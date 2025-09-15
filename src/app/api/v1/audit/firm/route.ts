@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * HERA Audit Firm Management API
- * 
+ *
  * Manages audit firms using universal architecture:
  * - Audit firms are core_entities with entity_type='audit_firm'
  * - Firm details stored in core_dynamic_data
@@ -85,11 +85,7 @@ const mockAuditFirms: AuditFirm[] = [
       partner_count: 3,
       staff_count: 18,
       office_locations: ['Manama'],
-      specializations: [
-        'statutory_audit',
-        'sme_audit',
-        'tax_advisory'
-      ],
+      specializations: ['statutory_audit', 'sme_audit', 'tax_advisory'],
       quality_control_system: 'ISQC1',
       peer_review_status: 'satisfactory',
       insurance_coverage: 1000000
@@ -143,7 +139,7 @@ export async function GET(request: NextRequest) {
       // In production, this would come from JWT claims or session
       // For demo, we'll use GSPU as the logged-in firm
       const currentFirm = mockAuditFirms.find(f => f.entity_code === 'GSPU')
-      
+
       return NextResponse.json({
         success: true,
         data: currentFirm
@@ -158,7 +154,6 @@ export async function GET(request: NextRequest) {
         total: mockAuditFirms.length
       }
     })
-
   } catch (error) {
     console.error('Audit firm API error:', error)
     return NextResponse.json(
@@ -211,7 +206,7 @@ export async function POST(request: NextRequest) {
     // Update firm information
     if (action === 'update_firm') {
       const { firm_id, updates } = data
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -223,11 +218,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid action' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
   } catch (error) {
     console.error('Audit firm API error:', error)
     return NextResponse.json(

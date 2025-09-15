@@ -8,14 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Menu,
-  X,
-  Plus,
-  Search,
-  Activity,
-  LucideIcon
-} from 'lucide-react'
+import { Menu, X, Plus, Search, Activity, LucideIcon } from 'lucide-react'
 
 export interface HeraSidebarNavItem {
   name: string
@@ -42,7 +35,7 @@ export interface HeraSidebarConfig {
   theme?: {
     primary?: string // gradient classes e.g. "from-pink-500 to-purple-600"
     sidebar?: string // gradient classes for sidebar bg
-    accent?: string  // accent color for active states
+    accent?: string // accent color for active states
   }
   bottomWidget?: {
     title: string
@@ -78,12 +71,13 @@ export function HeraSidebar({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showAppsModal, setShowAppsModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  
-  const filteredApps = additionalApps.filter(app => 
-    app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.description.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredApps = additionalApps.filter(
+    app =>
+      app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.description.toLowerCase().includes(searchQuery.toLowerCase())
   )
-  
+
   const isActive = (href: string) => {
     if (href === navigation[0]?.href) {
       return pathname === href
@@ -95,26 +89,30 @@ export function HeraSidebar({
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      
+
       {/* Sidebar */}
-      <div className={cn(
-        "fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b border-r border-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0",
-        theme.sidebar,
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <div
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b border-r border-gray-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0',
+          theme.sidebar,
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
         {/* Logo */}
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-800">
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className={cn(
-                "w-10 h-10 bg-gradient-to-br rounded-full flex items-center justify-center shadow-lg",
-                theme.primary
-              )}>
+              <div
+                className={cn(
+                  'w-10 h-10 bg-gradient-to-br rounded-full flex items-center justify-center shadow-lg',
+                  theme.primary
+                )}
+              >
                 <Logo className="w-6 h-6 text-white" />
               </div>
               {bottomWidget && (
@@ -122,12 +120,8 @@ export function HeraSidebar({
               )}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-100">
-                {title}
-              </h2>
-              {subtitle && (
-                <p className="text-xs text-gray-400">{subtitle}</p>
-              )}
+              <h2 className="text-lg font-bold text-gray-100">{title}</h2>
+              {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
             </div>
           </div>
           <button
@@ -141,47 +135,44 @@ export function HeraSidebar({
         {/* Navigation */}
         <nav className="mt-6 px-4 flex-1 overflow-y-auto" data-testid="hera-sidebar-nav">
           <div className="space-y-1">
-            {navigation.map((item) => {
+            {navigation.map(item => {
               const active = isActive(item.href)
-              
+
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
-                    active 
-                      ? cn("bg-gradient-to-r text-white shadow-lg", theme.accent)
-                      : "text-gray-300 hover:text-gray-100 hover:bg-gray-800"
+                    'group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
+                    active
+                      ? cn('bg-gradient-to-r text-white shadow-lg', theme.accent)
+                      : 'text-gray-300 hover:text-gray-100 hover:bg-gray-800'
                   )}
                 >
-                  <div className={cn(
-                    "mr-3 p-1.5 rounded-md transition-all duration-200",
-                    active 
-                      ? "bg-white/20" 
-                      : "bg-gray-800 group-hover:bg-gray-700"
-                  )}>
-                    <item.icon className={cn(
-                      "h-4 w-4 transition-all duration-200",
-                      active 
-                        ? "text-white" 
-                        : "text-gray-400 group-hover:text-gray-200"
-                    )} />
+                  <div
+                    className={cn(
+                      'mr-3 p-1.5 rounded-md transition-all duration-200',
+                      active ? 'bg-white/20' : 'bg-gray-800 group-hover:bg-gray-700'
+                    )}
+                  >
+                    <item.icon
+                      className={cn(
+                        'h-4 w-4 transition-all duration-200',
+                        active ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'
+                      )}
+                    />
                   </div>
                   {item.name}
                   {item.badge && (
-                    <Badge 
-                      variant={item.badgeVariant || 'default'}
-                      className="ml-auto"
-                    >
+                    <Badge variant={item.badgeVariant || 'default'} className="ml-auto">
                       {item.badge}
                     </Badge>
                   )}
                 </Link>
               )
             })}
-            
+
             {/* Plus button for more apps */}
             {additionalApps.length > 0 && (
               <button
@@ -200,10 +191,12 @@ export function HeraSidebar({
         {/* Bottom Widget */}
         {bottomWidget && (
           <div className="absolute bottom-6 left-4 right-4">
-            <div className={cn(
-              "bg-gradient-to-r rounded-lg p-4 text-white shadow-lg",
-              bottomWidget.gradient || theme.primary
-            )}>
+            <div
+              className={cn(
+                'bg-gradient-to-r rounded-lg p-4 text-white shadow-lg',
+                bottomWidget.gradient || theme.primary
+              )}
+            >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">{bottomWidget.title}</span>
                 {bottomWidget.icon && (
@@ -232,13 +225,11 @@ export function HeraSidebar({
             >
               <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
             </button>
-            
+
             {headerContent || (
               <div className="flex items-center space-x-4">
                 <div className="hidden sm:block">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {title}
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
                 </div>
               </div>
             )}
@@ -246,11 +237,9 @@ export function HeraSidebar({
         </header>
 
         {/* Page content */}
-        <main className="p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
-      
+
       {/* Apps Modal */}
       {additionalApps.length > 0 && (
         <Dialog open={showAppsModal} onOpenChange={setShowAppsModal}>
@@ -260,21 +249,21 @@ export function HeraSidebar({
                 {title} Applications
               </DialogTitle>
             </DialogHeader>
-            
+
             {/* Search */}
             <div className="relative mt-4">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search apps..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500"
               />
             </div>
-            
+
             {/* Apps Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-              {filteredApps.map((app) => (
+              {filteredApps.map(app => (
                 <button
                   key={app.name}
                   onClick={() => {
@@ -284,22 +273,20 @@ export function HeraSidebar({
                   }}
                   className="group p-4 bg-gray-800 hover:bg-gray-700 rounded-lg transition-all duration-200 text-left border border-gray-700 hover:border-gray-600"
                 >
-                  <div className={cn(
-                    "w-12 h-12 rounded-lg bg-gradient-to-br flex items-center justify-center mb-3",
-                    app.color
-                  )}>
+                  <div
+                    className={cn(
+                      'w-12 h-12 rounded-lg bg-gradient-to-br flex items-center justify-center mb-3',
+                      app.color
+                    )}
+                  >
                     <app.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-gray-100 group-hover:text-white">
-                    {app.name}
-                  </h3>
-                  <p className="text-sm text-gray-400 mt-1">
-                    {app.description}
-                  </p>
+                  <h3 className="font-semibold text-gray-100 group-hover:text-white">{app.name}</h3>
+                  <p className="text-sm text-gray-400 mt-1">{app.description}</p>
                 </button>
               ))}
             </div>
-            
+
             {filteredApps.length === 0 && (
               <div className="text-center py-8 text-gray-400">
                 No apps found matching "{searchQuery}"

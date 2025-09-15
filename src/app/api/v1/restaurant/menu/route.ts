@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
-
 // GET /api/v1/restaurant/menu - Fetch menu items using HERA universal tables
 export async function GET(request: NextRequest) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
-    
+
     // Get organization_id from mock context (in production, extract from JWT)
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
 
@@ -45,12 +44,12 @@ export async function GET(request: NextRequest) {
     // Combine entities with their dynamic properties
     const menuItems = menuEntities.map(entity => {
       const entityDynamicData = dynamicData.filter(d => d.entity_id === entity.id)
-      
+
       // Convert dynamic data to object
       const properties: Record<string, any> = {}
       entityDynamicData.forEach(data => {
         let value = data.field_value
-        
+
         // Parse JSON fields
         if (data.field_type === 'json') {
           try {
@@ -65,7 +64,7 @@ export async function GET(request: NextRequest) {
         } else if (data.field_type === 'integer') {
           value = parseInt(data.field_value, 10)
         }
-        
+
         properties[data.field_name] = value
       })
 
@@ -93,13 +92,9 @@ export async function GET(request: NextRequest) {
       data: menuItems,
       count: menuItems.length
     })
-
   } catch (error) {
     console.error('Restaurant menu API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -144,13 +139,55 @@ export async function POST(request: NextRequest) {
 
     // Create dynamic data properties with organization_id
     const dynamicDataInserts = [
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'price', field_value: price.toString(), field_type: 'decimal' },
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'description', field_value: description, field_type: 'text' },
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'category', field_value: category, field_type: 'text' },
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'prep_time', field_value: prep_time.toString(), field_type: 'integer' },
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'dietary_tags', field_value: JSON.stringify(dietary_tags), field_type: 'json' },
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'ingredients', field_value: ingredients, field_type: 'text' },
-      { entity_id: entity.id, organization_id: organizationId, field_name: 'popularity', field_value: '0', field_type: 'integer' }
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'price',
+        field_value: price.toString(),
+        field_type: 'decimal'
+      },
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'description',
+        field_value: description,
+        field_type: 'text'
+      },
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'category',
+        field_value: category,
+        field_type: 'text'
+      },
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'prep_time',
+        field_value: prep_time.toString(),
+        field_type: 'integer'
+      },
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'dietary_tags',
+        field_value: JSON.stringify(dietary_tags),
+        field_type: 'json'
+      },
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'ingredients',
+        field_value: ingredients,
+        field_type: 'text'
+      },
+      {
+        entity_id: entity.id,
+        organization_id: organizationId,
+        field_name: 'popularity',
+        field_value: '0',
+        field_type: 'integer'
+      }
     ]
 
     const { error: dynamicError } = await supabaseAdmin
@@ -181,12 +218,8 @@ export async function POST(request: NextRequest) {
         status: 'active'
       }
     })
-
   } catch (error) {
     console.error('Create menu item error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

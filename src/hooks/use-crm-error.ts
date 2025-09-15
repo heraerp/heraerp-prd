@@ -46,98 +46,97 @@ export function useCRMError(options: UseCRMErrorOptions = {}) {
   /**
    * Handle a new error
    */
-  const handleError = useCallback(async (
-    errorCode: string,
-    details?: any,
-    context?: CRMError['context']
-  ) => {
-    const result = crmErrorHandler.handleError(errorCode, details, context)
-    
-    if (result.error) {
-      setErrorState(prev => ({
-        ...prev,
-        error: result.error!,
-        canRetry: result.retryable && prev.retryCount < maxRetries
-      }))
+  const handleError = useCallback(
+    async (errorCode: string, details?: any, context?: CRMError['context']) => {
+      const result = crmErrorHandler.handleError(errorCode, details, context)
 
-      // Show toast notification
-      if (showToast) {
-        setToastError(result.error)
+      if (result.error) {
+        setErrorState(prev => ({
+          ...prev,
+          error: result.error!,
+          canRetry: result.retryable && prev.retryCount < maxRetries
+        }))
+
+        // Show toast notification
+        if (showToast) {
+          setToastError(result.error)
+        }
+
+        // Call error callback
+        onError?.(result.error)
+
+        // Auto retry if enabled and retryable
+        if (autoRetry && result.retryable && errorState.retryCount < maxRetries) {
+          setTimeout(() => {
+            retry()
+          }, result.retryAfter || retryDelay)
+        }
       }
 
-      // Call error callback
-      onError?.(result.error)
-
-      // Auto retry if enabled and retryable
-      if (autoRetry && result.retryable && errorState.retryCount < maxRetries) {
-        setTimeout(() => {
-          retry()
-        }, result.retryAfter || retryDelay)
-      }
-    }
-
-    return result
-  }, [errorState.retryCount, maxRetries, showToast, autoRetry, retryDelay, onError])
+      return result
+    },
+    [errorState.retryCount, maxRetries, showToast, autoRetry, retryDelay, onError]
+  )
 
   /**
    * Handle API errors
    */
-  const handleApiError = useCallback(async (
-    error: any,
-    context?: CRMError['context']
-  ) => {
-    setErrorState(prev => ({ ...prev, isLoading: false }))
-    
-    const result = await crmErrorHandler.handleApiError(error, context, maxRetries)
-    
-    if (result.error) {
-      setErrorState(prev => ({
-        ...prev,
-        error: result.error!,
-        canRetry: result.retryable && prev.retryCount < maxRetries
-      }))
+  const handleApiError = useCallback(
+    async (error: any, context?: CRMError['context']) => {
+      setErrorState(prev => ({ ...prev, isLoading: false }))
 
-      if (showToast) {
-        setToastError(result.error)
+      const result = await crmErrorHandler.handleApiError(error, context, maxRetries)
+
+      if (result.error) {
+        setErrorState(prev => ({
+          ...prev,
+          error: result.error!,
+          canRetry: result.retryable && prev.retryCount < maxRetries
+        }))
+
+        if (showToast) {
+          setToastError(result.error)
+        }
+
+        onError?.(result.error)
+
+        if (autoRetry && result.retryable && errorState.retryCount < maxRetries) {
+          setTimeout(() => {
+            retry()
+          }, result.retryAfter || retryDelay)
+        }
       }
 
-      onError?.(result.error)
-
-      if (autoRetry && result.retryable && errorState.retryCount < maxRetries) {
-        setTimeout(() => {
-          retry()
-        }, result.retryAfter || retryDelay)
-      }
-    }
-
-    return result
-  }, [errorState.retryCount, maxRetries, showToast, autoRetry, retryDelay, onError])
+      return result
+    },
+    [errorState.retryCount, maxRetries, showToast, autoRetry, retryDelay, onError]
+  )
 
   /**
    * Validate CRM data
    */
-  const validateData = useCallback((
-    data: any,
-    type: 'contact' | 'deal' | 'task' | 'organization'
-  ): ErrorHandlerResult => {
-    const result = crmErrorHandler.validateCRMData(data, type)
-    
-    if (!result.success && result.error) {
-      setErrorState(prev => ({
-        ...prev,
-        error: result.error!,
-        canRetry: false
-      }))
+  const validateData = useCallback(
+    (data: any, type: 'contact' | 'deal' | 'task' | 'organization'): ErrorHandlerResult => {
+      const result = crmErrorHandler.validateCRMData(data, type)
 
-      if (showToast) {
-        setToastError(result.error)
+      if (!result.success && result.error) {
+        setErrorState(prev => ({
+          ...prev,
+          error: result.error!,
+          canRetry: false
+        }))
+
+        if (showToast) {
+          setToastError(result.error)
+        }
+
+        onError?.(result.error)
       }
 
-      onError?.(result.error)
-    }
-
-    return result
-  }, [showToast, onError])
+      return result
+    },
+    [showToast, onError]
+  )
 
   /**
    * Retry the last failed operation
@@ -186,22 +185,22 @@ export function useCRMError(options: UseCRMErrorOptions = {}) {
   /**
    * Execute an operation with error handling
    */
-  const executeWithErrorHandling = useCallback(async <T>(
-    operation: () => Promise<T>,
-    context?: CRMError['context']
-  ): Promise<T | null> => {
-    setLoading(true)
-    clearError()
+  const executeWithErrorHandling = useCallback(
+    async <T>(operation: () => Promise<T>, context?: CRMError['context']): Promise<T | null> => {
+      setLoading(true)
+      clearError()
 
-    try {
-      const result = await operation()
-      handleSuccess()
-      return result
-    } catch (error) {
-      await handleApiError(error, context)
-      return null
-    }
-  }, [setLoading, clearError, handleSuccess, handleApiError])
+      try {
+        const result = await operation()
+        handleSuccess()
+        return result
+      } catch (error) {
+        await handleApiError(error, context)
+        return null
+      }
+    },
+    [setLoading, clearError, handleSuccess, handleApiError]
+  )
 
   /**
    * Dismiss toast notification
@@ -238,9 +237,7 @@ export function useCRMError(options: UseCRMErrorOptions = {}) {
 /**
  * Hook for form validation with CRM error handling
  */
-export function useCRMFormValidation(
-  formType: 'contact' | 'deal' | 'task' | 'organization'
-) {
+export function useCRMFormValidation(formType: 'contact' | 'deal' | 'task' | 'organization') {
   const { validateData, error, hasError, errorMessage, clearError } = useCRMError({
     showToast: false // Don't show toast for form validation
   })
@@ -250,92 +247,94 @@ export function useCRMFormValidation(
   /**
    * Validate individual field
    */
-  const validateField = useCallback((
-    fieldName: string,
-    value: any,
-    required: boolean = false
-  ): boolean => {
-    // Clear existing error
-    setFieldErrors(prev => {
-      const newErrors = { ...prev }
-      delete newErrors[fieldName]
-      return newErrors
-    })
+  const validateField = useCallback(
+    (fieldName: string, value: any, required: boolean = false): boolean => {
+      // Clear existing error
+      setFieldErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[fieldName]
+        return newErrors
+      })
 
-    // Required field validation
-    if (required && (!value || (typeof value === 'string' && value.trim() === ''))) {
-      setFieldErrors(prev => ({
-        ...prev,
-        [fieldName]: 'This field is required'
-      }))
-      return false
-    }
+      // Required field validation
+      if (required && (!value || (typeof value === 'string' && value.trim() === ''))) {
+        setFieldErrors(prev => ({
+          ...prev,
+          [fieldName]: 'This field is required'
+        }))
+        return false
+      }
 
-    // Field-specific validations
-    switch (fieldName) {
-      case 'email':
-        if (value && !crmErrorHandler['isValidEmail'](value)) {
-          setFieldErrors(prev => ({
-            ...prev,
-            [fieldName]: 'Please enter a valid email address'
-          }))
-          return false
-        }
-        break
+      // Field-specific validations
+      switch (fieldName) {
+        case 'email':
+          if (value && !crmErrorHandler['isValidEmail'](value)) {
+            setFieldErrors(prev => ({
+              ...prev,
+              [fieldName]: 'Please enter a valid email address'
+            }))
+            return false
+          }
+          break
 
-      case 'phone':
-        if (value && !crmErrorHandler['isValidPhone'](value)) {
-          setFieldErrors(prev => ({
-            ...prev,
-            [fieldName]: 'Please enter a valid phone number'
-          }))
-          return false
-        }
-        break
+        case 'phone':
+          if (value && !crmErrorHandler['isValidPhone'](value)) {
+            setFieldErrors(prev => ({
+              ...prev,
+              [fieldName]: 'Please enter a valid phone number'
+            }))
+            return false
+          }
+          break
 
-      case 'value':
-      case 'amount':
-        if (value && (isNaN(value) || parseFloat(value) < 0)) {
-          setFieldErrors(prev => ({
-            ...prev,
-            [fieldName]: 'Please enter a valid amount'
-          }))
-          return false
-        }
-        break
+        case 'value':
+        case 'amount':
+          if (value && (isNaN(value) || parseFloat(value) < 0)) {
+            setFieldErrors(prev => ({
+              ...prev,
+              [fieldName]: 'Please enter a valid amount'
+            }))
+            return false
+          }
+          break
 
-      case 'dueDate':
-      case 'closeDate':
-        if (value && new Date(value) < new Date()) {
-          setFieldErrors(prev => ({
-            ...prev,
-            [fieldName]: 'Date cannot be in the past'
-          }))
-          return false
-        }
-        break
-    }
+        case 'dueDate':
+        case 'closeDate':
+          if (value && new Date(value) < new Date()) {
+            setFieldErrors(prev => ({
+              ...prev,
+              [fieldName]: 'Date cannot be in the past'
+            }))
+            return false
+          }
+          break
+      }
 
-    return true
-  }, [])
+      return true
+    },
+    []
+  )
 
   /**
    * Validate entire form
    */
-  const validateForm = useCallback((formData: any): boolean => {
-    const result = validateData(formData, formType)
-    
-    if (!result.success && result.error) {
-      // Extract field-specific errors from validation result
-      if (result.error.details?.field) {
-        setFieldErrors({
-          [result.error.details.field]: result.error.userMessage
-        })
-      }
-    }
+  const validateForm = useCallback(
+    (formData: any): boolean => {
+      const result = validateData(formData, formType)
 
-    return result.success
-  }, [validateData, formType])
+      if (!result.success && result.error) {
+        // Extract field-specific errors from validation result
+        if (result.error.details?.field) {
+          setFieldErrors({
+            [result.error.details.field]: result.error.userMessage
+          })
+        }
+      }
+
+      return result.success
+    },
+    [validateData, formType]
+  )
 
   /**
    * Clear field error
@@ -383,50 +382,51 @@ export function useCRMAsyncOperation<T = any>(
   operation: () => Promise<T>,
   dependencies: any[] = []
 ) {
-  const {
-    executeWithErrorHandling,
-    isLoading,
-    error,
-    hasError,
-    retry,
-    clearError
-  } = useCRMError({ autoRetry: false })
+  const { executeWithErrorHandling, isLoading, error, hasError, retry, clearError } = useCRMError({
+    autoRetry: false
+  })
 
   const [data, setData] = useState<T | null>(null)
 
   /**
    * Execute the operation
    */
-  const execute = useCallback(async (context?: CRMError['context']) => {
-    const result = await executeWithErrorHandling(operation, context)
-    if (result !== null) {
-      setData(result)
-    }
-    return result
-  }, [executeWithErrorHandling, operation])
+  const execute = useCallback(
+    async (context?: CRMError['context']) => {
+      const result = await executeWithErrorHandling(operation, context)
+      if (result !== null) {
+        setData(result)
+      }
+      return result
+    },
+    [executeWithErrorHandling, operation]
+  )
 
   /**
    * Retry with context
    */
-  const retryOperation = useCallback(async (context?: CRMError['context']) => {
-    retry()
-    return execute(context)
-  }, [retry, execute])
+  const retryOperation = useCallback(
+    async (context?: CRMError['context']) => {
+      retry()
+      return execute(context)
+    },
+    [retry, execute]
+  )
 
   return {
     // Data
     data,
-    
+
     // State
     isLoading,
     error,
     hasError,
-    
+
     // Actions
     execute,
     retry: retryOperation,
     clearError,
-    
+
     // Utilities
     refetch: execute
   }

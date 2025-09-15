@@ -29,11 +29,11 @@ export default function ForgotPasswordPage() {
     try {
       // Get the current URL for the redirect
       const redirectTo = `${window.location.origin}/auth/reset-password`
-      
+
       console.log('Sending password reset email with redirect URL:', redirectTo)
-      
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo,
+        redirectTo
       })
 
       if (error) {
@@ -71,12 +71,12 @@ export default function ForgotPasswordPage() {
                   The link will expire in 1 hour.
                 </AlertDescription>
               </Alert>
-              
+
               <div className="space-y-3">
                 <p className="text-sm text-gray-600">
                   Didn't receive the email? Check your spam folder or try again.
                 </p>
-                
+
                 <Button
                   variant="outline"
                   className="w-full"
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
                 >
                   Try Another Email
                 </Button>
-                
+
                 <Link href="/auth/login" className="block">
                   <Button variant="ghost" className="w-full">
                     <ArrowLeft className="mr-2 h-4 w-4" />
@@ -120,7 +120,7 @@ export default function ForgotPasswordPage() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input
@@ -128,7 +128,7 @@ export default function ForgotPasswordPage() {
                   type="email"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
                   autoComplete="email"
@@ -138,12 +138,8 @@ export default function ForgotPasswordPage() {
                   Enter the email address associated with your HERA account
                 </p>
               </div>
-              
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading || !email}
-              >
+
+              <Button type="submit" className="w-full" disabled={isLoading || !email}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -157,34 +153,28 @@ export default function ForgotPasswordPage() {
                 )}
               </Button>
             </form>
-            
+
             <div className="mt-6 text-center space-y-2">
               <p className="text-sm text-gray-600">
                 Remember your password?{' '}
-                <Link 
-                  href="/auth/login" 
-                  className="text-blue-600 hover:text-blue-700 font-medium"
-                >
+                <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 font-medium">
                   Sign In
                 </Link>
               </p>
               <p className="text-sm text-gray-600">
                 Don't have an account?{' '}
-                <Link 
-                  href="/auth/signup" 
-                  className="text-blue-600 hover:text-blue-700 font-medium"
-                >
+                <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-medium">
                   Create One
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Security Notice */}
         <div className="mt-8 text-center">
           <p className="text-xs text-gray-500 max-w-sm mx-auto">
-            For security reasons, we'll send a password reset link to your registered email address. 
+            For security reasons, we'll send a password reset link to your registered email address.
             The link will expire after 1 hour.
           </p>
         </div>

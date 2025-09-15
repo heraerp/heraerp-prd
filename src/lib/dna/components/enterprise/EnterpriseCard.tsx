@@ -16,35 +16,35 @@ export interface EnterpriseCardProps extends React.HTMLAttributes<HTMLDivElement
   // Glass effects
   glassIntensity?: 'subtle' | 'medium' | 'strong' | 'ultra'
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'premium'
-  
+
   // Enterprise features
   elevation?: 'none' | 'low' | 'medium' | 'high' | 'floating'
   interactive?: boolean
   loading?: boolean
   disabled?: boolean
   selected?: boolean
-  
+
   // Advanced animations
   animateOnHover?: boolean
   animateOnMount?: boolean
   animationPreset?: 'fade' | 'slide' | 'scale' | 'float' | 'none'
-  
+
   // Accessibility
   role?: string
   ariaLabel?: string
   ariaDescribedBy?: string
-  
+
   // Performance
   lazy?: boolean
   priority?: 'high' | 'medium' | 'low'
-  
+
   // Advanced features
   glow?: boolean
   pulse?: boolean
   shimmer?: boolean
   gradient?: boolean
   noise?: boolean
-  
+
   // Layout
   fullHeight?: boolean
   noPadding?: boolean
@@ -73,8 +73,8 @@ const animationPresets = {
   },
   float: {
     initial: { opacity: 0, y: 10 },
-    animate: { 
-      opacity: 1, 
+    animate: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5, ease: 'easeOut' }
     },
@@ -96,44 +96,47 @@ const elevationStyles = {
 }
 
 export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardProps>(
-  ({
-    className,
-    children,
-    glassIntensity = 'medium',
-    variant = 'default',
-    elevation = 'low',
-    interactive = true,
-    loading = false,
-    disabled = false,
-    selected = false,
-    animateOnHover = true,
-    animateOnMount = true,
-    animationPreset = 'slide',
-    role = 'article',
-    ariaLabel,
-    ariaDescribedBy,
-    lazy = false,
-    priority = 'medium',
-    glow = false,
-    pulse = false,
-    shimmer = false,
-    gradient = false,
-    noise = false,
-    fullHeight = false,
-    noPadding = false,
-    compact = false,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      children,
+      glassIntensity = 'medium',
+      variant = 'default',
+      elevation = 'low',
+      interactive = true,
+      loading = false,
+      disabled = false,
+      selected = false,
+      animateOnHover = true,
+      animateOnMount = true,
+      animationPreset = 'slide',
+      role = 'article',
+      ariaLabel,
+      ariaDescribedBy,
+      lazy = false,
+      priority = 'medium',
+      glow = false,
+      pulse = false,
+      shimmer = false,
+      gradient = false,
+      noise = false,
+      fullHeight = false,
+      noPadding = false,
+      compact = false,
+      ...props
+    },
+    ref
+  ) => {
     const [isInView, setIsInView] = React.useState(!lazy)
     const cardRef = React.useRef<HTMLDivElement>(null)
-    
+
     // Merge refs
     React.useImperativeHandle(ref, () => cardRef.current!)
-    
+
     // Intersection observer for lazy loading
     React.useEffect(() => {
       if (!lazy || isInView) return
-      
+
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -143,14 +146,14 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
         },
         { rootMargin: '50px' }
       )
-      
+
       if (cardRef.current) {
         observer.observe(cardRef.current)
       }
-      
+
       return () => observer.disconnect()
     }, [lazy, isInView])
-    
+
     // Glass effects
     const { className: glassClassName, styles: glassStyles } = useGlassEffect({
       intensity: glassIntensity,
@@ -159,10 +162,10 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
       enableParticles: false,
       enableDepth: elevation === 'floating'
     })
-    
+
     // Animation variants
     const animations = animateOnMount ? animationPresets[animationPreset] : {}
-    
+
     // Loading state
     if (loading) {
       return (
@@ -185,7 +188,7 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
         </div>
       )
     }
-    
+
     const cardContent = (
       <motion.div
         ref={cardRef}
@@ -197,30 +200,30 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
         className={cn(
           // Base styles
           'rounded-xl border relative',
-          
+
           // Glass effects
           glassClassName,
-          
+
           // Elevation
           elevationStyles[elevation],
-          
+
           // States
           disabled && 'opacity-50 cursor-not-allowed',
           selected && 'ring-2 ring-primary ring-offset-2',
           interactive && !disabled && 'cursor-pointer',
-          
+
           // Layout
           fullHeight && 'h-full',
           !noPadding && !compact && 'p-6',
           compact && 'p-4',
-          
+
           // Advanced effects
           glow && 'shadow-[0_0_30px_rgba(59,130,246,0.3)]',
           pulse && 'animate-pulse',
-          
+
           // Performance
           priority === 'high' && 'will-change-transform',
-          
+
           className
         )}
         whileHover={animateOnHover && !disabled ? { scale: 1.02 } : undefined}
@@ -232,27 +235,25 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
         {gradient && (
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-xl pointer-events-none" />
         )}
-        
+
         {/* Noise texture */}
         {noise && (
-          <div 
+          <div
             className="absolute inset-0 rounded-xl pointer-events-none opacity-[0.03]"
             style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`
             }}
           />
         )}
-        
+
         {/* Shimmer effect */}
         {shimmer && (
           <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
         )}
-        
+
         {/* Content */}
-        <div className="relative z-10">
-          {children}
-        </div>
-        
+        <div className="relative z-10">{children}</div>
+
         {/* Selected indicator */}
         {selected && (
           <div className="absolute top-2 right-2">
@@ -261,7 +262,7 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
         )}
       </motion.div>
     )
-    
+
     // Lazy loading placeholder
     if (lazy && !isInView) {
       return (
@@ -277,7 +278,7 @@ export const EnterpriseCard = React.forwardRef<HTMLDivElement, EnterpriseCardPro
         />
       )
     }
-    
+
     return cardContent
   }
 )
@@ -303,20 +304,10 @@ export const CardHeader = React.forwardRef<
     {...props}
   >
     <div className="flex items-start gap-3 flex-1">
-      {icon && (
-        <div className="mt-0.5 text-muted-foreground">
-          {icon}
-        </div>
-      )}
-      <div className="flex-1 space-y-1">
-        {children}
-      </div>
+      {icon && <div className="mt-0.5 text-muted-foreground">{icon}</div>}
+      <div className="flex-1 space-y-1">{children}</div>
     </div>
-    {actions && (
-      <div className="flex items-center gap-2">
-        {actions}
-      </div>
-    )}
+    {actions && <div className="flex items-center gap-2">{actions}</div>}
   </div>
 ))
 CardHeader.displayName = 'CardHeader'
@@ -333,15 +324,11 @@ export const CardTitle = React.forwardRef<
     lg: 'text-xl',
     xl: 'text-2xl'
   }
-  
+
   return (
     <h3
       ref={ref}
-      className={cn(
-        'font-semibold leading-none tracking-tight',
-        sizeClasses[size],
-        className
-      )}
+      className={cn('font-semibold leading-none tracking-tight', sizeClasses[size], className)}
       {...props}
     />
   )

@@ -156,10 +156,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   const { organizationId, action, data } = body
 
   if (!organizationId || !action || !data) {
-    return NextResponse.json(
-      { success: false, error: 'Missing required fields' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
   }
 
   try {
@@ -180,10 +177,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         return await enrollCustomer(organizationId, data)
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Error processing loyalty action:', error)
@@ -200,10 +194,7 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
   const { organizationId, type, id, data } = body
 
   if (!organizationId || !type || !data) {
-    return NextResponse.json(
-      { success: false, error: 'Missing required fields' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
   }
 
   try {
@@ -220,10 +211,7 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
         return await updateTier(organizationId, id, data)
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid type' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid type' }, { status: 400 })
     }
   } catch (error) {
     console.error('Error updating loyalty data:', error)
@@ -270,27 +258,29 @@ async function getLoyaltyProgram(organizationId: string): Promise<LoyaltyProgram
     signup_bonus: (program.metadata as any)?.signup_bonus || 100,
     referral_bonus: (program.metadata as any)?.referral_bonus || 500,
     birthday_bonus: (program.metadata as any)?.birthday_bonus || 200,
-    tiers: tiers?.map(t => ({
-      id: t.id,
-      name: t.entity_name,
-      min_points: (t.metadata as any)?.min_points || 0,
-      benefits: (t.metadata as any)?.benefits || [],
-      discount_percentage: (t.metadata as any)?.discount_percentage || 0,
-      points_multiplier: (t.metadata as any)?.points_multiplier || 1,
-      color: (t.metadata as any)?.color || '#gray'
-    })) || [],
-    rewards: rewards?.map(r => ({
-      id: r.id,
-      name: r.entity_name,
-      description: (r.metadata as any)?.description || '',
-      points_required: (r.metadata as any)?.points_required || 0,
-      reward_type: (r.metadata as any)?.reward_type || 'discount',
-      reward_value: (r.metadata as any)?.reward_value || 0,
-      reward_details: (r.metadata as any)?.reward_details,
-      active: r.status === 'active',
-      stock: (r.metadata as any)?.stock,
-      expires_in_days: (r.metadata as any)?.expires_in_days
-    })) || [],
+    tiers:
+      tiers?.map(t => ({
+        id: t.id,
+        name: t.entity_name,
+        min_points: (t.metadata as any)?.min_points || 0,
+        benefits: (t.metadata as any)?.benefits || [],
+        discount_percentage: (t.metadata as any)?.discount_percentage || 0,
+        points_multiplier: (t.metadata as any)?.points_multiplier || 1,
+        color: (t.metadata as any)?.color || '#gray'
+      })) || [],
+    rewards:
+      rewards?.map(r => ({
+        id: r.id,
+        name: r.entity_name,
+        description: (r.metadata as any)?.description || '',
+        points_required: (r.metadata as any)?.points_required || 0,
+        reward_type: (r.metadata as any)?.reward_type || 'discount',
+        reward_value: (r.metadata as any)?.reward_value || 0,
+        reward_details: (r.metadata as any)?.reward_details,
+        active: r.status === 'active',
+        stock: (r.metadata as any)?.stock,
+        expires_in_days: (r.metadata as any)?.expires_in_days
+      })) || [],
     active: program.status === 'active'
   }
 }
@@ -331,7 +321,12 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
     {
       name: 'Silver',
       min_points: 500,
-      benefits: ['1.25 points per AED spent', '5% discount on services', 'Birthday bonus points', 'Priority booking'],
+      benefits: [
+        '1.25 points per AED spent',
+        '5% discount on services',
+        'Birthday bonus points',
+        'Priority booking'
+      ],
       discount_percentage: 5,
       points_multiplier: 1.25,
       color: '#C0C0C0'
@@ -339,7 +334,13 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
     {
       name: 'Gold',
       min_points: 2000,
-      benefits: ['1.5 points per AED spent', '10% discount on services', 'Birthday bonus points', 'Priority booking', 'Free birthday service'],
+      benefits: [
+        '1.5 points per AED spent',
+        '10% discount on services',
+        'Birthday bonus points',
+        'Priority booking',
+        'Free birthday service'
+      ],
       discount_percentage: 10,
       points_multiplier: 1.5,
       color: '#FFD700'
@@ -347,7 +348,14 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
     {
       name: 'Platinum',
       min_points: 5000,
-      benefits: ['2 points per AED spent', '15% discount on services', 'Birthday bonus points', 'VIP booking priority', 'Free birthday service', 'Exclusive events access'],
+      benefits: [
+        '2 points per AED spent',
+        '15% discount on services',
+        'Birthday bonus points',
+        'VIP booking priority',
+        'Free birthday service',
+        'Exclusive events access'
+      ],
       discount_percentage: 15,
       points_multiplier: 2,
       color: '#E5E4E2'
@@ -355,17 +363,15 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
   ]
 
   for (const tier of defaultTiers) {
-    await supabase
-      .from('core_entities')
-      .insert({
-        organization_id: organizationId,
-        entity_type: 'loyalty_tier',
-        entity_name: tier.name,
-        entity_code: `TIER-${tier.name.toUpperCase()}`,
-        status: 'active',
-        smart_code: 'HERA.SALON.LOYALTY.TIER.v1',
-        metadata: tier
-      })
+    await supabase.from('core_entities').insert({
+      organization_id: organizationId,
+      entity_type: 'loyalty_tier',
+      entity_name: tier.name,
+      entity_code: `TIER-${tier.name.toUpperCase()}`,
+      status: 'active',
+      smart_code: 'HERA.SALON.LOYALTY.TIER.v1',
+      metadata: tier
+    })
   }
 
   // Create default rewards
@@ -407,20 +413,18 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
   ]
 
   for (const reward of defaultRewards) {
-    await supabase
-      .from('core_entities')
-      .insert({
-        organization_id: organizationId,
-        entity_type: 'loyalty_reward',
-        entity_name: reward.name,
-        entity_code: `REWARD-${Date.now()}`,
-        status: 'active',
-        smart_code: 'HERA.SALON.LOYALTY.REWARD.v1',
-        metadata: reward
-      })
+    await supabase.from('core_entities').insert({
+      organization_id: organizationId,
+      entity_type: 'loyalty_reward',
+      entity_name: reward.name,
+      entity_code: `REWARD-${Date.now()}`,
+      status: 'active',
+      smart_code: 'HERA.SALON.LOYALTY.REWARD.v1',
+      metadata: reward
+    })
   }
 
-  return await getLoyaltyProgram(organizationId) as LoyaltyProgram
+  return (await getLoyaltyProgram(organizationId)) as LoyaltyProgram
 }
 
 async function getLoyaltyCustomers(organizationId: string) {
@@ -442,7 +446,10 @@ async function getLoyaltyCustomers(organizationId: string) {
   return loyaltyCustomers.sort((a, b) => b.points_balance - a.points_balance)
 }
 
-async function getCustomerLoyaltyData(organizationId: string, customerId: string): Promise<CustomerLoyalty | null> {
+async function getCustomerLoyaltyData(
+  organizationId: string,
+  customerId: string
+): Promise<CustomerLoyalty | null> {
   // Get customer info
   const { data: customer } = await supabase
     .from('core_entities')
@@ -468,7 +475,10 @@ async function getCustomerLoyaltyData(organizationId: string, customerId: string
 
   transactions?.forEach(txn => {
     const points = (txn.metadata as any)?.points || 0
-    if ((txn.metadata as any)?.transaction_type === 'earned' || (txn.metadata as any)?.transaction_type === 'bonus') {
+    if (
+      (txn.metadata as any)?.transaction_type === 'earned' ||
+      (txn.metadata as any)?.transaction_type === 'bonus'
+    ) {
       lifetimePoints += points
       pointsBalance += points
     } else if ((txn.metadata as any)?.transaction_type === 'redeemed') {
@@ -481,7 +491,7 @@ async function getCustomerLoyaltyData(organizationId: string, customerId: string
   const program = await getLoyaltyProgram(organizationId)
   let currentTier = program?.tiers[0]
   let nextTier = null
-  
+
   if (program) {
     for (let i = program.tiers.length - 1; i >= 0; i--) {
       if (lifetimePoints >= program.tiers[i].min_points) {
@@ -503,24 +513,29 @@ async function getCustomerLoyaltyData(organizationId: string, customerId: string
     points_balance: pointsBalance,
     lifetime_points: lifetimePoints,
     current_tier: currentTier?.name || 'Bronze',
-    tier_progress: nextTier ? ((lifetimePoints - currentTier!.min_points) / (nextTier.min_points - currentTier!.min_points)) * 100 : 100,
+    tier_progress: nextTier
+      ? ((lifetimePoints - currentTier!.min_points) /
+          (nextTier.min_points - currentTier!.min_points)) *
+        100
+      : 100,
     join_date: (customer.metadata as any)?.loyalty_join_date || customer.created_at,
     last_activity: transactions?.[0]?.created_at || customer.created_at,
     total_redemptions: totalRedemptions,
     available_rewards: availableRewards,
-    transaction_history: transactions?.map(t => ({
-      id: t.id,
-      customer_id: customerId,
-      customer_name: customer.entity_name,
-      transaction_type: (t.metadata as any)?.transaction_type || 'earned',
-      points: (t.metadata as any)?.points || 0,
-      balance_after: (t.metadata as any)?.balance_after || 0,
-      description: (t.metadata as any)?.description || '',
-      reference_id: (t.metadata as any)?.reference_id,
-      reference_type: (t.metadata as any)?.reference_type,
-      created_at: t.created_at,
-      metadata: t.metadata
-    })) || []
+    transaction_history:
+      transactions?.map(t => ({
+        id: t.id,
+        customer_id: customerId,
+        customer_name: customer.entity_name,
+        transaction_type: (t.metadata as any)?.transaction_type || 'earned',
+        points: (t.metadata as any)?.points || 0,
+        balance_after: (t.metadata as any)?.balance_after || 0,
+        description: (t.metadata as any)?.description || '',
+        reference_id: (t.metadata as any)?.reference_id,
+        reference_type: (t.metadata as any)?.reference_type,
+        created_at: t.created_at,
+        metadata: t.metadata
+      })) || []
   }
 }
 
@@ -567,25 +582,27 @@ async function getActiveRewards(organizationId: string) {
     .eq('entity_type', 'loyalty_reward')
     .eq('status', 'active')
 
-  return rewards?.map(r => ({
-    id: r.id,
-    name: r.entity_name,
-    description: (r.metadata as any)?.description || '',
-    points_required: (r.metadata as any)?.points_required || 0,
-    reward_type: (r.metadata as any)?.reward_type || 'discount',
-    reward_value: (r.metadata as any)?.reward_value || 0,
-    reward_details: (r.metadata as any)?.reward_details,
-    active: true,
-    stock: (r.metadata as any)?.stock,
-    expires_in_days: (r.metadata as any)?.expires_in_days,
-    redemption_count: (r.metadata as any)?.redemption_count || 0
-  })) || []
+  return (
+    rewards?.map(r => ({
+      id: r.id,
+      name: r.entity_name,
+      description: (r.metadata as any)?.description || '',
+      points_required: (r.metadata as any)?.points_required || 0,
+      reward_type: (r.metadata as any)?.reward_type || 'discount',
+      reward_value: (r.metadata as any)?.reward_value || 0,
+      reward_details: (r.metadata as any)?.reward_details,
+      active: true,
+      stock: (r.metadata as any)?.stock,
+      expires_in_days: (r.metadata as any)?.expires_in_days,
+      redemption_count: (r.metadata as any)?.redemption_count || 0
+    })) || []
+  )
 }
 
 async function getLoyaltyAnalytics(organizationId: string) {
   // Get all customers with loyalty
   const customers = await getLoyaltyCustomers(organizationId)
-  
+
   // Get recent transactions
   const { data: recentTransactions } = await supabase
     .from('universal_transactions')
@@ -599,8 +616,10 @@ async function getLoyaltyAnalytics(organizationId: string) {
   const activeMembers = customers.filter(c => c.points_balance > 0).length
   const totalPointsIssued = customers.reduce((sum, c) => sum + c.lifetime_points, 0)
   const totalPointsBalance = customers.reduce((sum, c) => sum + c.points_balance, 0)
-  const totalRedemptions = recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'redeemed').length || 0
-  
+  const totalRedemptions =
+    recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'redeemed').length ||
+    0
+
   // Tier distribution
   const tierDistribution: { [key: string]: number } = {}
   customers.forEach(c => {
@@ -608,8 +627,11 @@ async function getLoyaltyAnalytics(organizationId: string) {
   })
 
   // Recent activity
-  const recentEarned = recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'earned').length || 0
-  const recentRedeemed = recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'redeemed').length || 0
+  const recentEarned =
+    recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'earned').length || 0
+  const recentRedeemed =
+    recentTransactions?.filter(t => (t.metadata as any)?.transaction_type === 'redeemed').length ||
+    0
 
   return {
     totalMembers,
@@ -618,7 +640,10 @@ async function getLoyaltyAnalytics(organizationId: string) {
     totalPointsBalance,
     totalRedemptions,
     averagePointsPerMember: totalMembers > 0 ? Math.round(totalPointsBalance / totalMembers) : 0,
-    redemptionRate: totalPointsIssued > 0 ? ((totalPointsIssued - totalPointsBalance) / totalPointsIssued * 100).toFixed(1) : '0',
+    redemptionRate:
+      totalPointsIssued > 0
+        ? (((totalPointsIssued - totalPointsBalance) / totalPointsIssued) * 100).toFixed(1)
+        : '0',
     tierDistribution,
     recentActivity: {
       earned: recentEarned,
@@ -683,10 +708,7 @@ async function redeemReward(organizationId: string, data: any) {
     .single()
 
   if (!reward) {
-    return NextResponse.json(
-      { success: false, error: 'Reward not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ success: false, error: 'Reward not found' }, { status: 404 })
   }
 
   const pointsRequired = (reward.metadata as any)?.points_required || 0
@@ -694,10 +716,7 @@ async function redeemReward(organizationId: string, data: any) {
   // Check customer balance
   const customerLoyalty = await getCustomerLoyaltyData(organizationId, customerId)
   if (!customerLoyalty || customerLoyalty.points_balance < pointsRequired) {
-    return NextResponse.json(
-      { success: false, error: 'Insufficient points' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Insufficient points' }, { status: 400 })
   }
 
   const newBalance = customerLoyalty.points_balance - pointsRequired

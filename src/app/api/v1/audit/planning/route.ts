@@ -55,8 +55,10 @@ const riskAssessmentEntities = [
       estimated_hours: 45,
       assigned_to: 'Senior Team',
       isa_reference: 'ISA 240, ISA 315',
-      risk_description: 'Risk of material misstatement in revenue recognition due to complex contracts and multiple performance obligations',
-      planned_response: 'Detailed testing of revenue transactions, contract review, and analytical procedures'
+      risk_description:
+        'Risk of material misstatement in revenue recognition due to complex contracts and multiple performance obligations',
+      planned_response:
+        'Detailed testing of revenue transactions, contract review, and analytical procedures'
     }
   },
   {
@@ -81,7 +83,8 @@ const riskAssessmentEntities = [
       assigned_to: 'Partner Review',
       isa_reference: 'ISA 240',
       risk_description: 'Risk of management override of internal controls to commit fraud',
-      planned_response: 'Journal entry testing, management estimates review, and significant transactions examination'
+      planned_response:
+        'Journal entry testing, management estimates review, and significant transactions examination'
     }
   },
   {
@@ -106,7 +109,8 @@ const riskAssessmentEntities = [
       assigned_to: 'IT Specialist',
       isa_reference: 'ISA 315',
       risk_description: 'Risk related to IT general controls affecting financial reporting systems',
-      planned_response: 'IT controls testing, user access reviews, and change management procedures testing'
+      planned_response:
+        'IT controls testing, user access reviews, and change management procedures testing'
     }
   }
 ]
@@ -214,23 +218,26 @@ export async function GET(request: NextRequest) {
 
     if (action === 'get_planning_overview') {
       // Get complete planning overview for an engagement
-      const planningEntity = auditPlanningEntities.find(e => 
-        e.id === engagementId && e.organization_id === organizationId
+      const planningEntity = auditPlanningEntities.find(
+        e => e.id === engagementId && e.organization_id === organizationId
       )
-      
+
       if (!planningEntity) {
-        return NextResponse.json({
-          success: false,
-          message: 'Planning engagement not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Planning engagement not found'
+          },
+          { status: 404 }
+        )
       }
 
       // Get related risk assessments
       const risks = riskAssessmentEntities.filter(r => r.parent_id === engagementId)
-      
+
       // Get planning areas/work programs
       const workPrograms = planningAreas.filter(wp => wp.parent_id === engagementId)
-      
+
       // Get milestones
       const milestones = planningMilestones.filter(ms => ms.parent_id === engagementId)
 
@@ -245,8 +252,14 @@ export async function GET(request: NextRequest) {
             total_risks: risks.length,
             high_risks: risks.filter(r => r.metadata.risk_level === 'high').length,
             significant_risks: risks.filter(r => r.metadata.significant_risk).length,
-            total_planned_hours: workPrograms.reduce((sum, wp) => sum + wp.metadata.planned_hours, 0),
-            avg_completion: Math.round(workPrograms.reduce((sum, wp) => sum + wp.metadata.completion_percentage, 0) / workPrograms.length),
+            total_planned_hours: workPrograms.reduce(
+              (sum, wp) => sum + wp.metadata.planned_hours,
+              0
+            ),
+            avg_completion: Math.round(
+              workPrograms.reduce((sum, wp) => sum + wp.metadata.completion_percentage, 0) /
+                workPrograms.length
+            ),
             completed_milestones: milestones.filter(ms => ms.status === 'completed').length,
             total_milestones: milestones.length
           }
@@ -257,17 +270,35 @@ export async function GET(request: NextRequest) {
     if (action === 'get_risk_matrix') {
       // Professional risk assessment matrix
       const risks = riskAssessmentEntities.filter(r => r.parent_id === engagementId)
-      
+
       const riskMatrix = {
-        high_high: risks.filter(r => r.metadata.inherent_risk === 'high' && r.metadata.control_risk === 'high').length,
-        high_moderate: risks.filter(r => r.metadata.inherent_risk === 'high' && r.metadata.control_risk === 'moderate').length,
-        high_low: risks.filter(r => r.metadata.inherent_risk === 'high' && r.metadata.control_risk === 'low').length,
-        moderate_high: risks.filter(r => r.metadata.inherent_risk === 'moderate' && r.metadata.control_risk === 'high').length,
-        moderate_moderate: risks.filter(r => r.metadata.inherent_risk === 'moderate' && r.metadata.control_risk === 'moderate').length,
-        moderate_low: risks.filter(r => r.metadata.inherent_risk === 'moderate' && r.metadata.control_risk === 'low').length,
-        low_high: risks.filter(r => r.metadata.inherent_risk === 'low' && r.metadata.control_risk === 'high').length,
-        low_moderate: risks.filter(r => r.metadata.inherent_risk === 'low' && r.metadata.control_risk === 'moderate').length,
-        low_low: risks.filter(r => r.metadata.inherent_risk === 'low' && r.metadata.control_risk === 'low').length
+        high_high: risks.filter(
+          r => r.metadata.inherent_risk === 'high' && r.metadata.control_risk === 'high'
+        ).length,
+        high_moderate: risks.filter(
+          r => r.metadata.inherent_risk === 'high' && r.metadata.control_risk === 'moderate'
+        ).length,
+        high_low: risks.filter(
+          r => r.metadata.inherent_risk === 'high' && r.metadata.control_risk === 'low'
+        ).length,
+        moderate_high: risks.filter(
+          r => r.metadata.inherent_risk === 'moderate' && r.metadata.control_risk === 'high'
+        ).length,
+        moderate_moderate: risks.filter(
+          r => r.metadata.inherent_risk === 'moderate' && r.metadata.control_risk === 'moderate'
+        ).length,
+        moderate_low: risks.filter(
+          r => r.metadata.inherent_risk === 'moderate' && r.metadata.control_risk === 'low'
+        ).length,
+        low_high: risks.filter(
+          r => r.metadata.inherent_risk === 'low' && r.metadata.control_risk === 'high'
+        ).length,
+        low_moderate: risks.filter(
+          r => r.metadata.inherent_risk === 'low' && r.metadata.control_risk === 'moderate'
+        ).length,
+        low_low: risks.filter(
+          r => r.metadata.inherent_risk === 'low' && r.metadata.control_risk === 'low'
+        ).length
       }
 
       return NextResponse.json({
@@ -284,12 +315,15 @@ export async function GET(request: NextRequest) {
 
     if (action === 'get_materiality_calculation') {
       const planningEntity = auditPlanningEntities.find(e => e.id === engagementId)
-      
+
       if (!planningEntity) {
-        return NextResponse.json({
-          success: false,
-          message: 'Planning engagement not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Planning engagement not found'
+          },
+          { status: 404 }
+        )
       }
 
       const materialityCalc = {
@@ -302,7 +336,8 @@ export async function GET(request: NextRequest) {
         trivial_threshold: planningEntity.metadata.trivial_threshold,
         trivial_percentage: 5, // Standard 5%
         calculation_method: 'ISA 320 compliant',
-        benchmark_justification: 'Revenue selected as primary benchmark due to stable recurring business model'
+        benchmark_justification:
+          'Revenue selected as primary benchmark due to stable recurring business model'
       }
 
       return NextResponse.json({
@@ -313,7 +348,7 @@ export async function GET(request: NextRequest) {
 
     // Default: return planning summary
     const planning = auditPlanningEntities.find(e => e.organization_id === organizationId)
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -328,13 +363,15 @@ export async function GET(request: NextRequest) {
         }
       }
     })
-
   } catch (error) {
     console.error('Error in audit planning API:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch planning data'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to fetch planning data'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -349,7 +386,8 @@ export async function POST(request: NextRequest) {
         id: `eng_planning_${Date.now()}`,
         entity_type: 'audit_planning',
         entity_name: `${data.client_name} - ${data.audit_year} Audit Planning`,
-        entity_code: data.engagement_code || `PLAN-${data.audit_year}-${Math.floor(Math.random() * 1000)}`,
+        entity_code:
+          data.engagement_code || `PLAN-${data.audit_year}-${Math.floor(Math.random() * 1000)}`,
         organization_id: data.organization_id || 'gspu_audit_partners_org',
         smart_code: 'HERA.AUD.PLAN.ENT.MASTER.v1',
         status: 'draft',
@@ -385,7 +423,7 @@ export async function POST(request: NextRequest) {
     if (action === 'update_planning_progress') {
       // Update planning progress
       const { engagement_id, completion_percentage, updated_areas } = data
-      
+
       // In a real implementation, this would update the universal database
       const updatedEngagement = {
         id: engagement_id,
@@ -438,17 +476,22 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      message: 'Invalid action specified'
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid action specified'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Error in planning POST:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to process planning request'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to process planning request'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -470,12 +513,14 @@ export async function PUT(request: NextRequest) {
       message: 'Planning engagement updated successfully',
       data: updatedPlanning
     })
-
   } catch (error) {
     console.error('Error updating planning:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to update planning engagement'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to update planning engagement'
+      },
+      { status: 500 }
+    )
   }
 }

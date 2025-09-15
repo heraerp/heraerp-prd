@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'list':
         let filteredLeads = [...warmLeadsDB]
-        
+
         // Apply filters
         if (status) {
           filteredLeads = filteredLeads.filter(lead => lead.lead_status === status)
@@ -51,10 +51,10 @@ export async function GET(request: NextRequest) {
         if (minScore) {
           filteredLeads = filteredLeads.filter(lead => lead.lead_score >= parseInt(minScore))
         }
-        
+
         // Sort by lead score descending
         filteredLeads.sort((a, b) => b.lead_score - a.lead_score)
-        
+
         return NextResponse.json({
           success: true,
           data: filteredLeads,
@@ -78,10 +78,11 @@ export async function GET(request: NextRequest) {
             healthcare: warmLeadsDB.filter(l => l.source === 'healthcare').length,
             other: warmLeadsDB.filter(l => l.source === 'other').length
           },
-          average_lead_score: warmLeadsDB.reduce((sum, lead) => sum + lead.lead_score, 0) / warmLeadsDB.length || 0,
+          average_lead_score:
+            warmLeadsDB.reduce((sum, lead) => sum + lead.lead_score, 0) / warmLeadsDB.length || 0,
           last_updated: new Date().toISOString()
         }
-        
+
         return NextResponse.json({
           success: true,
           data: stats
@@ -99,7 +100,7 @@ export async function GET(request: NextRequest) {
           engagement_level: lead.engagement_level,
           source: lead.source
         }))
-        
+
         return NextResponse.json({
           success: true,
           data: exportData,
@@ -108,17 +109,23 @@ export async function GET(request: NextRequest) {
         })
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action. Use: list, stats, or export'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid action. Use: list, stats, or export'
+          },
+          { status: 400 }
+        )
     }
   } catch (error) {
     console.error('Warm leads API error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -130,12 +137,15 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'add_lead':
         const leadData = body.data as Partial<WarmLead>
-        
+
         // Calculate engagement level and lead score
-        const engagementLevel = calculateEngagementLevel(leadData.interactions_count || 0, leadData.modules_used?.length || 0)
+        const engagementLevel = calculateEngagementLevel(
+          leadData.interactions_count || 0,
+          leadData.modules_used?.length || 0
+        )
         const leadScore = calculateLeadScore(leadData)
         const conversionProbability = calculateConversionProbability(leadData)
-        
+
         const newLead: WarmLead = {
           id: `lead-${Date.now()}`,
           email: leadData.email!,
@@ -156,7 +166,7 @@ export async function POST(request: NextRequest) {
           engagement_level: engagementLevel,
           conversion_probability: conversionProbability
         }
-        
+
         // Check if lead already exists
         const existingLeadIndex = warmLeadsDB.findIndex(lead => lead.email === newLead.email)
         if (existingLeadIndex !== -1) {
@@ -170,7 +180,7 @@ export async function POST(request: NextRequest) {
         } else {
           warmLeadsDB.push(newLead)
         }
-        
+
         return NextResponse.json({
           success: true,
           data: newLead,
@@ -180,20 +190,23 @@ export async function POST(request: NextRequest) {
       case 'update_lead':
         const { id, updates } = body
         const leadIndex = warmLeadsDB.findIndex(lead => lead.id === id)
-        
+
         if (leadIndex === -1) {
-          return NextResponse.json({
-            success: false,
-            error: 'Lead not found'
-          }, { status: 404 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Lead not found'
+            },
+            { status: 404 }
+          )
         }
-        
+
         warmLeadsDB[leadIndex] = {
           ...warmLeadsDB[leadIndex],
           ...updates,
           last_activity: new Date().toISOString()
         }
-        
+
         return NextResponse.json({
           success: true,
           data: warmLeadsDB[leadIndex]
@@ -202,40 +215,52 @@ export async function POST(request: NextRequest) {
       case 'add_note':
         const { leadId, note } = body
         const noteLeadIndex = warmLeadsDB.findIndex(lead => lead.id === leadId)
-        
+
         if (noteLeadIndex === -1) {
-          return NextResponse.json({
-            success: false,
-            error: 'Lead not found'
-          }, { status: 404 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Lead not found'
+            },
+            { status: 404 }
+          )
         }
-        
+
         warmLeadsDB[noteLeadIndex].notes.push(`${new Date().toISOString()}: ${note}`)
-        
+
         return NextResponse.json({
           success: true,
           message: 'Note added to lead'
         })
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid action'
+          },
+          { status: 400 }
+        )
     }
   } catch (error) {
     console.error('Warm leads POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // Helper functions for lead scoring
-function calculateEngagementLevel(interactions: number, modules: number): 'low' | 'medium' | 'high' {
-  const engagementScore = interactions + (modules * 10)
-  
+function calculateEngagementLevel(
+  interactions: number,
+  modules: number
+): 'low' | 'medium' | 'high' {
+  const engagementScore = interactions + modules * 10
+
   if (engagementScore >= 50) return 'high'
   if (engagementScore >= 20) return 'medium'
   return 'low'
@@ -243,22 +268,22 @@ function calculateEngagementLevel(interactions: number, modules: number): 'low' 
 
 function calculateLeadScore(leadData: Partial<WarmLead>): number {
   let score = 0
-  
+
   // Base score for providing email
   score += 20
-  
+
   // Modules used (each module = 15 points)
   score += (leadData.modules_used?.length || 0) * 15
-  
+
   // Interactions (each interaction = 2 points)
   score += (leadData.interactions_count || 0) * 2
-  
+
   // Data size (larger data = more commitment)
   const dataSize = leadData.data_size || 0
   if (dataSize > 10000) score += 20
   else if (dataSize > 5000) score += 10
   else if (dataSize > 1000) score += 5
-  
+
   // Source-based scoring
   const sourceScores: Record<string, number> = {
     financial: 25, // High-value business users
@@ -270,29 +295,31 @@ function calculateLeadScore(leadData: Partial<WarmLead>): number {
     other: 5
   }
   score += sourceScores[leadData.source || 'other'] || 5
-  
+
   // Recent activity bonus
   const lastActivity = new Date(leadData.last_activity || Date.now())
-  const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24))
+  const daysSinceActivity = Math.floor(
+    (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
+  )
   if (daysSinceActivity <= 1) score += 15
   else if (daysSinceActivity <= 7) score += 10
   else if (daysSinceActivity <= 30) score += 5
-  
+
   return Math.min(score, 100) // Cap at 100
 }
 
 function calculateConversionProbability(leadData: Partial<WarmLead>): number {
   const leadScore = calculateLeadScore(leadData)
-  
+
   // Convert lead score to probability percentage
   let probability = leadScore * 0.8 // Base conversion
-  
+
   // Boost for high-value modules
   if (leadData.modules_used?.includes('financial')) probability += 15
   if (leadData.modules_used?.includes('crm')) probability += 10
-  
+
   // Boost for high interaction count
   if ((leadData.interactions_count || 0) > 50) probability += 10
-  
+
   return Math.min(probability, 95) // Cap at 95%
 }

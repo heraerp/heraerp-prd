@@ -169,20 +169,23 @@ export async function GET(request: NextRequest) {
     const section = searchParams.get('section')
     const status = searchParams.get('status')
     const client = searchParams.get('client')
-    
+
     // Get specific workpaper by ID
     if (id) {
       const workpaper = MOCK_WORKPAPERS.find(wp => wp.id === id)
       if (!workpaper) {
-        return NextResponse.json({
-          success: false,
-          message: 'Workpaper not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Workpaper not found'
+          },
+          { status: 404 }
+        )
       }
-      
+
       return NextResponse.json({
         success: true,
-        data: { 
+        data: {
           workpaper: {
             ...workpaper,
             organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945'
@@ -190,30 +193,30 @@ export async function GET(request: NextRequest) {
         }
       })
     }
-    
+
     // Filter workpapers
     let filteredWorkpapers = MOCK_WORKPAPERS
-    
+
     if (section && section !== 'all') {
       filteredWorkpapers = filteredWorkpapers.filter(wp => wp.section === section)
     }
-    
+
     if (status && status !== 'all') {
       filteredWorkpapers = filteredWorkpapers.filter(wp => wp.status === status)
     }
-    
+
     if (client) {
-      filteredWorkpapers = filteredWorkpapers.filter(wp => 
+      filteredWorkpapers = filteredWorkpapers.filter(wp =>
         wp.client.toLowerCase().includes(client.toLowerCase())
       )
     }
-    
+
     // Add HERA universal format
     const workpapers = filteredWorkpapers.map(wp => ({
       ...wp,
       organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945'
     }))
-    
+
     // Calculate statistics
     const stats = {
       total: MOCK_WORKPAPERS.length,
@@ -233,7 +236,7 @@ export async function GET(request: NextRequest) {
         review: MOCK_WORKPAPERS.filter(wp => wp.section === 'review').length
       }
     }
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -242,13 +245,15 @@ export async function GET(request: NextRequest) {
         stats
       }
     })
-    
   } catch (error) {
     console.error('Error fetching workpapers:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch workpapers'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to fetch workpapers'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -256,14 +261,14 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { action, data } = body
-    
+
     if (action === 'create_workpaper') {
       // In production, this would:
       // 1. Create core_entities record with entity_type='audit_workpaper'
-      // 2. Store workpaper details in core_dynamic_data  
+      // 2. Store workpaper details in core_dynamic_data
       // 3. Create universal_transactions for audit trail
       // 4. Link to engagement via core_relationships
-      
+
       const newWorkpaper = {
         id: `wp_${Date.now()}`,
         ...data,
@@ -278,67 +283,75 @@ export async function POST(request: NextRequest) {
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
         smart_code: `HERA.AUD.WP.${data.section?.toUpperCase()}.${data.type?.toUpperCase()}.v1`
       }
-      
+
       // Add to mock data (in production, save to HERA database)
       MOCK_WORKPAPERS.push(newWorkpaper)
-      
+
       console.log('✅ Workpaper created:', newWorkpaper.name)
-      
+
       return NextResponse.json({
         success: true,
         message: 'Workpaper created successfully',
         data: newWorkpaper
       })
     }
-    
+
     if (action === 'update_workpaper') {
       const { id, ...updates } = data
       const workpaperIndex = MOCK_WORKPAPERS.findIndex(wp => wp.id === id)
-      
+
       if (workpaperIndex === -1) {
-        return NextResponse.json({
-          success: false,
-          message: 'Workpaper not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Workpaper not found'
+          },
+          { status: 404 }
+        )
       }
-      
+
       // Update workpaper
       MOCK_WORKPAPERS[workpaperIndex] = {
         ...MOCK_WORKPAPERS[workpaperIndex],
         ...updates,
         last_modified: new Date().toISOString().split('T')[0]
       }
-      
+
       return NextResponse.json({
         success: true,
         message: 'Workpaper updated successfully',
         data: MOCK_WORKPAPERS[workpaperIndex]
       })
     }
-    
+
     if (action === 'add_comment') {
       const { workpaper_id, comment } = data
-      
+
       // In production, would save comment to database
       console.log(`Comment added to workpaper ${workpaper_id}:`, comment)
-      
+
       return NextResponse.json({
         success: true,
         message: 'Comment added successfully'
       })
     }
-    
-    return NextResponse.json({
-      success: false,
-      message: 'Invalid action'
-    }, { status: 400 })
-    
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid action'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Error processing workpaper request:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to process request'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to process request'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -346,34 +359,39 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
     const { id, updates } = body
-    
+
     const workpaperIndex = MOCK_WORKPAPERS.findIndex(wp => wp.id === id)
     if (workpaperIndex === -1) {
-      return NextResponse.json({
-        success: false,
-        message: 'Workpaper not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Workpaper not found'
+        },
+        { status: 404 }
+      )
     }
-    
+
     // Update workpaper
     MOCK_WORKPAPERS[workpaperIndex] = {
       ...MOCK_WORKPAPERS[workpaperIndex],
       ...updates,
       last_modified: new Date().toISOString().split('T')[0]
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Workpaper updated successfully',
       data: MOCK_WORKPAPERS[workpaperIndex]
     })
-    
   } catch (error) {
     console.error('Error updating workpaper:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to update workpaper'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to update workpaper'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -381,36 +399,44 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
-      return NextResponse.json({
-        success: false,
-        message: 'Workpaper ID required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Workpaper ID required'
+        },
+        { status: 400 }
+      )
     }
-    
+
     const workpaperIndex = MOCK_WORKPAPERS.findIndex(wp => wp.id === id)
     if (workpaperIndex === -1) {
-      return NextResponse.json({
-        success: false,
-        message: 'Workpaper not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Workpaper not found'
+        },
+        { status: 404 }
+      )
     }
-    
+
     // Remove workpaper
     const deletedWorkpaper = MOCK_WORKPAPERS.splice(workpaperIndex, 1)[0]
-    
+
     return NextResponse.json({
       success: true,
       message: 'Workpaper deleted successfully',
       data: deletedWorkpaper
     })
-    
   } catch (error) {
     console.error('Error deleting workpaper:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to delete workpaper'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to delete workpaper'
+      },
+      { status: 500 }
+    )
   }
 }

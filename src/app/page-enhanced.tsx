@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { 
-  Scissors, 
-  IceCream2, 
-  UtensilsCrossed, 
-  Stethoscope, 
+import {
+  Scissors,
+  IceCream2,
+  UtensilsCrossed,
+  Stethoscope,
   Factory,
   Store,
   Briefcase,
@@ -41,7 +41,12 @@ const industries = [
     color: 'from-purple-500 to-pink-600',
     bgColor: 'from-purple-50 to-pink-50',
     darkBgColor: 'dark:from-purple-900/20 dark:to-pink-900/20',
-    features: ['Appointment Booking', 'Staff Management', 'Inventory Tracking', 'WhatsApp Integration'],
+    features: [
+      'Appointment Booking',
+      'Staff Management',
+      'Inventory Tracking',
+      'WhatsApp Integration'
+    ],
     demoUrl: '/salon',
     buildUrl: '/salon-demo',
     stats: { businesses: '2,400+', revenue: '$4.2M processed', time: '30 seconds' }
@@ -158,13 +163,22 @@ export default function EnhancedLandingPage() {
               </Link>
             </div>
             <nav className="hidden md:flex items-center gap-8">
-              <Link href="#discover" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+              <Link
+                href="#discover"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
                 Explore Apps
               </Link>
-              <Link href="#how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+              <Link
+                href="#how-it-works"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
                 How It Works
               </Link>
-              <Link href="/docs" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+              <Link
+                href="/docs"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
                 Documentation
               </Link>
               <div className="flex items-center gap-4 ml-4">
@@ -189,29 +203,31 @@ export default function EnhancedLandingPage() {
               <Sparkles className="w-3 h-3 mr-1" />
               Trusted by 10,000+ businesses worldwide
             </Badge>
-            
+
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
               Run Your Entire Business
               <br />
               <span className="text-blue-600 dark:text-blue-400">In One Beautiful Platform</span>
             </h1>
-            
+
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              HERA transforms how businesses operate. Explore live demos of real companies, 
-              then build your own customized version in minutes.
+              HERA transforms how businesses operate. Explore live demos of real companies, then
+              build your own customized version in minutes.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg"
-                onClick={() => document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })
+                }
               >
                 <Play className="w-5 h-5 mr-2" />
                 Explore Live Demos
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="outline"
                 className="px-8 py-6 text-lg border-gray-300 dark:border-gray-600"
                 onClick={() => router.push('/auth/signup')}
@@ -246,9 +262,7 @@ export default function EnhancedLandingPage() {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     {index + 1}. {stage.stage}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    {stage.description}
-                  </p>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{stage.description}</p>
                   <Button variant="link" className="text-blue-600 dark:text-blue-400">
                     {stage.action}
                     <ChevronRight className="w-4 h-4 ml-1" />
@@ -277,14 +291,14 @@ export default function EnhancedLandingPage() {
               Experience Real Business Applications
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              These aren't demos - they're actual production systems running real businesses. 
-              Try them, then build your own.
+              These aren't demos - they're actual production systems running real businesses. Try
+              them, then build your own.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {industries.map((industry) => (
-              <Card 
+            {industries.map(industry => (
+              <Card
                 key={industry.id}
                 className={`group cursor-pointer transition-all duration-300 hover:shadow-xl ${
                   selectedIndustry === industry.id ? 'ring-2 ring-blue-500' : ''
@@ -310,7 +324,7 @@ export default function EnhancedLandingPage() {
                 <CardContent className="space-y-4">
                   {/* Features */}
                   <div className="flex flex-wrap gap-2">
-                    {industry.features.map((feature) => (
+                    {industry.features.map(feature => (
                       <Badge key={feature} variant="secondary" className="text-xs">
                         {feature}
                       </Badge>
@@ -341,9 +355,9 @@ export default function EnhancedLandingPage() {
 
                   {/* Actions */}
                   <div className="flex gap-3 pt-4">
-                    <Button 
+                    <Button
                       className="flex-1"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation()
                         router.push(industry.demoUrl)
                       }}
@@ -351,10 +365,10 @@ export default function EnhancedLandingPage() {
                       <Play className="w-4 h-4 mr-1" />
                       Try Demo
                     </Button>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="flex-1"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation()
                         router.push(industry.buildUrl)
                       }}
@@ -376,11 +390,11 @@ export default function EnhancedLandingPage() {
                   Ready to Build Your Own?
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Choose any demo as your starting point and customize it for your business. 
-                  Launch with your own subdomain in minutes.
+                  Choose any demo as your starting point and customize it for your business. Launch
+                  with your own subdomain in minutes.
                 </p>
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                   onClick={() => router.push('/auth/signup')}
                 >
@@ -405,7 +419,7 @@ export default function EnhancedLandingPage() {
               { icon: Store, name: 'Retail Store', coming: 'Q1 2025' },
               { icon: Briefcase, name: 'Consulting', coming: 'Q2 2025' },
               { icon: GraduationCap, name: 'Education', coming: 'Q2 2025' }
-            ].map((item) => (
+            ].map(item => (
               <Card key={item.name} className="p-6 text-center min-w-[200px]">
                 <item.icon className="w-12 h-12 mx-auto mb-3 text-gray-400" />
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100">{item.name}</h4>
@@ -420,7 +434,7 @@ export default function EnhancedLandingPage() {
       <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
-            {valueProps.map((prop) => (
+            {valueProps.map(prop => (
               <div key={prop.title} className="text-center">
                 <div className="inline-flex p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl mb-4">
                   <prop.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -428,9 +442,7 @@ export default function EnhancedLandingPage() {
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   {prop.title}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {prop.description}
-                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{prop.description}</p>
               </div>
             ))}
           </div>
@@ -440,16 +452,14 @@ export default function EnhancedLandingPage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Transform Your Business Today
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Transform Your Business Today</h2>
           <p className="text-xl mb-8 text-blue-100">
-            Join thousands of businesses already using HERA. 
-            From discovery to deployment in under an hour.
+            Join thousands of businesses already using HERA. From discovery to deployment in under
+            an hour.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="secondary"
               className="px-8 py-6 text-lg"
               onClick={() => router.push('/auth/signup')}
@@ -457,11 +467,13 @@ export default function EnhancedLandingPage() {
               Start Free Trial
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
               className="px-8 py-6 text-lg bg-transparent text-white border-white hover:bg-white/10"
-              onClick={() => document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() =>
+                document.getElementById('discover')?.scrollIntoView({ behavior: 'smooth' })
+              }
             >
               Explore More Demos
             </Button>

@@ -3,11 +3,11 @@ import { heraDevTracker } from '@/services/HERADevelopmentTracker'
 
 /**
  * HERA Development Tracking API - META Implementation
- * 
+ *
  * This API implements the sacred META principle: "HERA builds HERA"
  * All development work is tracked using HERA's own universal architecture
  * for perfect "vibe coding" context retrieval
- * 
+ *
  * Endpoints:
  * - POST: Record development tasks and sessions
  * - GET: Search development context and history
@@ -26,20 +26,16 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'record_task':
         return await handleRecordTask(body)
-      
+
       case 'record_session':
         return await handleRecordSession(body)
-        
+
       case 'batch_record':
         return await handleBatchRecord(body)
-        
-      default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
-    }
 
+      default:
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
+    }
   } catch (error) {
     console.error('HERA Development API error:', error)
     return NextResponse.json(
@@ -87,8 +83,8 @@ async function handleRecordTask(body: any) {
       traditionalTime: traditionalTime || 'Unknown',
       heraTime: heraTime || 'Real-time',
       accelerationFactor: accelerationFactor || 1,
-      timeSaved: traditionalTime && heraTime ? 
-        `${traditionalTime} reduced to ${heraTime}` : 'Time saved',
+      timeSaved:
+        traditionalTime && heraTime ? `${traditionalTime} reduced to ${heraTime}` : 'Time saved',
       acceptanceCriteria: acceptanceCriteria || [],
       technicalNotes: technicalNotes || [],
       implementationDetails: implementationDetails || {
@@ -99,7 +95,8 @@ async function handleRecordTask(body: any) {
         smartCodesGenerated: []
       },
       businessValue: businessValue || 'Enhanced HERA capabilities',
-      davePatelPrinciple: davePatelPrinciple || 'Record business events, accounting happens automatically',
+      davePatelPrinciple:
+        davePatelPrinciple || 'Record business events, accounting happens automatically',
       steveJobsPhilosophy: steveJobsPhilosophy || 'Simplicity is the ultimate sophistication',
       searchKeywords: searchKeywords || [],
       vibeContext: vibeContext || 'HERA universal architecture development',
@@ -116,13 +113,9 @@ async function handleRecordTask(body: any) {
       },
       message: `Development task recorded in HERA system: ${taskName}`
     })
-
   } catch (error) {
     console.error('❌ Failed to record development task:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -182,13 +175,9 @@ async function handleRecordSession(body: any) {
       },
       message: `Development session recorded: ${sessionGoal}`
     })
-
   } catch (error) {
     console.error('❌ Failed to record development session:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -242,10 +231,7 @@ async function handleBatchRecord(body: any) {
           '/src/app/restaurant/staff/form/page.tsx',
           '/src/app/restaurant/suppliers/form/page.tsx'
         ],
-        apisCreated: [
-          '/api/v1/financial/smart-code',
-          'Enhanced /api/v1/financial/universal-gl'
-        ],
+        apisCreated: ['/api/v1/financial/smart-code', 'Enhanced /api/v1/financial/universal-gl'],
         componentsBuilt: [
           'FinancialSmartCodeService',
           'HERADevelopmentTracker',
@@ -258,22 +244,35 @@ async function handleBatchRecord(body: any) {
           'HERA.FIN.GL.TXN.PAY.v1 - Payroll Transactions'
         ]
       },
-      businessValue: 'Complete financial system with zero configuration, intelligent business logic, and automatic compliance',
-      davePatelPrinciple: 'Record business events, accounting happens automatically - now enhanced with smart code intelligence',
-      steveJobsPhilosophy: 'Simplicity is the ultimate sophistication - complex financial logic hidden behind simple interfaces',
+      businessValue:
+        'Complete financial system with zero configuration, intelligent business logic, and automatic compliance',
+      davePatelPrinciple:
+        'Record business events, accounting happens automatically - now enhanced with smart code intelligence',
+      steveJobsPhilosophy:
+        'Simplicity is the ultimate sophistication - complex financial logic hidden behind simple interfaces',
       searchKeywords: [
-        'universal gl', 'smart code', 'financial integration', 'dave patel', 
-        'accounting automation', 'business rules', 'compliance', 'zero configuration'
+        'universal gl',
+        'smart code',
+        'financial integration',
+        'dave patel',
+        'accounting automation',
+        'business rules',
+        'compliance',
+        'zero configuration'
       ],
-      vibeContext: 'Complete Universal GL and Smart Code integration for HERA financial module - demonstrates META principle',
-      futureRetrievalNotes: 'Reference implementation for integrating smart codes with any HERA module. Shows how to enhance Dave Patel principles with intelligent business logic.'
+      vibeContext:
+        'Complete Universal GL and Smart Code integration for HERA financial module - demonstrates META principle',
+      futureRetrievalNotes:
+        'Reference implementation for integrating smart codes with any HERA module. Shows how to enhance Dave Patel principles with intelligent business logic.'
     })
 
     // Record the development session
     const sessionId = await heraDevTracker.recordDevelopmentSession({
       sessionType: 'integration',
-      sessionGoal: 'Integrate Universal GL with HERA Smart Code system for complete financial module',
-      userQuery: 'We want to tie the entire Financial accounting module and we are using smart coding for that',
+      sessionGoal:
+        'Integrate Universal GL with HERA Smart Code system for complete financial module',
+      userQuery:
+        'We want to tie the entire Financial accounting module and we are using smart coding for that',
       contextRequired: [
         'HERA Smart Code system understanding',
         'Universal GL architecture',
@@ -281,10 +280,30 @@ async function handleBatchRecord(body: any) {
         'Restaurant module integration patterns'
       ],
       filesChanged: [
-        { file: '/src/services/FinancialSmartCodeService.ts', changeType: 'created', linesAdded: 800, linesRemoved: 0 },
-        { file: '/src/app/api/v1/financial/smart-code/route.ts', changeType: 'created', linesAdded: 400, linesRemoved: 0 },
-        { file: '/src/services/UniversalGLService.ts', changeType: 'modified', linesAdded: 150, linesRemoved: 50 },
-        { file: '/src/app/api/v1/financial/universal-gl/route.ts', changeType: 'modified', linesAdded: 100, linesRemoved: 20 }
+        {
+          file: '/src/services/FinancialSmartCodeService.ts',
+          changeType: 'created',
+          linesAdded: 800,
+          linesRemoved: 0
+        },
+        {
+          file: '/src/app/api/v1/financial/smart-code/route.ts',
+          changeType: 'created',
+          linesAdded: 400,
+          linesRemoved: 0
+        },
+        {
+          file: '/src/services/UniversalGLService.ts',
+          changeType: 'modified',
+          linesAdded: 150,
+          linesRemoved: 50
+        },
+        {
+          file: '/src/app/api/v1/financial/universal-gl/route.ts',
+          changeType: 'modified',
+          linesAdded: 100,
+          linesRemoved: 20
+        }
       ],
       patterns: [
         'Smart Code generation for all financial transactions',
@@ -307,12 +326,16 @@ async function handleBatchRecord(body: any) {
         'Maintain graceful fallback if smart code fails',
         'Index all development work using HERA architecture'
       ],
-      traditionalApproach: 'Manual chart of accounts setup, complex business rule configuration, separate AP/AR/GL systems',
-      heraApproach: 'Universal architecture with smart code intelligence - zero configuration, automatic business rules, integrated GL-AP-AR-FA',
-      accelerationAchieved: '2000x acceleration - complete financial system setup from 12-18 months to 2 hours',
+      traditionalApproach:
+        'Manual chart of accounts setup, complex business rule configuration, separate AP/AR/GL systems',
+      heraApproach:
+        'Universal architecture with smart code intelligence - zero configuration, automatic business rules, integrated GL-AP-AR-FA',
+      accelerationAchieved:
+        '2000x acceleration - complete financial system setup from 12-18 months to 2 hours',
       vibeSignature: 'universal_gl_smart_code_integration_2025',
       retrievalContext: {
-        whenToUse: 'When integrating any HERA module with smart codes or building complete financial systems',
+        whenToUse:
+          'When integrating any HERA module with smart codes or building complete financial systems',
         similarScenarios: [
           'Module-specific smart code integration',
           'Business rule automation',
@@ -340,13 +363,9 @@ async function handleBatchRecord(body: any) {
       },
       message: 'Current development session successfully recorded in HERA system'
     })
-
   } catch (error) {
     console.error('❌ Failed to batch record development:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -360,17 +379,13 @@ export async function PUT(request: NextRequest) {
     switch (action) {
       case 'update_status':
         return await handleUpdateStatus(body)
-        
+
       case 'complete_task':
         return await handleCompleteTask(body)
-        
-      default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
-    }
 
+      default:
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
+    }
   } catch (error) {
     console.error('HERA Development PUT error:', error)
     return NextResponse.json(
@@ -403,25 +418,15 @@ async function handleUpdateStatus(body: any) {
       },
       message: `Task status updated to: ${status}`
     })
-
   } catch (error) {
     console.error('❌ Failed to update task status:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
 // Handle task completion
 async function handleCompleteTask(body: any) {
-  const {
-    taskId,
-    actualTimeSpent,
-    finalAcceleration,
-    lessonsLearned,
-    patternsIdentified
-  } = body
+  const { taskId, actualTimeSpent, finalAcceleration, lessonsLearned, patternsIdentified } = body
 
   if (!taskId) {
     return NextResponse.json(
@@ -431,7 +436,8 @@ async function handleCompleteTask(body: any) {
   }
 
   try {
-    await heraDevTracker.updateTaskStatus(taskId, 'inactive', { // inactive = completed
+    await heraDevTracker.updateTaskStatus(taskId, 'inactive', {
+      // inactive = completed
       actualTimeSpent: actualTimeSpent || 'Not specified',
       finalAcceleration: finalAcceleration || 1,
       lessonsLearned: lessonsLearned || [],
@@ -448,13 +454,9 @@ async function handleCompleteTask(body: any) {
       },
       message: 'Task completed and patterns recorded for vibe coding'
     })
-
   } catch (error) {
     console.error('❌ Failed to complete task:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -467,20 +469,16 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'search_context':
         return await handleSearchContext(searchParams)
-        
+
       case 'get_patterns':
         return await handleGetPatterns(searchParams)
-        
+
       case 'get_acceleration_history':
         return await handleGetAccelerationHistory(searchParams)
-        
-      default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
-    }
 
+      default:
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
+    }
   } catch (error) {
     console.error('HERA Development GET error:', error)
     return NextResponse.json(
@@ -514,13 +512,9 @@ async function handleSearchContext(searchParams: URLSearchParams) {
       },
       message: `Found ${context.tasks.length} tasks, ${context.sessions.length} sessions, ${context.patterns.length} patterns`
     })
-
   } catch (error) {
     console.error('❌ Failed to search development context:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -544,13 +538,9 @@ async function handleGetPatterns(searchParams: URLSearchParams) {
       },
       message: `Retrieved ${context.patterns.length} patterns for vibe coding`
     })
-
   } catch (error) {
     console.error('❌ Failed to get patterns:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -565,12 +555,14 @@ async function handleGetAccelerationHistory(searchParams: URLSearchParams) {
     })
 
     const accelerationHistory = context.tasks
-      .filter(task => task.dynamic_data?.some((field: any) => 
-        field.field_name === 'acceleration_factor' && field.field_value_number > 1
-      ))
+      .filter(task =>
+        task.dynamic_data?.some(
+          (field: any) => field.field_name === 'acceleration_factor' && field.field_value_number > 1
+        )
+      )
       .map(task => {
-        const accelerationField = task.dynamic_data?.find((field: any) => 
-          field.field_name === 'acceleration_factor'
+        const accelerationField = task.dynamic_data?.find(
+          (field: any) => field.field_name === 'acceleration_factor'
         )
         return {
           taskName: task.entity_name,
@@ -584,18 +576,16 @@ async function handleGetAccelerationHistory(searchParams: URLSearchParams) {
       data: {
         accelerationHistory,
         totalAcceleration: accelerationHistory.reduce((sum, task) => sum + task.acceleration, 0),
-        averageAcceleration: accelerationHistory.length > 0 
-          ? accelerationHistory.reduce((sum, task) => sum + task.acceleration, 0) / accelerationHistory.length 
-          : 0
+        averageAcceleration:
+          accelerationHistory.length > 0
+            ? accelerationHistory.reduce((sum, task) => sum + task.acceleration, 0) /
+              accelerationHistory.length
+            : 0
       },
       message: `Retrieved acceleration history for ${accelerationHistory.length} tasks`
     })
-
   } catch (error) {
     console.error('❌ Failed to get acceleration history:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }

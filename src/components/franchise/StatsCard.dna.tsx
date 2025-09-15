@@ -65,14 +65,18 @@ export function StatsCard({
       trend: 'text-blue-600 dark:text-blue-400'
     },
     success: {
-      card: enableDNA ? '' : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
+      card: enableDNA
+        ? ''
+        : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
       icon: 'text-green-600 bg-green-100/80 dark:bg-green-900/30',
       value: '!text-green-900 dark:!text-green-100', // Force color with !important
       title: 'text-green-700 dark:text-green-300',
       trend: 'text-green-600 dark:text-green-400'
     },
     warning: {
-      card: enableDNA ? '' : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
+      card: enableDNA
+        ? ''
+        : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
       icon: 'text-yellow-600 bg-yellow-100/80 dark:bg-yellow-900/30',
       value: '!text-yellow-900 dark:!text-yellow-100', // Force color with !important
       title: 'text-yellow-700 dark:text-yellow-300',
@@ -90,48 +94,48 @@ export function StatsCard({
   const currentVariant = variants[variant]
 
   return (
-    <div className={cn(
-      'rounded-xl border p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5',
-      enableDNA ? glassClassName : currentVariant.card,
-      'relative overflow-hidden', // For glass effects
-      className
-    )}>
+    <div
+      className={cn(
+        'rounded-xl border p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5',
+        enableDNA ? glassClassName : currentVariant.card,
+        'relative overflow-hidden', // For glass effects
+        className
+      )}
+    >
       {/* Optional shine effect for DNA cards */}
       {enableDNA && (
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
       )}
-      
+
       <div className="flex items-center justify-between relative z-10">
         <div className="flex-1">
-          <p className={cn('text-sm font-medium', currentVariant.title)}>
-            {title}
-          </p>
+          <p className={cn('text-sm font-medium', currentVariant.title)}>{title}</p>
           <div className="flex items-baseline mt-1">
-            <p className={cn('text-3xl font-bold', currentVariant.value)}>
-              {value}
-            </p>
+            <p className={cn('text-3xl font-bold', currentVariant.value)}>{value}</p>
             {trend && (
-              <span className={cn(
-                'ml-2 text-sm font-medium',
-                trend.direction === 'up' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-              )}>
+              <span
+                className={cn(
+                  'ml-2 text-sm font-medium',
+                  trend.direction === 'up'
+                    ? 'text-green-600 dark:text-green-400'
+                    : 'text-red-600 dark:text-red-400'
+                )}
+              >
                 {trend.direction === 'up' ? '↗' : '↘'} {trend.value}
               </span>
             )}
           </div>
-          {description && (
-            <p className={cn('text-sm mt-1', currentVariant.title)}>
-              {description}
-            </p>
-          )}
+          {description && <p className={cn('text-sm mt-1', currentVariant.title)}>{description}</p>}
         </div>
-        
+
         {Icon && (
-          <div className={cn(
-            'flex h-12 w-12 items-center justify-center rounded-lg',
-            enableDNA ? 'backdrop-blur-sm' : '',
-            currentVariant.icon
-          )}>
+          <div
+            className={cn(
+              'flex h-12 w-12 items-center justify-center rounded-lg',
+              enableDNA ? 'backdrop-blur-sm' : '',
+              currentVariant.icon
+            )}
+          >
             <Icon className="h-6 w-6" />
           </div>
         )}
@@ -158,24 +162,16 @@ interface StatsGridProps {
   enableDNA?: boolean
 }
 
-export function StatsGrid({ 
-  stats, 
-  className, 
+export function StatsGrid({
+  stats,
+  className,
   glassIntensity = 'medium',
-  enableDNA = true 
+  enableDNA = true
 }: StatsGridProps) {
   return (
-    <div className={cn(
-      'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6',
-      className
-    )}>
+    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6', className)}>
       {stats.map((stat, index) => (
-        <StatsCard 
-          key={index} 
-          {...stat} 
-          glassIntensity={glassIntensity}
-          enableDNA={enableDNA}
-        />
+        <StatsCard key={index} {...stat} glassIntensity={glassIntensity} enableDNA={enableDNA} />
       ))}
     </div>
   )

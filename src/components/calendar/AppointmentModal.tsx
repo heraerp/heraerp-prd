@@ -11,17 +11,23 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
+import {
   Calendar,
   Clock,
   User,
@@ -35,7 +41,7 @@ import {
   Copy
 } from 'lucide-react'
 
-import { 
+import {
   AppointmentModalProps,
   UniversalAppointment,
   UniversalResource,
@@ -57,7 +63,6 @@ export function AppointmentModal({
   initial_start_time,
   initial_end_time
 }: AppointmentModalProps) {
-
   // ==================== STATE MANAGEMENT ====================
   const [formData, setFormData] = useState<Partial<UniversalAppointment>>({
     title: '',
@@ -86,12 +91,12 @@ export function AppointmentModal({
         start_time: new Date(appointment.start_time),
         end_time: new Date(appointment.end_time)
       })
-      
+
       // Load resource allocations
       if (appointment.industry_data?.resource_allocations) {
         setSelectedResources(appointment.industry_data.resource_allocations)
       }
-      
+
       // Load customer data
       if (appointment.industry_data?.customer_data) {
         setCustomerData(appointment.industry_data.customer_data)
@@ -102,7 +107,8 @@ export function AppointmentModal({
         title: '',
         description: '',
         start_time: initial_start_time || new Date(),
-        end_time: initial_end_time || new Date(Date.now() + (industry_config.default_duration * 60 * 1000)),
+        end_time:
+          initial_end_time || new Date(Date.now() + industry_config.default_duration * 60 * 1000),
         duration_minutes: industry_config.default_duration,
         appointment_type: industry_config.appointment_types[0] || 'appointment',
         priority: 'medium',
@@ -141,7 +147,7 @@ export function AppointmentModal({
   // ==================== FORM HANDLERS ====================
   const handleInputChange = (field: keyof UniversalAppointment, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-    
+
     // Clear validation error when user starts typing
     if (validationErrors[field]) {
       setValidationErrors(prev => {
@@ -156,14 +162,14 @@ export function AppointmentModal({
     const date = new Date(value)
     setFormData(prev => {
       const updated = { ...prev, [field]: date }
-      
+
       // Auto-adjust duration when times change
       if (updated.start_time && updated.end_time) {
         updated.duration_minutes = Math.round(
           (updated.end_time.getTime() - updated.start_time.getTime()) / (1000 * 60)
         )
       }
-      
+
       return updated
     })
   }
@@ -172,34 +178,37 @@ export function AppointmentModal({
     setFormData(prev => ({
       ...prev,
       duration_minutes: minutes,
-      end_time: prev.start_time ? 
-        new Date(prev.start_time.getTime() + minutes * 60 * 1000) : 
-        prev.end_time
+      end_time: prev.start_time
+        ? new Date(prev.start_time.getTime() + minutes * 60 * 1000)
+        : prev.end_time
     }))
   }
 
   const handleResourceToggle = (resource: UniversalResource) => {
     setSelectedResources(prev => {
       const existing = prev.find(r => r.entity_id === resource.entity_id)
-      
+
       if (existing) {
         // Remove resource
         return prev.filter(r => r.entity_id !== resource.entity_id)
       } else {
         // Add resource
-        return [...prev, {
-          line_id: `line_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          transaction_id: appointment?.transaction_id || '',
-          entity_id: resource.entity_id,
-          line_type: 'resource_allocation',
-          quantity: 1,
-          duration_minutes: totalDuration,
-          allocation_type: 'primary',
-          smart_code: calendarSmartCodeService.generateAllocationSmartCode(
-            industry_config.industry,
-            'resource'
-          )
-        } as AppointmentLine]
+        return [
+          ...prev,
+          {
+            line_id: `line_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            transaction_id: appointment?.transaction_id || '',
+            entity_id: resource.entity_id,
+            line_type: 'resource_allocation',
+            quantity: 1,
+            duration_minutes: totalDuration,
+            allocation_type: 'primary',
+            smart_code: calendarSmartCodeService.generateAllocationSmartCode(
+              industry_config.industry,
+              'resource'
+            )
+          } as AppointmentLine
+        ]
       }
     })
   }
@@ -224,7 +233,7 @@ export function AppointmentModal({
       if (formData.start_time >= formData.end_time) {
         errors.end_time = 'End time must be after start time'
       }
-      
+
       if (formData.start_time < new Date() && mode === 'create') {
         errors.start_time = 'Cannot schedule appointments in the past'
       }
@@ -276,7 +285,7 @@ export function AppointmentModal({
 
   const handleDelete = async () => {
     if (!appointment || !on_delete) return
-    
+
     setIsLoading(true)
     try {
       await on_delete(appointment.transaction_id)
@@ -298,7 +307,7 @@ export function AppointmentModal({
               <Input
                 id="patient_name"
                 value={customerData.patient_name || ''}
-                onChange={(e) => handleCustomerDataChange('patient_name', e.target.value)}
+                onChange={e => handleCustomerDataChange('patient_name', e.target.value)}
                 placeholder="Enter patient name"
               />
             </div>
@@ -306,7 +315,7 @@ export function AppointmentModal({
               <Label htmlFor="procedure_type">Procedure Type</Label>
               <Select
                 value={customerData.procedure_type || ''}
-                onValueChange={(value) => handleCustomerDataChange('procedure_type', value)}
+                onValueChange={value => handleCustomerDataChange('procedure_type', value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select procedure type" />
@@ -324,13 +333,13 @@ export function AppointmentModal({
               <Input
                 id="insurance_info"
                 value={customerData.insurance_info || ''}
-                onChange={(e) => handleCustomerDataChange('insurance_info', e.target.value)}
+                onChange={e => handleCustomerDataChange('insurance_info', e.target.value)}
                 placeholder="Insurance provider and policy number"
               />
             </div>
           </div>
         )
-      
+
       case 'restaurant':
         return (
           <div className="space-y-4">
@@ -342,7 +351,7 @@ export function AppointmentModal({
                 min="1"
                 max="20"
                 value={customerData.party_size || ''}
-                onChange={(e) => handleCustomerDataChange('party_size', e.target.value)}
+                onChange={e => handleCustomerDataChange('party_size', e.target.value)}
                 placeholder="Number of guests"
               />
             </div>
@@ -351,7 +360,7 @@ export function AppointmentModal({
               <Textarea
                 id="special_requests"
                 value={customerData.special_requests || ''}
-                onChange={(e) => handleCustomerDataChange('special_requests', e.target.value)}
+                onChange={e => handleCustomerDataChange('special_requests', e.target.value)}
                 placeholder="Dietary restrictions, seating preferences, etc."
                 rows={3}
               />
@@ -360,7 +369,7 @@ export function AppointmentModal({
               <Label htmlFor="occasion">Occasion</Label>
               <Select
                 value={customerData.occasion || ''}
-                onValueChange={(value) => handleCustomerDataChange('occasion', value)}
+                onValueChange={value => handleCustomerDataChange('occasion', value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select occasion" />
@@ -376,7 +385,7 @@ export function AppointmentModal({
             </div>
           </div>
         )
-      
+
       case 'professional':
         return (
           <div className="space-y-4">
@@ -385,7 +394,7 @@ export function AppointmentModal({
               <Input
                 id="client_name"
                 value={customerData.client_name || ''}
-                onChange={(e) => handleCustomerDataChange('client_name', e.target.value)}
+                onChange={e => handleCustomerDataChange('client_name', e.target.value)}
                 placeholder="Enter client name"
               />
             </div>
@@ -393,7 +402,7 @@ export function AppointmentModal({
               <Label htmlFor="meeting_type">Meeting Type</Label>
               <Select
                 value={customerData.meeting_type || ''}
-                onValueChange={(value) => handleCustomerDataChange('meeting_type', value)}
+                onValueChange={value => handleCustomerDataChange('meeting_type', value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select meeting type" />
@@ -411,13 +420,13 @@ export function AppointmentModal({
               <Input
                 id="project_reference"
                 value={customerData.project_reference || ''}
-                onChange={(e) => handleCustomerDataChange('project_reference', e.target.value)}
+                onChange={e => handleCustomerDataChange('project_reference', e.target.value)}
                 placeholder="Related project or case number"
               />
             </div>
           </div>
         )
-      
+
       case 'manufacturing':
         return (
           <div className="space-y-4">
@@ -426,7 +435,7 @@ export function AppointmentModal({
               <Input
                 id="work_order"
                 value={customerData.work_order || ''}
-                onChange={(e) => handleCustomerDataChange('work_order', e.target.value)}
+                onChange={e => handleCustomerDataChange('work_order', e.target.value)}
                 placeholder="Work order number"
               />
             </div>
@@ -434,7 +443,7 @@ export function AppointmentModal({
               <Label htmlFor="maintenance_type">Maintenance Type</Label>
               <Select
                 value={customerData.maintenance_type || ''}
-                onValueChange={(value) => handleCustomerDataChange('maintenance_type', value)}
+                onValueChange={value => handleCustomerDataChange('maintenance_type', value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select maintenance type" />
@@ -452,14 +461,14 @@ export function AppointmentModal({
               <Textarea
                 id="technician_notes"
                 value={customerData.technician_notes || ''}
-                onChange={(e) => handleCustomerDataChange('technician_notes', e.target.value)}
+                onChange={e => handleCustomerDataChange('technician_notes', e.target.value)}
                 placeholder="Technical requirements, parts needed, etc."
                 rows={3}
               />
             </div>
           </div>
         )
-      
+
       default:
         return null
     }
@@ -473,18 +482,25 @@ export function AppointmentModal({
           <DialogTitle className="flex items-center space-x-2">
             <Calendar className="h-5 w-5" />
             <span>
-              {mode === 'create' ? 'New Appointment' : 
-               mode === 'edit' ? 'Pencil Appointment' : 'View Appointment'}
+              {mode === 'create'
+                ? 'New Appointment'
+                : mode === 'edit'
+                  ? 'Pencil Appointment'
+                  : 'View Appointment'}
             </span>
             {smartCodeSuggestion && (
               <Badge variant="outline" className="ml-2">
-                {smartCodeSuggestion.suggestedType} ({Math.round(smartCodeSuggestion.confidence * 100)}%)
+                {smartCodeSuggestion.suggestedType} (
+                {Math.round(smartCodeSuggestion.confidence * 100)}%)
               </Badge>
             )}
           </DialogTitle>
           <DialogDescription>
-            {mode === 'create' ? 'Create a new appointment in your calendar' :
-             mode === 'edit' ? 'Pencil appointment details' : 'View appointment information'}
+            {mode === 'create'
+              ? 'Create a new appointment in your calendar'
+              : mode === 'edit'
+                ? 'Pencil appointment details'
+                : 'View appointment information'}
           </DialogDescription>
         </DialogHeader>
 
@@ -503,7 +519,7 @@ export function AppointmentModal({
                 <Input
                   id="title"
                   value={formData.title || ''}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  onChange={e => handleInputChange('title', e.target.value)}
                   placeholder="Appointment title"
                   className={validationErrors.title ? 'border-red-500' : ''}
                 />
@@ -516,7 +532,7 @@ export function AppointmentModal({
                 <Label htmlFor="appointment_type">Type</Label>
                 <Select
                   value={formData.appointment_type || ''}
-                  onValueChange={(value) => handleInputChange('appointment_type', value)}
+                  onValueChange={value => handleInputChange('appointment_type', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
@@ -537,7 +553,7 @@ export function AppointmentModal({
               <Textarea
                 id="description"
                 value={formData.description || ''}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={e => handleInputChange('description', e.target.value)}
                 placeholder="Appointment description"
                 rows={3}
               />
@@ -549,8 +565,10 @@ export function AppointmentModal({
                 <Input
                   id="start_time"
                   type="datetime-local"
-                  value={formData.start_time ? formatDate(formData.start_time, "yyyy-MM-dd'T'HH:mm") : ''}
-                  onChange={(e) => handleDateTimeChange('start_time', e.target.value)}
+                  value={
+                    formData.start_time ? formatDate(formData.start_time, "yyyy-MM-dd'T'HH:mm") : ''
+                  }
+                  onChange={e => handleDateTimeChange('start_time', e.target.value)}
                   className={validationErrors.start_time ? 'border-red-500' : ''}
                 />
                 {validationErrors.start_time && (
@@ -563,8 +581,10 @@ export function AppointmentModal({
                 <Input
                   id="end_time"
                   type="datetime-local"
-                  value={formData.end_time ? formatDate(formData.end_time, "yyyy-MM-dd'T'HH:mm") : ''}
-                  onChange={(e) => handleDateTimeChange('end_time', e.target.value)}
+                  value={
+                    formData.end_time ? formatDate(formData.end_time, "yyyy-MM-dd'T'HH:mm") : ''
+                  }
+                  onChange={e => handleDateTimeChange('end_time', e.target.value)}
                   className={validationErrors.end_time ? 'border-red-500' : ''}
                 />
                 {validationErrors.end_time && (
@@ -580,7 +600,7 @@ export function AppointmentModal({
                   min="5"
                   step="5"
                   value={totalDuration}
-                  onChange={(e) => handleDurationChange(parseInt(e.target.value) || 0)}
+                  onChange={e => handleDurationChange(parseInt(e.target.value) || 0)}
                 />
                 {validationErrors.duration && (
                   <p className="text-sm text-red-600 mt-1">{validationErrors.duration}</p>
@@ -593,7 +613,7 @@ export function AppointmentModal({
                 <Label htmlFor="priority">Priority</Label>
                 <Select
                   value={formData.priority || 'medium'}
-                  onValueChange={(value) => handleInputChange('priority', value as any)}
+                  onValueChange={value => handleInputChange('priority', value as any)}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -611,7 +631,7 @@ export function AppointmentModal({
                 <Label htmlFor="status">Status</Label>
                 <Select
                   value={formData.status || 'draft'}
-                  onValueChange={(value) => handleInputChange('status', value as any)}
+                  onValueChange={value => handleInputChange('status', value as any)}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -635,13 +655,13 @@ export function AppointmentModal({
                 <p className="text-sm text-red-600 mt-1">{validationErrors.resources}</p>
               )}
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto">
               {availableResources.map(resource => {
                 const isSelected = selectedResources.some(r => r.entity_id === resource.entity_id)
-                
+
                 return (
-                  <Card 
+                  <Card
                     key={resource.entity_id}
                     className={`cursor-pointer transition-all ${
                       isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'
@@ -665,9 +685,7 @@ export function AppointmentModal({
                             </div>
                           )}
                         </div>
-                        {isSelected && (
-                          <CheckCircle className="h-5 w-5 text-blue-500" />
-                        )}
+                        {isSelected && <CheckCircle className="h-5 w-5 text-blue-500" />}
                       </div>
                     </CardContent>
                   </Card>
@@ -686,7 +704,7 @@ export function AppointmentModal({
               <Textarea
                 id="notes"
                 value={formData.notes || ''}
-                onChange={(e) => handleInputChange('notes', e.target.value)}
+                onChange={e => handleInputChange('notes', e.target.value)}
                 placeholder="Additional notes or instructions"
                 rows={4}
               />
@@ -705,7 +723,9 @@ export function AppointmentModal({
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Confidence:</span>
-                      <span className="text-sm">{Math.round(smartCodeSuggestion.confidence * 100)}%</span>
+                      <span className="text-sm">
+                        {Math.round(smartCodeSuggestion.confidence * 100)}%
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Smart Code:</span>
@@ -724,17 +744,13 @@ export function AppointmentModal({
         <DialogFooter className="flex justify-between">
           <div>
             {mode === 'edit' && on_delete && (
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={isLoading}
-              >
+              <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </Button>
             )}
           </div>
-          
+
           <div className="flex space-x-2">
             <Button variant="outline" onClick={on_close} disabled={isLoading}>
               Cancel

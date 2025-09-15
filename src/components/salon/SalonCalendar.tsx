@@ -2,7 +2,7 @@
 /**
  * HERA Salon Calendar Implementation
  * Smart Code: HERA.SALON.CALENDAR.MAIN.v1
- * 
+ *
  * Complete salon calendar using Universal HERA Calendar DNA
  */
 
@@ -14,19 +14,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Clock, 
-  User, 
-  Scissors, 
-  Sparkles, 
-  Calendar, 
-  Plus, 
+import {
+  Clock,
+  User,
+  Scissors,
+  Sparkles,
+  Calendar,
+  Plus,
   Star,
   MapPin,
   Phone,
@@ -104,36 +116,44 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
   const [services, setServices] = useState<SalonService[]>([])
   const [stylists, setStylists] = useState<SalonStylist[]>([])
   const [clients, setClients] = useState<SalonClient[]>([])
-  const [selectedView, setSelectedView] = useState<'timeGridWeek' | 'resourceTimeGridDay' | 'dayGridMonth'>('resourceTimeGridDay')
+  const [selectedView, setSelectedView] = useState<
+    'timeGridWeek' | 'resourceTimeGridDay' | 'dayGridMonth'
+  >('resourceTimeGridDay')
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedResource, setSelectedResource] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Salon-specific configuration
-  const salonConfig = useMemo(() => ({
-    businessHours: [
-      { daysOfWeek: [1, 2, 3, 4, 6], startTime: '10:00', endTime: '21:00' }, // Mon-Thu, Sat
-      { daysOfWeek: [5], startTime: '10:00', endTime: '21:00' }, // Friday (with prayer breaks)
-      { daysOfWeek: [0], startTime: '10:00', endTime: '20:00' }  // Sunday
-    ],
-    slotMinTime: '09:00:00',
-    slotMaxTime: '22:00:00',
-    slotDuration: '00:30:00',
-    snapDuration: '00:15:00',
-    resourceAreaWidth: '20%',
-    resourceAreaHeaderContent: 'Stylists',
-    schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'
-  }), [])
+  const salonConfig = useMemo(
+    () => ({
+      businessHours: [
+        { daysOfWeek: [1, 2, 3, 4, 6], startTime: '10:00', endTime: '21:00' }, // Mon-Thu, Sat
+        { daysOfWeek: [5], startTime: '10:00', endTime: '21:00' }, // Friday (with prayer breaks)
+        { daysOfWeek: [0], startTime: '10:00', endTime: '20:00' } // Sunday
+      ],
+      slotMinTime: '09:00:00',
+      slotMaxTime: '22:00:00',
+      slotDuration: '00:30:00',
+      snapDuration: '00:15:00',
+      resourceAreaWidth: '20%',
+      resourceAreaHeaderContent: 'Stylists',
+      schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives'
+    }),
+    []
+  )
 
   // Prayer time configuration for UAE
-  const prayerTimeBlocks = useMemo(() => [
-    { title: 'Fajr Prayer', start: '05:30', end: '06:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
-    { title: 'Dhuhr Prayer', start: '12:30', end: '13:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
-    { title: 'Asr Prayer', start: '15:30', end: '16:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
-    { title: 'Maghrib Prayer', start: '18:00', end: '18:30', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
-    { title: 'Isha Prayer', start: '19:30', end: '20:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] }
-  ], [])
+  const prayerTimeBlocks = useMemo(
+    () => [
+      { title: 'Fajr Prayer', start: '05:30', end: '06:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
+      { title: 'Dhuhr Prayer', start: '12:30', end: '13:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
+      { title: 'Asr Prayer', start: '15:30', end: '16:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
+      { title: 'Maghrib Prayer', start: '18:00', end: '18:30', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] },
+      { title: 'Isha Prayer', start: '19:30', end: '20:00', daysOfWeek: [0, 1, 2, 3, 4, 5, 6] }
+    ],
+    []
+  )
 
   // Load salon data
   useEffect(() => {
@@ -170,7 +190,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1'
       },
       {
-        id: 'srv-keratin-001', 
+        id: 'srv-keratin-001',
         name: 'Keratin Treatment',
         duration: 180,
         price: 350,
@@ -213,10 +233,15 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         id: 'stylist-rocky-001',
         name: 'Rocky',
         title: 'Celebrity Hair Artist',
-        specializations: ['Brazilian Blowout', 'Keratin Treatment', 'Color Specialist', 'Bridal Styling'],
+        specializations: [
+          'Brazilian Blowout',
+          'Keratin Treatment',
+          'Color Specialist',
+          'Bridal Styling'
+        ],
         level: 'celebrity',
         hourlyRate: 200,
-        commissionRate: 0.40,
+        commissionRate: 0.4,
         instagram: '@rocky_hair_artist',
         smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1'
       },
@@ -237,7 +262,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         specializations: ['Color Correction', 'Balayage', 'Highlights'],
         level: 'senior',
         hourlyRate: 140,
-        commissionRate: 0.30,
+        commissionRate: 0.3,
         smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
       }
     ]
@@ -374,30 +399,38 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
 
   const getStylistColor = (level: string): string => {
     switch (level) {
-      case 'celebrity': return '#8b5cf6' // Purple for celebrity
-      case 'senior': return '#3b82f6'    // Blue for senior
-      case 'junior': return '#6b7280'    // Gray for junior
-      default: return '#6b7280'
+      case 'celebrity':
+        return '#8b5cf6' // Purple for celebrity
+      case 'senior':
+        return '#3b82f6' // Blue for senior
+      case 'junior':
+        return '#6b7280' // Gray for junior
+      default:
+        return '#6b7280'
     }
   }
 
   const getVipBadgeColor = (vipLevel?: string) => {
     switch (vipLevel) {
-      case 'platinum': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30'
-      case 'gold': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30'
-      case 'regular': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30'
+      case 'platinum':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30'
+      case 'gold':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30'
+      case 'regular':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30'
     }
   }
 
   const handleEventClick = (info: any) => {
     const event = info.event
     const appointment = events.find(apt => apt.id === event.id)
-    
+
     if (appointment) {
       toast({
         title: appointment.extendedProps.service_name,
-        description: `Client: ${appointment.extendedProps.client_name} | Stylist: ${appointment.extendedProps.stylist_name}`,
+        description: `Client: ${appointment.extendedProps.client_name} | Stylist: ${appointment.extendedProps.stylist_name}`
       })
     }
   }
@@ -411,12 +444,12 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
   const handleEventDrop = async (info: any) => {
     // Handle drag and drop rescheduling
     const { event } = info
-    
+
     try {
       // In production, make API call to update appointment
       toast({
         title: 'Appointment Rescheduled',
-        description: `${event.title} moved to ${new Date(event.start).toLocaleString()}`,
+        description: `${event.title} moved to ${new Date(event.start).toLocaleString()}`
       })
     } catch (error) {
       // Revert if failed
@@ -432,7 +465,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
   const renderEventContent = (eventInfo: any) => {
     const event = eventInfo.event
     const appointment = events.find(apt => apt.id === event.id)
-    
+
     return (
       <div className="p-1 text-xs">
         <div className="font-medium truncate">{event.title}</div>
@@ -441,9 +474,9 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <DollarSign className="w-3 h-3" />
             <span>AED {appointment.extendedProps.service_price}</span>
             {appointment.extendedProps.vip_level && (
-              <Badge 
-                variant="outline" 
-                className={cn("text-xs", getVipBadgeColor(appointment.extendedProps.vip_level))}
+              <Badge
+                variant="outline"
+                className={cn('text-xs', getVipBadgeColor(appointment.extendedProps.vip_level))}
               >
                 {appointment.extendedProps.vip_level?.toUpperCase()}
               </Badge>
@@ -454,9 +487,8 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
     )
   }
 
-
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -490,20 +522,26 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="flex items-center">
               <Calendar className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Appointments</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Today's Appointments
+                </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
               <Users className="h-8 w-8 text-purple-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Stylists</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stylists.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Active Stylists
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {stylists.length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -514,7 +552,9 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="flex items-center">
               <DollarSign className="h-8 w-8 text-green-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Revenue</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Today's Revenue
+                </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">AED 2,350</p>
               </div>
             </div>
@@ -573,17 +613,18 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             {stylists.map(stylist => (
               <div key={stylist.id} className="flex items-center space-x-3 p-3 border rounded-lg">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
-                    {stylist.name.charAt(0)}
-                  </span>
+                  <span className="text-white font-bold text-sm">{stylist.name.charAt(0)}</span>
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-gray-900 dark:text-gray-100">{stylist.name}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{stylist.title}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge 
-                      variant="outline" 
-                      style={{ backgroundColor: getStylistColor(stylist.level) + '20', color: getStylistColor(stylist.level) }}
+                    <Badge
+                      variant="outline"
+                      style={{
+                        backgroundColor: getStylistColor(stylist.level) + '20',
+                        color: getStylistColor(stylist.level)
+                      }}
                     >
                       {stylist.level.toUpperCase()}
                     </Badge>
@@ -604,7 +645,10 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             {services.slice(0, 5).map(service => (
-              <div key={service.id} className="flex items-center justify-between p-3 border rounded-lg">
+              <div
+                key={service.id}
+                className="flex items-center justify-between p-3 border rounded-lg"
+              >
                 <div>
                   <p className="font-medium text-gray-900 dark:text-gray-100">{service.name}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -631,7 +675,10 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
           </CardHeader>
           <CardContent className="space-y-3">
             {prayerTimeBlocks.map((prayer, index) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div
+                key={index}
+                className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg"
+              >
                 <span className="text-sm font-medium text-green-800 dark:text-green-200">
                   {prayer.title}
                 </span>
@@ -642,7 +689,8 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             ))}
             <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <p className="text-xs text-blue-800 dark:text-blue-200">
-                🕌 Stylists automatically get 15-minute prayer breaks. Schedule adjusted for Ramadan.
+                🕌 Stylists automatically get 15-minute prayer breaks. Schedule adjusted for
+                Ramadan.
               </p>
             </div>
           </CardContent>
@@ -709,11 +757,11 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                     <SelectItem key={stylist.id} value={stylist.id}>
                       <div className="flex items-center gap-2">
                         {stylist.name}
-                        <Badge 
-                          variant="outline" 
-                          style={{ 
-                            backgroundColor: getStylistColor(stylist.level) + '20', 
-                            color: getStylistColor(stylist.level) 
+                        <Badge
+                          variant="outline"
+                          style={{
+                            backgroundColor: getStylistColor(stylist.level) + '20',
+                            color: getStylistColor(stylist.level)
                           }}
                         >
                           {stylist.level.toUpperCase()}
@@ -728,10 +776,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Date</Label>
-                <Input 
-                  type="date" 
-                  defaultValue={selectedDate?.toISOString().split('T')[0]}
-                />
+                <Input type="date" defaultValue={selectedDate?.toISOString().split('T')[0]} />
               </div>
               <div className="space-y-2">
                 <Label>Time</Label>
@@ -741,7 +786,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
 
             <div className="space-y-2">
               <Label>Special Notes</Label>
-              <Textarea 
+              <Textarea
                 placeholder="Any special requirements or notes..."
                 className="min-h-[80px]"
               />
@@ -751,13 +796,15 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
               <Button variant="outline" onClick={() => setIsBookingOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => {
-                toast({
-                  title: 'Appointment Booked',
-                  description: 'New appointment has been scheduled successfully.',
-                })
-                setIsBookingOpen(false)
-              }}>
+              <Button
+                onClick={() => {
+                  toast({
+                    title: 'Appointment Booked',
+                    description: 'New appointment has been scheduled successfully.'
+                  })
+                  setIsBookingOpen(false)
+                }}
+              >
                 Book Appointment
               </Button>
             </div>

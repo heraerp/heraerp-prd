@@ -257,21 +257,25 @@ export async function GET(request: NextRequest) {
 
     if (action === 'get_requisition') {
       // Get requisition details with organization filtering
-      const requisition = mockRequisitions.find(r => 
-        (r.client_id === clientId || r.id === requisitionId) &&
-        (!organizationId || r.organization_id === organizationId)
+      const requisition = mockRequisitions.find(
+        r =>
+          (r.client_id === clientId || r.id === requisitionId) &&
+          (!organizationId || r.organization_id === organizationId)
       )
-      
+
       if (!requisition) {
-        return NextResponse.json({
-          success: false,
-          message: 'Requisition not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Requisition not found'
+          },
+          { status: 404 }
+        )
       }
 
       // Get all documents for this requisition
       const documents = mockDocuments.filter(d => d.requisition_id === requisition.id)
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -282,8 +286,8 @@ export async function GET(request: NextRequest) {
             pending: documents.filter(d => d.status === 'pending').length,
             received: documents.filter(d => d.status === 'received').length,
             approved: documents.filter(d => d.status === 'approved').length,
-            overdue: documents.filter(d => 
-              d.status === 'pending' && new Date(d.due_date) < new Date()
+            overdue: documents.filter(
+              d => d.status === 'pending' && new Date(d.due_date) < new Date()
             ).length
           }
         }
@@ -293,16 +297,16 @@ export async function GET(request: NextRequest) {
     if (action === 'list_documents') {
       // List all documents with filtering including organization isolation
       let filteredDocuments = mockDocuments
-      
+
       // Multi-tenant filtering: Always filter by organization if provided
       if (organizationId) {
         filteredDocuments = filteredDocuments.filter(d => d.organization_id === organizationId)
       }
-      
+
       if (clientId) {
         filteredDocuments = filteredDocuments.filter(d => d.client_id === clientId)
       }
-      
+
       if (requisitionId) {
         filteredDocuments = filteredDocuments.filter(d => d.requisition_id === requisitionId)
       }
@@ -324,7 +328,12 @@ export async function GET(request: NextRequest) {
         category: searchParams.get('category') || undefined,
         priority: searchParams.get('priority') || undefined,
         search_term: searchParams.get('search') || undefined,
-        has_files: searchParams.get('hasFiles') === 'true' ? true : searchParams.get('hasFiles') === 'false' ? false : undefined
+        has_files:
+          searchParams.get('hasFiles') === 'true'
+            ? true
+            : searchParams.get('hasFiles') === 'false'
+              ? false
+              : undefined
       }
 
       try {
@@ -339,9 +348,10 @@ export async function GET(request: NextRequest) {
         console.warn('Enhanced search failed, using mock data:', error)
         // Fallback to mock data search
         let filteredDocs = mockDocuments
-        if (organizationId) filteredDocs = filteredDocs.filter(d => d.organization_id === organizationId)
+        if (organizationId)
+          filteredDocs = filteredDocs.filter(d => d.organization_id === organizationId)
         if (clientId) filteredDocs = filteredDocs.filter(d => d.client_id === clientId)
-        
+
         return NextResponse.json({
           success: true,
           data: filteredDocs,
@@ -354,19 +364,28 @@ export async function GET(request: NextRequest) {
     if (action === 'get_document') {
       const documentId = searchParams.get('documentId')
       if (!documentId) {
-        return NextResponse.json({
-          success: false,
-          message: 'documentId parameter required'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'documentId parameter required'
+          },
+          { status: 400 }
+        )
       }
 
       try {
-        const document = await enhancedAuditDocumentService.getDocument(documentId, organizationId || undefined)
+        const document = await enhancedAuditDocumentService.getDocument(
+          documentId,
+          organizationId || undefined
+        )
         if (!document) {
-          return NextResponse.json({
-            success: false,
-            message: 'Document not found'
-          }, { status: 404 })
+          return NextResponse.json(
+            {
+              success: false,
+              message: 'Document not found'
+            },
+            { status: 404 }
+          )
         }
 
         return NextResponse.json({
@@ -383,20 +402,26 @@ export async function GET(request: NextRequest) {
             mode: 'mock'
           })
         } else {
-          return NextResponse.json({
-            success: false,
-            message: 'Document not found'
-          }, { status: 404 })
+          return NextResponse.json(
+            {
+              success: false,
+              message: 'Document not found'
+            },
+            { status: 404 }
+          )
         }
       }
     }
 
     if (action === 'get_statistics') {
       if (!organizationId) {
-        return NextResponse.json({
-          success: false,
-          message: 'organizationId parameter required'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'organizationId parameter required'
+          },
+          { status: 400 }
+        )
       }
 
       try {
@@ -404,7 +429,7 @@ export async function GET(request: NextRequest) {
           organizationId,
           clientId || undefined
         )
-        
+
         return NextResponse.json({
           success: true,
           data: stats
@@ -414,7 +439,7 @@ export async function GET(request: NextRequest) {
         // Fallback to mock statistics
         let filteredDocs = mockDocuments.filter(d => d.organization_id === organizationId)
         if (clientId) filteredDocs = filteredDocs.filter(d => d.client_id === clientId)
-        
+
         const mockStats = {
           total: filteredDocs.length,
           pending: filteredDocs.filter(d => d.status === 'pending').length,
@@ -422,14 +447,18 @@ export async function GET(request: NextRequest) {
           under_review: filteredDocs.filter(d => d.status === 'under_review').length,
           approved: filteredDocs.filter(d => d.status === 'approved').length,
           rejected: filteredDocs.filter(d => d.status === 'rejected').length,
-          overdue: filteredDocs.filter(d => 
-            d.status === 'pending' && new Date(d.due_date) < new Date()
+          overdue: filteredDocs.filter(
+            d => d.status === 'pending' && new Date(d.due_date) < new Date()
           ).length,
-          completion_percentage: filteredDocs.length > 0 
-            ? Math.round((filteredDocs.filter(d => d.status === 'approved').length / filteredDocs.length) * 100)
-            : 0
+          completion_percentage:
+            filteredDocs.length > 0
+              ? Math.round(
+                  (filteredDocs.filter(d => d.status === 'approved').length / filteredDocs.length) *
+                    100
+                )
+              : 0
         }
-        
+
         return NextResponse.json({
           success: true,
           data: mockStats,
@@ -448,13 +477,15 @@ export async function GET(request: NextRequest) {
         received_documents: mockDocuments.filter(d => d.status === 'received').length
       }
     })
-
   } catch (error) {
     console.error('Error fetching documents:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch documents'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to fetch documents'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -489,14 +520,16 @@ export async function POST(request: NextRequest) {
         })
       } catch (error) {
         console.error('Supabase error, using mock data:', error)
-        
+
         // Fallback to mock data
         const newRequisition = {
           id: `req_${Date.now()}`,
           client_id: data.client_id,
           organization_id: data.organization_id || `gspu_client_${data.client_id}_org`,
           entity_type: 'document_requisition',
-          entity_code: data.entity_code || `REQ-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
+          entity_code:
+            data.entity_code ||
+            `REQ-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
           entity_name: `${data.client_name} - Document Requisition`,
           smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
           status: 'draft',
@@ -567,9 +600,9 @@ export async function POST(request: NextRequest) {
             validation_rules: []
           }
         }
-        
+
         mockDocuments.push(newDocument)
-        
+
         return NextResponse.json({
           success: true,
           message: 'Document created successfully (mock mode)',
@@ -580,10 +613,17 @@ export async function POST(request: NextRequest) {
 
     if (action === 'update_document_status') {
       // Enhanced document status update
-      const { document_id, status, received_date, file_attachments, review_notes, rejection_reason } = data
+      const {
+        document_id,
+        status,
+        received_date,
+        file_attachments,
+        review_notes,
+        rejection_reason
+      } = data
       let updatedDocument: any = null
       let docIndex = -1
-      
+
       try {
         const updates: any = {
           status,
@@ -618,10 +658,13 @@ export async function POST(request: NextRequest) {
         // Fallback to mock update
         docIndex = mockDocuments.findIndex(d => d.id === document_id)
         if (docIndex === -1) {
-          return NextResponse.json({
-            success: false,
-            message: 'Document not found'
-          }, { status: 404 })
+          return NextResponse.json(
+            {
+              success: false,
+              message: 'Document not found'
+            },
+            { status: 404 }
+          )
         }
 
         // Update document
@@ -632,12 +675,12 @@ export async function POST(request: NextRequest) {
           file_attachments: file_attachments || [],
           last_updated: new Date().toISOString()
         }
-        
+
         // Add review notes as dynamic property if provided
         if (review_notes) {
-          (updatedDoc as any).review_notes = review_notes
+          ;(updatedDoc as any).review_notes = review_notes
         }
-        
+
         mockDocuments[docIndex] = updatedDoc
         updatedDocument = mockDocuments[docIndex]
       }
@@ -668,18 +711,21 @@ export async function POST(request: NextRequest) {
     if (action === 'send_requisition') {
       // Send requisition to client
       const { requisition_id } = data
-      
+
       const reqIndex = mockRequisitions.findIndex(r => r.id === requisition_id)
       if (reqIndex === -1) {
-        return NextResponse.json({
-          success: false,
-          message: 'Requisition not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Requisition not found'
+          },
+          { status: 404 }
+        )
       }
 
       // Update requisition status
-      (mockRequisitions[reqIndex] as any).status = 'sent';
-      (mockRequisitions[reqIndex] as any).sent_date = new Date().toISOString()
+      ;(mockRequisitions[reqIndex] as any).status = 'sent'
+      ;(mockRequisitions[reqIndex] as any).sent_date = new Date().toISOString()
 
       // Create universal transaction for requisition sending
       const transaction = {
@@ -704,18 +750,23 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      message: 'Invalid action specified'
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid action specified'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Error processing document request:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to process document request',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to process document request',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -726,10 +777,13 @@ export async function PUT(request: NextRequest) {
 
     const docIndex = mockDocuments.findIndex(d => d.id === document_id)
     if (docIndex === -1) {
-      return NextResponse.json({
-        success: false,
-        message: 'Document not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Document not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Update document with review notes and attachments
@@ -740,12 +794,12 @@ export async function PUT(request: NextRequest) {
       reviewed_date: new Date().toISOString(),
       last_updated: new Date().toISOString()
     }
-    
+
     // Add review notes as dynamic property if provided
     if (notes) {
-      (updatedDoc as any).review_notes = notes
+      ;(updatedDoc as any).review_notes = notes
     }
-    
+
     mockDocuments[docIndex] = updatedDoc
 
     // Store in HERA universal tables as core_dynamic_data
@@ -763,13 +817,15 @@ export async function PUT(request: NextRequest) {
         dynamic_data: dynamicData
       }
     })
-
   } catch (error) {
     console.error('Error updating document:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to update document'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to update document'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -780,21 +836,30 @@ export async function DELETE(request: NextRequest) {
     const organizationId = searchParams.get('organizationId')
 
     if (!documentId || !organizationId) {
-      return NextResponse.json({
-        success: false,
-        message: 'Missing required parameters: documentId, organizationId'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Missing required parameters: documentId, organizationId'
+        },
+        { status: 400 }
+      )
     }
 
     try {
       // Use enhanced service to delete document
-      const deleteResult = await enhancedAuditDocumentService.deleteDocument(documentId, organizationId)
-      
+      const deleteResult = await enhancedAuditDocumentService.deleteDocument(
+        documentId,
+        organizationId
+      )
+
       if (!deleteResult.success) {
-        return NextResponse.json({
-          success: false,
-          message: deleteResult.error || 'Failed to delete document'
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: deleteResult.error || 'Failed to delete document'
+          },
+          { status: 500 }
+        )
       }
 
       return NextResponse.json({
@@ -802,17 +867,21 @@ export async function DELETE(request: NextRequest) {
         message: 'Document and associated files deleted successfully',
         data: { document_id: documentId }
       })
-
     } catch (error) {
       console.warn('Enhanced delete failed, using mock delete:', error)
-      
+
       // Fallback to mock delete
-      const docIndex = mockDocuments.findIndex(d => d.id === documentId && d.organization_id === organizationId)
+      const docIndex = mockDocuments.findIndex(
+        d => d.id === documentId && d.organization_id === organizationId
+      )
       if (docIndex === -1) {
-        return NextResponse.json({
-          success: false,
-          message: 'Document not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Document not found'
+          },
+          { status: 404 }
+        )
       }
 
       const deletedDocument = mockDocuments[docIndex]
@@ -821,19 +890,21 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({
         success: true,
         message: 'Document deleted successfully (mock mode)',
-        data: { 
+        data: {
           document_id: documentId,
           deleted_document: deletedDocument
         }
       })
     }
-
   } catch (error) {
     console.error('Error deleting document:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to delete document',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to delete document',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

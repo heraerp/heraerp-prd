@@ -3,7 +3,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -21,8 +27,18 @@ interface OrganizationalStructureStepProps {
 
 const ENTITY_TYPES = [
   { value: 'branch', label: 'Branch', icon: Building, color: 'bg-blue-100 text-blue-800' },
-  { value: 'cost_center', label: 'Cost Center', icon: DollarSign, color: 'bg-red-100 text-red-800' },
-  { value: 'profit_center', label: 'Profit Center', icon: Target, color: 'bg-green-100 text-green-800' }
+  {
+    value: 'cost_center',
+    label: 'Cost Center',
+    icon: DollarSign,
+    color: 'bg-red-100 text-red-800'
+  },
+  {
+    value: 'profit_center',
+    label: 'Profit Center',
+    icon: Target,
+    color: 'bg-green-100 text-green-800'
+  }
 ]
 
 export const OrganizationalStructureStep: React.FC<OrganizationalStructureStepProps> = ({
@@ -59,12 +75,15 @@ export const OrganizationalStructureStep: React.FC<OrganizationalStructureStepPr
   }
 
   const addUnit = () => {
-    const units = [...orgData.org_units, {
-      entity_code: '',
-      entity_name: '',
-      entity_type: 'branch' as const,
-      allow_posting: true
-    }]
+    const units = [
+      ...orgData.org_units,
+      {
+        entity_code: '',
+        entity_name: '',
+        entity_type: 'branch' as const,
+        allow_posting: true
+      }
+    ]
     onChange({ organizationalStructure: { org_units: units } })
   }
 
@@ -86,12 +105,14 @@ export const OrganizationalStructureStep: React.FC<OrganizationalStructureStepPr
                 <Icon className="h-4 w-4" />
                 <span>{entityType?.label || 'Organizational Unit'}</span>
                 {unit.allow_posting && (
-                  <Badge variant="secondary" className="text-xs">Posting Enabled</Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    Posting Enabled
+                  </Badge>
                 )}
               </CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => removeUnit(index)}
                 disabled={index === 0} // Don't allow removal of first unit (HQ)
               >
@@ -101,31 +122,31 @@ export const OrganizationalStructureStep: React.FC<OrganizationalStructureStepPr
             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Entity Code</Label>
-                <Input 
-                  value={unit.entity_code} 
-                  onChange={(e) => updateUnit(index, 'entity_code', e.target.value.toUpperCase())}
+                <Input
+                  value={unit.entity_code}
+                  onChange={e => updateUnit(index, 'entity_code', e.target.value.toUpperCase())}
                   placeholder="HQ"
                 />
               </div>
               <div>
                 <Label>Entity Name</Label>
-                <Input 
-                  value={unit.entity_name} 
-                  onChange={(e) => updateUnit(index, 'entity_name', e.target.value)}
+                <Input
+                  value={unit.entity_name}
+                  onChange={e => updateUnit(index, 'entity_name', e.target.value)}
                   placeholder="Head Office"
                 />
               </div>
               <div>
                 <Label>Type</Label>
-                <Select 
-                  value={unit.entity_type} 
+                <Select
+                  value={unit.entity_type}
                   onValueChange={(value: any) => updateUnit(index, 'entity_type', value)}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="hera-select-content">
-                    {ENTITY_TYPES.map((type) => (
+                    {ENTITY_TYPES.map(type => (
                       <SelectItem key={type.value} value={type.value} className="hera-select-item">
                         <div className="flex items-center space-x-2">
                           <type.icon className="h-4 w-4" />
@@ -137,9 +158,9 @@ export const OrganizationalStructureStep: React.FC<OrganizationalStructureStepPr
                 </Select>
               </div>
               <div className="flex items-center space-x-2">
-                <Switch 
+                <Switch
                   checked={unit.allow_posting}
-                  onCheckedChange={(checked) => updateUnit(index, 'allow_posting', checked)}
+                  onCheckedChange={checked => updateUnit(index, 'allow_posting', checked)}
                 />
                 <Label>Allow Direct Posting</Label>
               </div>
@@ -158,7 +179,7 @@ export const OrganizationalStructureStep: React.FC<OrganizationalStructureStepPr
         {ENTITY_TYPES.map(type => {
           const count = orgData.org_units.filter(u => u.entity_type === type.value).length
           const Icon = type.icon
-          
+
           return (
             <Card key={type.value}>
               <CardContent className="p-4 text-center">

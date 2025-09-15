@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * HERA Git Integration API
- * 
+ *
  * Provides Git repository statistics and activity for the Development Dashboard
  * This demonstrates HERA tracking its own development lifecycle
  */
@@ -167,7 +167,6 @@ export async function GET(request: NextRequest) {
         license: 'Proprietary'
       }
     })
-
   } catch (error) {
     console.error('Git integration API error:', error)
     return NextResponse.json(
@@ -221,11 +220,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid action' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
   } catch (error) {
     console.error('Git integration API error:', error)
     return NextResponse.json(

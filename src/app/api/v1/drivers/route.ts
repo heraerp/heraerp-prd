@@ -13,13 +13,14 @@ export async function GET(request: NextRequest) {
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
     const status = searchParams.get('status') || 'active'
     const includeAssignments = searchParams.get('include_assignments') === 'true'
-    
+
     console.log('🚗 Drivers: Loading driver management data')
 
     // Get all drivers (stored as entities)
     let query = supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
@@ -28,7 +29,8 @@ export async function GET(request: NextRequest) {
           field_value_boolean,
           field_type
         )
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'driver')
       .order('entity_name', { ascending: true })
@@ -52,7 +54,8 @@ export async function GET(request: NextRequest) {
     if (includeAssignments) {
       const { data: assignments, error: assignmentsError } = await supabaseAdmin
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           *,
           lines:universal_transaction_lines(
             id,
@@ -60,7 +63,8 @@ export async function GET(request: NextRequest) {
             quantity,
             line_amount
           )
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('transaction_type', 'order')
         .in('status', ['processing', 'approved'])
@@ -72,87 +76,91 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform drivers with dynamic data and current assignments
-    const transformedDrivers = drivers?.map(driver => {
-      const dynamicProps = driver.dynamic_data?.reduce((acc: any, prop: any) => {
-        let value = prop.field_value
-        if (prop.field_type === 'number' && prop.field_value_number !== null) {
-          value = prop.field_value_number
-        } else if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
-          value = prop.field_value_boolean
+    const transformedDrivers =
+      drivers?.map(driver => {
+        const dynamicProps =
+          driver.dynamic_data?.reduce((acc: any, prop: any) => {
+            let value = prop.field_value
+            if (prop.field_type === 'number' && prop.field_value_number !== null) {
+              value = prop.field_value_number
+            } else if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
+              value = prop.field_value_boolean
+            }
+            acc[prop.field_name] = value
+            return acc
+          }, {}) || {}
+
+        // Find current assignments for this driver
+        const driverAssignments = currentAssignments.filter(
+          (order: any) => (order.metadata as any)?.driver_id === driver.id
+        )
+
+        const driverData = {
+          id: driver.id,
+          name: driver.entity_name,
+          code: driver.entity_code,
+          status: driver.status,
+          created_at: driver.created_at,
+
+          // Contact Information
+          phone: dynamicProps.phone || '',
+          email: dynamicProps.email || '',
+          emergency_contact: dynamicProps.emergency_contact || '',
+
+          // Driver Details
+          license_number: dynamicProps.license_number || '',
+          vehicle_type: dynamicProps.vehicle_type || 'car',
+          vehicle_model: dynamicProps.vehicle_model || '',
+          vehicle_plate: dynamicProps.vehicle_plate || '',
+          vehicle_color: dynamicProps.vehicle_color || '',
+
+          // Operational Status
+          is_available: dynamicProps.is_available !== false,
+          shift_start: dynamicProps.shift_start || '09:00',
+          shift_end: dynamicProps.shift_end || '21:00',
+          max_orders: parseInt(dynamicProps.max_orders || '3'),
+
+          // Performance Metrics
+          rating: parseFloat(dynamicProps.rating || '5.0'),
+          total_deliveries: parseInt(dynamicProps.total_deliveries || '0'),
+          completed_today: parseInt(dynamicProps.completed_today || '0'),
+          average_delivery_time: parseInt(dynamicProps.average_delivery_time || '25'),
+          on_time_percentage: parseFloat(dynamicProps.on_time_percentage || '95.0'),
+
+          // Location & Route
+          current_location: dynamicProps.current_location
+            ? JSON.parse(dynamicProps.current_location)
+            : null,
+          home_base: dynamicProps.home_base || 'Restaurant',
+          delivery_zone: dynamicProps.delivery_zone || 'all',
+
+          // Current assignments
+          current_orders: driverAssignments.length,
+          assigned_orders: driverAssignments.map((order: any) => ({
+            id: order.id,
+            order_number: order.transaction_code,
+            status: order.status,
+            total_amount: order.total_amount || 0,
+            customer_name: (order.metadata as any)?.customer_name || 'Customer',
+            delivery_address: (order.metadata as any)?.delivery_address || '',
+            estimated_delivery_time: (order.metadata as any)?.estimated_delivery_time,
+            items_count: order.lines?.length || 0
+          })),
+
+          // Financial
+          earnings_today: parseFloat(dynamicProps.earnings_today || '0'),
+          earnings_week: parseFloat(dynamicProps.earnings_week || '0'),
+          commission_rate: parseFloat(dynamicProps.commission_rate || '0.15')
         }
-        acc[prop.field_name] = value
-        return acc
-      }, {}) || {}
 
-      // Find current assignments for this driver
-      const driverAssignments = currentAssignments.filter((order: any) => 
-        (order.metadata as any)?.driver_id === driver.id
-      )
-
-      const driverData = {
-        id: driver.id,
-        name: driver.entity_name,
-        code: driver.entity_code,
-        status: driver.status,
-        created_at: driver.created_at,
-        
-        // Contact Information
-        phone: dynamicProps.phone || '',
-        email: dynamicProps.email || '',
-        emergency_contact: dynamicProps.emergency_contact || '',
-        
-        // Driver Details
-        license_number: dynamicProps.license_number || '',
-        vehicle_type: dynamicProps.vehicle_type || 'car',
-        vehicle_model: dynamicProps.vehicle_model || '',
-        vehicle_plate: dynamicProps.vehicle_plate || '',
-        vehicle_color: dynamicProps.vehicle_color || '',
-        
-        // Operational Status
-        is_available: dynamicProps.is_available !== false,
-        shift_start: dynamicProps.shift_start || '09:00',
-        shift_end: dynamicProps.shift_end || '21:00',
-        max_orders: parseInt(dynamicProps.max_orders || '3'),
-        
-        // Performance Metrics
-        rating: parseFloat(dynamicProps.rating || '5.0'),
-        total_deliveries: parseInt(dynamicProps.total_deliveries || '0'),
-        completed_today: parseInt(dynamicProps.completed_today || '0'),
-        average_delivery_time: parseInt(dynamicProps.average_delivery_time || '25'),
-        on_time_percentage: parseFloat(dynamicProps.on_time_percentage || '95.0'),
-        
-        // Location & Route
-        current_location: dynamicProps.current_location ? 
-          JSON.parse(dynamicProps.current_location) : null,
-        home_base: dynamicProps.home_base || 'Restaurant',
-        delivery_zone: dynamicProps.delivery_zone || 'all',
-        
-        // Current assignments
-        current_orders: driverAssignments.length,
-        assigned_orders: driverAssignments.map((order: any) => ({
-          id: order.id,
-          order_number: order.transaction_code,
-          status: order.status,
-          total_amount: order.total_amount || 0,
-          customer_name: (order.metadata as any)?.customer_name || 'Customer',
-          delivery_address: (order.metadata as any)?.delivery_address || '',
-          estimated_delivery_time: (order.metadata as any)?.estimated_delivery_time,
-          items_count: order.lines?.length || 0
-        })),
-        
-        // Financial
-        earnings_today: parseFloat(dynamicProps.earnings_today || '0'),
-        earnings_week: parseFloat(dynamicProps.earnings_week || '0'),
-        commission_rate: parseFloat(dynamicProps.commission_rate || '0.15')
-      }
-
-      return driverData
-    }) || []
+        return driverData
+      }) || []
 
     // Calculate driver statistics
     const stats = {
       total_drivers: transformedDrivers.length,
-      available_drivers: transformedDrivers.filter(d => d.is_available && d.status === 'active').length,
+      available_drivers: transformedDrivers.filter(d => d.is_available && d.status === 'active')
+        .length,
       on_shift_drivers: transformedDrivers.filter(d => {
         const now = new Date()
         const currentTime = now.getHours() * 100 + now.getMinutes()
@@ -161,13 +169,16 @@ export async function GET(request: NextRequest) {
         return currentTime >= shiftStart && currentTime <= shiftEnd && d.status === 'active'
       }).length,
       total_active_orders: transformedDrivers.reduce((sum, d) => sum + d.current_orders, 0),
-      average_rating: transformedDrivers.length > 0 
-        ? transformedDrivers.reduce((sum, d) => sum + d.rating, 0) / transformedDrivers.length 
-        : 0,
+      average_rating:
+        transformedDrivers.length > 0
+          ? transformedDrivers.reduce((sum, d) => sum + d.rating, 0) / transformedDrivers.length
+          : 0,
       total_deliveries_today: transformedDrivers.reduce((sum, d) => sum + d.completed_today, 0),
-      average_delivery_time: transformedDrivers.length > 0 
-        ? transformedDrivers.reduce((sum, d) => sum + d.average_delivery_time, 0) / transformedDrivers.length 
-        : 0
+      average_delivery_time:
+        transformedDrivers.length > 0
+          ? transformedDrivers.reduce((sum, d) => sum + d.average_delivery_time, 0) /
+            transformedDrivers.length
+          : 0
     }
 
     const response = {
@@ -180,15 +191,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    console.log(`✅ Loaded ${transformedDrivers.length} drivers (${stats.available_drivers} available)`)
+    console.log(
+      `✅ Loaded ${transformedDrivers.length} drivers (${stats.available_drivers} available)`
+    )
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('❌ Drivers API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -211,12 +220,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Auto-generate driver code if not provided
-    const driverCode = driverData.code || 
-      'DRV_' + driverData.name
-        .toUpperCase()
-        .replace(/[^A-Z0-9\\s]/g, '')
-        .replace(/\\s+/g, '_')
-        .substring(0, 15) + '_' + Date.now().toString().slice(-4)
+    const driverCode =
+      driverData.code ||
+      'DRV_' +
+        driverData.name
+          .toUpperCase()
+          .replace(/[^A-Z0-9\\s]/g, '')
+          .replace(/\\s+/g, '_')
+          .substring(0, 15) +
+        '_' +
+        Date.now().toString().slice(-4)
 
     // Create driver entity
     const { data: driver, error: driverError } = await supabaseAdmin
@@ -246,14 +259,14 @@ export async function POST(request: NextRequest) {
       { name: 'phone', value: driverData.phone, type: 'text' },
       { name: 'email', value: driverData.email || '', type: 'text' },
       { name: 'emergency_contact', value: driverData.emergency_contact || '', type: 'text' },
-      
+
       // Driver Details
       { name: 'license_number', value: driverData.license_number || '', type: 'text' },
       { name: 'vehicle_type', value: driverData.vehicle_type || 'car', type: 'text' },
       { name: 'vehicle_model', value: driverData.vehicle_model || '', type: 'text' },
       { name: 'vehicle_plate', value: driverData.vehicle_plate || '', type: 'text' },
       { name: 'vehicle_color', value: driverData.vehicle_color || '', type: 'text' },
-      
+
       // Operational Settings
       { name: 'is_available', value: 'true', type: 'boolean' },
       { name: 'shift_start', value: driverData.shift_start || '09:00', type: 'text' },
@@ -261,7 +274,7 @@ export async function POST(request: NextRequest) {
       { name: 'max_orders', value: (driverData.max_orders || 3).toString(), type: 'number' },
       { name: 'delivery_zone', value: driverData.delivery_zone || 'all', type: 'text' },
       { name: 'home_base', value: driverData.home_base || 'Restaurant', type: 'text' },
-      
+
       // Initialize performance metrics
       { name: 'rating', value: '5.0', type: 'number' },
       { name: 'total_deliveries', value: '0', type: 'number' },
@@ -274,26 +287,24 @@ export async function POST(request: NextRequest) {
     ].filter(prop => prop.value !== '')
 
     if (driverProperties.length > 0) {
-      const { error: dynamicError } = await supabaseAdmin
-        .from('core_dynamic_data')
-        .insert(
-          driverProperties.map(prop => {
-            const baseProps = {
-              organization_id: organizationId,
-              entity_id: driver.id,
-              field_name: prop.name,
-              field_type: prop.type
-            }
-            
-            if (prop.type === 'number') {
-              return { ...baseProps, field_value_number: parseFloat(prop.value) || 0 }
-            } else if (prop.type === 'boolean') {
-              return { ...baseProps, field_value_boolean: prop.value === 'true' }
-            } else {
-              return { ...baseProps, field_value: prop.value }
-            }
-          })
-        )
+      const { error: dynamicError } = await supabaseAdmin.from('core_dynamic_data').insert(
+        driverProperties.map(prop => {
+          const baseProps = {
+            organization_id: organizationId,
+            entity_id: driver.id,
+            field_name: prop.name,
+            field_type: prop.type
+          }
+
+          if (prop.type === 'number') {
+            return { ...baseProps, field_value_number: parseFloat(prop.value) || 0 }
+          } else if (prop.type === 'boolean') {
+            return { ...baseProps, field_value_boolean: prop.value === 'true' }
+          } else {
+            return { ...baseProps, field_value: prop.value }
+          }
+        })
+      )
 
       if (dynamicError) {
         console.error('❌ Error storing driver properties:', dynamicError)
@@ -314,13 +325,9 @@ export async function POST(request: NextRequest) {
 
     console.log(`✅ Driver created: ${driver.entity_name} (${driver.entity_code})`)
     return NextResponse.json(response, { status: 201 })
-
   } catch (error) {
     console.error('❌ Create driver API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -343,39 +350,51 @@ export async function PUT(request: NextRequest) {
 
     // Update dynamic properties
     const dynamicUpdates = [
-      'phone', 'email', 'emergency_contact', 'license_number',
-      'vehicle_type', 'vehicle_model', 'vehicle_plate', 'vehicle_color',
-      'is_available', 'shift_start', 'shift_end', 'max_orders',
-      'delivery_zone', 'home_base', 'current_location'
+      'phone',
+      'email',
+      'emergency_contact',
+      'license_number',
+      'vehicle_type',
+      'vehicle_model',
+      'vehicle_plate',
+      'vehicle_color',
+      'is_available',
+      'shift_start',
+      'shift_end',
+      'max_orders',
+      'delivery_zone',
+      'home_base',
+      'current_location'
     ]
 
     for (const property of dynamicUpdates) {
       if (updateData[property] !== undefined) {
         const value = updateData[property]
-        const fieldType = property === 'max_orders' ? 'number' : 
-                         property === 'is_available' ? 'boolean' : 'text'
-        
+        const fieldType =
+          property === 'max_orders' ? 'number' : property === 'is_available' ? 'boolean' : 'text'
+
         const baseProps = {
           organization_id: organizationId,
           entity_id: updateData.id,
           field_name: property,
           field_type: fieldType
         }
-        
+
         let upsertData
         if (fieldType === 'number') {
           upsertData = { ...baseProps, field_value_number: parseFloat(value) || 0 }
         } else if (fieldType === 'boolean') {
           upsertData = { ...baseProps, field_value_boolean: Boolean(value) }
         } else {
-          upsertData = { ...baseProps, field_value: typeof value === 'object' ? JSON.stringify(value) : value.toString() }
+          upsertData = {
+            ...baseProps,
+            field_value: typeof value === 'object' ? JSON.stringify(value) : value.toString()
+          }
         }
-        
-        await supabaseAdmin
-          .from('core_dynamic_data')
-          .upsert(upsertData, {
-            onConflict: 'organization_id,entity_id,field_name'
-          })
+
+        await supabaseAdmin.from('core_dynamic_data').upsert(upsertData, {
+          onConflict: 'organization_id,entity_id,field_name'
+        })
       }
     }
 
@@ -391,12 +410,8 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'Driver updated successfully'
     })
-
   } catch (error) {
     console.error('❌ Update driver API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

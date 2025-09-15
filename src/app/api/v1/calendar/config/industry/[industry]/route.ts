@@ -9,7 +9,14 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
   healthcare: {
     industry: 'healthcare',
     resource_types: ['STAFF', 'EQUIPMENT', 'ROOM'],
-    appointment_types: ['consultation', 'examination', 'surgery', 'follow_up', 'emergency', 'vaccination'],
+    appointment_types: [
+      'consultation',
+      'examination',
+      'surgery',
+      'follow_up',
+      'emergency',
+      'vaccination'
+    ],
     default_duration: 30,
     business_hours: {
       start: '08:00',
@@ -25,7 +32,7 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
     required_fields: ['title', 'start_time', 'end_time', 'appointment_type'],
     optional_fields: ['description', 'notes', 'patient_name', 'procedure_type', 'insurance_info']
   },
-  
+
   restaurant: {
     industry: 'restaurant',
     resource_types: ['ROOM', 'STAFF', 'EQUIPMENT'],
@@ -43,13 +50,26 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
       cleanup_minutes: 15
     },
     required_fields: ['title', 'start_time', 'end_time', 'party_size'],
-    optional_fields: ['description', 'notes', 'special_requests', 'occasion', 'dietary_restrictions']
+    optional_fields: [
+      'description',
+      'notes',
+      'special_requests',
+      'occasion',
+      'dietary_restrictions'
+    ]
   },
-  
+
   professional: {
     industry: 'professional',
     resource_types: ['STAFF', 'ROOM', 'VIRTUAL', 'EQUIPMENT'],
-    appointment_types: ['meeting', 'consultation', 'presentation', 'workshop', 'interview', 'training'],
+    appointment_types: [
+      'meeting',
+      'consultation',
+      'presentation',
+      'workshop',
+      'interview',
+      'training'
+    ],
     default_duration: 60,
     business_hours: {
       start: '08:00',
@@ -65,11 +85,18 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
     required_fields: ['title', 'start_time', 'end_time', 'client_name'],
     optional_fields: ['description', 'notes', 'meeting_type', 'project_reference', 'agenda']
   },
-  
+
   manufacturing: {
     industry: 'manufacturing',
     resource_types: ['EQUIPMENT', 'STAFF', 'ROOM'],
-    appointment_types: ['maintenance', 'production', 'inspection', 'calibration', 'repair', 'training'],
+    appointment_types: [
+      'maintenance',
+      'production',
+      'inspection',
+      'calibration',
+      'repair',
+      'training'
+    ],
     default_duration: 120,
     business_hours: {
       start: '06:00',
@@ -83,9 +110,15 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
       cleanup_minutes: 20
     },
     required_fields: ['title', 'start_time', 'end_time', 'work_order'],
-    optional_fields: ['description', 'notes', 'maintenance_type', 'technician_notes', 'parts_required']
+    optional_fields: [
+      'description',
+      'notes',
+      'maintenance_type',
+      'technician_notes',
+      'parts_required'
+    ]
   },
-  
+
   retail: {
     industry: 'retail',
     resource_types: ['STAFF', 'ROOM', 'EQUIPMENT'],
@@ -105,7 +138,7 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
     required_fields: ['title', 'start_time', 'end_time', 'service_type'],
     optional_fields: ['description', 'notes', 'customer_preferences', 'product_details']
   },
-  
+
   education: {
     industry: 'education',
     resource_types: ['STAFF', 'ROOM', 'EQUIPMENT', 'VIRTUAL'],
@@ -125,11 +158,18 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
     required_fields: ['title', 'start_time', 'end_time', 'subject'],
     optional_fields: ['description', 'notes', 'course_code', 'instructor', 'student_capacity']
   },
-  
+
   fitness: {
     industry: 'fitness',
     resource_types: ['STAFF', 'EQUIPMENT', 'ROOM'],
-    appointment_types: ['training', 'class', 'assessment', 'consultation', 'therapy', 'maintenance'],
+    appointment_types: [
+      'training',
+      'class',
+      'assessment',
+      'consultation',
+      'therapy',
+      'maintenance'
+    ],
     default_duration: 60,
     business_hours: {
       start: '05:00',
@@ -143,9 +183,15 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
       cleanup_minutes: 10
     },
     required_fields: ['title', 'start_time', 'end_time', 'activity_type'],
-    optional_fields: ['description', 'notes', 'fitness_level', 'special_requirements', 'equipment_needed']
+    optional_fields: [
+      'description',
+      'notes',
+      'fitness_level',
+      'special_requirements',
+      'equipment_needed'
+    ]
   },
-  
+
   legal: {
     industry: 'legal',
     resource_types: ['STAFF', 'ROOM', 'VIRTUAL'],
@@ -165,11 +211,18 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
     required_fields: ['title', 'start_time', 'end_time', 'case_type'],
     optional_fields: ['description', 'notes', 'case_number', 'client_name', 'opposing_party']
   },
-  
+
   automotive: {
     industry: 'automotive',
     resource_types: ['STAFF', 'EQUIPMENT', 'ROOM'],
-    appointment_types: ['service', 'repair', 'inspection', 'installation', 'consultation', 'pickup'],
+    appointment_types: [
+      'service',
+      'repair',
+      'inspection',
+      'installation',
+      'consultation',
+      'pickup'
+    ],
     default_duration: 120,
     business_hours: {
       start: '07:00',
@@ -185,7 +238,7 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
     required_fields: ['title', 'start_time', 'end_time', 'vehicle_info'],
     optional_fields: ['description', 'notes', 'service_type', 'parts_needed', 'customer_concerns']
   },
-  
+
   beauty: {
     industry: 'beauty',
     resource_types: ['STAFF', 'EQUIPMENT', 'ROOM'],
@@ -203,13 +256,26 @@ const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {
       cleanup_minutes: 15
     },
     required_fields: ['title', 'start_time', 'end_time', 'service_type'],
-    optional_fields: ['description', 'notes', 'stylist_preference', 'color_preferences', 'allergies']
+    optional_fields: [
+      'description',
+      'notes',
+      'stylist_preference',
+      'color_preferences',
+      'allergies'
+    ]
   },
-  
+
   universal: {
     industry: 'universal',
     resource_types: ['STAFF', 'EQUIPMENT', 'ROOM', 'VEHICLE', 'VIRTUAL'],
-    appointment_types: ['appointment', 'meeting', 'consultation', 'service', 'maintenance', 'event'],
+    appointment_types: [
+      'appointment',
+      'meeting',
+      'consultation',
+      'service',
+      'maintenance',
+      'event'
+    ],
     default_duration: 60,
     business_hours: {
       start: '09:00',
@@ -235,21 +301,18 @@ export async function GET(
   try {
     const { industry: industryParam } = await params
     const industry = industryParam.toLowerCase()
-    
+
     const config = INDUSTRY_CONFIGS[industry]
-    
+
     if (!config) {
       // Return universal config as fallback
       return NextResponse.json(INDUSTRY_CONFIGS.universal)
     }
-    
+
     return NextResponse.json(config)
   } catch (error) {
     console.error('Error fetching industry config:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch industry configuration' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch industry configuration' }, { status: 500 })
   }
 }
 
@@ -261,7 +324,7 @@ function getAllConfigs() {
 // Helper function to get industry-specific validation rules
 function getIndustryValidationRules(industry: string) {
   const config = INDUSTRY_CONFIGS[industry.toLowerCase()] || INDUSTRY_CONFIGS.universal
-  
+
   return {
     required_fields: config.required_fields,
     optional_fields: config.optional_fields,
@@ -279,53 +342,63 @@ function validateAppointmentForIndustry(
 ): { isValid: boolean; errors: string[] } {
   const rules = getIndustryValidationRules(industry)
   const errors: string[] = []
-  
+
   // Check required fields
   rules.required_fields.forEach(field => {
     if (!appointmentData[field] && !appointmentData.industry_data?.[field]) {
       errors.push(`${field.replace('_', ' ')} is required for ${industry} appointments`)
     }
   })
-  
+
   // Validate appointment type
-  if (appointmentData.appointment_type && 
-      !rules.appointment_types.includes(appointmentData.appointment_type)) {
-    errors.push(`Invalid appointment type for ${industry}. Valid types: ${rules.appointment_types.join(', ')}`)
+  if (
+    appointmentData.appointment_type &&
+    !rules.appointment_types.includes(appointmentData.appointment_type)
+  ) {
+    errors.push(
+      `Invalid appointment type for ${industry}. Valid types: ${rules.appointment_types.join(', ')}`
+    )
   }
-  
+
   // Validate booking rules
   if (appointmentData.start_time) {
     const appointmentDate = new Date(appointmentData.start_time)
     const now = new Date()
-    const daysInAdvance = Math.ceil((appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    
+    const daysInAdvance = Math.ceil(
+      (appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    )
+
     if (daysInAdvance > rules.booking_rules.advance_booking_days) {
-      errors.push(`Cannot book more than ${rules.booking_rules.advance_booking_days} days in advance`)
+      errors.push(
+        `Cannot book more than ${rules.booking_rules.advance_booking_days} days in advance`
+      )
     }
-    
+
     if (daysInAdvance < 0) {
       errors.push('Cannot book appointments in the past')
     }
   }
-  
+
   // Validate business hours
   if (appointmentData.start_time && appointmentData.end_time) {
     const startTime = new Date(appointmentData.start_time)
     const endTime = new Date(appointmentData.end_time)
     const dayOfWeek = startTime.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase()
-    
+
     if (!rules.business_hours.days.includes(dayOfWeek)) {
       errors.push(`${industry} is not open on ${dayOfWeek}`)
     }
-    
+
     const startHour = startTime.toTimeString().substring(0, 5)
     const endHour = endTime.toTimeString().substring(0, 5)
-    
+
     if (startHour < rules.business_hours.start || endHour > rules.business_hours.end) {
-      errors.push(`Appointment must be within business hours: ${rules.business_hours.start} - ${rules.business_hours.end}`)
+      errors.push(
+        `Appointment must be within business hours: ${rules.business_hours.start} - ${rules.business_hours.end}`
+      )
     }
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors

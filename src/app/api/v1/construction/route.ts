@@ -11,7 +11,8 @@ const constructionApi = {
       id: `entity_${Date.now()}`,
       entity_type: entityData.entity_type,
       entity_name: entityData.entity_name,
-      entity_code: entityData.entity_code || `${entityData.entity_type.toUpperCase()}-${Date.now()}`,
+      entity_code:
+        entityData.entity_code || `${entityData.entity_type.toUpperCase()}-${Date.now()}`,
       organization_id: entityData.organization_id,
       status: 'active',
       created_at: new Date().toISOString(),
@@ -63,7 +64,9 @@ export async function GET(request: NextRequest) {
               address: `${i + 1} Sample Street, London`
             },
             project_interest: ['loft_conversion', 'extension', 'interior_decoration'][i % 3],
-            created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+            created_at: new Date(
+              Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+            ).toISOString()
           }))
         }
       })
@@ -80,8 +83,12 @@ export async function GET(request: NextRequest) {
             project_type: ['loft_conversion', 'extension', 'interior_decoration'][i % 3],
             status: ['planning', 'in_progress', 'completed'][i % 3],
             budget: Math.floor(Math.random() * 50000) + 15000,
-            start_date: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
-            estimated_end_date: new Date(Date.now() + Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
+            start_date: new Date(
+              Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000
+            ).toISOString(),
+            estimated_end_date: new Date(
+              Date.now() + Math.random() * 60 * 24 * 60 * 60 * 1000
+            ).toISOString(),
             customer_id: `customer_${Math.floor(Math.random() * 10) + 1}`,
             address: `${i + 1} Project Street, London`
           }))
@@ -103,7 +110,9 @@ export async function GET(request: NextRequest) {
             vat_amount: Math.floor((Math.random() * 40000 + 10000) * 0.2),
             status: ['draft', 'sent', 'approved', 'rejected'][i % 4],
             valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+            created_at: new Date(
+              Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+            ).toISOString()
           }))
         }
       })
@@ -162,8 +171,16 @@ export async function GET(request: NextRequest) {
         },
         recentActivity: [
           { type: 'new_lead', message: 'New lead: Kitchen Extension', time: '2 hours ago' },
-          { type: 'quote_approved', message: 'Quote approved: Loft Conversion', time: '4 hours ago' },
-          { type: 'project_completed', message: 'Project completed: Interior Decoration', time: '1 day ago' }
+          {
+            type: 'quote_approved',
+            message: 'Quote approved: Loft Conversion',
+            time: '4 hours ago'
+          },
+          {
+            type: 'project_completed',
+            message: 'Project completed: Interior Decoration',
+            time: '1 day ago'
+          }
         ],
         upcomingTasks: [
           { task: 'Site survey for new extension', due: 'Tomorrow', priority: 'high' },
@@ -172,13 +189,9 @@ export async function GET(request: NextRequest) {
         ]
       }
     })
-
   } catch (error) {
     console.error('Construction API Error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -202,7 +215,10 @@ export async function POST(request: NextRequest) {
         { field_name: 'address', field_value: data.address },
         { field_name: 'project_interest', field_value: data.project_interest },
         { field_name: 'lead_source', field_value: data.lead_source || 'website' },
-        { field_name: 'communication_preference', field_value: data.communication_preference || 'email' }
+        {
+          field_name: 'communication_preference',
+          field_value: data.communication_preference || 'email'
+        }
       ]
 
       await constructionApi.storeDynamicData(customer.id, dynamicFields)
@@ -281,16 +297,15 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid request type'
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid request type'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Construction API POST Error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
   }
 }

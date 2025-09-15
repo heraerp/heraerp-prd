@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   return enterpriseMiddleware(request, async (req, ctx) => {
     const organizationId = ctx.organizationId
     const searchParams = request.nextUrl.searchParams
-    
+
     const search = searchParams.get('q') || ''
     const status = searchParams.get('status') || 'all'
     const limit = parseInt(searchParams.get('limit') || '50')
@@ -20,9 +20,8 @@ export async function GET(request: NextRequest) {
 
     try {
       // Build status filter
-      const statusFilter = status === 'all' 
-        ? `('active', 'watchlist', 'submitted', 'won', 'lost')`
-        : `('${status}')`
+      const statusFilter =
+        status === 'all' ? `('active', 'watchlist', 'submitted', 'won', 'lost')` : `('${status}')`
 
       // Main tender query with dynamic data and status
       const tenderListQuery = `
@@ -103,13 +102,10 @@ export async function GET(request: NextRequest) {
         LIMIT $4 OFFSET $5
       `
 
-      const { data: tenders, error: tendersError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: tenderListQuery,
-          params: [organizationId, search, sortBy, limit, offset]
-        }
-      )
+      const { data: tenders, error: tendersError } = await supabase.rpc('execute_sql', {
+        query: tenderListQuery,
+        params: [organizationId, search, sortBy, limit, offset]
+      })
 
       if (tendersError) {
         throw new Error('Failed to fetch tender list')
@@ -143,13 +139,10 @@ export async function GET(request: NextRequest) {
         WHERE status IN ${statusFilter}
       `
 
-      const { data: countData, error: countError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: countQuery,
-          params: [organizationId, search]
-        }
-      )
+      const { data: countData, error: countError } = await supabase.rpc('execute_sql', {
+        query: countQuery,
+        params: [organizationId, search]
+      })
 
       if (countError) {
         throw new Error('Failed to get tender count')
@@ -171,13 +164,10 @@ export async function GET(request: NextRequest) {
         GROUP BY ut.reference_entity_id
       `
 
-      const { data: competitors, error: competitorError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: competitorQuery,
-          params: [organizationId]
-        }
-      )
+      const { data: competitors, error: competitorError } = await supabase.rpc('execute_sql', {
+        query: competitorQuery,
+        params: [organizationId]
+      })
 
       // Merge competitor data
       const competitorMap = (competitors || []).reduce((acc: any, item: any) => {
@@ -199,7 +189,7 @@ export async function GET(request: NextRequest) {
             total: countData?.[0]?.total || 0,
             limit,
             offset,
-            hasMore: (offset + limit) < (countData?.[0]?.total || 0)
+            hasMore: offset + limit < (countData?.[0]?.total || 0)
           }
         },
         smart_code: 'HERA.FURNITURE.TENDER.LIST.RETRIEVED.v1'
@@ -207,8 +197,8 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error('Error fetching tender list:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to fetch tender list',
           smart_code: 'HERA.FURNITURE.TENDER.LIST.ERROR.v1'
         },

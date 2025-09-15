@@ -3,17 +3,16 @@
 // Force dynamic rendering to avoid build issues
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Skeleton } from '@/components/ui/skeleton'
-import { 
-  Plus, 
-  Search, 
+import {
+  Plus,
+  Search,
   Filter,
   Download,
   Upload,
@@ -22,269 +21,230 @@ import {
   Edit,
   Eye,
   AlertCircle,
+  CheckCircle,
   Sofa,
   Briefcase,
   Bed,
   Square,
   Grid3x3,
-  Pencil
+  Pencil,
+  RefreshCw,
+  Trash2
 } from 'lucide-react'
-import { universalApi } from '@/lib/universal-api'
-import { supabase } from '@/lib/supabase'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import NewProductModal from '@/components/furniture/NewProductModal'
+import EditProductModal from '@/components/furniture/EditProductModal'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useProductsData } from '@/lib/furniture/use-products-data'
+import { ProductsPageSkeleton } from '@/components/furniture/ProductsPageSkeleton'
+import { universalApi } from '@/lib/universal-api'
 
 // Category icons mapping
 const categoryIcons = {
-  'office': Briefcase,
-  'seating': Sofa,
-  'tables': Square,
-  'storage': Grid3x3,
-  'beds': Bed
+  office: Briefcase,
+  seating: Sofa,
+  tables: Square,
+  storage: Grid3x3,
+  beds: Bed
 }
 
 // Category colors mapping
 const categoryColors = {
-  'office': 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50',
-  'seating': 'bg-blue-500/20 text-blue-400 border-blue-500/50',
-  'tables': 'bg-purple-500/20 text-purple-400 border-purple-500/50',
-  'storage': 'bg-amber-500/20 text-amber-400 border-amber-500/50',
-  'beds': 'bg-green-500/20 text-green-400 border-green-500/50'
+  office: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50',
+  seating: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
+  tables: 'bg-purple-500/20 text-purple-400 border-purple-500/50',
+  storage: 'bg-amber-500/20 text-amber-400 border-amber-500/50',
+  beds: 'bg-green-500/20 text-green-400 border-green-500/50'
 }
-
-// Column configuration for furniture products
-const columns = [
-  {
-    key: 'entity_code',
-    label: 'SKU',
-    sortable: true,
-    width: '120px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
-  },
-  {
-    key: 'entity_name',
-    label: 'Product Name',
-    sortable: true,
-    render: (value: string, row: any) => {
-      const Icon = categoryIcons[row.category as keyof typeof categoryIcons] || Package
-      return (
-        <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4 text-gray-400" />
-          <span className="font-medium">{value}</span>
-        </div>
-      )
-    }
-  },
-  {
-    key: 'category',
-    label: 'Category',
-    sortable: true,
-    render: (value: string) => {
-      const colorClass = categoryColors[value as keyof typeof categoryColors] || 'bg-gray-500/20 text-gray-400'
-      return (
-        <Badge variant="outline" className={cn("capitalize", colorClass)}>
-          {value || 'uncategorized'}
-        </Badge>
-      )
-    }
-  },
-  {
-    key: 'material',
-    label: 'Material',
-    sortable: true,
-    render: (value: string) => (
-      <span className="capitalize">{value || '-'}</span>
-    )
-  },
-  {
-    key: 'dimensions',
-    label: 'Dimensions (L×W×H)',
-    render: (value: any, row: any) => (
-      <span className="text-sm font-mono">
-        {row.length_cm || 0}×{row.width_cm || 0}×{row.height_cm || 0}cm
-      </span>
-    )
-  },
-  {
-    key: 'price',
-    label: 'Price',
-    sortable: true,
-    align: 'right' as const,
-    render: (value: number) => (
-      <span className="font-mono font-medium">
-        ${(value || 0).toLocaleString()}
-      </span>
-    )
-  },
-  {
-    key: 'stock_quantity',
-    label: 'Stock',
-    sortable: true,
-    align: 'right' as const,
-    render: (value: number) => {
-      const level = value || 0
-      const color = level > 20 ? 'text-green-600 dark:text-green-400' : 
-                   level > 10 ? 'text-amber-600 dark:text-amber-400' : 
-                   'text-red-600 dark:text-red-400'
-      return <span className={cn("font-medium", color)}>{level} units</span>
-    }
-  },
-  {
-    key: 'status',
-    label: 'Status',
-    render: (value: string) => {
-      const status = value || 'active'
-      const config = {
-        'active': { color: 'bg-green-500/20 text-green-600 dark:text-green-400', label: 'Active' },
-        'inactive': { color: 'bg-gray-500/20 text-gray-600 dark:text-gray-400', label: 'Inactive' },
-        'discontinued': { color: 'bg-red-500/20 text-red-600 dark:text-red-400', label: 'Discontinued' }
-      }
-      const statusConfig = config[status as keyof typeof config] || config.active
-      return (
-        <Badge variant="outline" className={statusConfig.color}>
-          {statusConfig.label}
-        </Badge>
-      )
-    }
-  },
-  {
-    key: 'actions',
-    label: 'Actions',
-    align: 'center' as const,
-    render: (_: any, row: any) => (
-      <div className="flex gap-1 justify-center">
-        <Link href={`/furniture/products/${row.id}`}>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-700">
-            <Eye className="h-4 w-4" />
-          </Button>
-        </Link>
-        <Link href={`/furniture/products/${row.id}/edit`}>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-700">
-            <Pencil className="h-4 w-4" />
-          </Button>
-        </Link>
-      </div>
-    )
-  }
-]
 
 export default function FurnitureProductCatalog() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  const [products, setProducts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([])
+  const [editingProduct, setEditingProduct] = useState<any>(null)
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (organizationId) {
-      loadProducts()
-    }
-  }, [organizationId])
+  // Use the optimized products data hook
+  const { products, loading, error, refresh, filterProducts } = useProductsData(organizationId)
 
-  useEffect(() => {
-    // Filter products based on search term
-    if (searchTerm) {
-      const filtered = products.filter(p => 
-        p.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.material?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.category?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      setFilteredProducts(filtered)
-    } else {
-      setFilteredProducts(products)
-    }
-  }, [products, searchTerm])
-
-  const loadProducts = async () => {
-    console.log('loadProducts called with organizationId:', organizationId)
-    try {
-      setLoading(true)
-      
-      // Use API endpoint to fetch products
-      console.log('Fetching products from API...')
-      const response = await fetch(`/api/furniture/products?organizationId=${organizationId}`)
-      
-      if (!response.ok) {
-        const error = await response.json()
-        console.error('API error:', error)
-        return
+  // Column configuration for furniture products
+  const columns = [
+    {
+      key: 'entity_code',
+      label: 'SKU',
+      sortable: true,
+      width: '120px',
+      render: (value: string) => <span className="font-mono text-sm">{value}</span>
+    },
+    {
+      key: 'entity_name',
+      label: 'Product Name',
+      sortable: true,
+      render: (value: string, row: any) => {
+        const Icon = categoryIcons[row.category as keyof typeof categoryIcons] || Package
+        return (
+          <div className="flex items-center gap-2">
+            <Icon className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{value}</span>
+          </div>
+        )
       }
-      
-      const { products: allEntities, dynamicData: allDynamicData } = await response.json()
-      
-      console.log('API response - Products:', allEntities?.length, 'Dynamic data:', allDynamicData?.length)
-      
-      // Filter for furniture products
-      const productEntities = (allEntities || []).filter((e: any) => 
-        e.smart_code?.startsWith('HERA.FURNITURE.PRODUCT')
+    },
+    {
+      key: 'category',
+      label: 'Category',
+      sortable: true,
+      render: (value: string) => {
+        const colorClass =
+          categoryColors[value as keyof typeof categoryColors] ||
+          'bg-gray-500/20 text-muted-foreground'
+        return (
+          <Badge variant="outline" className={cn('capitalize', colorClass)}>
+            {value || 'uncategorized'}
+          </Badge>
+        )
+      }
+    },
+    {
+      key: 'material',
+      label: 'Material',
+      sortable: true,
+      render: (value: string) => <span className="capitalize">{value || '-'}</span>
+    },
+    {
+      key: 'dimensions',
+      label: 'Dimensions (L×W×H)',
+      render: (value: any, row: any) => (
+        <span className="text-sm font-mono">
+          {row.length_cm || 0}×{row.width_cm || 0}×{row.height_cm || 0}cm
+        </span>
       )
-      
-      console.log('Furniture products found:', productEntities.length)
-      
-      // If no furniture products, try all products
-      const finalProducts = productEntities.length > 0 ? productEntities : (allEntities || [])
-      console.log('Using products:', finalProducts.length)
-      
-      // Enrich products with dynamic fields
-      const enrichedProducts = finalProducts.map((product: any) => {
-        // Get dynamic fields for this product
-        const productDynamicData = allDynamicData?.filter((d: any) => 
-          d.entity_id === product.id
-        ) || []
-
-        // Transform dynamic data into object
-        const dynamicFields = productDynamicData.reduce((acc: any, field: any) => {
-          let value = field.field_value_text || 
-                     field.field_value_number || 
-                     field.field_value_boolean
-          
-          // Handle JSON field - it might already be parsed
-          if (!value && field.field_value_json) {
-            try {
-              value = typeof field.field_value_json === 'string' 
-                ? JSON.parse(field.field_value_json) 
-                : field.field_value_json
-            } catch (e) {
-              console.warn('Failed to parse JSON for field:', field.field_name, field.field_value_json)
-              value = field.field_value_json
-            }
+    },
+    {
+      key: 'price',
+      label: 'Price',
+      sortable: true,
+      align: 'right' as const,
+      render: (value: number) => (
+        <span className="font-mono font-medium">${(value || 0).toLocaleString()}</span>
+      )
+    },
+    {
+      key: 'stock_quantity',
+      label: 'Stock',
+      sortable: true,
+      align: 'right' as const,
+      render: (value: number) => {
+        const level = value || 0
+        const color =
+          level > 20
+            ? 'text-green-600 dark:text-green-400'
+            : level > 10
+              ? 'text-amber-600 dark:text-amber-400'
+              : 'text-red-600 dark:text-red-400'
+        return <span className={cn('font-medium', color)}>{level} units</span>
+      }
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (value: string) => {
+        const status = value || 'active'
+        const config = {
+          active: { color: 'bg-green-500/20 text-green-600 dark:text-green-400', label: 'Active' },
+          inactive: {
+            color: 'bg-gray-500/20 text-gray-600 dark:text-muted-foreground',
+            label: 'Inactive'
+          },
+          discontinued: {
+            color: 'bg-red-500/20 text-red-600 dark:text-red-400',
+            label: 'Discontinued'
           }
-          
-          if (value !== null && value !== undefined) {
-            acc[field.field_name] = value
-          }
-          return acc
-        }, {})
-
-        return {
-          ...product,
-          ...dynamicFields,
-          category: dynamicFields.category || (product.metadata as any)?.category || 'uncategorized',
-          sub_category: dynamicFields.sub_category || (product.metadata as any)?.sub_category
         }
-      })
+        const statusConfig = config[status as keyof typeof config] || config.active
+        return (
+          <Badge variant="outline" className={statusConfig.color}>
+            {statusConfig.label}
+          </Badge>
+        )
+      }
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      align: 'center' as const,
+      render: (_: any, row: any) => (
+        <div className="flex gap-1 justify-center">
+          <Link href={`/furniture/products/${row.id}`}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 hover:bg-muted-foreground/10"
+              title="View"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+          </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:bg-muted-foreground/10"
+            title="Edit"
+            onClick={() => setEditingProduct(row)}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 hover:bg-red-700 text-red-400"
+            title="Delete"
+            onClick={() => handleDelete(row.id)}
+            disabled={deletingProductId === row.id}
+          >
+            {deletingProductId === row.id ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-400" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+      )
+    }
+  ]
 
-      console.log('Enriched products:', enrichedProducts.length)
-      console.log('Sample product:', enrichedProducts[0])
-      
-      setProducts(enrichedProducts)
-      setFilteredProducts(enrichedProducts)
+  // Memoize filtered products to avoid recalculation
+  const filteredProducts = useMemo(() => {
+    return filterProducts(searchTerm)
+  }, [products, searchTerm, filterProducts])
+
+  const handleDelete = async (productId: string) => {
+    if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      return
+    }
+
+    setDeletingProductId(productId)
+
+    try {
+      universalApi.setOrganizationId(organizationId)
+      const result = await universalApi.deleteEntity(productId)
+
+      if (result.success) {
+        refresh()
+        setSuccessMessage('Product deleted successfully')
+        setTimeout(() => setSuccessMessage(null), 3000)
+      } else {
+        throw new Error(result.error || 'Failed to delete product')
+      }
     } catch (error) {
-      console.error('Failed to load products:', error)
-      console.error('Error details:', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
-      })
+      console.error('Error deleting product:', error)
+      alert('Failed to delete product. Please try again.')
     } finally {
-      setLoading(false)
+      setDeletingProductId(null)
     }
   }
 
@@ -294,27 +254,27 @@ export default function FurnitureProductCatalog() {
   }
 
   const stats = [
-    { 
-      label: 'Total Products', 
-      value: products.length, 
+    {
+      label: 'Total Products',
+      value: products.length,
       icon: Package,
       color: 'text-blue-500'
     },
-    { 
-      label: 'Active SKUs', 
-      value: products.filter(p => p.status === 'active').length, 
+    {
+      label: 'Active SKUs',
+      value: products.filter(p => p.status === 'active').length,
       icon: BarChart,
       color: 'text-green-500'
     },
-    { 
-      label: 'Low Stock', 
-      value: products.filter(p => (p.stock_quantity || 0) < 10).length, 
+    {
+      label: 'Low Stock',
+      value: products.filter(p => (p.stock_quantity || 0) < 10).length,
       icon: AlertCircle,
       color: 'text-amber-500'
     },
-    { 
-      label: 'Total Value', 
-      value: `$${products.reduce((sum, p) => sum + ((p.stock_quantity || 0) * (p.cost || 0)), 0).toLocaleString()}`, 
+    {
+      label: 'Total Value',
+      value: `$${products.reduce((sum, p) => sum + (p.stock_quantity || 0) * (p.cost || 0), 0).toLocaleString()}`,
       icon: BarChart,
       color: 'text-purple-500'
     }
@@ -325,16 +285,40 @@ export default function FurnitureProductCatalog() {
     return <FurnitureOrgLoading />
   }
 
+  // Show skeleton while data is loading
+  if (loading && products.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="p-6">
+          <ProductsPageSkeleton />
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">Error loading products: {error}</p>
+          <Button onClick={refresh} variant="outline" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   // Three-layer authorization pattern for authenticated users
   if (isAuthenticated) {
     if (!isAuthenticated) {
       return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
-          <Alert className="max-w-md bg-gray-800/50 border-gray-700">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6">
+          <Alert className="max-w-md bg-card/50 border-border">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Please log in to access the product catalog.
-            </AlertDescription>
+            <AlertDescription>Please log in to access the product catalog.</AlertDescription>
           </Alert>
         </div>
       )
@@ -342,15 +326,9 @@ export default function FurnitureProductCatalog() {
 
     if (contextLoading) {
       return (
-        <div className="min-h-screen bg-gray-900 p-6">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <Skeleton className="h-10 w-64" />
-            <div className="grid grid-cols-4 gap-4">
-              {[...Array(4)].map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
-              ))}
-            </div>
-            <Skeleton className="h-96 w-full" />
+        <div className="min-h-screen bg-background">
+          <div className="p-6">
+            <ProductsPageSkeleton />
           </div>
         </div>
       )
@@ -358,14 +336,31 @@ export default function FurnitureProductCatalog() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
+        {/* Success Message */}
+        {successMessage && (
+          <Alert className="bg-green-900/20 border-green-800 text-green-400">
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>{successMessage}</AlertDescription>
+          </Alert>
+        )}
+
         {/* Header */}
         <FurniturePageHeader
           title="Product Catalog"
           subtitle="Manage furniture products, BOMs, and specifications"
           actions={
             <>
+              <Button
+                onClick={refresh}
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+                disabled={loading}
+              >
+                <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
+              </Button>
               <Button variant="outline" size="sm" onClick={handleExport}>
                 <Download className="h-4 w-4 mr-2" />
                 Export
@@ -376,13 +371,15 @@ export default function FurnitureProductCatalog() {
                   Import
                 </Button>
               </Link>
-              <NewProductModal 
+              <NewProductModal
                 organizationId={organizationId}
                 organizationName={organizationName}
-                onProductCreated={(productId) => {
+                onProductCreated={productId => {
                   console.log('New product created:', productId)
                   // Refresh the product list
-                  loadProducts()
+                  refresh()
+                  setSuccessMessage('Product created successfully')
+                  setTimeout(() => setSuccessMessage(null), 3000)
                 }}
               />
             </>
@@ -392,31 +389,38 @@ export default function FurnitureProductCatalog() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
-            <Card key={index} className="p-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-card/50 border-border hover:bg-card/70 transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400">{stat.label}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                 </div>
-                <stat.icon className={cn("h-8 w-8", stat.color)} />
+                <stat.icon className={cn('h-8 w-8', stat.color)} />
               </div>
             </Card>
           ))}
         </div>
 
         {/* Search and Filters */}
-        <Card className="p-4 bg-gray-800/50 border-gray-700">
+        <Card className="p-4 bg-card/50 border-border">
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search products by name, SKU, material, or category..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-400"
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground"
               />
             </div>
-            <Button variant="outline" size="default" className="border-gray-600 hover:bg-gray-700">
+            <Button
+              variant="outline"
+              size="default"
+              className="border-border hover:bg-muted-foreground/10"
+            >
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </Button>
@@ -425,7 +429,7 @@ export default function FurnitureProductCatalog() {
 
         {/* Products Table */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-white">Products</h2>
+          <h2 className="text-xl font-semibold text-foreground">Products</h2>
           <EnterpriseDataTable
             columns={columns}
             data={filteredProducts}
@@ -436,14 +440,30 @@ export default function FurnitureProductCatalog() {
             pageSize={20}
             emptyState={{
               icon: Package,
-              title: "No products found",
-              description: searchTerm 
-                ? "Try adjusting your search term." 
-                : "Start by adding your first furniture product to the catalog."
+              title: 'No products found',
+              description: searchTerm
+                ? 'Try adjusting your search term.'
+                : 'Start by adding your first furniture product to the catalog.'
             }}
-            className="bg-gray-800/50 border-gray-700"
+            className="bg-card/50 border-border"
           />
         </div>
+
+        {/* Edit Product Modal */}
+        {editingProduct && (
+          <EditProductModal
+            open={!!editingProduct}
+            onClose={() => setEditingProduct(null)}
+            product={editingProduct}
+            organizationId={organizationId}
+            onSuccess={() => {
+              refresh()
+              setEditingProduct(null)
+              setSuccessMessage('Product updated successfully')
+              setTimeout(() => setSuccessMessage(null), 3000)
+            }}
+          />
+        )}
       </div>
     </div>
   )

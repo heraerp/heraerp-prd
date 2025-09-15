@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   ArrowLeft,
-  Building2, 
-  FileText, 
-  CheckCircle2, 
-  Clock, 
+  Building2,
+  FileText,
+  CheckCircle2,
+  Clock,
   AlertCircle,
   Users,
   Calendar,
@@ -104,46 +104,79 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
   })
 
   const [documents] = useState([
-    { id: 1, name: 'Commercial Registration', category: 'A.1', status: 'received', date: '2025-01-15' },
+    {
+      id: 1,
+      name: 'Commercial Registration',
+      category: 'A.1',
+      status: 'received',
+      date: '2025-01-15'
+    },
     { id: 2, name: 'Financial Statements', category: 'B.2', status: 'pending', date: null },
-    { id: 3, name: 'Bank Confirmations', category: 'D.11', status: 'in_review', date: '2025-01-20' },
+    {
+      id: 3,
+      name: 'Bank Confirmations',
+      category: 'D.11',
+      status: 'in_review',
+      date: '2025-01-20'
+    },
     { id: 4, name: 'VAT Filings', category: 'E.2', status: 'received', date: '2025-01-18' }
   ])
 
   const [workingPapers] = useState([
     { id: 1, section: 'Cash & Bank', progress: 90, reviewer: 'Sarah Johnson', status: 'completed' },
-    { id: 2, section: 'Accounts Receivable', progress: 75, reviewer: 'David Wilson', status: 'in_progress' },
+    {
+      id: 2,
+      section: 'Accounts Receivable',
+      progress: 75,
+      reviewer: 'David Wilson',
+      status: 'in_progress'
+    },
     { id: 3, section: 'Inventory', progress: 45, reviewer: 'Emily Davis', status: 'in_progress' },
     { id: 4, section: 'Fixed Assets', progress: 0, reviewer: 'Not Assigned', status: 'planned' }
   ])
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'text-green-600 bg-green-50 border-green-200'
-      case 'moderate': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'very_high': return 'text-red-600 bg-red-50 border-red-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'low':
+        return 'text-green-600 bg-green-50 border-green-200'
+      case 'moderate':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'very_high':
+        return 'text-red-600 bg-red-50 border-red-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'planning': return 'bg-blue-100 text-blue-800'
-      case 'fieldwork': return 'bg-purple-100 text-purple-800'
-      case 'review': return 'bg-orange-100 text-orange-800'
-      case 'reporting': return 'bg-green-100 text-green-800'
-      case 'completed': return 'bg-gray-100 text-gray-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'planning':
+        return 'bg-blue-100 text-blue-800'
+      case 'fieldwork':
+        return 'bg-purple-100 text-purple-800'
+      case 'review':
+        return 'bg-orange-100 text-orange-800'
+      case 'reporting':
+        return 'bg-green-100 text-green-800'
+      case 'completed':
+        return 'bg-gray-100 text-gray-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
   const getDocumentStatusColor = (status: string) => {
     switch (status) {
-      case 'received': return 'bg-green-100 text-green-800'
-      case 'in_review': return 'bg-blue-100 text-blue-800'
-      case 'pending': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'received':
+        return 'bg-green-100 text-green-800'
+      case 'in_review':
+        return 'bg-blue-100 text-blue-800'
+      case 'pending':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -166,13 +199,15 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                 <Badge className={getRiskColor(client.risk_rating)}>
                   {client.risk_rating} risk
                 </Badge>
-                <Badge className={getStatusColor(client.status)}>
-                  {client.status}
-                </Badge>
+                <Badge className={getStatusColor(client.status)}>{client.status}</Badge>
               </div>
               <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                <span><strong>Organization ID:</strong> {client.organization_id}</span>
-                <span><strong>Audit Firm:</strong> {client.audit_firm}</span>
+                <span>
+                  <strong>Organization ID:</strong> {client.organization_id}
+                </span>
+                <span>
+                  <strong>Audit Firm:</strong> {client.audit_firm}
+                </span>
               </div>
             </div>
           </div>
@@ -221,7 +256,9 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Materiality</p>
-                <p className="text-2xl font-bold text-green-600">${(client.financials.materiality / 1000)}K</p>
+                <p className="text-2xl font-bold text-green-600">
+                  ${client.financials.materiality / 1000}K
+                </p>
               </div>
               <DollarSign className="w-8 h-8 text-green-500" />
             </div>
@@ -233,7 +270,9 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Audit Fees</p>
-                <p className="text-2xl font-bold text-purple-600">${(client.financials.fees / 1000)}K</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  ${client.financials.fees / 1000}K
+                </p>
               </div>
               <BarChart3 className="w-8 h-8 text-purple-500" />
             </div>
@@ -268,8 +307,12 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
               </div>
               <div className="pt-3 border-t">
                 <p className="text-sm text-gray-600">HERA Organization ID</p>
-                <p className="font-mono text-xs bg-gray-100 p-2 rounded">{client.organization_id}</p>
-                <p className="text-xs text-gray-500 mt-1">Each GSPU audit client has isolated data via unique organization ID</p>
+                <p className="font-mono text-xs bg-gray-100 p-2 rounded">
+                  {client.organization_id}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Each GSPU audit client has isolated data via unique organization ID
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">GSPU Client ID</p>
@@ -357,11 +400,16 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {documents.map((doc) => (
-                      <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    {documents.map(doc => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
-                            <Badge variant="outline" className="text-xs">{doc.category}</Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {doc.category}
+                            </Badge>
                             <span className="font-medium">{doc.name}</span>
                             <Badge className={getDocumentStatusColor(doc.status)}>
                               {doc.status.replace('_', ' ')}
@@ -411,7 +459,7 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {workingPapers.map((wp) => (
+                    {workingPapers.map(wp => (
                       <div key={wp.id} className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="font-medium">{wp.section}</h4>
@@ -427,9 +475,7 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                           <span className="text-sm font-bold">{wp.progress}%</span>
                         </div>
                         <Progress value={wp.progress} className="h-2 mb-2" />
-                        <p className="text-sm text-gray-600">
-                          Reviewer: {wp.reviewer}
-                        </p>
+                        <p className="text-sm text-gray-600">Reviewer: {wp.reviewer}</p>
                       </div>
                     ))}
                   </div>
@@ -453,28 +499,34 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                       <div className="flex-1">
                         <p className="font-medium">Engagement Accepted</p>
                         <p className="text-sm text-gray-600">January 15, 2025</p>
-                        <p className="text-xs text-gray-500 mt-1">Independence confirmed, team assigned</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Independence confirmed, team assigned
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="w-3 h-3 bg-green-500 rounded-full mt-2"></div>
                       <div className="flex-1">
                         <p className="font-medium">Planning Phase Complete</p>
                         <p className="text-sm text-gray-600">January 28, 2025</p>
-                        <p className="text-xs text-gray-500 mt-1">Risk assessment, materiality set</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Risk assessment, materiality set
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="w-3 h-3 bg-blue-500 rounded-full mt-2"></div>
                       <div className="flex-1">
                         <p className="font-medium">Fieldwork In Progress</p>
                         <p className="text-sm text-gray-600">February 1, 2025</p>
-                        <p className="text-xs text-gray-500 mt-1">Cash, AR testing complete. Inventory in progress</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Cash, AR testing complete. Inventory in progress
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="w-3 h-3 bg-gray-300 rounded-full mt-2"></div>
                       <div className="flex-1">
@@ -483,13 +535,15 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                         <p className="text-xs text-gray-500 mt-1">Comprehensive file review</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="w-3 h-3 bg-gray-300 rounded-full mt-2"></div>
                       <div className="flex-1">
                         <p className="font-medium text-gray-500">Report Completion</p>
                         <p className="text-sm text-gray-600">March 31, 2025 (Target)</p>
-                        <p className="text-xs text-gray-500 mt-1">Final report and client presentation</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Final report and client presentation
+                        </p>
                       </div>
                     </div>
                   </div>

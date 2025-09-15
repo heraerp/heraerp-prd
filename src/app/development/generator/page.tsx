@@ -9,17 +9,41 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Zap, Package, Users, Utensils, ShoppingCart, ChefHat, Truck, Building2, 
-  Factory, Heart, Store, Play, Settings, Download, Eye, CheckCircle,
-  Sparkles, Rocket, Clock, AlertCircle, RefreshCw
+import {
+  Zap,
+  Package,
+  Users,
+  Utensils,
+  ShoppingCart,
+  ChefHat,
+  Truck,
+  Building2,
+  Factory,
+  Heart,
+  Store,
+  Play,
+  Settings,
+  Download,
+  Eye,
+  CheckCircle,
+  Sparkles,
+  Rocket,
+  Clock,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react'
 
 /**
  * HERA Module Generator - Frontend Interface
- * 
+ *
  * Transform CLI template system into intuitive web interface
  * Generate complete restaurant modules with visual selection
  */
@@ -83,7 +107,12 @@ const moduleTemplates = {
       icon: Truck,
       description: 'Get food to customers hot, fast, and profitable',
       color: 'indigo',
-      features: ['Route Optimization', 'Driver Management', 'Delivery Tracking', 'Customer Updates'],
+      features: [
+        'Route Optimization',
+        'Driver Management',
+        'Delivery Tracking',
+        'Customer Updates'
+      ],
       estimatedTime: '55 seconds',
       complexity: 'Complex'
     }
@@ -107,7 +136,12 @@ const moduleTemplates = {
       icon: Heart,
       description: 'Manage patient records and appointments efficiently',
       color: 'pink',
-      features: ['Patient Records', 'Appointment Scheduling', 'Medical History', 'Insurance Tracking'],
+      features: [
+        'Patient Records',
+        'Appointment Scheduling',
+        'Medical History',
+        'Insurance Tracking'
+      ],
       estimatedTime: '75 seconds',
       complexity: 'Complex'
     }
@@ -167,14 +201,20 @@ export default function ModuleGeneratorPage() {
   }
 
   // Generate module using npm template system
-  const generateModule = async (moduleId, businessType = selectedBusinessType, isQuickSystem = false) => {
+  const generateModule = async (
+    moduleId,
+    businessType = selectedBusinessType,
+    isQuickSystem = false
+  ) => {
     setIsGenerating(true)
     setGenerationProgress(0)
     setGenerationLog([])
 
     try {
-      const endpoint = isQuickSystem ? '/api/v1/development/generate-system' : '/api/v1/development/generate'
-      
+      const endpoint = isQuickSystem
+        ? '/api/v1/development/generate-system'
+        : '/api/v1/development/generate'
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -202,11 +242,14 @@ export default function ModuleGeneratorPage() {
       for (const step of progressSteps) {
         await new Promise(resolve => setTimeout(resolve, 800))
         setGenerationProgress(step.progress)
-        setGenerationLog(prev => [...prev, {
-          timestamp: new Date().toLocaleTimeString(),
-          message: step.message,
-          type: step.progress === 100 ? 'success' : 'info'
-        }])
+        setGenerationLog(prev => [
+          ...prev,
+          {
+            timestamp: new Date().toLocaleTimeString(),
+            message: step.message,
+            type: step.progress === 100 ? 'success' : 'info'
+          }
+        ])
       }
 
       const result = await response.json()
@@ -216,14 +259,16 @@ export default function ModuleGeneratorPage() {
         setCustomModuleName('')
         setCustomDescription('')
       }
-
     } catch (error) {
       console.error('Error generating module:', error)
-      setGenerationLog(prev => [...prev, {
-        timestamp: new Date().toLocaleTimeString(),
-        message: 'Generation failed. Please try again.',
-        type: 'error'
-      }])
+      setGenerationLog(prev => [
+        ...prev,
+        {
+          timestamp: new Date().toLocaleTimeString(),
+          message: 'Generation failed. Please try again.',
+          type: 'error'
+        }
+      ])
     } finally {
       setTimeout(() => {
         setIsGenerating(false)
@@ -259,7 +304,7 @@ export default function ModuleGeneratorPage() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">
               <Rocket className="w-4 h-4" />
@@ -323,7 +368,7 @@ export default function ModuleGeneratorPage() {
                   <Input
                     id="custom-name"
                     value={customModuleName}
-                    onChange={(e) => setCustomModuleName(e.target.value)}
+                    onChange={e => setCustomModuleName(e.target.value)}
                     placeholder="e.g., loyalty-program"
                   />
                 </div>
@@ -332,7 +377,7 @@ export default function ModuleGeneratorPage() {
                   <Textarea
                     id="custom-description"
                     value={customDescription}
-                    onChange={(e) => setCustomDescription(e.target.value)}
+                    onChange={e => setCustomDescription(e.target.value)}
                     placeholder="Describe what this module does for your business"
                     rows={3}
                   />
@@ -352,7 +397,10 @@ export default function ModuleGeneratorPage() {
                 {generatedModules.length > 0 ? (
                   <div className="space-y-2">
                     {generatedModules.slice(0, 5).map((module, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                      >
                         <div>
                           <div className="font-medium text-sm">{module.name}</div>
                           <div className="text-xs text-gray-500">{module.generatedAt}</div>
@@ -361,7 +409,9 @@ export default function ModuleGeneratorPage() {
                           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
                             <Eye className="w-3 h-3" />
                           </Button>
-                          <Badge className="text-xs" variant="secondary">Ready</Badge>
+                          <Badge className="text-xs" variant="secondary">
+                            Ready
+                          </Badge>
                         </div>
                       </div>
                     ))}
@@ -383,11 +433,16 @@ export default function ModuleGeneratorPage() {
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 {quickSystems.map(system => (
-                  <Card key={system.id} className="hover:shadow-lg transition-all hover:scale-[1.02] border-emerald-200">
+                  <Card
+                    key={system.id}
+                    className="hover:shadow-lg transition-all hover:scale-[1.02] border-emerald-200"
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className={`w-16 h-16 bg-gradient-to-r from-${system.color}-400 to-${system.color}-600 rounded-2xl flex items-center justify-center`}>
+                          <div
+                            className={`w-16 h-16 bg-gradient-to-r from-${system.color}-400 to-${system.color}-600 rounded-2xl flex items-center justify-center`}
+                          >
                             <system.icon className="w-8 h-8 text-white" />
                           </div>
                           <div>
@@ -430,14 +485,15 @@ export default function ModuleGeneratorPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Package className="w-6 h-6 text-blue-500" />
-                Individual Modules - {businessTypes.find(t => t.value === selectedBusinessType)?.label}
+                Individual Modules -{' '}
+                {businessTypes.find(t => t.value === selectedBusinessType)?.label}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {currentModules.map(module => {
                   const IconComponent = module.icon
                   return (
-                    <Card 
-                      key={module.id} 
+                    <Card
+                      key={module.id}
                       className={`hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer ${
                         selectedModule?.id === module.id ? 'ring-2 ring-blue-500' : ''
                       }`}
@@ -445,7 +501,9 @@ export default function ModuleGeneratorPage() {
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <div className={`w-12 h-12 bg-gradient-to-r from-${module.color}-400 to-${module.color}-600 rounded-xl flex items-center justify-center`}>
+                          <div
+                            className={`w-12 h-12 bg-gradient-to-r from-${module.color}-400 to-${module.color}-600 rounded-xl flex items-center justify-center`}
+                          >
                             <IconComponent className="w-6 h-6 text-white" />
                           </div>
                           <Badge variant="secondary" className="text-xs">
@@ -456,18 +514,21 @@ export default function ModuleGeneratorPage() {
                       </CardHeader>
                       <CardContent>
                         <p className="text-gray-600 mb-4 text-sm">{module.description}</p>
-                        
+
                         <div className="space-y-3">
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-gray-500">Generation Time:</span>
                             <span className="font-medium">{module.estimatedTime}</span>
                           </div>
-                          
+
                           <div>
                             <p className="text-sm font-medium mb-2">Features:</p>
                             <div className="space-y-1">
                               {module.features.slice(0, 2).map((feature, index) => (
-                                <div key={index} className="text-xs text-gray-600 flex items-center gap-1">
+                                <div
+                                  key={index}
+                                  className="text-xs text-gray-600 flex items-center gap-1"
+                                >
                                   <CheckCircle className="w-3 h-3 text-green-500" />
                                   {feature}
                                 </div>
@@ -481,7 +542,7 @@ export default function ModuleGeneratorPage() {
                           </div>
 
                           <Button
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation()
                               generateModule(module.id, selectedBusinessType)
                             }}
@@ -529,7 +590,7 @@ export default function ModuleGeneratorPage() {
                       <span>{generationProgress}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${generationProgress}%` }}
                       />
@@ -541,7 +602,9 @@ export default function ModuleGeneratorPage() {
                     {generationLog.map((log, index) => (
                       <div key={index} className="flex items-center gap-2 mb-1">
                         <span className="text-gray-500">[{log.timestamp}]</span>
-                        {log.type === 'success' && <CheckCircle className="w-4 h-4 text-green-400" />}
+                        {log.type === 'success' && (
+                          <CheckCircle className="w-4 h-4 text-green-400" />
+                        )}
                         {log.type === 'error' && <AlertCircle className="w-4 h-4 text-red-400" />}
                         {log.type === 'info' && <RefreshCw className="w-4 h-4 text-blue-400" />}
                         <span>{log.message}</span>

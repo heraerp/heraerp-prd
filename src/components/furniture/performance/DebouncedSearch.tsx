@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { Search, X, Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface DebouncedSearchProps {
-  onSearch: (query: string) => void | Promise<void>;
-  placeholder?: string;
-  delay?: number;
-  minLength?: number;
-  className?: string;
-  showClearButton?: boolean;
-  showSearchIcon?: boolean;
-  autoFocus?: boolean;
-  value?: string;
-  onChange?: (value: string) => void;
-  suggestions?: string[];
-  onSuggestionClick?: (suggestion: string) => void;
+  onSearch: (query: string) => void | Promise<void>
+  placeholder?: string
+  delay?: number
+  minLength?: number
+  className?: string
+  showClearButton?: boolean
+  showSearchIcon?: boolean
+  autoFocus?: boolean
+  value?: string
+  onChange?: (value: string) => void
+  suggestions?: string[]
+  onSuggestionClick?: (suggestion: string) => void
 }
 
 export function DebouncedSearch({
@@ -31,139 +31,140 @@ export function DebouncedSearch({
   suggestions = [],
   onSuggestionClick
 }: DebouncedSearchProps) {
-  const [internalValue, setInternalValue] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [focusedSuggestion, setFocusedSuggestion] = useState(-1);
-  
-  const inputRef = useRef<HTMLInputElement>(null);
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
-  const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [internalValue, setInternalValue] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [focusedSuggestion, setFocusedSuggestion] = useState(-1)
 
-  const value = controlledValue !== undefined ? controlledValue : internalValue;
+  const inputRef = useRef<HTMLInputElement>(null)
+  const searchTimeoutRef = useRef<NodeJS.Timeout>()
+  const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  const value = controlledValue !== undefined ? controlledValue : internalValue
 
   // Debounced search function
-  const performSearch = useCallback(async (query: string) => {
-    if (query.length < minLength) {
-      setIsSearching(false);
-      return;
-    }
+  const performSearch = useCallback(
+    async (query: string) => {
+      if (query.length < minLength) {
+        setIsSearching(false)
+        return
+      }
 
-    setIsSearching(true);
-    try {
-      await onSearch(query);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [onSearch, minLength]);
+      setIsSearching(true)
+      try {
+        await onSearch(query)
+      } finally {
+        setIsSearching(false)
+      }
+    },
+    [onSearch, minLength]
+  )
 
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    
+    const newValue = e.target.value
+
     if (controlledValue === undefined) {
-      setInternalValue(newValue);
+      setInternalValue(newValue)
     }
-    
-    onChange?.(newValue);
-    setShowSuggestions(true);
-    setFocusedSuggestion(-1);
+
+    onChange?.(newValue)
+    setShowSuggestions(true)
+    setFocusedSuggestion(-1)
 
     // Clear existing timeout
     if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
+      clearTimeout(searchTimeoutRef.current)
     }
 
     // Set new timeout for debounced search
     searchTimeoutRef.current = setTimeout(() => {
-      performSearch(newValue);
-    }, delay);
-  };
+      performSearch(newValue)
+    }, delay)
+  }
 
   // Handle clear button
   const handleClear = () => {
     if (controlledValue === undefined) {
-      setInternalValue('');
+      setInternalValue('')
     }
-    onChange?.('');
-    onSearch('');
-    inputRef.current?.focus();
-    setShowSuggestions(false);
-  };
+    onChange?.('')
+    onSearch('')
+    inputRef.current?.focus()
+    setShowSuggestions(false)
+  }
 
   // Handle suggestion click
   const handleSuggestionClick = (suggestion: string) => {
     if (controlledValue === undefined) {
-      setInternalValue(suggestion);
+      setInternalValue(suggestion)
     }
-    onChange?.(suggestion);
-    onSuggestionClick?.(suggestion);
-    performSearch(suggestion);
-    setShowSuggestions(false);
-    inputRef.current?.focus();
-  };
+    onChange?.(suggestion)
+    onSuggestionClick?.(suggestion)
+    performSearch(suggestion)
+    setShowSuggestions(false)
+    inputRef.current?.focus()
+  }
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!showSuggestions || suggestions.length === 0) return;
+    if (!showSuggestions || suggestions.length === 0) return
 
     switch (e.key) {
       case 'ArrowDown':
-        e.preventDefault();
-        setFocusedSuggestion(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : prev
-        );
-        break;
+        e.preventDefault()
+        setFocusedSuggestion(prev => (prev < suggestions.length - 1 ? prev + 1 : prev))
+        break
       case 'ArrowUp':
-        e.preventDefault();
-        setFocusedSuggestion(prev => prev > 0 ? prev - 1 : -1);
-        break;
+        e.preventDefault()
+        setFocusedSuggestion(prev => (prev > 0 ? prev - 1 : -1))
+        break
       case 'Enter':
-        e.preventDefault();
+        e.preventDefault()
         if (focusedSuggestion >= 0) {
-          handleSuggestionClick(suggestions[focusedSuggestion]);
+          handleSuggestionClick(suggestions[focusedSuggestion])
         } else {
-          performSearch(value);
-          setShowSuggestions(false);
+          performSearch(value)
+          setShowSuggestions(false)
         }
-        break;
+        break
       case 'Escape':
-        setShowSuggestions(false);
-        setFocusedSuggestion(-1);
-        break;
+        setShowSuggestions(false)
+        setFocusedSuggestion(-1)
+        break
     }
-  };
+  }
 
   // Handle click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
-        inputRef.current && 
+        inputRef.current &&
         !inputRef.current.contains(e.target as Node) &&
         suggestionsRef.current &&
         !suggestionsRef.current.contains(e.target as Node)
       ) {
-        setShowSuggestions(false);
+        setShowSuggestions(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
+        clearTimeout(searchTimeoutRef.current)
       }
-    };
-  }, []);
+    }
+  }, [])
 
   // Filter suggestions based on current value
   const filteredSuggestions = suggestions.filter(suggestion =>
     suggestion.toLowerCase().includes(value.toLowerCase())
-  );
+  )
 
   return (
     <div className={cn('relative', className)}>
@@ -232,13 +233,11 @@ export function DebouncedSearch({
                 focusedSuggestion === index && 'bg-gray-100 dark:bg-gray-700'
               )}
             >
-              <div className="text-sm text-gray-900 dark:text-gray-100">
-                {suggestion}
-              </div>
+              <div className="text-sm text-gray-900 dark:text-gray-100">{suggestion}</div>
             </div>
           ))}
         </div>
       )}
     </div>
-  );
+  )
 }

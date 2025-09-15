@@ -1,11 +1,11 @@
 /**
  * 🎓 HERA Universal Learning API - All Domains Hybrid Architecture
- * 
+ *
  * Single endpoint that intelligently handles ALL educational domains:
  * - Mathematics, Physics, Chemistry, English (Direct AI)
- * - CA, Medicine, Law (PDF Processing) 
+ * - CA, Medicine, Law (PDF Processing)
  * - Engineering, Business, Technology (Hybrid)
- * 
+ *
  * Routes: POST /api/v1/learning/universal
  */
 
@@ -15,7 +15,8 @@ import { heraRouter, LearningRequest } from '@/lib/universal-learning/HERAUniver
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { action, domain, topic, student_query, student_level, files, urgency, ...otherData } = body
+    const { action, domain, topic, student_query, student_level, files, urgency, ...otherData } =
+      body
 
     console.log(`🎓 HERA Universal Learning Request: ${action} for ${domain}/${topic}`)
 
@@ -62,24 +63,34 @@ export async function POST(request: NextRequest) {
         return await handleDomainInfo(domain)
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: [
-            'learn', 'explain', 'teach', 'process_learning',
-            'generate_questions', 'create_study_plan', 
-            'analyze_performance', 'get_domain_info'
-          ]
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: [
+              'learn',
+              'explain',
+              'teach',
+              'process_learning',
+              'generate_questions',
+              'create_study_plan',
+              'analyze_performance',
+              'get_domain_info'
+            ]
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('Universal Learning API Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -89,10 +100,13 @@ export async function POST(request: NextRequest) {
 async function handleLearningRequest(requestData: Partial<LearningRequest>) {
   try {
     if (!requestData.domain || !requestData.student_query) {
-      return NextResponse.json({
-        success: false,
-        error: 'Missing required fields: domain and student_query'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Missing required fields: domain and student_query'
+        },
+        { status: 400 }
+      )
     }
 
     const learningRequest: LearningRequest = {
@@ -117,14 +131,16 @@ async function handleLearningRequest(requestData: Partial<LearningRequest>) {
       optimization: result.optimization,
       timestamp: new Date().toISOString()
     })
-
   } catch (error) {
     console.error('Learning request processing error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to process learning request',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to process learning request',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -132,11 +148,11 @@ async function handleLearningRequest(requestData: Partial<LearningRequest>) {
  * Generate questions using domain-appropriate approach
  */
 async function handleQuestionGeneration(params: {
-  domain: string;
-  topic: string;
-  difficulty: string;
-  count: number;
-  student_level?: string;
+  domain: string
+  topic: string
+  difficulty: string
+  count: number
+  student_level?: string
 }) {
   try {
     const { domain, topic, difficulty, count, student_level } = params
@@ -156,7 +172,13 @@ async function handleQuestionGeneration(params: {
     switch (strategy.approach) {
       case 'direct_ai':
         // Direct AI question generation for stable domains
-        questionsResult = await generateQuestionsDirectAI(domain, topic, difficulty, count, strategy)
+        questionsResult = await generateQuestionsDirectAI(
+          domain,
+          topic,
+          difficulty,
+          count,
+          strategy
+        )
         break
 
       case 'pdf_processing':
@@ -192,14 +214,16 @@ async function handleQuestionGeneration(params: {
         }
       }
     })
-
   } catch (error) {
     console.error('Question generation error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to generate questions',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to generate questions',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -207,10 +231,10 @@ async function handleQuestionGeneration(params: {
  * Generate questions using Direct AI approach
  */
 async function generateQuestionsDirectAI(
-  domain: string, 
-  topic: string, 
-  difficulty: string, 
-  count: number, 
+  domain: string,
+  topic: string,
+  difficulty: string,
+  count: number,
   strategy: any
 ) {
   const response = await fetch('/api/v1/ai/universal', {
@@ -253,7 +277,7 @@ async function generateQuestionsDirectAI(
   })
 
   const result = await response.json()
-  
+
   if (result.success) {
     // Try to parse AI response as JSON
     let questions = []
@@ -288,14 +312,14 @@ async function generateQuestionsDirectAI(
  */
 async function generateQuestionsPDF(
   domain: string,
-  topic: string, 
+  topic: string,
   difficulty: string,
   count: number,
   strategy: any
 ) {
   // For now, route to universal-learning API for PDF processing
   // In future, this would process actual PDF documents
-  
+
   const response = await fetch('/api/v1/universal-learning', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -315,7 +339,7 @@ async function generateQuestionsPDF(
   })
 
   const result = await response.json()
-  
+
   if (result.success) {
     return {
       questions: result.data?.questions || [],
@@ -334,12 +358,12 @@ async function generateQuestionsPDF(
 async function generateQuestionsHybrid(
   domain: string,
   topic: string,
-  difficulty: string, 
+  difficulty: string,
   count: number,
   strategy: any
 ) {
   const halfCount = Math.ceil(count / 2)
-  
+
   try {
     // Generate half questions via direct AI (fundamentals)
     const directAIStrategy = {
@@ -347,31 +371,39 @@ async function generateQuestionsHybrid(
       approach: 'direct_ai',
       smart_code: `HERA.EDU.${domain.toUpperCase()}.LRN.AI.DIRECT.v1`
     }
-    const fundamentalQuestions = await generateQuestionsDirectAI(domain, topic, difficulty, halfCount, directAIStrategy)
+    const fundamentalQuestions = await generateQuestionsDirectAI(
+      domain,
+      topic,
+      difficulty,
+      halfCount,
+      directAIStrategy
+    )
 
     // Generate half questions via PDF processing (current applications)
     const pdfStrategy = {
       ...strategy,
-      approach: 'pdf_processing', 
+      approach: 'pdf_processing',
       smart_code: `HERA.EDU.${domain.toUpperCase()}.CNT.AI.PROCESS.v1`
     }
-    const currentQuestions = await generateQuestionsPDF(domain, topic, difficulty, count - halfCount, pdfStrategy)
+    const currentQuestions = await generateQuestionsPDF(
+      domain,
+      topic,
+      difficulty,
+      count - halfCount,
+      pdfStrategy
+    )
 
     return {
-      questions: [
-        ...(fundamentalQuestions.questions || []),
-        ...(currentQuestions.questions || [])
-      ],
+      questions: [...(fundamentalQuestions.questions || []), ...(currentQuestions.questions || [])],
       source: 'hybrid',
       sources: {
         fundamental: fundamentalQuestions.source,
         current: currentQuestions.source
       }
     }
-
   } catch (error) {
     console.error('Hybrid question generation error:', error)
-    
+
     // Fallback to direct AI only
     return await generateQuestionsDirectAI(domain, topic, difficulty, count, strategy)
   }
@@ -382,14 +414,14 @@ async function generateQuestionsHybrid(
  */
 function createFallbackQuestions(domain: string, topic: string, difficulty: string, count: number) {
   const questions = []
-  
+
   for (let i = 0; i < count; i++) {
     questions.push({
       id: `fallback_${domain}_${i + 1}`,
       question: `${domain} ${topic} practice question ${i + 1}`,
       options: [
         `Option A for ${topic}`,
-        `Option B for ${topic}`, 
+        `Option B for ${topic}`,
         `Option C for ${topic}`,
         `Option D for ${topic}`
       ],
@@ -401,7 +433,7 @@ function createFallbackQuestions(domain: string, topic: string, difficulty: stri
       source: 'fallback'
     })
   }
-  
+
   return questions
 }
 
@@ -409,11 +441,11 @@ function createFallbackQuestions(domain: string, topic: string, difficulty: stri
  * Handle study plan creation
  */
 async function handleStudyPlanCreation(params: {
-  domain: string;
-  student_level?: string;
-  time_available?: string;
-  weak_areas: string[];
-  goals: string[];
+  domain: string
+  student_level?: string
+  time_available?: string
+  weak_areas: string[]
+  goals: string[]
 }) {
   // This would use the router to create domain-appropriate study plans
   return NextResponse.json({
@@ -435,14 +467,14 @@ async function handleStudyPlanCreation(params: {
  * Handle performance analysis
  */
 async function handlePerformanceAnalysis(params: {
-  domain: string;
-  student_data: any;
-  recent_activities: any[];
+  domain: string
+  student_data: any
+  recent_activities: any[]
 }) {
   // This would analyze performance using domain-appropriate metrics
   return NextResponse.json({
     success: true,
-    action: 'performance_analyzed', 
+    action: 'performance_analyzed',
     message: 'Performance analysis - implementation in progress',
     data: {
       domain: params.domain,
@@ -457,17 +489,29 @@ async function handlePerformanceAnalysis(params: {
 async function handleDomainInfo(domain: string) {
   try {
     const characteristics = heraRouter.getDomainCharacteristics(domain)
-    
+
     if (!characteristics) {
-      return NextResponse.json({
-        success: false,
-        error: `Domain '${domain}' not found`,
-        available_domains: [
-          'MATH', 'PHYSICS', 'CHEMISTRY', 'ENGLISH', 'HISTORY',
-          'CA', 'MEDICINE', 'LAW', 'BUSINESS_COMPLIANCE',
-          'ENGINEERING', 'BUSINESS', 'TECHNOLOGY'
-        ]
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Domain '${domain}' not found`,
+          available_domains: [
+            'MATH',
+            'PHYSICS',
+            'CHEMISTRY',
+            'ENGLISH',
+            'HISTORY',
+            'CA',
+            'MEDICINE',
+            'LAW',
+            'BUSINESS_COMPLIANCE',
+            'ENGINEERING',
+            'BUSINESS',
+            'TECHNOLOGY'
+          ]
+        },
+        { status: 404 }
+      )
     }
 
     const strategy = await heraRouter.determineOptimalStrategy({
@@ -488,13 +532,15 @@ async function handleDomainInfo(domain: string) {
         advantages: strategy.advantages
       }
     })
-
   } catch (error) {
     console.error('Domain info error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to get domain information'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to get domain information'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -505,11 +551,14 @@ export async function GET(request: NextRequest) {
   const action = searchParams.get('action') || 'info'
 
   if (!domain) {
-    return NextResponse.json({
-      success: false,
-      error: 'Domain parameter required',
-      usage: '/api/v1/learning/universal?domain=MATH&action=info'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Domain parameter required',
+        usage: '/api/v1/learning/universal?domain=MATH&action=info'
+      },
+      { status: 400 }
+    )
   }
 
   switch (action) {
@@ -518,10 +567,13 @@ export async function GET(request: NextRequest) {
       return await handleDomainInfo(domain)
 
     default:
-      return NextResponse.json({
-        success: false,
-        error: `Unknown GET action: ${action}`,
-        available_actions: ['info', 'characteristics']
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Unknown GET action: ${action}`,
+          available_actions: ['info', 'characteristics']
+        },
+        { status: 400 }
+      )
   }
 }

@@ -30,7 +30,7 @@ npm install -D @types/react-joyride
 ### Basic Usage
 
 ```tsx
-import { HeraOnboardingProvider, useOnboarding } from '@/lib/onboarding';
+import { HeraOnboardingProvider, useOnboarding } from '@/lib/onboarding'
 
 // Wrap your app with the provider
 function App() {
@@ -43,18 +43,16 @@ function App() {
     >
       <YourApp />
     </HeraOnboardingProvider>
-  );
+  )
 }
 
 // Use in any component
 function Dashboard() {
-  const { startTour } = useOnboarding();
-  
+  const { startTour } = useOnboarding()
+
   return (
-    <button onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1')}>
-      Start Tour
-    </button>
-  );
+    <button onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1')}>Start Tour</button>
+  )
 }
 ```
 
@@ -63,7 +61,7 @@ function Dashboard() {
 Tours are defined using HERA Smart Codes and registered centrally:
 
 ```typescript
-import { registerTour } from '@/lib/onboarding';
+import { registerTour } from '@/lib/onboarding'
 
 const myTour = {
   tourSmartCode: 'HERA.UI.ONBOARD.MYMODULE.OVERVIEW.v1',
@@ -78,7 +76,7 @@ const myTour = {
       placement: 'bottom',
       spotlightPadding: 8,
       waitFor: '[data-testid="feature-button"]',
-      timeoutMs: 5000,
+      timeoutMs: 5000
     },
     {
       smartCode: 'HERA.UI.ONBOARD.MYMODULE.STEP2.v1',
@@ -86,13 +84,13 @@ const myTour = {
       titleKey: 'ui.onboard.mymodule.step2.title',
       bodyKey: 'ui.onboard.mymodule.step2.body',
       placement: 'top',
-      route: '/mymodule/data', // Navigate before showing
-    },
-  ],
-};
+      route: '/mymodule/data' // Navigate before showing
+    }
+  ]
+}
 
 // Register the tour
-registerTour(myTour);
+registerTour(myTour)
 ```
 
 ### Step Options
@@ -133,8 +131,8 @@ Support for variable substitution:
 
 ```typescript
 const messages = {
-  'ui.onboard.welcome': 'Welcome {{name}} to {{module}}!',
-};
+  'ui.onboard.welcome': 'Welcome {{name}} to {{module}}!'
+}
 
 // Result: "Welcome John to Dashboard!"
 ```
@@ -143,13 +141,13 @@ const messages = {
 
 ```typescript
 // Create language manager
-const i18nManager = new I18nManager(async (lang) => {
-  const response = await fetch(`/api/i18n/${lang}.json`);
-  return response.json();
-});
+const i18nManager = new I18nManager(async lang => {
+  const response = await fetch(`/api/i18n/${lang}.json`)
+  return response.json()
+})
 
 // Load language
-const messages = await i18nManager.loadMessages('es');
+const messages = await i18nManager.loadMessages('es')
 ```
 
 ## 🎨 Theming
@@ -174,10 +172,10 @@ const customTheme = {
   tokens: {
     bubbleBackground: 'oklch(0.95 0.05 250)',
     bubbleText: '#1a1a1a',
-    beaconColor: 'oklch(0.57 0.192 250)',
+    beaconColor: 'oklch(0.57 0.192 250)'
     // ... more tokens
-  },
-};
+  }
+}
 ```
 
 ## 📊 Analytics & Events
@@ -191,7 +189,7 @@ Every interaction emits universal transactions:
   onEmit={(transaction, lines) => {
     // Send to your analytics API
     await analyticsApi.track(transaction, lines);
-    
+
     // Or store locally
     localStorage.setItem('onboarding_events', JSON.stringify({ transaction, lines }));
   }}
@@ -290,8 +288,8 @@ const isReady = await isStepReady('.target', {
   route: '/dashboard',
   waitFor: '.data-loaded',
   timeoutMs: 10000,
-  router: nextRouter,
-});
+  router: nextRouter
+})
 ```
 
 ## ♿ Accessibility
@@ -328,29 +326,22 @@ Special theme with enhanced visibility:
 ### Programmatic Control
 
 ```typescript
-const {
-  startTour,
-  stopTour,
-  next,
-  back,
-  getState,
-  isActive,
-  currentStep,
-  totalSteps,
-} = useOnboarding();
+const { startTour, stopTour, next, back, getState, isActive, currentStep, totalSteps } =
+  useOnboarding()
 
 // Start with options
 startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1', {
-  auto: true,        // Auto-start
-  startAt: 2,        // Start at step 3
-  overrides: {       // Override tour config
-    allowSkip: false,
-  },
-});
+  auto: true, // Auto-start
+  startAt: 2, // Start at step 3
+  overrides: {
+    // Override tour config
+    allowSkip: false
+  }
+})
 
 // Check state
-const state = getState();
-console.log(state.stepDurations); // Time spent per step
+const state = getState()
+console.log(state.stepDurations) // Time spent per step
 ```
 
 ### Conditional Tours
@@ -358,10 +349,10 @@ console.log(state.stepDurations); // Time spent per step
 Filter steps based on conditions:
 
 ```typescript
-const filteredSteps = filterSteps(tour.steps, (step) => {
+const filteredSteps = filterSteps(tour.steps, step => {
   // Only show admin features to admin users
-  return !step.smartCode.includes('ADMIN') || user.isAdmin;
-});
+  return !step.smartCode.includes('ADMIN') || user.isAdmin
+})
 ```
 
 ### Mini Tours
@@ -374,11 +365,11 @@ const miniTour = createMiniTour('WIDGET.KPI', [
     selector: '.kpi-card',
     titleKey: 'ui.widget.kpi.title',
     bodyKey: 'ui.widget.kpi.body',
-    placement: 'bottom',
-  },
-]);
+    placement: 'bottom'
+  }
+])
 
-registerTour(miniTour);
+registerTour(miniTour)
 ```
 
 ### Feature Flags
@@ -432,7 +423,7 @@ WHERE t.smart_code LIKE 'HERA.UI.ONBOARD.%'
   AND t.organization_id = ?
 
 -- Average time per step
-SELECT 
+SELECT
   tl.smart_code,
   AVG(tl.duration_ms) as avg_duration
 FROM universal_transaction_lines tl
@@ -451,6 +442,7 @@ npm test src/lib/onboarding
 ```
 
 Test coverage includes:
+
 - Step transformations
 - Event emission
 - Guard conditions
@@ -469,9 +461,9 @@ test('tour starts when button clicked', async () => {
       <MyComponent />
     </HeraOnboardingProvider>
   );
-  
+
   fireEvent.click(screen.getByText('Start Tour'));
-  
+
   await waitFor(() => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
@@ -497,24 +489,28 @@ When adding new features:
 ## 🚨 Troubleshooting
 
 ### Tour doesn't start
+
 - Check if tour is in `enabledTours` array
 - Verify target elements exist in DOM
 - Check browser console for errors
 - Ensure organization ID is provided
 
 ### Steps timeout
+
 - Increase `timeoutMs` for slow-loading content
 - Use `waitFor` conditions appropriately
 - Check if routes are navigating correctly
 - Verify selectors are unique and stable
 
 ### Wrong theme
+
 - Check system theme preference
 - Verify theme prop is passed correctly
 - Ensure CSS is loading properly
 - Try explicit theme override
 
 ### Events not tracking
+
 - Verify `onEmit` callback is provided
 - Check organization ID is set
 - Ensure no errors in emission logic

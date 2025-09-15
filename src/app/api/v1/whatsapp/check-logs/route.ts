@@ -8,7 +8,9 @@ export async function GET(request: NextRequest) {
     environment: {
       NODE_ENV: process.env.NODE_ENV,
       RAILWAY: process.env.RAILWAY_ENVIRONMENT || 'not_railway',
-      hasSupabase: !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+      hasSupabase: !!(
+        process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+      ),
       hasWhatsApp: !!(process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID)
     },
     recentActivity: {
@@ -96,14 +98,13 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    return NextResponse.json(logs, { 
+    return NextResponse.json(logs, {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache'
       }
     })
-
   } catch (error: any) {
     logs.error = {
       message: error.message || 'Unknown error',

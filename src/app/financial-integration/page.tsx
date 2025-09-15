@@ -8,22 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   ConfigurationPanel,
   PostingQueue,
   GLBalanceViewer,
   DuplicateAlert
 } from '@/components/financial-integration'
-import { 
-  Settings,
-  Send,
-  BarChart3,
-  Shield,
-  Zap,
-  Globe,
-  Brain,
-  CheckCircle2
-} from 'lucide-react'
+import { Settings, Send, BarChart3, Shield, Zap, Globe, Brain, CheckCircle2 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 export default function FinancialIntegrationPage() {
@@ -53,7 +44,8 @@ export default function FinancialIntegrationPage() {
     recommendation: 'DO NOT POST - High probability duplicate invoice detected',
     ai_analysis: {
       risk_level: 'high' as const,
-      explanation: 'This invoice appears to be a duplicate based on matching invoice number, amount, and vendor within a 7-day period.',
+      explanation:
+        'This invoice appears to be a duplicate based on matching invoice number, amount, and vendor within a 7-day period.',
       suggested_action: 'Review the original posting before proceeding'
     }
   }
@@ -76,9 +68,7 @@ export default function FinancialIntegrationPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              HERA DNA Financial Integration
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight">HERA DNA Financial Integration</h1>
             <p className="text-muted-foreground">
               Enterprise-grade financial system integration with zero schema changes
             </p>
@@ -99,9 +89,7 @@ export default function FinancialIntegrationPage() {
                 </div>
                 <div>
                   <p className="font-medium">Real-time Sync</p>
-                  <p className="text-sm text-muted-foreground">
-                    Instant posting to ERP
-                  </p>
+                  <p className="text-sm text-muted-foreground">Instant posting to ERP</p>
                 </div>
               </div>
             </CardContent>
@@ -115,9 +103,7 @@ export default function FinancialIntegrationPage() {
                 </div>
                 <div>
                   <p className="font-medium">AI Validation</p>
-                  <p className="text-sm text-muted-foreground">
-                    Smart duplicate detection
-                  </p>
+                  <p className="text-sm text-muted-foreground">Smart duplicate detection</p>
                 </div>
               </div>
             </CardContent>
@@ -131,9 +117,7 @@ export default function FinancialIntegrationPage() {
                 </div>
                 <div>
                   <p className="font-medium">Multi-tenant</p>
-                  <p className="text-sm text-muted-foreground">
-                    Perfect isolation
-                  </p>
+                  <p className="text-sm text-muted-foreground">Perfect isolation</p>
                 </div>
               </div>
             </CardContent>
@@ -147,9 +131,7 @@ export default function FinancialIntegrationPage() {
                 </div>
                 <div>
                   <p className="font-medium">Global Ready</p>
-                  <p className="text-sm text-muted-foreground">
-                    Multi-region support
-                  </p>
+                  <p className="text-sm text-muted-foreground">Multi-region support</p>
                 </div>
               </div>
             </CardContent>
@@ -276,9 +258,7 @@ export default function FinancialIntegrationPage() {
                   >
                     <Send className="h-5 w-5 mb-2 text-muted-foreground" />
                     <p className="font-medium">View Posting Queue</p>
-                    <p className="text-sm text-muted-foreground">
-                      Manage pending transactions
-                    </p>
+                    <p className="text-sm text-muted-foreground">Manage pending transactions</p>
                   </button>
 
                   <button
@@ -298,7 +278,7 @@ export default function FinancialIntegrationPage() {
         </TabsContent>
 
         <TabsContent value="configuration">
-          <ConfigurationPanel 
+          <ConfigurationPanel
             organizationId={currentOrganization.id}
             onConfigSave={() => {
               // Handle configuration save
@@ -308,9 +288,9 @@ export default function FinancialIntegrationPage() {
         </TabsContent>
 
         <TabsContent value="posting">
-          <PostingQueue 
+          <PostingQueue
             organizationId={currentOrganization.id}
-            onTransactionSelect={(transaction) => {
+            onTransactionSelect={transaction => {
               // Handle transaction selection
               console.log('Transaction selected:', transaction)
             }}
@@ -318,9 +298,9 @@ export default function FinancialIntegrationPage() {
         </TabsContent>
 
         <TabsContent value="balances">
-          <GLBalanceViewer 
+          <GLBalanceViewer
             organizationId={currentOrganization.id}
-            onAccountSelect={(accountCode) => {
+            onAccountSelect={accountCode => {
               // Handle account selection
               console.log('Account selected:', accountCode)
             }}

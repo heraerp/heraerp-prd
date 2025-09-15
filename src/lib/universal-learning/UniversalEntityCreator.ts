@@ -1,138 +1,150 @@
 // HERA Universal Learning Platform - Universal Entity Creator
 // Converts AI analysis into HERA's universal 6-table architecture
 
-import { UniversalAnalysisResult, UniversalAIElement, DomainSpecificElement } from './UniversalAIAnalyzer';
-import { UniversalKnowledgeStructure, ProcessingMetadata } from './UniversalContentProcessor';
+import {
+  UniversalAnalysisResult,
+  UniversalAIElement,
+  DomainSpecificElement
+} from './UniversalAIAnalyzer'
+import { UniversalKnowledgeStructure, ProcessingMetadata } from './UniversalContentProcessor'
 
 export interface EntityCreationResult {
-  coreEntities: CoreEntity[];
-  dynamicData: DynamicDataEntry[];
-  relationships: EntityRelationship[];
-  transactions: UniversalTransaction[];
-  organizationData: OrganizationEntry[];
-  transactionLines: TransactionLine[];
-  creationMetadata: EntityCreationMetadata;
+  coreEntities: CoreEntity[]
+  dynamicData: DynamicDataEntry[]
+  relationships: EntityRelationship[]
+  transactions: UniversalTransaction[]
+  organizationData: OrganizationEntry[]
+  transactionLines: TransactionLine[]
+  creationMetadata: EntityCreationMetadata
 }
 
 export interface CoreEntity {
-  entity_id: string;
-  organization_id: string;
-  entity_type: string;
-  entity_name: string;
-  entity_code: string;
-  status: 'active' | 'inactive' | 'draft';
-  smart_code: string;
-  metadata: EntityMetadata;
-  created_at: string;
-  updated_at: string;
+  entity_id: string
+  organization_id: string
+  entity_type: string
+  entity_name: string
+  entity_code: string
+  status: 'active' | 'inactive' | 'draft'
+  smart_code: string
+  metadata: EntityMetadata
+  created_at: string
+  updated_at: string
 }
 
 export interface DynamicDataEntry {
-  entity_id: string;
-  field_name: string;
-  field_type: 'text' | 'number' | 'json' | 'boolean' | 'date';
-  field_value: string;
-  field_metadata: any;
-  confidence_score?: number;
-  ai_generated: boolean;
-  smart_code?: string;
+  entity_id: string
+  field_name: string
+  field_type: 'text' | 'number' | 'json' | 'boolean' | 'date'
+  field_value: string
+  field_metadata: any
+  confidence_score?: number
+  ai_generated: boolean
+  smart_code?: string
 }
 
 export interface EntityRelationship {
-  relationship_id: string;
-  from_entity_id: string;
-  to_entity_id: string;
-  relationship_type: 'prerequisite' | 'related' | 'sequence' | 'contains' | 'enhances';
-  relationship_strength: number; // 0-1
-  metadata: RelationshipMetadata;
-  smart_code: string;
+  relationship_id: string
+  from_entity_id: string
+  to_entity_id: string
+  relationship_type: 'prerequisite' | 'related' | 'sequence' | 'contains' | 'enhances'
+  relationship_strength: number // 0-1
+  metadata: RelationshipMetadata
+  smart_code: string
 }
 
 export interface UniversalTransaction {
-  transaction_id: string;
-  organization_id: string;
-  transaction_type: 'learning_session' | 'assessment_attempt' | 'progress_update' | 'achievement_unlock';
-  transaction_date: string;
-  reference_number: string;
-  total_amount: number; // Learning value, score, or time
-  smart_code: string;
-  metadata: TransactionMetadata;
+  transaction_id: string
+  organization_id: string
+  transaction_type:
+    | 'learning_session'
+    | 'assessment_attempt'
+    | 'progress_update'
+    | 'achievement_unlock'
+  transaction_date: string
+  reference_number: string
+  total_amount: number // Learning value, score, or time
+  smart_code: string
+  metadata: TransactionMetadata
 }
 
 export interface TransactionLine {
-  line_id: string;
-  transaction_id: string;
-  line_type: 'content_interaction' | 'assessment_result' | 'progress_increment' | 'skill_development';
-  entity_id: string; // Related learning element
-  quantity: number;
-  unit_price: number; // Learning value or difficulty score
-  line_total: number;
-  metadata: LineMetadata;
+  line_id: string
+  transaction_id: string
+  line_type:
+    | 'content_interaction'
+    | 'assessment_result'
+    | 'progress_increment'
+    | 'skill_development'
+  entity_id: string // Related learning element
+  quantity: number
+  unit_price: number // Learning value or difficulty score
+  line_total: number
+  metadata: LineMetadata
 }
 
 export interface OrganizationEntry {
-  organization_id: string;
-  organization_name: string;
-  organization_type: 'learning_platform' | 'educational_institution' | 'individual_learner';
-  domain_focus: string; // CA, MED, LAW, etc.
-  metadata: OrganizationMetadata;
+  organization_id: string
+  organization_name: string
+  organization_type: 'learning_platform' | 'educational_institution' | 'individual_learner'
+  domain_focus: string // CA, MED, LAW, etc.
+  metadata: OrganizationMetadata
 }
 
 export interface EntityCreationMetadata {
-  totalEntitiesCreated: number;
-  dynamicFieldsCreated: number;
-  relationshipsEstablished: number;
-  transactionsLogged: number;
-  processingTime: number;
-  confidenceScore: number;
-  universalApplicability: number;
-  domainSpecialization: number;
+  totalEntitiesCreated: number
+  dynamicFieldsCreated: number
+  relationshipsEstablished: number
+  transactionsLogged: number
+  processingTime: number
+  confidenceScore: number
+  universalApplicability: number
+  domainSpecialization: number
 }
 
 export interface EntityMetadata {
-  universalElement?: UniversalAIElement;
-  domainSpecific?: boolean;
-  learningScience: any;
-  aiEnhancements: any;
-  assessmentData?: any;
-  crossDomainInsights?: any[];
+  universalElement?: UniversalAIElement
+  domainSpecific?: boolean
+  learningScience: any
+  aiEnhancements: any
+  assessmentData?: any
+  crossDomainInsights?: any[]
 }
 
 export interface RelationshipMetadata {
-  relationshipReason: string;
-  learningSequence?: number;
-  prerequisiteDepth?: number;
-  crossDomainSource?: string;
+  relationshipReason: string
+  learningSequence?: number
+  prerequisiteDepth?: number
+  crossDomainSource?: string
 }
 
 export interface TransactionMetadata {
-  learnerProfile?: any;
-  sessionDuration?: number;
-  contentElements?: string[];
-  performanceMetrics?: any;
+  learnerProfile?: any
+  sessionDuration?: number
+  contentElements?: string[]
+  performanceMetrics?: any
 }
 
 export interface LineMetadata {
-  bloomsLevel?: string;
-  difficulty?: string;
-  learningStyle?: string;
-  completionStatus?: string;
+  bloomsLevel?: string
+  difficulty?: string
+  learningStyle?: string
+  completionStatus?: string
 }
 
 export interface OrganizationMetadata {
-  domainSpecializations: string[];
-  learningObjectives: string[];
-  certificationTargets: string[];
-  customizationPreferences: any;
+  domainSpecializations: string[]
+  learningObjectives: string[]
+  certificationTargets: string[]
+  customizationPreferences: any
 }
 
 export class UniversalEntityCreator {
-  private organizationId: string;
-  private domain: string;
+  private organizationId: string
+  private domain: string
 
   constructor(organizationId: string, domain: string) {
-    this.organizationId = organizationId;
-    this.domain = domain;
+    this.organizationId = organizationId
+    this.domain = domain
   }
 
   /**
@@ -143,39 +155,52 @@ export class UniversalEntityCreator {
     processingMetadata: ProcessingMetadata,
     options: EntityCreationOptions = {}
   ): Promise<EntityCreationResult> {
-    
-    console.log(`🏗️ HERA Universal Entity Creator - Creating ${this.domain.toUpperCase()} entities`);
-    console.log(`📊 Processing ${analysisResult.universalElements?.length || 0} universal elements`);
-    console.log(`🎯 Processing ${analysisResult.domainSpecificElements?.length || 0} domain-specific elements`);
-    
-    const startTime = Date.now();
-    
+    console.log(`🏗️ HERA Universal Entity Creator - Creating ${this.domain.toUpperCase()} entities`)
+    console.log(`📊 Processing ${analysisResult.universalElements?.length || 0} universal elements`)
+    console.log(
+      `🎯 Processing ${analysisResult.domainSpecificElements?.length || 0} domain-specific elements`
+    )
+
+    const startTime = Date.now()
+
     // Step 1: Create core entities from universal elements
-    console.log(`📦 Creating core entities...`);
-    const coreEntities = await this.createCoreEntities(analysisResult, options);
-    
+    console.log(`📦 Creating core entities...`)
+    const coreEntities = await this.createCoreEntities(analysisResult, options)
+
     // Step 2: Create dynamic data entries
-    console.log(`📋 Creating dynamic data entries...`);
-    const dynamicData = await this.createDynamicData(analysisResult, coreEntities, options);
-    
+    console.log(`📋 Creating dynamic data entries...`)
+    const dynamicData = await this.createDynamicData(analysisResult, coreEntities, options)
+
     // Step 3: Establish entity relationships
-    console.log(`🔗 Establishing entity relationships...`);
-    const relationships = await this.createEntityRelationships(analysisResult, coreEntities, options);
-    
+    console.log(`🔗 Establishing entity relationships...`)
+    const relationships = await this.createEntityRelationships(
+      analysisResult,
+      coreEntities,
+      options
+    )
+
     // Step 4: Create learning transactions
-    console.log(`💫 Creating learning transactions...`);
-    const transactions = await this.createLearningTransactions(analysisResult, coreEntities, options);
-    
+    console.log(`💫 Creating learning transactions...`)
+    const transactions = await this.createLearningTransactions(
+      analysisResult,
+      coreEntities,
+      options
+    )
+
     // Step 5: Create transaction lines
-    console.log(`📝 Creating transaction lines...`);
-    const transactionLines = await this.createTransactionLines(transactions, coreEntities, analysisResult);
-    
+    console.log(`📝 Creating transaction lines...`)
+    const transactionLines = await this.createTransactionLines(
+      transactions,
+      coreEntities,
+      analysisResult
+    )
+
     // Step 6: Ensure organization exists
-    console.log(`🏢 Setting up organization data...`);
-    const organizationData = await this.ensureOrganizationExists(options);
-    
-    const processingTime = Date.now() - startTime;
-    
+    console.log(`🏢 Setting up organization data...`)
+    const organizationData = await this.ensureOrganizationExists(options)
+
+    const processingTime = Date.now() - startTime
+
     const creationMetadata: EntityCreationMetadata = {
       totalEntitiesCreated: coreEntities?.length || 0,
       dynamicFieldsCreated: dynamicData?.length || 0,
@@ -185,13 +210,15 @@ export class UniversalEntityCreator {
       confidenceScore: analysisResult.confidenceScore || 0.8,
       universalApplicability: this.calculateUniversalApplicability(analysisResult),
       domainSpecialization: this.calculateDomainSpecialization(analysisResult)
-    };
-    
-    console.log(`✅ Universal entity creation complete in ${processingTime}ms`);
-    console.log(`📊 Created ${coreEntities?.length || 0} entities, ${dynamicData?.length || 0} dynamic fields, ${relationships?.length || 0} relationships`);
-    console.log(`🎯 Universal Applicability: ${creationMetadata.universalApplicability.toFixed(2)}`);
-    console.log(`🎯 Domain Specialization: ${creationMetadata.domainSpecialization.toFixed(2)}`);
-    
+    }
+
+    console.log(`✅ Universal entity creation complete in ${processingTime}ms`)
+    console.log(
+      `📊 Created ${coreEntities?.length || 0} entities, ${dynamicData?.length || 0} dynamic fields, ${relationships?.length || 0} relationships`
+    )
+    console.log(`🎯 Universal Applicability: ${creationMetadata.universalApplicability.toFixed(2)}`)
+    console.log(`🎯 Domain Specialization: ${creationMetadata.domainSpecialization.toFixed(2)}`)
+
     return {
       coreEntities,
       dynamicData,
@@ -200,7 +227,7 @@ export class UniversalEntityCreator {
       organizationData,
       transactionLines,
       creationMetadata
-    };
+    }
   }
 
   /**
@@ -210,10 +237,9 @@ export class UniversalEntityCreator {
     analysisResult: UniversalAnalysisResult,
     options: EntityCreationOptions
   ): Promise<CoreEntity[]> {
-    
-    const entities: CoreEntity[] = [];
-    const timestamp = new Date().toISOString();
-    
+    const entities: CoreEntity[] = []
+    const timestamp = new Date().toISOString()
+
     // Create entities from universal elements
     for (const element of analysisResult.universalElements) {
       const entity: CoreEntity = {
@@ -233,11 +259,11 @@ export class UniversalEntityCreator {
         },
         created_at: timestamp,
         updated_at: timestamp
-      };
-      
-      entities.push(entity);
+      }
+
+      entities.push(entity)
     }
-    
+
     // Create entities from domain-specific elements
     for (const element of analysisResult.domainSpecificElements) {
       const entity: CoreEntity = {
@@ -256,14 +282,14 @@ export class UniversalEntityCreator {
         },
         created_at: timestamp,
         updated_at: timestamp
-      };
-      
-      entities.push(entity);
+      }
+
+      entities.push(entity)
     }
-    
+
     // Create assessment entities
     for (let i = 0; i < analysisResult.assessmentRecommendations.length; i++) {
-      const assessment = analysisResult.assessmentRecommendations[i];
+      const assessment = analysisResult.assessmentRecommendations[i]
       const entity: CoreEntity = {
         entity_id: this.generateEntityId('assessment', `assessment_${i}`),
         organization_id: this.organizationId,
@@ -280,12 +306,12 @@ export class UniversalEntityCreator {
         },
         created_at: timestamp,
         updated_at: timestamp
-      };
-      
-      entities.push(entity);
+      }
+
+      entities.push(entity)
     }
-    
-    return entities;
+
+    return entities
   }
 
   /**
@@ -296,14 +322,13 @@ export class UniversalEntityCreator {
     entities: CoreEntity[],
     options: EntityCreationOptions
   ): Promise<DynamicDataEntry[]> {
-    
-    const dynamicData: DynamicDataEntry[] = [];
-    
+    const dynamicData: DynamicDataEntry[] = []
+
     // Add dynamic data for universal elements
     for (const entity of entities) {
       if (entity.metadata.universalElement) {
-        const element = entity.metadata.universalElement;
-        
+        const element = entity.metadata.universalElement
+
         // Learning science properties
         dynamicData.push(
           {
@@ -346,8 +371,8 @@ export class UniversalEntityCreator {
             ai_generated: true,
             smart_code: 'HERA.EDU.UNIVERSAL.DIFFICULTY.v1'
           }
-        );
-        
+        )
+
         // AI enhancements
         dynamicData.push(
           {
@@ -365,7 +390,10 @@ export class UniversalEntityCreator {
             field_name: 'ai_examples',
             field_type: 'json',
             field_value: JSON.stringify(element.aiEnhancements.examples),
-            field_metadata: { category: 'ai_enhancement', count: element.aiEnhancements.examples.length },
+            field_metadata: {
+              category: 'ai_enhancement',
+              count: element.aiEnhancements.examples.length
+            },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
             smart_code: 'HERA.EDU.UNIVERSAL.AI.EXAMPLES.v1'
@@ -390,8 +418,8 @@ export class UniversalEntityCreator {
             ai_generated: true,
             smart_code: 'HERA.EDU.UNIVERSAL.AI.MNEMONICS.v1'
           }
-        );
-        
+        )
+
         // Universal applicability metrics
         dynamicData.push(
           {
@@ -408,14 +436,16 @@ export class UniversalEntityCreator {
             entity_id: entity.entity_id,
             field_name: 'learning_value',
             field_type: 'number',
-            field_value: (element.universalApplicability * analysisResult.confidenceScore).toString(),
+            field_value: (
+              element.universalApplicability * analysisResult.confidenceScore
+            ).toString(),
             field_metadata: { category: 'metrics', calculated: true },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
             smart_code: 'HERA.EDU.UNIVERSAL.LEARNING.VALUE.v1'
           }
-        );
-        
+        )
+
         // Prerequisites and relationships data
         if (element.prerequisites.length > 0) {
           dynamicData.push({
@@ -427,9 +457,9 @@ export class UniversalEntityCreator {
             confidence_score: 0.8,
             ai_generated: true,
             smart_code: 'HERA.EDU.UNIVERSAL.PREREQUISITES.v1'
-          });
+          })
         }
-        
+
         if (element.relatedConcepts.length > 0) {
           dynamicData.push({
             entity_id: entity.entity_id,
@@ -440,18 +470,18 @@ export class UniversalEntityCreator {
             confidence_score: 0.75,
             ai_generated: true,
             smart_code: 'HERA.EDU.UNIVERSAL.RELATED.CONCEPTS.v1'
-          });
+          })
         }
       }
     }
-    
+
     // Add dynamic data for domain-specific elements
     for (const entity of entities) {
       if (entity.metadata.domainSpecific) {
-        const domainElement = analysisResult.domainSpecificElements.find(
-          de => entity.entity_name.includes(de.domain)
-        );
-        
+        const domainElement = analysisResult.domainSpecificElements.find(de =>
+          entity.entity_name.includes(de.domain)
+        )
+
         if (domainElement) {
           dynamicData.push(
             {
@@ -489,9 +519,9 @@ export class UniversalEntityCreator {
               field_name: 'certification_alignment',
               field_type: 'json',
               field_value: JSON.stringify(domainElement.certificationAlignment),
-              field_metadata: { 
-                category: 'domain_specialization', 
-                count: domainElement.certificationAlignment.length 
+              field_metadata: {
+                category: 'domain_specialization',
+                count: domainElement.certificationAlignment.length
               },
               confidence_score: 0.9,
               ai_generated: true,
@@ -502,20 +532,20 @@ export class UniversalEntityCreator {
               field_name: 'practical_applications',
               field_type: 'json',
               field_value: JSON.stringify(domainElement.practicalApplications),
-              field_metadata: { 
+              field_metadata: {
                 category: 'domain_specialization',
-                count: domainElement.practicalApplications.length 
+                count: domainElement.practicalApplications.length
               },
               confidence_score: 0.85,
               ai_generated: true,
               smart_code: `HERA.EDU.${domainElement.domain.toUpperCase()}.PRACTICAL.APPLICATIONS.v1`
             }
-          );
+          )
         }
       }
     }
-    
-    return dynamicData;
+
+    return dynamicData
   }
 
   /**
@@ -526,21 +556,23 @@ export class UniversalEntityCreator {
     entities: CoreEntity[],
     options: EntityCreationOptions
   ): Promise<EntityRelationship[]> {
-    
-    const relationships: EntityRelationship[] = [];
-    
+    const relationships: EntityRelationship[] = []
+
     // Create prerequisite relationships
     for (const entity of entities) {
       if (entity.metadata.universalElement) {
-        const element = entity.metadata.universalElement;
-        
+        const element = entity.metadata.universalElement
+
         // Link prerequisites
         for (const prerequisite of element.prerequisites) {
-          const prerequisiteEntity = entities.find(e => 
-            e.entity_name.toLowerCase().includes(prerequisite.toLowerCase()) ||
-            e.metadata.universalElement?.content.toLowerCase().includes(prerequisite.toLowerCase())
-          );
-          
+          const prerequisiteEntity = entities.find(
+            e =>
+              e.entity_name.toLowerCase().includes(prerequisite.toLowerCase()) ||
+              e.metadata.universalElement?.content
+                .toLowerCase()
+                .includes(prerequisite.toLowerCase())
+          )
+
           if (prerequisiteEntity) {
             const relationship: EntityRelationship = {
               relationship_id: this.generateRelationshipId(),
@@ -553,19 +585,22 @@ export class UniversalEntityCreator {
                 prerequisiteDepth: 1
               },
               smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.PREREQUISITE.v1'
-            };
-            
-            relationships.push(relationship);
+            }
+
+            relationships.push(relationship)
           }
         }
-        
+
         // Link related concepts
         for (const relatedConcept of element.relatedConcepts) {
-          const relatedEntity = entities.find(e => 
-            e.entity_name.toLowerCase().includes(relatedConcept.toLowerCase()) ||
-            e.metadata.universalElement?.content.toLowerCase().includes(relatedConcept.toLowerCase())
-          );
-          
+          const relatedEntity = entities.find(
+            e =>
+              e.entity_name.toLowerCase().includes(relatedConcept.toLowerCase()) ||
+              e.metadata.universalElement?.content
+                .toLowerCase()
+                .includes(relatedConcept.toLowerCase())
+          )
+
           if (relatedEntity && relatedEntity.entity_id !== entity.entity_id) {
             const relationship: EntityRelationship = {
               relationship_id: this.generateRelationshipId(),
@@ -578,37 +613,45 @@ export class UniversalEntityCreator {
                 prerequisiteDepth: 0
               },
               smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.RELATED.v1'
-            };
-            
-            relationships.push(relationship);
+            }
+
+            relationships.push(relationship)
           }
         }
       }
     }
-    
+
     // Create learning sequence relationships based on Bloom's taxonomy
-    const bloomsOrder = ['knowledge', 'comprehension', 'application', 'analysis', 'synthesis', 'evaluation'];
-    const entitiesByBlooms: { [key: string]: CoreEntity[] } = {};
-    
+    const bloomsOrder = [
+      'knowledge',
+      'comprehension',
+      'application',
+      'analysis',
+      'synthesis',
+      'evaluation'
+    ]
+    const entitiesByBlooms: { [key: string]: CoreEntity[] } = {}
+
     entities.forEach(entity => {
       if (entity.metadata.universalElement) {
-        const bloomsLevel = entity.metadata.universalElement.learningScience.bloomsLevel;
+        const bloomsLevel = entity.metadata.universalElement.learningScience.bloomsLevel
         if (!entitiesByBlooms[bloomsLevel]) {
-          entitiesByBlooms[bloomsLevel] = [];
+          entitiesByBlooms[bloomsLevel] = []
         }
-        entitiesByBlooms[bloomsLevel].push(entity);
+        entitiesByBlooms[bloomsLevel].push(entity)
       }
-    });
-    
+    })
+
     // Create sequence relationships between Bloom's levels
     for (let i = 0; i < bloomsOrder.length - 1; i++) {
-      const currentLevel = bloomsOrder[i];
-      const nextLevel = bloomsOrder[i + 1];
-      
-      const currentEntities = entitiesByBlooms[currentLevel] || [];
-      const nextEntities = entitiesByBlooms[nextLevel] || [];
-      
-      for (const currentEntity of currentEntities.slice(0, 3)) { // Limit relationships
+      const currentLevel = bloomsOrder[i]
+      const nextLevel = bloomsOrder[i + 1]
+
+      const currentEntities = entitiesByBlooms[currentLevel] || []
+      const nextEntities = entitiesByBlooms[nextLevel] || []
+
+      for (const currentEntity of currentEntities.slice(0, 3)) {
+        // Limit relationships
         for (const nextEntity of nextEntities.slice(0, 2)) {
           const relationship: EntityRelationship = {
             relationship_id: this.generateRelationshipId(),
@@ -621,22 +664,22 @@ export class UniversalEntityCreator {
               learningSequence: i + 1
             },
             smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.SEQUENCE.v1'
-          };
-          
-          relationships.push(relationship);
+          }
+
+          relationships.push(relationship)
         }
       }
     }
-    
+
     // Create cross-domain enhancement relationships
     for (const insight of analysisResult.crossDomainInsights) {
-      const sourceEntities = entities.filter(e => 
+      const sourceEntities = entities.filter(e =>
         e.smart_code.includes(insight.sourceAomain.toUpperCase())
-      );
-      const targetEntities = entities.filter(e => 
+      )
+      const targetEntities = entities.filter(e =>
         e.smart_code.includes(insight.targetDomain.toUpperCase())
-      );
-      
+      )
+
       for (const sourceEntity of sourceEntities.slice(0, 2)) {
         for (const targetEntity of targetEntities.slice(0, 2)) {
           const relationship: EntityRelationship = {
@@ -651,14 +694,14 @@ export class UniversalEntityCreator {
               expectedImprovement: insight.expectedImprovement
             },
             smart_code: `HERA.EDU.CROSS.DOMAIN.${insight.sourceAomain.toUpperCase()}.TO.${insight.targetDomain.toUpperCase()}.v1`
-          };
-          
-          relationships.push(relationship);
+          }
+
+          relationships.push(relationship)
         }
       }
     }
-    
-    return relationships;
+
+    return relationships
   }
 
   /**
@@ -669,10 +712,9 @@ export class UniversalEntityCreator {
     entities: CoreEntity[],
     options: EntityCreationOptions
   ): Promise<UniversalTransaction[]> {
-    
-    const transactions: UniversalTransaction[] = [];
-    const timestamp = new Date().toISOString();
-    
+    const transactions: UniversalTransaction[] = []
+    const timestamp = new Date().toISOString()
+
     // Create content processing transaction
     const processingTransaction: UniversalTransaction = {
       transaction_id: this.generateTransactionId('processing'),
@@ -688,13 +730,13 @@ export class UniversalEntityCreator {
         aiProviderUsed: 'hera_universal_ai',
         confidenceScore: analysisResult.confidenceScore
       }
-    };
-    
-    transactions.push(processingTransaction);
-    
+    }
+
+    transactions.push(processingTransaction)
+
     // Create assessment preparation transactions
     for (let i = 0; i < analysisResult.assessmentRecommendations.length; i++) {
-      const assessment = analysisResult.assessmentRecommendations[i];
+      const assessment = analysisResult.assessmentRecommendations[i]
       const assessmentTransaction: UniversalTransaction = {
         transaction_id: this.generateTransactionId('assessment'),
         organization_id: this.organizationId,
@@ -709,14 +751,14 @@ export class UniversalEntityCreator {
           bloomsLevel: assessment.bloomsLevel,
           method: assessment.method
         }
-      };
-      
-      transactions.push(assessmentTransaction);
+      }
+
+      transactions.push(assessmentTransaction)
     }
-    
+
     // Create learning optimization transactions
     for (let i = 0; i < analysisResult.learningOptimizations.length; i++) {
-      const optimization = analysisResult.learningOptimizations[i];
+      const optimization = analysisResult.learningOptimizations[i]
       const optimizationTransaction: UniversalTransaction = {
         transaction_id: this.generateTransactionId('optimization'),
         organization_id: this.organizationId,
@@ -731,12 +773,12 @@ export class UniversalEntityCreator {
           implementation: optimization.implementation,
           evidenceBase: optimization.evidenceBase
         }
-      };
-      
-      transactions.push(optimizationTransaction);
+      }
+
+      transactions.push(optimizationTransaction)
     }
-    
-    return transactions;
+
+    return transactions
   }
 
   /**
@@ -747,14 +789,13 @@ export class UniversalEntityCreator {
     entities: CoreEntity[],
     analysisResult: UniversalAnalysisResult
   ): Promise<TransactionLine[]> {
-    
-    const transactionLines: TransactionLine[] = [];
-    
+    const transactionLines: TransactionLine[] = []
+
     for (const transaction of transactions) {
       if (transaction.transaction_type === 'learning_session') {
         // Create lines for each learning element
         for (let i = 0; i < entities.length; i++) {
-          const entity = entities[i];
+          const entity = entities[i]
           const line: TransactionLine = {
             line_id: this.generateLineId(),
             transaction_id: transaction.transaction_id,
@@ -769,13 +810,13 @@ export class UniversalEntityCreator {
               learningStyle: entity.metadata.universalElement?.learningScience.learningStyle,
               completionStatus: 'processed'
             }
-          };
-          
-          transactionLines.push(line);
+          }
+
+          transactionLines.push(line)
         }
       } else if (transaction.transaction_type === 'assessment_attempt') {
         // Create line for assessment
-        const assessmentEntity = entities.find(e => e.entity_type === 'universal_assessment');
+        const assessmentEntity = entities.find(e => e.entity_type === 'universal_assessment')
         if (assessmentEntity) {
           const line: TransactionLine = {
             line_id: this.generateLineId(),
@@ -790,20 +831,22 @@ export class UniversalEntityCreator {
               difficulty: transaction.metadata.difficulty,
               completionStatus: 'prepared'
             }
-          };
-          
-          transactionLines.push(line);
+          }
+
+          transactionLines.push(line)
         }
       }
     }
-    
-    return transactionLines;
+
+    return transactionLines
   }
 
   /**
    * Ensure organization exists in the system
    */
-  private async ensureOrganizationExists(options: EntityCreationOptions): Promise<OrganizationEntry[]> {
+  private async ensureOrganizationExists(
+    options: EntityCreationOptions
+  ): Promise<OrganizationEntry[]> {
     const organization: OrganizationEntry = {
       organization_id: this.organizationId,
       organization_name: `${this.domain.toUpperCase()} Learning Platform`,
@@ -820,88 +863,89 @@ export class UniversalEntityCreator {
           adaptiveDifficulty: true
         }
       }
-    };
-    
-    return [organization];
+    }
+
+    return [organization]
   }
 
   // Helper methods for ID generation and mapping
   private generateEntityId(prefix: string, id: string): string {
-    return `${prefix}_${this.domain}_${id}_${Date.now()}`;
+    return `${prefix}_${this.domain}_${id}_${Date.now()}`
   }
 
   private generateEntityCode(prefix: string, type: string, index: number): string {
-    return `${prefix}-${type}-${String(index + 1).padStart(3, '0')}`;
+    return `${prefix}-${type}-${String(index + 1).padStart(3, '0')}`
   }
 
   private generateRelationshipId(): string {
-    return `rel_${this.domain}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `rel_${this.domain}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
   private generateTransactionId(type: string): string {
-    return `txn_${type}_${this.domain}_${Date.now()}`;
+    return `txn_${type}_${this.domain}_${Date.now()}`
   }
 
   private generateLineId(): string {
-    return `line_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `line_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
   private mapToEntityType(elementType: string): string {
     const mapping = {
-      'concept': 'universal_learning_concept',
-      'procedure': 'universal_learning_procedure',
-      'example': 'universal_learning_example',
-      'definition': 'universal_learning_definition',
-      'principle': 'universal_learning_principle',
-      'case_study': 'universal_learning_case_study'
-    };
-    
-    return mapping[elementType] || 'universal_learning_element';
+      concept: 'universal_learning_concept',
+      procedure: 'universal_learning_procedure',
+      example: 'universal_learning_example',
+      definition: 'universal_learning_definition',
+      principle: 'universal_learning_principle',
+      case_study: 'universal_learning_case_study'
+    }
+
+    return mapping[elementType] || 'universal_learning_element'
   }
 
   private mapDomainToEntityType(domain: string): string {
-    return `${domain.toLowerCase()}_domain_specialization`;
+    return `${domain.toLowerCase()}_domain_specialization`
   }
 
   private calculateUniversalApplicability(analysisResult: UniversalAnalysisResult): number {
-    const totalElements = analysisResult.universalElements.length;
-    if (totalElements === 0) return 0;
-    
+    const totalElements = analysisResult.universalElements.length
+    if (totalElements === 0) return 0
+
     const totalApplicability = analysisResult.universalElements.reduce(
-      (sum, element) => sum + element.universalApplicability, 0
-    );
-    
-    return totalApplicability / totalElements;
+      (sum, element) => sum + element.universalApplicability,
+      0
+    )
+
+    return totalApplicability / totalElements
   }
 
   private calculateDomainSpecialization(analysisResult: UniversalAnalysisResult): number {
-    const domainElements = analysisResult.domainSpecificElements.length;
-    const totalElements = analysisResult.universalElements.length + domainElements;
-    
-    if (totalElements === 0) return 0;
-    
-    return domainElements / totalElements;
+    const domainElements = analysisResult.domainSpecificElements.length
+    const totalElements = analysisResult.universalElements.length + domainElements
+
+    if (totalElements === 0) return 0
+
+    return domainElements / totalElements
   }
 
   private getDomainCertifications(domain: string): string[] {
     const certifications = {
-      'CA': ['ICAI CA Final', 'ICAI CA Intermediate', 'ICAI CA Foundation'],
-      'MED': ['USMLE', 'Medical Board Exams', 'Specialty Certifications'],
-      'LAW': ['Bar Exam', 'Legal Specialization Certificates'],
-      'ENG': ['FE Exam', 'PE License', 'Technical Certifications'],
-      'LANG': ['TOEFL', 'IELTS', 'Language Proficiency Certificates']
-    };
-    
-    return certifications[domain] || ['General Education Certification'];
+      CA: ['ICAI CA Final', 'ICAI CA Intermediate', 'ICAI CA Foundation'],
+      MED: ['USMLE', 'Medical Board Exams', 'Specialty Certifications'],
+      LAW: ['Bar Exam', 'Legal Specialization Certificates'],
+      ENG: ['FE Exam', 'PE License', 'Technical Certifications'],
+      LANG: ['TOEFL', 'IELTS', 'Language Proficiency Certificates']
+    }
+
+    return certifications[domain] || ['General Education Certification']
   }
 }
 
 // Additional interfaces for type safety
 export interface EntityCreationOptions {
-  includeAssessments?: boolean;
-  includeRelationships?: boolean;
-  includeTransactions?: boolean;
-  maxEntitiesPerType?: number;
-  confidenceThreshold?: number;
-  generateMockData?: boolean;
+  includeAssessments?: boolean
+  includeRelationships?: boolean
+  includeTransactions?: boolean
+  maxEntitiesPerType?: number
+  confidenceThreshold?: number
+  generateMockData?: boolean
 }

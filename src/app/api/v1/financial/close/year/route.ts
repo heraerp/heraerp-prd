@@ -1,7 +1,7 @@
 /**
  * HERA Fiscal Year Close API Endpoint
  * Smart Code: HERA.FIN.API.CLOSE.YEAR.v1
- * 
+ *
  * Handles year-end closing operations
  */
 
@@ -24,16 +24,16 @@ export async function POST(request: NextRequest) {
   try {
     // For now, we'll skip authentication check in this endpoint
     // In production, you should use the proper authentication from your app
-    
+
     // Parse and validate request
     const body = await request.json()
     const validationResult = FiscalCloseRequestSchema.safeParse(body)
-    
+
     if (!validationResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Validation failed',
-          details: validationResult.error.errors 
+          details: validationResult.error.errors
         },
         { status: 400 }
       )
@@ -44,10 +44,7 @@ export async function POST(request: NextRequest) {
     // Verify organization access
     // In production, check if user has access to the organization
     if (!params.organization_id) {
-      return NextResponse.json(
-        { error: 'Organization context required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization context required' }, { status: 400 })
     }
 
     // Create fiscal close engine
@@ -88,7 +85,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
   } catch (error) {
     console.error('Fiscal close error:', error)
     return NextResponse.json(
@@ -109,10 +105,7 @@ export async function GET(request: NextRequest) {
     const fiscalYear = searchParams.get('fiscal_year')
 
     if (!organizationId || !fiscalYear) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
     }
 
     // Check authentication - simplified for now
@@ -130,12 +123,8 @@ export async function GET(request: NextRequest) {
         last_close_journal: null
       }
     })
-
   } catch (error) {
     console.error('Status check error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

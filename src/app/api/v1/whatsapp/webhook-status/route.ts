@@ -5,9 +5,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  const accessToken = process.env.WHATSAPP_ACCESS_TOKEN || process.env.NEXT_PUBLIC_WHATSAPP_ACCESS_TOKEN
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER_ID
-  const webhookVerifyToken = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || 'hera-whatsapp-webhook-2024-secure-token'
+  const accessToken =
+    process.env.WHATSAPP_ACCESS_TOKEN || process.env.NEXT_PUBLIC_WHATSAPP_ACCESS_TOKEN
+  const phoneNumberId =
+    process.env.WHATSAPP_PHONE_NUMBER_ID || process.env.NEXT_PUBLIC_WHATSAPP_PHONE_NUMBER_ID
+  const webhookVerifyToken =
+    process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || 'hera-whatsapp-webhook-2024-secure-token'
   const businessAccountId = process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '1112225330318984'
 
   const status = {
@@ -48,7 +51,9 @@ export async function GET(request: NextRequest) {
       }
     ],
     database: {
-      supabaseConfigured: !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+      supabaseConfigured: !!(
+        process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
+      ),
       note: 'Without Supabase, messages cannot be stored. Only demo data will be shown.'
     }
   }
@@ -56,15 +61,12 @@ export async function GET(request: NextRequest) {
   // If access token is available, try to get phone number details
   if (accessToken && phoneNumberId) {
     try {
-      const phoneResponse = await fetch(
-        `https://graph.facebook.com/v20.0/${phoneNumberId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
+      const phoneResponse = await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
         }
-      )
-      
+      })
+
       if (phoneResponse.ok) {
         const phoneData = await phoneResponse.json()
         status.credentials.phoneDetails = {

@@ -1,7 +1,7 @@
 /**
  * HERA MCP Intelligent Form Completion API
  * Smart Code: HERA.MCP.API.FORM.COMPLETION.INTELLIGENT.v1
- * 
+ *
  * Uses AI to intelligently complete questionnaire forms based on business context
  */
 
@@ -61,7 +61,7 @@ class IntelligentFormCompletion {
       return this.handleCompanyProfile(question)
     }
 
-    // Sales Management Section  
+    // Sales Management Section
     if (question.section_code === 'SALES') {
       return this.handleSalesManagement(question)
     }
@@ -129,7 +129,8 @@ class IntelligentFormCompletion {
   private handleCompanyProfile(question: any): IntelligentAnswer {
     const { businessType, industry, size } = this.businessContext
 
-    if (question.id === 'cp_001') { // Business lines
+    if (question.id === 'cp_001') {
+      // Business lines
       const businessLines = this.getBusinessLines(businessType, industry)
       return {
         questionId: question.id,
@@ -140,7 +141,8 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'cp_002') { // Annual revenue
+    if (question.id === 'cp_002') {
+      // Annual revenue
       const revenueRange = this.getRevenueRange(size)
       return {
         questionId: question.id,
@@ -151,7 +153,8 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'cp_003') { // Employee count
+    if (question.id === 'cp_003') {
+      // Employee count
       const employeeCount = this.getEmployeeCount(size)
       return {
         questionId: question.id,
@@ -168,18 +171,22 @@ class IntelligentFormCompletion {
   private handleSalesManagement(question: any): IntelligentAnswer {
     const { businessType, goals } = this.businessContext
 
-    if (question.id === 'sl_001') { // Credit limit alerts
+    if (question.id === 'sl_001') {
+      // Credit limit alerts
       const needsAlerts = goals.includes('cash_flow') || goals.includes('financial_visibility')
       return {
         questionId: question.id,
         questionType: question.input_type,
         answer: needsAlerts,
-        reasoning: needsAlerts ? 'Credit management important for cash flow goals' : 'Not a priority based on stated goals',
+        reasoning: needsAlerts
+          ? 'Credit management important for cash flow goals'
+          : 'Not a priority based on stated goals',
         confidence: 0.8
       }
     }
 
-    if (question.id === 'sl_002') { // Sales channel
+    if (question.id === 'sl_002') {
+      // Sales channel
       const channel = this.getSalesChannel(businessType)
       return {
         questionId: question.id,
@@ -190,7 +197,8 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'sl_003') { // Sales process description
+    if (question.id === 'sl_003') {
+      // Sales process description
       const processDescription = this.getSalesProcessDescription(businessType)
       return {
         questionId: question.id,
@@ -201,13 +209,16 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'sl_004') { // Multi-currency
+    if (question.id === 'sl_004') {
+      // Multi-currency
       const needsMultiCurrency = businessType === 'trading' || businessType === 'manufacturing'
       return {
         questionId: question.id,
         questionType: question.input_type,
         answer: needsMultiCurrency,
-        reasoning: needsMultiCurrency ? 'Likely international operations' : 'Primarily domestic business',
+        reasoning: needsMultiCurrency
+          ? 'Likely international operations'
+          : 'Primarily domestic business',
         confidence: 0.75
       }
     }
@@ -218,8 +229,10 @@ class IntelligentFormCompletion {
   private handleProcurement(question: any): IntelligentAnswer {
     const { businessType, size } = this.businessContext
 
-    if (question.id === 'pr_001') { // Purchase approvals
-      const approvalProcess = size === 'large' ? 'BASIC_SYSTEM' : size === 'medium' ? 'EXCEL_SHEETS' : 'MANUAL_EMAIL'
+    if (question.id === 'pr_001') {
+      // Purchase approvals
+      const approvalProcess =
+        size === 'large' ? 'BASIC_SYSTEM' : size === 'medium' ? 'EXCEL_SHEETS' : 'MANUAL_EMAIL'
       return {
         questionId: question.id,
         questionType: question.input_type,
@@ -229,13 +242,16 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'pr_002') { // Tender processes
+    if (question.id === 'pr_002') {
+      // Tender processes
       const usesTenders = size === 'large' || businessType === 'manufacturing'
       return {
         questionId: question.id,
         questionType: question.input_type,
         answer: usesTenders,
-        reasoning: usesTenders ? 'Large organizations typically use formal tenders' : 'Smaller operations use informal processes',
+        reasoning: usesTenders
+          ? 'Large organizations typically use formal tenders'
+          : 'Smaller operations use informal processes',
         confidence: 0.8
       }
     }
@@ -246,13 +262,16 @@ class IntelligentFormCompletion {
   private handleProduction(question: any): IntelligentAnswer {
     const { businessType } = this.businessContext
 
-    if (question.id === 'pd_001') { // Manufacturing activities
+    if (question.id === 'pd_001') {
+      // Manufacturing activities
       const hasManufacturing = ['manufacturing', 'restaurant', 'healthcare'].includes(businessType)
       return {
         questionId: question.id,
         questionType: question.input_type,
         answer: hasManufacturing,
-        reasoning: hasManufacturing ? `${businessType} involves production activities` : 'No manufacturing operations',
+        reasoning: hasManufacturing
+          ? `${businessType} involves production activities`
+          : 'No manufacturing operations',
         confidence: 0.95
       }
     }
@@ -263,7 +282,8 @@ class IntelligentFormCompletion {
   private handleInventory(question: any): IntelligentAnswer {
     const { businessType, goals } = this.businessContext
 
-    if (question.id === 'iv_001') { // Inventory tracking
+    if (question.id === 'iv_001') {
+      // Inventory tracking
       const trackingMethod = this.getInventoryTrackingMethod(businessType)
       return {
         questionId: question.id,
@@ -274,13 +294,16 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'iv_002') { // Multiple locations
+    if (question.id === 'iv_002') {
+      // Multiple locations
       const multiLocation = businessType === 'retail' || businessType === 'restaurant'
       return {
         questionId: question.id,
         questionType: question.input_type,
         answer: multiLocation,
-        reasoning: multiLocation ? 'Likely multiple locations/branches' : 'Single location operation',
+        reasoning: multiLocation
+          ? 'Likely multiple locations/branches'
+          : 'Single location operation',
         confidence: 0.8
       }
     }
@@ -291,13 +314,17 @@ class IntelligentFormCompletion {
   private handleFinance(question: any): IntelligentAnswer {
     const { businessType, size } = this.businessContext
 
-    if (question.id === 'fn_001') { // Accounting standards
+    if (question.id === 'fn_001') {
+      // Accounting standards
       const standards = size === 'large' ? 'IFRS' : 'LOCAL_GAAP'
       return {
         questionId: question.id,
         questionType: question.input_type,
         answer: standards,
-        reasoning: size === 'large' ? 'Large organizations typically use IFRS' : 'Local standards for smaller businesses',
+        reasoning:
+          size === 'large'
+            ? 'Large organizations typically use IFRS'
+            : 'Local standards for smaller businesses',
         confidence: 0.8
       }
     }
@@ -308,8 +335,10 @@ class IntelligentFormCompletion {
   private handleGeneralExpectations(question: any): IntelligentAnswer {
     const { goals, size } = this.businessContext
 
-    if (question.id === 'ge_001') { // Timeline
-      const timeline = size === 'large' ? '6_12_MONTHS' : size === 'medium' ? '3_6_MONTHS' : 'UNDER_3_MONTHS'
+    if (question.id === 'ge_001') {
+      // Timeline
+      const timeline =
+        size === 'large' ? '6_12_MONTHS' : size === 'medium' ? '3_6_MONTHS' : 'UNDER_3_MONTHS'
       return {
         questionId: question.id,
         questionType: question.input_type,
@@ -319,13 +348,14 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'ge_002') { // Primary motivation
+    if (question.id === 'ge_002') {
+      // Primary motivation
       const motivation = goals[0] || 'EFFICIENCY'
       const motivationMap: Record<string, string> = {
-        'improve_efficiency': 'EFFICIENCY',
-        'financial_visibility': 'VISIBILITY',
-        'regulatory_compliance': 'COMPLIANCE',
-        'cost_reduction': 'COST_REDUCTION'
+        improve_efficiency: 'EFFICIENCY',
+        financial_visibility: 'VISIBILITY',
+        regulatory_compliance: 'COMPLIANCE',
+        cost_reduction: 'COST_REDUCTION'
       }
       return {
         questionId: question.id,
@@ -336,7 +366,8 @@ class IntelligentFormCompletion {
       }
     }
 
-    if (question.id === 'ge_003') { // User count
+    if (question.id === 'ge_003') {
+      // User count
       const userCount = this.getUserCount(size)
       return {
         questionId: question.id,
@@ -351,83 +382,101 @@ class IntelligentFormCompletion {
   }
 
   // Helper methods for default handling
-  private handleHRPayroll(question: any): IntelligentAnswer { return this.getDefaultAnswerForQuestion(question) }
-  private handleProjects(question: any): IntelligentAnswer { return this.getDefaultAnswerForQuestion(question) }
-  private handleAssets(question: any): IntelligentAnswer { return this.getDefaultAnswerForQuestion(question) }
-  private handleITInfrastructure(question: any): IntelligentAnswer { return this.getDefaultAnswerForQuestion(question) }
-  private handleAIAgents(question: any): IntelligentAnswer { return this.getDefaultAnswerForQuestion(question) }
+  private handleHRPayroll(question: any): IntelligentAnswer {
+    return this.getDefaultAnswerForQuestion(question)
+  }
+  private handleProjects(question: any): IntelligentAnswer {
+    return this.getDefaultAnswerForQuestion(question)
+  }
+  private handleAssets(question: any): IntelligentAnswer {
+    return this.getDefaultAnswerForQuestion(question)
+  }
+  private handleITInfrastructure(question: any): IntelligentAnswer {
+    return this.getDefaultAnswerForQuestion(question)
+  }
+  private handleAIAgents(question: any): IntelligentAnswer {
+    return this.getDefaultAnswerForQuestion(question)
+  }
 
   // Utility methods
   private getBusinessLines(businessType: string, industry: string): string[] {
     const businessLineMap: Record<string, string[]> = {
-      'restaurant': ['HOSPITALITY', 'RETAIL'],
-      'healthcare': ['HEALTHCARE'],
-      'manufacturing': ['MANUFACTURING'],
-      'retail': ['RETAIL', 'TRADING'],
-      'consulting': ['CONSULTING', 'PROJECT_SERVICES']
+      restaurant: ['HOSPITALITY', 'RETAIL'],
+      healthcare: ['HEALTHCARE'],
+      manufacturing: ['MANUFACTURING'],
+      retail: ['RETAIL', 'TRADING'],
+      consulting: ['CONSULTING', 'PROJECT_SERVICES']
     }
     return businessLineMap[businessType] || ['OTHER']
   }
 
   private getRevenueRange(size: string): string {
     const revenueMap: Record<string, string> = {
-      'small': '1M_5M',
-      'medium': '5M_25M', 
-      'large': '25M_100M',
-      'enterprise': 'OVER_100M'
+      small: '1M_5M',
+      medium: '5M_25M',
+      large: '25M_100M',
+      enterprise: 'OVER_100M'
     }
     return revenueMap[size] || '1M_5M'
   }
 
   private getEmployeeCount(size: string): number {
     const employeeMap: Record<string, number> = {
-      'small': 25,
-      'medium': 75,
-      'large': 250,
-      'enterprise': 500
+      small: 25,
+      medium: 75,
+      large: 250,
+      enterprise: 500
     }
     return employeeMap[size] || 25
   }
 
   private getSalesChannel(businessType: string): string {
     const channelMap: Record<string, string> = {
-      'restaurant': 'RETAIL_STORES',
-      'healthcare': 'DIRECT_SALES',
-      'manufacturing': 'DISTRIBUTORS',
-      'retail': 'MIXED',
-      'consulting': 'DIRECT_SALES'
+      restaurant: 'RETAIL_STORES',
+      healthcare: 'DIRECT_SALES',
+      manufacturing: 'DISTRIBUTORS',
+      retail: 'MIXED',
+      consulting: 'DIRECT_SALES'
     }
     return channelMap[businessType] || 'DIRECT_SALES'
   }
 
   private getSalesProcessDescription(businessType: string): string {
     const processMap: Record<string, string> = {
-      'restaurant': 'Customers place orders at counter or table, payment processed immediately, kitchen fulfills order, service staff delivers to table.',
-      'healthcare': 'Patient scheduling, insurance verification, service delivery, billing and claims processing, payment collection.',
-      'manufacturing': 'Lead qualification, RFQ response, proposal submission, contract negotiation, production planning, delivery coordination.',
-      'retail': 'Product display, customer selection, point-of-sale transaction, inventory fulfillment, customer service.',
-      'consulting': 'Initial consultation, proposal development, contract signing, project delivery, invoice generation, payment follow-up.'
+      restaurant:
+        'Customers place orders at counter or table, payment processed immediately, kitchen fulfills order, service staff delivers to table.',
+      healthcare:
+        'Patient scheduling, insurance verification, service delivery, billing and claims processing, payment collection.',
+      manufacturing:
+        'Lead qualification, RFQ response, proposal submission, contract negotiation, production planning, delivery coordination.',
+      retail:
+        'Product display, customer selection, point-of-sale transaction, inventory fulfillment, customer service.',
+      consulting:
+        'Initial consultation, proposal development, contract signing, project delivery, invoice generation, payment follow-up.'
     }
-    return processMap[businessType] || 'Standard lead-to-cash process with customer onboarding, order processing, and payment collection.'
+    return (
+      processMap[businessType] ||
+      'Standard lead-to-cash process with customer onboarding, order processing, and payment collection.'
+    )
   }
 
   private getInventoryTrackingMethod(businessType: string): string {
     const trackingMap: Record<string, string> = {
-      'restaurant': 'BASIC_SOFTWARE',
-      'healthcare': 'BARCODE_SYSTEM',
-      'manufacturing': 'BARCODE_SYSTEM',
-      'retail': 'BARCODE_SYSTEM',
-      'consulting': 'NO_FORMAL'
+      restaurant: 'BASIC_SOFTWARE',
+      healthcare: 'BARCODE_SYSTEM',
+      manufacturing: 'BARCODE_SYSTEM',
+      retail: 'BARCODE_SYSTEM',
+      consulting: 'NO_FORMAL'
     }
     return trackingMap[businessType] || 'MANUAL_COUNT'
   }
 
   private getUserCount(size: string): number {
     const userMap: Record<string, number> = {
-      'small': 15,
-      'medium': 45,
-      'large': 150,
-      'enterprise': 300
+      small: 15,
+      medium: 45,
+      large: 150,
+      enterprise: 300
     }
     return userMap[size] || 15
   }
@@ -474,19 +523,21 @@ export async function POST(request: NextRequest) {
     }
 
     const startTime = Date.now()
-    
+
     // Create intelligent form completion service
     const formCompletion = new IntelligentFormCompletion(businessContext, organizationId)
-    
+
     // Generate intelligent answers
     const answers = await formCompletion.generateAnswers()
-    
+
     const completionTime = Date.now() - startTime
 
     // Log completion for monitoring
     console.log(`🧠 MCP Intelligent Form Completion completed in ${completionTime}ms`)
     console.log(`📊 Generated ${answers.length} intelligent answers`)
-    console.log(`🎯 Average confidence: ${(answers.reduce((sum, a) => sum + a.confidence, 0) / answers.length).toFixed(2)}`)
+    console.log(
+      `🎯 Average confidence: ${(answers.reduce((sum, a) => sum + a.confidence, 0) / answers.length).toFixed(2)}`
+    )
 
     return NextResponse.json({
       success: true,
@@ -500,12 +551,11 @@ export async function POST(request: NextRequest) {
         smart_code: 'HERA.MCP.API.FORM.COMPLETION.SUCCESS.v1'
       }
     })
-
   } catch (error) {
     console.error('Error in intelligent form completion:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to generate intelligent form completion',
         details: error instanceof Error ? error.message : 'Unknown error',
         smart_code: 'HERA.MCP.API.FORM.COMPLETION.ERROR.v1'

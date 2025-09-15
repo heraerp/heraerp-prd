@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         entity_subcategory: 'pizza',
         description: 'Classic pizza with tomato sauce, mozzarella, and fresh basil',
         properties: {
-          price: 18.50,
+          price: 18.5,
           prep_time: 20,
           ingredients: ['tomato sauce', 'mozzarella', 'fresh basil', 'olive oil'],
           allergens: ['gluten', 'dairy'],
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         entity_subcategory: 'salad',
         description: 'Romaine lettuce with Caesar dressing, croutons and parmesan',
         properties: {
-          price: 14.50,
+          price: 14.5,
           prep_time: 10,
           ingredients: ['romaine lettuce', 'caesar dressing', 'croutons', 'parmesan'],
           allergens: ['gluten', 'dairy', 'eggs'],
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         entity_subcategory: 'pasta',
         description: 'Traditional lasagna with meat sauce, bechamel and cheese',
         properties: {
-          price: 22.00,
+          price: 22.0,
           prep_time: 25,
           ingredients: ['pasta sheets', 'ground beef', 'tomato sauce', 'bechamel', 'mozzarella'],
           allergens: ['gluten', 'dairy'],
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         entity_subcategory: 'traditional',
         description: 'Classic Italian dessert with coffee, mascarpone and cocoa',
         properties: {
-          price: 8.50,
+          price: 8.5,
           prep_time: 5,
           ingredients: ['ladyfingers', 'espresso', 'mascarpone', 'eggs', 'cocoa'],
           allergens: ['gluten', 'dairy', 'eggs'],
@@ -159,12 +159,8 @@ export async function POST(request: NextRequest) {
       message: `Created ${createdItems.length} menu items for Mario's Restaurant`,
       data: createdItems
     })
-
   } catch (error) {
     console.error('Seed menu error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

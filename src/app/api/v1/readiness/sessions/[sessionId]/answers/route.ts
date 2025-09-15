@@ -4,7 +4,8 @@ import { verifyAuth } from '@/lib/auth/verify-auth'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // POST /api/v1/readiness/sessions/:sessionId/answers - Save answer
@@ -21,18 +22,12 @@ export async function POST(
 
     const { sessionId } = await params
     const body = await request.json()
-    const { 
-      question_id, 
-      question_text, 
-      answer_value, 
-      answer_type, 
-      category,
-      organization_id 
-    } = body
+    const { question_id, question_text, answer_value, answer_type, category, organization_id } =
+      body
 
     const orgId = organization_id || '550e8400-e29b-41d4-a716-446655440000'
     console.log('📝 Saving answer with org ID:', orgId)
-    
+
     if (!orgId) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
@@ -45,7 +40,7 @@ export async function POST(
       .order('line_number', { ascending: false })
       .limit(1)
 
-    const lineNumber = (existingLines && existingLines[0]?.line_number || 0) + 1
+    const lineNumber = ((existingLines && existingLines[0]?.line_number) || 0) + 1
 
     // Create answer as transaction line
     const answerData = {
@@ -77,10 +72,7 @@ export async function POST(
 
     if (answerError) {
       console.error('Failed to save answer:', answerError)
-      return NextResponse.json(
-        { error: 'Failed to save answer' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to save answer' }, { status: 500 })
     }
 
     // Update session progress
@@ -93,8 +85,8 @@ export async function POST(
     if (session) {
       const currentProgress = (session.metadata as any)?.completionRate || 0
       const totalQuestions = (session.metadata as any)?.totalQuestions || 100
-      const newProgress = Math.min(100, currentProgress + (100 / totalQuestions))
-      
+      const newProgress = Math.min(100, currentProgress + 100 / totalQuestions)
+
       await supabase
         .from('universal_transactions')
         .update({
@@ -113,10 +105,7 @@ export async function POST(
     })
   } catch (error) {
     console.error('Failed to save answer:', error)
-    return NextResponse.json(
-      { error: 'Failed to save answer' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to save answer' }, { status: 500 })
   }
 }
 
@@ -134,10 +123,11 @@ export async function GET(
 
     const { sessionId } = await params
     const { searchParams } = new URL(request.url)
-    const organizationId = searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
-    
+    const organizationId =
+      searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
+
     console.log('📖 Fetching answers for session:', sessionId, 'org:', organizationId)
-    
+
     if (!organizationId) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
@@ -151,10 +141,7 @@ export async function GET(
 
     if (error) {
       console.error('Failed to fetch answers:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch answers' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch answers' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -163,9 +150,6 @@ export async function GET(
     })
   } catch (error) {
     console.error('Failed to fetch answers:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch answers' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch answers' }, { status: 500 })
   }
 }

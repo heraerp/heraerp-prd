@@ -1,6 +1,13 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+  useCallback
+} from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabaseClient as supabase } from '@/lib/supabase-client'
 import { useRouter, usePathname } from 'next/navigation'
@@ -31,17 +38,17 @@ interface MultiOrgAuthContext {
   session: Session | null
   isAuthenticated: boolean
   isLoading: boolean
-  
+
   // Organizations
   organizations: Organization[]
   currentOrganization: Organization | null
   isLoadingOrgs: boolean
-  
+
   // Actions
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   register: (email: string, password: string, userData?: any) => Promise<void>
-  
+
   // Organization management
   createOrganization: (data: {
     organization_name: string
@@ -50,7 +57,7 @@ interface MultiOrgAuthContext {
   }) => Promise<Organization>
   switchOrganization: (orgId: string) => Promise<void>
   refreshOrganizations: () => Promise<void>
-  
+
   // Utilities
   checkSubdomainAvailability: (subdomain: string) => Promise<boolean>
   getOrganizationBySubdomain: (subdomain: string) => Organization | null
@@ -67,44 +74,44 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
   const [user, setUser] = useState<DualUser | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  
+
   // Organization state
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [currentOrganization, setCurrentOrganization] = useState<Organization | null>(null)
   const [isLoadingOrgs, setIsLoadingOrgs] = useState(false)
-  
+
   const router = useRouter()
   const pathname = usePathname()
-  
+
   // Get subdomain from URL (works for both dev and production)
   const getSubdomain = () => {
     if (typeof window === 'undefined') return null
-    
+
     const hostname = window.location.hostname
     const pathname = window.location.pathname
-    
+
     // Development: check for /~subdomain pattern on localhost
     if (hostname === 'localhost' && pathname.startsWith('/~')) {
       const match = pathname.match(/^\/~([^\/]+)/)
       return match ? match[1] : null
     }
-    
+
     // Development: check for *.lvh.me domains (resolves to 127.0.0.1)
     if (hostname.endsWith('.lvh.me')) {
       return hostname.split('.')[0]
     }
-    
+
     // Development: check for *.localhost domains
     if (hostname.endsWith('.localhost')) {
       return hostname.split('.')[0]
     }
-    
+
     // Production: check actual subdomain (e.g., mario.heraerp.com)
     const parts = hostname.split('.')
     if (parts.length >= 3 || (parts.length === 2 && !parts[0].includes('localhost'))) {
       return parts[0]
     }
-    
+
     return null
   }
 
@@ -114,9 +121,11 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
 
     try {
       setIsLoadingOrgs(true)
-      
+
       // Get auth token
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      const {
+        data: { session: currentSession }
+      } = await supabase.auth.getSession()
       const authToken = currentSession?.access_token
 
       if (!authToken) {
@@ -127,7 +136,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
       // Fetch user's organizations
       const response = await fetch('/api/v1/organizations', {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -135,22 +144,29 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
       if (response.ok) {
         const data = await response.json()
         console.log('Organizations API response:', data)
-        
+
         // Handle both new format (with success property) and direct array response
-        const orgs = data.success ? data.organizations : data.organizations ? data.organizations : Array.isArray(data) ? data : []
+        const orgs = data.success
+          ? data.organizations
+          : data.organizations
+            ? data.organizations
+            : Array.isArray(data)
+              ? data
+              : []
         console.log('Parsed organizations:', orgs)
-        
+
         if (orgs && orgs.length > 0) {
           setOrganizations(orgs)
-          
+
           // Set current organization based on subdomain or first org
           const subdomain = getSubdomain()
           if (subdomain) {
             // Check settings.subdomain first, then fallback to metadata.subdomain for backwards compatibility
-            const org = orgs.find((o: Organization) => 
-              o.settings?.subdomain === subdomain || 
-              (o.metadata as any)?.subdomain === subdomain ||
-              o.subdomain === subdomain
+            const org = orgs.find(
+              (o: Organization) =>
+                o.settings?.subdomain === subdomain ||
+                (o.metadata as any)?.subdomain === subdomain ||
+                o.subdomain === subdomain
             )
             if (org) {
               setCurrentOrganization(org)
@@ -172,109 +188,109 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
             }
           }
         } else {
-            // No organizations found, check if this is a demo user
-            console.log('No organizations found from API, checking for demo user')
-            const userEmail = authUser.email || ''
-            console.log('User email:', userEmail)
-            
-            // Universal demo user has access to all demo organizations
-            if (userEmail === 'demo@heraerp.com') {
-              const allDemoOrgs: Organization[] = [
-                {
-                  id: '519d9c67-6fa4-4c73-9c56-6d132a6649c1',
-                  name: 'Bella Beauty Salon (Demo)',
-                  subdomain: 'demo-salon',
-                  type: 'salon',
-                  subscription_plan: 'demo',
-                  role: 'owner',
-                  permissions: ['*'],
-                  is_active: true
-                },
-                {
-                  id: '6c3bc585-eec9-40a2-adc5-a89bfb398a16',
-                  name: 'Kochi Ice Cream Manufacturing (Demo)',
-                  subdomain: 'demo-icecream',
-                  type: 'icecream',
-                  subscription_plan: 'demo',
-                  role: 'owner',
-                  permissions: ['*'],
-                  is_active: true
-                },
-                {
-                  id: '3740d358-f283-47e8-8055-852b67eee1a6',
-                  name: "Mario's Restaurant (Demo)",
-                  subdomain: 'demo-restaurant',
-                  type: 'restaurant',
-                  subscription_plan: 'demo',
-                  role: 'owner',
-                  permissions: ['*'],
-                  is_active: true
-                },
-                {
-                  id: '037aac11-2323-4a71-8781-88a8454c9695',
-                  name: 'Dr. Smith Family Practice (Demo)',
-                  subdomain: 'demo-healthcare',
-                  type: 'healthcare',
-                  subscription_plan: 'demo',
-                  role: 'owner',
-                  permissions: ['*'],
-                  is_active: true
-                }
-              ]
-              
-              setOrganizations(allDemoOrgs)
-              
-              // Set current organization based on subdomain or pathname
-              const subdomain = getSubdomain()
-              const pathname = window.location.pathname
-              let selectedOrg: Organization | null = null
-              
-              // Check subdomain first
-              if (subdomain) {
-                selectedOrg = allDemoOrgs.find(o => o.subdomain === subdomain) || null
-              }
-              
-              // If no subdomain match, check pathname for demo routes
-              if (!selectedOrg && pathname) {
-                const basePath = pathname.split('/')[1]
-                const demoRouteMap: Record<string, string> = {
-                  'salon': 'demo-salon',
-                  'salon-data': 'demo-salon',
-                  'icecream': 'demo-icecream',
-                  'restaurant': 'demo-restaurant',
-                  'healthcare': 'demo-healthcare'
-                }
-                
-                if (demoRouteMap[basePath]) {
-                  selectedOrg = allDemoOrgs.find(o => o.subdomain === demoRouteMap[basePath]) || null
-                }
-              }
-              
-              // Set the selected organization or default to first one
-              if (selectedOrg) {
-                setCurrentOrganization(selectedOrg)
-                localStorage.setItem('current-organization-id', selectedOrg.id)
-              } else if (allDemoOrgs.length > 0) {
-                setCurrentOrganization(allDemoOrgs[0])
-                localStorage.setItem('current-organization-id', allDemoOrgs[0].id)
-              }
-            } else if (process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) {
-              // Use default organization for development
-              console.log('No organizations found, using default organization for development')
-              const defaultOrg: Organization = {
-                id: process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
-                name: 'Dubai Luxury Salon & Spa',
-                subdomain: 'salon',
+          // No organizations found, check if this is a demo user
+          console.log('No organizations found from API, checking for demo user')
+          const userEmail = authUser.email || ''
+          console.log('User email:', userEmail)
+
+          // Universal demo user has access to all demo organizations
+          if (userEmail === 'demo@heraerp.com') {
+            const allDemoOrgs: Organization[] = [
+              {
+                id: '519d9c67-6fa4-4c73-9c56-6d132a6649c1',
+                name: 'Bella Beauty Salon (Demo)',
+                subdomain: 'demo-salon',
                 type: 'salon',
-                subscription_plan: 'professional',
-                role: 'admin',
+                subscription_plan: 'demo',
+                role: 'owner',
+                permissions: ['*'],
+                is_active: true
+              },
+              {
+                id: '6c3bc585-eec9-40a2-adc5-a89bfb398a16',
+                name: 'Kochi Ice Cream Manufacturing (Demo)',
+                subdomain: 'demo-icecream',
+                type: 'icecream',
+                subscription_plan: 'demo',
+                role: 'owner',
+                permissions: ['*'],
+                is_active: true
+              },
+              {
+                id: '3740d358-f283-47e8-8055-852b67eee1a6',
+                name: "Mario's Restaurant (Demo)",
+                subdomain: 'demo-restaurant',
+                type: 'restaurant',
+                subscription_plan: 'demo',
+                role: 'owner',
+                permissions: ['*'],
+                is_active: true
+              },
+              {
+                id: '037aac11-2323-4a71-8781-88a8454c9695',
+                name: 'Dr. Smith Family Practice (Demo)',
+                subdomain: 'demo-healthcare',
+                type: 'healthcare',
+                subscription_plan: 'demo',
+                role: 'owner',
                 permissions: ['*'],
                 is_active: true
               }
-              setOrganizations([defaultOrg])
-              setCurrentOrganization(defaultOrg)
-              localStorage.setItem('current-organization-id', defaultOrg.id)
+            ]
+
+            setOrganizations(allDemoOrgs)
+
+            // Set current organization based on subdomain or pathname
+            const subdomain = getSubdomain()
+            const pathname = window.location.pathname
+            let selectedOrg: Organization | null = null
+
+            // Check subdomain first
+            if (subdomain) {
+              selectedOrg = allDemoOrgs.find(o => o.subdomain === subdomain) || null
             }
+
+            // If no subdomain match, check pathname for demo routes
+            if (!selectedOrg && pathname) {
+              const basePath = pathname.split('/')[1]
+              const demoRouteMap: Record<string, string> = {
+                salon: 'demo-salon',
+                'salon-data': 'demo-salon',
+                icecream: 'demo-icecream',
+                restaurant: 'demo-restaurant',
+                healthcare: 'demo-healthcare'
+              }
+
+              if (demoRouteMap[basePath]) {
+                selectedOrg = allDemoOrgs.find(o => o.subdomain === demoRouteMap[basePath]) || null
+              }
+            }
+
+            // Set the selected organization or default to first one
+            if (selectedOrg) {
+              setCurrentOrganization(selectedOrg)
+              localStorage.setItem('current-organization-id', selectedOrg.id)
+            } else if (allDemoOrgs.length > 0) {
+              setCurrentOrganization(allDemoOrgs[0])
+              localStorage.setItem('current-organization-id', allDemoOrgs[0].id)
+            }
+          } else if (process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID) {
+            // Use default organization for development
+            console.log('No organizations found, using default organization for development')
+            const defaultOrg: Organization = {
+              id: process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID,
+              name: 'Dubai Luxury Salon & Spa',
+              subdomain: 'salon',
+              type: 'salon',
+              subscription_plan: 'professional',
+              role: 'admin',
+              permissions: ['*'],
+              is_active: true
+            }
+            setOrganizations([defaultOrg])
+            setCurrentOrganization(defaultOrg)
+            localStorage.setItem('current-organization-id', defaultOrg.id)
+          }
         }
       }
     } catch (error) {
@@ -308,7 +324,9 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     const initializeAuth = async () => {
       try {
         // Get initial session
-        const { data: { session: initialSession } } = await supabase.auth.getSession()
+        const {
+          data: { session: initialSession }
+        } = await supabase.auth.getSession()
 
         if (initialSession) {
           setSession(initialSession)
@@ -347,7 +365,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
   const login = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     })
 
     if (error) {
@@ -375,8 +393,8 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
       email,
       password,
       options: {
-        data: userData,
-      },
+        data: userData
+      }
     })
 
     if (error) {
@@ -399,7 +417,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     const response = await fetch('/api/v1/organizations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${session.access_token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
@@ -438,14 +456,14 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     if (org) {
       setCurrentOrganization(org)
       localStorage.setItem('current-organization-id', org.id)
-      
+
       // For demo organizations, don't redirect - just update state
       // The app will handle the organization context change
       if (org.subdomain && org.subdomain.startsWith('demo-')) {
         console.log(`Switched to demo organization: ${org.name}`)
         return
       }
-      
+
       // In production, redirect to organization subdomain
       if (process.env.NODE_ENV === 'production') {
         window.location.href = `https://${org.subdomain}.heraerp.com/org/salon`
@@ -454,7 +472,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
         const currentHost = window.location.hostname
         const currentPort = window.location.port
         const protocol = window.location.protocol
-        
+
         // Use .lvh.me domains which resolve to 127.0.0.1
         const portSuffix = currentPort ? `:${currentPort}` : ''
         window.location.href = `${protocol}//${org.subdomain}.lvh.me${portSuffix}/org/salon`
@@ -470,15 +488,18 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
 
   const checkSubdomainAvailability = useCallback(async (subdomain: string): Promise<boolean> => {
     try {
-      const response = await fetch(`/api/v1/organizations/check-subdomain?subdomain=${encodeURIComponent(subdomain)}`, {
-        method: 'GET'
-      })
-      
+      const response = await fetch(
+        `/api/v1/organizations/check-subdomain?subdomain=${encodeURIComponent(subdomain)}`,
+        {
+          method: 'GET'
+        }
+      )
+
       if (response.ok) {
         const data = await response.json()
         return data.available
       }
-      
+
       return false
     } catch (error) {
       console.error('Error checking subdomain:', error)
@@ -505,7 +526,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
     switchOrganization,
     refreshOrganizations,
     checkSubdomainAvailability,
-    getOrganizationBySubdomain,
+    getOrganizationBySubdomain
   }
 
   return (
@@ -526,9 +547,9 @@ export const useMultiOrgAuth = () => {
 // Utility function to get subdomain from request
 function getSubdomainFromRequest(): string | null {
   if (typeof window === 'undefined') return null
-  
+
   const hostname = window.location.hostname
-  
+
   // Local development
   if (hostname.includes('localhost')) {
     // Check for simulated subdomain in path
@@ -538,13 +559,13 @@ function getSubdomainFromRequest(): string | null {
     }
     return null
   }
-  
+
   // Production
   const parts = hostname.split('.')
   if (parts.length >= 3) {
     return parts[0]
   }
-  
+
   return null
 }
 

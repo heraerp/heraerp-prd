@@ -5,9 +5,11 @@ This directory contains admin UI components for managing Universal Configuration
 ## Components
 
 ### RulesList
+
 A comprehensive table view component for displaying and managing configuration rules.
 
 **Features:**
+
 - Advanced search and filtering capabilities
 - Sortable columns with visual indicators
 - Performance metrics (success rate, application count, errors)
@@ -18,21 +20,24 @@ A comprehensive table view component for displaying and managing configuration r
 - Full dark mode support
 
 **Usage:**
-```tsx
-import { RulesList } from '@/components/admin/config';
 
-<RulesList
-  onEditRule={(rule) => console.log('Edit:', rule)}
-  onDeleteRule={(ruleId) => console.log('Delete:', ruleId)}
-  onViewRule={(rule) => console.log('View:', rule)}
+```tsx
+import { RulesList } from '@/components/admin/config'
+
+;<RulesList
+  onEditRule={rule => console.log('Edit:', rule)}
+  onDeleteRule={ruleId => console.log('Delete:', ruleId)}
+  onViewRule={rule => console.log('View:', rule)}
   onCreateRule={() => console.log('Create new rule')}
 />
 ```
 
 ### RuleEditor
+
 A comprehensive form component for creating and editing configuration rules.
 
 **Features:**
+
 - Tabbed interface (Basic Info, Conditions, Actions, Configuration)
 - Dynamic condition and action builders
 - Real-time smart code generation
@@ -42,20 +47,23 @@ A comprehensive form component for creating and editing configuration rules.
 - Full accessibility support
 
 **Usage:**
-```tsx
-import { RuleEditor } from '@/components/admin/config';
 
-<RuleEditor
+```tsx
+import { RuleEditor } from '@/components/admin/config'
+
+;<RuleEditor
   rule={existingRule} // Optional for editing
-  onSave={(rule) => console.log('Save:', rule)}
+  onSave={rule => console.log('Save:', rule)}
   onCancel={() => console.log('Cancel')}
 />
 ```
 
 ### RulePreview
+
 An advanced preview and testing component for configuration rules.
 
 **Features:**
+
 - Rule overview with visual condition/action display
 - Interactive testing with custom data input
 - Real-time execution simulation
@@ -65,13 +73,11 @@ An advanced preview and testing component for configuration rules.
 - JSON formatting and validation
 
 **Usage:**
-```tsx
-import { RulePreview } from '@/components/admin/config';
 
-<RulePreview
-  rule={ruleToPreview}
-  onClose={() => console.log('Close preview')}
-/>
+```tsx
+import { RulePreview } from '@/components/admin/config'
+
+;<RulePreview rule={ruleToPreview} onClose={() => console.log('Close preview')} />
 ```
 
 ## Design System
@@ -79,26 +85,30 @@ import { RulePreview } from '@/components/admin/config';
 All components follow HERA's glassmorphism design system with:
 
 ### Glass Effects
+
 - `backdrop-blur-xl` for glass morphism effect
 - Semi-transparent backgrounds: `bg-white/50 dark:bg-gray-900/50`
 - Subtle borders: `border-white/20 dark:border-gray-700/30`
 - Layered depth with box shadows
 
 ### Dark Mode Support
+
 - Automatic theme switching with proper contrast
 - HERA DNA text color fixes: `!text-gray-900 dark:!text-gray-100`
 - Dark mode optimized glass effects
 - Consistent component theming
 
 ### Color System
+
 - **Primary**: Blue-to-cyan gradients (`from-blue-600 to-cyan-600`)
-- **Status Colors**: 
+- **Status Colors**:
   - Active: Emerald (`bg-emerald-100 text-emerald-800`)
   - Warning: Amber (`bg-amber-100 text-amber-800`)
   - Error: Red (`bg-red-100 text-red-800`)
   - Info: Blue (`bg-blue-100 text-blue-800`)
 
 ### Typography
+
 - Proper text contrast with `!important` modifiers where needed
 - HERA brand font stack with Inter fallback
 - Semantic heading hierarchy
@@ -107,25 +117,28 @@ All components follow HERA's glassmorphism design system with:
 ## Universal Configuration Rules
 
 ### Rule Structure
+
 ```typescript
 interface ConfigRule {
-  id?: string;
-  name: string;
-  category: string;
-  type: 'validation' | 'transformation' | 'business_logic' | 'integration';
-  scope: 'global' | 'organization' | 'entity_type' | 'specific';
-  status: 'active' | 'inactive' | 'draft' | 'deprecated';
-  priority: number; // 1-10 priority scale
-  description: string;
-  smart_code: string; // HERA smart code format
-  conditions: ConditionArray;
-  actions: ActionArray;
-  configuration: ConfigObject;
+  id?: string
+  name: string
+  category: string
+  type: 'validation' | 'transformation' | 'business_logic' | 'integration'
+  scope: 'global' | 'organization' | 'entity_type' | 'specific'
+  status: 'active' | 'inactive' | 'draft' | 'deprecated'
+  priority: number // 1-10 priority scale
+  description: string
+  smart_code: string // HERA smart code format
+  conditions: ConditionArray
+  actions: ActionArray
+  configuration: ConfigObject
 }
 ```
 
 ### Smart Code Format
+
 Rules follow HERA's smart code convention:
+
 ```
 HERA.{CATEGORY}.{TYPE}.{NAME}.v{VERSION}
 ```
@@ -133,11 +146,13 @@ HERA.{CATEGORY}.{TYPE}.{NAME}.v{VERSION}
 Example: `HERA.CRM.VALIDATION.CREDIT.LIMIT.v1`
 
 ### Condition Operators
+
 - **Comparison**: `==`, `!=`, `>`, `<`, `>=`, `<=`
 - **String**: `contains`, `starts_with`, `ends_with`, `regex`
 - **List**: `in`, `not_in`
 
 ### Action Types
+
 - **validate**: Data validation actions
 - **transform**: Data transformation operations
 - **calculate**: Mathematical calculations
@@ -150,16 +165,19 @@ Example: `HERA.CRM.VALIDATION.CREDIT.LIMIT.v1`
 These components integrate with HERA's universal architecture:
 
 ### Multi-Tenant Support
+
 - Organization-based rule scoping
 - Proper data isolation
 - Context-aware rule application
 
 ### Universal API Integration
+
 - RESTful endpoints for CRUD operations
 - Real-time validation and testing
 - Performance monitoring integration
 
 ### Smart Code Integration
+
 - Automatic smart code generation
 - Business intelligence context
 - Cross-module rule relationships
@@ -167,12 +185,14 @@ These components integrate with HERA's universal architecture:
 ## Performance Considerations
 
 ### Optimization Features
+
 - Lazy loading for large rule sets
 - Virtualized table rows for performance
 - Debounced search and filtering
 - Optimistic UI updates
 
 ### Monitoring Integration
+
 - Rule execution performance tracking
 - Success rate analytics
 - Error rate monitoring
@@ -181,6 +201,7 @@ These components integrate with HERA's universal architecture:
 ## Accessibility
 
 All components follow WCAG AA guidelines:
+
 - Proper ARIA labels and roles
 - Keyboard navigation support
 - High contrast mode compatibility
@@ -190,6 +211,7 @@ All components follow WCAG AA guidelines:
 ## Testing
 
 Components include comprehensive testing capabilities:
+
 - Unit tests for all component logic
 - Integration tests with mock API
 - Accessibility testing with axe-core

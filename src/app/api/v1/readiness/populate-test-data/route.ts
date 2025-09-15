@@ -3,7 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // Sample questions for testing
@@ -15,7 +16,7 @@ const sampleQuestions = [
   { id: 'q5', text: 'Do you have integration capabilities?', category: 'technology' },
   { id: 'q6', text: 'Are your KPIs clearly defined?', category: 'strategy' },
   { id: 'q7', text: 'Do you have change management processes?', category: 'change_management' },
-  { id: 'q8', text: 'Is data security a priority?', category: 'data_management' },
+  { id: 'q8', text: 'Is data security a priority?', category: 'data_management' }
 ]
 
 // POST /api/v1/readiness/populate-test-data - Populate test answers
@@ -56,15 +57,11 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      return supabase
-        .from('universal_transaction_lines')
-        .insert([answerData])
-        .select()
-        .single()
+      return supabase.from('universal_transaction_lines').insert([answerData]).select().single()
     })
 
     const results = await Promise.all(answerPromises)
-    
+
     // Calculate category scores
     const categoryScores: Record<string, { total: number; count: number; score: number }> = {}
     sampleQuestions.forEach((q, i) => {
@@ -74,13 +71,15 @@ export async function POST(request: NextRequest) {
       }
       categoryScores[q.category].total += score
       categoryScores[q.category].count += 1
-      categoryScores[q.category].score = Math.round(categoryScores[q.category].total / categoryScores[q.category].count)
+      categoryScores[q.category].score = Math.round(
+        categoryScores[q.category].total / categoryScores[q.category].count
+      )
     })
 
     // Update session with completion data
     const overallScore = Math.round(
-      Object.values(categoryScores).reduce((sum, cat) => sum + cat.score, 0) / 
-      Object.keys(categoryScores).length
+      Object.values(categoryScores).reduce((sum, cat) => sum + cat.score, 0) /
+        Object.keys(categoryScores).length
     )
 
     await supabase
@@ -114,15 +113,15 @@ export async function POST(request: NextRequest) {
       categoryScores
     }
 
-    await supabase
-      .from('core_dynamic_data')
-      .insert([{
+    await supabase.from('core_dynamic_data').insert([
+      {
         organization_id: orgId,
         entity_id: session_id,
         field_name: 'ai_insights',
         field_value_text: JSON.stringify(insights),
         smart_code: 'HERA.ERP.Readiness.Insights.V1'
-      }])
+      }
+    ])
 
     return NextResponse.json({
       success: true,

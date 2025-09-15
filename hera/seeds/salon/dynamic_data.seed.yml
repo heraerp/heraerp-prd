@@ -1,0 +1,22 @@
+smart_code: HERA.SALON.SEED.DYNAMIC_DATA.v1
+context:
+  organization_code: ORG-HO-DXB
+rows:
+  # Price list
+  - { entity_slug: price_list:PL-AED-STD, key_slug: price_list.currency, value: "AED", value_type: text }
+
+  # Services
+  - { entity_slug: service:HAIRCUT_BASIC, key_slug: service.duration_min, value: 45, value_type: number }
+  - { entity_slug: service:HAIRCUT_BASIC, key_slug: service.base_fee,     value: 50, value_type: number }
+  - { entity_slug: service:HAIR_COLOR,    key_slug: service.duration_min, value: 120, value_type: number }
+  - { entity_slug: service:HAIR_COLOR,    key_slug: service.base_fee,     value: 200, value_type: number }
+
+  # Products
+  - { entity_slug: product:SHAMPOO_RET, key_slug: product.sku,            value: "SKU-RET-001", value_type: text }
+  - { entity_slug: product:SHAMPOO_RET, key_slug: product.category,       value: "retail", value_type: text }
+  - { entity_slug: product:SHAMPOO_RET, key_slug: product.reorder_level,  value: 50, value_type: number }
+
+  - { entity_slug: product:DYE_COLOR,   key_slug: product.sku,            value: "SKU-DYE-001", value_type: text }
+  - { entity_slug: product:DYE_COLOR,   key_slug: product.category,       value: "consumable", value_type: text }
+  - { entity_slug: product:DYE_COLOR,   key_slug: product.reorder_level,  value: 200, value_type: number }
+

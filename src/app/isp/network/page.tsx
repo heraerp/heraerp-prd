@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
-  Network, 
-  Wifi, 
-  Signal, 
+import {
+  Network,
+  Wifi,
+  Signal,
   Activity,
   Server,
   Globe,
@@ -22,7 +22,20 @@ import {
   Edit2,
   Trash2
 } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, RadialBarChart, RadialBar, PolarAngleAxis } from 'recharts'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  RadialBarChart,
+  RadialBar,
+  PolarAngleAxis
+} from 'recharts'
 import { ISPModal } from '@/components/isp/ISPModal'
 import { ISPTable } from '@/components/isp/ISPTable'
 import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
@@ -108,14 +121,22 @@ function NetworkCard({ title, value, subtitle, icon: Icon, status, gradient }: N
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
+      <div
+        className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
+      />
       <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:bg-accent/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
           </div>
-          <div className={`flex items-center space-x-1 text-xs font-medium ${statusColors[status]}`}>
-            {status === 'operational' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+          <div
+            className={`flex items-center space-x-1 text-xs font-medium ${statusColors[status]}`}
+          >
+            {status === 'operational' ? (
+              <CheckCircle className="h-4 w-4" />
+            ) : (
+              <AlertCircle className="h-4 w-4" />
+            )}
             <span className="capitalize">{status}</span>
           </div>
         </div>
@@ -155,28 +176,28 @@ export default function NetworkPage() {
   })
 
   const [regionalData, setRegionalData] = useState([
-    { 
-      name: 'Thiruvananthapuram', 
+    {
+      name: 'Thiruvananthapuram',
       code: 'TVM',
-      uptime: 99.8, 
+      uptime: 99.8,
       subscribers: 18000,
       towers: 45,
       bandwidth_utilization: 72,
       latency: 12
     },
-    { 
-      name: 'Kochi', 
+    {
+      name: 'Kochi',
       code: 'COK',
-      uptime: 99.7, 
+      uptime: 99.7,
       subscribers: 15000,
       towers: 38,
       bandwidth_utilization: 68,
       latency: 14
     },
-    { 
-      name: 'Kozhikode', 
+    {
+      name: 'Kozhikode',
       code: 'CCJ',
-      uptime: 99.9, 
+      uptime: 99.9,
       subscribers: 12832,
       towers: 32,
       bandwidth_utilization: 65,
@@ -204,27 +225,25 @@ export default function NetworkPage() {
   const handleAdd = async () => {
     try {
       const towerCode = `TWR-${String((towers.length || 0) + 1).padStart(3, '0')}`
-      
-      const { data, error } = await supabase
-        .from('core_entities')
-        .insert({
-          organization_id: INDIA_VISION_ORG_ID,
-          entity_type: 'network_tower',
-          entity_name: formData.name,
-          entity_code: towerCode,
-          metadata: {
-            location: formData.location,
-            region: formData.region,
-            latitude: formData.latitude,
-            longitude: formData.longitude,
-            status: formData.status,
-            type: formData.type,
-            capacity: formData.capacity,
-            current_load: 0,
-            last_maintenance: new Date().toISOString().split('T')[0],
-            subscribers: 0
-          }
-  })
+
+      const { data, error } = await supabase.from('core_entities').insert({
+        organization_id: INDIA_VISION_ORG_ID,
+        entity_type: 'network_tower',
+        entity_name: formData.name,
+        entity_code: towerCode,
+        metadata: {
+          location: formData.location,
+          region: formData.region,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          status: formData.status,
+          type: formData.type,
+          capacity: formData.capacity,
+          current_load: 0,
+          last_maintenance: new Date().toISOString().split('T')[0],
+          subscribers: 0
+        }
+      })
 
       // Create new tower entity
 
@@ -307,11 +326,18 @@ export default function NetworkPage() {
 
         if (error) throw error
 
-        setTowers(towers.map(t => 
-          t.id === selectedTower.id 
-            ? { ...t, ...formData, currentLoad: selectedTower.currentLoad, subscribers: selectedTower.subscribers }
-            : t
-        ))
+        setTowers(
+          towers.map(t =>
+            t.id === selectedTower.id
+              ? {
+                  ...t,
+                  ...formData,
+                  currentLoad: selectedTower.currentLoad,
+                  subscribers: selectedTower.subscribers
+                }
+              : t
+          )
+        )
         setShowEditModal(false)
         setSelectedTower(null)
         resetForm()
@@ -338,10 +364,7 @@ export default function NetworkPage() {
           throw new Error('Tower not found')
         }
 
-        const { error } = await supabase
-          .from('core_entities')
-          .delete()
-          .eq('id', entities.id)
+        const { error } = await supabase.from('core_entities').delete().eq('id', entities.id)
 
         if (error) throw error
 
@@ -407,7 +430,7 @@ export default function NetworkPage() {
       if (error) throw error
 
       if (towerEntities) {
-        const loadedTowers = towerEntities.map((entity) => ({
+        const loadedTowers = towerEntities.map(entity => ({
           id: entity.entity_code || entity.id,
           name: entity.entity_name,
           location: entity.metadata?.location || '',
@@ -418,7 +441,8 @@ export default function NetworkPage() {
           type: entity.metadata?.type || 'primary',
           capacity: entity.metadata?.capacity || 5000,
           currentLoad: entity.metadata?.current_load || 0,
-          lastMaintenance: entity.metadata?.last_maintenance || new Date().toISOString().split('T')[0],
+          lastMaintenance:
+            entity.metadata?.last_maintenance || new Date().toISOString().split('T')[0],
           subscribers: entity.metadata?.subscribers || 0
         }))
         setTowers(loadedTowers)
@@ -450,21 +474,27 @@ export default function NetworkPage() {
           overall_uptime: networkMetrics.metadata.overall_uptime || 99.8,
           total_bandwidth_gbps: networkMetrics.metadata.total_bandwidth_gbps || 400,
           peak_utilization: networkMetrics.metadata.peak_utilization || 78,
-          total_towers: networkMetrics.metadata.regions?.reduce((sum: number, r: any) => sum + (r.towers || 0), 0) || 115,
+          total_towers:
+            networkMetrics.metadata.regions?.reduce(
+              (sum: number, r: any) => sum + (r.towers || 0),
+              0
+            ) || 115,
           active_connections: 42156,
           service_tickets: 23
         })
 
         if (networkMetrics.metadata.regions) {
-          setRegionalData(networkMetrics.metadata.regions.map((region: any) => ({
-            name: region.name,
-            code: region.code,
-            uptime: region.uptime,
-            subscribers: region.subscribers,
-            towers: region.towers || 0,
-            bandwidth_utilization: region.bandwidth_utilization || 70,
-            latency: 10 + Math.random() * 5
-          })))
+          setRegionalData(
+            networkMetrics.metadata.regions.map((region: any) => ({
+              name: region.name,
+              code: region.code,
+              uptime: region.uptime,
+              subscribers: region.subscribers,
+              towers: region.towers || 0,
+              bandwidth_utilization: region.bandwidth_utilization || 70,
+              latency: 10 + Math.random() * 5
+            }))
+          )
         }
       }
     } catch (error) {
@@ -481,7 +511,9 @@ export default function NetworkPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Network Operations Center
           </h1>
-          <p className="text-white/60 mt-1">Real-time network monitoring and infrastructure management</p>
+          <p className="text-white/60 mt-1">
+            Real-time network monitoring and infrastructure management
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <div className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/20">
@@ -493,7 +525,7 @@ export default function NetworkPage() {
             </div>
             <span className="text-sm font-medium text-emerald-400">All Systems Operational</span>
           </div>
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
           >
@@ -566,7 +598,9 @@ export default function NetworkPage() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/60">Subscribers</span>
-                  <span className="text-sm font-medium text-white">{region.subscribers.toLocaleString()}</span>
+                  <span className="text-sm font-medium text-white">
+                    {region.subscribers.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/60">Towers</span>
@@ -574,17 +608,21 @@ export default function NetworkPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/60">Bandwidth Usage</span>
-                  <span className="text-sm font-medium text-white">{region.bandwidth_utilization}%</span>
+                  <span className="text-sm font-medium text-white">
+                    {region.bandwidth_utilization}%
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-white/60">Avg Latency</span>
-                  <span className="text-sm font-medium text-white">{region.latency.toFixed(1)}ms</span>
+                  <span className="text-sm font-medium text-white">
+                    {region.latency.toFixed(1)}ms
+                  </span>
                 </div>
 
                 {/* Bandwidth usage bar */}
                 <div className="mt-4">
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full transition-all duration-500"
                       style={{ width: `${region.bandwidth_utilization}%` }}
                     />
@@ -606,26 +644,26 @@ export default function NetworkPage() {
               <AreaChart data={performanceData}>
                 <defs>
                   <linearGradient id="bandwidthGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="hour" stroke="rgba(255,255,255,0.5)" />
                 <YAxis stroke="rgba(255,255,255,0.5)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="bandwidth" 
-                  stroke="#0099CC" 
-                  fillOpacity={1} 
-                  fill="url(#bandwidthGradient)" 
+                <Area
+                  type="monotone"
+                  dataKey="bandwidth"
+                  stroke="#0099CC"
+                  fillOpacity={1}
+                  fill="url(#bandwidthGradient)"
                   strokeWidth={2}
                 />
               </AreaChart>
@@ -697,66 +735,66 @@ export default function NetworkPage() {
           <ISPTable
             data={towers}
             columns={[
-            {
-              key: 'id',
-              label: 'Tower ID',
-              render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
-            },
-            {
-              key: 'name',
-              label: 'Tower Info',
-              render: (item) => (
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-white">{item.name}</p>
-                  <div className="flex items-center space-x-1 text-xs text-white/60">
-                    <MapPin className="h-3 w-3" />
-                    <span>{item.location}</span>
+              {
+                key: 'id',
+                label: 'Tower ID',
+                render: item => (
+                  <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+                )
+              },
+              {
+                key: 'name',
+                label: 'Tower Info',
+                render: item => (
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">{item.name}</p>
+                    <div className="flex items-center space-x-1 text-xs text-white/60">
+                      <MapPin className="h-3 w-3" />
+                      <span>{item.location}</span>
+                    </div>
+                    <p className="text-xs text-white/60">Region: {item.region}</p>
                   </div>
-                  <p className="text-xs text-white/60">Region: {item.region}</p>
-                </div>
-              )
-            },
-            {
-              key: 'type',
-              label: 'Type',
-              render: (item) => (
-                <div className="flex items-center space-x-2">
-                  <Radio className="h-4 w-4 text-[#0099CC]" />
-                  <span className="text-sm text-white capitalize">{item.type}</span>
-                </div>
-              )
-            },
-            {
-              key: 'status',
-              label: 'Status',
-              render: (item) => getStatusBadge(item.status)
-            },
-            {
-              key: 'capacity',
-              label: 'Capacity',
-              render: (item) => (
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-white">
-                    {item.currentLoad} / {item.capacity}
-                  </p>
-                  <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
-                      style={{ width: `${(item.currentLoad / item.capacity) * 100}%` }}
-                    />
+                )
+              },
+              {
+                key: 'type',
+                label: 'Type',
+                render: item => (
+                  <div className="flex items-center space-x-2">
+                    <Radio className="h-4 w-4 text-[#0099CC]" />
+                    <span className="text-sm text-white capitalize">{item.type}</span>
                   </div>
-                  <p className="text-xs text-white/60">{item.subscribers} subscribers</p>
-                </div>
-              )
-            },
-            {
-              key: 'lastMaintenance',
-              label: 'Last Maintenance',
-              render: (item) => (
-                <p className="text-sm text-white/80">{item.lastMaintenance}</p>
-              )
-            }
-          ]}
+                )
+              },
+              {
+                key: 'status',
+                label: 'Status',
+                render: item => getStatusBadge(item.status)
+              },
+              {
+                key: 'capacity',
+                label: 'Capacity',
+                render: item => (
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">
+                      {item.currentLoad} / {item.capacity}
+                    </p>
+                    <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
+                        style={{ width: `${(item.currentLoad / item.capacity) * 100}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-white/60">{item.subscribers} subscribers</p>
+                  </div>
+                )
+              },
+              {
+                key: 'lastMaintenance',
+                label: 'Last Maintenance',
+                render: item => <p className="text-sm text-white/80">{item.lastMaintenance}</p>
+              }
+            ]}
             onEdit={handleEdit}
             onDelete={handleDelete}
             searchPlaceholder="Search towers by ID, name, or location..."
@@ -774,92 +812,95 @@ export default function NetworkPage() {
         title="Add New Tower"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleAdd()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleAdd()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Tower Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter tower name"
             required
           />
-          
+
           <ISPInput
             label="Location"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location details"
             icon={<MapPin className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Region"
             value={formData.region}
-            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            onChange={e => setFormData({ ...formData, region: e.target.value })}
             options={[
               { value: 'Thiruvananthapuram', label: 'Thiruvananthapuram' },
               { value: 'Kochi', label: 'Kochi' },
               { value: 'Kozhikode', label: 'Kozhikode' }
             ]}
           />
-          
+
           <div className="grid grid-cols-2 gap-4">
             <ISPInput
               label="Latitude"
               type="number"
               step="0.0001"
               value={formData.latitude}
-              onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
+              onChange={e => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
               placeholder="8.5241"
               required
             />
-            
+
             <ISPInput
               label="Longitude"
               type="number"
               step="0.0001"
               value={formData.longitude}
-              onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
+              onChange={e => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
               placeholder="76.9366"
               required
             />
           </div>
-          
+
           <ISPSelect
             label="Tower Type"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, type: e.target.value as any })}
             options={[
               { value: 'primary', label: 'Primary' },
               { value: 'backup', label: 'Backup' },
               { value: 'relay', label: 'Relay' }
             ]}
           />
-          
+
           <ISPSelect
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
             options={[
               { value: 'operational', label: 'Operational' },
               { value: 'maintenance', label: 'Maintenance' },
               { value: 'offline', label: 'Offline' }
             ]}
           />
-          
+
           <ISPInput
             label="Capacity"
             type="number"
             value={formData.capacity}
-            onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
             placeholder="Enter capacity"
             icon={<Users className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -871,9 +912,7 @@ export default function NetworkPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Add Tower
-            </ISPButton>
+            <ISPButton type="submit">Add Tower</ISPButton>
           </div>
         </form>
       </ISPModal>
@@ -889,92 +928,95 @@ export default function NetworkPage() {
         title="Edit Tower"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleUpdate()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleUpdate()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Tower Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter tower name"
             required
           />
-          
+
           <ISPInput
             label="Location"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location details"
             icon={<MapPin className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Region"
             value={formData.region}
-            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            onChange={e => setFormData({ ...formData, region: e.target.value })}
             options={[
               { value: 'Thiruvananthapuram', label: 'Thiruvananthapuram' },
               { value: 'Kochi', label: 'Kochi' },
               { value: 'Kozhikode', label: 'Kozhikode' }
             ]}
           />
-          
+
           <div className="grid grid-cols-2 gap-4">
             <ISPInput
               label="Latitude"
               type="number"
               step="0.0001"
               value={formData.latitude}
-              onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
+              onChange={e => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
               placeholder="8.5241"
               required
             />
-            
+
             <ISPInput
               label="Longitude"
               type="number"
               step="0.0001"
               value={formData.longitude}
-              onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
+              onChange={e => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
               placeholder="76.9366"
               required
             />
           </div>
-          
+
           <ISPSelect
             label="Tower Type"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, type: e.target.value as any })}
             options={[
               { value: 'primary', label: 'Primary' },
               { value: 'backup', label: 'Backup' },
               { value: 'relay', label: 'Relay' }
             ]}
           />
-          
+
           <ISPSelect
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
             options={[
               { value: 'operational', label: 'Operational' },
               { value: 'maintenance', label: 'Maintenance' },
               { value: 'offline', label: 'Offline' }
             ]}
           />
-          
+
           <ISPInput
             label="Capacity"
             type="number"
             value={formData.capacity}
-            onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
             placeholder="Enter capacity"
             icon={<Users className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -987,9 +1029,7 @@ export default function NetworkPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Update Tower
-            </ISPButton>
+            <ISPButton type="submit">Update Tower</ISPButton>
           </div>
         </form>
       </ISPModal>

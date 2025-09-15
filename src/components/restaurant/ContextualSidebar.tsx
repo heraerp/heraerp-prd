@@ -78,11 +78,11 @@ interface ContextualSidebarProps {
   className?: string
 }
 
-export function ContextualSidebar({ 
-  currentSection, 
-  isCollapsed = false, 
+export function ContextualSidebar({
+  currentSection,
+  isCollapsed = false,
   onToggleCollapse,
-  className = '' 
+  className = ''
 }: ContextualSidebarProps) {
   const pathname = usePathname()
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -410,17 +410,14 @@ export function ContextualSidebar({
 
   if (isCollapsed) {
     return (
-      <div className={`w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 space-y-4 ${className}`}>
+      <div
+        className={`w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 space-y-4 ${className}`}
+      >
         {/* Collapsed view - only icons */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleCollapse}
-          className="w-10 h-10 p-0"
-        >
+        <Button variant="ghost" size="sm" onClick={onToggleCollapse} className="w-10 h-10 p-0">
           <ChevronRight className="w-4 h-4" />
         </Button>
-        
+
         {sidebarContent[0].items.map(item => (
           <div
             key={item.id}
@@ -446,23 +443,16 @@ export function ContextualSidebar({
                 </Button>
               </Link>
             ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-10 h-10 p-0"
-                onClick={item.action}
-              >
+              <Button variant="ghost" size="sm" className="w-10 h-10 p-0" onClick={item.action}>
                 {item.icon}
               </Button>
             )}
-            
+
             {/* Tooltip on hover */}
             {hoveredItem === item.id && (
               <div className="absolute left-full ml-2 top-0 z-50 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
                 {item.label}
-                {item.hotkey && (
-                  <span className="ml-2 text-gray-400">{item.hotkey}</span>
-                )}
+                {item.hotkey && <span className="ml-2 text-gray-400">{item.hotkey}</span>}
               </div>
             )}
           </div>
@@ -480,12 +470,7 @@ export function ContextualSidebar({
             <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
             <p className="text-sm text-gray-500 mt-1">Context-aware shortcuts</p>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggleCollapse}
-            className="w-8 h-8 p-0"
-          >
+          <Button variant="ghost" size="sm" onClick={onToggleCollapse} className="w-8 h-8 p-0">
             <ChevronLeft className="w-4 h-4" />
           </Button>
         </div>
@@ -493,7 +478,7 @@ export function ContextualSidebar({
 
       {/* Navigation Sections */}
       <div className="flex-1 overflow-y-auto py-4 space-y-6">
-        {sidebarContent.map((section) => (
+        {sidebarContent.map(section => (
           <div key={section.id} className="px-6">
             <div
               className="flex items-center justify-between mb-3 cursor-pointer"
@@ -511,7 +496,7 @@ export function ContextualSidebar({
 
             {expandedSections.has(section.id) && (
               <div className="space-y-1">
-                {section.items.map((item) => (
+                {section.items.map(item => (
                   <div key={item.id} className="group">
                     {item.href ? (
                       <Link href={item.href}>
@@ -541,9 +526,7 @@ export function ContextualSidebar({
                               </Badge>
                             )}
                             {item.hotkey && (
-                              <span className="text-xs text-gray-400 font-mono">
-                                {item.hotkey}
-                              </span>
+                              <span className="text-xs text-gray-400 font-mono">{item.hotkey}</span>
                             )}
                             <ArrowUpRight className="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
@@ -573,9 +556,7 @@ export function ContextualSidebar({
                             </Badge>
                           )}
                           {item.hotkey && (
-                            <span className="text-xs text-gray-400 font-mono">
-                              {item.hotkey}
-                            </span>
+                            <span className="text-xs text-gray-400 font-mono">{item.hotkey}</span>
                           )}
                         </div>
                       </div>

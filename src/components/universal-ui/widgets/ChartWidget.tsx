@@ -4,7 +4,25 @@ import React, { useEffect, useState } from 'react'
 import { Widget } from '@/lib/universal-ui/view-meta-service'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { universalApi } from '@/lib/universal-api'
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar, AreaChart, Area, ScatterChart, Scatter } from 'recharts'
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  ScatterChart,
+  Scatter
+} from 'recharts'
 
 interface ChartWidgetProps {
   widget: Widget
@@ -13,7 +31,16 @@ interface ChartWidgetProps {
   onAction?: (action: any) => void
 }
 
-const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#14B8A6', '#F97316']
+const COLORS = [
+  '#3B82F6',
+  '#10B981',
+  '#F59E0B',
+  '#EF4444',
+  '#8B5CF6',
+  '#EC4899',
+  '#14B8A6',
+  '#F97316'
+]
 
 export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetProps) {
   const [data, setData] = useState<any[]>([])
@@ -26,10 +53,10 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
   const loadChartData = async () => {
     try {
       setLoading(true)
-      
+
       const config = widget.config
       const source = widget.data_source
-      
+
       if (config.chart_type === 'pie' && config.series) {
         // For pie charts, use series configuration
         const pieData = config.series.map((series, index) => ({
@@ -56,7 +83,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
 
   const loadDataFromSource = async (source: any) => {
     let tableName = 'core_entities'
-    
+
     switch (source.type) {
       case 'transactions':
         tableName = 'universal_transactions'
@@ -65,17 +92,17 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
         tableName = 'core_relationships'
         break
     }
-    
+
     const result = await universalApi.query(tableName, {
       organization_id: organizationId,
       ...buildFilters(source.filters)
     })
-    
+
     if (result.data) {
       // Transform data for charts
       return transformDataForChart(result.data, widget.config)
     }
-    
+
     return []
   }
 
@@ -96,7 +123,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
         [config.y_axis]: Number(row[config.y_axis]) || 0
       }))
     }
-    
+
     return rawData
   }
 
@@ -108,27 +135,40 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
           { name: 'Labor Cost', value: 800, color: '#10B981' },
           { name: 'Overhead', value: 156, color: '#F59E0B' }
         ]
-      
+
       case 'line':
       case 'area':
         return Array.from({ length: 12 }, (_, i) => ({
-          month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i],
+          month: [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+          ][i],
           'Average Cost': Math.floor(Math.random() * 1000 + 1000),
           'Material Cost': Math.floor(Math.random() * 600 + 600)
         }))
-      
+
       case 'bar':
         return Array.from({ length: 5 }, (_, i) => ({
           category: ['Chairs', 'Tables', 'Desks', 'Cabinets', 'Sofas'][i],
           count: Math.floor(Math.random() * 50 + 10)
         }))
-      
+
       case 'scatter':
         return Array.from({ length: 30 }, () => ({
           x: Math.floor(Math.random() * 100),
           y: Math.floor(Math.random() * 100)
         }))
-      
+
       default:
         return []
     }
@@ -136,9 +176,13 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
 
   const renderChart = () => {
     const config = widget.config
-    
+
     // Normalize data to array to prevent runtime errors when a non-array payload is provided
-    const safeData = Array.isArray(data) ? data : data && typeof data === 'object' ? Object.values(data as any) : []
+    const safeData = Array.isArray(data)
+      ? data
+      : data && typeof data === 'object'
+        ? Object.values(data as any)
+        : []
     switch (config.chart_type) {
       case 'pie':
         return (
@@ -160,7 +204,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
             <Legend />
           </PieChart>
         )
-      
+
       case 'line':
         return (
           <LineChart data={safeData as any[]}>
@@ -180,7 +224,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
             ))}
           </LineChart>
         )
-      
+
       case 'bar':
         return (
           <BarChart data={safeData as any[]}>
@@ -192,7 +236,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
             <Bar dataKey={config.y_axis || 'count'} fill={COLORS[0]} />
           </BarChart>
         )
-      
+
       case 'area':
         return (
           <AreaChart data={safeData as any[]}>
@@ -214,7 +258,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
             ))}
           </AreaChart>
         )
-      
+
       case 'scatter':
         return (
           <ScatterChart>
@@ -225,7 +269,7 @@ export function ChartWidget({ widget, entityId, organizationId }: ChartWidgetPro
             <Scatter data={data} fill={COLORS[0]} />
           </ScatterChart>
         )
-      
+
       default:
         return null
     }

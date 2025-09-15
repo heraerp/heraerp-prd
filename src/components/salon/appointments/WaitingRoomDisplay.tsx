@@ -12,7 +12,11 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 let supabase: ReturnType<typeof createClient> | null = null
 
 function getSupabase() {
-  if (!supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (
+    !supabase &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
     supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -35,15 +39,15 @@ export function WaitingRoomDisplay() {
   const [checkedInAppointments, setCheckedInAppointments] = useState<CheckedInAppointment[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { currentOrganization } = useMultiOrgAuth()
-  
+
   useEffect(() => {
     if (!currentOrganization) return
-    
+
     const db = getSupabase()
     if (!db) return
-    
+
     fetchCheckedInAppointments()
-    
+
     // Set up real-time subscription
     const subscription = db
       .channel('waiting-room')
@@ -61,31 +65,32 @@ export function WaitingRoomDisplay() {
         }
       )
       .subscribe()
-    
+
     // Refresh every minute to update wait times
     const interval = setInterval(fetchCheckedInAppointments, 60000)
-    
+
     return () => {
       subscription.unsubscribe()
       clearInterval(interval)
     }
   }, [currentOrganization])
-  
+
   const fetchCheckedInAppointments = async () => {
     if (!currentOrganization) return
-    
+
     const db = getSupabase()
     if (!db) {
       // No Supabase configured - show empty state
       setIsLoading(false)
       return
     }
-    
+
     try {
       // Get all appointments with CHECKED_IN status
       const { data: appointments } = await db
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           *,
           client:source_entity_id(entity_name),
           stylist:target_entity_id(entity_name),
@@ -93,45 +98,49 @@ export function WaitingRoomDisplay() {
             to_entity:to_entity_id(entity_name, entity_code),
             relationship_data
           )
-        `)
+        `
+        )
         .eq('organization_id', currentOrganization.id)
         .eq('transaction_type', 'appointment')
         .eq('transaction_date', new Date().toISOString().split('T')[0])
         .eq('status_relationships.relationship_type', 'has_workflow_status')
         .eq('status_relationships.relationship_data->is_active', 'true')
-      
+
       // Filter for checked-in appointments
-      const checkedIn = appointments?.filter(apt => {
-        const status = apt.status_relationships?.[0]?.to_entity
-        return status?.entity_code === 'STATUS-APPOINTMENT-CHECKED_IN'
-      }) || []
-      
+      const checkedIn =
+        appointments?.filter(apt => {
+          const status = apt.status_relationships?.[0]?.to_entity
+          return status?.entity_code === 'STATUS-APPOINTMENT-CHECKED_IN'
+        }) || []
+
       // Transform and calculate wait times
       const transformed = checkedIn.map(apt => {
-        const checkedInAt = (apt.metadata as any)?.checked_in_at || 
-                           apt.status_relationships?.[0]?.relationship_data?.checked_in_at ||
-                           new Date().toISOString()
-        
+        const checkedInAt =
+          (apt.metadata as any)?.checked_in_at ||
+          apt.status_relationships?.[0]?.relationship_data?.checked_in_at ||
+          new Date().toISOString()
+
         const waitTime = Math.floor(
           (new Date().getTime() - new Date(checkedInAt).getTime()) / 1000 / 60
         )
-        
+
         return {
           id: apt.id,
           clientName: apt.client?.entity_name || (apt.metadata as any)?.customer_name || 'Unknown',
-          stylistName: apt.stylist?.entity_name || (apt.metadata as any)?.stylist_name || 'Any Available',
+          stylistName:
+            apt.stylist?.entity_name || (apt.metadata as any)?.stylist_name || 'Any Available',
           serviceName: (apt.metadata as any)?.service_name || 'Service',
           appointmentTime: (apt.metadata as any)?.appointment_time || '10:00',
           checkedInAt,
           waitTime
         }
       })
-      
+
       // Sort by check-in time (oldest first)
-      transformed.sort((a, b) => 
-        new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime()
+      transformed.sort(
+        (a, b) => new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime()
       )
-      
+
       setCheckedInAppointments(transformed)
     } catch (error) {
       console.error('Failed to fetch waiting room:', error)
@@ -139,19 +148,19 @@ export function WaitingRoomDisplay() {
       setIsLoading(false)
     }
   }
-  
+
   const getWaitTimeColor = (minutes: number) => {
     if (minutes < 5) return 'text-green-600'
     if (minutes < 15) return 'text-yellow-600'
     return 'text-red-600'
   }
-  
+
   const getWaitTimeBadge = (minutes: number) => {
     if (minutes < 5) return 'default'
     if (minutes < 15) return 'secondary'
     return 'destructive'
   }
-  
+
   if (isLoading) {
     return (
       <Card>
@@ -159,14 +168,12 @@ export function WaitingRoomDisplay() {
           <CardTitle>Waiting Room</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
-            Loading waiting room...
-          </div>
+          <div className="text-center py-8 text-muted-foreground">Loading waiting room...</div>
         </CardContent>
       </Card>
     )
   }
-  
+
   return (
     <Card>
       <CardHeader>
@@ -175,16 +182,12 @@ export function WaitingRoomDisplay() {
             <Clock className="w-5 h-5" />
             Waiting Room
           </CardTitle>
-          <Badge variant="outline">
-            {checkedInAppointments.length} waiting
-          </Badge>
+          <Badge variant="outline">{checkedInAppointments.length} waiting</Badge>
         </div>
       </CardHeader>
       <CardContent>
         {checkedInAppointments.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No clients currently waiting
-          </div>
+          <div className="text-center py-8 text-muted-foreground">No clients currently waiting</div>
         ) : (
           <div className="space-y-3">
             {checkedInAppointments.map((apt, index) => (
@@ -212,9 +215,7 @@ export function WaitingRoomDisplay() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge variant={getWaitTimeBadge(apt.waitTime)}>
-                    {apt.waitTime} min
-                  </Badge>
+                  <Badge variant={getWaitTimeBadge(apt.waitTime)}>{apt.waitTime} min</Badge>
                   <p className={`text-xs mt-1 ${getWaitTimeColor(apt.waitTime)}`}>
                     Checked in {formatDate(new Date(apt.checkedInAt), 'h:mm a')}
                   </p>

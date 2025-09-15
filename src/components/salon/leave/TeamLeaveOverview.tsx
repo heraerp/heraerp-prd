@@ -56,10 +56,10 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
 
   const departments = ['Styling', 'Nail Services', 'Front Desk', 'Management']
   const departmentCoverage = {
-    'Styling': { total: 8, onLeave: 1 },
+    Styling: { total: 8, onLeave: 1 },
     'Nail Services': { total: 4, onLeave: 1 },
     'Front Desk': { total: 2, onLeave: 1 },
-    'Management': { total: 3, onLeave: 0 }
+    Management: { total: 3, onLeave: 0 }
   }
 
   const getStatusStyle = (status: string) => {
@@ -76,7 +76,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
   const getCoverageLevel = (dept: string) => {
     const coverage = departmentCoverage[dept as keyof typeof departmentCoverage]
     if (!coverage) return 'good'
-    
+
     const percentage = ((coverage.total - coverage.onLeave) / coverage.total) * 100
     if (percentage >= 75) return 'good'
     if (percentage >= 50) return 'warning'
@@ -128,84 +128,81 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
           </div>
         </div>
 
-      {/* Department Coverage */}
-      <div className="mb-6">
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Department Coverage
-        </h4>
-        <div className="grid grid-cols-2 gap-3">
-          {departments.map((dept) => {
-            const coverage = departmentCoverage[dept as keyof typeof departmentCoverage]
-            const level = getCoverageLevel(dept)
-            
-            return (
-              <div
-                key={dept}
-                className="p-3 rounded-lg bg-gray-800/50 border border-gray-700/50"
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    {dept}
-                  </span>
-                  {level === 'critical' && (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  )}
+        {/* Department Coverage */}
+        <div className="mb-6">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Department Coverage
+          </h4>
+          <div className="grid grid-cols-2 gap-3">
+            {departments.map(dept => {
+              const coverage = departmentCoverage[dept as keyof typeof departmentCoverage]
+              const level = getCoverageLevel(dept)
+
+              return (
+                <div key={dept} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700/50">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      {dept}
+                    </span>
+                    {level === 'critical' && <AlertCircle className="h-4 w-4 text-red-500" />}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                      {coverage.total - coverage.onLeave}/{coverage.total} available
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 text-xs font-medium rounded-full ${getCoverageStyle(level)}`}
+                    >
+                      {Math.round(((coverage.total - coverage.onLeave) / coverage.total) * 100)}%
+                    </span>
+                  </div>
                 </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Team Members on Leave */}
+        <div>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Team Members
+          </h4>
+          <div className="space-y-3">
+            {teamLeave.map(member => (
+              <div
+                key={member.id}
+                className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700/50"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+                    <Users className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white text-sm">
+                      {member.name}
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      {member.role} • {member.department}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-600 dark:text-gray-400">
-                    {coverage.total - coverage.onLeave}/{coverage.total} available
+                    {formatDate(member.startDate, 'MMM d')} - {formatDate(member.endDate, 'MMM d')}
                   </span>
-                  <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${getCoverageStyle(level)}`}>
-                    {Math.round(((coverage.total - coverage.onLeave) / coverage.total) * 100)}%
+                  <span
+                    className={`px-2 py-1 text-xs font-medium rounded-md border ${getStatusStyle(
+                      member.status
+                    )}`}
+                  >
+                    {member.status === 'current' ? 'On Leave' : 'Upcoming'}
                   </span>
                 </div>
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
-      </div>
-
-      {/* Team Members on Leave */}
-      <div>
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Team Members
-        </h4>
-        <div className="space-y-3">
-          {teamLeave.map((member) => (
-            <div
-              key={member.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700/50"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                  <Users className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white text-sm">
-                    {member.name}
-                  </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    {member.role} • {member.department}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-600 dark:text-gray-400">
-                  {formatDate(member.startDate, 'MMM d')} - {formatDate(member.endDate, 'MMM d')}
-                </span>
-                <span
-                  className={`px-2 py-1 text-xs font-medium rounded-md border ${getStatusStyle(
-                    member.status
-                  )}`}
-                >
-                  {member.status === 'current' ? 'On Leave' : 'Upcoming'}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
       </div>
     </div>
   )

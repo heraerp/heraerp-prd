@@ -11,9 +11,17 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Loader2, LogIn, UserPlus, AlertCircle, Rocket,
-  CheckCircle, Building2, Shield, Zap, Globe
+import {
+  Loader2,
+  LogIn,
+  UserPlus,
+  AlertCircle,
+  Rocket,
+  CheckCircle,
+  Building2,
+  Shield,
+  Zap,
+  Globe
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
@@ -23,11 +31,11 @@ export default function GetStartedPage() {
   const { login, register, isAuthenticated } = useMultiOrgAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Login form state
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
-  
+
   // Register form state
   const [registerData, setRegisterData] = useState({
     email: '',
@@ -82,7 +90,7 @@ export default function GetStartedPage() {
       await register(registerData.email, registerData.password, {
         full_name: registerData.fullName
       })
-      
+
       // After registration, redirect to organization creation
       router.push('/auth/organizations/new')
     } catch (err) {
@@ -115,12 +123,10 @@ export default function GetStartedPage() {
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <h1 className="text-5xl font-light text-gray-900 mb-6">
-              Start Your HERA Journey
-            </h1>
+            <h1 className="text-5xl font-light text-gray-900 mb-6">Start Your HERA Journey</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Enterprise-grade ERP that's live in 2 weeks. Join thousands of businesses 
-              already transforming their operations with HERA.
+              Enterprise-grade ERP that's live in 2 weeks. Join thousands of businesses already
+              transforming their operations with HERA.
             </p>
           </div>
 
@@ -141,28 +147,36 @@ export default function GetStartedPage() {
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">2-Week Implementation Guarantee</p>
-                        <p className="text-sm text-gray-600">Live in 14 days or your implementation is free</p>
+                        <p className="text-sm text-gray-600">
+                          Live in 14 days or your implementation is free
+                        </p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">70% Cost Savings</p>
-                        <p className="text-sm text-gray-600">Enterprise features at small business prices</p>
+                        <p className="text-sm text-gray-600">
+                          Enterprise features at small business prices
+                        </p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">Industry-Specific Solutions</p>
-                        <p className="text-sm text-gray-600">Pre-configured for salon, restaurant, healthcare & more</p>
+                        <p className="text-sm text-gray-600">
+                          Pre-configured for salon, restaurant, healthcare & more
+                        </p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-gray-900">AI-Powered Automation</p>
-                        <p className="text-sm text-gray-600">85% journal automation, smart insights, and more</p>
+                        <p className="text-sm text-gray-600">
+                          85% journal automation, smart insights, and more
+                        </p>
                       </div>
                     </li>
                   </ul>
@@ -201,7 +215,8 @@ export default function GetStartedPage() {
               <Alert className="border-amber-200 bg-amber-50">
                 <Zap className="h-4 w-4 text-amber-600" />
                 <AlertDescription className="text-gray-700">
-                  <strong>Quick Demo:</strong> Use mario@restaurant.com / securepass123 to explore a fully configured restaurant
+                  <strong>Quick Demo:</strong> Use mario@restaurant.com / securepass123 to explore a
+                  fully configured restaurant
                 </AlertDescription>
               </Alert>
             </div>
@@ -220,7 +235,7 @@ export default function GetStartedPage() {
                     <TabsTrigger value="login">Sign In</TabsTrigger>
                     <TabsTrigger value="register">Sign Up</TabsTrigger>
                   </TabsList>
-                  
+
                   {/* Login Form */}
                   <TabsContent value="login">
                     <form onSubmit={handleLogin} className="space-y-4">
@@ -230,7 +245,7 @@ export default function GetStartedPage() {
                           <AlertDescription>{error}</AlertDescription>
                         </Alert>
                       )}
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="login-email">Email</Label>
                         <Input
@@ -238,12 +253,12 @@ export default function GetStartedPage() {
                           type="email"
                           placeholder="your@email.com"
                           value={loginEmail}
-                          onChange={(e) => setLoginEmail(e.target.value)}
+                          onChange={e => setLoginEmail(e.target.value)}
                           required
                           disabled={isLoading}
                         />
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="login-password">Password</Label>
                         <Input
@@ -251,18 +266,13 @@ export default function GetStartedPage() {
                           type="password"
                           placeholder="••••••••"
                           value={loginPassword}
-                          onChange={(e) => setLoginPassword(e.target.value)}
+                          onChange={e => setLoginPassword(e.target.value)}
                           required
                           disabled={isLoading}
                         />
                       </div>
-                      
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        size="lg"
-                        disabled={isLoading}
-                      >
+
+                      <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -277,7 +287,7 @@ export default function GetStartedPage() {
                       </Button>
                     </form>
                   </TabsContent>
-                  
+
                   {/* Register Form */}
                   <TabsContent value="register">
                     <form onSubmit={handleRegister} className="space-y-4">
@@ -287,7 +297,7 @@ export default function GetStartedPage() {
                           <AlertDescription>{error}</AlertDescription>
                         </Alert>
                       )}
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="full-name">Full Name</Label>
                         <Input
@@ -295,12 +305,14 @@ export default function GetStartedPage() {
                           type="text"
                           placeholder="John Doe"
                           value={registerData.fullName}
-                          onChange={(e) => setRegisterData({...registerData, fullName: e.target.value})}
+                          onChange={e =>
+                            setRegisterData({ ...registerData, fullName: e.target.value })
+                          }
                           required
                           disabled={isLoading}
                         />
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="register-email">Email</Label>
                         <Input
@@ -308,12 +320,14 @@ export default function GetStartedPage() {
                           type="email"
                           placeholder="your@email.com"
                           value={registerData.email}
-                          onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
+                          onChange={e =>
+                            setRegisterData({ ...registerData, email: e.target.value })
+                          }
                           required
                           disabled={isLoading}
                         />
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="register-password">Password</Label>
                         <Input
@@ -321,12 +335,14 @@ export default function GetStartedPage() {
                           type="password"
                           placeholder="••••••••"
                           value={registerData.password}
-                          onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
+                          onChange={e =>
+                            setRegisterData({ ...registerData, password: e.target.value })
+                          }
                           required
                           disabled={isLoading}
                         />
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="confirm-password">Confirm Password</Label>
                         <Input
@@ -334,18 +350,15 @@ export default function GetStartedPage() {
                           type="password"
                           placeholder="••••••••"
                           value={registerData.confirmPassword}
-                          onChange={(e) => setRegisterData({...registerData, confirmPassword: e.target.value})}
+                          onChange={e =>
+                            setRegisterData({ ...registerData, confirmPassword: e.target.value })
+                          }
                           required
                           disabled={isLoading}
                         />
                       </div>
-                      
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        size="lg"
-                        disabled={isLoading}
-                      >
+
+                      <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -358,7 +371,7 @@ export default function GetStartedPage() {
                           </>
                         )}
                       </Button>
-                      
+
                       <p className="text-xs text-gray-600 text-center mt-4">
                         By signing up, you agree to our Terms of Service and Privacy Policy
                       </p>

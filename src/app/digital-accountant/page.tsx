@@ -10,17 +10,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  Brain, 
-  Send, 
-  Loader2, 
+import {
+  Brain,
+  Send,
+  Loader2,
   Calculator,
   FileText,
-  TrendingUp, 
-  AlertCircle, 
-  ChevronDown, 
-  ArrowUp, 
-  History, 
+  TrendingUp,
+  AlertCircle,
+  ChevronDown,
+  ArrowUp,
+  History,
   Moon,
   Sun,
   CheckCircle2,
@@ -110,12 +110,12 @@ const QUICK_ACTIONS: QuickAction[] = [
 ]
 
 const EXAMPLE_PROMPTS = [
-  "Post a journal to accrue $12,000 for August marketing expenses",
-  "Create a recurring invoice for $5,000 + VAT to Dubai Salon",
+  'Post a journal to accrue $12,000 for August marketing expenses',
+  'Create a recurring invoice for $5,000 + VAT to Dubai Salon',
   "Apply a $5,250 bank receipt to open invoices for Mario's Restaurant",
-  "Show me the P&L for August 2025",
-  "Reconcile credit card transactions for this month",
-  "Calculate VAT for the current period"
+  'Show me the P&L for August 2025',
+  'Reconcile credit card transactions for this month',
+  'Calculate VAT for the current period'
 ]
 
 export default function DigitalAccountantPage() {
@@ -141,12 +141,12 @@ All transactions follow enterprise accounting standards with multi-level approva
       timestamp: new Date()
     }
   ])
-  
+
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<'chat' | 'journal' | 'reports'>('chat')
   const [confidence, setConfidence] = useState<number>(0)
-  
+
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -205,12 +205,12 @@ All transactions follow enterprise accounting standards with multi-level approva
             mode: activeTab,
             previousTransactionId: messages[messages.length - 1]?.transactionId
           }
-        }),
+        })
       })
 
       clearInterval(confidenceInterval)
       const data = await response.json()
-      
+
       if (data.error) {
         throw new Error(data.error)
       }
@@ -230,7 +230,6 @@ All transactions follow enterprise accounting standards with multi-level approva
 
       setMessages(prev => [...prev, assistantMessage])
       setConfidence(data.confidence || 90)
-      
     } catch (error) {
       const errorMessage: Message = {
         id: Date.now().toString() + '-error',
@@ -287,17 +286,17 @@ All transactions follow enterprise accounting standards with multi-level approva
   // Render transaction status badge
   const renderStatusBadge = (status?: string) => {
     if (!status) return null
-    
+
     const statusConfig = {
       draft: { variant: 'outline' as const, icon: Clock },
       posted: { variant: 'default' as const, icon: CheckCircle2 },
       approved: { variant: 'default' as const, icon: FileCheck },
       reversed: { variant: 'destructive' as const, icon: XCircle }
     }
-    
+
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft
     const Icon = config.icon
-    
+
     return (
       <Badge variant={config.variant} className="gap-1">
         <Icon className="h-3 w-3" />
@@ -307,7 +306,10 @@ All transactions follow enterprise accounting standards with multi-level approva
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")} style={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff' }}>
+    <div
+      className={cn('min-h-screen', isDarkMode && 'dark')}
+      style={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff' }}
+    >
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -320,7 +322,7 @@ All transactions follow enterprise accounting standards with multi-level approva
               <p className="text-sm text-muted-foreground">AI-Powered Enterprise Accounting</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="gap-1">
               <Shield className="h-3 w-3" />
@@ -331,7 +333,7 @@ All transactions follow enterprise accounting standards with multi-level approva
             </Button>
           </div>
         </div>
-        
+
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Quick Actions Sidebar */}
@@ -362,7 +364,7 @@ All transactions follow enterprise accounting standards with multi-level approva
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Compliance Status */}
             <Card>
               <CardHeader className="pb-3">
@@ -371,11 +373,15 @@ All transactions follow enterprise accounting standards with multi-level approva
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Period Status</span>
-                  <Badge variant="outline" className="text-xs">AUG 2025 OPEN</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    AUG 2025 OPEN
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">VAT Filing</span>
-                  <Badge variant="outline" className="text-xs">DUE SEP 15</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    DUE SEP 15
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Pending Approvals</span>
@@ -384,10 +390,14 @@ All transactions follow enterprise accounting standards with multi-level approva
               </CardContent>
             </Card>
           </div>
-          
+
           {/* Chat Interface */}
           <Card className="lg:col-span-3 flex flex-col h-[80vh]">
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1 flex flex-col">
+            <Tabs
+              value={activeTab}
+              onValueChange={v => setActiveTab(v as any)}
+              className="flex-1 flex flex-col"
+            >
               <CardHeader className="border-b pb-3">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="chat" className="gap-2">
@@ -404,7 +414,7 @@ All transactions follow enterprise accounting standards with multi-level approva
                   </TabsTrigger>
                 </TabsList>
               </CardHeader>
-              
+
               <TabsContent value="chat" className="flex-1 flex flex-col">
                 <ScrollArea className="flex-1 px-6 py-4" ref={scrollAreaRef}>
                   <div className="space-y-6">
@@ -417,12 +427,14 @@ All transactions follow enterprise accounting standards with multi-level approva
                         )}
                       >
                         {message.role !== 'user' && (
-                          <div className={cn(
-                            "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
-                            message.role === 'error' 
-                              ? "bg-destructive/20" 
-                              : "bg-gradient-to-br from-emerald-600/20 to-emerald-400/20"
-                          )}>
+                          <div
+                            className={cn(
+                              'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+                              message.role === 'error'
+                                ? 'bg-destructive/20'
+                                : 'bg-gradient-to-br from-emerald-600/20 to-emerald-400/20'
+                            )}
+                          >
                             {message.role === 'error' ? (
                               <AlertCircle className="h-5 w-5 text-destructive" />
                             ) : (
@@ -430,23 +442,25 @@ All transactions follow enterprise accounting standards with multi-level approva
                             )}
                           </div>
                         )}
-                        
-                        <div className={cn(
-                          'flex-1 space-y-3',
-                          message.role === 'user' && 'max-w-[80%]'
-                        )}>
+
+                        <div
+                          className={cn(
+                            'flex-1 space-y-3',
+                            message.role === 'user' && 'max-w-[80%]'
+                          )}
+                        >
                           <div
                             className={cn(
                               'rounded-lg px-4 py-3',
-                              message.role === 'user' 
-                                ? 'bg-primary text-primary-foreground' 
+                              message.role === 'user'
+                                ? 'bg-primary text-primary-foreground'
                                 : message.role === 'error'
-                                ? 'bg-destructive/10 text-destructive'
-                                : 'bg-muted'
+                                  ? 'bg-destructive/10 text-destructive'
+                                  : 'bg-muted'
                             )}
                           >
                             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                            
+
                             {/* Transaction Status */}
                             {message.transactionId && (
                               <div className="mt-3 flex items-center gap-2 text-xs">
@@ -457,7 +471,7 @@ All transactions follow enterprise accounting standards with multi-level approva
                                 {renderStatusBadge(message.status)}
                               </div>
                             )}
-                            
+
                             {/* Confidence Score */}
                             {message.confidence && message.confidence > 0 && (
                               <div className="mt-2">
@@ -469,7 +483,7 @@ All transactions follow enterprise accounting standards with multi-level approva
                               </div>
                             )}
                           </div>
-                          
+
                           {/* Action Buttons */}
                           {message.actions && message.actions.length > 0 && (
                             <div className="flex gap-2 flex-wrap">
@@ -485,7 +499,7 @@ All transactions follow enterprise accounting standards with multi-level approva
                               ))}
                             </div>
                           )}
-                          
+
                           {/* Transaction Details */}
                           {message.data && message.data.lines && (
                             <div className="bg-muted/50 rounded-lg p-3">
@@ -502,7 +516,9 @@ All transactions follow enterprise accounting standards with multi-level approva
                                   <tbody>
                                     {message.data.lines.map((line: any, idx: number) => (
                                       <tr key={idx} className="border-b last:border-0">
-                                        <td className="py-1">{line.account_code} - {line.account_name}</td>
+                                        <td className="py-1">
+                                          {line.account_code} - {line.account_name}
+                                        </td>
                                         <td className="text-right py-1">
                                           {line.debit > 0 ? line.debit.toFixed(2) : '—'}
                                         </td>
@@ -516,14 +532,14 @@ All transactions follow enterprise accounting standards with multi-level approva
                               </div>
                             </div>
                           )}
-                          
+
                           <div className="text-xs text-muted-foreground">
                             {message.timestamp.toLocaleTimeString()}
                           </div>
                         </div>
                       </div>
                     ))}
-                    
+
                     {loading && (
                       <div className="flex gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-600/20 to-emerald-400/20 flex items-center justify-center animate-pulse">
@@ -542,11 +558,11 @@ All transactions follow enterprise accounting standards with multi-level approva
                         </div>
                       </div>
                     )}
-                    
+
                     <div ref={messagesEndRef} />
                   </div>
                 </ScrollArea>
-                
+
                 {/* Example Prompts */}
                 {messages.length === 1 && (
                   <div className="px-6 pb-4">
@@ -569,13 +585,13 @@ All transactions follow enterprise accounting standards with multi-level approva
                     </div>
                   </div>
                 )}
-                
+
                 <form ref={formRef} onSubmit={handleSubmit} className="p-4 border-t">
                   <div className="flex gap-2">
                     <Input
                       ref={inputRef}
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
+                      onChange={e => setInput(e.target.value)}
                       placeholder="Ask me to post journals, create invoices, reconcile accounts..."
                       className="flex-1"
                       disabled={loading}
@@ -590,12 +606,12 @@ All transactions follow enterprise accounting standards with multi-level approva
                   </div>
                 </form>
               </TabsContent>
-              
+
               <TabsContent value="journal" className="flex-1 p-6 overflow-y-auto">
-                <JournalEntryForm 
-                  organizationId={organizationId} 
+                <JournalEntryForm
+                  organizationId={organizationId}
                   isDarkMode={isDarkMode}
-                  onSuccess={(journalId) => {
+                  onSuccess={journalId => {
                     // Create a success message
                     const successMessage: Message = {
                       id: Date.now().toString(),
@@ -609,7 +625,7 @@ All transactions follow enterprise accounting standards with multi-level approva
                   }}
                 />
               </TabsContent>
-              
+
               <TabsContent value="reports" className="flex-1 p-6">
                 <Alert>
                   <TrendingUp className="h-4 w-4" />
@@ -621,7 +637,7 @@ All transactions follow enterprise accounting standards with multi-level approva
             </Tabs>
           </Card>
         </div>
-        
+
         {/* Bottom Info Bar */}
         <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-4">

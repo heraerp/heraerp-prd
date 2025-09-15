@@ -1,9 +1,9 @@
 'use client'
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
-import React from 'react';
+import React from 'react'
 import {
   HeraCard,
   HeraWealthCard,
@@ -22,25 +22,24 @@ import {
   HeraSection,
   HeraThemeProvider,
   HeraThemeToggle
-} from '@/components/universal/ui';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Users, 
-  ShoppingBag, 
+} from '@/components/universal/ui'
+import {
+  DollarSign,
+  TrendingUp,
+  Users,
+  ShoppingBag,
   BarChart3,
   Zap,
   Target,
   Shield,
   Activity
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 function DesignSystemShowcase() {
   return (
     <HeraLayout variant="full-width" padding="lg">
       <div className="max-w-7xl mx-auto space-y-12">
-        
         {/* Header */}
         <HeraPageHeader
           title="HERA Universal Design System"
@@ -148,7 +147,7 @@ function DesignSystemShowcase() {
             <HeraCard animation="slide-up" animationDelay={100}>
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold">Standard Progress</h3>
-                
+
                 <HeraProgress
                   value={75}
                   label="Project Completion"
@@ -177,16 +176,10 @@ function DesignSystemShowcase() {
             <HeraCard animation="slide-up" animationDelay={200}>
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold">Specialized Progress</h3>
-                
-                <HeraGoalProgress
-                  current={8500}
-                  target={10000}
-                  title="Daily Revenue Goal"
-                />
 
-                <HeraRiskProgress
-                  riskLevel={35}
-                />
+                <HeraGoalProgress current={8500} target={10000} title="Daily Revenue Goal" />
+
+                <HeraRiskProgress riskLevel={35} />
 
                 <HeraGoalProgress
                   current={12500}
@@ -250,8 +243,8 @@ function DesignSystemShowcase() {
           subtitle="Hover effects and interactive feedback"
         >
           <HeraGrid cols={3} gap="lg">
-            <HeraCard 
-              interactive 
+            <HeraCard
+              interactive
               glow="primary"
               className="hera-center h-32 cursor-pointer"
               onClick={() => alert('Primary Glow Card Clicked!')}
@@ -262,8 +255,8 @@ function DesignSystemShowcase() {
               </div>
             </HeraCard>
 
-            <HeraCard 
-              interactive 
+            <HeraCard
+              interactive
               glow="success"
               className="hera-center h-32 cursor-pointer"
               onClick={() => alert('Success Glow Card Clicked!')}
@@ -274,8 +267,8 @@ function DesignSystemShowcase() {
               </div>
             </HeraCard>
 
-            <HeraCard 
-              interactive 
+            <HeraCard
+              interactive
               glow="warning"
               className="hera-center h-32 cursor-pointer"
               onClick={() => alert('Warning Glow Card Clicked!')}
@@ -353,7 +346,7 @@ function DesignSystemShowcase() {
         </div>
       </div>
     </HeraLayout>
-  );
+  )
 }
 
 export default function DesignSystemPage() {
@@ -361,5 +354,5 @@ export default function DesignSystemPage() {
     <HeraThemeProvider defaultTheme="dark">
       <DesignSystemShowcase />
     </HeraThemeProvider>
-  );
+  )
 }

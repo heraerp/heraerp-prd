@@ -74,7 +74,7 @@ const mockTeams = [
     }
   },
   {
-    id: 'team_002', 
+    id: 'team_002',
     organization_id: 'gspu_audit_partners_org',
     entity_type: 'audit_team',
     entity_code: 'GSPU-QR-001',
@@ -118,7 +118,7 @@ const mockTeamMembers = [
   },
   {
     id: 'member_002',
-    team_id: 'team_001', 
+    team_id: 'team_001',
     member_id: 'manager_001',
     member_name: 'Emily Davis',
     role: 'manager',
@@ -166,22 +166,26 @@ export async function GET(request: NextRequest) {
     if (action === 'get_team' && teamId) {
       // Get specific team details
       const team = mockTeams.find(t => t.id === teamId)
-      
+
       if (!team) {
-        return NextResponse.json({
-          success: false,
-          message: 'Team not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Team not found'
+          },
+          { status: 404 }
+        )
       }
 
       const response: any = { team }
-      
+
       if (includeMembers) {
         const members = mockTeamMembers.filter(m => m.team_id === teamId)
         response.members = members
         response.team_statistics = {
           total_members: members.length,
-          avg_availability: members.reduce((sum, m) => sum + m.availability_percentage, 0) / members.length,
+          avg_availability:
+            members.reduce((sum, m) => sum + m.availability_percentage, 0) / members.length,
           total_hourly_cost: members.reduce((sum, m) => sum + (m.hourly_rate || 0), 0),
           role_distribution: {
             partners: members.filter(m => m.role === 'partner').length,
@@ -202,7 +206,7 @@ export async function GET(request: NextRequest) {
     if (action === 'list_teams') {
       // List all teams with optional filtering
       let filteredTeams = mockTeams
-      
+
       if (teamType) {
         filteredTeams = filteredTeams.filter(t => t.team_type === teamType)
       }
@@ -213,9 +217,10 @@ export async function GET(request: NextRequest) {
         return {
           ...team,
           member_count: members.length,
-          avg_member_availability: members.length > 0 
-            ? members.reduce((sum, m) => sum + m.availability_percentage, 0) / members.length 
-            : 0
+          avg_member_availability:
+            members.length > 0
+              ? members.reduce((sum, m) => sum + m.availability_percentage, 0) / members.length
+              : 0
         }
       })
 
@@ -239,7 +244,7 @@ export async function GET(request: NextRequest) {
     if (action === 'team_members' && teamId) {
       // Get team members
       const members = mockTeamMembers.filter(m => m.team_id === teamId)
-      
+
       return NextResponse.json({
         success: true,
         data: members,
@@ -250,10 +255,34 @@ export async function GET(request: NextRequest) {
     if (action === 'available_members') {
       // Get available team members for assignment
       const availableMembers = [
-        { id: 'staff_001', name: 'David Wilson', role: 'staff', availability: 85, specializations: ['Inventory', 'Procurement'] },
-        { id: 'senior_002', name: 'Lisa Chen', role: 'senior', availability: 70, specializations: ['Revenue Recognition', 'Leases'] },
-        { id: 'manager_002', name: 'Robert Taylor', role: 'manager', availability: 60, specializations: ['Banking', 'Derivatives'] },
-        { id: 'intern_001', name: 'Jessica Adams', role: 'intern', availability: 100, specializations: ['Data Analysis', 'Documentation'] }
+        {
+          id: 'staff_001',
+          name: 'David Wilson',
+          role: 'staff',
+          availability: 85,
+          specializations: ['Inventory', 'Procurement']
+        },
+        {
+          id: 'senior_002',
+          name: 'Lisa Chen',
+          role: 'senior',
+          availability: 70,
+          specializations: ['Revenue Recognition', 'Leases']
+        },
+        {
+          id: 'manager_002',
+          name: 'Robert Taylor',
+          role: 'manager',
+          availability: 60,
+          specializations: ['Banking', 'Derivatives']
+        },
+        {
+          id: 'intern_001',
+          name: 'Jessica Adams',
+          role: 'intern',
+          availability: 100,
+          specializations: ['Data Analysis', 'Documentation']
+        }
       ]
 
       return NextResponse.json({
@@ -269,16 +298,19 @@ export async function GET(request: NextRequest) {
         total_teams: mockTeams.length,
         total_members: mockTeamMembers.length,
         avg_team_size: mockTeamMembers.length / mockTeams.length,
-        avg_utilization: mockTeams.reduce((sum, t) => sum + (t.current_workload || 0), 0) / mockTeams.length
+        avg_utilization:
+          mockTeams.reduce((sum, t) => sum + (t.current_workload || 0), 0) / mockTeams.length
       }
     })
-
   } catch (error) {
     console.error('Error fetching teams:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch teams'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to fetch teams'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -290,8 +322,12 @@ export async function POST(request: NextRequest) {
     if (action === 'create_team') {
       // Create new audit team
       const teamId = `team_${Date.now()}`
-      const teamCode = data.team_code || `GSPU-${data.team_type.toUpperCase().substring(0, 3)}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
-      
+      const teamCode =
+        data.team_code ||
+        `GSPU-${data.team_type.toUpperCase().substring(0, 3)}-${Math.floor(Math.random() * 1000)
+          .toString()
+          .padStart(3, '0')}`
+
       const newTeam = {
         id: teamId,
         organization_id: 'gspu_audit_partners_org', // GSPU is the audit firm using HERA
@@ -365,8 +401,9 @@ export async function POST(request: NextRequest) {
 
     if (action === 'assign_member') {
       // Assign member to team
-      const { team_id, member_id, member_name, role, specialization, availability_percentage } = data
-      
+      const { team_id, member_id, member_name, role, specialization, availability_percentage } =
+        data
+
       const newMember = {
         id: `member_${Date.now()}`,
         team_id,
@@ -410,14 +447,19 @@ export async function POST(request: NextRequest) {
     if (action === 'remove_member') {
       // Remove member from team
       const { team_id, member_id } = data
-      
-      const memberIndex = mockTeamMembers.findIndex(m => m.team_id === team_id && m.member_id === member_id)
-      
+
+      const memberIndex = mockTeamMembers.findIndex(
+        m => m.team_id === team_id && m.member_id === member_id
+      )
+
       if (memberIndex === -1) {
-        return NextResponse.json({
-          success: false,
-          message: 'Team member not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Team member not found'
+          },
+          { status: 404 }
+        )
       }
 
       const removedMember = mockTeamMembers.splice(memberIndex, 1)[0]
@@ -445,18 +487,23 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      message: 'Invalid action specified'
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid action specified'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Error processing team request:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to process team request',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to process team request',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -467,13 +514,16 @@ export async function PUT(request: NextRequest) {
 
     if (action === 'update_team') {
       const { team_id, updates } = data
-      
+
       const teamIndex = mockTeams.findIndex(t => t.id === team_id)
       if (teamIndex === -1) {
-        return NextResponse.json({
-          success: false,
-          message: 'Team not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Team not found'
+          },
+          { status: 404 }
+        )
       }
 
       // Update team
@@ -482,7 +532,7 @@ export async function PUT(request: NextRequest) {
         ...updates,
         updated_date: new Date().toISOString()
       }
-      
+
       mockTeams[teamIndex] = updatedTeam
 
       // Create transaction for team update
@@ -510,13 +560,18 @@ export async function PUT(request: NextRequest) {
 
     if (action === 'update_member') {
       const { team_id, member_id, updates } = data
-      
-      const memberIndex = mockTeamMembers.findIndex(m => m.team_id === team_id && m.member_id === member_id)
+
+      const memberIndex = mockTeamMembers.findIndex(
+        m => m.team_id === team_id && m.member_id === member_id
+      )
       if (memberIndex === -1) {
-        return NextResponse.json({
-          success: false,
-          message: 'Team member not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Team member not found'
+          },
+          { status: 404 }
+        )
       }
 
       // Update member
@@ -533,17 +588,22 @@ export async function PUT(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      message: 'Invalid action specified'
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid action specified'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Error updating team:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to update team'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to update team'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -551,26 +611,32 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const teamId = searchParams.get('teamId')
-    
+
     if (!teamId) {
-      return NextResponse.json({
-        success: false,
-        message: 'Team ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Team ID is required'
+        },
+        { status: 400 }
+      )
     }
 
     const teamIndex = mockTeams.findIndex(t => t.id === teamId)
     if (teamIndex === -1) {
-      return NextResponse.json({
-        success: false,
-        message: 'Team not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Team not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Remove team and all its members
     const deletedTeam = mockTeams.splice(teamIndex, 1)[0]
     const removedMembers = mockTeamMembers.filter(m => m.team_id === teamId)
-    
+
     // Remove members
     for (let i = mockTeamMembers.length - 1; i >= 0; i--) {
       if (mockTeamMembers[i].team_id === teamId) {
@@ -600,12 +666,14 @@ export async function DELETE(request: NextRequest) {
         transaction
       }
     })
-
   } catch (error) {
     console.error('Error deleting team:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to delete team'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to delete team'
+      },
+      { status: 500 }
+    )
   }
 }

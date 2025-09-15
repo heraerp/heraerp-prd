@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || 'demo_org'
-    
+
     // Demo CRM contacts data
     const contacts = [
       {
@@ -70,7 +70,6 @@ export async function GET(request: NextRequest) {
       count: contacts.length,
       message: 'CRM contacts retrieved successfully'
     })
-
   } catch (error) {
     console.error('CRM Contacts API error:', error)
     return NextResponse.json(
@@ -119,7 +118,6 @@ export async function POST(request: NextRequest) {
       data: newContact,
       message: 'Contact created successfully'
     })
-
   } catch (error) {
     console.error('Create contact error:', error)
     return NextResponse.json(

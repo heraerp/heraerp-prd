@@ -19,9 +19,7 @@ export default function UCRSettingsPage() {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
         <Alert className="max-w-md bg-gray-800/50 border-gray-700">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Please log in to access UCR settings.
-          </AlertDescription>
+          <AlertDescription>Please log in to access UCR settings.</AlertDescription>
         </Alert>
       </div>
     )

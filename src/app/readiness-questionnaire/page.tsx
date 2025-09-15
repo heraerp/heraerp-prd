@@ -1,7 +1,7 @@
 /**
  * HERA ERP Readiness Questionnaire Page
  * Smart Code: HERA.ERP.READINESS.PAGE.V1
- * 
+ *
  * Main page hosting the ERP Readiness Questionnaire wizard
  */
 
@@ -13,11 +13,11 @@ export const dynamic = 'force-dynamic'
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { 
-  BarChart3, 
-  Clock, 
-  Users, 
-  CheckCircle, 
+import {
+  BarChart3,
+  Clock,
+  Users,
+  CheckCircle,
   ArrowLeft,
   Lightbulb,
   Target,
@@ -33,10 +33,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 
 import { ReadinessWizardV2 as ReadinessWizard } from '@/modules/readiness-questionnaire/ReadinessWizardV2'
 import { createReadinessTemplate } from '@/modules/readiness-questionnaire/template'
-import type { 
-  QuestionnaireTemplate, 
-  QuestionnaireSession, 
-  SessionAPI 
+import type {
+  QuestionnaireTemplate,
+  QuestionnaireSession,
+  SessionAPI
 } from '@/modules/readiness-questionnaire/types'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useToast } from '@/hooks/use-toast'
@@ -60,14 +60,14 @@ export default function ReadinessQuestionnairePage() {
 
   const startAssessment = async () => {
     if (!template) return
-    
+
     setLoading(true)
     try {
       // Create session via API
       const response = await fetch('/api/v1/readiness/sessions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           organization_id: organizationId,
@@ -75,14 +75,14 @@ export default function ReadinessQuestionnairePage() {
           industry_type: 'general' // Can be made dynamic based on org type
         })
       })
-      
+
       if (!response.ok) throw new Error('Failed to create session')
-      
+
       const data = await response.json()
       console.log('API Response:', JSON.stringify(data, null, 2))
       console.log('data.data:', JSON.stringify(data.data, null, 2))
       console.log('data.data.id:', data.data?.id)
-      
+
       // Ensure data structure exists
       if (!data || !data.data || !data.data.id) {
         console.error('Invalid response structure:', data)
@@ -90,7 +90,7 @@ export default function ReadinessQuestionnairePage() {
         console.error('data.data.id exists?', !!data.data?.id)
         throw new Error('Invalid response format: missing session data')
       }
-      
+
       const newSession: QuestionnaireSession = {
         id: data.data.id,
         organization_id: organizationId,
@@ -102,7 +102,7 @@ export default function ReadinessQuestionnairePage() {
         smart_code: 'HERA.ERP.Readiness.Session.Transaction.V1',
         answers: []
       }
-      
+
       setSession(newSession)
       setShowWizard(true)
     } catch (error) {
@@ -119,13 +119,13 @@ export default function ReadinessQuestionnairePage() {
 
   // Real API implementation
   const createSessionAPI = (session: QuestionnaireSession): SessionAPI => ({
-    saveAnswer: async (line) => {
+    saveAnswer: async line => {
       try {
         // Save answer via API
         const response = await fetch(`/api/v1/readiness/sessions/${session.id}/answers`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             question_id: line.question_id,
@@ -136,22 +136,22 @@ export default function ReadinessQuestionnairePage() {
             organization_id: organizationId
           })
         })
-        
+
         if (!response.ok) throw new Error('Failed to save answer')
-        
+
         // Update local state
         setSession(prev => {
           if (!prev) return prev
-          
+
           const existingIndex = prev.answers.findIndex(a => a.question_id === line.question_id)
           const newAnswers = [...prev.answers]
-          
+
           if (existingIndex >= 0) {
             newAnswers[existingIndex] = line
           } else {
             newAnswers.push(line)
           }
-          
+
           return { ...prev, answers: newAnswers }
         })
       } catch (error) {
@@ -163,7 +163,7 @@ export default function ReadinessQuestionnairePage() {
         })
       }
     },
-    
+
     next: async () => {
       setSession(prev => {
         if (!prev || !template) return prev
@@ -173,7 +173,7 @@ export default function ReadinessQuestionnairePage() {
       })
       return session
     },
-    
+
     prev: async () => {
       setSession(prev => {
         if (!prev) return prev
@@ -182,46 +182,45 @@ export default function ReadinessQuestionnairePage() {
       })
       return session
     },
-    
+
     complete: async () => {
       if (!session) return session
-      
+
       try {
         // Complete session and generate insights via API
         const response = await fetch(`/api/v1/readiness/sessions/${session.id}/complete`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             organization_id: organizationId
           })
         })
-        
+
         if (!response.ok) throw new Error('Failed to complete session')
-        
+
         const data = await response.json()
-        
+
         setSession(prev => {
           if (!prev) return prev
-          return { 
-            ...prev, 
+          return {
+            ...prev,
             status: 'COMPLETED',
             completed_at: new Date().toISOString(),
             ai_insights: data.data.insights
           }
         })
-        
+
         toast({
           title: 'Assessment Complete!',
-          description: 'Your readiness assessment has been saved.',
+          description: 'Your readiness assessment has been saved.'
         })
-        
+
         // Redirect to dashboard after a short delay
         setTimeout(() => {
           router.push('/readiness-dashboard')
         }, 2000)
-        
       } catch (error) {
         console.error('Failed to complete session:', error)
         toast({
@@ -230,7 +229,7 @@ export default function ReadinessQuestionnairePage() {
           variant: 'destructive'
         })
       }
-      
+
       return session
     }
   })
@@ -274,13 +273,7 @@ export default function ReadinessQuestionnairePage() {
   */
 
   if (showWizard && template && session) {
-    return (
-      <ReadinessWizard
-        template={template}
-        session={session}
-        api={createSessionAPI(session)}
-      />
-    )
+    return <ReadinessWizard template={template} session={session} api={createSessionAPI(session)} />
   }
 
   return (
@@ -308,14 +301,14 @@ export default function ReadinessQuestionnairePage() {
             <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
               <BarChart3 className="w-10 h-10 text-white" />
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               ERP Readiness Assessment
             </h1>
-            
+
             <p className="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto font-medium">
-              Discover how prepared your business is for ERP implementation with our 
-              comprehensive assessment tool.
+              Discover how prepared your business is for ERP implementation with our comprehensive
+              assessment tool.
             </p>
           </motion.div>
 
@@ -326,7 +319,7 @@ export default function ReadinessQuestionnairePage() {
             transition={{ delay: 0.2 }}
             className="mb-12"
           >
-            <Card 
+            <Card
               className="bg-white dark:bg-gray-800 shadow-2xl border-0"
               style={{
                 background: `
@@ -354,31 +347,41 @@ export default function ReadinessQuestionnairePage() {
                       <Clock className="w-6 h-6 text-white" />
                     </div>
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">15 mins</div>
-                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">Assessment Time</div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                      Assessment Time
+                    </div>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                       <Target className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">12 Sections</div>
-                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">Business Areas</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      12 Sections
+                    </div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                      Business Areas
+                    </div>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                       <Lightbulb className="w-6 h-6 text-white" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">AI Insights</div>
-                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">Smart Analysis</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      AI Insights
+                    </div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                      Smart Analysis
+                    </div>
                   </div>
                 </div>
 
                 <Alert className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
                   <Lightbulb className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   <AlertDescription className="text-gray-700 dark:text-gray-300 font-medium">
-                    This assessment will evaluate your organization across 12 key areas including 
-                    sales, procurement, finance, HR, and technology readiness. You'll receive 
+                    This assessment will evaluate your organization across 12 key areas including
+                    sales, procurement, finance, HR, and technology readiness. You'll receive
                     personalized insights and recommendations.
                   </AlertDescription>
                 </Alert>
@@ -396,7 +399,7 @@ export default function ReadinessQuestionnairePage() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
               What We'll Assess
             </h2>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
                 { title: 'Company Profile', icon: Users, color: 'from-blue-500 to-blue-600' },
@@ -404,7 +407,11 @@ export default function ReadinessQuestionnairePage() {
                 { title: 'Procurement', icon: Shield, color: 'from-purple-500 to-purple-600' },
                 { title: 'Production', icon: Zap, color: 'from-orange-500 to-orange-600' },
                 { title: 'Inventory', icon: CheckCircle, color: 'from-teal-500 to-teal-600' },
-                { title: 'Finance & Accounting', icon: BarChart3, color: 'from-indigo-500 to-indigo-600' }
+                {
+                  title: 'Finance & Accounting',
+                  icon: BarChart3,
+                  color: 'from-indigo-500 to-indigo-600'
+                }
               ].map((section, index) => (
                 <motion.div
                   key={section.title}
@@ -413,7 +420,9 @@ export default function ReadinessQuestionnairePage() {
                   transition={{ delay: 0.5 + index * 0.1 }}
                   className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
                 >
-                  <div className={`w-10 h-10 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center shadow-sm`}>
+                  <div
+                    className={`w-10 h-10 bg-gradient-to-br ${section.color} rounded-lg flex items-center justify-center shadow-sm`}
+                  >
                     <section.icon className="w-5 h-5 text-white" />
                   </div>
                   <span className="font-semibold text-gray-900 dark:text-white">
@@ -441,7 +450,7 @@ export default function ReadinessQuestionnairePage() {
                 <>
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     className="mr-2"
                   >
                     <Clock className="w-5 h-5" />
@@ -455,10 +464,10 @@ export default function ReadinessQuestionnairePage() {
                 </>
               )}
             </Button>
-            
+
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 font-medium">
-              <span className="text-slate-700 dark:text-slate-300">Free assessment</span> • 
-              <span className="text-slate-700 dark:text-slate-300">No registration required</span> • 
+              <span className="text-slate-700 dark:text-slate-300">Free assessment</span> •
+              <span className="text-slate-700 dark:text-slate-300">No registration required</span> •
               <span className="text-slate-700 dark:text-slate-300">Instant results</span>
             </p>
           </motion.div>

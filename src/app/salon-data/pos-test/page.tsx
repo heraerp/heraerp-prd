@@ -11,12 +11,7 @@ import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { 
-  CreditCard, 
-  DollarSign, 
-  CheckCircle,
-  Banknote
-} from 'lucide-react'
+import { CreditCard, DollarSign, CheckCircle, Banknote } from 'lucide-react'
 
 export default function POSTestPage() {
   const [amount, setAmount] = useState('100')
@@ -41,8 +36,10 @@ export default function POSTestPage() {
           <CardContent>
             <div className="text-center space-y-4">
               <p className="text-lg">Amount Paid: AED {amount}</p>
-              <p className="text-gray-600">Payment Type: {paymentType === 'cash' ? 'Cash' : 'Card'}</p>
-              <Button 
+              <p className="text-gray-600">
+                Payment Type: {paymentType === 'cash' ? 'Cash' : 'Card'}
+              </p>
+              <Button
                 onClick={() => {
                   setPaymentComplete(false)
                   setAmount('100')
@@ -64,7 +61,7 @@ export default function POSTestPage() {
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
           POS Payment Test
         </h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Amount Input */}
           <Card>
@@ -81,13 +78,13 @@ export default function POSTestPage() {
                   <Input
                     type="number"
                     value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={e => setAmount(e.target.value)}
                     className="pl-12 text-2xl"
                     placeholder="0.00"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-2">
-                  {['50', '100', '200'].map((preset) => (
+                  {['50', '100', '200'].map(preset => (
                     <Button
                       key={preset}
                       variant="outline"

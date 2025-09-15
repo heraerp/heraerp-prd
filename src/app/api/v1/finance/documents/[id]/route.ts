@@ -1,7 +1,7 @@
 /**
  * HERA Financial Document Details API
  * Smart Code: HERA.FIN.API.DOC.DETAIL.v1
- * 
+ *
  * Retrieve detailed financial document with full audit trail
  */
 
@@ -13,26 +13,27 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organizationId')
-    
+
     if (!organizationId) {
-      return NextResponse.json({
-        success: false,
-        error: 'Organization ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Organization ID is required'
+        },
+        { status: 400 }
+      )
     }
-    
+
     // Get document with all details
     const { data: transaction, error: txError } = await supabaseAdmin
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         universal_transaction_lines (
           id,
@@ -62,23 +63,28 @@ export async function GET(
           entity_code,
           entity_type
         )
-      `)
+      `
+      )
       .eq('id', resolvedParams.id)
       .eq('organization_id', organizationId)
       .single()
-    
+
     if (txError || !transaction) {
-      return NextResponse.json({
-        success: false,
-        error: 'Document not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Document not found'
+        },
+        { status: 404 }
+      )
     }
-    
+
     // Get GL account details for line items
-    const accountIds = transaction.universal_transaction_lines
-      ?.map((line: any) => line.entity_id || (line.metadata as any)?.account_id)
-      .filter(Boolean) || []
-    
+    const accountIds =
+      transaction.universal_transaction_lines
+        ?.map((line: any) => line.entity_id || (line.metadata as any)?.account_id)
+        .filter(Boolean) || []
+
     let accounts: any[] = []
     if (accountIds.length > 0) {
       const { data: accountData } = await supabaseAdmin
@@ -86,10 +92,10 @@ export async function GET(
         .select('id, entity_code, entity_name, metadata')
         .in('id', accountIds)
         .eq('entity_type', 'gl_account')
-      
+
       accounts = accountData || []
     }
-    
+
     // Get posting history (audit trail)
     const { data: auditTrail } = await supabaseAdmin
       .from('universal_transactions')
@@ -98,7 +104,7 @@ export async function GET(
       .eq('metadata->original_document_id', resolvedParams.id)
       .eq('transaction_type', 'audit_log')
       .order('created_at', { ascending: false })
-    
+
     // Transform to document format
     const document = {
       id: transaction.id,
@@ -121,15 +127,22 @@ export async function GET(
       target_entity: transaction.target_entity,
       metadata: transaction.metadata,
       lines: transaction.universal_transaction_lines?.map((line: any, index: number) => {
-        const account = accounts.find(a => a.id === (line.entity_id || (line.metadata as any)?.account_id))
+        const account = accounts.find(
+          a => a.id === (line.entity_id || (line.metadata as any)?.account_id)
+        )
         return {
           id: line.id,
           line_number: line.line_number || index + 1,
-          account_code: account?.entity_code || (line.metadata as any)?.account_code || line.entity_id,
-          account_name: account?.entity_name || (line.metadata as any)?.account_name || line.description,
+          account_code:
+            account?.entity_code || (line.metadata as any)?.account_code || line.entity_id,
+          account_name:
+            account?.entity_name || (line.metadata as any)?.account_name || line.description,
           description: line.description,
-          debit_amount: (line.metadata as any)?.debit || (line.line_amount > 0 ? line.line_amount : 0),
-          credit_amount: (line.metadata as any)?.credit || (line.line_amount < 0 ? Math.abs(line.line_amount) : 0),
+          debit_amount:
+            (line.metadata as any)?.debit || (line.line_amount > 0 ? line.line_amount : 0),
+          credit_amount:
+            (line.metadata as any)?.credit ||
+            (line.line_amount < 0 ? Math.abs(line.line_amount) : 0),
           quantity: line.quantity,
           unit_amount: line.unit_amount,
           line_amount: line.line_amount,
@@ -140,25 +153,28 @@ export async function GET(
           updated_at: line.updated_at
         }
       }),
-      audit_trail: auditTrail?.map(audit => ({
-        id: audit.id,
-        action: (audit.metadata as any)?.action || 'updated',
-        timestamp: audit.created_at,
-        user: (audit.metadata as any)?.user || 'System',
-        changes: (audit.metadata as any)?.changes
-      })) || []
+      audit_trail:
+        auditTrail?.map(audit => ({
+          id: audit.id,
+          action: (audit.metadata as any)?.action || 'updated',
+          timestamp: audit.created_at,
+          user: (audit.metadata as any)?.user || 'System',
+          changes: (audit.metadata as any)?.changes
+        })) || []
     }
-    
+
     return NextResponse.json({
       success: true,
       document
     })
-    
   } catch (error) {
     console.error('API error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }

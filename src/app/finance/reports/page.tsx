@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   FileText,
   Download,
   Calendar,
@@ -233,32 +233,47 @@ export default function FinanceReportsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ready': return 'bg-emerald-500/20 text-emerald-400'
-      case 'scheduled': return 'bg-blue-500/20 text-blue-400'
-      case 'processing': return 'bg-yellow-500/20 text-yellow-400'
-      case 'error': return 'bg-red-500/20 text-red-400'
-      case 'active': return 'bg-emerald-500/20 text-emerald-400'
-      case 'paused': return 'bg-gray-500/20 text-gray-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+      case 'ready':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'scheduled':
+        return 'bg-blue-500/20 text-blue-400'
+      case 'processing':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'error':
+        return 'bg-red-500/20 text-red-400'
+      case 'active':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'paused':
+        return 'bg-gray-500/20 text-gray-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
     }
   }
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'Financial Statements': return 'from-emerald-500 to-green-600'
-      case 'Accounting Reports': return 'from-[#00DDFF] to-[#0049B7]'
-      case 'Receivables': return 'from-purple-500 to-pink-500'
-      case 'Payables': return 'from-red-500 to-rose-600'
-      case 'Management Reports': return 'from-[#fff685] to-amber-500'
-      case 'Custom': return 'from-indigo-500 to-purple-600'
-      default: return 'from-gray-500 to-gray-600'
+      case 'Financial Statements':
+        return 'from-emerald-500 to-green-600'
+      case 'Accounting Reports':
+        return 'from-[#00DDFF] to-[#0049B7]'
+      case 'Receivables':
+        return 'from-purple-500 to-pink-500'
+      case 'Payables':
+        return 'from-red-500 to-rose-600'
+      case 'Management Reports':
+        return 'from-[#fff685] to-amber-500'
+      case 'Custom':
+        return 'from-indigo-500 to-purple-600'
+      default:
+        return 'from-gray-500 to-gray-600'
     }
   }
 
   const allReports = [...standardReports, ...customReports]
   const filteredReports = allReports.filter(report => {
-    const matchesSearch = report.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         report.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      report.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'all' || report.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -271,10 +286,12 @@ export default function FinanceReportsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Financial Reports
           </h1>
-          <p className="text-white/60 mt-1">Generate and schedule financial reports and statements</p>
+          <p className="text-white/60 mt-1">
+            Generate and schedule financial reports and statements
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshReports}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -332,14 +349,14 @@ export default function FinanceReportsPage() {
                 type="text"
                 placeholder="Search reports..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-indigo-500 transition-colors"
               />
             </div>
-            
+
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={e => setSelectedCategory(e.target.value)}
               className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-colors"
             >
               <option value="all">All Categories</option>
@@ -360,16 +377,24 @@ export default function FinanceReportsPage() {
           {/* Reports Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredReports
-              .filter(report => activeTab === 'standard' ? report.category !== 'Custom' : report.category === 'Custom')
-              .map((report) => {
+              .filter(report =>
+                activeTab === 'standard'
+                  ? report.category !== 'Custom'
+                  : report.category === 'Custom'
+              )
+              .map(report => {
                 const Icon = report.icon
                 return (
                   <div key={report.id} className="relative group">
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${getCategoryColor(report.category)} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                    <div
+                      className={`absolute -inset-0.5 bg-gradient-to-r ${getCategoryColor(report.category)} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                    />
                     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-start space-x-4">
-                          <div className={`p-3 rounded-xl bg-gradient-to-br ${getCategoryColor(report.category)}`}>
+                          <div
+                            className={`p-3 rounded-xl bg-gradient-to-br ${getCategoryColor(report.category)}`}
+                          >
                             <Icon className="h-6 w-6 text-white" />
                           </div>
                           <div>
@@ -391,18 +416,24 @@ export default function FinanceReportsPage() {
                         {report.lastRun && (
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-white/60">Last Run</span>
-                            <span className="text-white">{new Date(report.lastRun).toLocaleDateString()}</span>
+                            <span className="text-white">
+                              {new Date(report.lastRun).toLocaleDateString()}
+                            </span>
                           </div>
                         )}
                         {report.nextRun && (
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-white/60">Next Run</span>
-                            <span className="text-white">{new Date(report.nextRun).toLocaleDateString()}</span>
+                            <span className="text-white">
+                              {new Date(report.nextRun).toLocaleDateString()}
+                            </span>
                           </div>
                         )}
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-white/60">Status</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}
+                          >
                             {report.status}
                           </span>
                         </div>
@@ -410,8 +441,11 @@ export default function FinanceReportsPage() {
 
                       <div className="flex items-center justify-between pt-4 border-t border-white/10">
                         <div className="flex items-center space-x-2">
-                          {report.format.map((format) => (
-                            <span key={format} className="px-2 py-1 rounded text-xs bg-white/10 text-white/60">
+                          {report.format.map(format => (
+                            <span
+                              key={format}
+                              className="px-2 py-1 rounded text-xs bg-white/10 text-white/60"
+                            >
                               {format}
                             </span>
                           ))}
@@ -471,7 +505,7 @@ export default function FinanceReportsPage() {
 
           {/* Scheduled Reports List */}
           <div className="space-y-4">
-            {scheduledReports.map((schedule) => (
+            {scheduledReports.map(schedule => (
               <div key={schedule.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -480,11 +514,13 @@ export default function FinanceReportsPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         <FileText className="h-5 w-5 text-indigo-400" />
                         <h3 className="text-lg font-semibold text-white">{schedule.reportName}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(schedule.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(schedule.status)}`}
+                        >
                           {schedule.status}
                         </span>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div>
                           <p className="text-xs text-white/60 mb-1">Frequency</p>
@@ -492,11 +528,15 @@ export default function FinanceReportsPage() {
                         </div>
                         <div>
                           <p className="text-xs text-white/60 mb-1">Next Run</p>
-                          <p className="text-sm text-white">{new Date(schedule.nextRun).toLocaleDateString()}</p>
+                          <p className="text-sm text-white">
+                            {new Date(schedule.nextRun).toLocaleDateString()}
+                          </p>
                         </div>
                         <div>
                           <p className="text-xs text-white/60 mb-1">Last Run</p>
-                          <p className="text-sm text-white">{new Date(schedule.lastRun).toLocaleDateString()}</p>
+                          <p className="text-sm text-white">
+                            {new Date(schedule.lastRun).toLocaleDateString()}
+                          </p>
                         </div>
                         <div>
                           <p className="text-xs text-white/60 mb-1">Recipients</p>
@@ -506,14 +546,17 @@ export default function FinanceReportsPage() {
 
                       <div className="flex items-center space-x-4">
                         {schedule.recipients.map((email, index) => (
-                          <div key={index} className="flex items-center space-x-2 text-xs text-white/60">
+                          <div
+                            key={index}
+                            className="flex items-center space-x-2 text-xs text-white/60"
+                          >
                             <Mail className="h-3 w-3" />
                             <span>{email}</span>
                           </div>
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2 ml-4">
                       <button className="p-2 text-white/40 hover:text-white transition-colors">
                         <Eye className="h-4 w-4" />
@@ -544,15 +587,21 @@ export default function FinanceReportsPage() {
                   <ul className="space-y-2 text-sm text-white/60">
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" />
-                      <span>Schedule monthly reports after month-end close (typically 5th business day)</span>
+                      <span>
+                        Schedule monthly reports after month-end close (typically 5th business day)
+                      </span>
                     </li>
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" />
-                      <span>Set up automated distribution lists for different stakeholder groups</span>
+                      <span>
+                        Set up automated distribution lists for different stakeholder groups
+                      </span>
                     </li>
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" />
-                      <span>Use PDF format for external stakeholders, Excel for internal analysis</span>
+                      <span>
+                        Use PDF format for external stakeholders, Excel for internal analysis
+                      </span>
                     </li>
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" />

@@ -2,7 +2,11 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
-import { getDemoOrganizationId, getDemoOrganizationInfo, isDemoRoute } from '@/lib/demo-org-resolver'
+import {
+  getDemoOrganizationId,
+  getDemoOrganizationInfo,
+  isDemoRoute
+} from '@/lib/demo-org-resolver'
 
 interface DemoOrgContextType {
   organizationId: string | null
@@ -54,7 +58,7 @@ export function DemoOrgProvider({ children }: DemoOrgProviderProps) {
 
       // Get demo organization info
       const info = await getDemoOrganizationInfo(pathname)
-      
+
       if (info) {
         setOrgInfo({
           organizationId: info.id,
@@ -77,9 +81,5 @@ export function DemoOrgProvider({ children }: DemoOrgProviderProps) {
     loadDemoOrg()
   }, [pathname])
 
-  return (
-    <DemoOrgContext.Provider value={orgInfo}>
-      {children}
-    </DemoOrgContext.Provider>
-  )
+  return <DemoOrgContext.Provider value={orgInfo}>{children}</DemoOrgContext.Provider>
 }

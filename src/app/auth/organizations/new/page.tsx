@@ -10,11 +10,31 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
-  Loader2, Building2, AlertCircle, CheckCircle, X, 
-  ArrowLeft, ArrowRight, Sparkles, Store, Heart, 
-  Briefcase, Factory, Users, Globe, Shield, Zap, Hammer
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Loader2,
+  Building2,
+  AlertCircle,
+  CheckCircle,
+  X,
+  ArrowLeft,
+  ArrowRight,
+  Sparkles,
+  Store,
+  Heart,
+  Briefcase,
+  Factory,
+  Users,
+  Globe,
+  Shield,
+  Zap,
+  Hammer
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
@@ -31,12 +51,12 @@ const BUSINESS_TYPES = [
 export default function CreateOrganizationPage() {
   const router = useRouter()
   const { createOrganization, checkSubdomainAvailability, isAuthenticated } = useMultiOrgAuth()
-  
+
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isCheckingSubdomain, setIsCheckingSubdomain] = useState(false)
   const [subdomainAvailable, setSubdomainAvailable] = useState<boolean | null>(null)
-  
+
   const [formData, setFormData] = useState({
     organization_name: '',
     organization_type: 'salon', // Default to salon since it's the only option
@@ -59,7 +79,7 @@ export default function CreateOrganizationPage() {
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '')
         .substring(0, 63)
-      
+
       setFormData(prev => ({ ...prev, subdomain: suggested }))
     }
   }, [formData.organization_name])
@@ -101,15 +121,18 @@ export default function CreateOrganizationPage() {
 
     try {
       const org = await createOrganization(formData)
-      
+
       // Store organization data temporarily for the apps page
-      localStorage.setItem(`new-org-${org.id}`, JSON.stringify({
-        id: org.id,
-        name: formData.organization_name,
-        subdomain: formData.subdomain,
-        type: formData.organization_type
-      }))
-      
+      localStorage.setItem(
+        `new-org-${org.id}`,
+        JSON.stringify({
+          id: org.id,
+          name: formData.organization_name,
+          subdomain: formData.subdomain,
+          type: formData.organization_type
+        })
+      )
+
       // Redirect to appropriate app based on business type
       const redirectAfterOrg = localStorage.getItem('redirectAfterOrg')
       if (redirectAfterOrg) {
@@ -120,10 +143,10 @@ export default function CreateOrganizationPage() {
         const protocol = window.location.protocol
         const hostname = window.location.hostname
         const port = window.location.port
-        
+
         // Use appropriate subdomain pattern for development vs production
         let baseUrl: string
-        
+
         if (process.env.NODE_ENV === 'production') {
           // Production: use actual heraerp.com subdomains
           baseUrl = `${protocol}//${formData.subdomain}.heraerp.com`
@@ -132,7 +155,7 @@ export default function CreateOrganizationPage() {
           const portSuffix = port ? `:${port}` : ''
           baseUrl = `${protocol}//${formData.subdomain}.lvh.me${portSuffix}`
         }
-        
+
         switch (formData.organization_type) {
           case 'salon':
             window.location.href = `${baseUrl}/org/salon`
@@ -164,7 +187,7 @@ export default function CreateOrganizationPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Animated background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      
+
       {/* Glassmorphic orbs for depth */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
@@ -177,8 +200,8 @@ export default function CreateOrganizationPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Link href="/auth/organizations">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors"
                 >
@@ -193,8 +216,12 @@ export default function CreateOrganizationPage() {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">Create Organization</h1>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">Set up your new business</p>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
+                    Create Organization
+                  </h1>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Set up your new business
+                  </p>
                 </div>
               </div>
             </div>
@@ -215,20 +242,29 @@ export default function CreateOrganizationPage() {
               Organization Details
             </CardTitle>
             <CardDescription className="text-gray-700 dark:text-gray-300 text-center text-lg leading-relaxed max-w-lg mx-auto">
-              Create a new organization to manage your business. Each organization gets its own subdomain and completely isolated data.
+              Create a new organization to manage your business. Each organization gets its own
+              subdomain and completely isolated data.
             </CardDescription>
           </CardHeader>
           <CardContent className="px-10 pb-10">
             <form onSubmit={handleSubmit} className="space-y-8">
               {error && (
-                <Alert variant="destructive" className="bg-red-50/90 dark:bg-red-900/40 backdrop-blur-lg border-red-200/60 dark:border-red-800/60">
+                <Alert
+                  variant="destructive"
+                  className="bg-red-50/90 dark:bg-red-900/40 backdrop-blur-lg border-red-200/60 dark:border-red-800/60"
+                >
                   <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-red-800 dark:text-red-200 font-medium">{error}</AlertDescription>
+                  <AlertDescription className="text-red-800 dark:text-red-200 font-medium">
+                    {error}
+                  </AlertDescription>
                 </Alert>
               )}
-              
+
               <div className="space-y-3">
-                <Label htmlFor="organization_name" className="text-base font-semibold text-gray-800 dark:text-gray-200">
+                <Label
+                  htmlFor="organization_name"
+                  className="text-base font-semibold text-gray-800 dark:text-gray-200"
+                >
                   Organization Name
                 </Label>
                 <Input
@@ -236,7 +272,7 @@ export default function CreateOrganizationPage() {
                   type="text"
                   placeholder="ACME Corporation"
                   value={formData.organization_name}
-                  onChange={(e) => setFormData({...formData, organization_name: e.target.value})}
+                  onChange={e => setFormData({ ...formData, organization_name: e.target.value })}
                   required
                   disabled={isLoading}
                   className="h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
@@ -245,33 +281,41 @@ export default function CreateOrganizationPage() {
                   Your business or company name
                 </p>
               </div>
-              
+
               <div className="space-y-3">
-                <Label htmlFor="organization_type" className="text-base font-semibold text-gray-800 dark:text-gray-200">
+                <Label
+                  htmlFor="organization_type"
+                  className="text-base font-semibold text-gray-800 dark:text-gray-200"
+                >
                   Business Type
                 </Label>
                 <Select
                   value={formData.organization_type}
-                  onValueChange={(value) => setFormData({...formData, organization_type: value})}
+                  onValueChange={value => setFormData({ ...formData, organization_type: value })}
                   disabled={false}
                 >
-                  <SelectTrigger id="organization_type" className="h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100">
+                  <SelectTrigger
+                    id="organization_type"
+                    className="h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100"
+                  >
                     <SelectValue placeholder="Select your business type" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl border-2 border-white/30 dark:border-gray-700/60 shadow-2xl rounded-xl">
-                    {BUSINESS_TYPES.map((type) => {
+                    {BUSINESS_TYPES.map(type => {
                       const Icon = type.icon
                       return (
-                        <SelectItem 
-                          key={type.value} 
-                          value={type.value} 
+                        <SelectItem
+                          key={type.value}
+                          value={type.value}
                           className="py-3 px-4 text-base hover:bg-blue-50/70 dark:hover:bg-blue-900/30 focus:bg-blue-50/70 dark:focus:bg-blue-900/30 rounded-lg"
                         >
                           <div className="flex items-center gap-3">
                             <div className="p-2 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40 rounded-lg">
                               <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <span className="font-medium text-gray-900 dark:text-gray-100">{type.label}</span>
+                            <span className="font-medium text-gray-900 dark:text-gray-100">
+                              {type.label}
+                            </span>
                           </div>
                         </SelectItem>
                       )
@@ -282,9 +326,12 @@ export default function CreateOrganizationPage() {
                   Choose the type of business you're setting up
                 </p>
               </div>
-              
+
               <div className="space-y-3">
-                <Label htmlFor="subdomain" className="text-base font-semibold text-gray-800 dark:text-gray-200">
+                <Label
+                  htmlFor="subdomain"
+                  className="text-base font-semibold text-gray-800 dark:text-gray-200"
+                >
                   Subdomain
                 </Label>
                 <div className="relative">
@@ -293,7 +340,9 @@ export default function CreateOrganizationPage() {
                     type="text"
                     placeholder="acme"
                     value={formData.subdomain}
-                    onChange={(e) => setFormData({...formData, subdomain: e.target.value.toLowerCase()})}
+                    onChange={e =>
+                      setFormData({ ...formData, subdomain: e.target.value.toLowerCase() })
+                    }
                     required
                     disabled={isLoading}
                     className="pr-12 h-14 text-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-2 border-gray-200/60 dark:border-gray-700/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
@@ -312,7 +361,10 @@ export default function CreateOrganizationPage() {
                 </div>
                 <div className="bg-blue-50/70 dark:bg-blue-900/30 backdrop-blur-sm rounded-lg p-3 border border-blue-200/50 dark:border-blue-700/50">
                   <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">
-                    Your HERA URL will be: <span className="font-bold">{formData.subdomain || 'subdomain'}.heraerp.com</span>
+                    Your HERA URL will be:{' '}
+                    <span className="font-bold">
+                      {formData.subdomain || 'subdomain'}.heraerp.com
+                    </span>
                   </p>
                 </div>
                 {subdomainAvailable === false && (
@@ -323,7 +375,7 @@ export default function CreateOrganizationPage() {
                   </div>
                 )}
               </div>
-              
+
               <div className="pt-4">
                 <Button
                   type="submit"
@@ -363,7 +415,9 @@ export default function CreateOrganizationPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
               <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">Team Collaboration</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">
+              Team Collaboration
+            </h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Invite unlimited team members anytime
             </p>

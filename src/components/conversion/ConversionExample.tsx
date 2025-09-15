@@ -33,15 +33,14 @@ export function ConversionExample() {
 
   const handleCompleteConversion = async (conversionData: ConversionData) => {
     console.log('🚀 Starting conversion with data:', conversionData)
-    
+
     try {
       // In a real implementation, this would call the backend API
       const result = await DemoToSaaSConversionService.convertDemoToSaaS(conversionData)
-      
+
       console.log('✅ Conversion completed:', result)
       setConversionResult(result)
       setShowWizard(false)
-      
     } catch (error) {
       console.error('❌ Conversion failed:', error)
     }
@@ -76,7 +75,7 @@ export function ConversionExample() {
                 <strong>Subdomain:</strong> {conversionResult.organization?.subdomain}
               </div>
               <div>
-                <strong>Access URL:</strong> 
+                <strong>Access URL:</strong>
                 <a href={conversionResult.accessUrl} className="text-blue-600 hover:underline ml-2">
                   {conversionResult.accessUrl}
                 </a>
@@ -87,10 +86,12 @@ export function ConversionExample() {
               {conversionResult.businessSetup && (
                 <>
                   <div>
-                    <strong>Chart of Accounts:</strong> {conversionResult.businessSetup.chartOfAccounts} accounts
+                    <strong>Chart of Accounts:</strong>{' '}
+                    {conversionResult.businessSetup.chartOfAccounts} accounts
                   </div>
                   <div>
-                    <strong>Templates:</strong> {conversionResult.businessSetup.templates} business templates
+                    <strong>Templates:</strong> {conversionResult.businessSetup.templates} business
+                    templates
                   </div>
                 </>
               )}
@@ -113,7 +114,7 @@ export function ConversionExample() {
   return (
     <div className="max-w-4xl mx-auto p-8">
       <h1 className="text-3xl font-bold text-center mb-8">Demo-to-SaaS Conversion Example</h1>
-      
+
       <ConversionBanner
         demoModule="furniture"
         metrics={demoMetrics}

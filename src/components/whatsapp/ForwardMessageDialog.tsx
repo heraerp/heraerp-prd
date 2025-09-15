@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -48,20 +48,20 @@ export function ForwardMessageDialog({
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(false)
   const [forwarding, setForwarding] = useState(false)
-  
+
   // Fetch contacts/conversations
   useEffect(() => {
     if (open) {
       fetchContacts()
     }
   }, [open])
-  
+
   const fetchContacts = async () => {
     setLoading(true)
     try {
       const response = await fetch('/api/v1/whatsapp/conversations')
       const result = await response.json()
-      
+
       if (result.status === 'success') {
         // Transform conversations to contacts format
         const contactsList = result.conversations.map((conv: any) => ({
@@ -79,23 +79,22 @@ export function ForwardMessageDialog({
       setLoading(false)
     }
   }
-  
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contact.phone.includes(searchQuery)
+
+  const filteredContacts = contacts.filter(
+    contact =>
+      contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contact.phone.includes(searchQuery)
   )
-  
+
   const handleContactToggle = (contactId: string) => {
     setSelectedContacts(prev =>
-      prev.includes(contactId)
-        ? prev.filter(id => id !== contactId)
-        : [...prev, contactId]
+      prev.includes(contactId) ? prev.filter(id => id !== contactId) : [...prev, contactId]
     )
   }
-  
+
   const handleForward = async () => {
     if (selectedContacts.length === 0 || !messageToForward) return
-    
+
     try {
       setForwarding(true)
       await onForward(selectedContacts)
@@ -107,20 +106,18 @@ export function ForwardMessageDialog({
       setForwarding(false)
     }
   }
-  
+
   // Recent contacts section (mock data)
   const recentContacts = contacts.slice(0, 5)
-  
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Forward Message</DialogTitle>
-          <DialogDescription>
-            Select contacts to forward this message to
-          </DialogDescription>
+          <DialogDescription>Select contacts to forward this message to</DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           {/* Search */}
           <div className="relative">
@@ -128,27 +125,23 @@ export function ForwardMessageDialog({
             <Input
               placeholder="Search contacts..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-9"
             />
           </div>
-          
+
           {/* Selected contacts count */}
           {selectedContacts.length > 0 && (
             <div className="flex items-center justify-between px-2">
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {selectedContacts.length} selected
               </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelectedContacts([])}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setSelectedContacts([])}>
                 Clear all
               </Button>
             </div>
           )}
-          
+
           {/* Contacts list */}
           <ScrollArea className="h-80">
             {loading ? (
@@ -175,7 +168,7 @@ export function ForwardMessageDialog({
                     <div className="my-2 border-b" />
                   </>
                 )}
-                
+
                 {/* All contacts */}
                 <div className="flex items-center gap-2 px-2 py-1 text-xs text-gray-500">
                   <Users className="w-3 h-3" />
@@ -193,19 +186,12 @@ export function ForwardMessageDialog({
             )}
           </ScrollArea>
         </div>
-        
+
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={forwarding}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={forwarding}>
             Cancel
           </Button>
-          <Button
-            onClick={handleForward}
-            disabled={selectedContacts.length === 0 || forwarding}
-          >
+          <Button onClick={handleForward} disabled={selectedContacts.length === 0 || forwarding}>
             <Forward className="w-4 h-4 mr-2" />
             Forward to {selectedContacts.length || 0}
           </Button>
@@ -215,14 +201,14 @@ export function ForwardMessageDialog({
   )
 }
 
-function ContactItem({ 
-  contact, 
-  isSelected, 
-  onToggle 
-}: { 
+function ContactItem({
+  contact,
+  isSelected,
+  onToggle
+}: {
   contact: Contact
   isSelected: boolean
-  onToggle: () => void 
+  onToggle: () => void
 }) {
   return (
     <div
@@ -232,16 +218,20 @@ function ContactItem({
       <Checkbox
         checked={isSelected}
         onCheckedChange={onToggle}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       />
-      
+
       <Avatar className="w-10 h-10">
         <AvatarImage src={contact.avatar} />
         <AvatarFallback>
-          {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+          {contact.name
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase()}
         </AvatarFallback>
       </Avatar>
-      
+
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <p className="font-medium text-sm">{contact.name}</p>

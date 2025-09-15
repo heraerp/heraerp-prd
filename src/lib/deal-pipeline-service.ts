@@ -1,6 +1,6 @@
 /**
  * Deal Pipeline Configuration Service
- * 
+ *
  * Manages organization-specific deal pipeline configurations using HERA's universal 6-table architecture.
  * Stores pipeline configs as core_entities with dynamic data for flexibility.
  */
@@ -34,21 +34,63 @@ export const PIPELINE_TEMPLATES = {
     complexity: 'Beginner',
     recommended: 'Startups, Small Teams',
     stages: [
-      { id: 'interested', name: 'Interested', color: 'bg-blue-500', description: 'They want to learn more', order: 1 },
-      { id: 'proposal', name: 'Proposal Sent', color: 'bg-orange-500', description: 'Waiting for their decision', order: 2 },
-      { id: 'won', name: 'Deal Won', color: 'bg-green-500', description: 'Success! New customer', order: 3 }
+      {
+        id: 'interested',
+        name: 'Interested',
+        color: 'bg-blue-500',
+        description: 'They want to learn more',
+        order: 1
+      },
+      {
+        id: 'proposal',
+        name: 'Proposal Sent',
+        color: 'bg-orange-500',
+        description: 'Waiting for their decision',
+        order: 2
+      },
+      {
+        id: 'won',
+        name: 'Deal Won',
+        color: 'bg-green-500',
+        description: 'Success! New customer',
+        order: 3
+      }
     ]
   },
   standard: {
     name: 'Standard Pipeline',
     description: 'Balanced approach with qualification',
-    complexity: 'Intermediate', 
+    complexity: 'Intermediate',
     recommended: 'Growing Companies, Sales Teams',
     stages: [
-      { id: 'lead', name: 'Lead', color: 'bg-gray-500', description: 'Initial contact made', order: 1 },
-      { id: 'qualified', name: 'Qualified', color: 'bg-blue-500', description: 'Meets our criteria', order: 2 },
-      { id: 'proposal', name: 'Proposal', color: 'bg-orange-500', description: 'Proposal submitted', order: 3 },
-      { id: 'won', name: 'Won', color: 'bg-green-500', description: 'Deal closed successfully', order: 4 }
+      {
+        id: 'lead',
+        name: 'Lead',
+        color: 'bg-gray-500',
+        description: 'Initial contact made',
+        order: 1
+      },
+      {
+        id: 'qualified',
+        name: 'Qualified',
+        color: 'bg-blue-500',
+        description: 'Meets our criteria',
+        order: 2
+      },
+      {
+        id: 'proposal',
+        name: 'Proposal',
+        color: 'bg-orange-500',
+        description: 'Proposal submitted',
+        order: 3
+      },
+      {
+        id: 'won',
+        name: 'Won',
+        color: 'bg-green-500',
+        description: 'Deal closed successfully',
+        order: 4
+      }
     ]
   },
   enterprise: {
@@ -57,11 +99,41 @@ export const PIPELINE_TEMPLATES = {
     complexity: 'Advanced',
     recommended: 'Large Companies, Enterprise Sales',
     stages: [
-      { id: 'lead', name: 'Lead', color: 'bg-gray-500', description: 'Initial contact made', order: 1 },
-      { id: 'qualified', name: 'Qualified', color: 'bg-blue-500', description: 'Meets criteria & budget', order: 2 },
-      { id: 'discovery', name: 'Discovery', color: 'bg-purple-500', description: 'Understanding needs', order: 3 },
-      { id: 'proposal', name: 'Proposal', color: 'bg-orange-500', description: 'Formal proposal sent', order: 4 },
-      { id: 'won', name: 'Won', color: 'bg-green-500', description: 'Deal closed & signed', order: 5 }
+      {
+        id: 'lead',
+        name: 'Lead',
+        color: 'bg-gray-500',
+        description: 'Initial contact made',
+        order: 1
+      },
+      {
+        id: 'qualified',
+        name: 'Qualified',
+        color: 'bg-blue-500',
+        description: 'Meets criteria & budget',
+        order: 2
+      },
+      {
+        id: 'discovery',
+        name: 'Discovery',
+        color: 'bg-purple-500',
+        description: 'Understanding needs',
+        order: 3
+      },
+      {
+        id: 'proposal',
+        name: 'Proposal',
+        color: 'bg-orange-500',
+        description: 'Formal proposal sent',
+        order: 4
+      },
+      {
+        id: 'won',
+        name: 'Won',
+        color: 'bg-green-500',
+        description: 'Deal closed & signed',
+        order: 5
+      }
     ]
   }
 }
@@ -75,7 +147,7 @@ class DealPipelineService {
       // First try to get from HERA universal tables
       const entities = await heraApi.getEntities('deal_pipeline_config')
       const orgConfig = entities.find((entity: any) => entity.organization_id === organizationId)
-      
+
       if (orgConfig) {
         // Get dynamic data for the configuration
         const dynamicData = await heraApi.getDynamicData(orgConfig.id, [
@@ -85,7 +157,7 @@ class DealPipelineService {
           'created_at',
           'updated_at'
         ])
-        
+
         return {
           id: orgConfig.id,
           organizationId,
@@ -96,23 +168,23 @@ class DealPipelineService {
           updatedAt: dynamicData.updated_at || new Date().toISOString()
         }
       }
-      
+
       // Fallback to localStorage for demo/development
       const saved = localStorage.getItem(`deal-config-${organizationId}`)
       if (saved) {
         return JSON.parse(saved)
       }
-      
+
       return null
     } catch (error) {
       console.error('Failed to load pipeline config:', error)
-      
+
       // Fallback to localStorage
       const saved = localStorage.getItem(`deal-config-${organizationId}`)
       if (saved) {
         return JSON.parse(saved)
       }
-      
+
       return null
     }
   }
@@ -145,7 +217,10 @@ class DealPipelineService {
       const dynamicFields = [
         { field_name: 'template', field_value: config.template },
         { field_name: 'stages_config', field_value: JSON.stringify(config.stages) },
-        { field_name: 'custom_stages', field_value: config.customStages ? JSON.stringify(config.customStages) : null },
+        {
+          field_name: 'custom_stages',
+          field_value: config.customStages ? JSON.stringify(config.customStages) : null
+        },
         { field_name: 'created_at', field_value: config.createdAt },
         { field_name: 'updated_at', field_value: new Date().toISOString() }
       ]
@@ -155,29 +230,37 @@ class DealPipelineService {
       }
 
       // Also save to localStorage as backup
-      localStorage.setItem(`deal-config-${config.organizationId}`, JSON.stringify({
-        ...config,
-        id: entityId,
-        updatedAt: new Date().toISOString()
-      }))
-
+      localStorage.setItem(
+        `deal-config-${config.organizationId}`,
+        JSON.stringify({
+          ...config,
+          id: entityId,
+          updatedAt: new Date().toISOString()
+        })
+      )
     } catch (error) {
       console.error('Failed to save pipeline config:', error)
-      
+
       // Fallback to localStorage
-      localStorage.setItem(`deal-config-${config.organizationId}`, JSON.stringify({
-        ...config,
-        updatedAt: new Date().toISOString()
-      }))
+      localStorage.setItem(
+        `deal-config-${config.organizationId}`,
+        JSON.stringify({
+          ...config,
+          updatedAt: new Date().toISOString()
+        })
+      )
     }
   }
 
   /**
    * Get default configuration for a template
    */
-  getTemplateConfig(template: keyof typeof PIPELINE_TEMPLATES, organizationId: string): PipelineConfig {
+  getTemplateConfig(
+    template: keyof typeof PIPELINE_TEMPLATES,
+    organizationId: string
+  ): PipelineConfig {
     const templateData = PIPELINE_TEMPLATES[template]
-    
+
     return {
       organizationId,
       template,
@@ -208,14 +291,14 @@ class DealPipelineService {
     try {
       const entities = await heraApi.getEntities('deal_pipeline_config')
       const orgIds = []
-      
+
       for (const entity of entities) {
         const dynamicData = await heraApi.getDynamicData(entity.id, ['template'])
         if (dynamicData.template === template) {
           orgIds.push(entity.organization_id)
         }
       }
-      
+
       return orgIds
     } catch (error) {
       console.error('Failed to get organizations by template:', error)
@@ -226,15 +309,18 @@ class DealPipelineService {
   /**
    * Migration helper - migrate organizations to new template
    */
-  async migratePipelineTemplate(organizationId: string, newTemplate: keyof typeof PIPELINE_TEMPLATES): Promise<void> {
+  async migratePipelineTemplate(
+    organizationId: string,
+    newTemplate: keyof typeof PIPELINE_TEMPLATES
+  ): Promise<void> {
     const currentConfig = await this.getPipelineConfig(organizationId)
     const newConfig = this.getTemplateConfig(newTemplate, organizationId)
-    
+
     if (currentConfig) {
       newConfig.id = currentConfig.id
       newConfig.createdAt = currentConfig.createdAt
     }
-    
+
     await this.savePipelineConfig(newConfig)
   }
 }
@@ -245,7 +331,7 @@ export const dealPipelineService = new DealPipelineService()
 // HERA Smart Code for pipeline configuration
 export const PIPELINE_SMART_CODES = {
   SIMPLE_PIPELINE: 'HERA.DEAL.PIPELINE.SIMPLE.v1',
-  STANDARD_PIPELINE: 'HERA.DEAL.PIPELINE.STANDARD.v1', 
+  STANDARD_PIPELINE: 'HERA.DEAL.PIPELINE.STANDARD.v1',
   ENTERPRISE_PIPELINE: 'HERA.DEAL.PIPELINE.ENTERPRISE.v1',
   CUSTOM_PIPELINE: 'HERA.DEAL.PIPELINE.CUSTOM.v1',
   PIPELINE_CONFIG: 'HERA.DEAL.CONFIG.PIPELINE.v1'

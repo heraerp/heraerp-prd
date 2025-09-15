@@ -36,7 +36,7 @@ const SACRED_DNA_RULES = {
     enforcement: 'mandatory' as const,
     reason: 'UI development detected - DNA components are mandatory'
   },
-  
+
   // Rule 2: Emergency/Firefight gets DNA for stability
   emergencyGetsDNA: {
     patterns: [
@@ -46,7 +46,7 @@ const SACRED_DNA_RULES = {
     enforcement: 'critical' as const,
     reason: 'Emergency situation - DNA components provide maximum stability'
   },
-  
+
   // Rule 3: ANY development work gets DNA by default
   allDevelopmentGetsDNA: {
     patterns: [
@@ -63,25 +63,25 @@ const SACRED_DNA_RULES = {
  */
 const DNA_COMPONENT_MAPPING = {
   // Traditional -> DNA Enterprise
-  'Card': 'EnterpriseCard',
-  'StatsCard': 'EnterpriseStatsCard', 
-  'Dashboard': 'EnterpriseDashboard components',
-  'Button': 'EnterpriseCard with interactive props',
-  'Modal': 'EnterpriseCard with modal variants',
-  'Form': 'EnterpriseCard with form layouts',
-  'Table': 'EnterpriseCard with table variants',
-  'Chart': 'ChartPlaceholder with enterprise styling',
-  'Metric': 'MetricTile or EnterpriseStatsCard',
-  'KPI': 'KPICard',
-  'Progress': 'ProgressIndicator',
-  'Activity': 'ActivityItem',
-  
+  Card: 'EnterpriseCard',
+  StatsCard: 'EnterpriseStatsCard',
+  Dashboard: 'EnterpriseDashboard components',
+  Button: 'EnterpriseCard with interactive props',
+  Modal: 'EnterpriseCard with modal variants',
+  Form: 'EnterpriseCard with form layouts',
+  Table: 'EnterpriseCard with table variants',
+  Chart: 'ChartPlaceholder with enterprise styling',
+  Metric: 'MetricTile or EnterpriseStatsCard',
+  KPI: 'KPICard',
+  Progress: 'ProgressIndicator',
+  Activity: 'ActivityItem',
+
   // Patterns to components
-  'stats': 'EnterpriseStatsCard with live updates',
-  'analytics': 'EnterpriseDashboard with KPI cards',
-  'dashboard': 'Complete EnterpriseDashboard suite',
-  'metrics': 'EnterpriseStatsCard with sparklines',
-  'realtime': 'EnterpriseStatsCard with live prop',
+  stats: 'EnterpriseStatsCard with live updates',
+  analytics: 'EnterpriseDashboard with KPI cards',
+  dashboard: 'Complete EnterpriseDashboard suite',
+  metrics: 'EnterpriseStatsCard with sparklines',
+  realtime: 'EnterpriseStatsCard with live prop',
   'data visualization': 'EnterpriseStatsCard + ChartPlaceholder',
   'business intelligence': 'Full EnterpriseDashboard implementation'
 }
@@ -98,7 +98,7 @@ EMERGENCY PROTOCOL ACTIVATED - Using HERA DNA Enterprise Components for maximum 
 - Accessibility built-in for inclusive emergency responses
 Original request: {originalPrompt}
 `,
-  
+
   dashboard: `
 DASHBOARD REQUEST ENHANCED - Full Enterprise Dashboard Suite:
 - EnterpriseStatsCard with real-time updates and sparklines
@@ -108,7 +108,7 @@ DASHBOARD REQUEST ENHANCED - Full Enterprise Dashboard Suite:
 - Professional glassmorphism with enterprise color schemes
 Enhanced request: {originalPrompt}
 `,
-  
+
   stats: `
 STATISTICS REQUEST ENHANCED - Advanced Metrics Display:
 - EnterpriseStatsCard with live data capabilities
@@ -118,7 +118,7 @@ STATISTICS REQUEST ENHANCED - Advanced Metrics Display:
 - Real-time updates with smooth animations
 Enhanced request: {originalPrompt}
 `,
-  
+
   form: `
 FORM REQUEST ENHANCED - Enterprise Form Components:
 - EnterpriseCard as form containers with validation states
@@ -127,7 +127,7 @@ FORM REQUEST ENHANCED - Enterprise Form Components:
 - Accessibility-compliant form interactions
 Enhanced request: {originalPrompt}
 `,
-  
+
   general: `
 REQUEST AUTO-ENHANCED - HERA DNA Enterprise Components:
 - Professional glassmorphism design system
@@ -141,7 +141,10 @@ Enhanced request: {originalPrompt}
 /**
  * Analyze build context and determine DNA enforcement
  */
-export function analyzeBuildRequest(userPrompt: string, urgency: 'low' | 'medium' | 'high' | 'critical' | 'firefight' = 'medium'): DNAEnforcementResult {
+export function analyzeBuildRequest(
+  userPrompt: string,
+  urgency: 'low' | 'medium' | 'high' | 'critical' | 'firefight' = 'medium'
+): DNAEnforcementResult {
   const context: BuildContext = {
     type: detectRequestType(userPrompt),
     urgency,
@@ -149,39 +152,41 @@ export function analyzeBuildRequest(userPrompt: string, urgency: 'low' | 'medium
     userPrompt,
     timestamp: new Date()
   }
-  
+
   // Apply SACRED DNA RULES (cannot be bypassed)
   let enforcementLevel: DNAEnforcementResult['enforcementLevel'] = 'optional'
   let reason = 'Default DNA enforcement'
   let shouldUseDNA = true // DEFAULT: Always use DNA
-  
+
   // Check emergency/firefight rule
   if (SACRED_DNA_RULES.emergencyGetsDNA.patterns.some(pattern => pattern.test(userPrompt))) {
     enforcementLevel = 'critical'
     reason = SACRED_DNA_RULES.emergencyGetsDNA.reason
     shouldUseDNA = true
   }
-  
+
   // Check UI requirement rule
   else if (SACRED_DNA_RULES.uiRequiresRNA.patterns.some(pattern => pattern.test(userPrompt))) {
     enforcementLevel = 'mandatory'
     reason = SACRED_DNA_RULES.uiRequiresRNA.reason
     shouldUseDNA = true
   }
-  
+
   // Check general development rule
-  else if (SACRED_DNA_RULES.allDevelopmentGetsDNA.patterns.some(pattern => pattern.test(userPrompt))) {
+  else if (
+    SACRED_DNA_RULES.allDevelopmentGetsDNA.patterns.some(pattern => pattern.test(userPrompt))
+  ) {
     enforcementLevel = 'recommended'
     reason = SACRED_DNA_RULES.allDevelopmentGetsDNA.reason
     shouldUseDNA = true
   }
-  
+
   // Get recommended components
   const recommendedComponents = getRecommendedComponents(userPrompt, context)
-  
+
   // Auto-enhance prompt
   const autoEnhancedPrompt = enhancePromptWithDNA(userPrompt, context, recommendedComponents)
-  
+
   return {
     shouldUseDNA,
     reason,
@@ -197,14 +202,14 @@ export function analyzeBuildRequest(userPrompt: string, urgency: 'low' | 'medium
 function detectRequestType(prompt: string): BuildContext['type'] {
   const uiPatterns = /\b(ui|component|interface|dashboard|form|card|button|modal|page)\b/i
   const emergencyPatterns = /\b(urgent|emergency|critical|firefight|fix|bug|broken|down)\b/i
-  
+
   if (emergencyPatterns.test(prompt)) return 'emergency'
   if (uiPatterns.test(prompt)) return 'ui'
   if (/\b(api|endpoint|route|server)\b/i.test(prompt)) return 'api'
   if (/\b(feature|functionality|module)\b/i.test(prompt)) return 'feature'
   if (/\b(component|react|tsx)\b/i.test(prompt)) return 'component'
   if (/\b(page|screen|view)\b/i.test(prompt)) return 'page'
-  
+
   return 'unknown'
 }
 
@@ -218,7 +223,7 @@ function detectUIElements(prompt: string): boolean {
     /\b(interface|ui|component|layout|design)\b/i,
     /\b(display|show|render|present)\b/i
   ]
-  
+
   return uiPatterns.some(pattern => pattern.test(prompt))
 }
 
@@ -227,14 +232,14 @@ function detectUIElements(prompt: string): boolean {
  */
 function getRecommendedComponents(prompt: string, context: BuildContext): string[] {
   const recommendations: string[] = []
-  
+
   // Analyze prompt for component keywords
   Object.entries(DNA_COMPONENT_MAPPING).forEach(([keyword, component]) => {
     if (new RegExp(`\\b${keyword}\\b`, 'i').test(prompt)) {
       recommendations.push(component)
     }
   })
-  
+
   // Always recommend based on context type
   switch (context.type) {
     case 'ui':
@@ -250,7 +255,7 @@ function getRecommendedComponents(prompt: string, context: BuildContext): string
     default:
       recommendations.push('EnterpriseCard (universal)')
   }
-  
+
   return [...new Set(recommendations)] // Remove duplicates
 }
 
@@ -258,12 +263,12 @@ function getRecommendedComponents(prompt: string, context: BuildContext): string
  * Enhance prompt with DNA components and guidance
  */
 function enhancePromptWithDNA(
-  originalPrompt: string, 
+  originalPrompt: string,
   context: BuildContext,
   recommendedComponents: string[]
 ): string {
   let template = AUTO_ENHANCEMENT_TEMPLATES.general
-  
+
   // Select appropriate template
   if (context.urgency === 'firefight' || context.urgency === 'critical') {
     template = AUTO_ENHANCEMENT_TEMPLATES.emergency
@@ -274,9 +279,9 @@ function enhancePromptWithDNA(
   } else if (/form|input/i.test(originalPrompt)) {
     template = AUTO_ENHANCEMENT_TEMPLATES.form
   }
-  
+
   const enhancedPrompt = template.replace('{originalPrompt}', originalPrompt)
-  
+
   return `${enhancedPrompt}
 
 MANDATORY DNA COMPONENTS TO USE:
@@ -298,13 +303,13 @@ REASON: Professional enterprise-grade components with glassmorphism, animations,
 export function preFlightDNACheck(userPrompt: string): DNAEnforcementResult {
   // Auto-detect urgency from prompt
   let urgency: BuildContext['urgency'] = 'medium'
-  
+
   if (/\b(firefight|emergency|critical|urgent|asap|immediately)\b/i.test(userPrompt)) {
     urgency = 'firefight'
   } else if (/\b(important|priority|soon|quickly)\b/i.test(userPrompt)) {
     urgency = 'high'
   }
-  
+
   return analyzeBuildRequest(userPrompt, urgency)
 }
 

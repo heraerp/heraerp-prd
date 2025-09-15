@@ -37,12 +37,12 @@ export async function getOrganizationContext(
   // Parse subdomain
   const parts = host.split('.')
   const subdomain = parts[0]
-  
+
   // Check if it's a custom subdomain (not www, app, localhost)
   const isCustomSubdomain = !!(
-    subdomain && 
-    subdomain !== 'www' && 
-    subdomain !== 'app' && 
+    subdomain &&
+    subdomain !== 'www' &&
+    subdomain !== 'app' &&
     subdomain !== 'localhost' &&
     subdomain !== 'heraerp' &&
     parts.length >= 2 // Ensure it's actually a subdomain
@@ -54,7 +54,7 @@ export async function getOrganizationContext(
   // If custom subdomain, look up the organization
   if (isCustomSubdomain) {
     const organization = await getOrganizationBySubdomain(subdomain)
-    
+
     if (organization) {
       return {
         organizationId: organization.id,
@@ -82,18 +82,21 @@ export async function getOrganizationContext(
  * Get organization by subdomain from database
  * Uses the new server-side organization utilities
  */
-async function getOrganizationBySubdomain(subdomain: string): Promise<{id: string, organization_name: string} | null> {
+async function getOrganizationBySubdomain(
+  subdomain: string
+): Promise<{ id: string; organization_name: string } | null> {
   try {
     // Import here to avoid circular dependencies in middleware context
     const { getOrgByHostOrSubdomain } = await import('@/lib/server/organizations')
     const organization = await getOrgByHostOrSubdomain(subdomain)
-    return organization ? {
-      id: organization.id,
-      organization_name: organization.organization_name
-    } : null
+    return organization
+      ? {
+          id: organization.id,
+          organization_name: organization.organization_name
+        }
+      : null
   } catch (error) {
     console.error('Error looking up organization by subdomain:', error)
     return null
   }
 }
-

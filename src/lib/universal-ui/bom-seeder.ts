@@ -91,7 +91,7 @@ export class BOMSeeder {
       {
         name: 'Oak Wood Panel',
         code: 'MAT-OAK-001',
-        unit_cost: 45.00,
+        unit_cost: 45.0,
         unit_of_measure: 'sqft',
         lead_time_days: 7,
         supplier: 'Premium Wood Suppliers'
@@ -99,7 +99,7 @@ export class BOMSeeder {
       {
         name: 'Pine Wood Panel',
         code: 'MAT-PINE-001',
-        unit_cost: 25.00,
+        unit_cost: 25.0,
         unit_of_measure: 'sqft',
         lead_time_days: 5,
         supplier: 'Budget Wood Co'
@@ -107,7 +107,7 @@ export class BOMSeeder {
       {
         name: 'Steel Bracket',
         code: 'HW-BRACKET-001',
-        unit_cost: 2.50,
+        unit_cost: 2.5,
         unit_of_measure: 'piece',
         lead_time_days: 3,
         supplier: 'Industrial Hardware Inc'
@@ -115,7 +115,7 @@ export class BOMSeeder {
       {
         name: 'Wood Screw 2"',
         code: 'HW-SCREW-002',
-        unit_cost: 0.10,
+        unit_cost: 0.1,
         unit_of_measure: 'piece',
         lead_time_days: 1,
         supplier: 'FastFix Hardware'
@@ -123,7 +123,7 @@ export class BOMSeeder {
       {
         name: 'Wood Glue',
         code: 'ADH-GLUE-001',
-        unit_cost: 8.00,
+        unit_cost: 8.0,
         unit_of_measure: 'bottle',
         lead_time_days: 2,
         supplier: 'Adhesive Solutions'
@@ -131,7 +131,7 @@ export class BOMSeeder {
       {
         name: 'Sandpaper 120 Grit',
         code: 'FIN-SAND-120',
-        unit_cost: 1.50,
+        unit_cost: 1.5,
         unit_of_measure: 'sheet',
         lead_time_days: 1,
         supplier: 'Finishing Supplies Ltd'
@@ -139,7 +139,7 @@ export class BOMSeeder {
       {
         name: 'Wood Stain - Walnut',
         code: 'FIN-STAIN-WAL',
-        unit_cost: 15.00,
+        unit_cost: 15.0,
         unit_of_measure: 'quart',
         lead_time_days: 3,
         supplier: 'ColorCraft Finishes'
@@ -147,7 +147,7 @@ export class BOMSeeder {
       {
         name: 'Polyurethane Finish',
         code: 'FIN-POLY-001',
-        unit_cost: 20.00,
+        unit_cost: 20.0,
         unit_of_measure: 'quart',
         lead_time_days: 3,
         supplier: 'ProFinish Corp'
@@ -220,10 +220,10 @@ export class BOMSeeder {
           lead_time_days: 2,
           component_type: 'sub_assembly',
           labor_hours: 1.5,
-          labor_cost_per_hour: 25.00
+          labor_cost_per_hour: 25.0
         }
       })
-      
+
       // Create relationships to raw materials
       for (const comp of assembly.components) {
         const material = rawMaterials.find(m => m.entity_name === comp.material)
@@ -240,7 +240,7 @@ export class BOMSeeder {
           })
         }
       }
-      
+
       created.push(result.data)
     }
     return created
@@ -311,13 +311,13 @@ export class BOMSeeder {
           has_bom: true
         }
       })
-      
+
       // Create component relationships
       let totalCost = 0
       for (const comp of product.components) {
         const componentList = comp.type === 'sub' ? subAssemblies : rawMaterials
         const component = componentList.find(c => c.entity_name === comp.name)
-        
+
         if (component) {
           await universalApi.createRelationship({
             from_entity_id: result.data.id,
@@ -330,15 +330,17 @@ export class BOMSeeder {
               component_type: comp.type
             }
           })
-          
+
           // Calculate cost
           const unitCost = component.metadata.unit_cost || 0
           totalCost += unitCost * comp.quantity
         }
       }
-      
+
       // Assign status (Released)
-      const statusEntity = await universalApi.getEntityBySmartCode('HERA.WORKFLOW.STATUS.RELEASED.v1')
+      const statusEntity = await universalApi.getEntityBySmartCode(
+        'HERA.WORKFLOW.STATUS.RELEASED.v1'
+      )
       if (statusEntity.data) {
         await universalApi.createRelationship({
           from_entity_id: result.data.id,
@@ -347,7 +349,7 @@ export class BOMSeeder {
           smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1'
         })
       }
-      
+
       created.push(result.data)
     }
     return created
@@ -355,7 +357,7 @@ export class BOMSeeder {
 
   private async createRevisionHistory(products: any[]) {
     const transactions = []
-    
+
     for (const product of products) {
       // Initial creation
       const createTxn = await universalApi.createTransaction({
@@ -372,7 +374,7 @@ export class BOMSeeder {
         }
       })
       transactions.push(createTxn.data)
-      
+
       // Revision update
       if (product.metadata.revision !== 'A') {
         const revisionTxn = await universalApi.createTransaction({
@@ -391,7 +393,7 @@ export class BOMSeeder {
         })
         transactions.push(revisionTxn.data)
       }
-      
+
       // Release
       const releaseTxn = await universalApi.createTransaction({
         transaction_type: 'bom_revision',
@@ -409,7 +411,7 @@ export class BOMSeeder {
       })
       transactions.push(releaseTxn.data)
     }
-    
+
     return transactions
   }
 

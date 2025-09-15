@@ -100,7 +100,12 @@ export const CONFIG_TYPES = {
     smartCodePrefix: 'HERA.SALON.SKILL',
     displayName: 'Staff Skill',
     pluralName: 'Staff Skills',
-    defaultFields: ['description', 'certification_required', 'service_category', 'proficiency_levels']
+    defaultFields: [
+      'description',
+      'certification_required',
+      'service_category',
+      'proficiency_levels'
+    ]
   },
   PRODUCT_TYPE: {
     entityType: 'salon_product_type',
@@ -135,7 +140,13 @@ export const CONFIG_TYPES = {
     smartCodePrefix: 'HERA.SALON.BOOKING',
     displayName: 'Booking Rule',
     pluralName: 'Booking Rules',
-    defaultFields: ['rule_type', 'advance_days', 'cancellation_hours', 'deposit_required', 'is_active']
+    defaultFields: [
+      'rule_type',
+      'advance_days',
+      'cancellation_hours',
+      'deposit_required',
+      'is_active'
+    ]
   },
   LOYALTY_TIER: {
     entityType: 'loyalty_tier',
@@ -149,7 +160,13 @@ export const CONFIG_TYPES = {
     smartCodePrefix: 'HERA.SALON.PACKAGE',
     displayName: 'Package Type',
     pluralName: 'Package Types',
-    defaultFields: ['description', 'validity_days', 'services_included', 'discount_percentage', 'is_active']
+    defaultFields: [
+      'description',
+      'validity_days',
+      'services_included',
+      'discount_percentage',
+      'is_active'
+    ]
   }
 } as const
 
@@ -165,12 +182,13 @@ function getSupabaseClient() {
   if (supabaseInstance) {
     return supabaseInstance
   }
-  
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 
-                      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY ||
-                      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
   if (!supabaseUrl || !supabaseKey) {
     // During build time, return a mock client
     if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
@@ -182,7 +200,7 @@ function getSupabaseClient() {
           update: () => Promise.resolve({ data: [], error: null }),
           delete: () => Promise.resolve({ data: [], error: null }),
           single: () => Promise.resolve({ data: null, error: null }),
-          eq: () => ({ 
+          eq: () => ({
             select: () => Promise.resolve({ data: [], error: null }),
             update: () => Promise.resolve({ data: [], error: null }),
             delete: () => Promise.resolve({ data: [], error: null }),
@@ -193,7 +211,7 @@ function getSupabaseClient() {
               select: () => Promise.resolve({ data: [], error: null })
             })
           }),
-          order: () => ({ 
+          order: () => ({
             select: () => Promise.resolve({ data: [], error: null })
           }),
           in: () => ({
@@ -208,21 +226,21 @@ function getSupabaseClient() {
     }
     throw new Error('Missing Supabase environment variables')
   }
-  
+
   // Create and cache the client
   supabaseInstance = createClient(supabaseUrl, supabaseKey, {
     auth: {
       persistSession: false
     }
   })
-  
+
   return supabaseInstance
 }
 
 // Configuration Factory Class
 export class ConfigurationFactory {
   private supabase: any
-  
+
   constructor() {
     this.supabase = getSupabaseClient()
   }
@@ -247,11 +265,10 @@ export class ConfigurationFactory {
       try {
         const { searchParams } = new URL(request.url)
         const organizationId = searchParams.get('organization_id')
-        
+
         if (!organizationId) {
           return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
         }
-
 
         // Fetch main entities
         const { data: items, error: itemsError } = await this.supabase
@@ -323,7 +340,6 @@ export class ConfigurationFactory {
           )
         }
 
-
         // Create main entity
         // Log the request for debugging
         console.log(`Creating ${config.entityType} entity:`, {
@@ -375,10 +391,13 @@ export class ConfigurationFactory {
           if (dynamicError) throw dynamicError
         }
 
-        return NextResponse.json({
-          message: `${config.displayName} created successfully`,
-          data: { ...entity, ...dynamicFields }
-        }, { status: 201 })
+        return NextResponse.json(
+          {
+            message: `${config.displayName} created successfully`,
+            data: { ...entity, ...dynamicFields }
+          },
+          { status: 201 }
+        )
       } catch (error: any) {
         console.error(`Error creating ${config.displayName}:`, error)
         return NextResponse.json(
@@ -402,7 +421,6 @@ export class ConfigurationFactory {
         if (!id) {
           return NextResponse.json({ error: 'id parameter required' }, { status: 400 })
         }
-
 
         const { name, ...dynamicFields } = body
 
@@ -448,16 +466,14 @@ export class ConfigurationFactory {
               .eq('id', id)
               .single()
 
-            const { error } = await this.supabase
-              .from('core_dynamic_data')
-              .insert({
-                organization_id: entity.organization_id,
-                entity_id: id,
-                field_name: key,
-                ...this.getFieldValueColumn(value),
-                smart_code: `${config.smartCodePrefix}.FIELD.${key.toUpperCase()}.v1`,
-                created_at: new Date().toISOString()
-              })
+            const { error } = await this.supabase.from('core_dynamic_data').insert({
+              organization_id: entity.organization_id,
+              entity_id: id,
+              field_name: key,
+              ...this.getFieldValueColumn(value),
+              smart_code: `${config.smartCodePrefix}.FIELD.${key.toUpperCase()}.v1`,
+              created_at: new Date().toISOString()
+            })
 
             if (error) throw error
           }
@@ -489,7 +505,6 @@ export class ConfigurationFactory {
           return NextResponse.json({ error: 'id parameter required' }, { status: 400 })
         }
 
-
         // Check if item has related entities
         if (config.relatedEntityType) {
           const { data: entity } = await this.supabase
@@ -510,7 +525,9 @@ export class ConfigurationFactory {
 
             if (related && related.length > 0) {
               return NextResponse.json(
-                { error: `Cannot delete ${config.displayName} with existing ${config.relatedEntityType}s` },
+                {
+                  error: `Cannot delete ${config.displayName} with existing ${config.relatedEntityType}s`
+                },
                 { status: 400 }
               )
             }
@@ -548,27 +565,31 @@ export class ConfigurationFactory {
     return items.map(item => {
       const itemDynamicData = dynamicData.filter(d => d.entity_id === item.id)
       const dynamicFields: any = {}
-      
+
       itemDynamicData.forEach(field => {
         if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
-        if (field.field_value_number !== null) dynamicFields[field.field_name] = field.field_value_number
-        if (field.field_value_boolean !== null) dynamicFields[field.field_name] = field.field_value_boolean
+        if (field.field_value_number !== null)
+          dynamicFields[field.field_name] = field.field_value_number
+        if (field.field_value_boolean !== null)
+          dynamicFields[field.field_name] = field.field_value_boolean
         if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
       })
 
       // Add related count if applicable
       let relatedCount = 0
       if (config.relatedEntityType && config.relatedFieldName) {
-        relatedCount = relatedItems.filter(r => 
-          r.metadata?.[config.relatedFieldName!] === item.entity_code ||
-          dynamicData.find(d => 
-            d.entity_id === r.id && 
-            d.field_name === config.relatedFieldName && 
-            d.field_value_text === item.entity_code
-          )
+        relatedCount = relatedItems.filter(
+          r =>
+            r.metadata?.[config.relatedFieldName!] === item.entity_code ||
+            dynamicData.find(
+              d =>
+                d.entity_id === r.id &&
+                d.field_name === config.relatedFieldName &&
+                d.field_value_text === item.entity_code
+            )
         ).length
       }
-      
+
       return {
         ...item,
         ...dynamicFields,
@@ -583,15 +604,16 @@ export class ConfigurationFactory {
   private calculateAnalytics(items: any[], relatedItems: any[], config: ConfigType) {
     const baseAnalytics = {
       [`total_${config.pluralName.toLowerCase().replace(/ /g, '_')}`]: items.length,
-      [`active_${config.pluralName.toLowerCase().replace(/ /g, '_')}`]: items.filter(i => 
-        (i.metadata as any)?.is_active !== false && i.is_active !== false
+      [`active_${config.pluralName.toLowerCase().replace(/ /g, '_')}`]: items.filter(
+        i => (i.metadata as any)?.is_active !== false && i.is_active !== false
       ).length
     }
 
     if (config.relatedEntityType) {
       baseAnalytics[`total_${config.relatedEntityType}s`] = relatedItems.length
-      baseAnalytics[`average_${config.relatedEntityType}s_per_${config.entityType.replace(/_/g, '_')}`] = 
-        items.length > 0 ? Math.round(relatedItems.length / items.length) : 0
+      baseAnalytics[
+        `average_${config.relatedEntityType}s_per_${config.entityType.replace(/_/g, '_')}`
+      ] = items.length > 0 ? Math.round(relatedItems.length / items.length) : 0
     }
 
     // Apply custom analytics if provided
@@ -629,5 +651,4 @@ export class ConfigurationFactory {
       return { field_value_json: value }
     }
   }
-
 }

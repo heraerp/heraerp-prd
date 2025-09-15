@@ -21,14 +21,12 @@ const HEALTH_CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 export async function controlCenterMiddleware(request: NextRequest) {
   // Skip for non-protected routes
-  const isProtected = PROTECTED_OPERATIONS.some(op => 
-    request.nextUrl.pathname.startsWith(op)
-  )
-  
+  const isProtected = PROTECTED_OPERATIONS.some(op => request.nextUrl.pathname.startsWith(op))
+
   if (!isProtected) {
     return NextResponse.next()
   }
-  
+
   try {
     // Check cached health status
     const now = Date.now()
@@ -36,12 +34,12 @@ export async function controlCenterMiddleware(request: NextRequest) {
       // Run quick health check
       const healthResult = await controlCenterService.runSystemHealthCheck()
       const isHealthy = healthResult.overallHealth >= 70
-      
+
       healthCache = {
         timestamp: now,
         healthy: isHealthy
       }
-      
+
       // Log critical issues
       if (!isHealthy) {
         console.warn('[Control Center] System health below threshold:', {
@@ -53,26 +51,26 @@ export async function controlCenterMiddleware(request: NextRequest) {
         })
       }
     }
-    
+
     // Add health status to response headers
     const response = NextResponse.next()
     response.headers.set('X-HERA-Health', healthCache.healthy ? 'healthy' : 'degraded')
     response.headers.set('X-HERA-Control-Center', 'active')
-    
+
     // If system is critical, return error for write operations
     if (!healthCache.healthy && ['POST', 'PUT', 'DELETE'].includes(request.method)) {
       return NextResponse.json(
-        { 
+        {
           error: 'System health check failed',
-          message: 'Control Center has detected critical issues. Please run health check for details.',
+          message:
+            'Control Center has detected critical issues. Please run health check for details.',
           code: 'CONTROL_CENTER_HEALTH_FAILURE'
         },
         { status: 503 }
       )
     }
-    
+
     return response
-    
   } catch (error) {
     console.error('[Control Center Middleware] Error:', error)
     // Don't block operations if middleware fails
@@ -88,22 +86,22 @@ export async function validateOperation(
   context: Record<string, any>
 ): Promise<{ valid: boolean; errors?: string[] }> {
   const errors: string[] = []
-  
+
   // Check organization context
   if (!context.organizationId) {
     errors.push('Organization ID required for all operations')
   }
-  
+
   // Check smart code
   if (!context.smartCode) {
     errors.push('Smart code required for operation tracking')
   }
-  
+
   // Check for custom table operations
   if (context.tableName && !isValidTable(context.tableName)) {
     errors.push(`Invalid table: ${context.tableName}. Only sacred 6 tables allowed.`)
   }
-  
+
   return {
     valid: errors.length === 0,
     errors: errors.length > 0 ? errors : undefined
@@ -119,6 +117,6 @@ function isValidTable(tableName: string): boolean {
     'universal_transactions',
     'universal_transaction_lines'
   ]
-  
+
   return sacredTables.includes(tableName)
 }

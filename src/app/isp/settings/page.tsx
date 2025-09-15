@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Settings,
   Network,
   DollarSign,
@@ -534,7 +534,7 @@ export default function SettingsPage() {
       if (settingsEntity?.metadata) {
         // Update settings with saved values
         const savedSettings = settingsEntity.metadata
-        setConfigSections(prev => 
+        setConfigSections(prev =>
           prev.map(section => ({
             ...section,
             settings: section.settings.map(setting => ({
@@ -557,9 +557,7 @@ export default function SettingsPage() {
           ? {
               ...section,
               settings: section.settings.map(setting =>
-                setting.key === settingKey
-                  ? { ...setting, value: newValue }
-                  : setting
+                setting.key === settingKey ? { ...setting, value: newValue } : setting
               )
             }
           : section
@@ -598,21 +596,19 @@ export default function SettingsPage() {
           .eq('id', existing.id)
       } else {
         // Create new settings entity
-        await supabase
-          .from('core_entities')
-          .insert({
-            organization_id: INDIA_VISION_ORG_ID,
-            entity_type: 'system_settings',
-            entity_name: 'India Vision System Settings',
-            entity_code: 'SETTINGS-001',
-            smart_code: 'HERA.ISP.CONFIG.SYSTEM.SETTINGS.v1',
-            metadata: allSettings
-          })
+        await supabase.from('core_entities').insert({
+          organization_id: INDIA_VISION_ORG_ID,
+          entity_type: 'system_settings',
+          entity_name: 'India Vision System Settings',
+          entity_code: 'SETTINGS-001',
+          smart_code: 'HERA.ISP.CONFIG.SYSTEM.SETTINGS.v1',
+          metadata: allSettings
+        })
       }
 
       setHasChanges(false)
       setLastSaved(new Date())
-      
+
       // Show success feedback
       setTimeout(() => {
         setIsSaving(false)
@@ -636,29 +632,29 @@ export default function SettingsPage() {
           <input
             type="text"
             value={setting.value}
-            onChange={(e) => handleSettingChange(sectionId, setting.key, e.target.value)}
+            onChange={e => handleSettingChange(sectionId, setting.key, e.target.value)}
             className="w-full px-3 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
           />
         )
-      
+
       case 'number':
         return (
           <div className="flex items-center space-x-2">
             <input
               type="number"
               value={setting.value}
-              onChange={(e) => handleSettingChange(sectionId, setting.key, parseFloat(e.target.value))}
+              onChange={e =>
+                handleSettingChange(sectionId, setting.key, parseFloat(e.target.value))
+              }
               min={setting.min}
               max={setting.max}
               step={setting.step}
               className="flex-1 px-3 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
             />
-            {setting.unit && (
-              <span className="text-white/60 text-sm">{setting.unit}</span>
-            )}
+            {setting.unit && <span className="text-white/60 text-sm">{setting.unit}</span>}
           </div>
         )
-      
+
       case 'boolean':
         return (
           <button
@@ -674,12 +670,12 @@ export default function SettingsPage() {
             />
           </button>
         )
-      
+
       case 'select':
         return (
           <select
             value={setting.value}
-            onChange={(e) => handleSettingChange(sectionId, setting.key, e.target.value)}
+            onChange={e => handleSettingChange(sectionId, setting.key, e.target.value)}
             className="w-full px-3 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#00DDFF] transition-colors"
           >
             {setting.options?.map(option => (
@@ -689,7 +685,7 @@ export default function SettingsPage() {
             ))}
           </select>
         )
-      
+
       case 'range':
         return (
           <div className="space-y-2">
@@ -697,7 +693,9 @@ export default function SettingsPage() {
               <input
                 type="range"
                 value={setting.value}
-                onChange={(e) => handleSettingChange(sectionId, setting.key, parseFloat(e.target.value))}
+                onChange={e =>
+                  handleSettingChange(sectionId, setting.key, parseFloat(e.target.value))
+                }
                 min={setting.min}
                 max={setting.max}
                 step={setting.step}
@@ -705,9 +703,7 @@ export default function SettingsPage() {
               />
               <div className="flex items-center space-x-1">
                 <span className="text-white font-medium">{setting.value}</span>
-                {setting.unit && (
-                  <span className="text-white/60 text-sm">{setting.unit}</span>
-                )}
+                {setting.unit && <span className="text-white/60 text-sm">{setting.unit}</span>}
               </div>
             </div>
             <div className="h-1 rounded-full bg-white/10 overflow-hidden">
@@ -720,7 +716,7 @@ export default function SettingsPage() {
             </div>
           </div>
         )
-      
+
       default:
         return null
     }
@@ -735,10 +731,10 @@ export default function SettingsPage() {
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
           <h2 className="text-lg font-semibold text-white mb-4">Configuration</h2>
           <nav className="space-y-1">
-            {configSections.map((section) => {
+            {configSections.map(section => {
               const Icon = section.icon
               const isActive = activeSection === section.id
-              
+
               return (
                 <button
                   key={section.id}
@@ -751,9 +747,7 @@ export default function SettingsPage() {
                 >
                   <Icon className="h-5 w-5" />
                   <span className="text-sm font-medium">{section.title}</span>
-                  {isActive && (
-                    <ChevronRight className="h-4 w-4 ml-auto" />
-                  )}
+                  {isActive && <ChevronRight className="h-4 w-4 ml-auto" />}
                 </button>
               )
             })}
@@ -764,11 +758,9 @@ export default function SettingsPage() {
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-medium text-white">Save Status</h3>
-            {hasChanges && (
-              <span className="text-xs text-yellow-400">Unsaved changes</span>
-            )}
+            {hasChanges && <span className="text-xs text-yellow-400">Unsaved changes</span>}
           </div>
-          
+
           {lastSaved && (
             <p className="text-xs text-white/60 mb-3">
               Last saved: {lastSaved.toLocaleTimeString()}
@@ -803,7 +795,9 @@ export default function SettingsPage() {
       <div className="flex-1">
         {activeConfig && (
           <div className="relative group">
-            <div className={`absolute -inset-0.5 bg-gradient-to-r ${activeConfig.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+            <div
+              className={`absolute -inset-0.5 bg-gradient-to-r ${activeConfig.color} rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+            />
             <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               {/* Section Header */}
               <div className="flex items-start justify-between mb-6">
@@ -827,12 +821,10 @@ export default function SettingsPage() {
 
               {/* Settings Grid */}
               <div className="space-y-6">
-                {activeConfig.settings.map((setting) => (
+                {activeConfig.settings.map(setting => (
                   <div key={setting.key} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-white">
-                        {setting.label}
-                      </label>
+                      <label className="text-sm font-medium text-white">{setting.label}</label>
                       {setting.description && (
                         <div className="group/info relative">
                           <Info className="h-4 w-4 text-white/40 cursor-help" />

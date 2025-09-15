@@ -1,0 +1,58 @@
+smart_code: HERA.SALON.APPOINTMENT.CANCEL_OR_NOSHOW.v1
+intent: >
+  Handle appointment cancellation or no-show; optionally emit fee lines based on timing rules and exclude cancelled revenue from reports.
+scope:
+  in_scope:
+    - Status change to cancelled or no_show
+    - Fee policy based on cancellation window (hours)
+    - Ensure revenue reports exclude cancelled
+  out_of_scope:
+    - Refund processing
+    - Rebooking workflows
+preconditions:
+  - catalog contains TXN_TYPE: [appointment, pos_order]
+  - catalog contains LINE_TYPE: [fee]
+  - permissions: [scheduler]
+invariants:
+  - all writes include organization_id
+  - fee lines only when within configured window
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: appointment_id
+      type: uuid
+      where: payload
+    - name: action
+      type: enum[cancelled,no_show]
+      where: payload
+  optional:
+    - name: cancellation_window_hours
+      type: number
+      where: payload
+      default: 6
+outputs:
+  entities_created: []
+  transactions_emitted: []
+happy_path:
+  - step: Read appointment time and compute delta to now
+  - step: Update appointment status
+  - step: If within window, create fee line in related POS order or generate fee-only POS order
+  - step: Tag POS order smart_code variant to ensure reports exclude when cancelled
+errors:
+  - code: APPOINTMENT_NOT_FOUND
+    when: invalid appointment_id
+    action: fail
+observability:
+  logs: [appointment_status_updated, fee_applied, fee_skipped]
+  audit_json: true
+example_payload:
+  organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  appointment_id: "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+  action: cancelled
+  cancellation_window_hours: 6
+checks:
+  - description: Fee line applied only when within window
+  - description: Revenue reports exclude cancelled
+

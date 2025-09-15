@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   // Check cache first
   const cacheKey = `icecream_dashboard_${organizationId}`
   const cached = cache.get(cacheKey)
-  
+
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
     console.log('API: Returning cached data for org:', organizationId)
     return NextResponse.json(cached.data)
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
         .eq('organization_id', organizationId)
         .eq('entity_type', 'product')
         .limit(50),
-      
+
       // Get only outlet locations
       supabase
         .from('core_entities')
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
         .eq('entity_type', 'location')
         .like('entity_code', 'OUTLET%')
         .limit(20),
-      
+
       // Get only recent transactions without lines
       supabase
         .from('universal_transactions')
@@ -72,16 +72,18 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate production metrics
-    const productionTxns = transactions.data?.filter(t => t.transaction_type === 'production_batch') || []
-    
+    const productionTxns =
+      transactions.data?.filter(t => t.transaction_type === 'production_batch') || []
+
     // Calculate efficiency from production transactions
     let totalEfficiency = 0
     productionTxns.forEach(txn => {
       if ((txn.metadata as any)?.yield_variance_percent) {
-        totalEfficiency += (100 + parseFloat(txn.metadata.yield_variance_percent))
+        totalEfficiency += 100 + parseFloat(txn.metadata.yield_variance_percent)
       }
     })
-    const avgEfficiency = productionTxns.length > 0 ? totalEfficiency / productionTxns.length : 97.93
+    const avgEfficiency =
+      productionTxns.length > 0 ? totalEfficiency / productionTxns.length : 97.93
 
     // Simplified inventory levels (reduce data size)
     const inventoryLevels = (products.data || []).slice(0, 10).map(product => ({
@@ -116,12 +118,8 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json(dashboardData)
-
   } catch (error) {
     console.error('API: Dashboard fetch error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch dashboard data' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch dashboard data' }, { status: 500 })
   }
 }

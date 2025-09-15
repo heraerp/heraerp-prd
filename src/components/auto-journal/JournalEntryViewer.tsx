@@ -4,9 +4,17 @@ import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { 
-  FileText, CheckCircle, AlertTriangle, Eye, Edit, 
-  Calendar, DollarSign, Building, Bot, User
+import {
+  FileText,
+  CheckCircle,
+  AlertTriangle,
+  Eye,
+  Edit,
+  Calendar,
+  DollarSign,
+  Building,
+  Bot,
+  User
 } from 'lucide-react'
 
 interface JournalLine {
@@ -71,11 +79,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
         </Badge>
       )
     } else {
-      return (
-        <Badge className="bg-gray-100 text-gray-700 border-gray-200">
-          Pending
-        </Badge>
-      )
+      return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Pending</Badge>
     }
   }
 
@@ -103,7 +107,9 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
         <CardContent className="p-12 text-center">
           <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Journal Entries</h3>
-          <p className="text-gray-600">Journal entries will appear here as transactions are processed</p>
+          <p className="text-gray-600">
+            Journal entries will appear here as transactions are processed
+          </p>
         </CardContent>
       </Card>
     )
@@ -111,14 +117,21 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
 
   return (
     <div className="space-y-4">
-      {entries.map((entry) => (
-        <Card key={entry.id} className="bg-white/80 backdrop-blur-sm hover:shadow-md transition-shadow">
+      {entries.map(entry => (
+        <Card
+          key={entry.id}
+          className="bg-white/80 backdrop-blur-sm hover:shadow-md transition-shadow"
+        >
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <CardTitle className="text-lg">{entry.description}</CardTitle>
-                  {getStatusBadge(entry.validation_status, entry.ai_confidence, entry.auto_generated)}
+                  {getStatusBadge(
+                    entry.validation_status,
+                    entry.ai_confidence,
+                    entry.auto_generated
+                  )}
                   {getGenerationBadge(entry.auto_generated, entry.ai_confidence)}
                 </div>
                 <CardDescription className="flex items-center gap-4">
@@ -152,7 +165,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
               </div>
             </div>
           </CardHeader>
-          
+
           <CardContent className="pt-0">
             {/* Journal Lines */}
             <div className="border rounded-lg overflow-hidden">
@@ -169,35 +182,41 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
                   {entry.lines
                     .sort((a, b) => a.line_order - b.line_order)
                     .map((line, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}>
-                      <td className="px-4 py-3">
-                        <div className="font-medium">{line.gl_account_code}</div>
-                        <div className="text-xs text-gray-500">{line.account_name}</div>
-                      </td>
-                      <td className="px-4 py-3">{line.description}</td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {line.debit_amount > 0 ? formatCurrency(line.debit_amount) : '—'}
-                      </td>
-                      <td className="px-4 py-3 text-right font-mono">
-                        {line.credit_amount > 0 ? formatCurrency(line.credit_amount) : '—'}
-                      </td>
-                    </tr>
-                  ))}
+                      <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}>
+                        <td className="px-4 py-3">
+                          <div className="font-medium">{line.gl_account_code}</div>
+                          <div className="text-xs text-gray-500">{line.account_name}</div>
+                        </td>
+                        <td className="px-4 py-3">{line.description}</td>
+                        <td className="px-4 py-3 text-right font-mono">
+                          {line.debit_amount > 0 ? formatCurrency(line.debit_amount) : '—'}
+                        </td>
+                        <td className="px-4 py-3 text-right font-mono">
+                          {line.credit_amount > 0 ? formatCurrency(line.credit_amount) : '—'}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
                 <tfoot className="bg-gray-50 border-t">
                   <tr className="font-medium">
-                    <td className="px-4 py-3" colSpan={2}>Total</td>
-                    <td className="px-4 py-3 text-right font-mono">
-                      {formatCurrency(entry.lines.reduce((sum, line) => sum + line.debit_amount, 0))}
+                    <td className="px-4 py-3" colSpan={2}>
+                      Total
                     </td>
                     <td className="px-4 py-3 text-right font-mono">
-                      {formatCurrency(entry.lines.reduce((sum, line) => sum + line.credit_amount, 0))}
+                      {formatCurrency(
+                        entry.lines.reduce((sum, line) => sum + line.debit_amount, 0)
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono">
+                      {formatCurrency(
+                        entry.lines.reduce((sum, line) => sum + line.credit_amount, 0)
+                      )}
                     </td>
                   </tr>
                 </tfoot>
               </table>
             </div>
-            
+
             {/* Entry Metadata */}
             <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-4">
@@ -205,9 +224,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
                   <span>AI Confidence: {Math.round(entry.ai_confidence * 100)}%</span>
                 )}
                 <span>Created: {formatDate(entry.created_at)}</span>
-                {entry.created_by && (
-                  <span>By: {entry.created_by}</span>
-                )}
+                {entry.created_by && <span>By: {entry.created_by}</span>}
               </div>
               <div className="flex items-center gap-1">
                 <Building className="w-3 h-3" />

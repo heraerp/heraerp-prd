@@ -42,35 +42,31 @@ export function InteractiveMessage({
   onAction
 }: InteractiveMessageProps) {
   const [showList, setShowList] = React.useState(false)
-  
+
   const handleButtonClick = (button: InteractiveButton) => {
     if (onAction) {
       onAction(button.id, button.type)
     }
   }
-  
+
   const handleListItemClick = (itemId: string) => {
     if (onAction) {
       onAction(itemId, 'list_reply')
     }
     setShowList(false)
   }
-  
+
   return (
     <div className="max-w-sm">
-      {header && (
-        <div className="font-semibold text-sm mb-2">{header}</div>
-      )}
-      
+      {header && <div className="font-semibold text-sm mb-2">{header}</div>}
+
       <div className="text-sm mb-3">{body}</div>
-      
-      {footer && (
-        <div className="text-xs text-gray-500 mb-3">{footer}</div>
-      )}
-      
+
+      {footer && <div className="text-xs text-gray-500 mb-3">{footer}</div>}
+
       {type === 'button' && buttons && (
         <div className="space-y-2">
-          {buttons.map((button) => (
+          {buttons.map(button => (
             <Button
               key={button.id}
               variant="outline"
@@ -83,7 +79,7 @@ export function InteractiveMessage({
           ))}
         </div>
       )}
-      
+
       {type === 'list' && (
         <>
           <Button
@@ -95,7 +91,7 @@ export function InteractiveMessage({
             {listButton || 'Select an option'}
             <ChevronRight className="w-4 h-4" />
           </Button>
-          
+
           {showList && sections && (
             <Card className="mt-2 p-2 max-h-64 overflow-y-auto">
               {sections.map((section, idx) => (
@@ -106,7 +102,7 @@ export function InteractiveMessage({
                     </div>
                   )}
                   <div className="space-y-1">
-                    {section.rows.map((row) => (
+                    {section.rows.map(row => (
                       <button
                         key={row.id}
                         className="w-full text-left px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
@@ -141,7 +137,7 @@ export const interactiveTemplates = {
       { id: 'contact_salon', title: '📞 Contact Us', type: 'quick_reply' as const }
     ]
   },
-  
+
   serviceSelection: {
     type: 'list' as const,
     header: 'Our Services',
@@ -153,7 +149,11 @@ export const interactiveTemplates = {
         rows: [
           { id: 'haircut', title: 'Haircut', description: 'Professional cut & style - AED 80' },
           { id: 'hair_color', title: 'Hair Color', description: 'Full color treatment - AED 250' },
-          { id: 'highlights', title: 'Highlights', description: 'Partial/Full highlights - AED 350' },
+          {
+            id: 'highlights',
+            title: 'Highlights',
+            description: 'Partial/Full highlights - AED 350'
+          },
           { id: 'treatment', title: 'Hair Treatment', description: 'Deep conditioning - AED 150' }
         ]
       },
@@ -167,7 +167,7 @@ export const interactiveTemplates = {
       }
     ]
   },
-  
+
   timeSelection: {
     type: 'list' as const,
     header: 'Available Times',
@@ -192,7 +192,7 @@ export const interactiveTemplates = {
       }
     ]
   },
-  
+
   appointmentActions: {
     type: 'button' as const,
     body: 'What would you like to do with your appointment?',
@@ -202,7 +202,7 @@ export const interactiveTemplates = {
       { id: 'cancel', title: '❌ Cancel', type: 'quick_reply' as const }
     ]
   },
-  
+
   feedbackRequest: {
     type: 'button' as const,
     header: 'Rate Your Experience',
@@ -237,15 +237,15 @@ export function createInteractiveMessage(
       body: { text: body }
     }
   }
-  
+
   if (options.header) {
     message.interactive.header = { type: 'text', text: options.header }
   }
-  
+
   if (options.footer) {
     message.interactive.footer = { text: options.footer }
   }
-  
+
   if (type === 'button' && options.buttons) {
     message.interactive.action = {
       buttons: options.buttons.map(btn => ({
@@ -257,7 +257,7 @@ export function createInteractiveMessage(
       }))
     }
   }
-  
+
   if (type === 'list' && options.sections) {
     message.interactive.action = {
       button: 'Select',
@@ -271,6 +271,6 @@ export function createInteractiveMessage(
       }))
     }
   }
-  
+
   return message
 }

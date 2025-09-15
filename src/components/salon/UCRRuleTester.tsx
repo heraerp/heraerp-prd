@@ -32,19 +32,16 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
-import {
-  Alert,
-  AlertDescription,
-} from '@/components/ui/alert'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
+  AccordionTrigger
 } from '@/components/ui/accordion'
 
 interface TestScenario {
@@ -275,32 +272,32 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
 
   const getScenarios = () => {
     if (!currentRule) return []
-    
+
     if (currentRule.smart_code.includes('CANCEL')) {
       return cancellationScenarios
-    } else if (currentRule.smart_code.includes('DISCOUNT') || currentRule.smart_code.includes('PRICING')) {
+    } else if (
+      currentRule.smart_code.includes('DISCOUNT') ||
+      currentRule.smart_code.includes('PRICING')
+    ) {
       return pricingScenarios
     }
-    
+
     return []
   }
 
   const runScenario = async (scenario: TestScenario) => {
     setRunning(true)
     setSelectedScenario(scenario.id)
-    
+
     try {
-      const result = await simulateRule(
-        [scenario],
-        currentRule.id
-      )
-      
+      const result = await simulateRule([scenario], currentRule.id)
+
       setTestResults(result)
-      
+
       if (result.passed === 1) {
         toast({
           title: 'Test Passed!',
-          description: `${scenario.name} completed successfully`,
+          description: `${scenario.name} completed successfully`
         })
       } else {
         toast({
@@ -323,7 +320,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
   const runAllScenarios = async () => {
     setRunning(true)
     const scenarios = getScenarios()
-    
+
     try {
       const result = await simulateRule(
         scenarios.map(s => ({
@@ -333,14 +330,14 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
         })),
         currentRule.id
       )
-      
+
       setTestResults(result)
-      
+
       const passRate = (result.passed / scenarios.length) * 100
-      
+
       toast({
         title: `Test Suite Complete`,
-        description: `${result.passed}/${scenarios.length} tests passed (${passRate.toFixed(0)}%)`,
+        description: `${result.passed}/${scenarios.length} tests passed (${passRate.toFixed(0)}%)`
       })
     } catch (err: any) {
       toast({
@@ -357,10 +354,10 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
     const result = testResults?.results?.find((r: any) => r.scenario_id === scenario.id)
     const hasRun = !!result
     const passed = result?.passed
-    
+
     return (
-      <Card 
-        key={scenario.id} 
+      <Card
+        key={scenario.id}
         className={`cursor-pointer transition-all hover:shadow-lg ${
           selectedScenario === scenario.id ? 'ring-2 ring-purple-500' : ''
         }`}
@@ -371,37 +368,36 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <h4 className="font-medium">{scenario.name}</h4>
-                {hasRun && (
-                  passed ? (
+                {hasRun &&
+                  (passed ? (
                     <CheckCircle className="w-4 h-4 text-green-500" />
                   ) : (
                     <XCircle className="w-4 h-4 text-red-500" />
-                  )
-                )}
+                  ))}
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 {scenario.description}
               </p>
-              
+
               {/* Context Preview */}
               <div className="space-y-1 text-xs">
-                {Object.entries(scenario.context).slice(0, 3).map(([key, value]) => (
-                  <div key={key} className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">
-                      {key.replace(/_/g, ' ')}
-                    </Badge>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {String(value)}
-                    </span>
-                  </div>
-                ))}
+                {Object.entries(scenario.context)
+                  .slice(0, 3)
+                  .map(([key, value]) => (
+                    <div key={key} className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {key.replace(/_/g, ' ')}
+                      </Badge>
+                      <span className="text-gray-600 dark:text-gray-400">{String(value)}</span>
+                    </div>
+                  ))}
               </div>
             </div>
-            
+
             <Button
               size="sm"
               variant={hasRun ? (passed ? 'outline' : 'destructive') : 'default'}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 runScenario(scenario)
               }}
@@ -418,12 +414,12 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
 
   const renderTestDetails = () => {
     if (!selectedScenario || !testResults) return null
-    
+
     const scenario = getScenarios().find(s => s.id === selectedScenario)
     const result = testResults.results?.find((r: any) => r.scenario_id === selectedScenario)
-    
+
     if (!scenario || !result) return null
-    
+
     return (
       <Card>
         <CardHeader>
@@ -462,11 +458,9 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <pre className="text-xs">{JSON.stringify(result.expected, null, 2)}</pre>
               </div>
             </div>
-            
+
             <div>
-              <h4 className="font-medium mb-2 text-blue-600 dark:text-blue-400">
-                Actual Result
-              </h4>
+              <h4 className="font-medium mb-2 text-blue-600 dark:text-blue-400">Actual Result</h4>
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
                 <pre className="text-xs">{JSON.stringify(result.actual, null, 2)}</pre>
               </div>
@@ -475,9 +469,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
 
           {result.diff && Object.keys(result.diff).length > 0 && (
             <div>
-              <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">
-                Differences
-              </h4>
+              <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">Differences</h4>
               <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
                 <pre className="text-xs">{JSON.stringify(result.diff, null, 2)}</pre>
               </div>
@@ -503,7 +495,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
             <Label>Customer Tier</Label>
             <Select
               value={customContext.customer_tier || ''}
-              onValueChange={(value) => setCustomContext({ ...customContext, customer_tier: value })}
+              onValueChange={value => setCustomContext({ ...customContext, customer_tier: value })}
             >
               <SelectTrigger className="mt-2">
                 <SelectValue placeholder="Select tier" />
@@ -524,7 +516,9 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <Input
                   type="time"
                   value={customContext.appointment_time || ''}
-                  onChange={(e) => setCustomContext({ ...customContext, appointment_time: e.target.value })}
+                  onChange={e =>
+                    setCustomContext({ ...customContext, appointment_time: e.target.value })
+                  }
                   className="mt-2"
                 />
               </div>
@@ -534,11 +528,13 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <Input
                   type="time"
                   value={customContext.arrival_time || customContext.cancel_time || ''}
-                  onChange={(e) => setCustomContext({ 
-                    ...customContext, 
-                    arrival_time: e.target.value,
-                    cancel_time: e.target.value
-                  })}
+                  onChange={e =>
+                    setCustomContext({
+                      ...customContext,
+                      arrival_time: e.target.value,
+                      cancel_time: e.target.value
+                    })
+                  }
                   className="mt-2"
                 />
               </div>
@@ -548,7 +544,12 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <Input
                   type="number"
                   value={customContext.service_price || ''}
-                  onChange={(e) => setCustomContext({ ...customContext, service_price: parseFloat(e.target.value) || 0 })}
+                  onChange={e =>
+                    setCustomContext({
+                      ...customContext,
+                      service_price: parseFloat(e.target.value) || 0
+                    })
+                  }
                   className="mt-2"
                 />
               </div>
@@ -561,7 +562,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <Label>Staff Role</Label>
                 <Select
                   value={customContext.staff_role || ''}
-                  onValueChange={(value) => setCustomContext({ ...customContext, staff_role: value })}
+                  onValueChange={value => setCustomContext({ ...customContext, staff_role: value })}
                 >
                   <SelectTrigger className="mt-2">
                     <SelectValue placeholder="Select role" />
@@ -579,7 +580,12 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <Input
                   type="number"
                   value={customContext.original_price || ''}
-                  onChange={(e) => setCustomContext({ ...customContext, original_price: parseFloat(e.target.value) || 0 })}
+                  onChange={e =>
+                    setCustomContext({
+                      ...customContext,
+                      original_price: parseFloat(e.target.value) || 0
+                    })
+                  }
                   className="mt-2"
                 />
               </div>
@@ -589,7 +595,12 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <Input
                   type="number"
                   value={customContext.requested_discount_pct || ''}
-                  onChange={(e) => setCustomContext({ ...customContext, requested_discount_pct: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setCustomContext({
+                      ...customContext,
+                      requested_discount_pct: parseInt(e.target.value) || 0
+                    })
+                  }
                   className="mt-2"
                   min={0}
                   max={100}
@@ -605,7 +616,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
             className="w-full p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700 font-mono text-sm"
             rows={6}
             value={JSON.stringify(customContext, null, 2)}
-            onChange={(e) => {
+            onChange={e => {
               try {
                 setCustomContext(JSON.parse(e.target.value))
               } catch (err) {
@@ -638,9 +649,9 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
 
   const renderSummary = () => {
     if (!testResults) return null
-    
+
     const passRate = (testResults.passed / (testResults.passed + testResults.failed)) * 100
-    
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -648,11 +659,11 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Pass Rate</p>
-                <p className="text-2xl font-bold">
-                  {passRate.toFixed(0)}%
-                </p>
+                <p className="text-2xl font-bold">{passRate.toFixed(0)}%</p>
               </div>
-              <TrendingUp className={`w-8 h-8 ${passRate >= 80 ? 'text-green-500' : 'text-red-500'}`} />
+              <TrendingUp
+                className={`w-8 h-8 ${passRate >= 80 ? 'text-green-500' : 'text-red-500'}`}
+              />
             </div>
           </CardContent>
         </Card>
@@ -807,9 +818,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="custom">
-            {renderCustomTest()}
-          </TabsContent>
+          <TabsContent value="custom">{renderCustomTest()}</TabsContent>
 
           <TabsContent value="results">
             <Card>

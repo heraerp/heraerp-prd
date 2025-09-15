@@ -6,18 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Mail, 
-  User, 
-  Calendar, 
-  Shield, 
-  CheckCircle,
-  Clock,
-  Send
-} from 'lucide-react'
+import { Mail, User, Calendar, Shield, CheckCircle, Clock, Send } from 'lucide-react'
 
 export function EmailAccessDemo() {
-  const { user, workspace, isAnonymous, isIdentified, saveWithEmail, daysRemaining } = useMultiOrgAuth()
+  const { user, workspace, isAnonymous, isIdentified, saveWithEmail, daysRemaining } =
+    useMultiOrgAuth()
   const [testEmail, setTestEmail] = useState('')
   const [emailFeatures, setEmailFeatures] = useState<string[]>([])
 
@@ -43,7 +36,7 @@ export function EmailAccessDemo() {
 
   const handleSaveEmail = async () => {
     if (!testEmail) return
-    
+
     const result = await saveWithEmail(testEmail)
     if (result.success) {
       console.log('✅ Email saved immediately:', testEmail)
@@ -92,7 +85,7 @@ export function EmailAccessDemo() {
               </div>
             </div>
           </div>
-          
+
           {currentEmail && (
             <div className="mt-4 p-3 bg-green-50 rounded-lg">
               <div className="flex items-center gap-2">
@@ -120,7 +113,7 @@ export function EmailAccessDemo() {
                 type="email"
                 placeholder="your@email.com"
                 value={testEmail}
-                onChange={(e) => setTestEmail(e.target.value)}
+                onChange={e => setTestEmail(e.target.value)}
                 className="flex-1"
               />
               <Button onClick={handleSaveEmail} disabled={!testEmail}>
@@ -152,7 +145,7 @@ export function EmailAccessDemo() {
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-4 pt-4 border-t">
               <Button onClick={sendTestEmail} className="w-full">
                 <Send className="w-4 h-4 mr-2" />
@@ -170,16 +163,22 @@ export function EmailAccessDemo() {
         </CardHeader>
         <CardContent>
           <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-            <div className="text-gray-400">// Email is immediately available after saveWithEmail()</div>
+            <div className="text-gray-400">
+              // Email is immediately available after saveWithEmail()
+            </div>
             <div className="mt-2">
-              <span className="text-blue-400">const</span> {`{ user, workspace }`} = <span className="text-yellow-400">useProgressiveAuth</span>()
+              <span className="text-blue-400">const</span> {`{ user, workspace }`} ={' '}
+              <span className="text-yellow-400">useProgressiveAuth</span>()
             </div>
             <div className="mt-1">
-              <span className="text-blue-400">const</span> userEmail = user?.email || organization?.email
+              <span className="text-blue-400">const</span> userEmail = user?.email ||
+              organization?.email
             </div>
             <div className="mt-2 text-gray-400">// Current email: </div>
             <div className="text-white">"{currentEmail || 'Not provided yet'}"</div>
-            <div className="mt-2 text-gray-400">// Available immediately - no waiting for full registration!</div>
+            <div className="mt-2 text-gray-400">
+              // Available immediately - no waiting for full registration!
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -192,14 +191,18 @@ export function EmailAccessDemo() {
         <CardContent>
           <div className="bg-gray-100 p-4 rounded-lg">
             <pre className="text-sm overflow-x-auto">
-{JSON.stringify({
-  id: organization?.id?.slice(0, 8) + '...',
-  type: organization?.type,
-  email: currentEmail || null,
-  organization_id: organization?.organization_id?.slice(0, 8) + '...',
-  expires_at: organization?.expires_at,
-  created_at: organization?.created_at
-}, null, 2)}
+              {JSON.stringify(
+                {
+                  id: organization?.id?.slice(0, 8) + '...',
+                  type: organization?.type,
+                  email: currentEmail || null,
+                  organization_id: organization?.organization_id?.slice(0, 8) + '...',
+                  expires_at: organization?.expires_at,
+                  created_at: organization?.created_at
+                },
+                null,
+                2
+              )}
             </pre>
           </div>
         </CardContent>

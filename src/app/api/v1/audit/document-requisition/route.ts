@@ -3,7 +3,7 @@ import { DOCUMENT_CATEGORIES } from '@/types/audit.types'
 
 /**
  * HERA Audit Document Requisition API
- * 
+ *
  * Manages document requisitions using universal architecture:
  * - Document requisitions as universal_transactions with smart_code='HERA.AUD.DOC.TXN.REQ.v1'
  * - Document line items as universal_transaction_lines
@@ -61,7 +61,7 @@ const generateDocumentLineItems = (requisitionId: string, clientId: string, dueD
       // Mock some documents as received/approved for demo
       const mockStatuses = ['pending', 'received', 'approved', 'under_review']
       const randomStatus = mockStatuses[Math.floor(Math.random() * mockStatuses.length)]
-      
+
       lineItems.push({
         transaction_id: requisitionId,
         organization_id: AUDIT_FIRM_ORG_ID,
@@ -84,27 +84,31 @@ const generateDocumentLineItems = (requisitionId: string, clientId: string, dueD
           priority: item.priority,
           status: index < 2 ? 'approved' : index < 4 ? 'received' : 'pending', // Mock progression
           due_date: dueDate,
-          received_date: index < 4 ? new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString() : null,
+          received_date:
+            index < 4
+              ? new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
+              : null,
           reviewed_by: index < 2 ? 'auditor_sarah_johnson' : null,
           approved_by: index < 2 ? 'auditor_john_smith' : null,
-          file_attachments: index < 4 ? [
-            {
-              id: `file_${Date.now()}_${index}`,
-              filename: `${item.code.replace('.', '_')}.pdf`,
-              file_path: `/uploads/documents/${requisitionId}/`,
-              file_size: Math.floor(Math.random() * 5000000) + 100000,
-              mime_type: 'application/pdf',
-              uploaded_date: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-              uploaded_by: 'client_user',
-              version: 1,
-              checksum: `sha256_${Math.random().toString(36).substring(7)}`
-            }
-          ] : [],
-          validation_rules: [
-            'file_size_max_10mb',
-            'format_pdf_or_excel',
-            'current_year_data'
-          ],
+          file_attachments:
+            index < 4
+              ? [
+                  {
+                    id: `file_${Date.now()}_${index}`,
+                    filename: `${item.code.replace('.', '_')}.pdf`,
+                    file_path: `/uploads/documents/${requisitionId}/`,
+                    file_size: Math.floor(Math.random() * 5000000) + 100000,
+                    mime_type: 'application/pdf',
+                    uploaded_date: new Date(
+                      Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+                    ).toISOString(),
+                    uploaded_by: 'client_user',
+                    version: 1,
+                    checksum: `sha256_${Math.random().toString(36).substring(7)}`
+                  }
+                ]
+              : [],
+          validation_rules: ['file_size_max_10mb', 'format_pdf_or_excel', 'current_year_data'],
           retention_period_years: 7,
           audit_area: getAuditArea(item.code),
           critical_for_opinion: item.priority === 'critical'
@@ -119,7 +123,7 @@ const generateDocumentLineItems = (requisitionId: string, clientId: string, dueD
 const getAuditArea = (documentCode: string): string => {
   const areaMapping: Record<string, string> = {
     'D.1': 'revenue',
-    'D.3': 'cost_of_sales', 
+    'D.3': 'cost_of_sales',
     'D.4': 'payroll',
     'D.7': 'fixed_assets',
     'D.8': 'inventory',
@@ -158,8 +162,8 @@ export async function GET(request: NextRequest) {
       }
 
       const lineItems = generateDocumentLineItems(
-        requisitionId, 
-        requisition.metadata.client_id, 
+        requisitionId,
+        requisition.metadata.client_id,
         requisition.metadata.due_date
       )
 
@@ -179,21 +183,24 @@ export async function GET(request: NextRequest) {
         total_requisitions: mockRequisitions.length,
         active_requisitions: mockRequisitions.filter(r => r.status === 'sent').length,
         completed_requisitions: mockRequisitions.filter(r => r.status === 'complete').length,
-        overdue_requisitions: mockRequisitions.filter(r => 
-          r.status !== 'complete' && new Date(r.metadata.due_date) < new Date()
+        overdue_requisitions: mockRequisitions.filter(
+          r => r.status !== 'complete' && new Date(r.metadata.due_date) < new Date()
         ).length,
-        documents_pending: mockRequisitions.reduce((sum, r) => 
-          sum + (r.metadata.total_documents - r.metadata.documents_received), 0
+        documents_pending: mockRequisitions.reduce(
+          (sum, r) => sum + (r.metadata.total_documents - r.metadata.documents_received),
+          0
         ),
-        documents_received: mockRequisitions.reduce((sum, r) => 
-          sum + r.metadata.documents_received, 0
+        documents_received: mockRequisitions.reduce(
+          (sum, r) => sum + r.metadata.documents_received,
+          0
         ),
-        documents_approved: mockRequisitions.reduce((sum, r) => 
-          sum + r.metadata.documents_approved, 0
+        documents_approved: mockRequisitions.reduce(
+          (sum, r) => sum + r.metadata.documents_approved,
+          0
         ),
         average_completion: Math.round(
-          mockRequisitions.reduce((sum, r) => sum + r.metadata.completion_percentage, 0) / 
-          mockRequisitions.length
+          mockRequisitions.reduce((sum, r) => sum + r.metadata.completion_percentage, 0) /
+            mockRequisitions.length
         )
       }
 
@@ -209,7 +216,10 @@ export async function GET(request: NextRequest) {
         success: true,
         data: {
           categories: DOCUMENT_CATEGORIES,
-          total_documents: Object.values(DOCUMENT_CATEGORIES).reduce((sum, cat) => sum + cat.items.length, 0),
+          total_documents: Object.values(DOCUMENT_CATEGORIES).reduce(
+            (sum, cat) => sum + cat.items.length,
+            0
+          ),
           framework: 'GSPU_2025',
           compliance_standards: ['ISA_230', 'ISA_500', 'PCAOB_AS_1215']
         }
@@ -218,11 +228,11 @@ export async function GET(request: NextRequest) {
 
     // Filter requisitions
     let filteredRequisitions = [...mockRequisitions]
-    
+
     if (clientId) {
       filteredRequisitions = filteredRequisitions.filter(r => r.metadata.client_id === clientId)
     }
-    
+
     if (status) {
       filteredRequisitions = filteredRequisitions.filter(r => r.status === status)
     }
@@ -234,7 +244,6 @@ export async function GET(request: NextRequest) {
         total: filteredRequisitions.length
       }
     })
-
   } catch (error) {
     console.error('Document requisition API error:', error)
     return NextResponse.json(
@@ -269,7 +278,10 @@ export async function POST(request: NextRequest) {
           client_name: data.client_name,
           audit_year: data.audit_year,
           due_date: data.due_date,
-          total_documents: Object.values(DOCUMENT_CATEGORIES).reduce((sum, cat) => sum + cat.items.length, 0),
+          total_documents: Object.values(DOCUMENT_CATEGORIES).reduce(
+            (sum, cat) => sum + cat.items.length,
+            0
+          ),
           documents_received: 0,
           documents_approved: 0,
           completion_percentage: 0,
@@ -294,7 +306,7 @@ export async function POST(request: NextRequest) {
     // Send requisition to client
     if (action === 'send_requisition') {
       const { requisition_id } = data
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -311,7 +323,7 @@ export async function POST(request: NextRequest) {
     // Update document status
     if (action === 'update_document_status') {
       const { requisition_id, document_id, status, notes, reviewed_by } = data
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -329,7 +341,7 @@ export async function POST(request: NextRequest) {
     // Upload document file
     if (action === 'upload_document') {
       const { requisition_id, document_id, file_info } = data
-      
+
       const fileAttachment = {
         id: `file_${Date.now()}`,
         filename: file_info.filename,
@@ -357,7 +369,7 @@ export async function POST(request: NextRequest) {
     // Send reminder to client
     if (action === 'send_reminder') {
       const { requisition_id, reminder_type, custom_message } = data
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -374,7 +386,7 @@ export async function POST(request: NextRequest) {
     // Generate requisition report
     if (action === 'generate_report') {
       const { requisition_id, format } = data
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -388,11 +400,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid action' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
   } catch (error) {
     console.error('Document requisition API error:', error)
     return NextResponse.json(

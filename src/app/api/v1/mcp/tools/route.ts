@@ -5,20 +5,21 @@ import { headers } from 'next/headers'
 export async function POST(request: NextRequest) {
   try {
     const { tool, input } = await request.json()
-    
+
     // Get organization ID from header or use default
     const headersList = await headers()
-    const organizationId = headersList.get('x-organization-id') || process.env.DEFAULT_ORGANIZATION_ID!
-    
+    const organizationId =
+      headersList.get('x-organization-id') || process.env.DEFAULT_ORGANIZATION_ID!
+
     if (!organizationId) {
       return NextResponse.json(
         { success: false, error: 'Organization ID is required' },
         { status: 400 }
       )
     }
-    
+
     const mcp = new MCPTools(organizationId)
-    
+
     // Route to appropriate tool
     let result
     switch (tool) {
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
     }
-    
+
     return NextResponse.json(result)
   } catch (error) {
     console.error('MCP tool error:', error)

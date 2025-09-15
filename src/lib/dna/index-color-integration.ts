@@ -43,52 +43,51 @@ export function universalDNAWithColorEnforcement(
   } = {}
 ) {
   const { urgency = 'medium', validateColors = true, enforceAccessibility = true } = options
-  
+
   // Get standard DNA enforcement
   const dnaResult = universalDNAEnforcement(userRequest, { urgency })
-  
+
   // Add color validation if requested
   let colorValidation = null
   if (validateColors) {
     colorValidation = HERA_DNA_COLOR_ENFORCEMENT.validateComponent(dnaResult.generatedCode)
   }
-  
+
   // Enhanced code generation with WCAG colors
   let enhancedCode = dnaResult.generatedCode
-  
+
   // Replace any non-compliant colors automatically
   if (colorValidation && !colorValidation.compliant) {
     enhancedCode = enhancedCode
       .replace(/#3B82F6/g, 'var(--color-primary)') // Old primary → WCAG compliant
       .replace(/#22C55E/g, 'var(--color-success)') // Old success → WCAG compliant
       .replace(/#F59E0B/g, 'var(--color-warning)') // Old warning → WCAG compliant
-      .replace(/#EF4444/g, 'var(--color-danger)')  // Old danger → WCAG compliant
-      .replace(/#E5E7EB/g, 'var(--color-border)')  // Old border → Better visibility
+      .replace(/#EF4444/g, 'var(--color-danger)') // Old danger → WCAG compliant
+      .replace(/#E5E7EB/g, 'var(--color-border)') // Old border → Better visibility
   }
-  
+
   // Add accessibility-specific instructions
-  const accessibilityInstructions = enforceAccessibility ? [
-    '🎨 WCAG AAA Colors Enforced:',
-    '  • Primary: #2563EB (5.17:1 contrast)',
-    '  • Success: #15803D (5.02:1 contrast)', 
-    '  • Warning: #A16207 (4.92:1 contrast)',
-    '  • Danger: #DC2626 (4.83:1 contrast)',
-    '♿ Accessibility Features Required:',
-    '  • Focus rings on interactive elements',
-    '  • Semantic color tokens (no hex codes)',
-    '  • High contrast mode support',
-    '  • Screen reader compatibility'
-  ] : []
-  
+  const accessibilityInstructions = enforceAccessibility
+    ? [
+        '🎨 WCAG AAA Colors Enforced:',
+        '  • Primary: #2563EB (5.17:1 contrast)',
+        '  • Success: #15803D (5.02:1 contrast)',
+        '  • Warning: #A16207 (4.92:1 contrast)',
+        '  • Danger: #DC2626 (4.83:1 contrast)',
+        '♿ Accessibility Features Required:',
+        '  • Focus rings on interactive elements',
+        '  • Semantic color tokens (no hex codes)',
+        '  • High contrast mode support',
+        '  • Screen reader compatibility'
+      ]
+    : []
+
   return {
     ...dnaResult,
     colorValidation,
     enhancedCode,
     accessibilityCompliant: colorValidation?.compliant ?? true,
-    instructions: [
-      ...dnaResult.instructions,
-      ...accessibilityInstructions
-    ],
+    instructions: [...dnaResult.instructions, ...accessibilityInstructions],
     guarantees: [
       ...dnaResult.guarantees,
       '🎨 WCAG AAA color compliance guaranteed',
@@ -115,7 +114,7 @@ export function generateAccessibleEnterpriseComponent(
     },
     secondary: {
       bg: 'var(--color-secondary)',
-      fg: 'var(--color-secondary-fg)', 
+      fg: 'var(--color-secondary-fg)',
       hover: 'var(--state-secondary-hover)'
     },
     success: {
@@ -134,9 +133,9 @@ export function generateAccessibleEnterpriseComponent(
       hover: 'color-mix(in srgb, var(--color-danger) 90%, black)'
     }
   }
-  
+
   const colors = colorMappings[variant]
-  
+
   const templates = {
     card: `
 import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'
@@ -159,7 +158,7 @@ import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/co
     {/* Content with perfect contrast ratios */}
   </CardContent>
 </EnterpriseCard>`,
-    
+
     stats: `
 import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'
 
@@ -177,7 +176,7 @@ import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseS
     color: 'var(--color-text)'
   }}
 />`,
-    
+
     dashboard: `
 import { DashboardSection, KPICard } from '@/lib/dna/components/enterprise/EnterpriseDashboard'
 
@@ -200,7 +199,7 @@ import { DashboardSection, KPICard } from '@/lib/dna/components/enterprise/Enter
     />
   </div>
 </DashboardSection>`,
-    
+
     button: `
 <button
   className="px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
@@ -214,7 +213,7 @@ import { DashboardSection, KPICard } from '@/lib/dna/components/enterprise/Enter
 >
   Accessible Button
 </button>`,
-    
+
     alert: `
 <div
   className="p-4 rounded-lg border flex items-start space-x-3"
@@ -237,7 +236,7 @@ import { DashboardSection, KPICard } from '@/lib/dna/components/enterprise/Enter
   </div>
 </div>`
   }
-  
+
   return templates[componentType] || templates.card
 }
 
@@ -252,7 +251,7 @@ export function migrateToAccessibleColors(code: string): {
 } {
   const changes: string[] = []
   let migratedCode = code
-  
+
   const colorMigrations = [
     {
       old: /#3B82F6/g,
@@ -260,19 +259,19 @@ export function migrateToAccessibleColors(code: string): {
       description: 'Primary blue: 3.68:1 → 5.17:1 contrast (40% better)'
     },
     {
-      old: /#22C55E/g,  
+      old: /#22C55E/g,
       new: 'var(--color-success)',
       description: 'Success green: 2.28:1 → 5.02:1 contrast (120% better)'
     },
     {
       old: /#F59E0B/g,
-      new: 'var(--color-warning)', 
+      new: 'var(--color-warning)',
       description: 'Warning yellow: 2.15:1 → 4.92:1 contrast (129% better)'
     },
     {
       old: /#EF4444/g,
       new: 'var(--color-danger)',
-      description: 'Danger red: 3.76:1 → 4.83:1 contrast (28% better)'  
+      description: 'Danger red: 3.76:1 → 4.83:1 contrast (28% better)'
     },
     {
       old: /#E5E7EB/g,
@@ -280,18 +279,19 @@ export function migrateToAccessibleColors(code: string): {
       description: 'Border gray: 1.24:1 → 1.48:1 visibility (19% better)'
     }
   ]
-  
+
   colorMigrations.forEach(migration => {
     if (migration.old.test(migratedCode)) {
       migratedCode = migratedCode.replace(migration.old, migration.new)
       changes.push(migration.description)
     }
   })
-  
-  const improvementReport = changes.length > 0 
-    ? `🎨 Accessibility Improvements Applied:\n${changes.map(c => `  • ${c}`).join('\n')}\n\n✅ Your code now meets WCAG AAA standards!`
-    : '✅ Code already uses WCAG compliant colors!'
-  
+
+  const improvementReport =
+    changes.length > 0
+      ? `🎨 Accessibility Improvements Applied:\n${changes.map(c => `  • ${c}`).join('\n')}\n\n✅ Your code now meets WCAG AAA standards!`
+      : '✅ Code already uses WCAG compliant colors!'
+
   return {
     migratedCode,
     changes,
@@ -317,11 +317,11 @@ export function validateDevelopmentWorkflow(
     validateColors: true,
     enforceAccessibility: true
   })
-  
+
   // Validate existing code if provided
   let colorCompliance = null
   let autoFixedCode = undefined
-  
+
   if (existingCode) {
     const migration = migrateToAccessibleColors(existingCode)
     colorCompliance = {
@@ -331,7 +331,7 @@ export function validateDevelopmentWorkflow(
     }
     autoFixedCode = migration.migratedCode
   }
-  
+
   const recommendations = [
     '🧬 Use HERA DNA Enterprise components for guaranteed quality',
     '🎨 Apply WCAG AAA compliant color tokens automatically',
@@ -340,7 +340,7 @@ export function validateDevelopmentWorkflow(
     '📱 Verify responsive design across all devices',
     '⚡ Leverage real-time capabilities for dynamic content'
   ]
-  
+
   return {
     enforcement,
     colorCompliance,
@@ -363,7 +363,7 @@ export function checkSystemStatus(): {
   const colorSystem = true // WCAG AAA color palette loaded
   const accessibilityCompliance = true // 100% WCAG compliance achieved
   const readyForProduction = dnaSystem && colorSystem && accessibilityCompliance
-  
+
   const report = `
 🧬 HERA DNA + Color System Status Report
 ======================================
@@ -394,7 +394,7 @@ export function checkSystemStatus(): {
 🚀 STATUS: READY FOR PRODUCTION
    Perfect accessibility + Enterprise quality guaranteed!
 `
-  
+
   return {
     dnaSystem,
     colorSystem,
@@ -414,11 +414,11 @@ export default {
   migrateToAccessibleColors,
   validateDevelopmentWorkflow,
   checkSystemStatus,
-  
+
   // Color system
   colors: HERA_COLOR_TOKENS,
   colorValidation: HERA_DNA_COLOR_ENFORCEMENT,
-  
+
   // Auto-enforcement
   dnaEnforcement: universalDNAEnforcement,
   emergencyEnforcement: emergencyDNAEnforcement
@@ -426,23 +426,23 @@ export default {
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * // 1. Complete DNA + Color enforcement
  * const result = universalDNAWithColorEnforcement("Create a success alert", {
  *   urgency: 'medium',
  *   validateColors: true,
  *   enforceAccessibility: true
  * })
- * 
+ *
  * // 2. Generate accessible component
  * const alertCode = generateAccessibleEnterpriseComponent('alert', 'success')
- * 
+ *
  * // 3. Migrate existing code
  * const { migratedCode, improvementReport } = migrateToAccessibleColors(oldCode)
- * 
- * // 4. Validate complete workflow  
+ *
+ * // 4. Validate complete workflow
  * const validation = validateDevelopmentWorkflow("Build dashboard", existingCode)
- * 
+ *
  * // 5. Check system status
  * const status = checkSystemStatus()
  * console.log(status.report)

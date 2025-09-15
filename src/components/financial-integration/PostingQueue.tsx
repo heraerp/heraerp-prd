@@ -13,21 +13,21 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { toast } from 'sonner'
-import { 
-  Send, 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  Send,
+  Clock,
+  CheckCircle2,
+  XCircle,
   AlertCircle,
   RefreshCw,
   FileText,
@@ -45,7 +45,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
 interface Transaction {
@@ -130,7 +130,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
 
       const results = await response.json()
       const successCount = results.filter((r: any) => r.success).length
-      
+
       toast.success(`Posted ${successCount} of ${transactionIds.length} transactions`)
       setSelectedTransactions(new Set())
       await loadTransactions()
@@ -294,12 +294,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={loadTransactions}
-                disabled={isLoading}
-              >
+              <Button variant="outline" size="sm" onClick={loadTransactions} disabled={isLoading}>
                 <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
@@ -360,7 +355,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                       <input
                         type="checkbox"
                         className="rounded border-gray-300"
-                        onChange={(e) => {
+                        onChange={e => {
                           if (e.target.checked) {
                             setSelectedTransactions(new Set(transactions.map(t => t.id)))
                           } else {
@@ -379,14 +374,14 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {transactions.map((transaction) => (
+                  {transactions.map(transaction => (
                     <TableRow key={transaction.id}>
                       <TableCell>
                         <input
                           type="checkbox"
                           className="rounded border-gray-300"
                           checked={selectedTransactions.has(transaction.id)}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newSelected = new Set(selectedTransactions)
                             if (e.target.checked) {
                               newSelected.add(transaction.id)
@@ -420,18 +415,23 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
                       <TableCell>
                         <div className="space-y-1">
                           {getStatusBadge(transaction.transaction_status)}
-                          {transaction.transaction_status === 'error' && (transaction.metadata as any)?.error_message && (
-                            <p className="text-xs text-red-600">
-                              {transaction.metadata.error_message}
-                            </p>
-                          )}
+                          {transaction.transaction_status === 'error' &&
+                            (transaction.metadata as any)?.error_message && (
+                              <p className="text-xs text-red-600">
+                                {transaction.metadata.error_message}
+                              </p>
+                            )}
                         </div>
                       </TableCell>
                       <TableCell>
                         {(transaction.metadata as any)?.sap_document_number ? (
                           <div className="text-sm">
-                            <p className="font-medium">{transaction.metadata.sap_document_number}</p>
-                            <p className="text-muted-foreground">FY {transaction.metadata.sap_fiscal_year}</p>
+                            <p className="font-medium">
+                              {transaction.metadata.sap_document_number}
+                            </p>
+                            <p className="text-muted-foreground">
+                              FY {transaction.metadata.sap_fiscal_year}
+                            </p>
                           </div>
                         ) : (
                           <span className="text-muted-foreground">-</span>

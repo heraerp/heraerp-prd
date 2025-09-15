@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   DollarSign,
   TrendingUp,
   ArrowRight,
@@ -23,8 +23,10 @@ import {
 
 export const metadata: Metadata = {
   title: 'Income Potential - HERA Franchise',
-  description: 'Discover your earning potential with HERA franchise. Scale from $25K to $500K+ annually with multiple revenue streams.',
-  keywords: 'HERA franchise income, earning potential, commission rates, franchise revenue, ERP sales income',
+  description:
+    'Discover your earning potential with HERA franchise. Scale from $25K to $500K+ annually with multiple revenue streams.',
+  keywords:
+    'HERA franchise income, earning potential, commission rates, franchise revenue, ERP sales income'
 }
 
 const incomeTable = [
@@ -47,7 +49,7 @@ const incomeTable = [
   {
     clients: 20,
     avgDeal: 100000,
-    commission: 0.40,
+    commission: 0.4,
     monthly: 66667,
     annual: 800000,
     level: 'Executive'
@@ -63,7 +65,7 @@ const incomeTable = [
   {
     clients: 50,
     avgDeal: 150000,
-    commission: 0.50,
+    commission: 0.5,
     monthly: 312500,
     annual: 3750000,
     level: 'Master'
@@ -187,44 +189,75 @@ export default function IncomePage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Level</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Clients</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Avg Deal</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Commission %</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Monthly</th>
-                      <th className="text-left py-4 px-4 font-semibold text-green-600">Annual Income</th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Level
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Clients
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Avg Deal
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Commission %
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Monthly
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-green-600">
+                        Annual Income
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {incomeTable.map((row, index) => (
-                      <tr key={index} className={`border-b border-slate-200 dark:border-slate-700 last:border-b-0 ${index === 1 ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}>
+                      <tr
+                        key={index}
+                        className={`border-b border-slate-200 dark:border-slate-700 last:border-b-0 ${index === 1 ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                      >
                         <td className="py-4 px-4">
-                          <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                            index === 0 ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200' :
-                            index === 1 ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200' :
-                            index === 2 ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' :
-                            index === 3 ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200' :
-                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200'
-                          }`}>
+                          <span
+                            className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
+                              index === 0
+                                ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
+                                : index === 1
+                                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200'
+                                  : index === 2
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200'
+                                    : index === 3
+                                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200'
+                                      : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200'
+                            }`}
+                          >
                             {row.level}
                           </span>
                         </td>
                         <td className="py-4 px-4 text-slate-900 dark:text-white">{row.clients}</td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">${row.avgDeal.toLocaleString()}</td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">{(row.commission * 100).toFixed(0)}%</td>
-                        <td className="py-4 px-4 text-slate-900 dark:text-white">${row.monthly.toLocaleString()}</td>
-                        <td className="py-4 px-4 font-bold text-green-600 text-lg">${row.annual.toLocaleString()}</td>
+                        <td className="py-4 px-4 text-slate-900 dark:text-white">
+                          ${row.avgDeal.toLocaleString()}
+                        </td>
+                        <td className="py-4 px-4 text-slate-900 dark:text-white">
+                          {(row.commission * 100).toFixed(0)}%
+                        </td>
+                        <td className="py-4 px-4 text-slate-900 dark:text-white">
+                          ${row.monthly.toLocaleString()}
+                        </td>
+                        <td className="py-4 px-4 font-bold text-green-600 text-lg">
+                          ${row.annual.toLocaleString()}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-            
+
             <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
               <div className="flex items-center mb-3">
                 <Calculator className="h-5 w-5 text-blue-600 mr-2" />
-                <span className="font-semibold text-blue-900 dark:text-blue-100">Calculation Notes</span>
+                <span className="font-semibold text-blue-900 dark:text-blue-100">
+                  Calculation Notes
+                </span>
               </div>
               <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                 <li>• Based on conservative 12-month client implementation cycles</li>
@@ -251,22 +284,21 @@ export default function IncomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {revenueStreams.map((stream, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
                   <stream.icon className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
                   {stream.title}
                 </h3>
-                <div className="text-2xl font-bold text-green-600 mb-3">
-                  {stream.percentage}
-                </div>
+                <div className="text-2xl font-bold text-green-600 mb-3">{stream.percentage}</div>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                   {stream.description}
                 </p>
-                <p className="text-xs text-blue-600 font-medium">
-                  Example: {stream.example}
-                </p>
+                <p className="text-xs text-blue-600 font-medium">Example: {stream.example}</p>
               </div>
             ))}
           </div>
@@ -287,42 +319,43 @@ export default function IncomePage() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {realWorldExamples.map((example, index) => (
-              <div key={index} className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-8 border border-slate-200 dark:border-slate-700">
+              <div
+                key={index}
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-8 border border-slate-200 dark:border-slate-700"
+              >
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-white font-semibold">
-                      {example.name.charAt(0)}
-                    </span>
+                    <span className="text-white font-semibold">{example.name.charAt(0)}</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white">
-                      {example.name}
-                    </h3>
+                    <h3 className="font-semibold text-slate-900 dark:text-white">{example.name}</h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
                       {example.territory}
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-sm text-slate-600 dark:text-slate-400">Timeframe</p>
-                    <p className="font-semibold text-slate-900 dark:text-white">{example.timeframe}</p>
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      {example.timeframe}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-600 dark:text-slate-400">Clients</p>
-                    <p className="font-semibold text-slate-900 dark:text-white">{example.clients}</p>
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      {example.clients}
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="mb-4">
                   <p className="text-sm text-slate-600 dark:text-slate-400">Annual Income</p>
                   <p className="text-3xl font-bold text-green-600">{example.income}</p>
                 </div>
-                
-                <p className="text-sm text-slate-700 dark:text-slate-300">
-                  {example.story}
-                </p>
+
+                <p className="text-sm text-slate-700 dark:text-slate-300">{example.story}</p>
               </div>
             ))}
           </div>
@@ -343,7 +376,10 @@ export default function IncomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {factors.map((factor, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700"
+              >
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
                   <factor.icon className="h-6 w-6 text-blue-600" />
                 </div>
@@ -353,11 +389,15 @@ export default function IncomePage() {
                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                   {factor.description}
                 </p>
-                <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                  factor.impact === 'Very High' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200' :
-                  factor.impact === 'High' ? 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-200' :
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200'
-                }`}>
+                <span
+                  className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                    factor.impact === 'Very High'
+                      ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-200'
+                      : factor.impact === 'High'
+                        ? 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-200'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200'
+                  }`}
+                >
                   {factor.impact} Impact
                 </span>
               </div>
@@ -374,9 +414,10 @@ export default function IncomePage() {
               Calculate Your Potential
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              Use our income calculator to project your earning potential based on your territory and goals
+              Use our income calculator to project your earning potential based on your territory
+              and goals
             </p>
-            
+
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 mb-8">
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
@@ -401,7 +442,7 @@ export default function IncomePage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
@@ -411,16 +452,14 @@ export default function IncomePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button 
+
+              <Button
                 asChild
                 variant="outline"
                 size="lg"
                 className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg"
               >
-                <Link href="/franchise/proof">
-                  See More Case Studies
-                </Link>
+                <Link href="/franchise/proof">See More Case Studies</Link>
               </Button>
             </div>
           </div>
@@ -437,8 +476,8 @@ export default function IncomePage() {
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
               Stop trading time for money. Build a scalable business that grows while you sleep.
             </p>
-            
-            <Button 
+
+            <Button
               asChild
               size="lg"
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"

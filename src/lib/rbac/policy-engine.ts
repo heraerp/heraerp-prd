@@ -56,10 +56,12 @@ export class RBACPolicyEngine {
     // Get policy entities
     const { data: policies } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data!inner(field_name, field_value_text)
-      `)
+      `
+      )
       .eq('entity_type', 'rbac_policy')
       .eq('organization_id', organizationId)
       .eq('metadata->>active', true)
@@ -135,12 +137,14 @@ export class RBACPolicyEngine {
             if (this.matchesPermission(allow, action, resource, smartCode, organizationId)) {
               // Check conditions
               const conditionsMet = await this.evaluateConditions(policy.conditions, context)
-              
+
               if (conditionsMet) {
                 appliedRules.push(`${role}:ALLOW:${this.permissionToString(allow)}`)
                 finalDecision = true
               } else {
-                appliedRules.push(`${role}:ALLOW_CONDITIONAL_FAILED:${this.permissionToString(allow)}`)
+                appliedRules.push(
+                  `${role}:ALLOW_CONDITIONAL_FAILED:${this.permissionToString(allow)}`
+                )
               }
             }
           }
@@ -246,7 +250,7 @@ export class RBACPolicyEngine {
           break
 
         case 'custom':
-          if (!await this.evaluateCustomCondition(condition.config, context)) return false
+          if (!(await this.evaluateCustomCondition(condition.config, context))) return false
           break
       }
     }
@@ -283,9 +287,7 @@ export class RBACPolicyEngine {
 
     if (config.allowed_ranges) {
       // Simple check - in production use proper IP range library
-      return config.allowed_ranges.some((range: string) => 
-        clientIP.startsWith(range.split('/')[0])
-      )
+      return config.allowed_ranges.some((range: string) => clientIP.startsWith(range.split('/')[0]))
     }
 
     return true
@@ -430,7 +432,7 @@ export class RBACPolicyEngine {
 
     if (existing) {
       policyId = existing.id
-      
+
       // Update metadata
       await supabase
         .from('core_entities')
@@ -476,39 +478,35 @@ export class RBACPolicyEngine {
       policyId = entity!.id
 
       // Store YAML
-      await supabase
-        .from('core_dynamic_data')
-        .insert({
-          id: uuidv4(),
-          entity_id: policyId,
-          field_name: 'policy_yaml',
-          field_value_text: policyYaml,
-          field_type: 'yaml',
-          smart_code: 'HERA.SECURITY.RBAC.POLICY.CONTENT.v1',
-          organization_id: organizationId
-        })
+      await supabase.from('core_dynamic_data').insert({
+        id: uuidv4(),
+        entity_id: policyId,
+        field_name: 'policy_yaml',
+        field_value_text: policyYaml,
+        field_type: 'yaml',
+        smart_code: 'HERA.SECURITY.RBAC.POLICY.CONTENT.v1',
+        organization_id: organizationId
+      })
     }
 
     // Reload policies
     await this.loadPolicies(organizationId)
 
     // Audit
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'policy_update',
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        smart_code: 'HERA.SECURITY.AUDIT.POLICY.UPDATE.v1',
-        organization_id: organizationId,
-        metadata: {
-          policy_id: policyId,
-          policy_name: policyName,
-          action: existing ? 'updated' : 'created',
-          role: parsed.role
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'policy_update',
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      smart_code: 'HERA.SECURITY.AUDIT.POLICY.UPDATE.v1',
+      organization_id: organizationId,
+      metadata: {
+        policy_id: policyId,
+        policy_name: policyName,
+        action: existing ? 'updated' : 'created',
+        role: parsed.role
+      }
+    })
 
     return policyId
   }

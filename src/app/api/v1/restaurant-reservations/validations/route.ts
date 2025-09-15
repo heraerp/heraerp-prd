@@ -52,19 +52,19 @@ export async function GET(request: NextRequest) {
       enhancedEntities = entities.map(entity => {
         const entityDynamicData = dynamicData?.filter(d => d.entity_id === entity.id) || []
         const dynamicFields = {}
-        
+
         entityDynamicData.forEach(field => {
           let value = field.field_value_text
           if (field.field_type === 'number') value = field.field_value_number
           if (field.field_type === 'json') value = field.field_value_json
-          
+
           dynamicFields[field.field_name] = {
             value,
             ai_enhanced: field.ai_enhanced_value,
             type: field.field_type
           }
         })
-        
+
         return {
           ...entity,
           dynamic_fields: dynamicFields
@@ -77,13 +77,9 @@ export async function GET(request: NextRequest) {
       data: enhancedEntities,
       count: enhancedEntities.length
     })
-
   } catch (error) {
     console.error('Restaurant-reservations API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -119,7 +115,11 @@ export async function POST(request: NextRequest) {
     if (entityError) {
       console.error('Error creating restaurant-reservations entity:', entityError)
       return NextResponse.json(
-        { success: false, message: 'Failed to create restaurant-reservations entity', error: entityError },
+        {
+          success: false,
+          message: 'Failed to create restaurant-reservations entity',
+          error: entityError
+        },
         { status: 500 }
       )
     }
@@ -176,7 +176,6 @@ export async function POST(request: NextRequest) {
         message: 'Restaurant-reservations created successfully'
       }
     })
-
   } catch (error) {
     console.error('Restaurant-reservations creation error:', error)
     return NextResponse.json(

@@ -4,7 +4,8 @@ import { verifyAuth } from '@/lib/auth/verify-auth'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // POST /api/v1/readiness/sessions/:sessionId/complete - Complete session and generate insights
@@ -37,25 +38,22 @@ export async function POST(
 
     if (answersError) {
       console.error('Failed to fetch answers:', answersError)
-      return NextResponse.json(
-        { error: 'Failed to fetch answers' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch answers' }, { status: 500 })
     }
 
     // Calculate scores by category
-    const categoryScores: Record<string, { total: number, count: number, score: number }> = {}
+    const categoryScores: Record<string, { total: number; count: number; score: number }> = {}
     let totalScore = 0
     let totalQuestions = 0
 
-    for (const answer of (answers || [])) {
+    for (const answer of answers || []) {
       const category = answer.line_data?.category || 'general'
       const score = answer.unit_amount || 0
-      
+
       if (!categoryScores[category]) {
         categoryScores[category] = { total: 0, count: 0, score: 0 }
       }
-      
+
       categoryScores[category].total += score
       categoryScores[category].count += 1
       totalScore += score
@@ -64,9 +62,10 @@ export async function POST(
 
     // Calculate average scores per category
     for (const category in categoryScores) {
-      categoryScores[category].score = categoryScores[category].count > 0
-        ? Math.round(categoryScores[category].total / categoryScores[category].count)
-        : 0
+      categoryScores[category].score =
+        categoryScores[category].count > 0
+          ? Math.round(categoryScores[category].total / categoryScores[category].count)
+          : 0
     }
 
     const overallScore = totalQuestions > 0 ? Math.round(totalScore / totalQuestions) : 0
@@ -107,15 +106,15 @@ export async function POST(
     }
 
     // Store AI insights as dynamic data
-    const { error: insightsError } = await supabase
-      .from('core_dynamic_data')
-      .insert([{
+    const { error: insightsError } = await supabase.from('core_dynamic_data').insert([
+      {
         organization_id: orgId,
         entity_id: sessionId,
         field_name: 'ai_insights',
         field_value_text: JSON.stringify(insights),
         smart_code: 'HERA.ERP.Readiness.AI.Analysis.V1'
-      }])
+      }
+    ])
 
     return NextResponse.json({
       success: true,
@@ -128,23 +127,29 @@ export async function POST(
     })
   } catch (error) {
     console.error('Failed to complete session:', error)
-    return NextResponse.json(
-      { error: 'Failed to complete session' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to complete session' }, { status: 500 })
   }
 }
 
-function generateRecommendations(categoryScores: Record<string, any>, overallScore: number): string[] {
+function generateRecommendations(
+  categoryScores: Record<string, any>,
+  overallScore: number
+): string[] {
   const recommendations: string[] = []
 
   // Overall recommendations
   if (overallScore >= 80) {
-    recommendations.push('Your organization shows strong ERP readiness. Consider starting with advanced modules.')
+    recommendations.push(
+      'Your organization shows strong ERP readiness. Consider starting with advanced modules.'
+    )
   } else if (overallScore >= 60) {
-    recommendations.push('Your organization has good foundational readiness. Focus on strengthening weak areas before full implementation.')
+    recommendations.push(
+      'Your organization has good foundational readiness. Focus on strengthening weak areas before full implementation.'
+    )
   } else {
-    recommendations.push('Your organization needs preparation before ERP implementation. Start with basic process standardization.')
+    recommendations.push(
+      'Your organization needs preparation before ERP implementation. Start with basic process standardization.'
+    )
   }
 
   // Category-specific recommendations
@@ -155,7 +160,9 @@ function generateRecommendations(categoryScores: Record<string, any>, overallSco
           recommendations.push('Invest in IT infrastructure and training before ERP deployment.')
           break
         case 'process':
-          recommendations.push('Document and standardize business processes for better ERP alignment.')
+          recommendations.push(
+            'Document and standardize business processes for better ERP alignment.'
+          )
           break
         case 'people':
           recommendations.push('Develop change management and training programs for staff.')

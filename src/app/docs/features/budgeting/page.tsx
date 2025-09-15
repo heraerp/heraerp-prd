@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { 
-  TrendingUp, 
-  Calculator, 
+import {
+  TrendingUp,
+  Calculator,
   CheckCircle2,
   Target,
   Clock,
@@ -25,67 +25,94 @@ import {
 
 export default function BudgetingDoc() {
   const [activeTab, setActiveTab] = useState('overview')
-  
+
   return (
     <div className="docs-container">
       <nav className="docs-sidebar">
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">Budgeting & Planning</h3>
-          <a href="#overview" className="docs-nav-link" onClick={() => setActiveTab('overview')}>Overview</a>
-          <a href="#features" className="docs-nav-link">Key Features</a>
-          <a href="#budget-creation" className="docs-nav-link">Budget Creation</a>
-          <a href="#variance-analysis" className="docs-nav-link">Variance Analysis</a>
-          <a href="#forecasting" className="docs-nav-link">Rolling Forecasts</a>
-          <a href="#implementation" className="docs-nav-link">Getting Started</a>
-          <a href="#metrics" className="docs-nav-link">Success Metrics</a>
-          <a href="#examples" className="docs-nav-link">Use Cases</a>
+          <a href="#overview" className="docs-nav-link" onClick={() => setActiveTab('overview')}>
+            Overview
+          </a>
+          <a href="#features" className="docs-nav-link">
+            Key Features
+          </a>
+          <a href="#budget-creation" className="docs-nav-link">
+            Budget Creation
+          </a>
+          <a href="#variance-analysis" className="docs-nav-link">
+            Variance Analysis
+          </a>
+          <a href="#forecasting" className="docs-nav-link">
+            Rolling Forecasts
+          </a>
+          <a href="#implementation" className="docs-nav-link">
+            Getting Started
+          </a>
+          <a href="#metrics" className="docs-nav-link">
+            Success Metrics
+          </a>
+          <a href="#examples" className="docs-nav-link">
+            Use Cases
+          </a>
         </div>
-        
+
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">Related Topics</h3>
-          <Link href="/docs/features/fin" className="docs-nav-link">Financial Management</Link>
-          <Link href="/docs/features/reporting" className="docs-nav-link">Financial Reporting</Link>
-          <Link href="/docs/features/analytics" className="docs-nav-link">Business Analytics</Link>
+          <Link href="/docs/features/fin" className="docs-nav-link">
+            Financial Management
+          </Link>
+          <Link href="/docs/features/reporting" className="docs-nav-link">
+            Financial Reporting
+          </Link>
+          <Link href="/docs/features/analytics" className="docs-nav-link">
+            Business Analytics
+          </Link>
         </div>
       </nav>
-      
+
       <main className="docs-main">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Link href="/docs" className="hover:text-accent-fg">Docs</Link>
+            <Link href="/docs" className="hover:text-accent-fg">
+              Docs
+            </Link>
             <span>/</span>
-            <Link href="/docs/features" className="hover:text-accent-fg">Features</Link>
+            <Link href="/docs/features" className="hover:text-accent-fg">
+              Features
+            </Link>
             <span>/</span>
             <span>Budgeting & Planning</span>
           </div>
-          
+
           <h1>Budgeting & Planning</h1>
           <p className="text-xl text-muted-foreground mt-2">
             Enterprise-grade budgeting with real-time variance tracking and intelligent forecasting
           </p>
         </div>
-        
+
         <div className="docs-note docs-note-success mb-8">
           <div className="flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <strong>Production Ready</strong>
               <p className="text-sm mt-1">
-                Managing $1B+ in budgets across industries with 95% forecast accuracy and real-time variance tracking.
-                Zero implementation time - included in every HERA deployment.
+                Managing $1B+ in budgets across industries with 95% forecast accuracy and real-time
+                variance tracking. Zero implementation time - included in every HERA deployment.
               </p>
             </div>
           </div>
         </div>
-        
+
         <section id="overview" className="mb-12">
           <h2>Overview</h2>
           <p>
-            HERA's universal budgeting system transforms financial planning from a quarterly exercise into a 
-            continuous, data-driven process. With multi-dimensional planning, real-time variance analysis, 
-            and AI-powered forecasting, stay ahead of changes and make informed decisions.
+            HERA's universal budgeting system transforms financial planning from a quarterly
+            exercise into a continuous, data-driven process. With multi-dimensional planning,
+            real-time variance analysis, and AI-powered forecasting, stay ahead of changes and make
+            informed decisions.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-2">Traditional Budgeting</h3>
@@ -97,7 +124,7 @@ export default function BudgetingDoc() {
                 <li>• Limited dimensions</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-2">HERA Budgeting</h3>
               <ul className="space-y-2 text-sm">
@@ -125,10 +152,10 @@ export default function BudgetingDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="features" className="mb-12">
           <h2>Key Features</h2>
-          
+
           <div className="grid gap-6 mt-6">
             <div className="docs-card">
               <div className="flex items-start gap-4">
@@ -136,7 +163,8 @@ export default function BudgetingDoc() {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Multi-Dimensional Planning</h3>
                   <p className="text-muted-foreground mb-3">
-                    Plan by any combination of dimensions with automatic consolidation and drill-down capabilities.
+                    Plan by any combination of dimensions with automatic consolidation and
+                    drill-down capabilities.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="docs-badge">Cost Centers</span>
@@ -149,23 +177,25 @@ export default function BudgetingDoc() {
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-start gap-4">
                 <Calculator className="w-8 h-8 text-accent-fg flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Driver-Based Budgeting</h3>
                   <p className="text-muted-foreground mb-3">
-                    Link budgets to business drivers for transparent, flexible planning that adapts to changes.
+                    Link budgets to business drivers for transparent, flexible planning that adapts
+                    to changes.
                   </p>
                   <pre className="text-xs bg-canvas-inset p-3 rounded overflow-x-auto">
-{`// Example: Restaurant Revenue Budget
+                    {`// Example: Restaurant Revenue Budget
 Customers/Month × Average Check × Days = Revenue
-    300        ×      $45      × 30  = $405,000`}</pre>
+    300        ×      $45      × 30  = $405,000`}
+                  </pre>
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-start gap-4">
                 <AlertTriangle className="w-8 h-8 text-accent-fg flex-shrink-0 mt-1" />
@@ -193,15 +223,16 @@ Customers/Month × Average Check × Days = Revenue
             </div>
           </div>
         </section>
-        
+
         <section id="budget-creation" className="mb-12">
           <h2>Budget Creation Process</h2>
-          
+
           <div className="docs-note docs-note-info mb-6">
-            <strong>Intelligent Templates:</strong> Start with industry-specific templates that include 
-            best-practice assumptions and automatically adjust for your business size and geography.
+            <strong>Intelligent Templates:</strong> Start with industry-specific templates that
+            include best-practice assumptions and automatically adjust for your business size and
+            geography.
           </div>
-          
+
           <div className="grid gap-4">
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">Budget Methods Supported</h3>
@@ -226,52 +257,68 @@ Customers/Month × Average Check × Days = Revenue
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">Budget Creation Workflow</h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">1</div>
+                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                    1
+                  </div>
                   <div className="flex-1">
                     <p className="font-medium">Select Template</p>
-                    <p className="text-sm text-muted-foreground">Choose from 50+ industry templates or start custom</p>
+                    <p className="text-sm text-muted-foreground">
+                      Choose from 50+ industry templates or start custom
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">2</div>
+                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                    2
+                  </div>
                   <div className="flex-1">
                     <p className="font-medium">Define Drivers</p>
-                    <p className="text-sm text-muted-foreground">Set business assumptions and growth targets</p>
+                    <p className="text-sm text-muted-foreground">
+                      Set business assumptions and growth targets
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">3</div>
+                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                    3
+                  </div>
                   <div className="flex-1">
                     <p className="font-medium">Allocate & Distribute</p>
-                    <p className="text-sm text-muted-foreground">Spread across periods with seasonality</p>
+                    <p className="text-sm text-muted-foreground">
+                      Spread across periods with seasonality
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">4</div>
+                  <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                    4
+                  </div>
                   <div className="flex-1">
                     <p className="font-medium">Review & Approve</p>
-                    <p className="text-sm text-muted-foreground">Multi-level approval with version control</p>
+                    <p className="text-sm text-muted-foreground">
+                      Multi-level approval with version control
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-        
+
         <section id="variance-analysis" className="mb-12">
           <h2>Variance Analysis</h2>
-          
+
           <div className="docs-card mb-6">
             <h3 className="text-lg font-semibold mb-3">Real-Time Budget vs Actual</h3>
             <p className="text-muted-foreground mb-4">
               Monitor performance continuously with intelligent variance analysis:
             </p>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -292,7 +339,9 @@ Customers/Month × Average Check × Days = Revenue
                     <td className="text-right py-2 text-danger-fg">($15,000)</td>
                     <td className="text-right py-2">-3.0%</td>
                     <td className="text-center py-2">
-                      <span className="text-xs bg-warning-subtle text-warning-fg px-2 py-1 rounded">Warning</span>
+                      <span className="text-xs bg-warning-subtle text-warning-fg px-2 py-1 rounded">
+                        Warning
+                      </span>
                     </td>
                   </tr>
                   <tr className="border-b">
@@ -302,7 +351,9 @@ Customers/Month × Average Check × Days = Revenue
                     <td className="text-right py-2 text-success-fg">$5,250</td>
                     <td className="text-right py-2">3.0%</td>
                     <td className="text-center py-2">
-                      <span className="text-xs bg-success-subtle text-success-fg px-2 py-1 rounded">Good</span>
+                      <span className="text-xs bg-success-subtle text-success-fg px-2 py-1 rounded">
+                        Good
+                      </span>
                     </td>
                   </tr>
                   <tr className="border-b">
@@ -312,7 +363,9 @@ Customers/Month × Average Check × Days = Revenue
                     <td className="text-right py-2 text-danger-fg">($15,000)</td>
                     <td className="text-right py-2">-7.5%</td>
                     <td className="text-center py-2">
-                      <span className="text-xs bg-danger-subtle text-danger-fg px-2 py-1 rounded">Alert</span>
+                      <span className="text-xs bg-danger-subtle text-danger-fg px-2 py-1 rounded">
+                        Alert
+                      </span>
                     </td>
                   </tr>
                   <tr>
@@ -322,14 +375,16 @@ Customers/Month × Average Check × Days = Revenue
                     <td className="text-right py-2 font-semibold text-danger-fg">($24,750)</td>
                     <td className="text-right py-2 font-semibold">-19.8%</td>
                     <td className="text-center py-2">
-                      <span className="text-xs bg-danger-subtle text-danger-fg px-2 py-1 rounded">Critical</span>
+                      <span className="text-xs bg-danger-subtle text-danger-fg px-2 py-1 rounded">
+                        Critical
+                      </span>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-          
+
           <div className="docs-card">
             <h3 className="text-lg font-semibold mb-3">Variance Intelligence</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -354,16 +409,16 @@ Customers/Month × Average Check × Days = Revenue
             </div>
           </div>
         </section>
-        
+
         <section id="forecasting" className="mb-12">
           <h2>Rolling Forecasts</h2>
-          
+
           <div className="docs-card mb-6">
             <h3 className="text-lg font-semibold mb-3">Continuous Planning</h3>
             <p className="text-muted-foreground mb-4">
               Move beyond annual budgets with rolling forecasts that adapt to changing conditions:
             </p>
-            
+
             <div className="grid gap-4">
               <div className="bg-canvas-inset p-4 rounded">
                 <h4 className="font-medium mb-3">12-Month Rolling Forecast</h4>
@@ -373,7 +428,7 @@ Customers/Month × Average Check × Days = Revenue
                   <span className="ml-auto text-success-fg">Updated monthly</span>
                 </div>
               </div>
-              
+
               <div className="bg-canvas-inset p-4 rounded">
                 <h4 className="font-medium mb-3">Scenario Planning</h4>
                 <div className="space-y-2">
@@ -391,7 +446,7 @@ Customers/Month × Average Check × Days = Revenue
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-canvas-inset p-4 rounded">
                 <h4 className="font-medium mb-3">AI-Powered Predictions</h4>
                 <ul className="space-y-1 text-sm">
@@ -404,15 +459,15 @@ Customers/Month × Average Check × Days = Revenue
             </div>
           </div>
         </section>
-        
+
         <section id="implementation" className="mb-12">
           <h2>Getting Started</h2>
-          
+
           <div className="docs-note docs-note-success mb-6">
-            <strong>Zero Implementation Required:</strong> Budgeting is automatically included in every 
-            HERA deployment. Start planning immediately with pre-configured templates.
+            <strong>Zero Implementation Required:</strong> Budgeting is automatically included in
+            every HERA deployment. Start planning immediately with pre-configured templates.
           </div>
-          
+
           <h3 className="mb-4">Day 1: Immediate Setup</h3>
           <div className="docs-card mb-4">
             <ul className="space-y-2">
@@ -422,7 +477,7 @@ Customers/Month × Average Check × Days = Revenue
               <li>✓ Set approval hierarchy</li>
             </ul>
           </div>
-          
+
           <h3 className="mb-4">Week 1: Budget Creation</h3>
           <div className="docs-card mb-4">
             <ul className="space-y-2">
@@ -432,7 +487,7 @@ Customers/Month × Average Check × Days = Revenue
               <li>✓ Review and approve</li>
             </ul>
           </div>
-          
+
           <h3 className="mb-4">Week 2: Integration</h3>
           <div className="docs-card mb-4">
             <ul className="space-y-2">
@@ -442,7 +497,7 @@ Customers/Month × Average Check × Days = Revenue
               <li>✓ Train budget owners</li>
             </ul>
           </div>
-          
+
           <h3 className="mb-4">Ongoing: Optimization</h3>
           <div className="docs-card">
             <ul className="space-y-2">
@@ -453,10 +508,10 @@ Customers/Month × Average Check × Days = Revenue
             </ul>
           </div>
         </section>
-        
+
         <section id="metrics" className="mb-12">
           <h2>Success Metrics</h2>
-          
+
           <div className="docs-card bg-success-emphasis text-white">
             <h3 className="text-xl font-semibold mb-4">Proven Results Across Industries</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -474,7 +529,7 @@ Customers/Month × Average Check × Days = Revenue
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Planning Efficiency</h4>
@@ -485,7 +540,7 @@ Customers/Month × Average Check × Days = Revenue
                 <li>• Consolidation: Days → Minutes</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Decision Impact</h4>
               <ul className="space-y-2 text-sm">
@@ -497,13 +552,15 @@ Customers/Month × Average Check × Days = Revenue
             </div>
           </div>
         </section>
-        
+
         <section id="examples" className="mb-12">
           <h2>Use Cases</h2>
-          
+
           <div className="grid gap-6">
             <div className="docs-card">
-              <h3 className="text-lg font-semibold mb-3">Restaurant Chain - Driver-Based Planning</h3>
+              <h3 className="text-lg font-semibold mb-3">
+                Restaurant Chain - Driver-Based Planning
+              </h3>
               <p className="text-muted-foreground mb-3">
                 50-location restaurant group transformed budgeting:
               </p>
@@ -514,9 +571,11 @@ Customers/Month × Average Check × Days = Revenue
                 <li>• Result: 15% improvement in profit margins through better planning</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
-              <h3 className="text-lg font-semibold mb-3">Healthcare Network - Department Budgets</h3>
+              <h3 className="text-lg font-semibold mb-3">
+                Healthcare Network - Department Budgets
+              </h3>
               <p className="text-muted-foreground mb-3">
                 Multi-facility healthcare system streamlined planning:
               </p>
@@ -527,7 +586,7 @@ Customers/Month × Average Check × Days = Revenue
                 <li>• Result: $3M cost savings through variance management</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">SaaS Company - Rolling Forecasts</h3>
               <p className="text-muted-foreground mb-3">
@@ -542,12 +601,15 @@ Customers/Month × Average Check × Days = Revenue
             </div>
           </div>
         </section>
-        
+
         <section>
           <h2>Next Steps</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link href="/docs/features/fin" className="docs-card hover:border-accent-fg transition-colors">
+            <Link
+              href="/docs/features/fin"
+              className="docs-card hover:border-accent-fg transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Financial Management</h4>
@@ -558,8 +620,11 @@ Customers/Month × Average Check × Days = Revenue
                 <ArrowRight className="w-5 h-5 text-accent-fg" />
               </div>
             </Link>
-            
-            <Link href="/docs/features/analytics" className="docs-card hover:border-accent-fg transition-colors">
+
+            <Link
+              href="/docs/features/analytics"
+              className="docs-card hover:border-accent-fg transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Business Analytics</h4>
@@ -571,15 +636,19 @@ Customers/Month × Average Check × Days = Revenue
               </div>
             </Link>
           </div>
-          
+
           <div className="docs-note docs-note-info mt-8">
             <div className="flex items-start gap-3">
               <Zap className="w-5 h-5 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Ready to transform your planning process?</strong>
                 <p className="text-sm mt-1">
-                  HERA Budgeting is included in every deployment with zero setup time. Start planning smarter today. 
-                  <Link href="/contact" className="underline">Contact us</Link> to see a demo tailored to your industry.
+                  HERA Budgeting is included in every deployment with zero setup time. Start
+                  planning smarter today.
+                  <Link href="/contact" className="underline">
+                    Contact us
+                  </Link>{' '}
+                  to see a demo tailored to your industry.
                 </p>
               </div>
             </div>

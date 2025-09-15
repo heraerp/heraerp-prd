@@ -6,7 +6,7 @@ import { getHeraAPI } from '@/lib/hera-api'
 /**
  * HERA Financial Module - Accounting Periods API
  * Smart Code: HERA.FIN.GL.ENT.PERIOD.v1
- * 
+ *
  * Manages fiscal years, quarters, months, and custom periods
  * Integrates with existing Mario demo setup
  */
@@ -18,16 +18,13 @@ export async function GET(request: NextRequest) {
     const fiscalYear = searchParams.get('fiscal_year')
     const periodType = searchParams.get('period_type') // year, quarter, month, custom
     const status = searchParams.get('status') // open, closed, locked
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const heraApi = getHeraAPI()
-    
+
     // Get accounting periods using universal patterns
     const periods = await heraApi.getEntities('accounting_period')
 
@@ -87,7 +84,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Accounting Periods API error:', error)
     return NextResponse.json(
-      { error: 'Failed to retrieve accounting periods', details: error instanceof Error ? error.message : String(error) },
+      {
+        error: 'Failed to retrieve accounting periods',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }
@@ -99,26 +99,23 @@ export async function POST(request: NextRequest) {
     const { organization_id, period_data, setup_type = 'create_period' } = body
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const heraApi = getHeraAPI()
-    
+
     if (setup_type === 'setup_fiscal_year') {
       // Create complete fiscal year with all periods
       const { fiscal_year, start_date, period_type = 'month' } = period_data
       const fiscalStart = new Date(start_date)
       const periods = []
-      
+
       if (period_type === 'month') {
         // Create 12 monthly periods + 1 adjusting period
         for (let i = 0; i < 13; i++) {
           const periodStart = new Date(fiscalStart)
           periodStart.setMonth(fiscalStart.getMonth() + i)
-          
+
           const periodEnd = new Date(periodStart)
           if (i < 12) {
             periodEnd.setMonth(periodStart.getMonth() + 1)
@@ -128,11 +125,12 @@ export async function POST(request: NextRequest) {
             periodEnd.setMonth(periodStart.getMonth())
             periodEnd.setDate(periodStart.getDate())
           }
-          
+
           const period = await heraApi.createEntity({
             organization_id,
             entity_type: 'accounting_period',
-            entity_name: i < 12 ? `Period ${i + 1} - ${fiscal_year}` : `Adjusting Period - ${fiscal_year}`,
+            entity_name:
+              i < 12 ? `Period ${i + 1} - ${fiscal_year}` : `Adjusting Period - ${fiscal_year}`,
             entity_code: `${fiscal_year}-${String(i + 1).padStart(2, '0')}`,
             smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
             fiscal_year,
@@ -144,11 +142,11 @@ export async function POST(request: NextRequest) {
             is_adjusting_period: i === 12,
             budget_period: false
           })
-          
+
           periods.push(period)
         }
       }
-      
+
       return NextResponse.json({
         success: true,
         data: periods,
@@ -159,7 +157,7 @@ export async function POST(request: NextRequest) {
         mario_demo_compatible: true
       })
     }
-    
+
     if (setup_type === 'create_period') {
       // Create individual period
       const newPeriod = await heraApi.createEntity({
@@ -193,7 +191,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Accounting Periods creation error:', error)
     return NextResponse.json(
-      { error: 'Failed to create accounting periods', details: error instanceof Error ? error.message : String(error) },
+      {
+        error: 'Failed to create accounting periods',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }
@@ -212,10 +213,10 @@ export async function PUT(request: NextRequest) {
     }
 
     const heraApi = getHeraAPI()
-    
+
     let updatedPeriod
     let message = ''
-    
+
     switch (action) {
       case 'close_period':
         updatedPeriod = await heraApi.updateEntity(period_id, {
@@ -226,7 +227,7 @@ export async function PUT(request: NextRequest) {
         })
         message = 'Period closed successfully'
         break
-        
+
       case 'reopen_period':
         updatedPeriod = await heraApi.updateEntity(period_id, {
           organization_id,
@@ -238,7 +239,7 @@ export async function PUT(request: NextRequest) {
         })
         message = 'Period reopened successfully'
         break
-        
+
       case 'lock_period':
         updatedPeriod = await heraApi.updateEntity(period_id, {
           organization_id,
@@ -248,7 +249,7 @@ export async function PUT(request: NextRequest) {
         })
         message = 'Period locked successfully'
         break
-        
+
       default:
         return NextResponse.json(
           { error: 'Invalid action. Use "close_period", "reopen_period", or "lock_period"' },
@@ -267,7 +268,10 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Accounting Periods update error:', error)
     return NextResponse.json(
-      { error: 'Failed to update period', details: error instanceof Error ? error.message : String(error) },
+      {
+        error: 'Failed to update period',
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }

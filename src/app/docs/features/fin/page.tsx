@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { 
-  Calculator, 
-  FileText, 
+import {
+  Calculator,
+  FileText,
   CheckCircle2,
   TrendingUp,
   Clock,
@@ -25,67 +25,94 @@ import {
 
 export default function FINDoc() {
   const [activeTab, setActiveTab] = useState('overview')
-  
+
   return (
     <div className="docs-container">
       <nav className="docs-sidebar">
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">Financial Management</h3>
-          <a href="#overview" className="docs-nav-link" onClick={() => setActiveTab('overview')}>Overview</a>
-          <a href="#features" className="docs-nav-link">Key Features</a>
-          <a href="#general-ledger" className="docs-nav-link">General Ledger</a>
-          <a href="#reporting" className="docs-nav-link">Financial Reporting</a>
-          <a href="#consolidation" className="docs-nav-link">Multi-Company</a>
-          <a href="#implementation" className="docs-nav-link">Getting Started</a>
-          <a href="#metrics" className="docs-nav-link">Success Metrics</a>
-          <a href="#examples" className="docs-nav-link">Use Cases</a>
+          <a href="#overview" className="docs-nav-link" onClick={() => setActiveTab('overview')}>
+            Overview
+          </a>
+          <a href="#features" className="docs-nav-link">
+            Key Features
+          </a>
+          <a href="#general-ledger" className="docs-nav-link">
+            General Ledger
+          </a>
+          <a href="#reporting" className="docs-nav-link">
+            Financial Reporting
+          </a>
+          <a href="#consolidation" className="docs-nav-link">
+            Multi-Company
+          </a>
+          <a href="#implementation" className="docs-nav-link">
+            Getting Started
+          </a>
+          <a href="#metrics" className="docs-nav-link">
+            Success Metrics
+          </a>
+          <a href="#examples" className="docs-nav-link">
+            Use Cases
+          </a>
         </div>
-        
+
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">Related Topics</h3>
-          <Link href="/docs/features/chart-of-accounts" className="docs-nav-link">Chart of Accounts</Link>
-          <Link href="/docs/features/budgeting" className="docs-nav-link">Budgeting & Planning</Link>
-          <Link href="/docs/features/auto-journal" className="docs-nav-link">Auto-Journal Engine</Link>
+          <Link href="/docs/features/chart-of-accounts" className="docs-nav-link">
+            Chart of Accounts
+          </Link>
+          <Link href="/docs/features/budgeting" className="docs-nav-link">
+            Budgeting & Planning
+          </Link>
+          <Link href="/docs/features/auto-journal" className="docs-nav-link">
+            Auto-Journal Engine
+          </Link>
         </div>
       </nav>
-      
+
       <main className="docs-main">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Link href="/docs" className="hover:text-accent-fg">Docs</Link>
+            <Link href="/docs" className="hover:text-accent-fg">
+              Docs
+            </Link>
             <span>/</span>
-            <Link href="/docs/features" className="hover:text-accent-fg">Features</Link>
+            <Link href="/docs/features" className="hover:text-accent-fg">
+              Features
+            </Link>
             <span>/</span>
             <span>Financial Management</span>
           </div>
-          
+
           <h1>Financial Management (FIN)</h1>
           <p className="text-xl text-muted-foreground mt-2">
-            Real-time financial control with automated posting, instant reporting, and AI-powered insights
+            Real-time financial control with automated posting, instant reporting, and AI-powered
+            insights
           </p>
         </div>
-        
+
         <div className="docs-note docs-note-success mb-8">
           <div className="flex items-start gap-3">
             <CheckCircle2 className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <strong>Production Ready</strong>
               <p className="text-sm mt-1">
-                Processing millions in transactions daily with same-day closing, 85% automation, and real-time reporting.
-                Trusted by CFOs for complete financial control.
+                Processing millions in transactions daily with same-day closing, 85% automation, and
+                real-time reporting. Trusted by CFOs for complete financial control.
               </p>
             </div>
           </div>
         </div>
-        
+
         <section id="overview" className="mb-12">
           <h2>Overview</h2>
           <p>
-            HERA FIN delivers enterprise-grade financial management with revolutionary simplicity. From automated 
-            journal entries to real-time consolidation, every financial process is optimized for accuracy, 
-            speed, and compliance.
+            HERA FIN delivers enterprise-grade financial management with revolutionary simplicity.
+            From automated journal entries to real-time consolidation, every financial process is
+            optimized for accuracy, speed, and compliance.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-2">Traditional Financial Systems</h3>
@@ -97,7 +124,7 @@ export default function FINDoc() {
                 <li>• Limited visibility</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-2">HERA FIN</h3>
               <ul className="space-y-2 text-sm">
@@ -125,10 +152,10 @@ export default function FINDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="features" className="mb-12">
           <h2>Key Features</h2>
-          
+
           <div className="grid gap-6 mt-6">
             <div className="docs-card">
               <div className="flex items-start gap-4">
@@ -136,7 +163,8 @@ export default function FINDoc() {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Intelligent General Ledger</h3>
                   <p className="text-muted-foreground mb-3">
-                    Real-time GL with automatic posting from all business transactions and intelligent account determination.
+                    Real-time GL with automatic posting from all business transactions and
+                    intelligent account determination.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="docs-badge">Auto-Posting</span>
@@ -147,14 +175,15 @@ export default function FINDoc() {
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-start gap-4">
                 <BarChart3 className="w-8 h-8 text-accent-fg flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Instant Financial Reporting</h3>
                   <p className="text-muted-foreground mb-3">
-                    Generate financial statements in seconds with drill-down capabilities and variance analysis.
+                    Generate financial statements in seconds with drill-down capabilities and
+                    variance analysis.
                   </p>
                   <div className="grid grid-cols-3 gap-2 mt-3 text-center">
                     <div className="bg-canvas-inset p-2 rounded">
@@ -173,14 +202,15 @@ export default function FINDoc() {
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-start gap-4">
                 <Globe className="w-8 h-8 text-accent-fg flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Multi-Company Consolidation</h3>
                   <p className="text-muted-foreground mb-3">
-                    Consolidate unlimited entities with automatic eliminations and currency translation.
+                    Consolidate unlimited entities with automatic eliminations and currency
+                    translation.
                   </p>
                   <ul className="space-y-1 text-sm">
                     <li>• Full, proportional, and equity methods</li>
@@ -193,15 +223,15 @@ export default function FINDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="general-ledger" className="mb-12">
           <h2>General Ledger Excellence</h2>
-          
+
           <div className="docs-note docs-note-info mb-6">
-            <strong>Automatic GL Posting:</strong> Every business transaction automatically creates proper 
-            journal entries with complete audit trail and real-time balance updates.
+            <strong>Automatic GL Posting:</strong> Every business transaction automatically creates
+            proper journal entries with complete audit trail and real-time balance updates.
           </div>
-          
+
           <div className="grid gap-4">
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">Automated Journal Creation</h3>
@@ -235,7 +265,7 @@ export default function FINDoc() {
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">GL Features</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -261,16 +291,16 @@ export default function FINDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="reporting" className="mb-12">
           <h2>Financial Reporting</h2>
-          
+
           <div className="docs-card mb-6">
             <h3 className="text-lg font-semibold mb-3">Real-Time Financial Statements</h3>
             <p className="text-muted-foreground mb-4">
               Generate any financial report instantly with complete accuracy:
             </p>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-canvas-inset p-4 rounded">
                 <h4 className="font-medium mb-2">Standard Reports</h4>
@@ -296,7 +326,7 @@ export default function FINDoc() {
               </div>
             </div>
           </div>
-          
+
           <div className="docs-card">
             <h3 className="text-lg font-semibold mb-3">Financial Analytics</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -318,48 +348,64 @@ export default function FINDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="consolidation" className="mb-12">
           <h2>Multi-Company Consolidation</h2>
-          
+
           <div className="docs-card mb-6">
             <h3 className="text-lg font-semibold mb-3">Enterprise Consolidation Engine</h3>
             <p className="text-muted-foreground mb-3">
               Consolidate complex corporate structures with automatic eliminations:
             </p>
-            
+
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">1</div>
+                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  1
+                </div>
                 <div className="flex-1">
                   <p className="font-medium">Data Collection</p>
-                  <p className="text-sm text-muted-foreground">Automatic gathering from all subsidiaries</p>
+                  <p className="text-sm text-muted-foreground">
+                    Automatic gathering from all subsidiaries
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">2</div>
+                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  2
+                </div>
                 <div className="flex-1">
                   <p className="font-medium">Currency Translation</p>
-                  <p className="text-sm text-muted-foreground">Multi-currency conversion with CTA calculation</p>
+                  <p className="text-sm text-muted-foreground">
+                    Multi-currency conversion with CTA calculation
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">3</div>
+                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  3
+                </div>
                 <div className="flex-1">
                   <p className="font-medium">Eliminations</p>
-                  <p className="text-sm text-muted-foreground">Automatic intercompany transaction removal</p>
+                  <p className="text-sm text-muted-foreground">
+                    Automatic intercompany transaction removal
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">4</div>
+                <div className="w-6 h-6 bg-accent-emphasis text-white rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                  4
+                </div>
                 <div className="flex-1">
                   <p className="font-medium">Consolidated Reports</p>
-                  <p className="text-sm text-muted-foreground">Group financial statements in minutes</p>
+                  <p className="text-sm text-muted-foreground">
+                    Group financial statements in minutes
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div className="docs-card">
             <h3 className="text-lg font-semibold mb-3">Consolidation Methods</h3>
             <table className="w-full text-sm">
@@ -395,10 +441,10 @@ export default function FINDoc() {
             </table>
           </div>
         </section>
-        
+
         <section id="implementation" className="mb-12">
           <h2>Getting Started</h2>
-          
+
           <h3 className="mb-4">Week 1: Foundation</h3>
           <div className="docs-card mb-4">
             <ul className="space-y-2">
@@ -408,7 +454,7 @@ export default function FINDoc() {
               <li>✓ Define GL posting rules</li>
             </ul>
           </div>
-          
+
           <h3 className="mb-4">Week 2: Integration</h3>
           <div className="docs-card mb-4">
             <ul className="space-y-2">
@@ -418,7 +464,7 @@ export default function FINDoc() {
               <li>✓ Test auto-posting</li>
             </ul>
           </div>
-          
+
           <h3 className="mb-4">Week 3: Reporting</h3>
           <div className="docs-card mb-4">
             <ul className="space-y-2">
@@ -428,7 +474,7 @@ export default function FINDoc() {
               <li>✓ Train finance team</li>
             </ul>
           </div>
-          
+
           <h3 className="mb-4">Week 4: Advanced Features</h3>
           <div className="docs-card">
             <ul className="space-y-2">
@@ -439,10 +485,10 @@ export default function FINDoc() {
             </ul>
           </div>
         </section>
-        
+
         <section id="metrics" className="mb-12">
           <h2>Success Metrics</h2>
-          
+
           <div className="docs-card bg-success-emphasis text-white">
             <h3 className="text-xl font-semibold mb-4">Proven Results Across Industries</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -460,7 +506,7 @@ export default function FINDoc() {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Efficiency Gains</h4>
@@ -471,7 +517,7 @@ export default function FINDoc() {
                 <li>• Consolidation: 1 week → 1 hour</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Quality Improvements</h4>
               <ul className="space-y-2 text-sm">
@@ -483,10 +529,10 @@ export default function FINDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="examples" className="mb-12">
           <h2>Use Cases</h2>
-          
+
           <div className="grid gap-6">
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">Multi-National Corporation</h3>
@@ -500,7 +546,7 @@ export default function FINDoc() {
                 <li>• Result: 5-day close to same-day, $2M annual savings</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">Fast-Growing Tech Company</h3>
               <p className="text-muted-foreground mb-3">
@@ -513,7 +559,7 @@ export default function FINDoc() {
                 <li>• Result: IPO-ready financials, 90% efficiency gain</li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h3 className="text-lg font-semibold mb-3">Healthcare Network</h3>
               <p className="text-muted-foreground mb-3">
@@ -528,12 +574,15 @@ export default function FINDoc() {
             </div>
           </div>
         </section>
-        
+
         <section>
           <h2>Next Steps</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link href="/docs/features/budgeting" className="docs-card hover:border-accent-fg transition-colors">
+            <Link
+              href="/docs/features/budgeting"
+              className="docs-card hover:border-accent-fg transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Budgeting & Planning</h4>
@@ -544,8 +593,11 @@ export default function FINDoc() {
                 <ArrowRight className="w-5 h-5 text-accent-fg" />
               </div>
             </Link>
-            
-            <Link href="/docs/features/financial-analytics" className="docs-card hover:border-accent-fg transition-colors">
+
+            <Link
+              href="/docs/features/financial-analytics"
+              className="docs-card hover:border-accent-fg transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Advanced Analytics</h4>
@@ -557,15 +609,19 @@ export default function FINDoc() {
               </div>
             </Link>
           </div>
-          
+
           <div className="docs-note docs-note-info mt-8">
             <div className="flex items-start gap-3">
               <Zap className="w-5 h-5 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Ready for real-time financial control?</strong>
                 <p className="text-sm mt-1">
-                  HERA FIN can be implemented in just 4 weeks with immediate improvements in closing time and accuracy. 
-                  <Link href="/contact" className="underline">Contact us</Link> to see how we can transform your financial operations.
+                  HERA FIN can be implemented in just 4 weeks with immediate improvements in closing
+                  time and accuracy.
+                  <Link href="/contact" className="underline">
+                    Contact us
+                  </Link>{' '}
+                  to see how we can transform your financial operations.
                 </p>
               </div>
             </div>

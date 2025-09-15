@@ -8,7 +8,9 @@ import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
 
 // Mock database operations - replace with actual HERA API calls
 class MockCalendarAppointmentDB {
-  private static appointments: (UniversalAppointment & { resource_allocations: AppointmentLine[] })[] = [
+  private static appointments: (UniversalAppointment & {
+    resource_allocations: AppointmentLine[]
+  })[] = [
     // Healthcare Appointments
     {
       transaction_id: 'appt_001',
@@ -263,7 +265,7 @@ class MockCalendarAppointmentDB {
         appointments = appointments.filter(a => a.start_time <= filters.end_date!)
       }
       if (filters.resource_ids && filters.resource_ids.length > 0) {
-        appointments = appointments.filter(a => 
+        appointments = appointments.filter(a =>
           a.resource_allocations.some(ra => filters.resource_ids!.includes(ra.entity_id))
         )
       }
@@ -279,7 +281,9 @@ class MockCalendarAppointmentDB {
     return appointments.map(({ resource_allocations, ...appointment }) => appointment)
   }
 
-  static async getById(appointmentId: string): Promise<(UniversalAppointment & { resource_allocations: AppointmentLine[] }) | null> {
+  static async getById(
+    appointmentId: string
+  ): Promise<(UniversalAppointment & { resource_allocations: AppointmentLine[] }) | null> {
     return this.appointments.find(a => a.transaction_id === appointmentId) || null
   }
 
@@ -330,7 +334,7 @@ class MockCalendarAppointmentDB {
     } as UniversalAppointment & { resource_allocations: AppointmentLine[] }
 
     this.appointments.push(newAppointment)
-    
+
     // Return without resource_allocations to match UniversalAppointment type
     const { resource_allocations, ...appointmentOnly } = newAppointment
     return appointmentOnly
@@ -345,8 +349,8 @@ class MockCalendarAppointmentDB {
     if (index === -1) return null
 
     // Update appointment data
-    this.appointments[index] = { 
-      ...this.appointments[index], 
+    this.appointments[index] = {
+      ...this.appointments[index],
       ...updates,
       transaction_date: new Date() // Update modified timestamp
     }
@@ -383,12 +387,16 @@ class MockCalendarAppointmentDB {
     return true
   }
 
-  static async cancel(appointmentId: string, reason?: string): Promise<UniversalAppointment | null> {
+  static async cancel(
+    appointmentId: string,
+    reason?: string
+  ): Promise<UniversalAppointment | null> {
     const index = this.appointments.findIndex(a => a.transaction_id === appointmentId)
     if (index === -1) return null
 
     this.appointments[index].status = 'cancelled'
-    this.appointments[index].notes = (this.appointments[index].notes || '') + 
+    this.appointments[index].notes =
+      (this.appointments[index].notes || '') +
       `\n\nCancelled: ${reason || 'No reason provided'} (${new Date().toISOString()})`
 
     const { resource_allocations, ...appointmentOnly } = this.appointments[index]
@@ -401,18 +409,15 @@ export async function GET(request: NextRequest) {
   try {
     const headersList = await headers()
     const organizationId = headersList.get('X-Organization-ID')
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const { searchParams } = new URL(request.url)
-    
+
     const filters: any = {}
-    
+
     if (searchParams.get('start_date')) {
       filters.start_date = new Date(searchParams.get('start_date')!)
     }
@@ -434,10 +439,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(appointments)
   } catch (error) {
     console.error('Error fetching appointments:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch appointments' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch appointments' }, { status: 500 })
   }
 }
 
@@ -446,16 +448,13 @@ export async function POST(request: NextRequest) {
   try {
     const headersList = await headers()
     const organizationId = headersList.get('X-Organization-ID')
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const { appointment, resource_allocations } = await request.json()
-    
+
     // Ensure organization_id is set
     appointment.organization_id = organizationId
 
@@ -486,7 +485,8 @@ export async function POST(request: NextRequest) {
     // Calculate duration if not provided
     if (!appointment.duration_minutes) {
       appointment.duration_minutes = Math.round(
-        (new Date(appointment.end_time).getTime() - new Date(appointment.start_time).getTime()) / (1000 * 60)
+        (new Date(appointment.end_time).getTime() - new Date(appointment.start_time).getTime()) /
+          (1000 * 60)
       )
     }
 
@@ -495,9 +495,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newAppointment, { status: 201 })
   } catch (error) {
     console.error('Error creating appointment:', error)
-    return NextResponse.json(
-      { error: 'Failed to create appointment' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create appointment' }, { status: 500 })
   }
 }

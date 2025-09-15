@@ -14,7 +14,7 @@ interface HeraChatWidgetProps {
   mode?: 'internal' | 'customer'
 }
 
-export function HeraChatWidget({ 
+export function HeraChatWidget({
   apiUrl,
   position = 'bottom-right',
   defaultOpen = false,
@@ -30,7 +30,7 @@ export function HeraChatWidget({
 
   if (!isOpen) {
     return (
-      <div className={cn("fixed z-50", positionClasses[position])}>
+      <div className={cn('fixed z-50', positionClasses[position])}>
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
@@ -38,7 +38,7 @@ export function HeraChatWidget({
         >
           <MessageCircle size={24} />
         </Button>
-        <Badge 
+        <Badge
           className="absolute -top-2 -right-2 h-6 w-6 p-0 items-center justify-center"
           variant="destructive"
         >
@@ -49,11 +49,11 @@ export function HeraChatWidget({
   }
 
   return (
-    <div 
+    <div
       className={cn(
-        "fixed z-50 transition-all duration-300",
+        'fixed z-50 transition-all duration-300',
         positionClasses[position],
-        isMinimized ? "w-80" : "w-full max-w-2xl"
+        isMinimized ? 'w-80' : 'w-full max-w-2xl'
       )}
     >
       {isMinimized ? (
@@ -79,9 +79,7 @@ export function HeraChatWidget({
               </Button>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Click to expand and continue chatting
-          </p>
+          <p className="text-sm text-muted-foreground">Click to expand and continue chatting</p>
         </div>
       ) : (
         <div className="bg-background border rounded-lg shadow-2xl">
@@ -107,11 +105,7 @@ export function HeraChatWidget({
             </div>
           </div>
           <div className="h-[500px]">
-            <HeraMCPChat 
-              apiUrl={apiUrl}
-              mode={mode}
-              className="h-full border-0 shadow-none"
-            />
+            <HeraMCPChat apiUrl={apiUrl} mode={mode} className="h-full border-0 shadow-none" />
           </div>
         </div>
       )}

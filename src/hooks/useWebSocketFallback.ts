@@ -42,9 +42,11 @@ export function useWebSocketFallback({
   fallbackPollingInterval = 10000
 }: UseWebSocketFallbackOptions): UseWebSocketFallbackReturn {
   const [socket, setSocket] = useState<WebSocket | null>(null)
-  const [connectionState, setConnectionState] = useState<'Connecting' | 'Open' | 'Closing' | 'Closed' | 'Fallback'>('Closed')
+  const [connectionState, setConnectionState] = useState<
+    'Connecting' | 'Open' | 'Closing' | 'Closed' | 'Fallback'
+  >('Closed')
   const [isFallback, setIsFallback] = useState(false)
-  
+
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const fallbackIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const reconnectAttemptsRef = useRef(0)
@@ -60,10 +62,11 @@ export function useWebSocketFallback({
       try {
         const response = await fetch(`${httpUrl}?action=status`)
         const result = await response.json()
-        
+
         if (result.success) {
           // Simulate periodic updates for demo
-          if (Math.random() < 0.1) { // 10% chance of update
+          if (Math.random() < 0.1) {
+            // 10% chance of update
             const mockUpdate: WebSocketMessage = {
               type: 'table_status_update',
               data: {
@@ -124,7 +127,7 @@ export function useWebSocketFallback({
         onConnect?.()
       }
 
-      newSocket.onmessage = (event) => {
+      newSocket.onmessage = event => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data)
           onMessage?.(message)
@@ -133,7 +136,7 @@ export function useWebSocketFallback({
         }
       }
 
-      newSocket.onclose = (event) => {
+      newSocket.onclose = event => {
         clearTimeout(connectionTimeout)
         setConnectionState('Closed')
         setSocket(null)
@@ -143,8 +146,10 @@ export function useWebSocketFallback({
         if (shouldReconnectRef.current) {
           if (reconnectAttemptsRef.current < maxReconnectAttempts) {
             reconnectAttemptsRef.current += 1
-            console.log(`WebSocket reconnection attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts}`)
-            
+            console.log(
+              `WebSocket reconnection attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts}`
+            )
+
             reconnectTimeoutRef.current = setTimeout(() => {
               connect()
             }, reconnectInterval)
@@ -155,11 +160,11 @@ export function useWebSocketFallback({
         }
       }
 
-      newSocket.onerror = (error) => {
+      newSocket.onerror = error => {
         clearTimeout(connectionTimeout)
         console.error('WebSocket error:', error)
         onError?.(error)
-        
+
         // Immediately try fallback on error
         if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
           startFallbackPolling()
@@ -171,11 +176,21 @@ export function useWebSocketFallback({
       console.error('Failed to create WebSocket connection:', error)
       startFallbackPolling()
     }
-  }, [wsUrl, onConnect, onMessage, onDisconnect, onError, reconnectInterval, maxReconnectAttempts, startFallbackPolling, stopFallbackPolling])
+  }, [
+    wsUrl,
+    onConnect,
+    onMessage,
+    onDisconnect,
+    onError,
+    reconnectInterval,
+    maxReconnectAttempts,
+    startFallbackPolling,
+    stopFallbackPolling
+  ])
 
   const disconnect = useCallback(() => {
     shouldReconnectRef.current = false
-    
+
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current)
     }
@@ -191,29 +206,32 @@ export function useWebSocketFallback({
     }
   }, [socket, stopFallbackPolling, onDisconnect])
 
-  const sendMessage = useCallback(async (message: WebSocketMessage) => {
-    if (isFallback) {
-      // Send via HTTP API when in fallback mode
-      try {
-        const response = await fetch(httpUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(message)
-        })
-        
-        const result = await response.json()
-        if (!result.success) {
-          console.error('HTTP fallback message failed:', result.message)
+  const sendMessage = useCallback(
+    async (message: WebSocketMessage) => {
+      if (isFallback) {
+        // Send via HTTP API when in fallback mode
+        try {
+          const response = await fetch(httpUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message)
+          })
+
+          const result = await response.json()
+          if (!result.success) {
+            console.error('HTTP fallback message failed:', result.message)
+          }
+        } catch (error) {
+          console.error('HTTP fallback error:', error)
         }
-      } catch (error) {
-        console.error('HTTP fallback error:', error)
+      } else if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(message))
+      } else {
+        console.warn('Cannot send message: not connected via WebSocket or fallback')
       }
-    } else if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(message))
-    } else {
-      console.warn('Cannot send message: not connected via WebSocket or fallback')
-    }
-  }, [socket, isFallback, httpUrl])
+    },
+    [socket, isFallback, httpUrl]
+  )
 
   useEffect(() => {
     connect()

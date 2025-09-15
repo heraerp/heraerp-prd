@@ -5,9 +5,9 @@
 
 import { NodeSDK } from '@opentelemetry/sdk-node'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
-import { 
-  BasicTracerProvider, 
-  ConsoleSpanExporter, 
+import {
+  BasicTracerProvider,
+  ConsoleSpanExporter,
   SimpleSpanProcessor,
   SpanContext
 } from '@opentelemetry/sdk-trace-base'
@@ -37,7 +37,7 @@ export class HeraTracer {
     const resource = new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: 'hera-enterprise',
       [SemanticResourceAttributes.SERVICE_VERSION]: process.env.HERA_VERSION || '1.0.0',
-      [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
+      [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development'
     })
 
     // Configure trace provider
@@ -46,7 +46,7 @@ export class HeraTracer {
     // Configure exporters
     if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
       const otlpExporter = new OTLPTraceExporter({
-        url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`,
+        url: `${process.env.OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
       })
       this.provider.addSpanProcessor(new SimpleSpanProcessor(otlpExporter))
     }
@@ -64,9 +64,9 @@ export class HeraTracer {
       traceProvider: this.provider,
       instrumentations: [
         getNodeAutoInstrumentations({
-          '@opentelemetry/instrumentation-fs': { enabled: false },
-        }),
-      ],
+          '@opentelemetry/instrumentation-fs': { enabled: false }
+        })
+      ]
     })
 
     // Start SDK
@@ -90,7 +90,7 @@ export class HeraTracer {
     fn: () => Promise<T>
   ): Promise<T> {
     const tracer = this.getTracer('ucr-resolver')
-    
+
     return tracer.startActiveSpan(
       'ucr.resolve',
       {
@@ -99,25 +99,25 @@ export class HeraTracer {
           'hera.organization_id': organizationId,
           'hera.ucr.rule_id': ruleId,
           'hera.ucr.context': JSON.stringify(context),
-          'hera.component': 'ucr',
-        },
+          'hera.component': 'ucr'
+        }
       },
-      async (span) => {
+      async span => {
         try {
           const result = await fn()
-          
+
           span.setAttributes({
             'hera.ucr.result': JSON.stringify(result),
-            'hera.ucr.success': true,
+            'hera.ucr.success': true
           })
-          
+
           span.setStatus({ code: SpanStatusCode.OK })
           return result
         } catch (error) {
           span.recordException(error as Error)
           span.setStatus({
             code: SpanStatusCode.ERROR,
-            message: (error as Error).message,
+            message: (error as Error).message
           })
           throw error
         } finally {
@@ -137,7 +137,7 @@ export class HeraTracer {
     fn: () => Promise<T>
   ): Promise<T> {
     const tracer = this.getTracer('guardrail-validator')
-    
+
     return tracer.startActiveSpan(
       'guardrail.validate',
       {
@@ -146,32 +146,32 @@ export class HeraTracer {
           'hera.organization_id': organizationId,
           'hera.guardrail.table': table,
           'hera.guardrail.payload_size': JSON.stringify(payload).length,
-          'hera.component': 'guardrail',
-        },
+          'hera.component': 'guardrail'
+        }
       },
-      async (span) => {
+      async span => {
         try {
           const result = await fn()
-          
+
           span.setAttributes({
             'hera.guardrail.allowed': true,
-            'hera.guardrail.fixes_applied': 0, // Will be updated by guardrail
+            'hera.guardrail.fixes_applied': 0 // Will be updated by guardrail
           })
-          
+
           span.setStatus({ code: SpanStatusCode.OK })
           return result
         } catch (error) {
           span.recordException(error as Error)
           span.setStatus({
             code: SpanStatusCode.ERROR,
-            message: (error as Error).message,
+            message: (error as Error).message
           })
-          
+
           span.setAttributes({
             'hera.guardrail.allowed': false,
-            'hera.guardrail.error': (error as Error).message,
+            'hera.guardrail.error': (error as Error).message
           })
-          
+
           throw error
         } finally {
           span.end()
@@ -190,7 +190,7 @@ export class HeraTracer {
     fn: () => Promise<T>
   ): Promise<T> {
     const tracer = this.getTracer('database')
-    
+
     return tracer.startActiveSpan(
       `db.${operation}`,
       {
@@ -200,28 +200,28 @@ export class HeraTracer {
           'db.operation': operation,
           'db.sql.table': table,
           'hera.organization_id': organizationId,
-          'hera.component': 'database',
-        },
+          'hera.component': 'database'
+        }
       },
-      async (span) => {
+      async span => {
         const startTime = Date.now()
-        
+
         try {
           const result = await fn()
           const duration = Date.now() - startTime
-          
+
           span.setAttributes({
             'db.rows_affected': Array.isArray(result) ? result.length : 1,
-            'hera.db.duration_ms': duration,
+            'hera.db.duration_ms': duration
           })
-          
+
           span.setStatus({ code: SpanStatusCode.OK })
           return result
         } catch (error) {
           span.recordException(error as Error)
           span.setStatus({
             code: SpanStatusCode.ERROR,
-            message: (error as Error).message,
+            message: (error as Error).message
           })
           throw error
         } finally {
@@ -241,7 +241,7 @@ export class HeraTracer {
     fn: () => Promise<T>
   ): Promise<T> {
     const tracer = this.getTracer('api')
-    
+
     return tracer.startActiveSpan(
       `${method} ${path}`,
       {
@@ -250,39 +250,39 @@ export class HeraTracer {
           'http.method': method,
           'http.route': path,
           'hera.organization_id': organizationId,
-          'hera.component': 'api',
-        },
+          'hera.component': 'api'
+        }
       },
-      async (span) => {
+      async span => {
         const startTime = Date.now()
-        
+
         try {
           const result = await fn()
           const duration = Date.now() - startTime
-          
+
           span.setAttributes({
             'http.status_code': 200,
             'hera.api.duration_ms': duration,
-            'hera.api.success': true,
+            'hera.api.success': true
           })
-          
+
           span.setStatus({ code: SpanStatusCode.OK })
           return result
         } catch (error) {
           const statusCode = (error as any).statusCode || 500
-          
+
           span.recordException(error as Error)
           span.setStatus({
             code: SpanStatusCode.ERROR,
-            message: (error as Error).message,
+            message: (error as Error).message
           })
-          
+
           span.setAttributes({
             'http.status_code': statusCode,
             'hera.api.success': false,
-            'hera.api.error': (error as Error).message,
+            'hera.api.error': (error as Error).message
           })
-          
+
           throw error
         } finally {
           span.end()
@@ -301,7 +301,7 @@ export class HeraTracer {
     fn: () => Promise<T>
   ): Promise<T> {
     const tracer = this.getTracer('reporting')
-    
+
     return tracer.startActiveSpan(
       'report.generate',
       {
@@ -310,28 +310,28 @@ export class HeraTracer {
           'hera.report.type': reportType,
           'hera.organization_id': organizationId,
           'hera.report.period': period,
-          'hera.component': 'reporting',
-        },
+          'hera.component': 'reporting'
+        }
       },
-      async (span) => {
+      async span => {
         const startTime = Date.now()
-        
+
         try {
           const result = await fn()
           const duration = Date.now() - startTime
-          
+
           span.setAttributes({
             'hera.report.duration_ms': duration,
-            'hera.report.success': true,
+            'hera.report.success': true
           })
-          
+
           span.setStatus({ code: SpanStatusCode.OK })
           return result
         } catch (error) {
           span.recordException(error as Error)
           span.setStatus({
             code: SpanStatusCode.ERROR,
-            message: (error as Error).message,
+            message: (error as Error).message
           })
           throw error
         } finally {
@@ -350,8 +350,8 @@ export class HeraTracer {
       kind: SpanKind.INTERNAL,
       attributes: {
         ...attributes,
-        'hera.span.custom': true,
-      },
+        'hera.span.custom': true
+      }
     })
   }
 
@@ -414,7 +414,7 @@ export class HeraTracer {
       ...headers,
       'x-trace-id': spanContext.traceId,
       'x-span-id': spanContext.spanId,
-      'x-trace-flags': spanContext.traceFlags.toString(),
+      'x-trace-flags': spanContext.traceFlags.toString()
     }
   }
 

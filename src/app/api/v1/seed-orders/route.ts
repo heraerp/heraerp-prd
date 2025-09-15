@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
 
     // Sample menu item IDs (these should exist in core_entities)
     const menuItems = [
-      { id: '550e8400-e29b-41d4-a716-446655440010', name: 'Margherita Pizza', price: 18.50 },
-      { id: '550e8400-e29b-41d4-a716-446655440011', name: 'Caesar Salad', price: 14.50 },
-      { id: '550e8400-e29b-41d4-a716-446655440012', name: 'Lasagna Bolognese', price: 22.00 },
-      { id: '550e8400-e29b-41d4-a716-446655440013', name: 'Tiramisu', price: 8.50 },
+      { id: '550e8400-e29b-41d4-a716-446655440010', name: 'Margherita Pizza', price: 18.5 },
+      { id: '550e8400-e29b-41d4-a716-446655440011', name: 'Caesar Salad', price: 14.5 },
+      { id: '550e8400-e29b-41d4-a716-446655440012', name: 'Lasagna Bolognese', price: 22.0 },
+      { id: '550e8400-e29b-41d4-a716-446655440013', name: 'Tiramisu', price: 8.5 },
       { id: '550e8400-e29b-41d4-a716-446655440014', name: 'House Wine', price: 6.25 }
     ]
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       {
         customer_name: 'Marco Ferrari',
         table_number: 'Table 2',
-        order_type: 'dine_in', 
+        order_type: 'dine_in',
         status: 'processing',
         items: [
           { menu_item: menuItems[2], quantity: 1 },
@@ -70,8 +70,11 @@ export async function POST(request: NextRequest) {
 
     for (const order of sampleOrders) {
       // Calculate total
-      const total_amount = order.items.reduce((sum, item) => sum + (item.quantity * item.menu_item.price), 0)
-      
+      const total_amount = order.items.reduce(
+        (sum, item) => sum + item.quantity * item.menu_item.price,
+        0
+      )
+
       // Generate reference number
       const reference_number = `ORD-${new Date().getFullYear()}-${String(Date.now() + Math.random() * 1000).slice(-6)}`
       const transaction_number = `TXN-${String(Date.now() + Math.random() * 1000).slice(-6)}`
@@ -146,12 +149,8 @@ export async function POST(request: NextRequest) {
       message: `Created ${createdOrders.length} sample orders for Mario's Restaurant`,
       data: createdOrders
     })
-
   } catch (error) {
     console.error('Seed orders error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

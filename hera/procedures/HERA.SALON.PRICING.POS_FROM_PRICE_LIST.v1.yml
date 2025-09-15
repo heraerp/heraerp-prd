@@ -1,0 +1,55 @@
+smart_code: HERA.SALON.PRICING.POS_FROM_PRICE_LIST.v1
+intent: >
+  Price POS order lines using ITEM_IN_PRICE_LIST based on CUSTOMER_PRICE_LIST; discounts emitted as separate lines.
+scope:
+  in_scope:
+    - Resolve customer's price list (CUSTOMER_PRICE_LIST) or default
+    - Look up ITEM_IN_PRICE_LIST for services/products
+    - Set unit_price and line_amount
+  out_of_scope:
+    - Tax calculation
+    - Discount policy beyond separate discount lines
+preconditions:
+  - catalog contains TXN_TYPE: [pos_order]
+  - catalog contains LINE_TYPE: [service_line, item_line, discount, tax]
+  - permissions: [pos_operator]
+invariants:
+  - unit_price is sourced solely from ITEM_IN_PRICE_LIST
+  - header total equals sum(lines)
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: customer_id
+      type: uuid
+      where: payload
+    - name: pos_order_id
+      type: uuid
+      where: payload
+outputs:
+  entities_created: []
+  transactions_emitted: []
+happy_path:
+  - step: Resolve price list for customer via CUSTOMER_PRICE_LIST
+  - step: Price each service_line and item_line from ITEM_IN_PRICE_LIST
+  - step: Apply discounts as discount lines; do not alter unit_price
+  - step: Recompute header totals and currency_code from price list
+errors:
+  - code: NO_PRICE_LIST
+    when: customer has no price list
+    action: use org default or block per policy
+  - code: NO_PRICE_FOR_ITEM
+    when: an entity lacks a list price
+    action: require manual override
+observability:
+  logs: [price_list_resolved, lines_priced, header_totalized]
+  audit_json: true
+example_payload:
+  organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  customer_id: "d2719d1a-8d3e-4d5a-8a2a-343f2e9b9c0b"
+  pos_order_id: "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+checks:
+  - description: Unit price sourced from ITEM_IN_PRICE_LIST
+  - description: Discount lines present for overrides
+

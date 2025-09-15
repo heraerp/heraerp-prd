@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Calendar,
   Plus,
   Search,
@@ -64,7 +64,7 @@ export default function ActivitiesPage() {
   const [activities, setActivities] = useState<ActivityTransaction[]>([])
   const [relatedEntities, setRelatedEntities] = useState<Record<string, RelatedEntity>>({})
   const [isLoading, setIsLoading] = useState(true)
-  
+
   const supabase = createClientComponentClient()
 
   useEffect(() => {
@@ -115,23 +115,35 @@ export default function ActivitiesPage() {
 
   const getActivityIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'call': return Phone
-      case 'email': return Mail
-      case 'meeting': return Users
-      case 'task': return CheckCircle
-      case 'note': return FileText
-      default: return Activity
+      case 'call':
+        return Phone
+      case 'email':
+        return Mail
+      case 'meeting':
+        return Users
+      case 'task':
+        return CheckCircle
+      case 'note':
+        return FileText
+      default:
+        return Activity
     }
   }
 
   const getActivityColor = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'call': return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'email': return 'from-[#ec7f37] to-[#be4f0c]'
-      case 'meeting': return 'from-purple-500 to-purple-600'
-      case 'task': return 'from-emerald-500 to-green-600'
-      case 'note': return 'from-blue-500 to-blue-600'
-      default: return 'from-gray-500 to-gray-600'
+      case 'call':
+        return 'from-[#FF5A09] to-[#ec7f37]'
+      case 'email':
+        return 'from-[#ec7f37] to-[#be4f0c]'
+      case 'meeting':
+        return 'from-purple-500 to-purple-600'
+      case 'task':
+        return 'from-emerald-500 to-green-600'
+      case 'note':
+        return 'from-blue-500 to-blue-600'
+      default:
+        return 'from-gray-500 to-gray-600'
     }
   }
 
@@ -145,18 +157,24 @@ export default function ActivitiesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'scheduled': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      case 'overdue': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'completed':
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      case 'scheduled':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+      case 'overdue':
+        return 'bg-red-500/20 text-red-400 border-red-500/30'
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
     }
   }
 
   const filteredActivities = activities.filter(activity => {
-    const matchesSearch = activity.business_context?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.transaction_code.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesType = selectedType === 'all' || activity.business_context?.activity_type === selectedType
-    
+    const matchesSearch =
+      activity.business_context?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      activity.transaction_code.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesType =
+      selectedType === 'all' || activity.business_context?.activity_type === selectedType
+
     // Date range filtering
     let matchesDate = true
     if (selectedDateRange !== 'all') {
@@ -176,52 +194,56 @@ export default function ActivitiesPage() {
           break
       }
     }
-    
+
     return matchesSearch && matchesType && matchesDate
   })
 
   // Group activities by date
-  const groupedActivities = filteredActivities.reduce((groups, activity) => {
-    const date = new Date(activity.created_at).toDateString()
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(activity)
-    return groups
-  }, {} as Record<string, ActivityTransaction[]>)
+  const groupedActivities = filteredActivities.reduce(
+    (groups, activity) => {
+      const date = new Date(activity.created_at).toDateString()
+      if (!groups[date]) {
+        groups[date] = []
+      }
+      groups[date].push(activity)
+      return groups
+    },
+    {} as Record<string, ActivityTransaction[]>
+  )
 
   const stats = [
-    { 
-      label: 'Total Activities', 
-      value: activities.length, 
-      icon: Activity, 
-      color: 'from-[#FF5A09] to-[#ec7f37]' 
+    {
+      label: 'Total Activities',
+      value: activities.length,
+      icon: Activity,
+      color: 'from-[#FF5A09] to-[#ec7f37]'
     },
-    { 
-      label: 'Calls Today', 
-      value: activities.filter(a => 
-        a.business_context?.activity_type === 'call' && 
-        new Date(a.created_at).toDateString() === new Date().toDateString()
-      ).length, 
-      icon: Phone, 
-      color: 'from-[#ec7f37] to-[#be4f0c]' 
+    {
+      label: 'Calls Today',
+      value: activities.filter(
+        a =>
+          a.business_context?.activity_type === 'call' &&
+          new Date(a.created_at).toDateString() === new Date().toDateString()
+      ).length,
+      icon: Phone,
+      color: 'from-[#ec7f37] to-[#be4f0c]'
     },
-    { 
-      label: 'Meetings This Week', 
+    {
+      label: 'Meetings This Week',
       value: activities.filter(a => {
         const ismeeting = a.business_context?.activity_type === 'meeting'
         const activityDate = new Date(a.created_at)
         const weekAgo = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
         return ismeeting && activityDate >= weekAgo
-      }).length, 
-      icon: Users, 
-      color: 'from-purple-500 to-purple-600' 
+      }).length,
+      icon: Users,
+      color: 'from-purple-500 to-purple-600'
     },
-    { 
-      label: 'Conversion Rate', 
-      value: '24%', 
-      icon: TrendingUp, 
-      color: 'from-[#be4f0c] to-[#FF5A09]' 
+    {
+      label: 'Conversion Rate',
+      value: '24%',
+      icon: TrendingUp,
+      color: 'from-[#be4f0c] to-[#FF5A09]'
     }
   ]
 
@@ -241,7 +263,7 @@ export default function ActivitiesPage() {
           <h1 className="text-3xl font-bold text-white">Activities</h1>
           <p className="text-white/60 mt-1">Track all your sales activities and engagements</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsCreating(true)}
           className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
@@ -280,14 +302,14 @@ export default function ActivitiesPage() {
             type="text"
             placeholder="Search activities..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
-        
+
         <select
           value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
+          onChange={e => setSelectedType(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Types</option>
@@ -300,7 +322,7 @@ export default function ActivitiesPage() {
 
         <select
           value={selectedDateRange}
-          onChange={(e) => setSelectedDateRange(e.target.value)}
+          onChange={e => setSelectedDateRange(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Time</option>
@@ -321,27 +343,33 @@ export default function ActivitiesPage() {
           <div key={date}>
             <h3 className="text-sm font-medium text-white/60 mb-4">{date}</h3>
             <div className="space-y-4">
-              {dateActivities.map((activity) => {
+              {dateActivities.map(activity => {
                 const activityType = activity.business_context?.activity_type || 'activity'
                 const ActivityIcon = getActivityIcon(activityType)
                 const status = getStatusFromContext(activity)
-                const sourceEntity = activity.source_entity_id ? relatedEntities[activity.source_entity_id] : null
-                const targetEntity = activity.target_entity_id ? relatedEntities[activity.target_entity_id] : null
-                
+                const sourceEntity = activity.source_entity_id
+                  ? relatedEntities[activity.source_entity_id]
+                  : null
+                const targetEntity = activity.target_entity_id
+                  ? relatedEntities[activity.target_entity_id]
+                  : null
+
                 return (
                   <div key={activity.id} className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
                     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-4">
-                          <div className={`p-3 rounded-xl bg-gradient-to-br ${getActivityColor(activityType)}`}>
+                          <div
+                            className={`p-3 rounded-xl bg-gradient-to-br ${getActivityColor(activityType)}`}
+                          >
                             <ActivityIcon className="h-5 w-5 text-white" />
                           </div>
                           <div className="flex-1">
                             <h4 className="text-base font-semibold text-white">
                               {activity.business_context?.title || 'Activity'}
                             </h4>
-                            
+
                             {/* Related Entities */}
                             <div className="flex items-center space-x-4 mt-2 text-sm">
                               {sourceEntity && (
@@ -371,12 +399,14 @@ export default function ActivitiesPage() {
                             <div className="mt-3 space-y-2">
                               {activity.business_context?.outcome && (
                                 <p className="text-sm text-white/80">
-                                  <span className="text-white/60">Outcome:</span> {activity.business_context.outcome}
+                                  <span className="text-white/60">Outcome:</span>{' '}
+                                  {activity.business_context.outcome}
                                 </p>
                               )}
                               {activity.business_context?.next_action && (
                                 <p className="text-sm text-white/80">
-                                  <span className="text-white/60">Next Action:</span> {activity.business_context.next_action}
+                                  <span className="text-white/60">Next Action:</span>{' '}
+                                  {activity.business_context.next_action}
                                 </p>
                               )}
                               {activity.business_context?.duration_minutes && (
@@ -385,22 +415,30 @@ export default function ActivitiesPage() {
                                   <span>{activity.business_context.duration_minutes} minutes</span>
                                 </div>
                               )}
-                              {activity.business_context?.attachments && activity.business_context.attachments.length > 0 && (
-                                <div className="flex items-center space-x-1 text-sm text-white/60">
-                                  <Link2 className="h-3 w-3" />
-                                  <span>{activity.business_context.attachments.length} attachments</span>
-                                </div>
-                              )}
+                              {activity.business_context?.attachments &&
+                                activity.business_context.attachments.length > 0 && (
+                                  <div className="flex items-center space-x-1 text-sm text-white/60">
+                                    <Link2 className="h-3 w-3" />
+                                    <span>
+                                      {activity.business_context.attachments.length} attachments
+                                    </span>
+                                  </div>
+                                )}
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center space-x-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}
+                          >
                             {status}
                           </span>
                           <span className="text-xs text-white/40">
-                            {new Date(activity.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {new Date(activity.created_at).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
                           </span>
                         </div>
                       </div>

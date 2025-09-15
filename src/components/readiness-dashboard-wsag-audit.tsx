@@ -4,7 +4,7 @@
  * WSAG Compliance Audit - Readiness Dashboard
  * Date: December 2024
  * WCAG 2.1 Level AA Compliance Target
- * 
+ *
  * ✅ = Compliant
  * ⚠️ = Partial Compliance (needs minor fixes)
  * ❌ = Non-Compliant (critical fixes needed)
@@ -13,128 +13,128 @@
 
 export const WSAGAuditReport = {
   summary: {
-    overallCompliance: "85%",
+    overallCompliance: '85%',
     criticalIssuesFixed: 2,
     remainingIssues: 3,
-    wcagLevel: "AA (partial)"
+    wcagLevel: 'AA (partial)'
   },
 
   colorContrast: {
-    status: "⚠️",
+    status: '⚠️',
     issues: [
       {
-        element: "Pagination text",
-        status: "🔄 FIXED",
-        problem: "Gray-600 text on gray backgrounds failed contrast ratio",
-        solution: "Changed to gray-900/white for light/dark modes",
-        wcagRatio: "7.1:1 (AAA)"
+        element: 'Pagination text',
+        status: '🔄 FIXED',
+        problem: 'Gray-600 text on gray backgrounds failed contrast ratio',
+        solution: 'Changed to gray-900/white for light/dark modes',
+        wcagRatio: '7.1:1 (AAA)'
       },
       {
-        element: "Category labels",
-        status: "⚠️",
-        problem: "Gray-600 text still used in some areas",
-        solution: "Update to gray-900 dark:text-white",
-        wcagRatio: "4.5:1 (AA needed)"
+        element: 'Category labels',
+        status: '⚠️',
+        problem: 'Gray-600 text still used in some areas',
+        solution: 'Update to gray-900 dark:text-white',
+        wcagRatio: '4.5:1 (AA needed)'
       },
       {
-        element: "Button text",
-        status: "🔄 FIXED",
-        problem: "Outline buttons lacked sufficient contrast",
-        solution: "Added explicit background and text colors",
-        wcagRatio: "8.5:1 (AAA)"
+        element: 'Button text',
+        status: '🔄 FIXED',
+        problem: 'Outline buttons lacked sufficient contrast',
+        solution: 'Added explicit background and text colors',
+        wcagRatio: '8.5:1 (AAA)'
       }
     ]
   },
 
   keyboardNavigation: {
-    status: "✅",
+    status: '✅',
     features: [
-      "Tab navigation works through all interactive elements",
-      "Focus indicators visible on all buttons and inputs",
-      "Escape key closes modals (when present)",
-      "Arrow keys work in tabs navigation"
+      'Tab navigation works through all interactive elements',
+      'Focus indicators visible on all buttons and inputs',
+      'Escape key closes modals (when present)',
+      'Arrow keys work in tabs navigation'
     ]
   },
 
   screenReaderSupport: {
-    status: "⚠️",
+    status: '⚠️',
     implemented: [
-      "ARIA labels on all buttons",
-      "Role attributes on key sections",
-      "SR-only text for visual indicators",
-      "Live regions for dynamic updates"
+      'ARIA labels on all buttons',
+      'Role attributes on key sections',
+      'SR-only text for visual indicators',
+      'Live regions for dynamic updates'
     ],
     needed: [
-      "Add aria-describedby for complex interactions",
-      "Implement announcements for page changes",
-      "Add loading state announcements"
+      'Add aria-describedby for complex interactions',
+      'Implement announcements for page changes',
+      'Add loading state announcements'
     ]
   },
 
   semanticHTML: {
-    status: "✅",
+    status: '✅',
     goodPractices: [
-      "Proper heading hierarchy (h1 > h2 > h3 > h4)",
-      "Semantic section elements used",
-      "Lists used for grouped items",
-      "Buttons vs links used appropriately"
+      'Proper heading hierarchy (h1 > h2 > h3 > h4)',
+      'Semantic section elements used',
+      'Lists used for grouped items',
+      'Buttons vs links used appropriately'
     ]
   },
 
   formAccessibility: {
-    status: "⚠️",
+    status: '⚠️',
     implemented: [
-      "Labels associated with inputs",
-      "Error messages linked to fields",
-      "Required fields marked with aria-required"
+      'Labels associated with inputs',
+      'Error messages linked to fields',
+      'Required fields marked with aria-required'
     ],
     improvements: [
-      "Add fieldset/legend for grouped inputs",
-      "Implement error summary at form top",
-      "Add success confirmations"
+      'Add fieldset/legend for grouped inputs',
+      'Implement error summary at form top',
+      'Add success confirmations'
     ]
   },
 
   animations: {
-    status: "✅",
+    status: '✅',
     features: [
-      "Respects prefers-reduced-motion",
-      "Essential animations only",
-      "No auto-playing content",
-      "Smooth transitions without jarring effects"
+      'Respects prefers-reduced-motion',
+      'Essential animations only',
+      'No auto-playing content',
+      'Smooth transitions without jarring effects'
     ]
   },
 
   mobileAccessibility: {
-    status: "✅",
+    status: '✅',
     features: [
-      "Touch targets minimum 44x44px",
-      "Responsive design works on all viewports",
-      "No horizontal scrolling",
-      "Pinch-to-zoom not disabled"
+      'Touch targets minimum 44x44px',
+      'Responsive design works on all viewports',
+      'No horizontal scrolling',
+      'Pinch-to-zoom not disabled'
     ]
   },
 
   recommendations: {
     immediate: [
-      "Update remaining gray-600 text colors to improve contrast",
-      "Add skip navigation links at page top",
-      "Implement focus trap for modal dialogs"
+      'Update remaining gray-600 text colors to improve contrast',
+      'Add skip navigation links at page top',
+      'Implement focus trap for modal dialogs'
     ],
     future: [
-      "Add comprehensive keyboard shortcuts guide",
-      "Implement voice navigation support",
-      "Add alternative text descriptions for complex visualizations",
-      "Consider adding a high contrast mode toggle"
+      'Add comprehensive keyboard shortcuts guide',
+      'Implement voice navigation support',
+      'Add alternative text descriptions for complex visualizations',
+      'Consider adding a high contrast mode toggle'
     ]
   },
 
   testingTools: [
-    "axe DevTools - 2 issues found and fixed",
-    "WAVE - Color contrast warnings addressed",
-    "Keyboard-only navigation - Fully functional",
-    "NVDA screen reader - 90% compatible",
-    "Chrome Lighthouse - 94/100 accessibility score"
+    'axe DevTools - 2 issues found and fixed',
+    'WAVE - Color contrast warnings addressed',
+    'Keyboard-only navigation - Fully functional',
+    'NVDA screen reader - 90% compatible',
+    'Chrome Lighthouse - 94/100 accessibility score'
   ],
 
   codeExamples: {
@@ -175,7 +175,7 @@ export const WSAGAuditReport = {
 <Button aria-label="Next page">Next</Button>
     `
   }
-};
+}
 
 // Export compliance checklist for automated testing
 export const WSAGComplianceChecklist = [
@@ -189,4 +189,4 @@ export const WSAGComplianceChecklist = [
   { id: 'errors', test: 'Error messages associated with fields', status: false },
   { id: 'motion', test: 'Respects prefers-reduced-motion', status: true },
   { id: 'touch', test: 'Touch targets 44x44px minimum', status: true }
-];
+]

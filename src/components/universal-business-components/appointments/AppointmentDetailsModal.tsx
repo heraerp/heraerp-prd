@@ -1,24 +1,19 @@
 'use client'
 
 import React, { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { 
-  User, 
-  Phone, 
-  Mail, 
-  Calendar, 
-  Clock, 
-  MapPin, 
+import {
+  User,
+  Phone,
+  Mail,
+  Calendar,
+  Clock,
+  MapPin,
   DollarSign,
   FileText,
   Brain,
@@ -35,7 +30,10 @@ import {
   Users,
   Settings
 } from 'lucide-react'
-import { APPOINTMENT_WORKFLOW, APPOINTMENT_SMART_CODES } from '@/lib/universal-business-systems/appointments/universal-appointment-system'
+import {
+  APPOINTMENT_WORKFLOW,
+  APPOINTMENT_SMART_CODES
+} from '@/lib/universal-business-systems/appointments/universal-appointment-system'
 
 // HERA Universal Business Component - Appointment Details Modal
 // Smart Code: HERA.UNIV.CRM.APT.MODAL.v1
@@ -71,8 +69,19 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     name: 'Healthcare',
     color: '#059669',
     gradient: 'from-emerald-500 to-blue-500',
-    statusActions: ['Check Patient In', 'Start Consultation', 'Complete Treatment', 'Schedule Follow-up'],
-    customFields: ['Insurance Info', 'Medical History', 'Allergies', 'Medications', 'Emergency Contact']
+    statusActions: [
+      'Check Patient In',
+      'Start Consultation',
+      'Complete Treatment',
+      'Schedule Follow-up'
+    ],
+    customFields: [
+      'Insurance Info',
+      'Medical History',
+      'Allergies',
+      'Medications',
+      'Emergency Contact'
+    ]
   },
   restaurant: {
     icon: '🍽️',
@@ -80,7 +89,13 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#DC2626',
     gradient: 'from-red-500 to-orange-500',
     statusActions: ['Confirm Reservation', 'Seat Party', 'Order Taken', 'Service Complete'],
-    customFields: ['Party Size', 'Special Occasion', 'Dietary Restrictions', 'Seating Preference', 'Special Requests']
+    customFields: [
+      'Party Size',
+      'Special Occasion',
+      'Dietary Restrictions',
+      'Seating Preference',
+      'Special Requests'
+    ]
   },
   professional: {
     icon: '💼',
@@ -88,15 +103,32 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#1F2937',
     gradient: 'from-gray-700 to-gray-900',
     statusActions: ['Confirm Meeting', 'Client Arrived', 'Meeting Started', 'Meeting Complete'],
-    customFields: ['Meeting Type', 'Agenda Items', 'Required Documents', 'Billing Rate', 'Project Code']
+    customFields: [
+      'Meeting Type',
+      'Agenda Items',
+      'Required Documents',
+      'Billing Rate',
+      'Project Code'
+    ]
   },
   retail: {
     icon: '🛍️',
     name: 'Retail',
     color: '#7C3AED',
     gradient: 'from-violet-500 to-amber-500',
-    statusActions: ['Confirm Appointment', 'Customer Arrived', 'Service Started', 'Service Complete'],
-    customFields: ['Service Type', 'Product Interest', 'Budget', 'Style Preference', 'Size Requirements']
+    statusActions: [
+      'Confirm Appointment',
+      'Customer Arrived',
+      'Service Started',
+      'Service Complete'
+    ],
+    customFields: [
+      'Service Type',
+      'Product Interest',
+      'Budget',
+      'Style Preference',
+      'Size Requirements'
+    ]
   },
   manufacturing: {
     icon: '🏭',
@@ -104,7 +136,13 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#0F766E',
     gradient: 'from-teal-500 to-blue-500',
     statusActions: ['Confirm Visit', 'Guest Arrived', 'Tour Started', 'Visit Complete'],
-    customFields: ['Visit Purpose', 'Safety Requirements', 'Areas of Interest', 'Duration', 'Group Size']
+    customFields: [
+      'Visit Purpose',
+      'Safety Requirements',
+      'Areas of Interest',
+      'Duration',
+      'Group Size'
+    ]
   },
   education: {
     icon: '🎓',
@@ -120,7 +158,13 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#DC2626',
     gradient: 'from-red-500 to-emerald-500',
     statusActions: ['Confirm Session', 'Member Checked In', 'Workout Started', 'Session Complete'],
-    customFields: ['Fitness Goals', 'Health Conditions', 'Experience Level', 'Equipment Preference', 'Trainer Notes']
+    customFields: [
+      'Fitness Goals',
+      'Health Conditions',
+      'Experience Level',
+      'Equipment Preference',
+      'Trainer Notes'
+    ]
   },
   beauty: {
     icon: '💄',
@@ -128,7 +172,13 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#EC4899',
     gradient: 'from-pink-500 to-purple-500',
     statusActions: ['Confirm Appointment', 'Client Arrived', 'Service Started', 'Service Complete'],
-    customFields: ['Service Type', 'Skin Type', 'Allergies', 'Preferred Products', 'Special Requests']
+    customFields: [
+      'Service Type',
+      'Skin Type',
+      'Allergies',
+      'Preferred Products',
+      'Special Requests'
+    ]
   },
   automotive: {
     icon: '🚗',
@@ -136,7 +186,13 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#374151',
     gradient: 'from-gray-500 to-red-500',
     statusActions: ['Confirm Service', 'Vehicle Dropped', 'Service Started', 'Service Complete'],
-    customFields: ['Vehicle Make/Model', 'Service Type', 'Mileage', 'Issues Reported', 'Parts Needed']
+    customFields: [
+      'Vehicle Make/Model',
+      'Service Type',
+      'Mileage',
+      'Issues Reported',
+      'Parts Needed'
+    ]
   },
   // Add more industries as needed
   legal: {
@@ -144,15 +200,31 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     name: 'Legal Services',
     color: '#1F2937',
     gradient: 'from-gray-800 to-red-600',
-    statusActions: ['Confirm Meeting', 'Client Arrived', 'Consultation Started', 'Meeting Complete'],
-    customFields: ['Case Type', 'Urgency Level', 'Documents Required', 'Billing Method', 'Special Notes']
+    statusActions: [
+      'Confirm Meeting',
+      'Client Arrived',
+      'Consultation Started',
+      'Meeting Complete'
+    ],
+    customFields: [
+      'Case Type',
+      'Urgency Level',
+      'Documents Required',
+      'Billing Method',
+      'Special Notes'
+    ]
   },
   consulting: {
     icon: '🧠',
     name: 'Consulting',
     color: '#6366F1',
     gradient: 'from-indigo-500 to-emerald-500',
-    statusActions: ['Confirm Session', 'Client Arrived', 'Consultation Started', 'Session Complete'],
+    statusActions: [
+      'Confirm Session',
+      'Client Arrived',
+      'Consultation Started',
+      'Session Complete'
+    ],
     customFields: ['Consultation Type', 'Industry Focus', 'Goals', 'Timeline', 'Budget Range']
   },
   'real-estate': {
@@ -161,53 +233,59 @@ const UNIVERSAL_INDUSTRY_CONFIG: Record<string, any> = {
     color: '#059669',
     gradient: 'from-emerald-500 to-amber-500',
     statusActions: ['Confirm Showing', 'Client Arrived', 'Showing Started', 'Showing Complete'],
-    customFields: ['Property Type', 'Price Range', 'Location Preference', 'Move Timeline', 'Special Requirements']
+    customFields: [
+      'Property Type',
+      'Price Range',
+      'Location Preference',
+      'Move Timeline',
+      'Special Requirements'
+    ]
   }
 }
 
 const STATUS_CONFIG = {
-  [APPOINTMENT_WORKFLOW.DRAFT]: { 
-    color: 'bg-gray-100 text-gray-800', 
+  [APPOINTMENT_WORKFLOW.DRAFT]: {
+    color: 'bg-gray-100 text-gray-800',
     icon: <Pencil className="w-4 h-4" />,
     label: 'Draft'
   },
-  [APPOINTMENT_WORKFLOW.SCHEDULED]: { 
-    color: 'bg-blue-100 text-blue-800', 
+  [APPOINTMENT_WORKFLOW.SCHEDULED]: {
+    color: 'bg-blue-100 text-blue-800',
     icon: <Calendar className="w-4 h-4" />,
     label: 'Scheduled'
   },
-  [APPOINTMENT_WORKFLOW.CONFIRMED]: { 
-    color: 'bg-green-100 text-green-800', 
+  [APPOINTMENT_WORKFLOW.CONFIRMED]: {
+    color: 'bg-green-100 text-green-800',
     icon: <CheckCircle className="w-4 h-4" />,
     label: 'Confirmed'
   },
-  [APPOINTMENT_WORKFLOW.REMINDED]: { 
-    color: 'bg-yellow-100 text-yellow-800', 
+  [APPOINTMENT_WORKFLOW.REMINDED]: {
+    color: 'bg-yellow-100 text-yellow-800',
     icon: <MessageSquare className="w-4 h-4" />,
     label: 'Reminded'
   },
-  [APPOINTMENT_WORKFLOW.CHECKED_IN]: { 
-    color: 'bg-purple-100 text-purple-800', 
+  [APPOINTMENT_WORKFLOW.CHECKED_IN]: {
+    color: 'bg-purple-100 text-purple-800',
     icon: <Users className="w-4 h-4" />,
     label: 'Checked In'
   },
-  [APPOINTMENT_WORKFLOW.IN_PROGRESS]: { 
-    color: 'bg-orange-100 text-orange-800', 
+  [APPOINTMENT_WORKFLOW.IN_PROGRESS]: {
+    color: 'bg-orange-100 text-orange-800',
     icon: <Settings className="w-4 h-4" />,
     label: 'In Progress'
   },
-  [APPOINTMENT_WORKFLOW.COMPLETED]: { 
-    color: 'bg-green-100 text-green-800', 
+  [APPOINTMENT_WORKFLOW.COMPLETED]: {
+    color: 'bg-green-100 text-green-800',
     icon: <CheckCircle className="w-4 h-4" />,
     label: 'Completed'
   },
-  [APPOINTMENT_WORKFLOW.CANCELLED]: { 
-    color: 'bg-red-100 text-red-800', 
+  [APPOINTMENT_WORKFLOW.CANCELLED]: {
+    color: 'bg-red-100 text-red-800',
     icon: <XCircle className="w-4 h-4" />,
     label: 'Cancelled'
   },
-  [APPOINTMENT_WORKFLOW.NO_SHOW]: { 
-    color: 'bg-gray-100 text-gray-800', 
+  [APPOINTMENT_WORKFLOW.NO_SHOW]: {
+    color: 'bg-gray-100 text-gray-800',
     icon: <AlertTriangle className="w-4 h-4" />,
     label: 'No Show'
   }
@@ -226,40 +304,41 @@ export function AppointmentDetailsModal({
   const [editedNotes, setEditedNotes] = useState('')
   const [statusNotes, setStatusNotes] = useState('')
   const [showAIInsights, setShowAIInsights] = useState(true)
-  
+
   if (!appointment) return null
-  
+
   // Get industry configuration with customization overrides
-  const defaultConfig = UNIVERSAL_INDUSTRY_CONFIG[industry] || UNIVERSAL_INDUSTRY_CONFIG.professional
+  const defaultConfig =
+    UNIVERSAL_INDUSTRY_CONFIG[industry] || UNIVERSAL_INDUSTRY_CONFIG.professional
   const config = {
     ...defaultConfig,
     color: customization?.primaryColor || defaultConfig.color,
     gradient: customization?.gradient || defaultConfig.gradient,
     name: customization?.brandName || defaultConfig.name
   }
-  
+
   const statusConfig = STATUS_CONFIG[appointment.extendedProps.status as keyof typeof STATUS_CONFIG]
   const props = appointment.extendedProps
-  
+
   // Format date and time
   const appointmentDate = new Date(appointment.start)
   const endDate = new Date(appointment.end)
   const duration = Math.round((endDate.getTime() - appointmentDate.getTime()) / (1000 * 60))
-  
+
   const handleStatusUpdate = (newStatus: string) => {
     if (onStatusUpdate) {
       onStatusUpdate(props.appointmentId, newStatus, statusNotes)
     }
     setStatusNotes('')
   }
-  
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR'
     }).format(amount)
   }
-  
+
   const getNextStatus = (currentStatus: string) => {
     const statusFlow = [
       APPOINTMENT_WORKFLOW.DRAFT,
@@ -270,14 +349,14 @@ export function AppointmentDetailsModal({
       APPOINTMENT_WORKFLOW.IN_PROGRESS,
       APPOINTMENT_WORKFLOW.COMPLETED
     ]
-    
+
     const currentIndex = statusFlow.indexOf(currentStatus)
     return currentIndex < statusFlow.length - 1 ? statusFlow[currentIndex + 1] : null
   }
-  
+
   const renderAIInsights = () => {
     if (!props.aiInsights || !showAIInsights) return null
-    
+
     return (
       <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
         <CardHeader>
@@ -292,43 +371,50 @@ export function AppointmentDetailsModal({
             <span className="text-sm font-medium">AI Confidence</span>
             <div className="flex items-center gap-2">
               <div className="w-16 bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-purple-600 h-2 rounded-full" 
+                <div
+                  className="bg-purple-600 h-2 rounded-full"
                   style={{ width: `${props.aiInsights.confidence_score}%` }}
                 />
               </div>
               <span className="text-sm font-semibold">{props.aiInsights.confidence_score}%</span>
             </div>
           </div>
-          
+
           {/* Customer Segment */}
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Customer Segment</span>
-            <Badge className={`
+            <Badge
+              className={`
               ${props.aiInsights.customer_segment === 'premium' ? 'bg-yellow-100 text-yellow-800' : ''}
               ${props.aiInsights.customer_segment === 'standard' ? 'bg-blue-100 text-blue-800' : ''}
               ${props.aiInsights.customer_segment === 'new' ? 'bg-green-100 text-green-800' : ''}
               ${props.aiInsights.customer_segment === 'loyal' ? 'bg-purple-100 text-purple-800' : ''}
               ${props.aiInsights.customer_segment === 'at_risk' ? 'bg-red-100 text-red-800' : ''}
-            `}>
+            `}
+            >
               {props.aiInsights.customer_segment}
             </Badge>
           </div>
-          
+
           {/* No-show Risk */}
           {props.aiInsights.no_show_risk && (
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">No-show Risk</span>
               <div className="flex items-center gap-2">
-                <AlertTriangle className={`w-4 h-4 ${
-                  props.aiInsights.no_show_risk > 25 ? 'text-red-500' :
-                  props.aiInsights.no_show_risk > 15 ? 'text-yellow-500' : 'text-green-500'
-                }`} />
+                <AlertTriangle
+                  className={`w-4 h-4 ${
+                    props.aiInsights.no_show_risk > 25
+                      ? 'text-red-500'
+                      : props.aiInsights.no_show_risk > 15
+                        ? 'text-yellow-500'
+                        : 'text-green-500'
+                  }`}
+                />
                 <span className="text-sm font-semibold">{props.aiInsights.no_show_risk}%</span>
               </div>
             </div>
           )}
-          
+
           {/* Upsell Opportunity */}
           {props.aiInsights.upsell_opportunity && (
             <div className="p-3 bg-white rounded-lg border border-purple-200">
@@ -337,11 +423,12 @@ export function AppointmentDetailsModal({
                 <span className="text-sm font-medium">Upsell Opportunity</span>
               </div>
               <p className="text-xs text-gray-600">
-                Based on customer profile and {industry} industry patterns, consider offering complementary services.
+                Based on customer profile and {industry} industry patterns, consider offering
+                complementary services.
               </p>
             </div>
           )}
-          
+
           {/* Predicted Duration */}
           {props.aiInsights.predicted_duration && (
             <div className="flex items-center justify-between">
@@ -362,7 +449,7 @@ export function AppointmentDetailsModal({
       </Card>
     )
   }
-  
+
   const getCustomerTitle = () => {
     const customerTitleMap: Record<string, string> = {
       jewelry: 'Customer',
@@ -381,7 +468,7 @@ export function AppointmentDetailsModal({
     }
     return customerTitleMap[industry] || 'Customer'
   }
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white border border-gray-200 shadow-2xl">
@@ -393,7 +480,8 @@ export function AppointmentDetailsModal({
                 {props.customerName} - {props.serviceName}
               </div>
               <div className="text-sm text-gray-600 font-normal">
-                {config.name} • {appointmentDate.toLocaleDateString()} at {appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {config.name} • {appointmentDate.toLocaleDateString()} at{' '}
+                {appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
             <div className="ml-auto">
@@ -404,7 +492,7 @@ export function AppointmentDetailsModal({
             </div>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           {/* Main Details */}
           <div className="lg:col-span-2 space-y-6">
@@ -423,11 +511,13 @@ export function AppointmentDetailsModal({
                     <p className="font-semibold">{props.customerName}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">{getCustomerTitle()} ID</label>
+                    <label className="text-sm font-medium text-gray-600">
+                      {getCustomerTitle()} ID
+                    </label>
                     <p className="text-sm font-mono">{props.customerId}</p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-gray-500" />
@@ -440,7 +530,7 @@ export function AppointmentDetailsModal({
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Appointment Details */}
             <Card>
               <CardHeader>
@@ -463,26 +553,36 @@ export function AppointmentDetailsModal({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-600">Date & Time</label>
-                    <p>{appointmentDate.toLocaleDateString()} at {appointmentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    <p>
+                      {appointmentDate.toLocaleDateString()} at{' '}
+                      {appointmentDate.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-600">Amount</label>
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4 text-gray-500" />
-                      <span className="font-semibold">{formatCurrency(props.totalAmount || 0)}</span>
+                      <span className="font-semibold">
+                        {formatCurrency(props.totalAmount || 0)}
+                      </span>
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-gray-600">Smart Code</label>
-                  <p className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">{props.smartCode}</p>
+                  <p className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                    {props.smartCode}
+                  </p>
                 </div>
-                
+
                 {props.specialRequests && (
                   <div>
                     <label className="text-sm font-medium text-gray-600">Special Requests</label>
@@ -493,7 +593,7 @@ export function AppointmentDetailsModal({
                 )}
               </CardContent>
             </Card>
-            
+
             {/* Staff Assignment */}
             {props.staffAssigned && props.staffAssigned.length > 0 && (
               <Card>
@@ -515,7 +615,7 @@ export function AppointmentDetailsModal({
               </Card>
             )}
           </div>
-          
+
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Status Actions */}
@@ -529,49 +629,50 @@ export function AppointmentDetailsModal({
                   <Button
                     onClick={() => handleStatusUpdate(getNextStatus(props.status)!)}
                     className="w-full"
-                    style={{ background: `linear-gradient(135deg, ${config.color} 0%, ${config.color}CC 100%)` }}
+                    style={{
+                      background: `linear-gradient(135deg, ${config.color} 0%, ${config.color}CC 100%)`
+                    }}
                   >
-                    {config.statusActions[Object.values(APPOINTMENT_WORKFLOW).indexOf(getNextStatus(props.status)!)] || 'Next Step'}
+                    {config.statusActions[
+                      Object.values(APPOINTMENT_WORKFLOW).indexOf(getNextStatus(props.status)!)
+                    ] || 'Next Step'}
                   </Button>
                 )}
-                
+
                 {/* Cancel/Reschedule */}
-                {props.status !== APPOINTMENT_WORKFLOW.COMPLETED && props.status !== APPOINTMENT_WORKFLOW.CANCELLED && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleStatusUpdate(APPOINTMENT_WORKFLOW.CANCELLED)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      Reschedule
-                    </Button>
-                  </div>
-                )}
-                
+                {props.status !== APPOINTMENT_WORKFLOW.COMPLETED &&
+                  props.status !== APPOINTMENT_WORKFLOW.CANCELLED && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleStatusUpdate(APPOINTMENT_WORKFLOW.CANCELLED)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                        Reschedule
+                      </Button>
+                    </div>
+                  )}
+
                 {/* Status Notes */}
                 <div>
                   <label className="text-xs font-medium text-gray-600">Add Notes</label>
                   <Textarea
                     placeholder="Status update notes..."
                     value={statusNotes}
-                    onChange={(e) => setStatusNotes(e.target.value)}
+                    onChange={e => setStatusNotes(e.target.value)}
                     className="mt-1"
                     rows={2}
                   />
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* AI Insights */}
             {renderAIInsights()}
-            
+
             {/* Appointment History */}
             <Card>
               <CardHeader>
@@ -598,7 +699,7 @@ export function AppointmentDetailsModal({
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Industry-Specific Custom Fields */}
             {config.customFields && config.customFields.length > 0 && (
               <Card>
@@ -619,28 +720,22 @@ export function AppointmentDetailsModal({
             )}
           </div>
         </div>
-        
+
         {/* Footer Actions */}
         <div className="flex justify-between items-center pt-6 border-t">
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAIInsights(!showAIInsights)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setShowAIInsights(!showAIInsights)}>
               <Brain className="w-4 h-4 mr-1" />
               {showAIInsights ? 'Hide' : 'Show'} AI
             </Button>
-            <span className="text-xs text-gray-500">
-              Appointment ID: {props.appointmentId}
-            </span>
+            <span className="text-xs text-gray-500">Appointment ID: {props.appointmentId}</span>
           </div>
-          
+
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>
               Close
             </Button>
-            <Button 
+            <Button
               onClick={() => setIsEditing(!isEditing)}
               className={`bg-gradient-to-r ${config.gradient} text-white`}
             >

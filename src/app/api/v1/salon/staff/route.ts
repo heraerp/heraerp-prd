@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id')
-    
+
     if (!organizationId) {
       return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
     }
@@ -36,29 +36,35 @@ export async function GET(request: NextRequest) {
     if (dynamicError) throw dynamicError
 
     // Enrich staff with dynamic data
-    const enrichedStaff = staffEntities?.map(staff => {
-      const staffDynamicData = dynamicData?.filter(d => d.entity_id === staff.id) || []
-      const dynamicFields: any = {}
-      
-      staffDynamicData.forEach(field => {
-        if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
-        if (field.field_value_number !== null) dynamicFields[field.field_name] = field.field_value_number
-        if (field.field_value_boolean !== null) dynamicFields[field.field_name] = field.field_value_boolean
-        if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
-      })
-      
-      return {
-        ...staff,
-        ...dynamicFields
-      }
-    }) || []
+    const enrichedStaff =
+      staffEntities?.map(staff => {
+        const staffDynamicData = dynamicData?.filter(d => d.entity_id === staff.id) || []
+        const dynamicFields: any = {}
+
+        staffDynamicData.forEach(field => {
+          if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
+          if (field.field_value_number !== null)
+            dynamicFields[field.field_name] = field.field_value_number
+          if (field.field_value_boolean !== null)
+            dynamicFields[field.field_name] = field.field_value_boolean
+          if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
+        })
+
+        return {
+          ...staff,
+          ...dynamicFields
+        }
+      }) || []
 
     // Calculate analytics
     const analytics = {
       total_staff: enrichedStaff.length,
-      full_time: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'full_time').length,
-      part_time: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'part_time').length,
-      contractors: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'contractor').length,
+      full_time: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'full_time')
+        .length,
+      part_time: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'part_time')
+        .length,
+      contractors: enrichedStaff.filter(s => (s.metadata as any)?.employment_type === 'contractor')
+        .length,
       by_role: {} as Record<string, number>
     }
 
@@ -74,10 +80,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Error fetching staff:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch staff' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Failed to fetch staff' }, { status: 500 })
   }
 }
 
@@ -153,10 +156,13 @@ export async function POST(request: NextRequest) {
         organization_id,
         entity_id: entity.id,
         field_name: key,
-        ...(typeof value === 'string' ? { field_value_text: value } :
-            typeof value === 'number' ? { field_value_number: value } :
-            typeof value === 'boolean' ? { field_value_boolean: value } :
-            { field_value_json: value }),
+        ...(typeof value === 'string'
+          ? { field_value_text: value }
+          : typeof value === 'number'
+            ? { field_value_number: value }
+            : typeof value === 'boolean'
+              ? { field_value_boolean: value }
+              : { field_value_json: value }),
         smart_code: `HERA.SALON.STAFF.FIELD.${key.toUpperCase()}.v1`,
         created_at: new Date().toISOString()
       }))
@@ -169,10 +175,13 @@ export async function POST(request: NextRequest) {
       if (dynamicError) throw dynamicError
     }
 
-    return NextResponse.json({
-      message: 'Staff member created successfully',
-      data: { ...entity, ...fields }
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        message: 'Staff member created successfully',
+        data: { ...entity, ...fields }
+      },
+      { status: 201 }
+    )
   } catch (error: any) {
     console.error('Error creating staff:', error)
     return NextResponse.json(
@@ -247,15 +256,13 @@ export async function PUT(request: NextRequest) {
             smart_code: `HERA.SALON.STAFF.FIELD.${key.toUpperCase()}.v1`,
             created_at: new Date().toISOString()
           }
-          
+
           if (typeof value === 'string') insertData.field_value_text = value
           else if (typeof value === 'number') insertData.field_value_number = value
           else if (typeof value === 'boolean') insertData.field_value_boolean = value
           else insertData.field_value_json = value
 
-          const { error } = await supabase
-            .from('core_dynamic_data')
-            .insert(insertData)
+          const { error } = await supabase.from('core_dynamic_data').insert(insertData)
 
           if (error) throw error
         }

@@ -5,22 +5,35 @@ import { useSupabaseAuth } from '@/contexts/supabase-auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  UserPlus, 
-  Edit, 
-  Trash2, 
-  RefreshCw, 
-  Users, 
-  Shield, 
-  Key, 
-  Mail, 
-  Phone, 
+import {
+  UserPlus,
+  Edit,
+  Trash2,
+  RefreshCw,
+  Users,
+  Shield,
+  Key,
+  Mail,
+  Phone,
   Calendar,
   MapPin,
   Briefcase,
@@ -83,7 +96,7 @@ interface Permission {
 // HERA Universal Permissions System
 const PERMISSION_CATEGORIES = {
   entities: 'Entity Management',
-  transactions: 'Transaction Operations', 
+  transactions: 'Transaction Operations',
   relationships: 'Relationship Management',
   users: 'User Administration',
   settings: 'System Settings',
@@ -93,63 +106,268 @@ const PERMISSION_CATEGORIES = {
 
 const UNIVERSAL_PERMISSIONS: Permission[] = [
   // Entity Management
-  { id: 'entities:read', name: 'View Entities', description: 'View all entity types (customers, products, etc.)', category: 'entities' },
-  { id: 'entities:create', name: 'Create Entities', description: 'Create new entities', category: 'entities' },
-  { id: 'entities:update', name: 'Pencil Entities', description: 'Modify existing entities', category: 'entities' },
-  { id: 'entities:delete', name: 'Delete Entities', description: 'Remove entities from system', category: 'entities' },
-  { id: 'entities:*', name: 'Full Entity Access', description: 'Complete control over all entities', category: 'entities' },
-  
+  {
+    id: 'entities:read',
+    name: 'View Entities',
+    description: 'View all entity types (customers, products, etc.)',
+    category: 'entities'
+  },
+  {
+    id: 'entities:create',
+    name: 'Create Entities',
+    description: 'Create new entities',
+    category: 'entities'
+  },
+  {
+    id: 'entities:update',
+    name: 'Pencil Entities',
+    description: 'Modify existing entities',
+    category: 'entities'
+  },
+  {
+    id: 'entities:delete',
+    name: 'Delete Entities',
+    description: 'Remove entities from system',
+    category: 'entities'
+  },
+  {
+    id: 'entities:*',
+    name: 'Full Entity Access',
+    description: 'Complete control over all entities',
+    category: 'entities'
+  },
+
   // Transaction Operations
-  { id: 'transactions:read', name: 'View Transactions', description: 'View transaction records', category: 'transactions' },
-  { id: 'transactions:create', name: 'Create Transactions', description: 'Create new transactions', category: 'transactions' },
-  { id: 'transactions:update', name: 'Pencil Transactions', description: 'Modify transaction records', category: 'transactions' },
-  { id: 'transactions:delete', name: 'Delete Transactions', description: 'Remove transaction records', category: 'transactions' },
-  { id: 'transactions:approve', name: 'Approve Transactions', description: 'Approve pending transactions', category: 'transactions' },
-  { id: 'transactions:*', name: 'Full Transaction Access', description: 'Complete transaction management', category: 'transactions' },
-  
+  {
+    id: 'transactions:read',
+    name: 'View Transactions',
+    description: 'View transaction records',
+    category: 'transactions'
+  },
+  {
+    id: 'transactions:create',
+    name: 'Create Transactions',
+    description: 'Create new transactions',
+    category: 'transactions'
+  },
+  {
+    id: 'transactions:update',
+    name: 'Pencil Transactions',
+    description: 'Modify transaction records',
+    category: 'transactions'
+  },
+  {
+    id: 'transactions:delete',
+    name: 'Delete Transactions',
+    description: 'Remove transaction records',
+    category: 'transactions'
+  },
+  {
+    id: 'transactions:approve',
+    name: 'Approve Transactions',
+    description: 'Approve pending transactions',
+    category: 'transactions'
+  },
+  {
+    id: 'transactions:*',
+    name: 'Full Transaction Access',
+    description: 'Complete transaction management',
+    category: 'transactions'
+  },
+
   // Relationship Management
-  { id: 'relationships:read', name: 'View Relationships', description: 'View entity relationships', category: 'relationships' },
-  { id: 'relationships:create', name: 'Create Relationships', description: 'Establish entity connections', category: 'relationships' },
-  { id: 'relationships:update', name: 'Pencil Relationships', description: 'Modify relationships', category: 'relationships' },
-  { id: 'relationships:delete', name: 'Delete Relationships', description: 'Remove relationships', category: 'relationships' },
-  { id: 'relationships:*', name: 'Full Relationship Access', description: 'Complete relationship management', category: 'relationships' },
-  
+  {
+    id: 'relationships:read',
+    name: 'View Relationships',
+    description: 'View entity relationships',
+    category: 'relationships'
+  },
+  {
+    id: 'relationships:create',
+    name: 'Create Relationships',
+    description: 'Establish entity connections',
+    category: 'relationships'
+  },
+  {
+    id: 'relationships:update',
+    name: 'Pencil Relationships',
+    description: 'Modify relationships',
+    category: 'relationships'
+  },
+  {
+    id: 'relationships:delete',
+    name: 'Delete Relationships',
+    description: 'Remove relationships',
+    category: 'relationships'
+  },
+  {
+    id: 'relationships:*',
+    name: 'Full Relationship Access',
+    description: 'Complete relationship management',
+    category: 'relationships'
+  },
+
   // User Administration
   { id: 'users:read', name: 'View Users', description: 'View user accounts', category: 'users' },
-  { id: 'users:create', name: 'Create Users', description: 'Add new users to organization', category: 'users' },
-  { id: 'users:update', name: 'Pencil Users', description: 'Modify user accounts', category: 'users' },
-  { id: 'users:delete', name: 'Delete Users', description: 'Remove user accounts', category: 'users' },
-  { id: 'users:manage', name: 'Full User Management', description: 'Complete user administration', category: 'users' },
-  
+  {
+    id: 'users:create',
+    name: 'Create Users',
+    description: 'Add new users to organization',
+    category: 'users'
+  },
+  {
+    id: 'users:update',
+    name: 'Pencil Users',
+    description: 'Modify user accounts',
+    category: 'users'
+  },
+  {
+    id: 'users:delete',
+    name: 'Delete Users',
+    description: 'Remove user accounts',
+    category: 'users'
+  },
+  {
+    id: 'users:manage',
+    name: 'Full User Management',
+    description: 'Complete user administration',
+    category: 'users'
+  },
+
   // System Settings
-  { id: 'settings:read', name: 'View Settings', description: 'View system configuration', category: 'settings' },
-  { id: 'settings:update', name: 'Modify Settings', description: 'Change system settings', category: 'settings' },
-  { id: 'settings:manage', name: 'Full Settings Access', description: 'Complete settings management', category: 'settings' },
-  
+  {
+    id: 'settings:read',
+    name: 'View Settings',
+    description: 'View system configuration',
+    category: 'settings'
+  },
+  {
+    id: 'settings:update',
+    name: 'Modify Settings',
+    description: 'Change system settings',
+    category: 'settings'
+  },
+  {
+    id: 'settings:manage',
+    name: 'Full Settings Access',
+    description: 'Complete settings management',
+    category: 'settings'
+  },
+
   // Reports & Analytics
-  { id: 'reports:read', name: 'View Reports', description: 'Access standard reports', category: 'reports' },
-  { id: 'reports:create', name: 'Create Reports', description: 'Generate custom reports', category: 'reports' },
-  { id: 'reports:all', name: 'Full Report Access', description: 'Access to all reports and analytics', category: 'reports' },
-  
+  {
+    id: 'reports:read',
+    name: 'View Reports',
+    description: 'Access standard reports',
+    category: 'reports'
+  },
+  {
+    id: 'reports:create',
+    name: 'Create Reports',
+    description: 'Generate custom reports',
+    category: 'reports'
+  },
+  {
+    id: 'reports:all',
+    name: 'Full Report Access',
+    description: 'Access to all reports and analytics',
+    category: 'reports'
+  },
+
   // API Access
   { id: 'api:read', name: 'API Read Access', description: 'Read-only API access', category: 'api' },
-  { id: 'api:write', name: 'API Write Access', description: 'Create and modify via API', category: 'api' },
-  { id: 'api:admin', name: 'Full API Access', description: 'Complete API administration', category: 'api' }
+  {
+    id: 'api:write',
+    name: 'API Write Access',
+    description: 'Create and modify via API',
+    category: 'api'
+  },
+  {
+    id: 'api:admin',
+    name: 'Full API Access',
+    description: 'Complete API administration',
+    category: 'api'
+  }
 ]
 
 const USER_ROLES = [
-  { value: 'owner', label: 'Owner', description: 'Full system access', permissions: ['entities:*', 'transactions:*', 'relationships:*', 'users:manage', 'settings:manage', 'reports:all', 'api:admin'] },
-  { value: 'admin', label: 'Administrator', description: 'Administrative access', permissions: ['entities:*', 'transactions:*', 'relationships:*', 'users:manage', 'settings:read', 'reports:all', 'api:write'] },
-  { value: 'manager', label: 'Manager', description: 'Management level access', permissions: ['entities:*', 'transactions:*', 'relationships:read', 'users:read', 'reports:read', 'api:read'] },
-  { value: 'user', label: 'Standard User', description: 'Basic user access', permissions: ['entities:read', 'transactions:read', 'relationships:read', 'reports:read', 'api:read'] },
-  { value: 'readonly', label: 'Read Only', description: 'View only access', permissions: ['entities:read', 'transactions:read', 'relationships:read', 'reports:read'] },
+  {
+    value: 'owner',
+    label: 'Owner',
+    description: 'Full system access',
+    permissions: [
+      'entities:*',
+      'transactions:*',
+      'relationships:*',
+      'users:manage',
+      'settings:manage',
+      'reports:all',
+      'api:admin'
+    ]
+  },
+  {
+    value: 'admin',
+    label: 'Administrator',
+    description: 'Administrative access',
+    permissions: [
+      'entities:*',
+      'transactions:*',
+      'relationships:*',
+      'users:manage',
+      'settings:read',
+      'reports:all',
+      'api:write'
+    ]
+  },
+  {
+    value: 'manager',
+    label: 'Manager',
+    description: 'Management level access',
+    permissions: [
+      'entities:*',
+      'transactions:*',
+      'relationships:read',
+      'users:read',
+      'reports:read',
+      'api:read'
+    ]
+  },
+  {
+    value: 'user',
+    label: 'Standard User',
+    description: 'Basic user access',
+    permissions: [
+      'entities:read',
+      'transactions:read',
+      'relationships:read',
+      'reports:read',
+      'api:read'
+    ]
+  },
+  {
+    value: 'readonly',
+    label: 'Read Only',
+    description: 'View only access',
+    permissions: ['entities:read', 'transactions:read', 'relationships:read', 'reports:read']
+  },
   { value: 'custom', label: 'Custom Role', description: 'Custom permission set', permissions: [] }
 ]
 
 const DEPARTMENTS = [
-  'Administration', 'Accounting', 'Sales', 'Marketing', 'Operations', 
-  'Human Resources', 'IT', 'Customer Service', 'Finance', 'Legal', 
-  'Engineering', 'Research', 'Quality Assurance', 'Other'
+  'Administration',
+  'Accounting',
+  'Sales',
+  'Marketing',
+  'Operations',
+  'Human Resources',
+  'IT',
+  'Customer Service',
+  'Finance',
+  'Legal',
+  'Engineering',
+  'Research',
+  'Quality Assurance',
+  'Other'
 ]
 
 export function UserManager() {
@@ -207,7 +425,7 @@ export function UserManager() {
 
       const response = await fetch(`/api/v1/users?${params}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -259,14 +477,12 @@ export function UserManager() {
 
       const url = editingUser ? '/api/v1/users' : '/api/v1/users'
       const method = editingUser ? 'PUT' : 'POST'
-      const body = editingUser 
-        ? { ...userData, id: editingUser.id }
-        : userData
+      const body = editingUser ? { ...userData, id: editingUser.id } : userData
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
@@ -294,7 +510,11 @@ export function UserManager() {
 
   // Delete user
   const deleteUser = async (userId: string) => {
-    if (!token || !confirm('Are you sure you want to delete this user? This action cannot be undone.')) return
+    if (
+      !token ||
+      !confirm('Are you sure you want to delete this user? This action cannot be undone.')
+    )
+      return
 
     setLoading(true)
     setError(null)
@@ -303,7 +523,7 @@ export function UserManager() {
       const response = await fetch(`/api/v1/users?id=${userId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -330,12 +550,12 @@ export function UserManager() {
     if (!token) return
 
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active'
-    
+
     try {
       const response = await fetch('/api/v1/users', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -436,10 +656,11 @@ export function UserManager() {
 
   // Filter users
   const filteredUsers = users.filter(user => {
-    const matchesDepartment = selectedDepartment === 'all' || (user.metadata as any)?.department === selectedDepartment
+    const matchesDepartment =
+      selectedDepartment === 'all' || (user.metadata as any)?.department === selectedDepartment
     const matchesRole = selectedRole === 'all' || (user.metadata as any)?.role === selectedRole
     const matchesStatus = selectedStatus === 'all' || user.status === selectedStatus
-    
+
     return matchesDepartment && matchesRole && matchesStatus
   })
 
@@ -481,7 +702,8 @@ export function UserManager() {
             </div>
           </CardTitle>
           <CardDescription>
-            Manage users and permissions for your organization using HERA's Universal User Architecture
+            Manage users and permissions for your organization using HERA's Universal User
+            Architecture
           </CardDescription>
         </CardHeader>
       </Card>
@@ -516,7 +738,9 @@ export function UserManager() {
                     <SelectContent>
                       <SelectItem value="all">All Departments</SelectItem>
                       {DEPARTMENTS.map(dept => (
-                        <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                        <SelectItem key={dept} value={dept}>
+                          {dept}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -531,7 +755,9 @@ export function UserManager() {
                     <SelectContent>
                       <SelectItem value="all">All Roles</SelectItem>
                       {USER_ROLES.map(role => (
-                        <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
+                        <SelectItem key={role.value} value={role.value}>
+                          {role.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -587,9 +813,21 @@ export function UserManager() {
                         <div>
                           <CardTitle className="text-lg">{userData.entity_name}</CardTitle>
                           <CardDescription className="flex items-center gap-2">
-                            <Badge variant={(userData.metadata as any)?.role === 'owner' ? 'default' : (userData.metadata as any)?.role === 'admin' ? 'secondary' : 'outline'} className="text-xs">
-                              {(userData.metadata as any)?.role === 'owner' && <Crown className="h-3 w-3 mr-1" />}
-                              {USER_ROLES.find(r => r.value === (userData.metadata as any)?.role)?.label || 'User'}
+                            <Badge
+                              variant={
+                                (userData.metadata as any)?.role === 'owner'
+                                  ? 'default'
+                                  : (userData.metadata as any)?.role === 'admin'
+                                    ? 'secondary'
+                                    : 'outline'
+                              }
+                              className="text-xs"
+                            >
+                              {(userData.metadata as any)?.role === 'owner' && (
+                                <Crown className="h-3 w-3 mr-1" />
+                              )}
+                              {USER_ROLES.find(r => r.value === (userData.metadata as any)?.role)
+                                ?.label || 'User'}
                             </Badge>
                           </CardDescription>
                         </div>
@@ -637,28 +875,38 @@ export function UserManager() {
                   </CardContent>
                   <CardFooter className="pt-3 flex justify-between">
                     <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => startEdit(userData)}
-                        disabled={(userData.metadata as any)?.role === 'owner' && user?.role !== 'owner'}
+                        disabled={
+                          (userData.metadata as any)?.role === 'owner' && user?.role !== 'owner'
+                        }
                       >
                         <Pencil className="h-3 w-3" />
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => toggleUserStatus(userData.id, userData.status)}
-                        disabled={(userData.metadata as any)?.role === 'owner' && user?.role !== 'owner'}
+                        disabled={
+                          (userData.metadata as any)?.role === 'owner' && user?.role !== 'owner'
+                        }
                       >
-                        {userData.status === 'active' ? <UserX className="h-3 w-3" /> : <UserCheck className="h-3 w-3" />}
+                        {userData.status === 'active' ? (
+                          <UserX className="h-3 w-3" />
+                        ) : (
+                          <UserCheck className="h-3 w-3" />
+                        )}
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => deleteUser(userData.id)}
                         className="text-red-600 hover:text-red-700"
-                        disabled={(userData.metadata as any)?.role === 'owner' || userData.id === user?.id}
+                        disabled={
+                          (userData.metadata as any)?.role === 'owner' || userData.id === user?.id
+                        }
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -693,7 +941,9 @@ export function UserManager() {
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h4 className="font-medium flex items-center gap-2">
-                              {role.value === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
+                              {role.value === 'owner' && (
+                                <Crown className="h-4 w-4 text-yellow-500" />
+                              )}
                               {role.label}
                             </h4>
                             <p className="text-sm text-gray-600">{role.description}</p>
@@ -702,7 +952,10 @@ export function UserManager() {
                         </div>
                         <div className="space-y-1">
                           {role.permissions.map(permission => (
-                            <div key={permission} className="text-xs bg-gray-50 px-2 py-1 rounded inline-block mr-1 mb-1">
+                            <div
+                              key={permission}
+                              className="text-xs bg-gray-50 px-2 py-1 rounded inline-block mr-1 mb-1"
+                            >
                               {permission}
                             </div>
                           ))}
@@ -720,18 +973,23 @@ export function UserManager() {
                       <Card key={category} className="p-4">
                         <h4 className="font-medium mb-3">{categoryName}</h4>
                         <div className="grid gap-2 md:grid-cols-2">
-                          {UNIVERSAL_PERMISSIONS
-                            .filter(permission => permission.category === category)
-                            .map(permission => (
-                              <div key={permission.id} className="flex items-start gap-3 p-2 bg-gray-50 rounded">
-                                <Key className="h-4 w-4 mt-0.5 text-gray-400" />
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-medium text-sm">{permission.name}</p>
-                                  <p className="text-xs text-gray-600">{permission.description}</p>
-                                  <code className="text-xs bg-gray-200 px-1 rounded">{permission.id}</code>
-                                </div>
+                          {UNIVERSAL_PERMISSIONS.filter(
+                            permission => permission.category === category
+                          ).map(permission => (
+                            <div
+                              key={permission.id}
+                              className="flex items-start gap-3 p-2 bg-gray-50 rounded"
+                            >
+                              <Key className="h-4 w-4 mt-0.5 text-gray-400" />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm">{permission.name}</p>
+                                <p className="text-xs text-gray-600">{permission.description}</p>
+                                <code className="text-xs bg-gray-200 px-1 rounded">
+                                  {permission.id}
+                                </code>
                               </div>
-                            ))}
+                            </div>
+                          ))}
                         </div>
                       </Card>
                     ))}
@@ -773,7 +1031,10 @@ export function UserManager() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-blue-600">
-                  {users.filter(u => ['owner', 'admin'].includes((u.metadata as any)?.role || '')).length}
+                  {
+                    users.filter(u => ['owner', 'admin'].includes((u.metadata as any)?.role || ''))
+                      .length
+                  }
                 </div>
                 <p className="text-xs text-gray-500">Admin level access</p>
               </CardContent>
@@ -807,8 +1068,8 @@ export function UserManager() {
                       <span className="text-sm">{dept}</span>
                       <div className="flex items-center gap-3">
                         <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full" 
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${percentage}%` }}
                           />
                         </div>
@@ -827,11 +1088,11 @@ export function UserManager() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>
-              {editingUser ? 'Pencil User' : 'Add New User'}
-            </CardTitle>
+            <CardTitle>{editingUser ? 'Pencil User' : 'Add New User'}</CardTitle>
             <CardDescription>
-              {editingUser ? 'Update user information and permissions' : 'Create a new user account for your organization'}
+              {editingUser
+                ? 'Update user information and permissions'
+                : 'Create a new user account for your organization'}
             </CardDescription>
           </CardHeader>
           <form onSubmit={saveUser}>
@@ -851,7 +1112,9 @@ export function UserManager() {
                       <Input
                         id="entity_name"
                         value={formData.entity_name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, entity_name: e.target.value }))}
+                        onChange={e =>
+                          setFormData(prev => ({ ...prev, entity_name: e.target.value }))
+                        }
                         placeholder="Enter full name"
                         required
                       />
@@ -862,7 +1125,9 @@ export function UserManager() {
                       <Input
                         id="entity_code"
                         value={formData.entity_code}
-                        onChange={(e) => setFormData(prev => ({ ...prev, entity_code: e.target.value }))}
+                        onChange={e =>
+                          setFormData(prev => ({ ...prev, entity_code: e.target.value }))
+                        }
                         placeholder="Auto-generated if empty"
                       />
                     </div>
@@ -873,7 +1138,9 @@ export function UserManager() {
                     <Textarea
                       id="description"
                       value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={e =>
+                        setFormData(prev => ({ ...prev, description: e.target.value }))
+                      }
                       placeholder="Brief description or notes about this user"
                       rows={3}
                     />
@@ -883,7 +1150,7 @@ export function UserManager() {
                     <Label htmlFor="status">Account Status</Label>
                     <Select
                       value={formData.status}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+                      onValueChange={value => setFormData(prev => ({ ...prev, status: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
@@ -906,7 +1173,7 @@ export function UserManager() {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                         placeholder="user@organization.com"
                         required
                       />
@@ -917,7 +1184,7 @@ export function UserManager() {
                       <Input
                         id="phone"
                         value={formData.phone}
-                        onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                        onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                         placeholder="+1 (555) 123-4567"
                       />
                     </div>
@@ -928,14 +1195,18 @@ export function UserManager() {
                       <Label htmlFor="department">Department</Label>
                       <Select
                         value={formData.department}
-                        onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
+                        onValueChange={value =>
+                          setFormData(prev => ({ ...prev, department: value }))
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select department" />
                         </SelectTrigger>
                         <SelectContent>
                           {DEPARTMENTS.map(dept => (
-                            <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                            <SelectItem key={dept} value={dept}>
+                              {dept}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -946,7 +1217,9 @@ export function UserManager() {
                       <Input
                         id="job_title"
                         value={formData.job_title}
-                        onChange={(e) => setFormData(prev => ({ ...prev, job_title: e.target.value }))}
+                        onChange={e =>
+                          setFormData(prev => ({ ...prev, job_title: e.target.value }))
+                        }
                         placeholder="Enter job title"
                       />
                     </div>
@@ -959,7 +1232,9 @@ export function UserManager() {
                         id="hire_date"
                         type="date"
                         value={formData.hire_date}
-                        onChange={(e) => setFormData(prev => ({ ...prev, hire_date: e.target.value }))}
+                        onChange={e =>
+                          setFormData(prev => ({ ...prev, hire_date: e.target.value }))
+                        }
                       />
                     </div>
 
@@ -968,7 +1243,7 @@ export function UserManager() {
                       <Input
                         id="location"
                         value={formData.location}
-                        onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                        onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))}
                         placeholder="Office location or remote"
                       />
                     </div>
@@ -982,9 +1257,11 @@ export function UserManager() {
                           <div className="relative flex-1">
                             <Input
                               id="password"
-                              type={showPassword ? "text" : "password"}
+                              type={showPassword ? 'text' : 'password'}
                               value={formData.password}
-                              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                              onChange={e =>
+                                setFormData(prev => ({ ...prev, password: e.target.value }))
+                              }
                               placeholder="Enter password"
                               required
                             />
@@ -995,13 +1272,19 @@ export function UserManager() {
                               className="absolute right-0 top-0 h-full px-3"
                               onClick={() => setShowPassword(!showPassword)}
                             >
-                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4" />
+                              ) : (
+                                <Eye className="h-4 w-4" />
+                              )}
                             </Button>
                           </div>
                           <Button
                             type="button"
                             variant="outline"
-                            onClick={() => setFormData(prev => ({ ...prev, password: generatePassword() }))}
+                            onClick={() =>
+                              setFormData(prev => ({ ...prev, password: generatePassword() }))
+                            }
                           >
                             Generate
                           </Button>
@@ -1012,9 +1295,13 @@ export function UserManager() {
                         <Switch
                           id="send_welcome_email"
                           checked={formData.send_welcome_email}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, send_welcome_email: checked }))}
+                          onCheckedChange={checked =>
+                            setFormData(prev => ({ ...prev, send_welcome_email: checked }))
+                          }
                         />
-                        <Label htmlFor="send_welcome_email">Send welcome email with login instructions</Label>
+                        <Label htmlFor="send_welcome_email">
+                          Send welcome email with login instructions
+                        </Label>
                       </div>
                     </div>
                   )}
@@ -1024,10 +1311,7 @@ export function UserManager() {
                 <TabsContent value="permissions" className="space-y-4 mt-6">
                   <div>
                     <Label htmlFor="role">User Role</Label>
-                    <Select
-                      value={formData.role}
-                      onValueChange={handleRoleChange}
-                    >
+                    <Select value={formData.role} onValueChange={handleRoleChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
@@ -1035,7 +1319,9 @@ export function UserManager() {
                         {USER_ROLES.map(role => (
                           <SelectItem key={role.value} value={role.value}>
                             <div className="flex items-center gap-2">
-                              {role.value === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
+                              {role.value === 'owner' && (
+                                <Crown className="h-4 w-4 text-yellow-500" />
+                              )}
                               <div>
                                 <div className="font-medium">{role.label}</div>
                                 <div className="text-xs text-gray-500">{role.description}</div>
@@ -1052,32 +1338,34 @@ export function UserManager() {
                     <div className="space-y-4">
                       <div>
                         <h4 className="font-medium mb-2">Custom Permissions</h4>
-                        <p className="text-sm text-gray-600 mb-4">Select specific permissions for this user</p>
+                        <p className="text-sm text-gray-600 mb-4">
+                          Select specific permissions for this user
+                        </p>
                       </div>
 
                       {Object.entries(PERMISSION_CATEGORIES).map(([category, categoryName]) => (
                         <Card key={category} className="p-4">
                           <h5 className="font-medium mb-3">{categoryName}</h5>
                           <div className="space-y-2">
-                            {UNIVERSAL_PERMISSIONS
-                              .filter(permission => permission.category === category)
-                              .map(permission => (
-                                <div key={permission.id} className="flex items-start gap-3">
-                                  <input
-                                    type="checkbox"
-                                    id={permission.id}
-                                    checked={formData.permissions.includes(permission.id)}
-                                    onChange={() => togglePermission(permission.id)}
-                                    className="mt-1"
-                                  />
-                                  <div className="flex-1">
-                                    <Label htmlFor={permission.id} className="font-medium text-sm">
-                                      {permission.name}
-                                    </Label>
-                                    <p className="text-xs text-gray-600">{permission.description}</p>
-                                  </div>
+                            {UNIVERSAL_PERMISSIONS.filter(
+                              permission => permission.category === category
+                            ).map(permission => (
+                              <div key={permission.id} className="flex items-start gap-3">
+                                <input
+                                  type="checkbox"
+                                  id={permission.id}
+                                  checked={formData.permissions.includes(permission.id)}
+                                  onChange={() => togglePermission(permission.id)}
+                                  className="mt-1"
+                                />
+                                <div className="flex-1">
+                                  <Label htmlFor={permission.id} className="font-medium text-sm">
+                                    {permission.name}
+                                  </Label>
+                                  <p className="text-xs text-gray-600">{permission.description}</p>
                                 </div>
-                              ))}
+                              </div>
+                            ))}
                           </div>
                         </Card>
                       ))}
@@ -1105,9 +1393,7 @@ export function UserManager() {
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? (
-                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
+                {loading ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : null}
                 {editingUser ? 'Update' : 'Create'} User
               </Button>
             </CardFooter>

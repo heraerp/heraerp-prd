@@ -1,7 +1,7 @@
 /**
  * HERA CRM Email API Endpoint
  * Handles email sending, templates, and history
- * 
+ *
  * Project Manager Task: Email Integration Backend
  */
 
@@ -51,12 +51,9 @@ export async function POST(request: NextRequest) {
         const { templateId, variables } = data
         const templates = await emailService.getEmailTemplates()
         const template = templates.find(t => t.id === templateId)
-        
+
         if (!template) {
-          return NextResponse.json(
-            { success: false, error: 'Template not found' },
-            { status: 404 }
-          )
+          return NextResponse.json({ success: false, error: 'Template not found' }, { status: 404 })
         }
 
         const processed = emailService.processTemplate(template, variables || {})
@@ -64,17 +61,14 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('CRM Email API error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
       },
       { status: 500 }
     )
@@ -116,17 +110,14 @@ export async function GET(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('CRM Email API error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
       },
       { status: 500 }
     )

@@ -42,7 +42,7 @@ export class UCRTemplateIndexService {
    */
   async ensureIndexEntity(organizationId: string): Promise<string> {
     const supabase = getSupabase()
-    
+
     // Check if index entity exists
     const { data: existing } = await supabase
       .from('core_entities')
@@ -75,7 +75,7 @@ export class UCRTemplateIndexService {
       .single()
 
     if (error) throw error
-    
+
     this.indexEntityId = newEntity.id
 
     // Initialize with default templates
@@ -94,7 +94,8 @@ export class UCRTemplateIndexService {
         template_id: 'ucr-salon-complete-v1',
         industry: 'salon',
         name: 'Salon Complete Business Rules',
-        description: 'Comprehensive rule set for salon operations including booking, pricing, and notifications',
+        description:
+          'Comprehensive rule set for salon operations including booking, pricing, and notifications',
         rule_families: ['BOOKING', 'PRICING', 'NOTIFICATION', 'WORKFLOW', 'VALIDATION'],
         smart_code: 'HERA.UCR.TEMPLATE.SALON.COMPLETE.v1',
         version: '1.0.0',
@@ -104,7 +105,8 @@ export class UCRTemplateIndexService {
         template_id: 'ucr-salon-booking-v1',
         industry: 'salon',
         name: 'Salon Booking Management',
-        description: 'Advanced booking rules with double-booking prevention and peak hour management',
+        description:
+          'Advanced booking rules with double-booking prevention and peak hour management',
         rule_families: ['BOOKING', 'VALIDATION'],
         smart_code: 'HERA.UCR.TEMPLATE.SALON.BOOKING.v1',
         version: '1.0.0',
@@ -116,7 +118,8 @@ export class UCRTemplateIndexService {
         template_id: 'ucr-restaurant-complete-v1',
         industry: 'restaurant',
         name: 'Restaurant Complete Business Rules',
-        description: 'Full restaurant management rules including orders, pricing, and kitchen workflow',
+        description:
+          'Full restaurant management rules including orders, pricing, and kitchen workflow',
         rule_families: ['ORDER', 'PRICING', 'INVENTORY', 'WORKFLOW', 'NOTIFICATION'],
         smart_code: 'HERA.UCR.TEMPLATE.RESTAURANT.COMPLETE.v1',
         version: '1.0.0',
@@ -138,7 +141,8 @@ export class UCRTemplateIndexService {
         template_id: 'ucr-healthcare-complete-v1',
         industry: 'healthcare',
         name: 'Healthcare Complete Business Rules',
-        description: 'Comprehensive healthcare rules including appointments, insurance, and compliance',
+        description:
+          'Comprehensive healthcare rules including appointments, insurance, and compliance',
         rule_families: ['APPOINTMENT', 'INSURANCE', 'COMPLIANCE', 'WORKFLOW', 'NOTIFICATION'],
         smart_code: 'HERA.UCR.TEMPLATE.HEALTHCARE.COMPLETE.v1',
         version: '1.0.0',
@@ -215,22 +219,20 @@ export class UCRTemplateIndexService {
   private async saveIndex(entityId: string, organizationId: string, index: UCRTemplateIndex) {
     const supabase = getSupabase()
 
-    const { error } = await supabase
-      .from('core_dynamic_data')
-      .upsert({
-        id: uuidv4(),
-        entity_id: entityId,
-        field_name: 'template_index',
-        field_value_text: JSON.stringify(index),
-        field_type: 'json',
-        smart_code: 'HERA.UCR.TEMPLATE.INDEX.DATA.v1',
-        organization_id: organizationId,
-        metadata: {
-          version: index.version,
-          template_count: index.templates.length,
-          last_updated: index.last_updated
-        }
-      })
+    const { error } = await supabase.from('core_dynamic_data').upsert({
+      id: uuidv4(),
+      entity_id: entityId,
+      field_name: 'template_index',
+      field_value_text: JSON.stringify(index),
+      field_type: 'json',
+      smart_code: 'HERA.UCR.TEMPLATE.INDEX.DATA.v1',
+      organization_id: organizationId,
+      metadata: {
+        version: index.version,
+        template_count: index.templates.length,
+        last_updated: index.last_updated
+      }
+    })
 
     if (error) throw error
   }
@@ -238,11 +240,14 @@ export class UCRTemplateIndexService {
   /**
    * Get template index
    */
-  async getTemplateIndex(organizationId: string, filters?: {
-    industry?: string
-    rule_family?: string
-    status?: string
-  }): Promise<UCRTemplateIndex> {
+  async getTemplateIndex(
+    organizationId: string,
+    filters?: {
+      industry?: string
+      rule_family?: string
+      status?: string
+    }
+  ): Promise<UCRTemplateIndex> {
     const entityId = await this.ensureIndexEntity(organizationId)
     const supabase = getSupabase()
 
@@ -266,7 +271,7 @@ export class UCRTemplateIndexService {
       }
 
       if (filters.rule_family) {
-        filteredTemplates = filteredTemplates.filter(t => 
+        filteredTemplates = filteredTemplates.filter(t =>
           t.rule_families.includes(filters.rule_family!)
         )
       }
@@ -287,7 +292,10 @@ export class UCRTemplateIndexService {
   /**
    * Get template by ID
    */
-  async getTemplateById(organizationId: string, templateId: string): Promise<UCRTemplateEntry | null> {
+  async getTemplateById(
+    organizationId: string,
+    templateId: string
+  ): Promise<UCRTemplateEntry | null> {
     const index = await this.getTemplateIndex(organizationId)
     return index.templates.find(t => t.template_id === templateId) || null
   }
@@ -297,9 +305,9 @@ export class UCRTemplateIndexService {
    */
   async upsertTemplate(organizationId: string, template: UCRTemplateEntry): Promise<void> {
     const index = await this.getTemplateIndex(organizationId)
-    
+
     const existingIndex = index.templates.findIndex(t => t.template_id === template.template_id)
-    
+
     if (existingIndex >= 0) {
       // Update existing
       index.templates[existingIndex] = {
@@ -315,7 +323,7 @@ export class UCRTemplateIndexService {
     }
 
     index.last_updated = new Date().toISOString()
-    
+
     const entityId = await this.ensureIndexEntity(organizationId)
     await this.saveIndex(entityId, organizationId, index)
   }
@@ -323,16 +331,21 @@ export class UCRTemplateIndexService {
   /**
    * Get templates grouped by industry
    */
-  async getTemplatesByIndustry(organizationId: string): Promise<Record<string, UCRTemplateEntry[]>> {
+  async getTemplatesByIndustry(
+    organizationId: string
+  ): Promise<Record<string, UCRTemplateEntry[]>> {
     const index = await this.getTemplateIndex(organizationId)
-    
-    return index.templates.reduce((acc, template) => {
-      if (!acc[template.industry]) {
-        acc[template.industry] = []
-      }
-      acc[template.industry].push(template)
-      return acc
-    }, {} as Record<string, UCRTemplateEntry[]>)
+
+    return index.templates.reduce(
+      (acc, template) => {
+        if (!acc[template.industry]) {
+          acc[template.industry] = []
+        }
+        acc[template.industry].push(template)
+        return acc
+      },
+      {} as Record<string, UCRTemplateEntry[]>
+    )
   }
 
   /**
@@ -341,12 +354,13 @@ export class UCRTemplateIndexService {
   async searchTemplates(organizationId: string, query: string): Promise<UCRTemplateEntry[]> {
     const index = await this.getTemplateIndex(organizationId)
     const lowerQuery = query.toLowerCase()
-    
-    return index.templates.filter(template => 
-      template.name.toLowerCase().includes(lowerQuery) ||
-      template.description.toLowerCase().includes(lowerQuery) ||
-      template.industry.toLowerCase().includes(lowerQuery) ||
-      template.rule_families.some(rf => rf.toLowerCase().includes(lowerQuery))
+
+    return index.templates.filter(
+      template =>
+        template.name.toLowerCase().includes(lowerQuery) ||
+        template.description.toLowerCase().includes(lowerQuery) ||
+        template.industry.toLowerCase().includes(lowerQuery) ||
+        template.rule_families.some(rf => rf.toLowerCase().includes(lowerQuery))
     )
   }
 }

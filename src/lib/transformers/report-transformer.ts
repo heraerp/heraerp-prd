@@ -20,13 +20,13 @@ export function transformToUIReport(data: {
   relationships: any[]
 }): UIReport {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -44,15 +44,16 @@ export function transformToUIReport(data: {
 
 export function filterReport(items: UIReport[], searchTerm: string): UIReport[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.report_type?.toLowerCase().includes(term) ||
-    item.frequency?.toLowerCase().includes(term) ||
-    item.parameters?.toLowerCase().includes(term) ||
-    item.last_run?.toLowerCase().includes(term) ||
-    item.recipients?.toLowerCase().includes(term) ||
-    item.format?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.report_type?.toLowerCase().includes(term) ||
+      item.frequency?.toLowerCase().includes(term) ||
+      item.parameters?.toLowerCase().includes(term) ||
+      item.last_run?.toLowerCase().includes(term) ||
+      item.recipients?.toLowerCase().includes(term) ||
+      item.format?.toLowerCase().includes(term)
   )
 }

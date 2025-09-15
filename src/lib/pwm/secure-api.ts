@@ -1,20 +1,20 @@
 /**
  * Secure PWM API Service with Encryption
- * 
+ *
  * Extends the PWM API with encryption capabilities for sensitive data
  */
 
-import { 
-  WealthEntity, 
-  WealthTransaction, 
+import {
+  WealthEntity,
+  WealthTransaction,
   WealthDynamicData,
   WealthEntityType,
   WealthTransactionType
 } from './types'
-import { 
-  encryptData, 
-  decryptData, 
-  encryptSensitiveFields, 
+import {
+  encryptData,
+  decryptData,
+  encryptSensitiveFields,
   decryptSensitiveFields,
   withEncryption,
   withDecryption,
@@ -27,7 +27,7 @@ const API_BASE = '/api/v1'
 // Define which fields should be encrypted
 const SENSITIVE_ENTITY_FIELDS = [
   'account_number',
-  'ssn', 
+  'ssn',
   'tax_id',
   'routing_number',
   'beneficiary_info',
@@ -52,7 +52,7 @@ export interface SecureWealthEntity extends WealthEntity {
 }
 
 /**
- * Enhanced transaction with encryption support  
+ * Enhanced transaction with encryption support
  */
 export interface SecureWealthTransaction extends WealthTransaction {
   encrypted_fields?: Record<string, EncryptedData>
@@ -69,24 +69,25 @@ export async function createSecureWealthEntity(
     // Extract sensitive data
     const sensitiveData: SensitiveWealthFields = {}
     const entityData = { ...entity }
-    
+
     SENSITIVE_ENTITY_FIELDS.forEach(field => {
       if (entityData[field as keyof typeof entityData]) {
-        sensitiveData[field as keyof SensitiveWealthFields] = 
-          entityData[field as keyof typeof entityData] as string
+        sensitiveData[field as keyof SensitiveWealthFields] = entityData[
+          field as keyof typeof entityData
+        ] as string
         delete entityData[field as keyof typeof entityData]
       }
     })
-    
+
     // Encrypt sensitive fields
     const encryptedFields = encryptSensitiveFields(sensitiveData, organizationId)
-    
+
     // Store encrypted data in HERA's dynamic_data table
     const entityWithEncryption = {
       ...entityData,
       encrypted_fields: encryptedFields
     }
-    
+
     // Call HERA API to create entity
     const response = await fetch(`${API_BASE}/entities`, {
       method: 'POST',
@@ -107,11 +108,11 @@ export async function createSecureWealthEntity(
         }))
       })
     })
-    
+
     if (!response.ok) {
       throw new Error(`Failed to create secure entity: ${response.statusText}`)
     }
-    
+
     const createdEntity = await response.json()
     return {
       ...createdEntity,
@@ -119,7 +120,9 @@ export async function createSecureWealthEntity(
       sensitive_data: sensitiveData
     }
   } catch (error) {
-    throw new Error(`Secure entity creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Secure entity creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -137,25 +140,25 @@ export async function getSecureWealthEntity(
         'Organization-ID': organizationId
       }
     })
-    
+
     if (!response.ok) {
       if (response.status === 404) return null
       throw new Error(`Failed to fetch entity: ${response.statusText}`)
     }
-    
+
     const entity = await response.json()
-    
+
     // Get encrypted dynamic data
     const dynamicDataResponse = await fetch(`${API_BASE}/entities/${entityId}/dynamic-data`, {
       headers: {
         'Organization-ID': organizationId
       }
     })
-    
+
     let encryptedFields: Record<string, EncryptedData> = {}
     if (dynamicDataResponse.ok) {
       const dynamicData = await dynamicDataResponse.json()
-      
+
       // Extract encrypted fields
       dynamicData.forEach((data: WealthDynamicData) => {
         if (data.field_name.startsWith('encrypted_') && data.data_type === 'json') {
@@ -164,20 +167,22 @@ export async function getSecureWealthEntity(
         }
       })
     }
-    
+
     // Decrypt sensitive fields
     let sensitiveData: SensitiveWealthFields = {}
     if (Object.keys(encryptedFields).length > 0) {
       sensitiveData = decryptSensitiveFields(encryptedFields, organizationId)
     }
-    
+
     return {
       ...entity,
       encrypted_fields: encryptedFields,
       sensitive_data: sensitiveData
     }
   } catch (error) {
-    throw new Error(`Secure entity retrieval failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Secure entity retrieval failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -193,15 +198,16 @@ export async function updateSecureWealthEntity(
     // Separate sensitive from non-sensitive updates
     const sensitiveUpdates: SensitiveWealthFields = {}
     const regularUpdates = { ...updates }
-    
+
     SENSITIVE_ENTITY_FIELDS.forEach(field => {
       if (regularUpdates[field as keyof typeof regularUpdates]) {
-        sensitiveUpdates[field as keyof SensitiveWealthFields] = 
-          regularUpdates[field as keyof typeof regularUpdates] as string
+        sensitiveUpdates[field as keyof SensitiveWealthFields] = regularUpdates[
+          field as keyof typeof regularUpdates
+        ] as string
         delete regularUpdates[field as keyof typeof regularUpdates]
       }
     })
-    
+
     // Update regular fields
     if (Object.keys(regularUpdates).length > 0) {
       const response = await fetch(`${API_BASE}/entities/${entityId}`, {
@@ -212,16 +218,16 @@ export async function updateSecureWealthEntity(
         },
         body: JSON.stringify(regularUpdates)
       })
-      
+
       if (!response.ok) {
         throw new Error(`Failed to update entity: ${response.statusText}`)
       }
     }
-    
+
     // Update encrypted fields
     if (Object.keys(sensitiveUpdates).length > 0) {
       const encryptedUpdates = encryptSensitiveFields(sensitiveUpdates, organizationId)
-      
+
       // Update dynamic data with new encrypted values
       for (const [field, encryptedData] of Object.entries(encryptedUpdates)) {
         await fetch(`${API_BASE}/entities/${entityId}/dynamic-data`, {
@@ -238,11 +244,13 @@ export async function updateSecureWealthEntity(
         })
       }
     }
-    
+
     // Return updated entity
-    return await getSecureWealthEntity(entityId, organizationId) as SecureWealthEntity
+    return (await getSecureWealthEntity(entityId, organizationId)) as SecureWealthEntity
   } catch (error) {
-    throw new Error(`Secure entity update failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Secure entity update failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -256,29 +264,31 @@ export async function listSecureWealthEntities(
   try {
     const params = new URLSearchParams()
     if (entityType) params.append('entity_type', entityType)
-    
+
     const response = await fetch(`${API_BASE}/entities?${params}`, {
       headers: {
         'Organization-ID': organizationId
       }
     })
-    
+
     if (!response.ok) {
       throw new Error(`Failed to list entities: ${response.statusText}`)
     }
-    
+
     const entities = await response.json()
-    
+
     // Decrypt each entity
     const secureEntities = await Promise.all(
       entities.map(async (entity: WealthEntity) => {
         return await getSecureWealthEntity(entity.entity_id, organizationId)
       })
     )
-    
+
     return secureEntities.filter(Boolean) as SecureWealthEntity[]
   } catch (error) {
-    throw new Error(`Secure entity listing failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Secure entity listing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -293,20 +303,20 @@ export async function createSecureWealthTransaction(
     // Extract and encrypt sensitive transaction data
     const sensitiveData: Record<string, string> = {}
     const transactionData = { ...transaction }
-    
+
     SENSITIVE_TRANSACTION_FIELDS.forEach(field => {
       if (transactionData[field as keyof typeof transactionData]) {
         sensitiveData[field] = transactionData[field as keyof typeof transactionData] as string
         delete transactionData[field as keyof typeof transactionData]
       }
     })
-    
+
     // Encrypt sensitive fields
     const encryptedFields: Record<string, EncryptedData> = {}
     Object.entries(sensitiveData).forEach(([field, value]) => {
       encryptedFields[field] = encryptData(value, organizationId)
     })
-    
+
     // Create transaction via HERA API
     const response = await fetch(`${API_BASE}/transactions`, {
       method: 'POST',
@@ -319,18 +329,20 @@ export async function createSecureWealthTransaction(
         encrypted_data: encryptedFields
       })
     })
-    
+
     if (!response.ok) {
       throw new Error(`Failed to create secure transaction: ${response.statusText}`)
     }
-    
+
     const createdTransaction = await response.json()
     return {
       ...createdTransaction,
       encrypted_fields: encryptedFields
     }
   } catch (error) {
-    throw new Error(`Secure transaction creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Secure transaction creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -345,15 +357,13 @@ export async function searchSecureWealthData(
   // For demo purposes, return filtered results
   // In production, implement hashed search indexing
   const entities = await listSecureWealthEntities(organizationId, entityType)
-  
+
   return entities.filter(entity => {
     // Search in non-sensitive fields
-    const searchableText = [
-      entity.entity_name,
-      entity.entity_code,
-      entity.entity_type
-    ].join(' ').toLowerCase()
-    
+    const searchableText = [entity.entity_name, entity.entity_code, entity.entity_type]
+      .join(' ')
+      .toLowerCase()
+
     return searchableText.includes(searchTerm.toLowerCase())
   })
 }
@@ -376,7 +386,7 @@ export async function logEncryptionAccess(log: EncryptionAuditLog): Promise<void
   try {
     // In production, send to secure audit log service
     console.log('PWM Encryption Audit:', log)
-    
+
     // Could store in HERA's universal transaction log
     await fetch(`${API_BASE}/audit-log`, {
       method: 'POST',

@@ -2,7 +2,7 @@
  * HERA DNA Modules Master Index
  * Central registry for all DNA modules across the system
  * Smart Code: HERA.DNA.MODULE.MASTER.INDEX.v1
- * 
+ *
  * This master index provides unified discovery and access to all HERA DNA modules
  */
 
@@ -36,7 +36,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Complete GL management with journal entries, COA, and period management'
   },
-  
+
   'HERA.FIN.AP.MODULE.v1': {
     id: 'HERA.FIN.AP.MODULE.v1',
     name: 'Accounts Payable Module',
@@ -46,7 +46,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Vendor management, invoice processing, and payment workflows'
   },
-  
+
   'HERA.FIN.AR.MODULE.v1': {
     id: 'HERA.FIN.AR.MODULE.v1',
     name: 'Accounts Receivable Module',
@@ -56,7 +56,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Customer management, invoicing, and collections'
   },
-  
+
   'HERA.FIN.FA.MODULE.v1': {
     id: 'HERA.FIN.FA.MODULE.v1',
     name: 'Fixed Assets Module',
@@ -66,7 +66,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Asset lifecycle management with depreciation automation'
   },
-  
+
   // Financial Components
   'HERA.FIN.AUTO.JOURNAL.ENGINE.v1': {
     id: 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1',
@@ -76,7 +76,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: '85% automation rate for journal entries'
   },
-  
+
   'HERA.FIN.CASHFLOW.SYSTEM.v1': {
     id: 'HERA.FIN.CASHFLOW.SYSTEM.v1',
     name: 'Universal Cashflow DNA',
@@ -111,7 +111,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Complete order-to-cash workflow'
   },
-  
+
   'HERA.UI.POS.UNIVERSAL.ENGINE.v1': {
     id: 'HERA.UI.POS.UNIVERSAL.ENGINE.v1',
     name: 'Universal POS Engine',
@@ -171,7 +171,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Complete salon business management'
   },
-  
+
   'HERA.REST.DNA.MODULE.v1': {
     id: 'HERA.REST.DNA.MODULE.v1',
     name: 'Restaurant Management DNA',
@@ -192,7 +192,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Glassmorphism panel with Fiori design'
   },
-  
+
   'HERA.UI.ENTERPRISE.TABLE.v1': {
     id: 'HERA.UI.ENTERPRISE.TABLE.v1',
     name: 'Enterprise Data Table',
@@ -253,7 +253,7 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     status: 'production',
     description: 'Progressive to production converter'
   },
-  
+
   'HERA.DEV.FACTORY.v1': {
     id: 'HERA.DEV.FACTORY.v1',
     name: 'Universal Factory',
@@ -291,15 +291,11 @@ export function getModuleById(moduleId: string): MasterModuleEntry | undefined {
 }
 
 export function getModulesByCategory(category: string): MasterModuleEntry[] {
-  return Object.values(HERA_DNA_MASTER_REGISTRY).filter(
-    module => module.category === category
-  )
+  return Object.values(HERA_DNA_MASTER_REGISTRY).filter(module => module.category === category)
 }
 
 export function getModulesByStatus(status: string): MasterModuleEntry[] {
-  return Object.values(HERA_DNA_MASTER_REGISTRY).filter(
-    module => module.status === status
-  )
+  return Object.values(HERA_DNA_MASTER_REGISTRY).filter(module => module.status === status)
 }
 
 export function getProductionModules(): MasterModuleEntry[] {
@@ -309,7 +305,7 @@ export function getProductionModules(): MasterModuleEntry[] {
 export function searchModules(query: string): MasterModuleEntry[] {
   const lowerQuery = query.toLowerCase()
   return Object.values(HERA_DNA_MASTER_REGISTRY).filter(
-    module => 
+    module =>
       module.name.toLowerCase().includes(lowerQuery) ||
       module.description.toLowerCase().includes(lowerQuery) ||
       module.id.toLowerCase().includes(lowerQuery)
@@ -321,16 +317,22 @@ export function searchModules(query: string): MasterModuleEntry[] {
  */
 export function getModuleStatistics() {
   const modules = Object.values(HERA_DNA_MASTER_REGISTRY)
-  const byCategory = modules.reduce((acc, module) => {
-    acc[module.category] = (acc[module.category] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-  
-  const byStatus = modules.reduce((acc, module) => {
-    acc[module.status] = (acc[module.status] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-  
+  const byCategory = modules.reduce(
+    (acc, module) => {
+      acc[module.category] = (acc[module.category] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
+  const byStatus = modules.reduce(
+    (acc, module) => {
+      acc[module.status] = (acc[module.status] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
   return {
     total: modules.length,
     byCategory,

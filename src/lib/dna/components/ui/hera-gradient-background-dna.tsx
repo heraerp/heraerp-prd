@@ -20,15 +20,20 @@ export function HeraGradientBackgroundDNA({
   blobCount = 3
 }: HeraGradientBackgroundDNAProps) {
   return (
-    <div className={cn("h-screen flex items-center justify-center relative overflow-hidden", className)}>
+    <div
+      className={cn(
+        'h-screen flex items-center justify-center relative overflow-hidden',
+        className
+      )}
+    >
       {/* Primary gradient background */}
-      <div 
-        className="absolute inset-0 animate-gradient-x" 
+      <div
+        className="absolute inset-0 animate-gradient-x"
         style={{
           background: 'linear-gradient(135deg, #7dd3fc 0%, #c084fc 50%, #f0f4f8 100%)'
         }}
       />
-      
+
       {/* Animated blobs for depth */}
       {showBlobs && (
         <div className="absolute inset-0">
@@ -43,10 +48,10 @@ export function HeraGradientBackgroundDNA({
           )}
         </div>
       )}
-      
+
       {/* White gradient overlay for bottom readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
-      
+
       {/* Content */}
       {children}
     </div>
@@ -88,9 +93,9 @@ export function HeraBlob({
   }
 
   return (
-    <div 
+    <div
       className={cn(
-        "rounded-full filter blur-3xl animate-subtle-pulse",
+        'rounded-full filter blur-3xl animate-subtle-pulse',
         colorClasses[color],
         sizeClasses[size],
         opacityClasses[opacity],

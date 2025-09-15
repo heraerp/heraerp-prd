@@ -13,8 +13,8 @@ function SimpleAppointmentDashboard({ organizationId }: { organizationId: string
         <p className="text-gray-400">Organization ID: {organizationId}</p>
         <div className="mt-4 p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
           <p className="text-yellow-400 text-sm">
-            Component temporarily simplified to fix build errors.
-            Full appointment management dashboard will be restored once import issues are resolved.
+            Component temporarily simplified to fix build errors. Full appointment management
+            dashboard will be restored once import issues are resolved.
           </p>
         </div>
       </div>
@@ -46,7 +46,8 @@ export default function SalonAppointmentsPage() {
 
       // Extract subdomain
       const parts = hostname.split('.')
-      if (parts.length >= 3) { // e.g., acme.app.com or acme.vercel.app
+      if (parts.length >= 3) {
+        // e.g., acme.app.com or acme.vercel.app
         const subdomain = parts[0]
         if (subdomain && subdomain !== 'app' && subdomain !== 'www') {
           try {

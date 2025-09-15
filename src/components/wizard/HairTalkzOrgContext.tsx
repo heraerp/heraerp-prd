@@ -17,10 +17,12 @@ export function HairTalkzOrgProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
-  
+
   // Use authenticated org if available, otherwise use demo org, fallback to Hair Talkz (Demo)
-  const organizationId = currentOrganization?.id || demoOrg?.id || 'a1b2c3d4-hair-talkz-demo-organization'
-  const organizationName = currentOrganization?.organization_name || demoOrg?.name || 'Hair Talkz Salon (Demo)'
+  const organizationId =
+    currentOrganization?.id || demoOrg?.id || 'a1b2c3d4-hair-talkz-demo-organization'
+  const organizationName =
+    currentOrganization?.organization_name || demoOrg?.name || 'Hair Talkz Salon (Demo)'
   const orgLoading = isAuthenticated ? isLoadingOrgs : false
 
   // Load demo organization if not authenticated
@@ -64,13 +66,13 @@ export function HairTalkzOrgLoading() {
           </div>
           <div className="absolute -inset-2 bg-gradient-to-r from-sage-300 via-dusty-rose-300 to-champagne-300 rounded-full opacity-20 animate-pulse"></div>
         </div>
-        
+
         {/* Loading Animation */}
         <div className="inline-flex items-center space-x-3">
           <div className="w-8 h-8 border-4 border-sage-300 border-t-champagne-500 rounded-full animate-spin"></div>
           <div className="text-sage-700 font-medium">Setting up your salon...</div>
         </div>
-        
+
         {/* Subtitle */}
         <p className="text-dusty-rose-600 text-sm max-w-sm mx-auto">
           Loading Hair Talkz salon management system with HERA's AI-powered business intelligence

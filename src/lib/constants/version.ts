@@ -15,7 +15,7 @@ export const APP_VERSION = {
     'Multi-tenant architecture: GSPU as HERA client with isolated organization per audit client',
     '🧬 HERA DNA: Universal Dropdown Visibility Fix across all applications'
   ]
-};
+}
 
 export const VERSION_HISTORY = [
   {
@@ -101,22 +101,18 @@ export const VERSION_HISTORY = [
   {
     version: '1.0.0',
     date: '2025-01-27',
-    changes: [
-      'Initial release',
-      'Core 6-table architecture',
-      'Version tracking system'
-    ]
+    changes: ['Initial release', 'Core 6-table architecture', 'Version tracking system']
   }
-];
+]
 
 // Check if update is available
 export const checkForUpdates = async (): Promise<boolean> => {
   try {
     // In production, this would check against a version endpoint
-    const response = await fetch('/api/version');
-    const data = await response.json();
-    return data.version !== APP_VERSION.current;
+    const response = await fetch('/api/version')
+    const data = await response.json()
+    return data.version !== APP_VERSION.current
   } catch {
-    return false;
+    return false
   }
-};
+}

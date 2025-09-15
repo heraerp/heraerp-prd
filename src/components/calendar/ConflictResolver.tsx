@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   AlertTriangle,
   Clock,
   Users,
@@ -21,25 +21,18 @@ import {
   MapPin
 } from 'lucide-react'
 
-import { 
-  SchedulingConflict,
-  ConflictResolution,
-  TimeSlot
-} from '@/types/calendar.types'
+import { SchedulingConflict, ConflictResolution, TimeSlot } from '@/types/calendar.types'
 
 interface ConflictResolverProps {
   conflicts: SchedulingConflict[]
-  onResolve: (resolutions: Array<{ conflict_id: string, resolution: ConflictResolution }>) => void
+  onResolve: (resolutions: Array<{ conflict_id: string; resolution: ConflictResolution }>) => void
   onDismiss?: () => void
 }
 
-export function ConflictResolver({
-  conflicts,
-  onResolve,
-  onDismiss
-}: ConflictResolverProps) {
-  
-  const [selectedResolutions, setSelectedResolutions] = useState<Record<string, ConflictResolution>>({})
+export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictResolverProps) {
+  const [selectedResolutions, setSelectedResolutions] = useState<
+    Record<string, ConflictResolution>
+  >({})
   const [activeTab, setActiveTab] = useState('overview')
 
   // ==================== CONFLICT ANALYSIS ====================
@@ -63,7 +56,7 @@ export function ConflictResolver({
       conflict_id: conflict.conflict_id,
       resolution: selectedResolutions[conflict.conflict_id] || conflict.suggestions[0]
     }))
-    
+
     onResolve(resolutions)
   }
 
@@ -73,37 +66,51 @@ export function ConflictResolver({
       conflict_id: conflict.conflict_id,
       resolution: conflict.suggestions[0] // Use first suggestion for auto-resolve
     }))
-    
+
     onResolve(resolutions)
   }
 
   // ==================== RENDER HELPERS ====================
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200'
-      case 'error': return 'bg-orange-100 text-orange-800 border-orange-200'
-      case 'warning': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'critical':
+        return 'bg-red-100 text-red-800 border-red-200'
+      case 'error':
+        return 'bg-orange-100 text-orange-800 border-orange-200'
+      case 'warning':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
 
   const getConflictIcon = (type: string) => {
     switch (type) {
-      case 'resource_double_booking': return <Users className="h-4 w-4" />
-      case 'maintenance_overlap': return <RefreshCw className="h-4 w-4" />
-      case 'skills_unavailable': return <AlertTriangle className="h-4 w-4" />
-      case 'capacity_exceeded': return <MapPin className="h-4 w-4" />
-      default: return <AlertTriangle className="h-4 w-4" />
+      case 'resource_double_booking':
+        return <Users className="h-4 w-4" />
+      case 'maintenance_overlap':
+        return <RefreshCw className="h-4 w-4" />
+      case 'skills_unavailable':
+        return <AlertTriangle className="h-4 w-4" />
+      case 'capacity_exceeded':
+        return <MapPin className="h-4 w-4" />
+      default:
+        return <AlertTriangle className="h-4 w-4" />
     }
   }
 
   const getResolutionIcon = (type: string) => {
     switch (type) {
-      case 'reschedule': return <Clock className="h-4 w-4" />
-      case 'reassign_resource': return <Users className="h-4 w-4" />
-      case 'split_appointment': return <Calendar className="h-4 w-4" />
-      case 'waitlist': return <RefreshCw className="h-4 w-4" />
-      default: return <ArrowRight className="h-4 w-4" />
+      case 'reschedule':
+        return <Clock className="h-4 w-4" />
+      case 'reassign_resource':
+        return <Users className="h-4 w-4" />
+      case 'split_appointment':
+        return <Calendar className="h-4 w-4" />
+      case 'waitlist':
+        return <RefreshCw className="h-4 w-4" />
+      default:
+        return <ArrowRight className="h-4 w-4" />
     }
   }
 
@@ -113,7 +120,7 @@ export function ConflictResolver({
 
   const renderConflictCard = (conflict: SchedulingConflict) => {
     const selectedResolution = selectedResolutions[conflict.conflict_id]
-    
+
     return (
       <Card key={conflict.conflict_id} className="mb-4">
         <CardHeader className="pb-3">
@@ -136,7 +143,7 @@ export function ConflictResolver({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-4">
           {/* Affected Items */}
           <div>
@@ -144,12 +151,14 @@ export function ConflictResolver({
             <div className="space-y-1 text-sm text-gray-600">
               {conflict.affected_appointments.length > 0 && (
                 <div>
-                  <span className="font-medium">Appointments:</span> {conflict.affected_appointments.join(', ')}
+                  <span className="font-medium">Appointments:</span>{' '}
+                  {conflict.affected_appointments.join(', ')}
                 </div>
               )}
               {conflict.affected_resources.length > 0 && (
                 <div>
-                  <span className="font-medium">Resources:</span> {conflict.affected_resources.join(', ')}
+                  <span className="font-medium">Resources:</span>{' '}
+                  {conflict.affected_resources.join(', ')}
                 </div>
               )}
             </div>
@@ -160,10 +169,11 @@ export function ConflictResolver({
             <h4 className="font-medium text-sm mb-3">Resolution Options:</h4>
             <div className="space-y-2">
               {conflict.suggestions.map((suggestion, index) => {
-                const isSelected = selectedResolution?.resolution_type === suggestion.resolution_type
-                
+                const isSelected =
+                  selectedResolution?.resolution_type === suggestion.resolution_type
+
                 return (
-                  <Card 
+                  <Card
                     key={index}
                     className={`cursor-pointer transition-all p-3 ${
                       isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'
@@ -171,55 +181,57 @@ export function ConflictResolver({
                     onClick={() => handleResolutionSelect(conflict.conflict_id, suggestion)}
                   >
                     <div className="flex items-start space-x-3">
-                      <div className="mt-1">
-                        {getResolutionIcon(suggestion.resolution_type)}
-                      </div>
-                      
+                      <div className="mt-1">{getResolutionIcon(suggestion.resolution_type)}</div>
+
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
                           <h5 className="font-medium text-sm">
-                            {suggestion.resolution_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            {suggestion.resolution_type
+                              .replace(/_/g, ' ')
+                              .replace(/\b\w/g, l => l.toUpperCase())}
                           </h5>
-                          {isSelected && (
-                            <CheckCircle className="h-4 w-4 text-blue-600" />
-                          )}
+                          {isSelected && <CheckCircle className="h-4 w-4 text-blue-600" />}
                         </div>
-                        
-                        <p className="text-sm text-gray-600 mb-2">
-                          {suggestion.description}
-                        </p>
-                        
+
+                        <p className="text-sm text-gray-600 mb-2">{suggestion.description}</p>
+
                         {/* Alternative options */}
-                        {suggestion.alternative_slots && suggestion.alternative_slots.length > 0 && (
-                          <div className="text-xs text-gray-500">
-                            <span className="font-medium">Alternative times:</span>
-                            <div className="mt-1 space-y-1">
-                              {suggestion.alternative_slots.slice(0, 3).map((slot, slotIndex) => (
-                                <div key={slotIndex} className="flex items-center space-x-2">
-                                  <Clock className="h-3 w-3" />
-                                  <span>{formatTimeSlot(slot)}</span>
-                                </div>
-                              ))}
-                              {suggestion.alternative_slots.length > 3 && (
-                                <span className="text-gray-400">
-                                  +{suggestion.alternative_slots.length - 3} more options
-                                </span>
-                              )}
+                        {suggestion.alternative_slots &&
+                          suggestion.alternative_slots.length > 0 && (
+                            <div className="text-xs text-gray-500">
+                              <span className="font-medium">Alternative times:</span>
+                              <div className="mt-1 space-y-1">
+                                {suggestion.alternative_slots.slice(0, 3).map((slot, slotIndex) => (
+                                  <div key={slotIndex} className="flex items-center space-x-2">
+                                    <Clock className="h-3 w-3" />
+                                    <span>{formatTimeSlot(slot)}</span>
+                                  </div>
+                                ))}
+                                {suggestion.alternative_slots.length > 3 && (
+                                  <span className="text-gray-400">
+                                    +{suggestion.alternative_slots.length - 3} more options
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                        
-                        {suggestion.alternative_resources && suggestion.alternative_resources.length > 0 && (
-                          <div className="text-xs text-gray-500">
-                            <span className="font-medium">Alternative resources:</span>
-                            <span className="ml-1">{suggestion.alternative_resources.join(', ')}</span>
-                          </div>
-                        )}
-                        
+                          )}
+
+                        {suggestion.alternative_resources &&
+                          suggestion.alternative_resources.length > 0 && (
+                            <div className="text-xs text-gray-500">
+                              <span className="font-medium">Alternative resources:</span>
+                              <span className="ml-1">
+                                {suggestion.alternative_resources.join(', ')}
+                              </span>
+                            </div>
+                          )}
+
                         {suggestion.cost_impact && suggestion.cost_impact !== 0 && (
                           <div className="text-xs">
                             <span className="font-medium">Cost impact:</span>
-                            <span className={`ml-1 ${suggestion.cost_impact > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            <span
+                              className={`ml-1 ${suggestion.cost_impact > 0 ? 'text-red-600' : 'text-green-600'}`}
+                            >
                               {suggestion.cost_impact > 0 ? '+' : ''}${suggestion.cost_impact}
                             </span>
                           </div>
@@ -249,7 +261,7 @@ export function ConflictResolver({
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="conflicts">Conflicts ({conflicts.length})</TabsTrigger>
           </TabsList>
-          
+
           <div className="flex items-center space-x-2">
             {conflictStats.autoResolvable > 0 && (
               <Button variant="outline" size="sm" onClick={handleAutoResolve}>
@@ -257,16 +269,16 @@ export function ConflictResolver({
                 Auto-resolve ({conflictStats.autoResolvable})
               </Button>
             )}
-            
-            <Button 
-              size="sm" 
+
+            <Button
+              size="sm"
               onClick={handleResolveAll}
               disabled={Object.keys(selectedResolutions).length === 0}
             >
               <CheckCircle className="h-4 w-4 mr-2" />
               Resolve All
             </Button>
-            
+
             {onDismiss && (
               <Button variant="ghost" size="sm" onClick={onDismiss}>
                 <X className="h-4 w-4" />
@@ -280,8 +292,8 @@ export function ConflictResolver({
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Scheduling Conflicts Detected</AlertTitle>
             <AlertDescription>
-              {conflicts.length} conflict{conflicts.length > 1 ? 's' : ''} found. 
-              Review and select resolution options below.
+              {conflicts.length} conflict{conflicts.length > 1 ? 's' : ''} found. Review and select
+              resolution options below.
             </AlertDescription>
           </Alert>
 
@@ -293,24 +305,26 @@ export function ConflictResolver({
                 <div className="text-sm text-gray-600">Critical</div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-orange-600">{conflictStats.error}</div>
                 <div className="text-sm text-gray-600">Errors</div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-yellow-600">{conflictStats.warning}</div>
                 <div className="text-sm text-gray-600">Warnings</div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-green-600">{conflictStats.autoResolvable}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {conflictStats.autoResolvable}
+                </div>
                 <div className="text-sm text-gray-600">Auto-resolvable</div>
               </CardContent>
             </Card>
@@ -326,18 +340,19 @@ export function ConflictResolver({
                 <div>
                   <h4 className="font-medium">Auto-resolve all possible conflicts</h4>
                   <p className="text-sm text-gray-600">
-                    Automatically apply the best suggested resolution for {conflictStats.autoResolvable} conflicts
+                    Automatically apply the best suggested resolution for{' '}
+                    {conflictStats.autoResolvable} conflicts
                   </p>
                 </div>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={handleAutoResolve}
                   disabled={conflictStats.autoResolvable === 0}
                 >
                   Auto-resolve
                 </Button>
               </div>
-              
+
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <h4 className="font-medium">Review each conflict manually</h4>
@@ -345,10 +360,7 @@ export function ConflictResolver({
                     Examine each conflict and choose the best resolution option
                   </p>
                 </div>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setActiveTab('conflicts')}
-                >
+                <Button variant="outline" onClick={() => setActiveTab('conflicts')}>
                   Review Conflicts
                 </Button>
               </div>
@@ -361,8 +373,10 @@ export function ConflictResolver({
             {conflicts
               .sort((a, b) => {
                 const severityOrder = { critical: 3, error: 2, warning: 1 }
-                return (severityOrder[b.severity as keyof typeof severityOrder] || 0) - 
-                       (severityOrder[a.severity as keyof typeof severityOrder] || 0)
+                return (
+                  (severityOrder[b.severity as keyof typeof severityOrder] || 0) -
+                  (severityOrder[a.severity as keyof typeof severityOrder] || 0)
+                )
               })
               .map(renderConflictCard)}
           </div>

@@ -10,11 +10,11 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Search, 
-  MoreVertical, 
-  Paperclip, 
-  Smile, 
+import {
+  Search,
+  MoreVertical,
+  Paperclip,
+  Smile,
   Mic,
   Check,
   CheckCheck,
@@ -40,18 +40,18 @@ import {
   ArrowLeft,
   X
 } from 'lucide-react'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator 
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu'
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuTrigger,
+  ContextMenuTrigger
 } from '@/components/ui/context-menu'
 import { Badge } from '@/components/ui/badge'
 import { useTheme } from 'next-themes'
@@ -102,7 +102,7 @@ export default function WhatsAppDesktop() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [replyingTo, setReplyingTo] = useState<Message | null>(null)
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { theme, setTheme } = useTheme()
@@ -113,13 +113,15 @@ export default function WhatsAppDesktop() {
       setLoading(true)
       const response = await fetch('/api/v1/whatsapp/conversations')
       const result = await response.json()
-      
+
       if (result.status === 'success') {
         setConversations(result.data.conversations)
-        
+
         // If a conversation is selected, update its messages
         if (selectedConversation) {
-          const updated = result.data.conversations.find((c: Conversation) => c.id === selectedConversation.id)
+          const updated = result.data.conversations.find(
+            (c: Conversation) => c.id === selectedConversation.id
+          )
           if (updated) {
             setMessages(updated.messages || [])
           }
@@ -147,24 +149,24 @@ export default function WhatsAppDesktop() {
   // Send message
   const sendMessage = async () => {
     if (!messageInput.trim() || !selectedConversation) return
-    
+
     try {
       const payload: any = {
         conversationId: selectedConversation.id,
         text: messageInput,
         to: selectedConversation.metadata.phone
       }
-      
+
       if (replyingTo) {
         payload.replyTo = replyingTo.id
       }
-      
+
       const response = await fetch('/api/v1/whatsapp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
-      
+
       const result = await response.json()
       if (result.success) {
         setMessageInput('')
@@ -179,14 +181,17 @@ export default function WhatsAppDesktop() {
   // Send media
   const sendMedia = async (file: File) => {
     if (!selectedConversation) return
-    
+
     // In a real implementation, you would upload the file first
     // For now, we'll just show the structure
     try {
       const mediaUrl = 'https://example.com/uploaded-file.jpg' // Upload file and get URL
-      const mediaType = file.type.startsWith('image/') ? 'image' : 
-                       file.type.startsWith('video/') ? 'video' : 'document'
-      
+      const mediaType = file.type.startsWith('image/')
+        ? 'image'
+        : file.type.startsWith('video/')
+          ? 'video'
+          : 'document'
+
       const response = await fetch('/api/v1/whatsapp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -198,7 +203,7 @@ export default function WhatsAppDesktop() {
           text: messageInput || undefined // Caption if any
         })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         setMessageInput('')
@@ -212,9 +217,11 @@ export default function WhatsAppDesktop() {
   // Global search
   const searchMessages = async (query: string, type: 'all' | 'starred' | 'media' = 'all') => {
     try {
-      const response = await fetch(`/api/v1/whatsapp/search?q=${encodeURIComponent(query)}&type=${type}`)
+      const response = await fetch(
+        `/api/v1/whatsapp/search?q=${encodeURIComponent(query)}&type=${type}`
+      )
       const result = await response.json()
-      
+
       if (result.status === 'success') {
         return result.data.results
       }
@@ -248,13 +255,13 @@ export default function WhatsAppDesktop() {
   // Group messages by date
   const groupMessagesByDate = (messages: Message[]) => {
     const groups: { [key: string]: Message[] } = {}
-    
+
     messages.forEach(msg => {
       const date = formatDate(new Date(msg.created_at), 'yyyy-MM-dd')
       if (!groups[date]) groups[date] = []
       groups[date].push(msg)
     })
-    
+
     return groups
   }
 
@@ -262,7 +269,7 @@ export default function WhatsAppDesktop() {
   useEffect(() => {
     const handleKeyboard = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
-        switch(e.key) {
+        switch (e.key) {
           case '/':
             e.preventDefault()
             document.getElementById('search-input')?.focus()
@@ -274,7 +281,7 @@ export default function WhatsAppDesktop() {
         }
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyboard)
     return () => window.removeEventListener('keydown', handleKeyboard)
   }, [])
@@ -283,7 +290,7 @@ export default function WhatsAppDesktop() {
   const togglePin = async (convId: string) => {
     const conv = conversations.find(c => c.id === convId)
     if (!conv) return
-    
+
     try {
       await fetch('/api/v1/whatsapp/conversations', {
         method: 'PATCH',
@@ -293,10 +300,10 @@ export default function WhatsAppDesktop() {
           action: conv.isPinned ? 'unpin' : 'pin'
         })
       })
-      
-      setConversations(prev => prev.map(c => 
-        c.id === convId ? { ...c, isPinned: !c.isPinned } : c
-      ))
+
+      setConversations(prev =>
+        prev.map(c => (c.id === convId ? { ...c, isPinned: !c.isPinned } : c))
+      )
     } catch (error) {
       console.error('Error toggling pin:', error)
     }
@@ -305,7 +312,7 @@ export default function WhatsAppDesktop() {
   const toggleArchive = async (convId: string) => {
     const conv = conversations.find(c => c.id === convId)
     if (!conv) return
-    
+
     try {
       await fetch('/api/v1/whatsapp/conversations', {
         method: 'PATCH',
@@ -315,10 +322,10 @@ export default function WhatsAppDesktop() {
           action: conv.isArchived ? 'unarchive' : 'archive'
         })
       })
-      
-      setConversations(prev => prev.map(c => 
-        c.id === convId ? { ...c, isArchived: !c.isArchived } : c
-      ))
+
+      setConversations(prev =>
+        prev.map(c => (c.id === convId ? { ...c, isArchived: !c.isArchived } : c))
+      )
     } catch (error) {
       console.error('Error toggling archive:', error)
     }
@@ -327,7 +334,7 @@ export default function WhatsAppDesktop() {
   const toggleStar = async (messageId: string) => {
     const msg = messages.find(m => m.id === messageId)
     if (!msg) return
-    
+
     try {
       await fetch(`/api/v1/whatsapp/messages/${messageId}`, {
         method: 'PATCH',
@@ -336,10 +343,10 @@ export default function WhatsAppDesktop() {
           action: msg.isStarred ? 'unstar' : 'star'
         })
       })
-      
-      setMessages(prev => prev.map(m => 
-        m.id === messageId ? { ...m, isStarred: !m.isStarred } : m
-      ))
+
+      setMessages(prev =>
+        prev.map(m => (m.id === messageId ? { ...m, isStarred: !m.isStarred } : m))
+      )
     } catch (error) {
       console.error('Error toggling star:', error)
     }
@@ -350,7 +357,7 @@ export default function WhatsAppDesktop() {
       await fetch(`/api/v1/whatsapp/messages/${messageId}`, {
         method: 'DELETE'
       })
-      
+
       setMessages(prev => prev.filter(m => m.id !== messageId))
     } catch (error) {
       console.error('Error deleting message:', error)
@@ -366,10 +373,8 @@ export default function WhatsAppDesktop() {
           action: 'markRead'
         })
       })
-      
-      setMessages(prev => prev.map(m => 
-        m.id === messageId ? { ...m, status: 'read' } : m
-      ))
+
+      setMessages(prev => prev.map(m => (m.id === messageId ? { ...m, status: 'read' } : m)))
     } catch (error) {
       console.error('Error marking message as read:', error)
     }
@@ -377,9 +382,10 @@ export default function WhatsAppDesktop() {
 
   // Filter conversations
   const filteredConversations = conversations.filter(conv => {
-    const matchesSearch = conv.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         conv.metadata.phone.includes(searchQuery) ||
-                         conv.lastMessage?.text.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      conv.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conv.metadata.phone.includes(searchQuery) ||
+      conv.lastMessage?.text.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesArchive = showArchived ? conv.isArchived : !conv.isArchived
     return matchesSearch && matchesArchive
   })
@@ -392,11 +398,11 @@ export default function WhatsAppDesktop() {
   })
 
   // Filter messages
-  const filteredMessages = showStarred 
+  const filteredMessages = showStarred
     ? messages.filter(m => m.isStarred)
     : messageSearchQuery
-    ? messages.filter(m => m.text.toLowerCase().includes(messageSearchQuery.toLowerCase()))
-    : messages
+      ? messages.filter(m => m.text.toLowerCase().includes(messageSearchQuery.toLowerCase()))
+      : messages
 
   return (
     <div className="flex h-screen bg-background">
@@ -430,7 +436,11 @@ export default function WhatsAppDesktop() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-                    {theme === 'dark' ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
+                    {theme === 'dark' ? (
+                      <Sun className="mr-2 h-4 w-4" />
+                    ) : (
+                      <Moon className="mr-2 h-4 w-4" />
+                    )}
                     Toggle theme
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -451,7 +461,7 @@ export default function WhatsAppDesktop() {
               placeholder="Search or start new chat"
               className="pl-10 pr-4"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
@@ -459,7 +469,7 @@ export default function WhatsAppDesktop() {
         {/* Conversation List */}
         <ScrollArea className="flex-1">
           <div className="space-y-px">
-            {sortedConversations.map((conv) => (
+            {sortedConversations.map(conv => (
               <div
                 key={conv.id}
                 className={`flex items-start gap-3 p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
@@ -470,26 +480,31 @@ export default function WhatsAppDesktop() {
                   setMessages(conv.messages || [])
                   setMessageSearchQuery('')
                   setShowStarred(false)
-                  
+
                   // Mark all inbound messages as read
-                  const unreadMessages = conv.messages?.filter(m => 
-                    m.direction === 'inbound' && m.status !== 'read'
-                  ) || []
-                  
+                  const unreadMessages =
+                    conv.messages?.filter(m => m.direction === 'inbound' && m.status !== 'read') ||
+                    []
+
                   for (const msg of unreadMessages) {
                     await markMessageAsRead(msg.id)
                   }
-                  
+
                   // Update conversation unread count
-                  setConversations(prev => prev.map(c => 
-                    c.id === conv.id ? { ...c, unreadCount: 0 } : c
-                  ))
+                  setConversations(prev =>
+                    prev.map(c => (c.id === conv.id ? { ...c, unreadCount: 0 } : c))
+                  )
                 }}
               >
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={conv.metadata.profile_pic} />
                   <AvatarFallback>
-                    {conv.entity_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                    {conv.entity_name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
@@ -506,18 +521,17 @@ export default function WhatsAppDesktop() {
                     <p className="text-sm text-muted-foreground truncate">
                       {conv.lastMessage?.direction === 'outbound' && (
                         <span className="inline-flex items-center mr-1">
-                          {conv.lastMessage.status === 'read' ? 
-                            <CheckCheck className="h-3 w-3 text-blue-500" /> : 
+                          {conv.lastMessage.status === 'read' ? (
+                            <CheckCheck className="h-3 w-3 text-blue-500" />
+                          ) : (
                             <Check className="h-3 w-3" />
-                          }
+                          )}
                         </span>
                       )}
                       {conv.lastMessage?.text || 'No messages yet'}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <Badge className="bg-green-500 text-white">
-                        {conv.unreadCount}
-                      </Badge>
+                      <Badge className="bg-green-500 text-white">{conv.unreadCount}</Badge>
                     )}
                   </div>
                 </div>
@@ -537,18 +551,22 @@ export default function WhatsAppDesktop() {
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={selectedConversation.metadata.profile_pic} />
                   <AvatarFallback>
-                    {selectedConversation.entity_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                    {selectedConversation.entity_name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium">{selectedConversation.entity_name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {selectedConversation.metadata.is_online ? 
-                      'online' : 
-                      selectedConversation.metadata.last_seen ? 
-                        `last seen ${formatTime(selectedConversation.metadata.last_seen)}` : 
-                        selectedConversation.metadata.phone
-                    }
+                    {selectedConversation.metadata.is_online
+                      ? 'online'
+                      : selectedConversation.metadata.last_seen
+                        ? `last seen ${formatTime(selectedConversation.metadata.last_seen)}`
+                        : selectedConversation.metadata.phone}
                   </p>
                 </div>
               </div>
@@ -564,8 +582,8 @@ export default function WhatsAppDesktop() {
                     placeholder="Search in chat"
                     className="w-[200px] h-8 text-sm"
                     value={messageSearchQuery}
-                    onChange={(e) => setMessageSearchQuery(e.target.value)}
-                    onFocus={(e) => e.target.select()}
+                    onChange={e => setMessageSearchQuery(e.target.value)}
+                    onFocus={e => e.target.select()}
                   />
                   {messageSearchQuery && (
                     <Button
@@ -595,9 +613,7 @@ export default function WhatsAppDesktop() {
                       {selectedConversation.isPinned ? 'Unpin' : 'Pin'} chat
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">
-                      Delete chat
-                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive">Delete chat</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -645,7 +661,7 @@ export default function WhatsAppDesktop() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      {msgs.map((message) => (
+                      {msgs.map(message => (
                         <ContextMenu key={message.id}>
                           <ContextMenuTrigger>
                             <div
@@ -665,9 +681,10 @@ export default function WhatsAppDesktop() {
                               <div
                                 className={`
                                   max-w-[70%] p-3 rounded-lg relative
-                                  ${message.direction === 'outbound' 
-                                    ? 'bg-green-500 text-white dark:bg-green-600' 
-                                    : 'bg-muted'
+                                  ${
+                                    message.direction === 'outbound'
+                                      ? 'bg-green-500 text-white dark:bg-green-600'
+                                      : 'bg-muted'
                                   }
                                   ${selectedMessages.has(message.id) ? 'ring-2 ring-blue-500' : ''}
                                   ${message.isStarred ? 'shadow-lg' : ''}
@@ -675,39 +692,42 @@ export default function WhatsAppDesktop() {
                               >
                                 {/* Reply indicator */}
                                 {message.replyTo && (
-                                  <div className={`mb-2 p-2 rounded ${
-                                    message.direction === 'outbound' 
-                                      ? 'bg-green-600 dark:bg-green-700' 
-                                      : 'bg-muted-foreground/10'
-                                  }`}>
+                                  <div
+                                    className={`mb-2 p-2 rounded ${
+                                      message.direction === 'outbound'
+                                        ? 'bg-green-600 dark:bg-green-700'
+                                        : 'bg-muted-foreground/10'
+                                    }`}
+                                  >
                                     <p className="text-xs opacity-70">Replying to</p>
                                     <p className="text-sm truncate">Original message text...</p>
                                   </div>
                                 )}
-                                
+
                                 <p className="text-sm whitespace-pre-wrap break-words">
                                   {message.text}
                                 </p>
-                                
+
                                 <div className="flex items-center justify-end gap-1 mt-1">
-                                  {message.isStarred && (
-                                    <Star className="h-3 w-3 fill-current" />
-                                  )}
-                                  <span className={`text-xs ${
-                                    message.direction === 'outbound' 
-                                      ? 'text-white/70' 
-                                      : 'text-muted-foreground'
-                                  }`}>
+                                  {message.isStarred && <Star className="h-3 w-3 fill-current" />}
+                                  <span
+                                    className={`text-xs ${
+                                      message.direction === 'outbound'
+                                        ? 'text-white/70'
+                                        : 'text-muted-foreground'
+                                    }`}
+                                  >
                                     {formatMessageTime(message.created_at)}
                                   </span>
                                   {message.direction === 'outbound' && (
                                     <span>
-                                      {message.status === 'read' ? 
-                                        <CheckCheck className="h-3 w-3 text-blue-200" /> : 
-                                        message.status === 'delivered' ?
-                                        <CheckCheck className="h-3 w-3" /> :
+                                      {message.status === 'read' ? (
+                                        <CheckCheck className="h-3 w-3 text-blue-200" />
+                                      ) : message.status === 'delivered' ? (
+                                        <CheckCheck className="h-3 w-3" />
+                                      ) : (
                                         <Check className="h-3 w-3" />
-                                      }
+                                      )}
                                     </span>
                                   )}
                                 </div>
@@ -723,15 +743,19 @@ export default function WhatsAppDesktop() {
                               <Forward className="mr-2 h-4 w-4" />
                               Forward
                             </ContextMenuItem>
-                            <ContextMenuItem onClick={() => navigator.clipboard.writeText(message.text)}>
+                            <ContextMenuItem
+                              onClick={() => navigator.clipboard.writeText(message.text)}
+                            >
                               <Copy className="mr-2 h-4 w-4" />
                               Copy
                             </ContextMenuItem>
                             <ContextMenuItem onClick={() => toggleStar(message.id)}>
-                              <Star className={`mr-2 h-4 w-4 ${message.isStarred ? 'fill-current' : ''}`} />
+                              <Star
+                                className={`mr-2 h-4 w-4 ${message.isStarred ? 'fill-current' : ''}`}
+                              />
                               {message.isStarred ? 'Unstar' : 'Star'}
                             </ContextMenuItem>
-                            <ContextMenuItem 
+                            <ContextMenuItem
                               className="text-destructive"
                               onClick={() => deleteMessage(message.id)}
                             >
@@ -757,16 +781,12 @@ export default function WhatsAppDesktop() {
                     <p className="text-xs text-muted-foreground">Replying to</p>
                     <p className="text-sm truncate">{replyingTo.text}</p>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setReplyingTo(null)}
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => setReplyingTo(null)}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               )}
-              
+
               <div className="flex items-end gap-2">
                 {/* Emoji Picker */}
                 <DropdownMenu open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
@@ -777,7 +797,24 @@ export default function WhatsAppDesktop() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-[300px] p-2">
                     <div className="grid grid-cols-8 gap-1">
-                      {['😀', '😂', '😍', '🤔', '😎', '😭', '😊', '🙏', '👍', '❤️', '🎉', '🔥', '💯', '👏', '😁', '🤗'].map(emoji => (
+                      {[
+                        '😀',
+                        '😂',
+                        '😍',
+                        '🤔',
+                        '😎',
+                        '😭',
+                        '😊',
+                        '🙏',
+                        '👍',
+                        '❤️',
+                        '🎉',
+                        '🔥',
+                        '💯',
+                        '👏',
+                        '😁',
+                        '🤗'
+                      ].map(emoji => (
                         <Button
                           key={emoji}
                           variant="ghost"
@@ -807,16 +844,18 @@ export default function WhatsAppDesktop() {
                       <Camera className="mr-2 h-4 w-4" />
                       Photos & Videos
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => {
-                      const input = document.createElement('input')
-                      input.type = 'file'
-                      input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'
-                      input.onchange = (e) => {
-                        const file = (e.target as HTMLInputElement).files?.[0]
-                        if (file) sendMedia(file)
-                      }
-                      input.click()
-                    }}>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        const input = document.createElement('input')
+                        input.type = 'file'
+                        input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'
+                        input.onchange = e => {
+                          const file = (e.target as HTMLInputElement).files?.[0]
+                          if (file) sendMedia(file)
+                        }
+                        input.click()
+                      }}
+                    >
                       <File className="mr-2 h-4 w-4" />
                       Document
                     </DropdownMenuItem>
@@ -830,14 +869,14 @@ export default function WhatsAppDesktop() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
                   className="hidden"
                   accept="image/*,video/*"
                   multiple
-                  onChange={(e) => {
+                  onChange={e => {
                     const files = Array.from(e.target.files || [])
                     files.forEach(file => sendMedia(file))
                     e.target.value = '' // Reset input
@@ -849,8 +888,8 @@ export default function WhatsAppDesktop() {
                   placeholder="Type a message"
                   className="flex-1"
                   value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyDown={(e) => {
+                  onChange={e => setMessageInput(e.target.value)}
+                  onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
                       sendMessage()
@@ -876,9 +915,9 @@ export default function WhatsAppDesktop() {
                     </svg>
                   </Button>
                 ) : (
-                  <Button 
-                    size="icon" 
-                    variant={isRecording ? "destructive" : "default"}
+                  <Button
+                    size="icon"
+                    variant={isRecording ? 'destructive' : 'default'}
                     onClick={() => setIsRecording(!isRecording)}
                   >
                     <Mic className="h-5 w-5" />
@@ -899,8 +938,12 @@ export default function WhatsAppDesktop() {
                 Select a conversation to start messaging or use Ctrl+N to start a new chat
               </p>
               <div className="mt-6 space-y-2 text-sm text-muted-foreground">
-                <p><kbd className="px-2 py-1 bg-muted rounded">Ctrl+/</kbd> Search conversations</p>
-                <p><kbd className="px-2 py-1 bg-muted rounded">Ctrl+N</kbd> New chat</p>
+                <p>
+                  <kbd className="px-2 py-1 bg-muted rounded">Ctrl+/</kbd> Search conversations
+                </p>
+                <p>
+                  <kbd className="px-2 py-1 bg-muted rounded">Ctrl+N</kbd> New chat
+                </p>
               </div>
             </div>
           </div>

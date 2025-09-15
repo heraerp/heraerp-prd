@@ -33,9 +33,7 @@ export function ISPTable<T extends Record<string, any>>({
   // Filter data based on search term
   const filteredData = data.filter(item => {
     const searchStr = searchTerm.toLowerCase()
-    return Object.values(item).some(value => 
-      String(value).toLowerCase().includes(searchStr)
-    )
+    return Object.values(item).some(value => String(value).toLowerCase().includes(searchStr))
   })
 
   // Pagination
@@ -53,7 +51,7 @@ export function ISPTable<T extends Record<string, any>>({
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => {
+          onChange={e => {
             setSearchTerm(e.target.value)
             setCurrentPage(1)
           }}
@@ -92,7 +90,7 @@ export function ISPTable<T extends Record<string, any>>({
               <tbody>
                 {paginatedData.length === 0 ? (
                   <tr>
-                    <td 
+                    <td
                       colSpan={columns.length + (onEdit || onDelete ? 1 : 0)}
                       className="px-6 py-12 text-center text-white/40"
                     >
@@ -101,16 +99,15 @@ export function ISPTable<T extends Record<string, any>>({
                   </tr>
                 ) : (
                   paginatedData.map((item, index) => (
-                    <tr 
+                    <tr
                       key={index}
                       className="border-b border-white/5 hover:bg-white/5 transition-colors duration-200"
                     >
-                      {columns.map((column) => (
+                      {columns.map(column => (
                         <td key={String(column.key)} className="px-6 py-4 text-sm text-white/70">
-                          {column.render 
+                          {column.render
                             ? column.render(item)
-                            : String(item[column.key as keyof T] || '-')
-                          }
+                            : String(item[column.key as keyof T] || '-')}
                         </td>
                       ))}
                       {(onEdit || onDelete) && (
@@ -148,7 +145,9 @@ export function ISPTable<T extends Record<string, any>>({
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-6 py-4 border-t border-white/10">
               <div className="text-sm text-white/60">
-                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredData.length)} of {filteredData.length} entries
+                Showing {startIndex + 1} to{' '}
+                {Math.min(startIndex + itemsPerPage, filteredData.length)} of {filteredData.length}{' '}
+                entries
               </div>
               <div className="flex items-center space-x-2">
                 <button

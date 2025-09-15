@@ -2,18 +2,32 @@ import { Command } from 'commander'
 import { SmartCodeValidateInputSchema, SmartCodeValidateOutputSchema } from '../schemas'
 import { HERAGuardrails, SMART_CODE_PATTERN } from '../../lib/guardrails/hera-guardrails'
 
-const KNOWN_INDUSTRIES = ['RETAIL', 'RESTAURANT', 'ACCOUNTING', 'CRM', 'INVENTORY', 'ERP', 'HLTH', 'FIN', 'MFG', 'HR']
+const KNOWN_INDUSTRIES = [
+  'RETAIL',
+  'RESTAURANT',
+  'ACCOUNTING',
+  'CRM',
+  'INVENTORY',
+  'ERP',
+  'HLTH',
+  'FIN',
+  'MFG',
+  'HR'
+]
 
 export function registerSmartCode(cmd: Command) {
   const sc = cmd.command('smart-code').description('Smart code operations')
 
-  sc
-    .command('validate')
+  sc.command('validate')
     .argument('<smart_code>', 'Smart Code to validate')
     .option('--semantic', 'Run semantic checks', false)
     .option('--json', 'Output JSON', false)
     .action(async (smart_code: string, opts) => {
-      const parsed = SmartCodeValidateInputSchema.safeParse({ smart_code, semantic: !!opts.semantic, json: !!opts.json })
+      const parsed = SmartCodeValidateInputSchema.safeParse({
+        smart_code,
+        semantic: !!opts.semantic,
+        json: !!opts.json
+      })
       if (!parsed.success) {
         console.error(parsed.error.flatten())
         process.exit(1)
@@ -37,7 +51,9 @@ export function registerSmartCode(cmd: Command) {
               version_current: true
             }
           : undefined,
-        suggestions: result.passed ? [] : ['Verify industry/module segments and use a numeric version suffix like v1']
+        suggestions: result.passed
+          ? []
+          : ['Verify industry/module segments and use a numeric version suffix like v1']
       }
 
       const validated = SmartCodeValidateOutputSchema.safeParse(output)

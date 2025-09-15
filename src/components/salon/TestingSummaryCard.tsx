@@ -47,9 +47,7 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
             </div>
             <div>
               <CardTitle>Rule Testing</CardTitle>
-              <CardDescription>
-                Test your business rules before deployment
-              </CardDescription>
+              <CardDescription>Test your business rules before deployment</CardDescription>
             </div>
           </div>
           <Link href="/salon-data/config?tab=rules">
@@ -84,15 +82,20 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
           </h4>
           <div className="space-y-2">
             {tests.map((test, index) => (
-              <div 
+              <div
                 key={index}
                 className="flex items-center justify-between p-3 bg-white/70 dark:bg-gray-800/70 rounded-lg"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    test.passRate === 100 ? 'bg-green-500' :
-                    test.passRate >= 80 ? 'bg-yellow-500' : 'bg-red-500'
-                  }`} />
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      test.passRate === 100
+                        ? 'bg-green-500'
+                        : test.passRate >= 80
+                          ? 'bg-yellow-500'
+                          : 'bg-red-500'
+                    }`}
+                  />
                   <div>
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {test.ruleName}
@@ -102,12 +105,14 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
                     </p>
                   </div>
                 </div>
-                <Badge 
+                <Badge
                   variant="outline"
                   className={
-                    test.passRate === 100 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' :
-                    test.passRate >= 80 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200' :
-                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
+                    test.passRate === 100
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
+                      : test.passRate >= 80
+                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200'
+                        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
                   }
                 >
                   {test.passRate}% Pass
@@ -120,8 +125,8 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
         {/* Test Scenarios */}
         <div className="mt-4 p-3 bg-blue-100/50 dark:bg-blue-900/20 rounded-lg">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Pre-built scenarios</strong> for cancellations, pricing, notifications, and more. 
-            Create custom tests for your specific business needs.
+            <strong>Pre-built scenarios</strong> for cancellations, pricing, notifications, and
+            more. Create custom tests for your specific business needs.
           </p>
         </div>
       </CardContent>

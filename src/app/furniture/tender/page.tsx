@@ -157,15 +157,15 @@ export default function TenderManagementPage() {
   useEffect(() => {
     async function loadTenderData() {
       if (!organizationId) return
-      
+
       try {
         // Set organization context
         universalApi.setOrganizationId(organizationId)
-        
+
         // Load metrics
         const metricsData = await tenderService.getMetrics()
         setMetrics(metricsData)
-        
+
         // Update stats with real data
         setTenderStats([
           {
@@ -180,7 +180,7 @@ export default function TenderManagementPage() {
             label: 'Bids Submitted',
             value: metricsData.bidsSubmitted.current.toString(),
             change: `+${metricsData.bidsSubmitted.delta} this month`,
-            trend: metricsData.bidsSubmitted.delta > 0 ? 'up' as const : 'neutral' as const,
+            trend: metricsData.bidsSubmitted.delta > 0 ? ('up' as const) : ('neutral' as const),
             icon: Target,
             gradient: 'from-purple-500 to-pink-500'
           },
@@ -188,7 +188,7 @@ export default function TenderManagementPage() {
             label: 'Win Rate',
             value: `${metricsData.winRate.percentage}%`,
             change: `${metricsData.winRate.wonBids}/${metricsData.winRate.totalBids} won`,
-            trend: metricsData.winRate.percentage > 40 ? 'up' as const : 'neutral' as const,
+            trend: metricsData.winRate.percentage > 40 ? ('up' as const) : ('neutral' as const),
             icon: Trophy,
             gradient: 'from-green-500 to-emerald-500'
           },
@@ -201,7 +201,7 @@ export default function TenderManagementPage() {
             gradient: 'from-amber-500 to-orange-500'
           }
         ])
-        
+
         // Load tender list
         const { tenders: tenderList } = await tenderService.getTenderList({
           status: 'active',
@@ -214,7 +214,7 @@ export default function TenderManagementPage() {
         setLoading(false)
       }
     }
-    
+
     loadTenderData()
   }, [organizationId])
 
@@ -259,7 +259,10 @@ export default function TenderManagementPage() {
                 </Button>
               </Link>
               <Link href="/furniture/tender/new">
-                <Button size="sm" className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700">
+                <Button
+                  size="sm"
+                  className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                >
                   <Plus className="h-4 w-4" />
                   Add Tender
                 </Button>
@@ -272,7 +275,7 @@ export default function TenderManagementPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-white">Tender Performance</h2>
           <StatCardGrid>
-            {tenderStats.map((stat) => (
+            {tenderStats.map(stat => (
               <FurnitureStatCard key={stat.label} {...stat} />
             ))}
           </StatCardGrid>
@@ -294,7 +297,7 @@ export default function TenderManagementPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search tenders by code, title, or department..."
                 className="pl-10 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400"
               />
@@ -322,8 +325,11 @@ export default function TenderManagementPage() {
                     <div className="text-center text-gray-400">No active tenders found</div>
                   </Card>
                 ) : (
-                  tenders.map((tender) => (
-                    <Card key={tender.id} className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50 hover:border-amber-500/50 transition-colors">
+                  tenders.map(tender => (
+                    <Card
+                      key={tender.id}
+                      className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50 hover:border-amber-500/50 transition-colors"
+                    >
                       <div className="space-y-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -352,17 +358,23 @@ export default function TenderManagementPage() {
                           </div>
                           <div>
                             <p className="text-xs text-gray-400">Estimated Value</p>
-                            <p className="text-sm font-medium text-white">₹{(tender.estimated_value / 100000).toFixed(1)}L</p>
+                            <p className="text-sm font-medium text-white">
+                              ₹{(tender.estimated_value / 100000).toFixed(1)}L
+                            </p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-400">EMD Required</p>
-                            <p className="text-sm font-medium text-white">₹{(tender.emd_amount / 1000).toFixed(0)}K</p>
+                            <p className="text-sm font-medium text-white">
+                              ₹{(tender.emd_amount / 1000).toFixed(0)}K
+                            </p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-400">Closing Date</p>
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3 text-amber-400" />
-                              <p className="text-sm font-medium text-amber-400">{tender.days_left} days left</p>
+                              <p className="text-sm font-medium text-amber-400">
+                                {tender.days_left} days left
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -371,20 +383,23 @@ export default function TenderManagementPage() {
                           <div className="flex items-center gap-2">
                             <Brain className="h-4 w-4 text-purple-400" />
                             <span className="text-sm text-gray-400">
-                              AI Strategy: <span className="text-white font-medium">{tender.bid_strategy || 'moderate'}</span>
+                              AI Strategy:{' '}
+                              <span className="text-white font-medium">
+                                {tender.bid_strategy || 'moderate'}
+                              </span>
                             </span>
                           </div>
                           <div className="flex gap-2">
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               onClick={async () => {
                                 try {
                                   toast({
                                     title: 'Calculating Bid',
-                                    description: 'AI is analyzing the tender...',
+                                    description: 'AI is analyzing the tender...'
                                   })
-                                  
+
                                   const result = await tenderService.calculateBid(tender.id, {
                                     estimated_amount: tender.estimated_value,
                                     costs: {
@@ -393,24 +408,25 @@ export default function TenderManagementPage() {
                                     },
                                     margin_preference: 'moderate'
                                   })
-                                  
+
                                   toast({
                                     title: 'Bid Calculated Successfully',
-                                    description: `Draft bid: ₹${(result.bid_amount / 100000).toFixed(1)}L with ${result.ai_confidence || 78}% confidence. Margin: ${result.margin_percentage?.toFixed(1) || '12.5'}%`,
+                                    description: `Draft bid: ₹${(result.bid_amount / 100000).toFixed(1)}L with ${result.ai_confidence || 78}% confidence. Margin: ${result.margin_percentage?.toFixed(1) || '12.5'}%`
                                   })
-                                  
+
                                   console.log('Bid calculation result:', result)
-                                  
+
                                   // Optional: Navigate to bid details or refresh the list
                                   // router.push(`/furniture/tender/${tender.id}/bid/${result.draft_bid_id}`)
                                 } catch (error) {
                                   console.error('Error calculating bid:', error)
                                   const errorMessage = error.message || 'Unknown error'
-                                  
+
                                   if (errorMessage.includes('Supabase not configured')) {
                                     toast({
                                       title: 'Database Not Configured',
-                                      description: 'Please configure Supabase credentials in your .env file. See SETUP_SUPABASE.md for instructions.',
+                                      description:
+                                        'Please configure Supabase credentials in your .env file. See SETUP_SUPABASE.md for instructions.',
                                       variant: 'destructive'
                                     })
                                   } else {
@@ -449,7 +465,8 @@ export default function TenderManagementPage() {
                   <div className="flex-1">
                     <h4 className="font-semibold text-white">AI Bid Recommendations</h4>
                     <p className="text-sm text-gray-300 mt-1">
-                      3 tenders identified with high win probability based on historical data and current market conditions.
+                      3 tenders identified with high win probability based on historical data and
+                      current market conditions.
                     </p>
                     <Button size="sm" className="mt-3" variant="secondary">
                       View Analysis
@@ -481,28 +498,38 @@ export default function TenderManagementPage() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white">Competitor Analysis</h3>
               <div className="grid gap-4">
-                {mockCompetitors.map((competitor) => (
-                  <Card key={competitor.id} className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
+                {mockCompetitors.map(competitor => (
+                  <Card
+                    key={competitor.id}
+                    className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <h4 className="font-semibold text-white">{competitor.name}</h4>
                         <div className="flex items-center gap-4 mt-2 text-sm">
                           <span className="text-gray-400">
-                            Win Rate: <span className="text-white font-medium">{competitor.winRate}</span>
+                            Win Rate:{' '}
+                            <span className="text-white font-medium">{competitor.winRate}</span>
                           </span>
                           <span className="text-gray-400">
-                            Avg Margin: <span className="text-white font-medium">{competitor.avgBidMargin}</span>
+                            Avg Margin:{' '}
+                            <span className="text-white font-medium">
+                              {competitor.avgBidMargin}
+                            </span>
                           </span>
                           <span className="text-gray-400">
-                            Total Wins: <span className="text-white font-medium">{competitor.totalWins}</span>
+                            Total Wins:{' '}
+                            <span className="text-white font-medium">{competitor.totalWins}</span>
                           </span>
                         </div>
                       </div>
-                      <Badge 
+                      <Badge
                         variant={
-                          competitor.strengthLevel === 'high' ? 'destructive' :
-                          competitor.strengthLevel === 'medium' ? 'default' :
-                          'secondary'
+                          competitor.strengthLevel === 'high'
+                            ? 'destructive'
+                            : competitor.strengthLevel === 'medium'
+                              ? 'default'
+                              : 'secondary'
                         }
                       >
                         {competitor.strengthLevel} threat

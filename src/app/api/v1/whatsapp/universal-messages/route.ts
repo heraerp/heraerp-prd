@@ -10,10 +10,11 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const organizationId = searchParams.get('org_id') || 
-                          searchParams.get('organization_id') ||
-                          process.env.DEFAULT_ORGANIZATION_ID || 
-                          'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Hair Talkz
+    const organizationId =
+      searchParams.get('org_id') ||
+      searchParams.get('organization_id') ||
+      process.env.DEFAULT_ORGANIZATION_ID ||
+      'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Hair Talkz
 
     console.log('🔍 Fetching WhatsApp messages for org:', organizationId)
 
@@ -68,7 +69,13 @@ export async function GET(request: NextRequest) {
       .from('universal_transactions')
       .select('*')
       .eq('organization_id', organizationId)
-      .in('transaction_type', ['whatsapp_message', 'whatsapp_webhook', 'whatsapp_ai_request', 'whatsapp_inbound', 'whatsapp_outbound'])
+      .in('transaction_type', [
+        'whatsapp_message',
+        'whatsapp_webhook',
+        'whatsapp_ai_request',
+        'whatsapp_inbound',
+        'whatsapp_outbound'
+      ])
       .order('created_at', { ascending: false })
       .limit(50) // Increased limit to see more recent messages
 
@@ -85,9 +92,11 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
 
     console.log('🕐 Messages in last 24h:', recentMessages?.length || 0)
-    
+
     if (recentMessages && recentMessages.length > 0) {
-      console.log('📨 Recent message types:', [...new Set(recentMessages.map(m => m.transaction_type))])
+      console.log('📨 Recent message types:', [
+        ...new Set(recentMessages.map(m => m.transaction_type))
+      ])
       console.log('📨 Sample recent message:', {
         id: recentMessages[0].id,
         type: recentMessages[0].transaction_type,
@@ -100,31 +109,43 @@ export async function GET(request: NextRequest) {
     const allWhatsAppTxns = [
       ...(allTransactions || []),
       ...(recentActivity || []).filter(tx => !allTransactions?.some(atx => atx.id === tx.id)),
-      ...(recentMessages || []).filter(tx => 
-        !allTransactions?.some(atx => atx.id === tx.id) && 
-        !recentActivity?.some(rtx => rtx.id === tx.id)
+      ...(recentMessages || []).filter(
+        tx =>
+          !allTransactions?.some(atx => atx.id === tx.id) &&
+          !recentActivity?.some(rtx => rtx.id === tx.id)
       )
     ]
 
     console.log('📊 Combined WhatsApp transactions:', allWhatsAppTxns.length)
 
     // Format messages for frontend
-    const messages = allWhatsAppTxns.map(txn => ({
-      id: txn.id,
-      text: (txn.metadata as any)?.text || (txn.metadata as any)?.message || (txn.metadata as any)?.body || '',
-      direction: (txn.metadata as any)?.direction || (txn.transaction_type.includes('inbound') ? 'inbound' : 'outbound'),
-      wa_id: (txn.metadata as any)?.from || (txn.metadata as any)?.wa_id || (txn.metadata as any)?.contact_id || '',
-      phone: (txn.metadata as any)?.phone || '',
-      timestamp: txn.created_at,
-      occurred_at: txn.transaction_date,
-      status: txn.transaction_status,
-      smart_code: txn.smart_code,
-      cost: (txn.metadata as any)?.cost_usd || 0,
-      provider: (txn.metadata as any)?.provider_selected || 'unknown',
-      metadata: txn.metadata,
-      transaction_type: txn.transaction_type,
-      is_recent: new Date(txn.created_at) > new Date(oneDayAgo)
-    })) || []
+    const messages =
+      allWhatsAppTxns.map(txn => ({
+        id: txn.id,
+        text:
+          (txn.metadata as any)?.text ||
+          (txn.metadata as any)?.message ||
+          (txn.metadata as any)?.body ||
+          '',
+        direction:
+          (txn.metadata as any)?.direction ||
+          (txn.transaction_type.includes('inbound') ? 'inbound' : 'outbound'),
+        wa_id:
+          (txn.metadata as any)?.from ||
+          (txn.metadata as any)?.wa_id ||
+          (txn.metadata as any)?.contact_id ||
+          '',
+        phone: (txn.metadata as any)?.phone || '',
+        timestamp: txn.created_at,
+        occurred_at: txn.transaction_date,
+        status: txn.transaction_status,
+        smart_code: txn.smart_code,
+        cost: (txn.metadata as any)?.cost_usd || 0,
+        provider: (txn.metadata as any)?.provider_selected || 'unknown',
+        metadata: txn.metadata,
+        transaction_type: txn.transaction_type,
+        is_recent: new Date(txn.created_at) > new Date(oneDayAgo)
+      })) || []
 
     // Query actual conversation entities from database
     const { data: conversationEntities, error: convEntitiesError } = await supabase
@@ -133,7 +154,7 @@ export async function GET(request: NextRequest) {
       .eq('entity_type', 'whatsapp_conversation')
       .eq('organization_id', organizationId)
       .order('created_at', { ascending: false })
-    
+
     if (convEntitiesError) {
       console.error('Error fetching conversations:', convEntitiesError)
     }
@@ -146,7 +167,7 @@ export async function GET(request: NextRequest) {
       .select('*')
       .eq('entity_type', 'customer')
       .eq('organization_id', organizationId)
-    
+
     if (custError) {
       console.error('Error fetching customers:', custError)
     }
@@ -168,7 +189,7 @@ export async function GET(request: NextRequest) {
       const waId = (conv.metadata as any)?.wa_id || (conv.metadata as any)?.phone || ''
       const customerId = (conv.metadata as any)?.customer_id
       const customer = customerMap.get(waId)
-      
+
       conversationMap.set(conv.id, {
         id: conv.id,
         waContactId: waId,
@@ -189,7 +210,7 @@ export async function GET(request: NextRequest) {
     // Then assign messages to conversations
     messages.forEach(msg => {
       const waId = msg.wa_id || msg.phone || 'unknown'
-      
+
       // Find conversation by wa_id
       let convEntry = null
       for (const [convId, conv] of conversationMap.entries()) {
@@ -198,7 +219,7 @@ export async function GET(request: NextRequest) {
           break
         }
       }
-      
+
       // If no conversation found, create a synthetic one
       if (!convEntry) {
         const syntheticId = `conv-${waId}`
@@ -217,15 +238,18 @@ export async function GET(request: NextRequest) {
         }
         conversationMap.set(syntheticId, convEntry)
       }
-      
+
       convEntry.messages.push(msg)
-      
+
       // Update last message info
-      if (!convEntry.lastMessage || new Date(msg.timestamp) > new Date(convEntry.lastMessage.timestamp)) {
+      if (
+        !convEntry.lastMessage ||
+        new Date(msg.timestamp) > new Date(convEntry.lastMessage.timestamp)
+      ) {
         convEntry.lastMessage = msg
         convEntry.lastMessageTime = msg.timestamp
       }
-      
+
       // Update cost
       convEntry.conversationCost += msg.cost
     })
@@ -253,11 +277,12 @@ export async function GET(request: NextRequest) {
         hasChannel: !!configs.channel,
         hasRouting: !!configs.routing,
         hasToolmap: !!configs.toolmap,
-        providers: configs.routing?.providers?.map(p => ({
-          name: p.name,
-          enabled: p.enabled,
-          priority: p.priority
-        })) || []
+        providers:
+          configs.routing?.providers?.map(p => ({
+            name: p.name,
+            enabled: p.enabled,
+            priority: p.priority
+          })) || []
       },
       data: {
         totalConversations: conversationsWithMessages.length,
@@ -269,13 +294,14 @@ export async function GET(request: NextRequest) {
           providers,
           messagesByDirection
         },
-        recentActivity: recentActivity?.map(activity => ({
-          id: activity.id,
-          type: activity.transaction_type,
-          status: activity.transaction_status,
-          timestamp: activity.created_at,
-          metadata: activity.metadata
-        })) || []
+        recentActivity:
+          recentActivity?.map(activity => ({
+            id: activity.id,
+            type: activity.transaction_type,
+            status: activity.transaction_status,
+            timestamp: activity.created_at,
+            metadata: activity.metadata
+          })) || []
       },
       debug: {
         dynamicMessagesCount: dynamicMessages?.length || 0,
@@ -287,14 +313,16 @@ export async function GET(request: NextRequest) {
         }
       }
     })
-
   } catch (error) {
     console.error('Universal messages API error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      details: 'Failed to fetch universal WhatsApp messages'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        details: 'Failed to fetch universal WhatsApp messages'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -333,12 +361,14 @@ export async function POST(request: NextRequest) {
         'Check /api/v1/whatsapp/universal-messages for the new data'
       ]
     })
-
   } catch (error) {
     console.error('Test message creation error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

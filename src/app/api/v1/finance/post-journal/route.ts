@@ -119,12 +119,8 @@ export async function POST(request: NextRequest) {
       postingDate: journalTransaction.transaction_date,
       message: 'Journal entry posted successfully'
     })
-
   } catch (error) {
     console.error('Error in post-journal API:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
   }
 }

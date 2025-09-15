@@ -10,12 +10,15 @@ export async function POST(request: NextRequest) {
     const { action, content, type, context } = body
 
     if (!action || !content) {
-      return NextResponse.json({
-        success: false,
-        error: 'Action and content are required',
-        smart_code: 'HERA.AI.DOCS.ERROR.MISSING_PARAMS.v1',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Action and content are required',
+          smart_code: 'HERA.AI.DOCS.ERROR.MISSING_PARAMS.v1',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
 
     switch (action) {
@@ -189,32 +192,37 @@ Context: ${context || 'HERA Universal Architecture'}`,
         return NextResponse.json(architectureDocsResult)
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown documentation action: ${action}`,
-          available_actions: [
-            'generate_api_docs',
-            'generate_component_docs',
-            'generate_smart_code_docs',
-            'generate_user_guide',
-            'analyze_code_quality',
-            'generate_changelog',
-            'generate_architecture_docs'
-          ],
-          smart_code: 'HERA.AI.DOCS.ERROR.UNKNOWN_ACTION.v1',
-          timestamp: new Date().toISOString()
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown documentation action: ${action}`,
+            available_actions: [
+              'generate_api_docs',
+              'generate_component_docs',
+              'generate_smart_code_docs',
+              'generate_user_guide',
+              'analyze_code_quality',
+              'generate_changelog',
+              'generate_architecture_docs'
+            ],
+            smart_code: 'HERA.AI.DOCS.ERROR.UNKNOWN_ACTION.v1',
+            timestamp: new Date().toISOString()
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('AI Documentation Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to generate documentation',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      smart_code: 'HERA.AI.DOCS.ERROR.GENERATION.v1',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to generate documentation',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        smart_code: 'HERA.AI.DOCS.ERROR.GENERATION.v1',
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -231,7 +239,7 @@ export async function GET(request: NextRequest) {
           data: {
             documentation_types: [
               'API Documentation',
-              'Component Documentation', 
+              'Component Documentation',
               'Smart Code Documentation',
               'User Guides',
               'Code Quality Analysis',
@@ -280,14 +288,16 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString()
         })
     }
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to process documentation request',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      smart_code: 'HERA.AI.DOCS.ERROR.REQUEST.v1',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to process documentation request',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        smart_code: 'HERA.AI.DOCS.ERROR.REQUEST.v1',
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }

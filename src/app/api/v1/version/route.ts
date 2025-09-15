@@ -5,7 +5,7 @@ export async function GET() {
   // Get version from constants file (source of truth)
   const version = APP_VERSION.current
   const buildDate = APP_VERSION.releaseDate
-  
+
   return NextResponse.json({
     version,
     buildDate,

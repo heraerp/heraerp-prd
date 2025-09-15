@@ -8,7 +8,13 @@ interface DAGExecutionRequest {
     dag_name: string
     nodes: Array<{
       node_id: string
-      node_type: 'calculation' | 'validation' | 'transformation' | 'aggregation' | 'decision' | 'api_call'
+      node_type:
+        | 'calculation'
+        | 'validation'
+        | 'transformation'
+        | 'aggregation'
+        | 'decision'
+        | 'api_call'
       node_name: string
       dependencies: string[] // IDs of nodes this depends on
       execution_config: {
@@ -113,11 +119,14 @@ class DAGExecutionEngine {
       }
 
       // Optimize DAG for execution
-      const optimizedDAG = this.optimizeDAGExecution(request.dag_definition, request.optimization_options)
-      
+      const optimizedDAG = this.optimizeDAGExecution(
+        request.dag_definition,
+        request.optimization_options
+      )
+
       // Build dependency graph
       const dependencyGraph = this.buildDependencyGraph(optimizedDAG.nodes)
-      
+
       // Execute nodes based on dependencies
       const executionResults = await this.executeNodes(
         optimizedDAG.nodes,
@@ -159,10 +168,9 @@ class DAGExecutionEngine {
         },
         final_output: finalOutput
       }
-
     } catch (error) {
       const totalTime = Date.now() - startTime
-      
+
       return {
         execution_id: executionId,
         dag_id: request.dag_definition.dag_id,
@@ -263,18 +271,18 @@ class DAGExecutionEngine {
 
   private buildDependencyGraph(nodes: any[]): Map<string, string[]> {
     const graph = new Map<string, string[]>()
-    
+
     for (const node of nodes) {
       graph.set(node.node_id, node.dependencies || [])
     }
-    
+
     return graph
   }
 
   private async executeNodes(
-    nodes: any[], 
-    dependencyGraph: Map<string, string[]>, 
-    context: any, 
+    nodes: any[],
+    dependencyGraph: Map<string, string[]>,
+    context: any,
     options?: any
   ): Promise<Record<string, any>> {
     const results: Record<string, any> = {}
@@ -283,12 +291,12 @@ class DAGExecutionEngine {
 
     // Topological sort for execution order
     const executionOrder = this.topologicalSort(nodes, dependencyGraph)
-    
+
     // Execute nodes in dependency order with parallel execution where possible
     for (const batch of this.createExecutionBatches(executionOrder, dependencyGraph)) {
-      const batchPromises = batch.map(async (nodeId) => {
+      const batchPromises = batch.map(async nodeId => {
         const node = nodes.find(n => n.node_id === nodeId)!
-        
+
         try {
           executing.add(nodeId)
           const result = await this.executeNode(node, results, context, options)
@@ -296,15 +304,15 @@ class DAGExecutionEngine {
           return { nodeId, result }
         } catch (error) {
           completed.add(nodeId)
-          return { 
-            nodeId, 
-            result: { 
-              status: 'FAILED', 
+          return {
+            nodeId,
+            result: {
+              status: 'FAILED',
               error_message: (error as Error).message,
               execution_time_ms: 0,
               dependencies_satisfied: false,
               parallel_execution: batch.length > 1
-            } 
+            }
           }
         } finally {
           executing.delete(nodeId)
@@ -313,7 +321,7 @@ class DAGExecutionEngine {
 
       // Wait for batch completion
       const batchResults = await Promise.all(batchPromises)
-      
+
       // Store results
       for (const { nodeId, result } of batchResults) {
         results[nodeId] = result
@@ -323,9 +331,14 @@ class DAGExecutionEngine {
     return results
   }
 
-  private async executeNode(node: any, previousResults: any, context: any, options?: any): Promise<any> {
+  private async executeNode(
+    node: any,
+    previousResults: any,
+    context: any,
+    options?: any
+  ): Promise<any> {
     const startTime = Date.now()
-    
+
     // Check cache first
     const cacheKey = this.generateCacheKey(node, context.input_data)
     if (options?.enable_caching && this.executionCache.has(cacheKey)) {
@@ -349,14 +362,11 @@ class DAGExecutionEngine {
     }
 
     // Execute the node function
-    const nodeResult = await this.executeNodeFunction(
-      node.execution_config.function_name,
-      {
-        ...node.execution_config.parameters,
-        ...context.input_data,
-        dependencies: dependencyData
-      }
-    )
+    const nodeResult = await this.executeNodeFunction(node.execution_config.function_name, {
+      ...node.execution_config.parameters,
+      ...context.input_data,
+      dependencies: dependencyData
+    })
 
     const executionTime = Date.now() - startTime
 
@@ -413,11 +423,12 @@ class DAGExecutionEngine {
     const price = params.dependencies?.apply_markup || params.price || 125
     const minPrice = params.min_price || 50
     const maxPrice = params.max_price || 1000
-    
+
     return {
       price,
       is_valid: price >= minPrice && price <= maxPrice,
-      validation_errors: price < minPrice ? ['Price below minimum'] : price > maxPrice ? ['Price above maximum'] : []
+      validation_errors:
+        price < minPrice ? ['Price below minimum'] : price > maxPrice ? ['Price above maximum'] : []
     }
   }
 
@@ -460,7 +471,10 @@ class DAGExecutionEngine {
     return result
   }
 
-  private createExecutionBatches(executionOrder: string[], dependencyGraph: Map<string, string[]>): string[][] {
+  private createExecutionBatches(
+    executionOrder: string[],
+    dependencyGraph: Map<string, string[]>
+  ): string[][] {
     const batches: string[][] = []
     const processed = new Set<string>()
 
@@ -508,7 +522,7 @@ class DAGExecutionEngine {
 
   private determineOverallStatus(results: Record<string, any>): 'COMPLETED' | 'FAILED' | 'PARTIAL' {
     const statuses = Object.values(results).map(r => r.status)
-    
+
     if (statuses.every(s => s === 'SUCCESS')) return 'COMPLETED'
     if (statuses.every(s => s === 'FAILED')) return 'FAILED'
     return 'PARTIAL'
@@ -539,7 +553,8 @@ class DAGExecutionEngine {
       .map(([nodeId, result]) => ({
         node_id: nodeId,
         execution_time_ms: result.execution_time_ms || 0,
-        optimization_suggestions: result.execution_time_ms > 1000 ? ['Consider optimizing this node'] : []
+        optimization_suggestions:
+          result.execution_time_ms > 1000 ? ['Consider optimizing this node'] : []
       }))
       .filter(b => b.optimization_suggestions.length > 0)
   }
@@ -548,7 +563,7 @@ class DAGExecutionEngine {
     // Find terminal nodes (nodes with no dependents)
     const nodeIds = new Set(nodes.map(n => n.node_id))
     const dependents = new Set<string>()
-    
+
     for (const node of nodes) {
       for (const dep of node.dependencies || []) {
         dependents.add(dep)
@@ -556,25 +571,32 @@ class DAGExecutionEngine {
     }
 
     const terminalNodes = Array.from(nodeIds).filter(id => !dependents.has(id))
-    
+
     if (terminalNodes.length === 1) {
       return results[terminalNodes[0]]?.result_data
     }
 
     // Multiple terminal nodes - return aggregated result
     return {
-      terminal_results: terminalNodes.reduce((acc, nodeId) => {
-        acc[nodeId] = results[nodeId]?.result_data
-        return acc
-      }, {} as Record<string, any>)
+      terminal_results: terminalNodes.reduce(
+        (acc, nodeId) => {
+          acc[nodeId] = results[nodeId]?.result_data
+          return acc
+        },
+        {} as Record<string, any>
+      )
     }
   }
 
-  private async storeExecutionRecord(executionId: string, request: DAGExecutionRequest, results: Record<string, any>, totalTime: number): Promise<void> {
+  private async storeExecutionRecord(
+    executionId: string,
+    request: DAGExecutionRequest,
+    results: Record<string, any>,
+    totalTime: number
+  ): Promise<void> {
     try {
-      await supabase
-        .from('universal_transactions')
-        .insert([{
+      await supabase.from('universal_transactions').insert([
+        {
           organization_id: request.organization_id,
           transaction_type: 'dag_execution',
           transaction_code: executionId,
@@ -593,7 +615,8 @@ class DAGExecutionEngine {
             performance_metrics: this.performanceMetrics,
             dag_definition: request.dag_definition
           }
-        }])
+        }
+      ])
     } catch (error) {
       console.error('Failed to store DAG execution record:', error)
     }
@@ -617,11 +640,10 @@ export async function POST(request: NextRequest) {
     const result = await dagEngine.executeDAG(body)
 
     return NextResponse.json(result)
-
   } catch (error) {
     console.error('DAG execution error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'DAG execution failed',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -638,7 +660,7 @@ export async function GET() {
     description: 'HERA DAG Execution Engine - Universal Workflow and Calculation Processing',
     capabilities: [
       'Dependency-based execution ordering',
-      'Parallel node execution optimization', 
+      'Parallel node execution optimization',
       'Intelligent caching and memoization',
       'Real-time performance monitoring',
       'Bottleneck analysis and optimization',
@@ -649,21 +671,17 @@ export async function GET() {
       'calculation',
       'validation',
       'transformation',
-      'aggregation', 
+      'aggregation',
       'decision',
       'api_call'
     ],
-    execution_modes: [
-      'sync',
-      'async',
-      'batch'
-    ],
+    execution_modes: ['sync', 'async', 'batch'],
     optimization_features: {
-      'parallel_execution': 'Execute independent nodes simultaneously',
-      'caching': 'Cache node results for repeated executions',
-      'memoization': 'Remember expensive calculations',
-      'dependency_optimization': 'Optimize execution order for minimal time',
-      'bottleneck_analysis': 'Identify and suggest optimizations for slow nodes'
+      parallel_execution: 'Execute independent nodes simultaneously',
+      caching: 'Cache node results for repeated executions',
+      memoization: 'Remember expensive calculations',
+      dependency_optimization: 'Optimize execution order for minimal time',
+      bottleneck_analysis: 'Identify and suggest optimizations for slow nodes'
     },
     example_request: {
       organization_id: 'uuid-here',
@@ -683,7 +701,7 @@ export async function GET() {
           },
           {
             node_id: 'markup_calc',
-            node_type: 'calculation', 
+            node_type: 'calculation',
             node_name: 'Apply Markup',
             dependencies: ['cost_calc'],
             execution_config: {

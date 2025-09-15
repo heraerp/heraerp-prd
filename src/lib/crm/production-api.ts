@@ -1,7 +1,7 @@
 /**
  * HERA CRM Production API Service
  * Replaces all mock data with real HERA API integration
- * 
+ *
  * Project Manager Priority #1: Data Persistence Foundation
  */
 
@@ -159,7 +159,7 @@ export class ProductionCRMService {
       }
 
       const newContact = await heraApi.createEntity(entityData)
-      
+
       // Return formatted contact
       return {
         id: newContact.entity_id,
@@ -246,7 +246,7 @@ export class ProductionCRMService {
       }
 
       const newOpp = await heraApi.createEntity(entityData)
-      
+
       return {
         id: newOpp.entity_id,
         name: newOpp.entity_name,
@@ -320,7 +320,7 @@ export class ProductionCRMService {
       }
 
       const newTask = await heraApi.createEntity(entityData)
-      
+
       return {
         id: newTask.entity_id,
         title: newTask.entity_name,
@@ -354,16 +354,27 @@ export class ProductionCRMService {
 
       // Calculate real analytics from actual data
       const totalPipelineValue = opportunities.reduce((sum, opp) => sum + opp.value, 0)
-      const weightedPipeline = opportunities.reduce((sum, opp) => sum + (opp.value * opp.probability / 100), 0)
-      const averageDealSize = opportunities.length > 0 ? totalPipelineValue / opportunities.length : 0
-      
+      const weightedPipeline = opportunities.reduce(
+        (sum, opp) => sum + (opp.value * opp.probability) / 100,
+        0
+      )
+      const averageDealSize =
+        opportunities.length > 0 ? totalPipelineValue / opportunities.length : 0
+
       // Calculate conversion rate from actual data
       const closedWonOpps = opportunities.filter(opp => opp.stage === 'closed-won')
       const totalOpps = opportunities.length
       const conversionRate = totalOpps > 0 ? (closedWonOpps.length / totalOpps) * 100 : 0
 
       // Stage metrics from real data
-      const stages = ['discovery', 'qualification', 'proposal', 'negotiation', 'closed-won', 'closed-lost']
+      const stages = [
+        'discovery',
+        'qualification',
+        'proposal',
+        'negotiation',
+        'closed-won',
+        'closed-lost'
+      ]
       const stageMetrics = stages.map(stage => {
         const stageOpps = opportunities.filter(opp => opp.stage === stage)
         return {
@@ -377,7 +388,7 @@ export class ProductionCRMService {
       const industries = [...new Set(contacts.map(c => c.industry).filter(Boolean))]
       const industryBreakdown = industries.map(industry => {
         const industryContacts = contacts.filter(c => c.industry === industry)
-        const industryOpps = opportunities.filter(opp => 
+        const industryOpps = opportunities.filter(opp =>
           industryContacts.some(contact => contact.name === opp.contact)
         )
         return {
@@ -407,7 +418,10 @@ export class ProductionCRMService {
   /**
    * Update methods for real CRUD operations
    */
-  async updateContact(contactId: string | number, updates: Partial<CRMContact>): Promise<CRMContact> {
+  async updateContact(
+    contactId: string | number,
+    updates: Partial<CRMContact>
+  ): Promise<CRMContact> {
     try {
       await heraApi.updateEntity(contactId.toString(), {
         entity_name: updates.name,
@@ -432,7 +446,7 @@ export class ProductionCRMService {
       const contacts = await this.getContacts()
       const updatedContact = contacts.find(c => c.id === contactId)
       if (!updatedContact) throw new Error('Contact not found after update')
-      
+
       return updatedContact
     } catch (error) {
       console.error('Error updating contact:', error)

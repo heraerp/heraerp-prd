@@ -1,0 +1,47 @@
+smart_code: HERA.SALON.MDM.RELATIONSHIPS.SEED.v1
+rows:
+  # Service requires Product (consumables)
+  - from_slug: service:HAIR_COLOR
+    to_slug:   product:DYE_COLOR
+    relationship_type: SERVICE_BOM
+    relationship_data: { quantity: 1, uom: "EA" }
+
+  # Service offered at branch
+  - from_slug: service:HAIRCUT_BASIC
+    to_slug:   branch:DUBAI_MAIN
+    relationship_type: SERVICE_AT_BRANCH
+    relationship_data: {}
+
+  - from_slug: service:HAIR_COLOR
+    to_slug:   branch:DUBAI_MAIN
+    relationship_type: SERVICE_AT_BRANCH
+    relationship_data: {}
+
+  # Branch seating
+  - from_slug: branch:DUBAI_MAIN
+    to_slug:   chair:DUBAI_MAIN_01
+    relationship_type: BRANCH_HAS_CHAIR
+    relationship_data: { }
+
+  # Customer default price list
+  - from_slug: customer:ALICE_DXB
+    to_slug:   price_list:STANDARD_AED
+    relationship_type: CUSTOMER_PRICE_LIST
+    relationship_data: {}
+
+  # Price list contents (AED)
+  - from_slug: price_list:STANDARD_AED
+    to_slug:   service:HAIRCUT_BASIC
+    relationship_type: ITEM_IN_PRICE_LIST
+    relationship_data: { list_price: 50.00, currency_code: "AED" }
+
+  - from_slug: price_list:STANDARD_AED
+    to_slug:   service:HAIR_COLOR
+    relationship_type: ITEM_IN_PRICE_LIST
+    relationship_data: { list_price: 200.00, currency_code: "AED" }
+
+  - from_slug: price_list:STANDARD_AED
+    to_slug:   product:SHAMPOO_RET
+    relationship_type: ITEM_IN_PRICE_LIST
+    relationship_data: { list_price: 25.00, currency_code: "AED" }
+

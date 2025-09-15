@@ -7,8 +7,9 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function GET(request: NextRequest) {
   // Test message storage directly
-  const organizationId = process.env.DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
-  
+  const organizationId =
+    process.env.DEFAULT_ORGANIZATION_ID || '44d2d8f8-167d-46a7-a704-c0e5435863d6'
+
   // Get a conversation to test with
   const { data: conversation } = await supabase
     .from('core_entities')
@@ -17,11 +18,11 @@ export async function GET(request: NextRequest) {
     .eq('organization_id', organizationId)
     .limit(1)
     .single()
-  
+
   if (!conversation) {
     return NextResponse.json({ error: 'No conversation found' })
   }
-  
+
   // Try to store a test message
   const testMessage = {
     organization_id: organizationId,
@@ -39,13 +40,13 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     }
   }
-  
+
   const { data, error } = await supabase
     .from('universal_transactions')
     .insert(testMessage)
     .select()
     .single()
-  
+
   if (error) {
     return NextResponse.json({
       status: 'error',
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest) {
       attempted_data: testMessage
     })
   }
-  
+
   return NextResponse.json({
     status: 'success',
     message: 'Test message stored successfully',

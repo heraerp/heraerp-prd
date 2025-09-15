@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Universal GL API - HERA Auto-Journal Integration
- * 
+ *
  * POST: Record business transaction with automatic journal entry generation via Auto-Journal Engine
  * GET: Retrieve GL entries and financial data
- * 
+ *
  * Revolutionary principle: "Record business events, AI-powered accounting happens automatically"
- * 
+ *
  * Note: This API now uses the HERA Auto-Journal DNA Component for intelligent automation
  */
 
@@ -21,17 +21,13 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'record_transaction':
         return await handleRecordTransaction(body)
-      
+
       case 'batch_transactions':
         return await handleBatchTransactions(body)
-        
-      default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
-    }
 
+      default:
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
+    }
   } catch (error) {
     console.error('Universal GL API error:', error)
     return NextResponse.json(
@@ -58,7 +54,10 @@ async function handleRecordTransaction(body: any) {
   // Validation
   if (!organizationId || !transactionType || !amount || !description) {
     return NextResponse.json(
-      { success: false, message: 'Missing required fields: organizationId, transactionType, amount, description' },
+      {
+        success: false,
+        message: 'Missing required fields: organizationId, transactionType, amount, description'
+      },
       { status: 400 }
     )
   }
@@ -67,7 +66,7 @@ async function handleRecordTransaction(body: any) {
 
   // Generate Smart Code based on transaction type
   const smartCode = generateSmartCode(transactionType, details)
-  
+
   // Simulate auto-journal processing with AI classification
   const autoJournalResult = await simulateAutoJournalProcessing({
     organizationId,
@@ -128,7 +127,7 @@ async function handleBatchTransactions(body: any) {
     try {
       const amount = parseFloat(txn.amount)
       const smartCode = generateSmartCode(txn.transactionType, txn.details)
-      
+
       // Simulate auto-journal batch processing logic
       const processingMode = amount > 1000 ? 'immediate' : 'batch'
       if (processingMode === 'batch') {
@@ -153,7 +152,7 @@ async function handleBatchTransactions(body: any) {
         journalCreated: true,
         confidence: autoJournalResult.confidence
       })
-      
+
       successCount++
     } catch (error) {
       results.push({
@@ -184,15 +183,15 @@ async function handleBatchTransactions(body: any) {
 // Simulate HERA Auto-Journal processing
 async function simulateAutoJournalProcessing(transaction: any): Promise<any> {
   const { transactionType, amount, smartCode, details, batchMode = false } = transaction
-  
+
   // Simulate AI classification
   const relevanceScore = Math.random() * 0.3 + 0.7 // 70-100%
   const confidence = Math.random() * 0.2 + 0.8 // 80-100%
   const aiUsed = relevanceScore < 0.95 // AI used for complex cases
-  
+
   // Generate journal entries based on transaction type
   const journalLines = generateJournalLines(transactionType, amount, details)
-  
+
   return {
     relevanceScore,
     confidence,
@@ -216,15 +215,15 @@ async function simulateAutoJournalProcessing(transaction: any): Promise<any> {
 // Generate Smart Code based on transaction type
 function generateSmartCode(transactionType: string, details: any): string {
   const codeMap: Record<string, string> = {
-    'sale': 'HERA.FIN.AR.TXN.SALE.v1',
-    'purchase': 'HERA.FIN.AP.TXN.PURCH.v1',
-    'payment': 'HERA.FIN.GL.TXN.PAY.v1',
-    'receipt': 'HERA.FIN.GL.TXN.RCP.v1',
-    'expense': 'HERA.FIN.GL.TXN.EXP.v1',
-    'inventory': 'HERA.INV.TXN.ADJ.v1',
-    'payroll': 'HERA.HR.PAY.TXN.SAL.v1'
+    sale: 'HERA.FIN.AR.TXN.SALE.v1',
+    purchase: 'HERA.FIN.AP.TXN.PURCH.v1',
+    payment: 'HERA.FIN.GL.TXN.PAY.v1',
+    receipt: 'HERA.FIN.GL.TXN.RCP.v1',
+    expense: 'HERA.FIN.GL.TXN.EXP.v1',
+    inventory: 'HERA.INV.TXN.ADJ.v1',
+    payroll: 'HERA.HR.PAY.TXN.SAL.v1'
   }
-  
+
   return codeMap[transactionType] || 'HERA.FIN.GL.TXN.GEN.v1'
 }
 
@@ -239,7 +238,7 @@ function generateJournalLines(transactionType: string, amount: number, details: 
       description: `Auto-posted ${transactionType} transaction`
     }
   ]
-  
+
   // Add corresponding credit/debit line
   switch (transactionType) {
     case 'sale':
@@ -278,7 +277,7 @@ function generateJournalLines(transactionType: string, amount: number, details: 
         description: 'General ledger posting'
       })
   }
-  
+
   return baseLines
 }
 
@@ -295,14 +294,14 @@ function generateJournalId(): string {
 // Helper function to determine sub-module from transaction type
 function getSubModuleFromTransactionType(transactionType: string): string {
   const moduleMap: Record<string, string> = {
-    'sale': 'AR',
-    'purchase': 'AP', 
-    'payment': 'GL',
-    'receipt': 'GL',
-    'expense': 'GL',
-    'inventory': 'INV'
+    sale: 'AR',
+    purchase: 'AP',
+    payment: 'GL',
+    receipt: 'GL',
+    expense: 'GL',
+    inventory: 'INV'
   }
-  
+
   return moduleMap[transactionType] || 'GL'
 }
 
@@ -311,7 +310,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const action = searchParams.get('action') || 'trial_balance'
   const organizationId = searchParams.get('organizationId')
-  
+
   if (!organizationId) {
     return NextResponse.json(
       { success: false, message: 'Organization ID required' },
@@ -327,8 +326,8 @@ export async function GET(request: NextRequest) {
           organizationId,
           asOfDate: new Date().toISOString(),
           accounts: generateMockTrialBalance(),
-          totalDebits: 25750.00,
-          totalCredits: 25750.00,
+          totalDebits: 25750.0,
+          totalCredits: 25750.0,
           isBalanced: true,
           autoJournalStats: {
             totalEntries: 156,
@@ -338,26 +337,53 @@ export async function GET(request: NextRequest) {
           }
         }
       })
-      
+
     default:
-      return NextResponse.json(
-        { success: false, message: 'Invalid action' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
   }
 }
 
 // Generate mock trial balance data
 function generateMockTrialBalance(): any[] {
   return [
-    { accountCode: '1100', accountName: 'Cash and Cash Equivalents', debitBalance: 15250.00, creditBalance: 0 },
-    { accountCode: '1200', accountName: 'Accounts Receivable', debitBalance: 3500.00, creditBalance: 0 },
-    { accountCode: '1300', accountName: 'Inventory', debitBalance: 7000.00, creditBalance: 0 },
-    { accountCode: '2100', accountName: 'Accounts Payable', debitBalance: 0, creditBalance: 2250.00 },
-    { accountCode: '2200', accountName: 'Sales Tax Payable', debitBalance: 0, creditBalance: 750.00 },
-    { accountCode: '3000', accountName: 'Owner\'s Equity', debitBalance: 0, creditBalance: 15000.00 },
-    { accountCode: '4000', accountName: 'Sales Revenue', debitBalance: 0, creditBalance: 12500.00 },
-    { accountCode: '5000', accountName: 'Cost of Goods Sold', debitBalance: 4750.00, creditBalance: 0 },
-    { accountCode: '6000', accountName: 'Operating Expenses', debitBalance: 1250.00, creditBalance: 0 }
+    {
+      accountCode: '1100',
+      accountName: 'Cash and Cash Equivalents',
+      debitBalance: 15250.0,
+      creditBalance: 0
+    },
+    {
+      accountCode: '1200',
+      accountName: 'Accounts Receivable',
+      debitBalance: 3500.0,
+      creditBalance: 0
+    },
+    { accountCode: '1300', accountName: 'Inventory', debitBalance: 7000.0, creditBalance: 0 },
+    {
+      accountCode: '2100',
+      accountName: 'Accounts Payable',
+      debitBalance: 0,
+      creditBalance: 2250.0
+    },
+    {
+      accountCode: '2200',
+      accountName: 'Sales Tax Payable',
+      debitBalance: 0,
+      creditBalance: 750.0
+    },
+    { accountCode: '3000', accountName: "Owner's Equity", debitBalance: 0, creditBalance: 15000.0 },
+    { accountCode: '4000', accountName: 'Sales Revenue', debitBalance: 0, creditBalance: 12500.0 },
+    {
+      accountCode: '5000',
+      accountName: 'Cost of Goods Sold',
+      debitBalance: 4750.0,
+      creditBalance: 0
+    },
+    {
+      accountCode: '6000',
+      accountName: 'Operating Expenses',
+      debitBalance: 1250.0,
+      creditBalance: 0
+    }
   ]
 }

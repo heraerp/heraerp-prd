@@ -7,7 +7,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { schemaManager, SchemaUtils } from './schema-manager'
-import { EnhancedSchemaManager, SelfGoverningIntegration } from '@/lib/governance/self-governing-integration'
+import {
+  EnhancedSchemaManager,
+  SelfGoverningIntegration
+} from '@/lib/governance/self-governing-integration'
 import type {
   DNAComponent,
   DNATemplate,
@@ -26,18 +29,21 @@ const schemaKeys = {
   systemSchema: () => [...schemaKeys.all, 'system'] as const,
   components: (filters?: any) => [...schemaKeys.systemSchema(), 'components', filters] as const,
   templates: (industry?: string) => [...schemaKeys.systemSchema(), 'templates', industry] as const,
-  smartCodes: (industry?: string) => [...schemaKeys.systemSchema(), 'smart-codes', industry] as const,
-  entityTypes: (category?: string) => [...schemaKeys.systemSchema(), 'entity-types', category] as const,
-  fieldTypes: (category?: string) => [...schemaKeys.systemSchema(), 'field-types', category] as const,
-  
+  smartCodes: (industry?: string) =>
+    [...schemaKeys.systemSchema(), 'smart-codes', industry] as const,
+  entityTypes: (category?: string) =>
+    [...schemaKeys.systemSchema(), 'entity-types', category] as const,
+  fieldTypes: (category?: string) =>
+    [...schemaKeys.systemSchema(), 'field-types', category] as const,
+
   orgConfig: (orgId: string) => [...schemaKeys.all, 'org-config', orgId] as const,
-  fieldSelections: (orgId: string, entityType?: string) => 
+  fieldSelections: (orgId: string, entityType?: string) =>
     [...schemaKeys.all, 'field-selections', orgId, entityType] as const,
-  formConfigs: (orgId: string, entityType?: string, formType?: string) => 
+  formConfigs: (orgId: string, entityType?: string, formType?: string) =>
     [...schemaKeys.all, 'form-configs', orgId, entityType, formType] as const,
   completeSchema: (orgId: string) => [...schemaKeys.all, 'complete-schema', orgId] as const,
-  effectiveFields: (orgId: string, entityType: string, selectionType: string) => 
-    [...schemaKeys.all, 'effective-fields', orgId, entityType, selectionType] as const,
+  effectiveFields: (orgId: string, entityType: string, selectionType: string) =>
+    [...schemaKeys.all, 'effective-fields', orgId, entityType, selectionType] as const
 }
 
 // =====================================================
@@ -47,16 +53,12 @@ const schemaKeys = {
 /**
  * Hook to get DNA components with caching
  */
-export function useDNAComponents(filters?: {
-  type?: string
-  category?: string
-  status?: string
-}) {
+export function useDNAComponents(filters?: { type?: string; category?: string; status?: string }) {
   return useQuery({
     queryKey: schemaKeys.components(filters),
     queryFn: () => EnhancedSchemaManager.getDNAComponents(filters),
     staleTime: 10 * 60 * 1000, // 10 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
+    cacheTime: 30 * 60 * 1000 // 30 minutes
   })
 }
 
@@ -68,7 +70,7 @@ export function useDNATemplates(industry?: string) {
     queryKey: schemaKeys.templates(industry),
     queryFn: () => EnhancedSchemaManager.getDNATemplates(industry),
     staleTime: 10 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000
   })
 }
 
@@ -80,7 +82,7 @@ export function useSmartCodeDefinitions(industry?: string) {
     queryKey: schemaKeys.smartCodes(industry),
     queryFn: () => schemaManager.getSmartCodeDefinitions(industry),
     staleTime: 10 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000
   })
 }
 
@@ -92,7 +94,7 @@ export function useEntityTypeDefinitions(category?: string) {
     queryKey: schemaKeys.entityTypes(category),
     queryFn: () => schemaManager.getEntityTypeDefinitions(category),
     staleTime: 10 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000
   })
 }
 
@@ -104,7 +106,7 @@ export function useFieldTypeDefinitions(category?: string) {
     queryKey: schemaKeys.fieldTypes(category),
     queryFn: () => schemaManager.getFieldTypeDefinitions(category),
     staleTime: 10 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000
   })
 }
 
@@ -117,7 +119,7 @@ export function useComponent(componentName: string) {
     queryFn: () => SchemaUtils.getComponent(componentName),
     staleTime: 15 * 60 * 1000,
     cacheTime: 30 * 60 * 1000,
-    enabled: !!componentName,
+    enabled: !!componentName
   })
 }
 
@@ -130,7 +132,7 @@ export function useTemplate(templateName: string, industry?: string) {
     queryFn: () => SchemaUtils.getTemplate(templateName, industry),
     staleTime: 15 * 60 * 1000,
     cacheTime: 30 * 60 * 1000,
-    enabled: !!templateName,
+    enabled: !!templateName
   })
 }
 
@@ -143,7 +145,7 @@ export function useSmartCodeDefinition(smartCode: string) {
     queryFn: () => SchemaUtils.getSmartCodeDefinition(smartCode),
     staleTime: 15 * 60 * 1000,
     cacheTime: 30 * 60 * 1000,
-    enabled: !!smartCode,
+    enabled: !!smartCode
   })
 }
 
@@ -163,7 +165,7 @@ export function useOrganizationConfig(organizationId?: string) {
     queryFn: () => EnhancedSchemaManager.getOrganizationConfig(orgId!),
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 15 * 60 * 1000, // 15 minutes
-    enabled: !!orgId,
+    enabled: !!orgId
   })
 }
 
@@ -182,15 +184,12 @@ export function useUpdateOrganizationConfig() {
       organizationId: string
       config: Partial<OrganizationSystemConfig>
     }) => EnhancedSchemaManager.upsertOrganizationConfig(organizationId, config, user?.id!),
-    onSuccess: (data) => {
+    onSuccess: data => {
       // Update the cache
-      queryClient.setQueryData(
-        schemaKeys.orgConfig(data.organization_id),
-        data
-      )
+      queryClient.setQueryData(schemaKeys.orgConfig(data.organization_id), data)
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: schemaKeys.completeSchema(data.organization_id) })
-    },
+    }
   })
 }
 
@@ -206,7 +205,7 @@ export function useEntityFieldSelections(organizationId?: string, entityType?: s
     queryFn: () => schemaManager.getUserEntityFieldSelections(orgId!, entityType),
     staleTime: 5 * 60 * 1000,
     cacheTime: 15 * 60 * 1000,
-    enabled: !!orgId,
+    enabled: !!orgId
   })
 }
 
@@ -220,7 +219,7 @@ export function useUpdateEntityFieldSelection() {
   return useMutation({
     mutationFn: (selection: Partial<UserEntityFieldSelection>) =>
       schemaManager.upsertEntityFieldSelection(selection, user?.id!),
-    onSuccess: (data) => {
+    onSuccess: data => {
       // Invalidate related queries
       queryClient.invalidateQueries({
         queryKey: schemaKeys.fieldSelections(data.organization_id, data.entity_type)
@@ -232,7 +231,7 @@ export function useUpdateEntityFieldSelection() {
           data.selection_type
         )
       })
-    },
+    }
   })
 }
 
@@ -252,7 +251,7 @@ export function useDynamicFormConfigurations(
     queryFn: () => schemaManager.getDynamicFormConfigurations(orgId!, entityType, formType),
     staleTime: 5 * 60 * 1000,
     cacheTime: 15 * 60 * 1000,
-    enabled: !!orgId,
+    enabled: !!orgId
   })
 }
 
@@ -266,19 +265,15 @@ export function useUpdateDynamicFormConfiguration() {
   return useMutation({
     mutationFn: (formConfig: Partial<DynamicFormConfiguration>) =>
       schemaManager.upsertDynamicFormConfiguration(formConfig, user?.id!),
-    onSuccess: (data) => {
+    onSuccess: data => {
       // Invalidate related queries
       queryClient.invalidateQueries({
         queryKey: schemaKeys.formConfigs(data.organization_id, data.entity_type, data.form_type)
       })
       queryClient.invalidateQueries({
-        queryKey: schemaKeys.effectiveFields(
-          data.organization_id,
-          data.entity_type,
-          data.form_type
-        )
+        queryKey: schemaKeys.effectiveFields(data.organization_id, data.entity_type, data.form_type)
       })
-    },
+    }
   })
 }
 
@@ -294,7 +289,7 @@ export function useCompleteSystemSchema(organizationId?: string) {
     queryFn: () => schemaManager.getCompleteSystemSchema(orgId!),
     staleTime: 5 * 60 * 1000,
     cacheTime: 15 * 60 * 1000,
-    enabled: !!orgId,
+    enabled: !!orgId
   })
 }
 
@@ -314,7 +309,7 @@ export function useEffectiveFieldConfiguration(
     queryFn: () => schemaManager.getEffectiveFieldConfiguration(orgId!, entityType, selectionType),
     staleTime: 5 * 60 * 1000,
     cacheTime: 15 * 60 * 1000,
-    enabled: !!orgId && !!entityType,
+    enabled: !!orgId && !!entityType
   })
 }
 
@@ -334,7 +329,7 @@ export function useFeatureFlag(featureName: string, organizationId?: string) {
     queryFn: () => SchemaUtils.hasFeatureEnabled(orgId!, featureName),
     staleTime: 5 * 60 * 1000,
     cacheTime: 15 * 60 * 1000,
-    enabled: !!orgId && !!featureName,
+    enabled: !!orgId && !!featureName
   })
 }
 
@@ -350,7 +345,7 @@ export function useValidateOrganizationConfig(organizationId?: string) {
     queryFn: () => schemaManager.validateOrganizationConfiguration(orgId!),
     staleTime: 2 * 60 * 1000, // 2 minutes
     cacheTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!orgId,
+    enabled: !!orgId
   })
 }
 
@@ -380,7 +375,7 @@ export function useEnabledComponents(organizationId?: string) {
       )
     },
     enabled: !!orgConfig && !!allComponents,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000
   })
 }
 
@@ -406,7 +401,7 @@ export function useEnabledEntityTypes(organizationId?: string) {
       )
     },
     enabled: !!orgConfig && !!allEntityTypes,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000
   })
 }
 
@@ -421,7 +416,7 @@ export function useWarmUpCache(organizationId?: string) {
     mutationFn: () => schemaManager.warmUpCache(orgId),
     onSuccess: () => {
       console.log('Schema cache warmed up successfully')
-    },
+    }
   })
 }
 
@@ -443,7 +438,7 @@ export function useClearCache() {
     },
     onSuccess: () => {
       console.log('Schema cache cleared successfully')
-    },
+    }
   })
 }
 
@@ -475,20 +470,25 @@ export function useEntityFormSchema(
     effectiveFields: effectiveFields.data,
     formConfig: formConfig.data?.[0],
     smartCodes: smartCodes.data,
-    isLoading: entityDefinition.isLoading || fieldTypes.isLoading || 
-               effectiveFields.isLoading || formConfig.isLoading || smartCodes.isLoading,
-    error: entityDefinition.error || fieldTypes.error || 
-           effectiveFields.error || formConfig.error || smartCodes.error,
+    isLoading:
+      entityDefinition.isLoading ||
+      fieldTypes.isLoading ||
+      effectiveFields.isLoading ||
+      formConfig.isLoading ||
+      smartCodes.isLoading,
+    error:
+      entityDefinition.error ||
+      fieldTypes.error ||
+      effectiveFields.error ||
+      formConfig.error ||
+      smartCodes.error
   }
 }
 
 /**
  * Hook to get everything needed to render an entity table
  */
-export function useEntityTableSchema(
-  entityType: string,
-  organizationId?: string
-) {
+export function useEntityTableSchema(entityType: string, organizationId?: string) {
   const { user } = useMultiOrgAuth()
   const orgId = organizationId || user?.organization_id
 
@@ -501,7 +501,7 @@ export function useEntityTableSchema(
     effectiveFields: effectiveFields.data,
     fieldTypes: fieldTypes.data,
     isLoading: entityDefinition.isLoading || effectiveFields.isLoading || fieldTypes.isLoading,
-    error: entityDefinition.error || effectiveFields.error || fieldTypes.error,
+    error: entityDefinition.error || effectiveFields.error || fieldTypes.error
   }
 }
 
@@ -517,7 +517,7 @@ export function useDataQualityMetrics(organizationId?: string) {
     queryFn: () => SelfGoverningIntegration.getDataQualityMetrics(orgId),
     staleTime: 2 * 60 * 1000, // 2 minutes
     cacheTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!orgId,
+    enabled: !!orgId
   })
 }
 
@@ -535,23 +535,23 @@ export function useSchemaAdministration(organizationId?: string) {
     entityTypes: useEntityTypeDefinitions(),
     fieldTypes: useFieldTypeDefinitions(),
     smartCodes: useSmartCodeDefinitions(),
-    
+
     // Organization configuration (admin CRUD)
     orgConfig: useOrganizationConfig(orgId),
     fieldSelections: useEntityFieldSelections(orgId),
     formConfigs: useDynamicFormConfigurations(orgId),
-    
+
     // Self-governing standards integration
     qualityMetrics: useDataQualityMetrics(orgId),
-    
+
     // Mutations
     updateOrgConfig: useUpdateOrganizationConfig(),
     updateFieldSelection: useUpdateEntityFieldSelection(),
     updateFormConfig: useUpdateDynamicFormConfiguration(),
-    
+
     // Utilities
     validation: useValidateOrganizationConfig(orgId),
     warmUpCache: useWarmUpCache(orgId),
-    clearCache: useClearCache(),
+    clearCache: useClearCache()
   }
 }

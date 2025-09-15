@@ -6,7 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { formatDate } from '@/lib/date-utils'
 import { addDays, parseISO } from 'date-fns'
 import { cn } from '@/lib/utils'
@@ -40,10 +46,14 @@ interface Customer {
   email?: string
 }
 
-export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewAppointmentModalProps) {
+export function NewAppointmentModal({
+  onClose,
+  onSuccess,
+  organizationId
+}: NewAppointmentModalProps) {
   const { createAppointment, loading } = useAppointments({ organizationId })
   const [formLoading, setFormLoading] = useState(false)
-  
+
   // Form state
   const [customerId, setCustomerId] = useState('')
   const [serviceId, setServiceId] = useState('')
@@ -51,20 +61,20 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
   const [appointmentDate, setAppointmentDate] = useState(formatDate(new Date(), 'yyyy-MM-dd'))
   const [appointmentTime, setAppointmentTime] = useState('')
   const [notes, setNotes] = useState('')
-  
+
   // Data state
   const [customers, setCustomers] = useState<Customer[]>([])
   const [services, setServices] = useState<Service[]>([])
   const [staff, setStaff] = useState<Staff[]>([])
   const [availableSlots, setAvailableSlots] = useState<string[]>([])
-  
+
   // Selected service details
   const selectedService = services.find(s => s.id === serviceId)
-  
+
   // Fetch customers, services, and staff on mount
   useEffect(() => {
     if (!organizationId) return
-    
+
     const fetchData = async () => {
       setFormLoading(true)
       try {
@@ -73,36 +83,45 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
           universalApi.getEntities('service', organizationId),
           universalApi.getEntities('employee', organizationId)
         ])
-        
+
         // Transform customers
         if (customersResp.success && customersResp.data) {
-          setCustomers(customersResp.data.map((c: any) => ({
-            id: c.id,
-            name: c.entity_name,
-            phone: (c.metadata as any)?.phone,
-            email: (c.metadata as any)?.email
-          })))
+          setCustomers(
+            customersResp.data.map((c: any) => ({
+              id: c.id,
+              name: c.entity_name,
+              phone: (c.metadata as any)?.phone,
+              email: (c.metadata as any)?.email
+            }))
+          )
         }
-        
+
         // Transform services
         if (servicesResp.success && servicesResp.data) {
-          setServices(servicesResp.data.map((s: any) => ({
-            id: s.id,
-            name: s.entity_name,
-            duration: (s.metadata as any)?.duration || 60,
-            price: (s.metadata as any)?.price || 0
-          })))
-        }
-        
-        // Transform staff
-        if (staffResp.success && staffResp.data) {
-          setStaff(staffResp.data
-            .filter((e: any) => (e.metadata as any)?.role === 'stylist' || (e.metadata as any)?.department === 'salon')
-            .map((s: any) => ({
+          setServices(
+            servicesResp.data.map((s: any) => ({
               id: s.id,
               name: s.entity_name,
-              specializations: (s.metadata as any)?.specializations
+              duration: (s.metadata as any)?.duration || 60,
+              price: (s.metadata as any)?.price || 0
             }))
+          )
+        }
+
+        // Transform staff
+        if (staffResp.success && staffResp.data) {
+          setStaff(
+            staffResp.data
+              .filter(
+                (e: any) =>
+                  (e.metadata as any)?.role === 'stylist' ||
+                  (e.metadata as any)?.department === 'salon'
+              )
+              .map((s: any) => ({
+                id: s.id,
+                name: s.entity_name,
+                specializations: (s.metadata as any)?.specializations
+              }))
           )
         }
       } catch (error) {
@@ -116,10 +135,10 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
         setFormLoading(false)
       }
     }
-    
+
     fetchData()
   }, [organizationId])
-  
+
   // Generate available time slots when staff and date are selected
   useEffect(() => {
     if (staffId && appointmentDate && selectedService) {
@@ -134,10 +153,10 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
       setAvailableSlots(slots)
     }
   }, [staffId, appointmentDate, selectedService])
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!customerId || !serviceId || !staffId || !appointmentDate || !appointmentTime) {
       toast({
         title: 'Error',
@@ -146,7 +165,7 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
       })
       return
     }
-    
+
     const result = await createAppointment({
       customerId,
       serviceId,
@@ -156,22 +175,19 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
       duration: selectedService?.duration || 60,
       notes
     })
-    
+
     if (result) {
       onSuccess()
     }
   }
-  
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+
       {/* Modal */}
-      <div 
+      <div
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
         style={{
           background: `
@@ -193,7 +209,7 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-800 bg-gray-900/50 backdrop-blur-xl">
           <div className="flex items-center gap-3">
-            <div 
+            <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
               style={{
                 background: `
@@ -213,55 +229,60 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
               New Appointment
             </h2>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
-          >
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
-        
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Customer Selection */}
           <div className="space-y-2">
-            <Label htmlFor="customer" className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300">
+            <Label
+              htmlFor="customer"
+              className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300"
+            >
               <User className="w-4 h-4" />
               Customer *
             </Label>
             <Select value={customerId} onValueChange={setCustomerId} disabled={formLoading}>
-              <SelectTrigger 
+              <SelectTrigger
                 id="customer"
                 className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
               >
                 <SelectValue placeholder="Select a customer" />
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-gray-700">
-                {customers.map((customer) => (
+                {customers.map(customer => (
                   <SelectItem key={customer.id} value={customer.id} className="!text-gray-300">
                     {customer.name}
-                    {customer.phone && <span className="text-sm text-gray-500 ml-2">({customer.phone})</span>}
+                    {customer.phone && (
+                      <span className="text-sm text-gray-500 ml-2">({customer.phone})</span>
+                    )}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Service Selection */}
           <div className="space-y-2">
-            <Label htmlFor="service" className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300">
+            <Label
+              htmlFor="service"
+              className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300"
+            >
               <Scissors className="w-4 h-4" />
               Service *
             </Label>
             <Select value={serviceId} onValueChange={setServiceId} disabled={formLoading}>
-              <SelectTrigger 
+              <SelectTrigger
                 id="service"
                 className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
               >
                 <SelectValue placeholder="Select a service" />
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-gray-700">
-                {services.map((service) => (
+                {services.map(service => (
                   <SelectItem key={service.id} value={service.id} className="!text-gray-300">
                     <div className="flex items-center justify-between w-full">
                       <span>{service.name}</span>
@@ -274,22 +295,25 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Staff Selection */}
           <div className="space-y-2">
-            <Label htmlFor="staff" className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300">
+            <Label
+              htmlFor="staff"
+              className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300"
+            >
               <User className="w-4 h-4" />
               Staff Member *
             </Label>
             <Select value={staffId} onValueChange={setStaffId} disabled={formLoading}>
-              <SelectTrigger 
+              <SelectTrigger
                 id="staff"
                 className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
               >
                 <SelectValue placeholder="Select a staff member" />
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-gray-700">
-                {staff.map((member) => (
+                {staff.map(member => (
                   <SelectItem key={member.id} value={member.id} className="!text-gray-300">
                     {member.name}
                   </SelectItem>
@@ -297,11 +321,14 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Date and Time */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="date" className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300">
+              <Label
+                htmlFor="date"
+                className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300"
+              >
                 <Calendar className="w-4 h-4" />
                 Date *
               </Label>
@@ -309,28 +336,35 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
                 id="date"
                 type="date"
                 value={appointmentDate}
-                onChange={(e) => setAppointmentDate(e.target.value)}
+                onChange={e => setAppointmentDate(e.target.value)}
                 min={formatDate(new Date(), 'yyyy-MM-dd')}
                 max={formatDate(addDays(new Date(), 90), 'yyyy-MM-dd')}
                 className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
                 disabled={formLoading}
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="time" className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300">
+              <Label
+                htmlFor="time"
+                className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300"
+              >
                 <Clock className="w-4 h-4" />
                 Time *
               </Label>
-              <Select value={appointmentTime} onValueChange={setAppointmentTime} disabled={formLoading || !staffId}>
-                <SelectTrigger 
+              <Select
+                value={appointmentTime}
+                onValueChange={setAppointmentTime}
+                disabled={formLoading || !staffId}
+              >
+                <SelectTrigger
                   id="time"
                   className="bg-gray-800/50 border-gray-700 !text-white focus:border-indigo-500 hover:bg-gray-700/50"
                 >
                   <SelectValue placeholder="Select a time" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-900 border-gray-700">
-                  {availableSlots.map((slot) => (
+                  {availableSlots.map(slot => (
                     <SelectItem key={slot} value={slot} className="!text-gray-300">
                       {slot}
                     </SelectItem>
@@ -339,10 +373,10 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
               </Select>
             </div>
           </div>
-          
+
           {/* Service Details Display */}
           {selectedService && (
-            <div 
+            <div
               className="p-4 rounded-lg"
               style={{
                 background: 'rgba(147, 51, 234, 0.1)',
@@ -363,32 +397,38 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-purple-400" />
                   <span className="!text-gray-300">
-                    End: {appointmentTime && formatDate(
-                      parseISO(`${appointmentDate}T${appointmentTime}`).getTime() + selectedService.duration * 60000,
-                      'HH:mm'
-                    )}
+                    End:{' '}
+                    {appointmentTime &&
+                      formatDate(
+                        parseISO(`${appointmentDate}T${appointmentTime}`).getTime() +
+                          selectedService.duration * 60000,
+                        'HH:mm'
+                      )}
                   </span>
                 </div>
               </div>
             </div>
           )}
-          
+
           {/* Notes */}
           <div className="space-y-2">
-            <Label htmlFor="notes" className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300">
+            <Label
+              htmlFor="notes"
+              className="flex items-center gap-2 !text-gray-700 dark:!text-gray-300"
+            >
               <FileText className="w-4 h-4" />
               Notes
             </Label>
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="Add any special requests or notes..."
               className="bg-gray-800/50 border-gray-700 !text-white placeholder:text-gray-500 focus:border-indigo-500 hover:bg-gray-700/50 min-h-[80px]"
               disabled={formLoading}
             />
           </div>
-          
+
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t border-gray-800">
             <Button
@@ -402,7 +442,9 @@ export function NewAppointmentModal({ onClose, onSuccess, organizationId }: NewA
             </Button>
             <Button
               type="submit"
-              disabled={loading || formLoading || !customerId || !serviceId || !staffId || !appointmentTime}
+              disabled={
+                loading || formLoading || !customerId || !serviceId || !staffId || !appointmentTime
+              }
               className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg disabled:opacity-50"
             >
               {loading || formLoading ? (

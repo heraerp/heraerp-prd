@@ -1,7 +1,7 @@
 /**
  * HERA CRM Email History Component
  * Shows email communication history with contacts
- * 
+ *
  * Project Manager Task: Email Integration UI
  */
 
@@ -12,11 +12,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { 
-  Mail, Clock, ChevronDown, ChevronUp, 
-  Send, Inbox, User, Calendar, 
-  CheckCircle, XCircle, Loader2,
-  Reply, Forward, Archive
+import {
+  Mail,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Send,
+  Inbox,
+  User,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Reply,
+  Forward,
+  Archive
 } from 'lucide-react'
 import { createEmailService, EmailMessage } from '@/lib/crm/email-service'
 import { CRMContact } from '@/lib/crm/production-api'
@@ -42,7 +52,7 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
   const loadEmailHistory = async () => {
     setIsLoading(true)
     setError(null)
-    
+
     try {
       const emailHistory = await emailService.getEmailHistory(contact.id)
       setEmails(emailHistory)
@@ -83,11 +93,26 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'sent':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Sent</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Sent
+          </Badge>
+        )
       case 'failed':
-        return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Failed</Badge>
+        return (
+          <Badge className="bg-red-100 text-red-800">
+            <XCircle className="h-3 w-3 mr-1" />
+            Failed
+          </Badge>
+        )
       case 'sending':
-        return <Badge className="bg-blue-100 text-blue-800"><Loader2 className="h-3 w-3 mr-1 animate-spin" />Sending</Badge>
+        return (
+          <Badge className="bg-blue-100 text-blue-800">
+            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+            Sending
+          </Badge>
+        )
       default:
         return <Badge variant="outline">Draft</Badge>
     }
@@ -133,8 +158,8 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline">{emails.length} emails</Badge>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               onClick={() => onComposeReply?.(contact)}
               className="bg-blue-600 hover:bg-blue-700"
             >
@@ -160,14 +185,14 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
           </div>
         ) : (
           <div className="space-y-4">
-            {emails.map((email) => {
+            {emails.map(email => {
               const isExpanded = expandedEmails.has(email.id || '')
-              
+
               return (
                 <Card key={email.id} className="border border-gray-200">
                   <CardContent className="p-0">
                     {/* Email Header */}
-                    <div 
+                    <div
                       className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                       onClick={() => toggleEmailExpansion(email.id || '')}
                     >
@@ -178,15 +203,13 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
                               <User className="h-4 w-4" />
                             </AvatarFallback>
                           </Avatar>
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="font-semibold text-sm">
-                                {email.subject}
-                              </span>
+                              <span className="font-semibold text-sm">{email.subject}</span>
                               {getStatusBadge(email.status || 'draft')}
                             </div>
-                            
+
                             <div className="flex items-center gap-4 text-xs text-gray-600">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
@@ -197,7 +220,7 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
                                 <span>CC: {email.cc.join(', ')}</span>
                               )}
                             </div>
-                            
+
                             {!isExpanded && (
                               <p className="text-sm text-gray-600 mt-2">
                                 {truncateText(email.body)}
@@ -223,30 +246,39 @@ export function EmailHistory({ contact, organizationId, onComposeReply }: EmailH
                           {/* Email Metadata */}
                           <div className="bg-white p-3 rounded-lg border mb-4 text-xs text-gray-600">
                             <div className="grid grid-cols-2 gap-2">
-                              <div><strong>From:</strong> Your Organization</div>
-                              <div><strong>To:</strong> {email.to.join(', ')}</div>
+                              <div>
+                                <strong>From:</strong> Your Organization
+                              </div>
+                              <div>
+                                <strong>To:</strong> {email.to.join(', ')}
+                              </div>
                               {email.cc && email.cc.length > 0 && (
                                 <>
-                                  <div><strong>CC:</strong> {email.cc.join(', ')}</div>
+                                  <div>
+                                    <strong>CC:</strong> {email.cc.join(', ')}
+                                  </div>
                                   <div></div>
                                 </>
                               )}
-                              <div><strong>Date:</strong> {new Date(email.sentAt || '').toLocaleString()}</div>
-                              <div><strong>Status:</strong> {email.status}</div>
+                              <div>
+                                <strong>Date:</strong>{' '}
+                                {new Date(email.sentAt || '').toLocaleString()}
+                              </div>
+                              <div>
+                                <strong>Status:</strong> {email.status}
+                              </div>
                             </div>
                           </div>
 
                           {/* Email Body */}
                           <div className="bg-white p-4 rounded-lg border">
-                            <div className="whitespace-pre-wrap text-sm">
-                              {email.body}
-                            </div>
+                            <div className="whitespace-pre-wrap text-sm">{email.body}</div>
                           </div>
 
                           {/* Email Actions */}
                           <div className="flex items-center gap-2 mt-4 pt-3 border-t">
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
                               onClick={() => onComposeReply?.(contact, email)}
                             >

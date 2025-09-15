@@ -10,11 +10,11 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export class DemoApiService {
   private data: any
-  
+
   constructor() {
     this.data = getDemoData() || initializeDemoData()
   }
-  
+
   // Chart of Accounts
   async getChartOfAccounts() {
     await delay(300)
@@ -32,12 +32,13 @@ export class DemoApiService {
           account_type: account.type,
           account_subtype: account.subtype,
           current_balance: account.balance,
-          normal_balance: account.type === 'asset' || account.type === 'expense' ? 'debit' : 'credit'
+          normal_balance:
+            account.type === 'asset' || account.type === 'expense' ? 'debit' : 'credit'
         }
       }))
     }
   }
-  
+
   // Customers
   async getCustomers() {
     await delay(200)
@@ -65,7 +66,7 @@ export class DemoApiService {
       }))
     }
   }
-  
+
   // Vendors
   async getVendors() {
     await delay(200)
@@ -93,7 +94,7 @@ export class DemoApiService {
       }))
     }
   }
-  
+
   // Products
   async getProducts() {
     await delay(250)
@@ -121,28 +122,28 @@ export class DemoApiService {
       }))
     }
   }
-  
+
   // Transactions
   async getTransactions(filters?: any) {
     await delay(300)
     let transactions = this.data.transactions
-    
+
     if (filters?.type) {
       transactions = transactions.filter((t: any) => t.type === filters.type)
     }
-    
+
     if (filters?.status) {
       transactions = transactions.filter((t: any) => t.status === filters.status)
     }
-    
+
     if (filters?.dateFrom) {
       transactions = transactions.filter((t: any) => new Date(t.date) >= new Date(filters.dateFrom))
     }
-    
+
     if (filters?.dateTo) {
       transactions = transactions.filter((t: any) => new Date(t.date) <= new Date(filters.dateTo))
     }
-    
+
     return {
       success: true,
       data: transactions.map((trans: any) => ({
@@ -165,7 +166,7 @@ export class DemoApiService {
       }))
     }
   }
-  
+
   // Dashboard KPIs
   async getDashboardKPIs() {
     await delay(200)
@@ -174,7 +175,7 @@ export class DemoApiService {
       data: this.data.kpis
     }
   }
-  
+
   // Create new transaction
   async createTransaction(transaction: any) {
     await delay(500)
@@ -183,24 +184,24 @@ export class DemoApiService {
       ...transaction,
       created_at: new Date().toISOString()
     }
-    
+
     this.data.transactions.unshift(newTrans)
-    
+
     // Update session storage
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('hera-demo-data', JSON.stringify(this.data))
     }
-    
+
     return {
       success: true,
       data: newTrans
     }
   }
-  
+
   // Update entity
   async updateEntity(entityType: string, entityId: string, updates: any) {
     await delay(300)
-    
+
     // Find and update the entity
     let collection
     switch (entityType) {
@@ -216,29 +217,29 @@ export class DemoApiService {
       default:
         return { success: false, error: 'Invalid entity type' }
     }
-    
+
     const index = collection.findIndex((item: any) => item.id === entityId)
     if (index !== -1) {
       collection[index] = { ...collection[index], ...updates }
-      
+
       // Update session storage
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('hera-demo-data', JSON.stringify(this.data))
       }
-      
+
       return {
         success: true,
         data: collection[index]
       }
     }
-    
+
     return { success: false, error: 'Entity not found' }
   }
-  
+
   // Financial reports
   async getFinancialReport(reportType: string, params?: any) {
     await delay(400)
-    
+
     switch (reportType) {
       case 'profit_loss':
         return this.generateProfitLossReport(params)
@@ -250,23 +251,23 @@ export class DemoApiService {
         return { success: false, error: 'Invalid report type' }
     }
   }
-  
+
   private generateProfitLossReport(params: any) {
     const revenue = this.data.chartOfAccounts
       .filter((acc: any) => acc.type === 'revenue')
       .reduce((sum: number, acc: any) => sum + Math.abs(acc.balance), 0)
-    
+
     const cogs = this.data.chartOfAccounts
       .filter((acc: any) => acc.subtype === 'cogs')
       .reduce((sum: number, acc: any) => sum + acc.balance, 0)
-    
+
     const expenses = this.data.chartOfAccounts
       .filter((acc: any) => acc.type === 'expense' && acc.subtype !== 'cogs')
       .reduce((sum: number, acc: any) => sum + acc.balance, 0)
-    
+
     const grossProfit = revenue - cogs
     const netIncome = grossProfit - expenses
-    
+
     return {
       success: true,
       data: {
@@ -274,27 +275,27 @@ export class DemoApiService {
         revenue,
         cogs,
         grossProfit,
-        grossMargin: (grossProfit / revenue * 100).toFixed(2) + '%',
+        grossMargin: ((grossProfit / revenue) * 100).toFixed(2) + '%',
         expenses,
         netIncome,
-        netMargin: (netIncome / revenue * 100).toFixed(2) + '%'
+        netMargin: ((netIncome / revenue) * 100).toFixed(2) + '%'
       }
     }
   }
-  
+
   private generateBalanceSheetReport(params: any) {
     const assets = this.data.chartOfAccounts
       .filter((acc: any) => acc.type === 'asset')
       .reduce((sum: number, acc: any) => sum + acc.balance, 0)
-    
+
     const liabilities = this.data.chartOfAccounts
       .filter((acc: any) => acc.type === 'liability')
       .reduce((sum: number, acc: any) => sum + Math.abs(acc.balance), 0)
-    
+
     const equity = this.data.chartOfAccounts
       .filter((acc: any) => acc.type === 'equity')
       .reduce((sum: number, acc: any) => sum + Math.abs(acc.balance), 0)
-    
+
     return {
       success: true,
       data: {
@@ -307,13 +308,13 @@ export class DemoApiService {
       }
     }
   }
-  
+
   private generateCashFlowReport(params: any) {
     // Simplified cash flow calculation
     const operatingCashFlow = this.data.kpis.revenue.thisMonth * 0.2
     const investingCashFlow = -15000 // Equipment purchases
     const financingCashFlow = -8000 // Loan payments
-    
+
     return {
       success: true,
       data: {

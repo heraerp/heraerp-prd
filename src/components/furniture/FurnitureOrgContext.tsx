@@ -13,15 +13,19 @@ interface FurnitureOrgContextType {
 
 const FurnitureOrgContext = createContext<FurnitureOrgContextType | null>(null)
 
-export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({ children }: { children: ReactNode }) {
+export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({
+  children
+}: {
+  children: ReactNode
+}) {
   const pathname = usePathname()
   const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
-  
+
   // Always use the furniture organization when in furniture module
   const FURNITURE_ORG_ID = 'f0af4ced-9d12-4a55-a649-b484368db249'
   const FURNITURE_ORG_NAME = 'Kerala Furniture Works'
-  
+
   // For furniture module, always use the furniture org regardless of authentication
   const organizationId = FURNITURE_ORG_ID
   const organizationName = FURNITURE_ORG_NAME

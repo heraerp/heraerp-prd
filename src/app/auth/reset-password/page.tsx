@@ -36,7 +36,7 @@ function ResetPasswordForm() {
         const errorCode = hashParams.get('error_code')
         const errorDescription = hashParams.get('error_description')
         const error = hashParams.get('error')
-        
+
         console.log('URL Parameters:', {
           fullURL: window.location.href,
           hash: window.location.hash,
@@ -44,26 +44,29 @@ function ResetPasswordForm() {
           errorDescription,
           error
         })
-        
+
         // Handle Supabase errors
         if (errorCode || error) {
           let errorMessage = 'Invalid or expired reset link. Please request a new one.'
-          
+
           if (errorCode === 'otp_expired') {
             errorMessage = 'This password reset link has expired. Please request a new one.'
           } else if (errorDescription) {
             errorMessage = decodeURIComponent(errorDescription.replace(/\+/g, ' '))
           }
-          
+
           setError(errorMessage)
           setHasValidSession(false)
           setSessionChecked(true)
           return
         }
-        
+
         // Check for existing session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-        
+        const {
+          data: { session },
+          error: sessionError
+        } = await supabase.auth.getSession()
+
         if (sessionError) {
           console.error('Session check error:', sessionError)
           setError('Invalid or expired reset link. Please request a new one.')
@@ -74,12 +77,12 @@ function ResetPasswordForm() {
           // Check if we have recovery token in URL
           const accessToken = hashParams.get('access_token')
           const type = hashParams.get('type')
-          
+
           console.log('Token check:', {
             accessToken: accessToken ? 'present' : 'missing',
             type: type
           })
-          
+
           if (accessToken && type === 'recovery') {
             // Set the session with the recovery token
             const refreshToken = hashParams.get('refresh_token')
@@ -87,12 +90,12 @@ function ResetPasswordForm() {
               hasAccessToken: !!accessToken,
               hasRefreshToken: !!refreshToken
             })
-            
+
             const { data: sessionData, error: setSessionError } = await supabase.auth.setSession({
               access_token: accessToken,
               refresh_token: refreshToken || ''
             })
-            
+
             if (setSessionError) {
               console.error('Failed to set session:', setSessionError)
               setError('Failed to validate reset link. Please request a new one.')
@@ -143,7 +146,7 @@ function ResetPasswordForm() {
 
     try {
       console.log('Attempting to update password...')
-      
+
       const { data, error } = await supabase.auth.updateUser({
         password: password
       })
@@ -162,14 +165,14 @@ function ResetPasswordForm() {
 
       console.log('Password updated successfully')
       setSuccess(true)
-      
+
       // Sign out to ensure clean state
       console.log('Signing out...')
       const { error: signOutError } = await supabase.auth.signOut()
       if (signOutError) {
         console.error('Sign out error:', signOutError)
       }
-      
+
       // Redirect to login after 2 seconds
       console.log('Redirecting to login in 2 seconds...')
       setTimeout(() => {
@@ -203,7 +206,7 @@ function ResetPasswordForm() {
   // Invalid session state
   if (!hasValidSession) {
     const isExpired = error?.toLowerCase().includes('expired')
-    
+
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto">
@@ -216,10 +219,9 @@ function ResetPasswordForm() {
                 {isExpired ? 'Link Expired' : 'Invalid Reset Link'}
               </CardTitle>
               <CardDescription>
-                {isExpired 
+                {isExpired
                   ? 'This password reset link has expired'
-                  : 'This password reset link is invalid'
-                }
+                  : 'This password reset link is invalid'}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -229,19 +231,16 @@ function ResetPasswordForm() {
                   <AlertDescription className="text-amber-800">{error}</AlertDescription>
                 </Alert>
               )}
-              
+
               <div className="text-sm text-gray-600 space-y-2">
                 <p className="text-center">
-                  {isExpired 
+                  {isExpired
                     ? 'For security reasons, password reset links expire after 1 hour.'
-                    : 'This link may have already been used or is invalid.'
-                  }
+                    : 'This link may have already been used or is invalid.'}
                 </p>
-                <p className="text-center font-medium">
-                  Please request a new password reset link.
-                </p>
+                <p className="text-center font-medium">Please request a new password reset link.</p>
               </div>
-              
+
               <div className="space-y-3">
                 <Link href="/auth/forgot-password" className="block">
                   <Button className="w-full" size="lg">
@@ -249,14 +248,14 @@ function ResetPasswordForm() {
                     Request New Reset Link
                   </Button>
                 </Link>
-                
+
                 <Link href="/auth/login" className="block">
                   <Button variant="outline" className="w-full">
                     Back to Login
                   </Button>
                 </Link>
               </div>
-              
+
               <div className="pt-4 border-t">
                 <p className="text-xs text-gray-500 text-center">
                   Tip: Check your email spam folder if you don't receive the reset email.
@@ -280,23 +279,22 @@ function ResetPasswordForm() {
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
               <CardTitle className="text-2xl">Password Reset Successfully</CardTitle>
-              <CardDescription>
-                Your password has been updated
-              </CardDescription>
+              <CardDescription>Your password has been updated</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Alert className="border-green-200 bg-green-50">
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <AlertDescription className="text-green-800">
-                  Your password has been reset successfully. You can now sign in with your new password.
+                  Your password has been reset successfully. You can now sign in with your new
+                  password.
                 </AlertDescription>
               </Alert>
-              
+
               <div className="space-y-3">
                 <p className="text-sm text-gray-600 text-center">
                   Redirecting to login page in 2 seconds...
                 </p>
-                
+
                 <Link href="/auth/login" className="block">
                   <Button className="w-full" size="lg">
                     <Lock className="mr-2 h-4 w-4" />
@@ -304,7 +302,7 @@ function ResetPasswordForm() {
                   </Button>
                 </Link>
               </div>
-              
+
               <div className="pt-4 border-t">
                 <p className="text-xs text-gray-500 text-center">
                   Your old password will no longer work. Please use your new password to sign in.
@@ -324,9 +322,7 @@ function ResetPasswordForm() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-            <CardDescription>
-              Enter your new password below
-            </CardDescription>
+            <CardDescription>Enter your new password below</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -336,16 +332,16 @@ function ResetPasswordForm() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">New Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Enter new password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     required
                     disabled={isLoading}
                     autoComplete="new-password"
@@ -356,27 +352,21 @@ function ResetPasswordForm() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Must be at least 6 characters long
-                </p>
+                <p className="text-xs text-gray-500">Must be at least 6 characters long</p>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm New Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm new password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={e => setConfirmPassword(e.target.value)}
                     required
                     disabled={isLoading}
                     autoComplete="new-password"
@@ -394,7 +384,7 @@ function ResetPasswordForm() {
                   </button>
                 </div>
               </div>
-              
+
               <Button
                 type="submit"
                 className="w-full"
@@ -413,23 +403,20 @@ function ResetPasswordForm() {
                 )}
               </Button>
             </form>
-            
+
             <div className="mt-6 text-center">
-              <Link 
-                href="/auth/login" 
-                className="text-sm text-gray-600 hover:text-gray-800"
-              >
+              <Link href="/auth/login" className="text-sm text-gray-600 hover:text-gray-800">
                 Back to Login
               </Link>
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Security Notice */}
         <div className="mt-8 text-center">
           <p className="text-xs text-gray-500 max-w-sm mx-auto">
-            Make sure to use a strong password that you haven't used before. 
-            Your password should be at least 6 characters long.
+            Make sure to use a strong password that you haven't used before. Your password should be
+            at least 6 characters long.
           </p>
         </div>
       </div>
@@ -439,11 +426,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        </div>
+      }
+    >
       <ResetPasswordForm />
     </Suspense>
   )

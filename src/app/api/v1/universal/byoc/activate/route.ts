@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Mock storage reference (same as main BYOC route)
 // In production, this would be replaced with actual database operations
 declare global {
-  var mockConfigurations: Record<string, any[]> | undefined;
+  var mockConfigurations: Record<string, any[]> | undefined
 }
 
 if (!global.mockConfigurations) {
@@ -17,14 +17,17 @@ export async function POST(request: NextRequest) {
 
     if (!applicationId || !organizationId || !configId || !userId) {
       return NextResponse.json(
-        { success: false, error: 'applicationId, organizationId, configId, and userId are required' },
+        {
+          success: false,
+          error: 'applicationId, organizationId, configId, and userId are required'
+        },
         { status: 400 }
       )
     }
 
     const configKey = `${applicationId}:${organizationId}`
     const configs = global.mockConfigurations![configKey] || []
-    
+
     // Check if the configuration exists
     const targetConfig = configs.find((c: any) => c.id === configId)
     if (!targetConfig) {
@@ -82,8 +85,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error activating BYOC configuration:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to activate configuration',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -107,7 +110,7 @@ export async function GET(request: NextRequest) {
 
     const configKey = `${applicationId}:${organizationId}`
     const configs = global.mockConfigurations![configKey] || []
-    
+
     // Find active configuration
     const activeConfig = configs.find((c: any) => c.metadata.isActive)
 
@@ -119,15 +122,15 @@ export async function GET(request: NextRequest) {
         totalConfigurations: configs.length,
         inactiveConfigurations: configs.filter((c: any) => !c.metadata.isActive).length
       },
-      message: activeConfig 
-        ? `Active configuration: ${activeConfig.name}` 
+      message: activeConfig
+        ? `Active configuration: ${activeConfig.name}`
         : 'No active configuration found'
     })
   } catch (error) {
     console.error('Error getting active BYOC configuration:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to get active configuration',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

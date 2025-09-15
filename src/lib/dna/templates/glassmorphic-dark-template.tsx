@@ -1,10 +1,10 @@
 /**
  * HERA DNA Design Template: "Glassmorphic Dark"
- * 
+ *
  * A premium dark theme template with glassmorphic effects, animated gradients,
  * and professional depth. Perfect for enterprise applications, dashboards,
  * and data-heavy interfaces.
- * 
+ *
  * Features:
  * - Dark slate base with glassmorphic cards
  * - Animated gradient blobs for depth
@@ -17,12 +17,12 @@
 export interface GlassmorphicDarkTheme {
   name: string
   colors: {
-    primary: string      // Main brand color (e.g., #0049B7)
-    secondary: string    // Secondary accent (e.g., #0099CC)
-    accent: string       // Bright accent (e.g., #FFD700)
-    danger: string       // Alert/danger color (e.g., #E91E63)
-    dangerDark: string   // Darker danger variant (e.g., #C2185B)
-    darkBase: string     // Dark background (e.g., #001A3D)
+    primary: string // Main brand color (e.g., #0049B7)
+    secondary: string // Secondary accent (e.g., #0099CC)
+    accent: string // Bright accent (e.g., #FFD700)
+    danger: string // Alert/danger color (e.g., #E91E63)
+    dangerDark: string // Darker danger variant (e.g., #C2185B)
+    darkBase: string // Dark background (e.g., #001A3D)
   }
 }
 
@@ -40,7 +40,7 @@ export const glassmorphicThemes = {
       darkBase: '#001A3D'
     }
   },
-  
+
   // Healthcare Theme (Teal/Green/Lime)
   healthcare: {
     name: 'Healthcare',
@@ -53,7 +53,7 @@ export const glassmorphicThemes = {
       darkBase: '#004D40'
     }
   },
-  
+
   // Finance Theme (Navy/Purple/Gold)
   finance: {
     name: 'Finance',
@@ -66,7 +66,7 @@ export const glassmorphicThemes = {
       darkBase: '#0D1642'
     }
   },
-  
+
   // Restaurant Theme (Orange/Red/Yellow)
   restaurant: {
     name: 'Restaurant',
@@ -79,7 +79,7 @@ export const glassmorphicThemes = {
       darkBase: '#3E2723'
     }
   },
-  
+
   // Manufacturing Theme (Grey/Blue/Orange)
   manufacturing: {
     name: 'Manufacturing',
@@ -92,7 +92,7 @@ export const glassmorphicThemes = {
       darkBase: '#212121'
     }
   },
-  
+
   // Retail Theme (Pink/Purple/Yellow)
   retail: {
     name: 'Retail',
@@ -140,13 +140,16 @@ export function generateGlassmorphicCard(theme: GlassmorphicDarkTheme) {
 }
 
 // Button component template
-export function generateGlassmorphicButton(theme: GlassmorphicDarkTheme, variant: 'primary' | 'secondary' | 'danger' = 'primary') {
+export function generateGlassmorphicButton(
+  theme: GlassmorphicDarkTheme,
+  variant: 'primary' | 'secondary' | 'danger' = 'primary'
+) {
   const gradients = {
     primary: `from-[${theme.colors.secondary}] to-[${theme.colors.primary}]`,
     secondary: `from-[${theme.colors.accent}] to-[${theme.colors.secondary}]`,
     danger: `from-[${theme.colors.danger}] to-[${theme.colors.dangerDark}]`
   }
-  
+
   return `
     <button className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-r ${gradients[variant]} rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />

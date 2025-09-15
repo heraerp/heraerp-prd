@@ -78,18 +78,20 @@ export function OperationsDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
-  const [selectedView, setSelectedView] = useState<'overview' | 'tables' | 'delivery' | 'pickup'>('overview')
+  const [selectedView, setSelectedView] = useState<'overview' | 'tables' | 'delivery' | 'pickup'>(
+    'overview'
+  )
 
   // Load operations data
   const loadOperationsData = async () => {
     try {
       setIsLoading(true)
       setError(null)
-      
+
       console.log('🎯 Loading operations dashboard data...')
       const response = await fetch('/api/v1/restaurant/operations')
       const result = await response.json()
-      
+
       if (result.success) {
         setOperationsData(result.data)
         setLastUpdated(new Date())
@@ -115,7 +117,8 @@ export function OperationsDashboard() {
 
   // Helper functions
   const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`
-  const formatTime = (dateString: string) => new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const formatTime = (dateString: string) =>
+    new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   const getTimeAgo = (dateString: string) => {
     const minutes = Math.floor((new Date().getTime() - new Date(dateString).getTime()) / 60000)
     if (minutes < 1) return 'Just now'
@@ -128,29 +131,42 @@ export function OperationsDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'processing': return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'approved': return 'bg-green-100 text-green-800 border-green-200'
-      case 'completed': return 'bg-gray-100 text-gray-800 border-gray-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      case 'processing':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'approved':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'completed':
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
 
   const getInsightIcon = (type: string) => {
     switch (type) {
-      case 'alert': return <AlertTriangle className="w-4 h-4 text-red-500" />
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-500" />
-      case 'info': return <Activity className="w-4 h-4 text-blue-500" />
-      default: return <Activity className="w-4 h-4 text-gray-500" />
+      case 'alert':
+        return <AlertTriangle className="w-4 h-4 text-red-500" />
+      case 'warning':
+        return <AlertTriangle className="w-4 h-4 text-yellow-500" />
+      case 'info':
+        return <Activity className="w-4 h-4 text-blue-500" />
+      default:
+        return <Activity className="w-4 h-4 text-gray-500" />
     }
   }
 
   const getInsightColor = (type: string) => {
     switch (type) {
-      case 'alert': return 'bg-red-50 border-red-200 text-red-800'
-      case 'warning': return 'bg-yellow-50 border-yellow-200 text-yellow-800'
-      case 'info': return 'bg-blue-50 border-blue-200 text-blue-800'
-      default: return 'bg-gray-50 border-gray-200 text-gray-800'
+      case 'alert':
+        return 'bg-red-50 border-red-200 text-red-800'
+      case 'warning':
+        return 'bg-yellow-50 border-yellow-200 text-yellow-800'
+      case 'info':
+        return 'bg-blue-50 border-blue-200 text-blue-800'
+      default:
+        return 'bg-gray-50 border-gray-200 text-gray-800'
     }
   }
 
@@ -172,7 +188,9 @@ export function OperationsDashboard() {
       <div className="max-w-7xl mx-auto p-6">
         <Card className="p-8 text-center">
           <AlertTriangle className="w-12 h-12 mx-auto text-red-500 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Unable to Load Operations Data</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Unable to Load Operations Data
+          </h3>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={loadOperationsData}
@@ -235,7 +253,9 @@ export function OperationsDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-green-800">Today's Revenue</p>
-              <p className="text-2xl font-bold text-green-900">{formatCurrency(metrics.total_revenue)}</p>
+              <p className="text-2xl font-bold text-green-900">
+                {formatCurrency(metrics.total_revenue)}
+              </p>
               <p className="text-xs text-green-700 mt-1">
                 Avg: {formatCurrency(metrics.average_order_value)}
               </p>
@@ -251,7 +271,9 @@ export function OperationsDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-purple-800">Table Occupancy</p>
-              <p className="text-2xl font-bold text-purple-900">{metrics.table_occupancy_rate.toFixed(1)}%</p>
+              <p className="text-2xl font-bold text-purple-900">
+                {metrics.table_occupancy_rate.toFixed(1)}%
+              </p>
               <p className="text-xs text-purple-700 mt-1">
                 {metrics.occupied_tables}/{metrics.total_tables} tables
               </p>
@@ -267,7 +289,9 @@ export function OperationsDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-orange-800">Delivery Status</p>
-              <p className="text-2xl font-bold text-orange-900">{metrics.available_drivers}/{metrics.total_drivers}</p>
+              <p className="text-2xl font-bold text-orange-900">
+                {metrics.available_drivers}/{metrics.total_drivers}
+              </p>
               <p className="text-xs text-orange-700 mt-1">
                 {metrics.active_deliveries} active deliveries
               </p>
@@ -402,7 +426,10 @@ export function OperationsDashboard() {
                 <div className="text-right">
                   <Badge className="bg-purple-100 text-purple-800">{metrics.dine_in_orders}</Badge>
                   <p className="text-xs text-purple-700 mt-1">
-                    {metrics.total_orders > 0 ? ((metrics.dine_in_orders / metrics.total_orders) * 100).toFixed(1) : 0}%
+                    {metrics.total_orders > 0
+                      ? ((metrics.dine_in_orders / metrics.total_orders) * 100).toFixed(1)
+                      : 0}
+                    %
                   </p>
                 </div>
               </div>
@@ -414,7 +441,10 @@ export function OperationsDashboard() {
                 <div className="text-right">
                   <Badge className="bg-orange-100 text-orange-800">{metrics.delivery_orders}</Badge>
                   <p className="text-xs text-orange-700 mt-1">
-                    {metrics.total_orders > 0 ? ((metrics.delivery_orders / metrics.total_orders) * 100).toFixed(1) : 0}%
+                    {metrics.total_orders > 0
+                      ? ((metrics.delivery_orders / metrics.total_orders) * 100).toFixed(1)
+                      : 0}
+                    %
                   </p>
                 </div>
               </div>
@@ -426,7 +456,10 @@ export function OperationsDashboard() {
                 <div className="text-right">
                   <Badge className="bg-indigo-100 text-indigo-800">{metrics.pickup_orders}</Badge>
                   <p className="text-xs text-indigo-700 mt-1">
-                    {metrics.total_orders > 0 ? ((metrics.pickup_orders / metrics.total_orders) * 100).toFixed(1) : 0}%
+                    {metrics.total_orders > 0
+                      ? ((metrics.pickup_orders / metrics.total_orders) * 100).toFixed(1)
+                      : 0}
+                    %
                   </p>
                 </div>
               </div>
@@ -451,26 +484,28 @@ export function OperationsDashboard() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tables.map((table) => (
+            {tables.map(table => (
               <div
                 key={table.id}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   table.status === 'occupied'
                     ? 'bg-red-50 border-red-200'
                     : table.status === 'reserved'
-                    ? 'bg-yellow-50 border-yellow-200'
-                    : 'bg-green-50 border-green-200'
+                      ? 'bg-yellow-50 border-yellow-200'
+                      : 'bg-green-50 border-green-200'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-gray-900">Table {table.table_number}</h4>
-                  <Badge className={
-                    table.status === 'occupied'
-                      ? 'bg-red-100 text-red-800'
-                      : table.status === 'reserved'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-green-100 text-green-800'
-                  }>
+                  <Badge
+                    className={
+                      table.status === 'occupied'
+                        ? 'bg-red-100 text-red-800'
+                        : table.status === 'reserved'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-green-100 text-green-800'
+                    }
+                  >
                     {table.status}
                   </Badge>
                 </div>
@@ -511,17 +546,30 @@ export function OperationsDashboard() {
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Driver Status</h3>
             <div className="space-y-4">
-              {drivers.map((driver) => (
-                <div key={driver.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              {drivers.map(driver => (
+                <div
+                  key={driver.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${driver.is_available ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <div
+                      className={`w-3 h-3 rounded-full ${driver.is_available ? 'bg-green-500' : 'bg-red-500'}`}
+                    ></div>
                     <div>
                       <p className="font-medium text-gray-900">{driver.name}</p>
-                      <p className="text-sm text-gray-600">{driver.vehicle_type} • {driver.phone}</p>
+                      <p className="text-sm text-gray-600">
+                        {driver.vehicle_type} • {driver.phone}
+                      </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <Badge className={driver.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                    <Badge
+                      className={
+                        driver.is_available
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }
+                    >
                       {driver.current_orders} orders
                     </Badge>
                     <div className="flex items-center space-x-1 mt-1">
@@ -538,47 +586,51 @@ export function OperationsDashboard() {
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Delivery Orders</h3>
             <div className="space-y-3">
-              {orders.by_type.delivery.filter((order: any) => ['pending', 'processing', 'approved'].includes(order.status)).map((order: any) => (
-                <div key={order.id} className="p-4 border border-gray-200 rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3">
-                      <span className="font-medium text-gray-900">{order.order_number}</span>
-                      <Badge className={getStatusColor(order.status)}>
-                        {order.status}
-                      </Badge>
+              {orders.by_type.delivery
+                .filter((order: any) =>
+                  ['pending', 'processing', 'approved'].includes(order.status)
+                )
+                .map((order: any) => (
+                  <div key={order.id} className="p-4 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-3">
+                        <span className="font-medium text-gray-900">{order.order_number}</span>
+                        <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
+                      </div>
+                      <span className="font-semibold text-gray-900">
+                        {formatCurrency(order.total_amount)}
+                      </span>
                     </div>
-                    <span className="font-semibold text-gray-900">{formatCurrency(order.total_amount)}</span>
-                  </div>
-                  <div className="text-sm text-gray-600 space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-4 h-4" />
-                      <span>{order.customer.name}</span>
-                      {order.customer.phone && (
-                        <>
-                          <Phone className="w-4 h-4" />
-                          <span>{order.customer.phone}</span>
-                        </>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <Users className="w-4 h-4" />
+                        <span>{order.customer.name}</span>
+                        {order.customer.phone && (
+                          <>
+                            <Phone className="w-4 h-4" />
+                            <span>{order.customer.phone}</span>
+                          </>
+                        )}
+                      </div>
+                      {order.delivery_address && (
+                        <div className="flex items-center space-x-2">
+                          <MapPin className="w-4 h-4" />
+                          <span>{order.delivery_address}</span>
+                        </div>
                       )}
-                    </div>
-                    {order.delivery_address && (
+                      {order.driver_name && (
+                        <div className="flex items-center space-x-2">
+                          <Car className="w-4 h-4" />
+                          <span>Driver: {order.driver_name}</span>
+                        </div>
+                      )}
                       <div className="flex items-center space-x-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{order.delivery_address}</span>
+                        <Clock className="w-4 h-4" />
+                        <span>Ordered: {getTimeAgo(order.created_at)}</span>
                       </div>
-                    )}
-                    {order.driver_name && (
-                      <div className="flex items-center space-x-2">
-                        <Car className="w-4 h-4" />
-                        <span>Driver: {order.driver_name}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center space-x-2">
-                      <Clock className="w-4 h-4" />
-                      <span>Ordered: {getTimeAgo(order.created_at)}</span>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </Card>
         </div>
@@ -593,11 +645,11 @@ export function OperationsDashboard() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
                     <span className="font-medium text-gray-900">{order.order_number}</span>
-                    <Badge className={getStatusColor(order.status)}>
-                      {order.status}
-                    </Badge>
+                    <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
                   </div>
-                  <span className="font-semibold text-gray-900">{formatCurrency(order.total_amount)}</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatCurrency(order.total_amount)}
+                  </span>
                 </div>
                 <div className="text-sm text-gray-600 space-y-2">
                   <div className="flex items-center space-x-2">
@@ -629,7 +681,8 @@ export function OperationsDashboard() {
                 </div>
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <div className="text-xs text-gray-500">
-                    {order.items.length} items: {order.items.map((item: any) => `${item.quantity}× ${item.name}`).join(', ')}
+                    {order.items.length} items:{' '}
+                    {order.items.map((item: any) => `${item.quantity}× ${item.name}`).join(', ')}
                   </div>
                 </div>
               </div>
@@ -645,24 +698,29 @@ export function OperationsDashboard() {
             HERA Universal Operations Intelligence
           </h3>
           <p className="text-sm text-indigo-800 mb-4">
-            This comprehensive operations dashboard demonstrates HERA's universal architecture powering real-time restaurant operations:
+            This comprehensive operations dashboard demonstrates HERA's universal architecture
+            powering real-time restaurant operations:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-indigo-700">
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Real-Time Operations</strong><br />
+              <strong>Real-Time Operations</strong>
+              <br />
               Unified view of dine-in, pickup, and delivery orders from universal transactions
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Dynamic Entity Management</strong><br />
+              <strong>Dynamic Entity Management</strong>
+              <br />
               Tables and drivers as flexible entities with unlimited custom properties
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Steve Jobs Excellence</strong><br />
+              <strong>Steve Jobs Excellence</strong>
+              <br />
               "Focus and simplicity" - omniscient control through elegant interface design
             </div>
           </div>
           <p className="text-xs text-indigo-600 mt-4">
-            Same architecture supports healthcare facilities, manufacturing operations, and professional services
+            Same architecture supports healthcare facilities, manufacturing operations, and
+            professional services
           </p>
         </div>
       </Card>

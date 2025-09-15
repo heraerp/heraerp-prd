@@ -4,13 +4,13 @@
  * Smart Code: HERA.MCP.WHATSAPP.TOOLS.v1
  */
 
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '@/types/database';
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '@/types/database'
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey)
 
 // WhatsApp DNA Configuration
 export const WHATSAPP_DNA_CONFIG = {
@@ -35,18 +35,22 @@ export const WHATSAPP_DNA_CONFIG = {
     media: { name: 'Media Message', use_case: 'Before/after photos' },
     location: { name: 'Location Message', use_case: 'Salon directions' }
   }
-};
+}
 
 // WhatsApp Analytics
 export async function getWhatsAppAnalytics(
   organizationId: string,
   options: {
-    startDate?: Date;
-    endDate?: Date;
-    phoneNumber?: string;
+    startDate?: Date
+    endDate?: Date
+    phoneNumber?: string
   } = {}
 ) {
-  const { startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), endDate = new Date(), phoneNumber } = options;
+  const {
+    startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    endDate = new Date(),
+    phoneNumber
+  } = options
 
   try {
     // Get WhatsApp conversations (stored as transactions)
@@ -56,25 +60,28 @@ export async function getWhatsAppAnalytics(
       .eq('organization_id', organizationId)
       .in('transaction_type', ['whatsapp_conversation', 'whatsapp_message'])
       .gte('created_at', startDate.toISOString())
-      .lte('created_at', endDate.toISOString());
+      .lte('created_at', endDate.toISOString())
 
     if (phoneNumber) {
-      query = query.eq('metadata->whatsapp_number', phoneNumber);
+      query = query.eq('metadata->whatsapp_number', phoneNumber)
     }
 
-    const { data: conversations, error } = await query;
-    if (error) throw error;
+    const { data: conversations, error } = await query
+    if (error) throw error
 
     // Calculate analytics
-    const totalConversations = conversations?.length || 0;
-    const totalMessages = conversations?.reduce((sum, conv) => 
-      sum + (conv.universal_transaction_lines?.length || 0), 0) || 0;
-    
-    const bookingConversions = conversations?.filter(c => 
-      (c.metadata as any)?.conversion_type === 'booking').length || 0;
-    
-    const responseRates = conversations?.filter(c => 
-      (c.metadata as any)?.customer_responded === true).length || 0;
+    const totalConversations = conversations?.length || 0
+    const totalMessages =
+      conversations?.reduce(
+        (sum, conv) => sum + (conv.universal_transaction_lines?.length || 0),
+        0
+      ) || 0
+
+    const bookingConversions =
+      conversations?.filter(c => (c.metadata as any)?.conversion_type === 'booking').length || 0
+
+    const responseRates =
+      conversations?.filter(c => (c.metadata as any)?.customer_responded === true).length || 0
 
     const summary = {
       total_conversations: totalConversations,
@@ -83,26 +90,34 @@ export async function getWhatsAppAnalytics(
       conversion_rate: totalConversations > 0 ? (bookingConversions / totalConversations) * 100 : 0,
       avg_response_time: '2.5 minutes',
       avg_conversation_length: totalConversations > 0 ? totalMessages / totalConversations : 0
-    };
+    }
 
     // Message type breakdown
-    const messageTypes = conversations?.reduce((acc, conv) => {
-      const type = (conv.metadata as any)?.message_type || 'text';
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>) || {};
+    const messageTypes =
+      conversations?.reduce(
+        (acc, conv) => {
+          const type = (conv.metadata as any)?.message_type || 'text'
+          acc[type] = (acc[type] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      ) || {}
 
     // Peak hours analysis
-    const hourlyDistribution = conversations?.reduce((acc, conv) => {
-      const hour = new Date(conv.created_at).getHours();
-      acc[hour] = (acc[hour] || 0) + 1;
-      return acc;
-    }, {} as Record<number, number>) || {};
+    const hourlyDistribution =
+      conversations?.reduce(
+        (acc, conv) => {
+          const hour = new Date(conv.created_at).getHours()
+          acc[hour] = (acc[hour] || 0) + 1
+          return acc
+        },
+        {} as Record<number, number>
+      ) || {}
 
     const peakHours = Object.entries(hourlyDistribution)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
-      .map(([hour, count]) => ({ hour: parseInt(hour), conversation_count: count }));
+      .map(([hour, count]) => ({ hour: parseInt(hour), conversation_count: count }))
 
     return {
       success: true,
@@ -119,13 +134,13 @@ export async function getWhatsAppAnalytics(
         }
       },
       insights: generateWhatsAppInsights(summary, messageTypes, peakHours)
-    };
+    }
   } catch (error) {
-    console.error('WhatsApp analytics error:', error);
+    console.error('WhatsApp analytics error:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
-    };
+    }
   }
 }
 
@@ -133,10 +148,10 @@ export async function getWhatsAppAnalytics(
 export async function createBookingFlow(
   organizationId: string,
   options: {
-    serviceTypes?: string[];
-    bookingWindowDays?: number;
-    requireDeposit?: boolean;
-    enableStylistSelection?: boolean;
+    serviceTypes?: string[]
+    bookingWindowDays?: number
+    requireDeposit?: boolean
+    enableStylistSelection?: boolean
   } = {}
 ) {
   const {
@@ -144,7 +159,7 @@ export async function createBookingFlow(
     bookingWindowDays = 60,
     requireDeposit = false,
     enableStylistSelection = true
-  } = options;
+  } = options
 
   const flow = {
     flow_id: `booking_flow_${Date.now()}`,
@@ -153,7 +168,7 @@ export async function createBookingFlow(
     steps: [] as any[],
     estimated_completion_time: '60 seconds',
     conversion_optimization: true
-  };
+  }
 
   // Step 1: Service Selection
   flow.steps.push({
@@ -168,7 +183,7 @@ export async function createBookingFlow(
       description: `Professional ${service} service`
     })),
     smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.SERVICE.v1'
-  });
+  })
 
   // Step 2: Stylist Selection (if enabled)
   if (enableStylistSelection) {
@@ -184,7 +199,7 @@ export async function createBookingFlow(
         { id: 'any_available', title: 'Any Available Stylist' }
       ],
       smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.STYLIST.v1'
-    });
+    })
   }
 
   // Step 3: Date & Time Selection
@@ -196,7 +211,7 @@ export async function createBookingFlow(
     title: 'Select your preferred date and time',
     booking_window: bookingWindowDays,
     smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.DATETIME.v1'
-  });
+  })
 
   // Step 4: Confirmation
   const finalStep = {
@@ -210,9 +225,9 @@ export async function createBookingFlow(
     payment_required: requireDeposit,
     payment_options: requireDeposit ? ['whatsapp_pay', 'payment_link'] : [],
     deposit_percentage: requireDeposit ? 20 : 0
-  };
+  }
 
-  flow.steps.push(finalStep);
+  flow.steps.push(finalStep)
 
   // Save flow configuration to database
   try {
@@ -223,15 +238,15 @@ export async function createBookingFlow(
       organization_id: organizationId,
       smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.v1',
       metadata: flow
-    };
+    }
 
     const { data, error } = await supabase
       .from('core_entities')
       .insert(flowEntity)
       .select()
-      .single();
+      .single()
 
-    if (error) throw error;
+    if (error) throw error
 
     return {
       success: true,
@@ -240,13 +255,13 @@ export async function createBookingFlow(
       organization_id: organizationId,
       flow_config: flow,
       entity_id: data.id
-    };
+    }
   } catch (error) {
-    console.error('Create booking flow error:', error);
+    console.error('Create booking flow error:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
-    };
+    }
   }
 }
 
@@ -254,13 +269,13 @@ export async function createBookingFlow(
 export async function getCustomerJourneyAnalytics(
   organizationId: string,
   options: {
-    customerId?: string;
-    journeyType?: string;
-    timeframe?: number;
+    customerId?: string
+    journeyType?: string
+    timeframe?: number
   } = {}
 ) {
-  const { customerId, journeyType = 'all', timeframe = 30 } = options;
-  const startDate = new Date(Date.now() - timeframe * 24 * 60 * 60 * 1000);
+  const { customerId, journeyType = 'all', timeframe = 30 } = options
+  const startDate = new Date(Date.now() - timeframe * 24 * 60 * 60 * 1000)
 
   try {
     // Get customer journeys
@@ -269,35 +284,40 @@ export async function getCustomerJourneyAnalytics(
       .select(`*, universal_transaction_lines(*)`)
       .eq('organization_id', organizationId)
       .gte('created_at', startDate.toISOString())
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: true })
 
     if (customerId) {
-      query = query.or(`from_entity_id.eq.${customerId},to_entity_id.eq.${customerId}`);
+      query = query.or(`from_entity_id.eq.${customerId},to_entity_id.eq.${customerId}`)
     }
 
     if (journeyType !== 'all') {
-      query = query.eq('metadata->journey_type', journeyType);
+      query = query.eq('metadata->journey_type', journeyType)
     }
 
-    const { data: touchpoints, error } = await query;
-    if (error) throw error;
+    const { data: touchpoints, error } = await query
+    if (error) throw error
 
     // Group by customer
-    const customerJourneys = touchpoints?.reduce((acc, touchpoint) => {
-      const custId = touchpoint.from_entity_id || touchpoint.to_entity_id;
-      if (!acc[custId]) {
-        acc[custId] = [];
-      }
-      acc[custId].push(touchpoint);
-      return acc;
-    }, {} as Record<string, any[]>) || {};
+    const customerJourneys =
+      touchpoints?.reduce(
+        (acc, touchpoint) => {
+          const custId = touchpoint.from_entity_id || touchpoint.to_entity_id
+          if (!acc[custId]) {
+            acc[custId] = []
+          }
+          acc[custId].push(touchpoint)
+          return acc
+        },
+        {} as Record<string, any[]>
+      ) || {}
 
     // Calculate metrics
     const journeyMetrics = Object.entries(customerJourneys).map(([custId, journey]) => {
-      const firstTouch = journey[0];
-      const lastTouch = journey[journey.length - 1];
-      const duration = new Date(lastTouch.created_at).getTime() - new Date(firstTouch.created_at).getTime();
-      const hasConversion = journey.some(t => (t.metadata as any)?.conversion_type === 'booking');
+      const firstTouch = journey[0]
+      const lastTouch = journey[journey.length - 1]
+      const duration =
+        new Date(lastTouch.created_at).getTime() - new Date(firstTouch.created_at).getTime()
+      const hasConversion = journey.some(t => (t.metadata as any)?.conversion_type === 'booking')
 
       return {
         customer_id: custId,
@@ -305,12 +325,14 @@ export async function getCustomerJourneyAnalytics(
         journey_duration_hours: duration / (1000 * 60 * 60),
         has_conversion: hasConversion,
         journey_type: (firstTouch.metadata as any)?.journey_type || 'unknown'
-      };
-    });
+      }
+    })
 
-    const avgTouchpoints = journeyMetrics.reduce((sum, j) => sum + j.touchpoint_count, 0) / journeyMetrics.length || 0;
-    const conversionCount = journeyMetrics.filter(j => j.has_conversion).length;
-    const conversionRate = journeyMetrics.length > 0 ? (conversionCount / journeyMetrics.length) * 100 : 0;
+    const avgTouchpoints =
+      journeyMetrics.reduce((sum, j) => sum + j.touchpoint_count, 0) / journeyMetrics.length || 0
+    const conversionCount = journeyMetrics.filter(j => j.has_conversion).length
+    const conversionRate =
+      journeyMetrics.length > 0 ? (conversionCount / journeyMetrics.length) * 100 : 0
 
     return {
       success: true,
@@ -326,13 +348,13 @@ export async function getCustomerJourneyAnalytics(
           retention_rate: 0 // Calculate based on repeat customers
         }
       }
-    };
+    }
   } catch (error) {
-    console.error('Customer journey analytics error:', error);
+    console.error('Customer journey analytics error:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
-    };
+    }
   }
 }
 
@@ -342,26 +364,26 @@ function generateWhatsAppInsights(
   messageTypes: Record<string, number>,
   peakHours: any[]
 ): string[] {
-  const insights: string[] = [];
+  const insights: string[] = []
 
   if (summary.response_rate < 70) {
-    insights.push('Response rate below 70% - consider improving initial message engagement');
+    insights.push('Response rate below 70% - consider improving initial message engagement')
   }
 
   if (summary.conversion_rate < 10) {
-    insights.push('Low conversion rate - optimize booking flow for better results');
+    insights.push('Low conversion rate - optimize booking flow for better results')
   }
 
   if (peakHours.length > 0 && peakHours[0].hour >= 18) {
-    insights.push('Peak activity in evening hours - ensure staff coverage');
+    insights.push('Peak activity in evening hours - ensure staff coverage')
   }
 
-  const interactiveRate = ((messageTypes.interactive || 0) / summary.total_messages) * 100;
+  const interactiveRate = ((messageTypes.interactive || 0) / summary.total_messages) * 100
   if (interactiveRate < 30) {
-    insights.push('Low interactive message usage - increase buttons and lists for engagement');
+    insights.push('Low interactive message usage - increase buttons and lists for engagement')
   }
 
-  return insights;
+  return insights
 }
 
 // MCP Tool Definitions
@@ -378,4 +400,4 @@ export const MCP_WHATSAPP_TOOLS = {
     description: 'Analyze customer journey via WhatsApp',
     handler: getCustomerJourneyAnalytics
   }
-};
+}

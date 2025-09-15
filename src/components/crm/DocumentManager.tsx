@@ -1,7 +1,7 @@
 /**
  * HERA CRM Document Manager Component
  * Complete file upload and document management interface
- * 
+ *
  * Project Manager Task: File Upload & Document Management UI
  */
 
@@ -13,14 +13,36 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Upload, File, FileText, Image, Download, Trash2, 
-  Eye, Edit, X, Plus, Search, Filter, Calendar,
-  Paperclip, CheckCircle, AlertCircle, Loader2,
-  FolderOpen, Tag, User
+import {
+  Upload,
+  File,
+  FileText,
+  Image,
+  Download,
+  Trash2,
+  Eye,
+  Edit,
+  X,
+  Plus,
+  Search,
+  Filter,
+  Calendar,
+  Paperclip,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  FolderOpen,
+  Tag,
+  User
 } from 'lucide-react'
 import { createDocumentService, CRMDocument, DocumentFilter } from '@/lib/crm/document-service'
 import { CRMContact } from '@/lib/crm/production-api'
@@ -33,30 +55,30 @@ interface DocumentManagerProps {
   organizationId: string
 }
 
-export function DocumentManager({ 
-  contact, 
-  opportunityId, 
-  isOpen, 
-  onClose, 
-  organizationId 
+export function DocumentManager({
+  contact,
+  opportunityId,
+  isOpen,
+  onClose,
+  organizationId
 }: DocumentManagerProps) {
   const [documentService] = useState(() => createDocumentService(organizationId))
   const [documents, setDocuments] = useState<CRMDocument[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Upload state
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [dragActive, setDragActive] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
+
   // Form state
   const [selectedCategory, setSelectedCategory] = useState<CRMDocument['category']>('other')
   const [documentTags, setDocumentTags] = useState('')
   const [documentNotes, setDocumentNotes] = useState('')
   const [isPublicDocument, setIsPublicDocument] = useState(false)
-  
+
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
@@ -72,12 +94,12 @@ export function DocumentManager({
   const loadDocuments = async () => {
     setIsLoading(true)
     setError(null)
-    
+
     try {
       const filter: DocumentFilter = {}
       if (contact?.id) filter.contactId = contact.id
       if (opportunityId) filter.opportunityId = opportunityId
-      
+
       const docs = await documentService.getDocuments(filter)
       setDocuments(docs)
     } catch (err) {
@@ -93,32 +115,35 @@ export function DocumentManager({
 
     setIsUploading(true)
     setUploadProgress(0)
-    
+
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
         setUploadProgress(((i + 1) / files.length) * 100)
-        
+
         const result = await documentService.uploadDocument(
           file,
           {
             contactId: contact?.id,
             opportunityId,
             category: selectedCategory,
-            tags: documentTags.split(',').map(t => t.trim()).filter(Boolean),
+            tags: documentTags
+              .split(',')
+              .map(t => t.trim())
+              .filter(Boolean),
             notes: documentNotes,
             isPublic: isPublicDocument
           },
           'current_user@company.com' // TODO: Get from auth context
         )
-        
+
         if (result.success && result.document) {
           setDocuments(prev => [...prev, result.document!])
         } else {
           throw new Error(result.error || 'Upload failed')
         }
       }
-      
+
       // Reset form
       setShowUploadForm(false)
       setDocumentTags('')
@@ -148,7 +173,7 @@ export function DocumentManager({
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       handleFileUpload(e.dataTransfer.files)
     }
@@ -157,7 +182,7 @@ export function DocumentManager({
   // Document actions
   const handleDeleteDocument = async (documentId: string) => {
     if (!confirm('Are you sure you want to delete this document?')) return
-    
+
     try {
       const success = await documentService.deleteDocument(documentId)
       if (success) {
@@ -183,7 +208,8 @@ export function DocumentManager({
   const getFileIcon = (mimeType: string) => {
     if (mimeType.startsWith('image/')) return <Image className="h-5 w-5 text-green-600" />
     if (mimeType.includes('pdf')) return <FileText className="h-5 w-5 text-red-600" />
-    if (mimeType.includes('word') || mimeType.includes('document')) return <FileText className="h-5 w-5 text-blue-600" />
+    if (mimeType.includes('word') || mimeType.includes('document'))
+      return <FileText className="h-5 w-5 text-blue-600" />
     return <File className="h-5 w-5 text-gray-600" />
   }
 
@@ -198,12 +224,13 @@ export function DocumentManager({
 
   // Filter documents
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.originalName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         (doc.notes && doc.notes.toLowerCase().includes(searchTerm.toLowerCase()))
-    
+    const matchesSearch =
+      doc.originalName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (doc.notes && doc.notes.toLowerCase().includes(searchTerm.toLowerCase()))
+
     const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter
-    
+
     return matchesSearch && matchesCategory
   })
 
@@ -237,9 +264,9 @@ export function DocumentManager({
                 <div className="flex items-center gap-2">
                   <AlertCircle className="h-5 w-5 text-red-600" />
                   <span className="text-red-800">{error}</span>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setError(null)}
                     className="ml-auto"
                   >
@@ -272,11 +299,11 @@ export function DocumentManager({
                 <Input
                   placeholder="Search documents..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10 w-64"
                 />
               </div>
-              
+
               {/* Category Filter */}
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="w-48">
@@ -294,7 +321,7 @@ export function DocumentManager({
               </Select>
             </div>
 
-            <Button 
+            <Button
               onClick={() => setShowUploadForm(!showUploadForm)}
               className="bg-blue-600 hover:bg-blue-700"
             >
@@ -310,8 +337,8 @@ export function DocumentManager({
                 {/* Drag & Drop Area */}
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                    dragActive 
-                      ? 'border-blue-500 bg-blue-50' 
+                    dragActive
+                      ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-300 hover:border-gray-400'
                   }`}
                   onDragEnter={handleDrag}
@@ -337,14 +364,17 @@ export function DocumentManager({
                   multiple
                   className="hidden"
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.txt,.csv"
-                  onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                  onChange={e => e.target.files && handleFileUpload(e.target.files)}
                 />
 
                 {/* Upload Options */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                   <div>
                     <Label htmlFor="category">Category</Label>
-                    <Select value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as any)}>
+                    <Select
+                      value={selectedCategory}
+                      onValueChange={value => setSelectedCategory(value as any)}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -358,23 +388,23 @@ export function DocumentManager({
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="tags">Tags (comma-separated)</Label>
                     <Input
                       id="tags"
                       value={documentTags}
-                      onChange={(e) => setDocumentTags(e.target.value)}
+                      onChange={e => setDocumentTags(e.target.value)}
                       placeholder="proposal, q1, important"
                     />
                   </div>
-                  
+
                   <div className="flex items-center space-x-2 mt-6">
                     <input
                       type="checkbox"
                       id="isPublic"
                       checked={isPublicDocument}
-                      onChange={(e) => setIsPublicDocument(e.target.checked)}
+                      onChange={e => setIsPublicDocument(e.target.checked)}
                       className="rounded"
                     />
                     <Label htmlFor="isPublic" className="text-sm">
@@ -388,7 +418,7 @@ export function DocumentManager({
                   <Textarea
                     id="notes"
                     value={documentNotes}
-                    onChange={(e) => setDocumentNotes(e.target.value)}
+                    onChange={e => setDocumentNotes(e.target.value)}
                     placeholder="Add notes about these documents..."
                     rows={3}
                   />
@@ -411,8 +441,8 @@ export function DocumentManager({
                   <FolderOpen className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                   <h3 className="text-lg font-semibold mb-2">No documents found</h3>
                   <p className="text-gray-600 mb-4">
-                    {searchTerm || categoryFilter !== 'all' 
-                      ? 'No documents match your search criteria.' 
+                    {searchTerm || categoryFilter !== 'all'
+                      ? 'No documents match your search criteria.'
                       : 'Start by uploading your first document.'}
                   </p>
                   <Button onClick={() => setShowUploadForm(true)}>
@@ -422,11 +452,14 @@ export function DocumentManager({
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {filteredDocuments.map((document) => (
-                    <div key={document.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                  {filteredDocuments.map(document => (
+                    <div
+                      key={document.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                    >
                       <div className="flex items-center gap-4 flex-1">
                         {getFileIcon(document.mimeType)}
-                        
+
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium truncate">{document.originalName}</h4>
                           <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
@@ -443,7 +476,7 @@ export function DocumentManager({
                               {document.uploadedBy}
                             </span>
                           </div>
-                          
+
                           {document.tags.length > 0 && (
                             <div className="flex items-center gap-1 mt-2">
                               <Tag className="h-3 w-3 text-gray-400" />
@@ -454,18 +487,16 @@ export function DocumentManager({
                               ))}
                             </div>
                           )}
-                          
+
                           {document.notes && (
-                            <p className="text-sm text-gray-600 mt-1 truncate">
-                              {document.notes}
-                            </p>
+                            <p className="text-sm text-gray-600 mt-1 truncate">{document.notes}</p>
                           )}
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 ml-4">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => handleDownload(document)}
                         >
@@ -477,8 +508,8 @@ export function DocumentManager({
                         <Button size="sm" variant="outline">
                           <Pencil className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => handleDeleteDocument(document.id)}
                           className="text-red-600 hover:text-red-700"

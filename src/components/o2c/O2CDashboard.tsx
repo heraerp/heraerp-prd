@@ -9,10 +9,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
-import { 
-  ShoppingCart, 
-  FileText, 
-  DollarSign, 
+import {
+  ShoppingCart,
+  FileText,
+  DollarSign,
   TrendingUp,
   AlertCircle,
   Package,
@@ -99,9 +99,7 @@ export function O2CDashboard() {
     return (
       <Alert className="m-4">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Please log in to access the O2C dashboard.
-        </AlertDescription>
+        <AlertDescription>Please log in to access the O2C dashboard.</AlertDescription>
       </Alert>
     )
   }
@@ -144,10 +142,10 @@ export function O2CDashboard() {
       // Fetch metrics
       const metricsResponse = await fetch(`/api/v1/o2c?type=metrics&days=30`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`
         }
       })
-      
+
       if (metricsResponse.ok) {
         const data = await metricsResponse.json()
         setMetrics(calculateMetrics(data.data))
@@ -167,10 +165,10 @@ export function O2CDashboard() {
     const orders = transactions.filter(t => t.transaction_type === 'sales_order')
     const invoices = transactions.filter(t => t.transaction_type === 'customer_invoice')
     const payments = transactions.filter(t => t.transaction_type === 'customer_payment')
-    
+
     const today = new Date().toDateString()
-    const todayPayments = payments.filter(p => 
-      new Date(p.transaction_date).toDateString() === today
+    const todayPayments = payments.filter(
+      p => new Date(p.transaction_date).toDateString() === today
     )
 
     return {
@@ -179,16 +177,18 @@ export function O2CDashboard() {
         pending: orders.filter(o => (o.metadata as any)?.status === 'pending').length,
         approved: orders.filter(o => (o.metadata as any)?.status === 'approved').length,
         shipped: orders.filter(o => (o.metadata as any)?.fulfillment_status === 'shipped').length,
-        delivered: orders.filter(o => (o.metadata as any)?.fulfillment_status === 'delivered').length,
+        delivered: orders.filter(o => (o.metadata as any)?.fulfillment_status === 'delivered')
+          .length,
         total_value: orders.reduce((sum, o) => sum + (o.total_amount || 0), 0)
       },
       invoices: {
         total: invoices.length,
         pending: invoices.filter(i => (i.metadata as any)?.status === 'pending').length,
         paid: invoices.filter(i => (i.metadata as any)?.status === 'paid').length,
-        overdue: invoices.filter(i => 
-          (i.metadata as any)?.status === 'pending' && 
-          new Date((i.metadata as any)?.due_date) < new Date()
+        overdue: invoices.filter(
+          i =>
+            (i.metadata as any)?.status === 'pending' &&
+            new Date((i.metadata as any)?.due_date) < new Date()
         ).length,
         total_value: invoices.reduce((sum, i) => sum + (i.total_amount || 0), 0),
         paid_value: invoices
@@ -212,8 +212,12 @@ export function O2CDashboard() {
       },
       analytics: {
         dso: 32, // Would calculate actual DSO
-        collection_rate: invoices.length > 0 ? 
-          (invoices.filter(i => (i.metadata as any)?.status === 'paid').length / invoices.length * 100) : 0,
+        collection_rate:
+          invoices.length > 0
+            ? (invoices.filter(i => (i.metadata as any)?.status === 'paid').length /
+                invoices.length) *
+              100
+            : 0,
         revenue_mtd: invoices
           .filter(i => new Date(i.transaction_date).getMonth() === new Date().getMonth())
           .reduce((sum, i) => sum + (i.total_amount || 0), 0),
@@ -233,9 +237,7 @@ export function O2CDashboard() {
     })
 
     return last30Days.map(date => {
-      const dayInvoices = invoices.filter(i => 
-        i.transaction_date.split('T')[0] === date
-      )
+      const dayInvoices = invoices.filter(i => i.transaction_date.split('T')[0] === date)
       return {
         date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         revenue: dayInvoices.reduce((sum, i) => sum + (i.total_amount || 0), 0)
@@ -245,14 +247,16 @@ export function O2CDashboard() {
 
   const filterOverdueInvoices = (transactions: any[]) => {
     return transactions
-      .filter(t => 
-        t.transaction_type === 'customer_invoice' &&
-        (t.metadata as any)?.status === 'pending' &&
-        new Date((t.metadata as any)?.due_date) < new Date()
+      .filter(
+        t =>
+          t.transaction_type === 'customer_invoice' &&
+          (t.metadata as any)?.status === 'pending' &&
+          new Date((t.metadata as any)?.due_date) < new Date()
       )
-      .sort((a, b) => 
-        new Date((a.metadata as any)?.due_date).getTime() - 
-        new Date((b.metadata as any)?.due_date).getTime()
+      .sort(
+        (a, b) =>
+          new Date((a.metadata as any)?.due_date).getTime() -
+          new Date((b.metadata as any)?.due_date).getTime()
       )
       .slice(0, 5)
   }
@@ -306,17 +310,10 @@ export function O2CDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Order-to-Cash Dashboard</h1>
-          <p className="text-muted-foreground">
-            Real-time revenue cycle management and analytics
-          </p>
+          <p className="text-muted-foreground">Real-time revenue cycle management and analytics</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchO2CData()}
-            disabled={refreshing}
-          >
+          <Button variant="outline" size="sm" onClick={() => fetchO2CData()} disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -354,7 +351,8 @@ export function O2CDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{metrics?.invoices.pending || 0}</div>
             <p className="text-xs text-muted-foreground">
-              {formatCurrency(metrics?.invoices.total_value - metrics?.invoices.paid_value || 0)} outstanding
+              {formatCurrency(metrics?.invoices.total_value - metrics?.invoices.paid_value || 0)}{' '}
+              outstanding
             </p>
             <div className="mt-2 flex items-center gap-2 text-xs">
               <Badge variant="destructive">{metrics?.invoices.overdue || 0} overdue</Badge>
@@ -425,11 +423,11 @@ export function O2CDashboard() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                    <Line 
-                      type="monotone" 
-                      dataKey="revenue" 
-                      stroke="#3b82f6" 
+                    <Tooltip formatter={value => formatCurrency(Number(value))} />
+                    <Line
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="#3b82f6"
                       strokeWidth={2}
                       dot={false}
                     />
@@ -450,9 +448,17 @@ export function O2CDashboard() {
                     <Pie
                       data={[
                         { name: 'Pending', value: metrics?.orders.pending || 0, color: '#94a3b8' },
-                        { name: 'Approved', value: metrics?.orders.approved || 0, color: '#3b82f6' },
+                        {
+                          name: 'Approved',
+                          value: metrics?.orders.approved || 0,
+                          color: '#3b82f6'
+                        },
                         { name: 'Shipped', value: metrics?.orders.shipped || 0, color: '#10b981' },
-                        { name: 'Delivered', value: metrics?.orders.delivered || 0, color: '#22c55e' }
+                        {
+                          name: 'Delivered',
+                          value: metrics?.orders.delivered || 0,
+                          color: '#22c55e'
+                        }
                       ]}
                       cx="50%"
                       cy="50%"
@@ -461,8 +467,11 @@ export function O2CDashboard() {
                       paddingAngle={5}
                       dataKey="value"
                     >
-                      {[0, 1, 2, 3].map((index) => (
-                        <Cell key={`cell-${index}`} fill={['#94a3b8', '#3b82f6', '#10b981', '#22c55e'][index]} />
+                      {[0, 1, 2, 3].map(index => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={['#94a3b8', '#3b82f6', '#10b981', '#22c55e'][index]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -484,8 +493,11 @@ export function O2CDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {overdueInvoices.map((invoice) => (
-                    <div key={invoice.id} className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-gray-900">
+                  {overdueInvoices.map(invoice => (
+                    <div
+                      key={invoice.id}
+                      className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-gray-900"
+                    >
                       <div className="flex items-center gap-4">
                         <div>
                           <p className="font-medium">{invoice.transaction_code}</p>
@@ -494,7 +506,11 @@ export function O2CDashboard() {
                           </p>
                         </div>
                         <Badge variant="destructive">
-                          {Math.floor((Date.now() - new Date((invoice.metadata as any)?.due_date).getTime()) / (1000 * 60 * 60 * 24))} days overdue
+                          {Math.floor(
+                            (Date.now() - new Date((invoice.metadata as any)?.due_date).getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          )}{' '}
+                          days overdue
                         </Badge>
                       </div>
                       <div className="text-right">
@@ -518,18 +534,25 @@ export function O2CDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentTransactions.map((transaction) => (
+                {recentTransactions.map(transaction => (
                   <div key={transaction.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800">
-                        {transaction.transaction_type === 'sales_order' && <ShoppingCart className="h-4 w-4" />}
-                        {transaction.transaction_type === 'customer_invoice' && <FileText className="h-4 w-4" />}
-                        {transaction.transaction_type === 'customer_payment' && <DollarSign className="h-4 w-4" />}
+                        {transaction.transaction_type === 'sales_order' && (
+                          <ShoppingCart className="h-4 w-4" />
+                        )}
+                        {transaction.transaction_type === 'customer_invoice' && (
+                          <FileText className="h-4 w-4" />
+                        )}
+                        {transaction.transaction_type === 'customer_payment' && (
+                          <DollarSign className="h-4 w-4" />
+                        )}
                       </div>
                       <div>
                         <p className="font-medium">{transaction.transaction_code}</p>
                         <p className="text-sm text-muted-foreground">
-                          {transaction.customer?.entity_name} • {new Date(transaction.transaction_date).toLocaleDateString()}
+                          {transaction.customer?.entity_name} •{' '}
+                          {new Date(transaction.transaction_date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -558,13 +581,11 @@ export function O2CDashboard() {
                   <Input
                     placeholder="Search orders..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Button>
-                  Create Order
-                </Button>
+                <Button>Create Order</Button>
               </div>
 
               <div className="rounded-md border">
@@ -582,15 +603,18 @@ export function O2CDashboard() {
                   <tbody>
                     {recentTransactions
                       .filter(t => t.transaction_type === 'sales_order')
-                      .filter(t => 
-                        t.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        t.customer?.entity_name?.toLowerCase().includes(searchTerm.toLowerCase())
+                      .filter(
+                        t =>
+                          t.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          t.customer?.entity_name?.toLowerCase().includes(searchTerm.toLowerCase())
                       )
-                      .map((order) => (
+                      .map(order => (
                         <tr key={order.id} className="border-b hover:bg-muted/50">
                           <td className="p-3 font-medium">{order.transaction_code}</td>
                           <td className="p-3">{order.customer?.entity_name}</td>
-                          <td className="p-3">{new Date(order.transaction_date).toLocaleDateString()}</td>
+                          <td className="p-3">
+                            {new Date(order.transaction_date).toLocaleDateString()}
+                          </td>
                           <td className="p-3 font-bold">{formatCurrency(order.total_amount)}</td>
                           <td className="p-3">{getStatusBadge((order.metadata as any)?.status)}</td>
                           <td className="p-3">
@@ -621,16 +645,12 @@ export function O2CDashboard() {
                   <Input
                     placeholder="Search invoices..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Button variant="outline">
-                  Run Dunning
-                </Button>
-                <Button>
-                  Create Invoice
-                </Button>
+                <Button variant="outline">Run Dunning</Button>
+                <Button>Create Invoice</Button>
               </div>
 
               <div className="rounded-md border">
@@ -649,22 +669,27 @@ export function O2CDashboard() {
                   <tbody>
                     {recentTransactions
                       .filter(t => t.transaction_type === 'customer_invoice')
-                      .filter(t => 
-                        t.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        t.customer?.entity_name?.toLowerCase().includes(searchTerm.toLowerCase())
+                      .filter(
+                        t =>
+                          t.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          t.customer?.entity_name?.toLowerCase().includes(searchTerm.toLowerCase())
                       )
-                      .map((invoice) => (
+                      .map(invoice => (
                         <tr key={invoice.id} className="border-b hover:bg-muted/50">
                           <td className="p-3 font-medium">{invoice.transaction_code}</td>
                           <td className="p-3">{invoice.customer?.entity_name}</td>
-                          <td className="p-3">{new Date(invoice.transaction_date).toLocaleDateString()}</td>
-                          <td className="p-3">{new Date((invoice.metadata as any)?.due_date).toLocaleDateString()}</td>
+                          <td className="p-3">
+                            {new Date(invoice.transaction_date).toLocaleDateString()}
+                          </td>
+                          <td className="p-3">
+                            {new Date((invoice.metadata as any)?.due_date).toLocaleDateString()}
+                          </td>
                           <td className="p-3 font-bold">{formatCurrency(invoice.total_amount)}</td>
                           <td className="p-3">
-                            {new Date((invoice.metadata as any)?.due_date) < new Date() && (invoice.metadata as any)?.status === 'pending'
+                            {new Date((invoice.metadata as any)?.due_date) < new Date() &&
+                            (invoice.metadata as any)?.status === 'pending'
                               ? getStatusBadge('overdue')
-                              : getStatusBadge((invoice.metadata as any)?.status)
-                            }
+                              : getStatusBadge((invoice.metadata as any)?.status)}
                           </td>
                           <td className="p-3">
                             <Button size="sm" variant="ghost">
@@ -694,13 +719,11 @@ export function O2CDashboard() {
                   <Input
                     placeholder="Search payments..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Button>
-                  Record Payment
-                </Button>
+                <Button>Record Payment</Button>
               </div>
 
               <div className="rounded-md border">
@@ -718,15 +741,18 @@ export function O2CDashboard() {
                   <tbody>
                     {recentTransactions
                       .filter(t => t.transaction_type === 'customer_payment')
-                      .filter(t => 
-                        t.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        t.customer?.entity_name?.toLowerCase().includes(searchTerm.toLowerCase())
+                      .filter(
+                        t =>
+                          t.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          t.customer?.entity_name?.toLowerCase().includes(searchTerm.toLowerCase())
                       )
-                      .map((payment) => (
+                      .map(payment => (
                         <tr key={payment.id} className="border-b hover:bg-muted/50">
                           <td className="p-3 font-medium">{payment.transaction_code}</td>
                           <td className="p-3">{payment.customer?.entity_name}</td>
-                          <td className="p-3">{new Date(payment.transaction_date).toLocaleDateString()}</td>
+                          <td className="p-3">
+                            {new Date(payment.transaction_date).toLocaleDateString()}
+                          </td>
                           <td className="p-3">
                             <Badge variant="outline">
                               <CreditCard className="h-3 w-3 mr-1" />
@@ -737,7 +763,10 @@ export function O2CDashboard() {
                           <td className="p-3">
                             {(payment.metadata as any)?.unapplied_amount > 0 ? (
                               <Badge variant="secondary">
-                                {formatCurrency(payment.total_amount - payment.metadata.unapplied_amount)} applied
+                                {formatCurrency(
+                                  payment.total_amount - payment.metadata.unapplied_amount
+                                )}{' '}
+                                applied
                               </Badge>
                             ) : (
                               <Badge variant="default">Fully applied</Badge>
@@ -770,7 +799,8 @@ export function O2CDashboard() {
                     <div>
                       <p className="font-medium">Collection Optimization</p>
                       <p className="text-sm text-muted-foreground">
-                        Focus on 5 high-value overdue accounts could recover ${formatCurrency(150000)}
+                        Focus on 5 high-value overdue accounts could recover $
+                        {formatCurrency(150000)}
                       </p>
                     </div>
                   </div>
@@ -809,8 +839,8 @@ export function O2CDashboard() {
                       <span className="text-sm font-bold">{metrics?.analytics.dso} days</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
+                      <div
+                        className="bg-blue-600 h-2 rounded-full"
                         style={{ width: `${Math.min((32 / 60) * 100, 100)}%` }}
                       />
                     </div>
@@ -819,11 +849,13 @@ export function O2CDashboard() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Collection Rate</span>
-                      <span className="text-sm font-bold">{metrics?.analytics.collection_rate.toFixed(1)}%</span>
+                      <span className="text-sm font-bold">
+                        {metrics?.analytics.collection_rate.toFixed(1)}%
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-600 h-2 rounded-full" 
+                      <div
+                        className="bg-green-600 h-2 rounded-full"
                         style={{ width: `${metrics?.analytics.collection_rate}%` }}
                       />
                     </div>
@@ -832,12 +864,16 @@ export function O2CDashboard() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Average Credit Score</span>
-                      <span className="text-sm font-bold">{metrics?.customers.average_credit_score}</span>
+                      <span className="text-sm font-bold">
+                        {metrics?.customers.average_credit_score}
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-purple-600 h-2 rounded-full" 
-                        style={{ width: `${(metrics?.customers.average_credit_score / 850) * 100}%` }}
+                      <div
+                        className="bg-purple-600 h-2 rounded-full"
+                        style={{
+                          width: `${(metrics?.customers.average_credit_score / 850) * 100}%`
+                        }}
                       />
                     </div>
                   </div>
@@ -856,16 +892,24 @@ export function O2CDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">MTD Revenue</p>
-                  <p className="text-2xl font-bold">{formatCurrency(metrics?.analytics.revenue_mtd || 0)}</p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(metrics?.analytics.revenue_mtd || 0)}
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">YTD Revenue</p>
-                  <p className="text-2xl font-bold">{formatCurrency(metrics?.analytics.revenue_ytd || 0)}</p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(metrics?.analytics.revenue_ytd || 0)}
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">Avg Order Value</p>
                   <p className="text-2xl font-bold">
-                    {formatCurrency(metrics?.orders.total > 0 ? metrics.orders.total_value / metrics.orders.total : 0)}
+                    {formatCurrency(
+                      metrics?.orders.total > 0
+                        ? metrics.orders.total_value / metrics.orders.total
+                        : 0
+                    )}
                   </p>
                 </div>
               </div>

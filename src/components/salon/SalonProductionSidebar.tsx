@@ -2,20 +2,53 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { 
-  Home, Calendar, Users, Scissors, CreditCard, 
-  BarChart3, Settings, Bell, Search, Plus,
-  Sparkles, Star, Heart, Palette, Clock,
-  User, Gift, Zap, Crown, Award, X,
-  DollarSign, TrendingUp, Calculator, ShoppingCart,
-  ChevronDown, ChevronRight, Package, FileText,
-  PieChart, Receipt, Wallet, Building2, Activity,
+import {
+  Home,
+  Calendar,
+  Users,
+  Scissors,
+  CreditCard,
+  BarChart3,
+  Settings,
+  Bell,
+  Search,
+  Plus,
+  Sparkles,
+  Star,
+  Heart,
+  Palette,
+  Clock,
+  User,
+  Gift,
+  Zap,
+  Crown,
+  Award,
+  X,
+  DollarSign,
+  TrendingUp,
+  Calculator,
+  ShoppingCart,
+  ChevronDown,
+  ChevronRight,
+  Package,
+  FileText,
+  PieChart,
+  Receipt,
+  Wallet,
+  Building2,
+  Activity,
   MessageCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
 interface SidebarItem {
   id: string
@@ -142,7 +175,7 @@ export function SalonProductionSidebar() {
   const isActive = (href: string) => {
     // Extract subdomain from current path
     const subdomain = pathname.match(/^\/~([^\/]+)/)?.[1]
-    
+
     if (subdomain) {
       // Convert href to subdomain path for comparison
       const adjustedHref = href.replace('/salon', `/~${subdomain}/salon`)
@@ -218,20 +251,20 @@ export function SalonProductionSidebar() {
     },
     {
       id: 'daily-report',
-      label: 'Today\'s Report',
+      label: "Today's Report",
       icon: <BarChart3 className="w-5 h-5" />,
       href: '/salon/reports?period=today',
       color: 'hover:bg-teal-100',
-      description: 'View today\'s performance'
+      description: "View today's performance"
     }
   ]
 
   const handleNavigation = (href: string) => {
     setShowQuickActionsModal(false)
-    
+
     // Extract subdomain from current path
     const subdomain = pathname.match(/^\/~([^\/]+)/)?.[1]
-    
+
     // Convert relative salon paths to proper subdomain paths
     if (subdomain && href.startsWith('/salon')) {
       const adjustedHref = href.replace('/salon', `/~${subdomain}/salon`)
@@ -246,14 +279,12 @@ export function SalonProductionSidebar() {
   }
 
   if (!mounted) {
-    return (
-      <div className="w-16 bg-gradient-to-b from-pink-50 to-purple-50 border-r" />
-    )
+    return <div className="w-16 bg-gradient-to-b from-pink-50 to-purple-50 border-r" />
   }
 
   return (
     <TooltipProvider>
-      <div 
+      <div
         className={`
           ${isExpanded ? 'w-64' : 'w-16'}
           bg-gradient-to-b from-pink-50/90 to-purple-50/90 
@@ -327,7 +358,7 @@ export function SalonProductionSidebar() {
         {/* Navigation Items */}
         <nav className="flex-1 px-3 pb-20 overflow-y-auto scrollbar-hide">
           <div className="space-y-1">
-            {sidebarItems.map((item) => {
+            {sidebarItems.map(item => {
               const active = isActive(item.href)
               const ItemButton = (
                 <Button
@@ -336,9 +367,10 @@ export function SalonProductionSidebar() {
                   className={`
                     w-full 
                     ${!isExpanded ? 'justify-center p-0 h-10' : 'justify-start'}
-                    ${active 
-                      ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50' 
-                      : 'bg-white/50 hover:bg-white/80 text-gray-700'
+                    ${
+                      active
+                        ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50'
+                        : 'bg-white/50 hover:bg-white/80 text-gray-700'
                     }
                     ${item.color}
                     transition-all 
@@ -348,16 +380,18 @@ export function SalonProductionSidebar() {
                     backdrop-blur-sm
                   `}
                   variant="ghost"
-                  size={isExpanded ? "sm" : "icon"}
+                  size={isExpanded ? 'sm' : 'icon'}
                 >
-                  <div className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-gray-600'}`}>
+                  <div
+                    className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-gray-600'}`}
+                  >
                     {item.icon}
                   </div>
                   {isExpanded && (
                     <>
                       <span className="font-medium text-gray-900">{item.label}</span>
                       {item.badge && (
-                        <Badge 
+                        <Badge
                           className="ml-auto bg-gradient-to-r from-pink-500 to-purple-500 !text-white dark:!text-white border-0"
                           variant="secondary"
                         >
@@ -376,9 +410,7 @@ export function SalonProductionSidebar() {
                 ItemButton
               ) : (
                 <Tooltip key={item.id} delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    {ItemButton}
-                  </TooltipTrigger>
+                  <TooltipTrigger asChild>{ItemButton}</TooltipTrigger>
                   <TooltipContent side="right">
                     <p>{item.label}</p>
                     {item.badge && (
@@ -414,7 +446,9 @@ export function SalonProductionSidebar() {
                   <Plus className="w-5 h-5" />
                 </div>
                 <span className="font-medium">More Apps</span>
-                <ChevronRight className={`ml-auto w-4 h-4 transition-transform ${showMoreApps ? 'rotate-90' : ''}`} />
+                <ChevronRight
+                  className={`ml-auto w-4 h-4 transition-transform ${showMoreApps ? 'rotate-90' : ''}`}
+                />
               </Button>
             ) : (
               <Tooltip delayDuration={0}>
@@ -719,20 +753,20 @@ export function SalonProductionSidebar() {
           </div>
 
           <div className="mt-2">
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                className="w-10 h-10 p-0 bg-white/20 hover:bg-white/40 text-slate-600 hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
-                onClick={() => handleNavigation('/salon/settings')}
-              >
-                <Settings className="w-5 h-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              <p>Settings</p>
-            </TooltipContent>
-          </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  className="w-10 h-10 p-0 bg-white/20 hover:bg-white/40 text-slate-600 hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
+                  onClick={() => handleNavigation('/salon/settings')}
+                >
+                  <Settings className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Settings</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>
@@ -746,7 +780,7 @@ export function SalonProductionSidebar() {
             </DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-            {quickActionItems.map((item) => (
+            {quickActionItems.map(item => (
               <Button
                 key={item.id}
                 onClick={() => handleNavigation(item.href)}

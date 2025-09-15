@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic'
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { ArrowLeft, FileText, Download } from 'lucide-react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useRef } from 'react'
 
 // Mermaid component
@@ -20,8 +20,8 @@ function MermaidDiagram({ chart, id }: { chart: string; id: string }) {
     if (ref.current && typeof window !== 'undefined') {
       const loadMermaid = async () => {
         const mermaid = (await import('mermaid')).default
-        const isDarkMode = document.documentElement.classList.contains('dark');
-        mermaid.initialize({ 
+        const isDarkMode = document.documentElement.classList.contains('dark')
+        mermaid.initialize({
           startOnLoad: true,
           theme: isDarkMode ? 'dark' : 'default',
           flowchart: {
@@ -29,23 +29,23 @@ function MermaidDiagram({ chart, id }: { chart: string; id: string }) {
             htmlLabels: true
           }
         })
-        
+
         ref.current!.innerHTML = chart
         mermaid.contentLoaded()
       }
       loadMermaid()
-      
+
       // Listen for theme changes
       const observer = new MutationObserver(() => {
         loadMermaid()
-      });
-      
+      })
+
       observer.observe(document.documentElement, {
         attributes: true,
         attributeFilter: ['class']
-      });
-      
-      return () => observer.disconnect();
+      })
+
+      return () => observer.disconnect()
     }
   }, [chart])
 
@@ -184,7 +184,8 @@ sequenceDiagram
           <CardHeader>
             <CardTitle>MCP Orchestration Architecture</CardTitle>
             <CardDescription>
-              Complete visual representation of the HERA ERP delivery lifecycle with Model Context Protocol (MCP) orchestration
+              Complete visual representation of the HERA ERP delivery lifecycle with Model Context
+              Protocol (MCP) orchestration
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -260,13 +261,27 @@ sequenceDiagram
                     <strong>Participants:</strong>
                   </p>
                   <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
-                    <li><strong>Client Team:</strong> Business stakeholders and end users</li>
-                    <li><strong>MCP Orchestrator:</strong> AI-powered automation (Claude/OpenAI)</li>
-                    <li><strong>HERA Core:</strong> The universal foundation</li>
-                    <li><strong>Guardrails v2.0:</strong> Enforcement and validation layer</li>
-                    <li><strong>Data Pipelines:</strong> ETL and migration tools</li>
-                    <li><strong>UAT Council:</strong> Testing and approval team</li>
-                    <li><strong>Prod Ops:</strong> Production operations team</li>
+                    <li>
+                      <strong>Client Team:</strong> Business stakeholders and end users
+                    </li>
+                    <li>
+                      <strong>MCP Orchestrator:</strong> AI-powered automation (Claude/OpenAI)
+                    </li>
+                    <li>
+                      <strong>HERA Core:</strong> The universal foundation
+                    </li>
+                    <li>
+                      <strong>Guardrails v2.0:</strong> Enforcement and validation layer
+                    </li>
+                    <li>
+                      <strong>Data Pipelines:</strong> ETL and migration tools
+                    </li>
+                    <li>
+                      <strong>UAT Council:</strong> Testing and approval team
+                    </li>
+                    <li>
+                      <strong>Prod Ops:</strong> Production operations team
+                    </li>
                   </ul>
                 </div>
               </CardContent>
@@ -285,23 +300,33 @@ sequenceDiagram
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">🛡️</span>
-                  <span><strong>Architecture Protection:</strong> Universal structure maintained</span>
+                  <span>
+                    <strong>Architecture Protection:</strong> Universal structure maintained
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">🛡️</span>
-                  <span><strong>Multi-Tenancy:</strong> organization_id required everywhere</span>
+                  <span>
+                    <strong>Multi-Tenancy:</strong> organization_id required everywhere
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">🛡️</span>
-                  <span><strong>Business Classification:</strong> Required on all entities/transactions</span>
+                  <span>
+                    <strong>Business Classification:</strong> Required on all entities/transactions
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">🛡️</span>
-                  <span><strong>GL Balance:</strong> Must balance per currency</span>
+                  <span>
+                    <strong>GL Balance:</strong> Must balance per currency
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">🛡️</span>
-                  <span><strong>Fiscal Control:</strong> Period status enforcement</span>
+                  <span>
+                    <strong>Fiscal Control:</strong> Period status enforcement
+                  </span>
                 </li>
               </ul>
             </CardContent>
@@ -316,23 +341,33 @@ sequenceDiagram
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">🧬</span>
-                  <span><strong>Finance DNA:</strong> COA, GL posting, fiscal periods</span>
+                  <span>
+                    <strong>Finance DNA:</strong> COA, GL posting, fiscal periods
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">🧬</span>
-                  <span><strong>Controlling DNA:</strong> Cost centers, profit analytics</span>
+                  <span>
+                    <strong>Controlling DNA:</strong> Cost centers, profit analytics
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">🧬</span>
-                  <span><strong>Purchasing DNA:</strong> Vendors, POs, 3-way match</span>
+                  <span>
+                    <strong>Purchasing DNA:</strong> Vendors, POs, 3-way match
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">🧬</span>
-                  <span><strong>P2P DNA:</strong> Purchase-to-Pay workflow</span>
+                  <span>
+                    <strong>P2P DNA:</strong> Purchase-to-Pay workflow
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">🧬</span>
-                  <span><strong>O2C DNA:</strong> Order-to-Cash workflow</span>
+                  <span>
+                    <strong>O2C DNA:</strong> Order-to-Cash workflow
+                  </span>
                 </li>
               </ul>
             </CardContent>
@@ -343,9 +378,7 @@ sequenceDiagram
         <Card className="mt-8">
           <CardHeader>
             <CardTitle>Implementation Code Examples</CardTitle>
-            <CardDescription>
-              Real examples from each phase of the implementation
-            </CardDescription>
+            <CardDescription>Real examples from each phase of the implementation</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="requirements" className="w-full">
@@ -357,7 +390,9 @@ sequenceDiagram
 
               <TabsContent value="requirements" className="mt-4">
                 <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <div className="text-gray-400">// Phase 1: MCP captures requirements as draft entities</div>
+                  <div className="text-gray-400">
+                    // Phase 1: MCP captures requirements as draft entities
+                  </div>
                   <pre>{`const requirement = {
   entity_type: 'project_requirement',
   entity_name: 'P2P Approval Workflow',
@@ -380,7 +415,9 @@ sequenceDiagram
 
               <TabsContent value="sandbox" className="mt-4">
                 <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <div className="text-gray-400">// Phase 3: Generate test transactions in sandbox</div>
+                  <div className="text-gray-400">
+                    // Phase 3: Generate test transactions in sandbox
+                  </div>
                   <pre>{`const testPO = {
   transaction_type: 'purchase_order',
   business_context: 'MANUFACTURING.P2P.PO.TEST.v1',
@@ -422,9 +459,7 @@ sequenceDiagram
         <Card className="mt-8">
           <CardHeader>
             <CardTitle>Success Metrics</CardTitle>
-            <CardDescription>
-              Proven results from HERA implementations
-            </CardDescription>
+            <CardDescription>Proven results from HERA implementations</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

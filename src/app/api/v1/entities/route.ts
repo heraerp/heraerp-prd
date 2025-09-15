@@ -13,11 +13,11 @@ async function getOrganizationFromAuth(request: NextRequest): Promise<string> {
 
   const token = authHeader.replace('Bearer ', '')
   const payload = await jwtService.verify(token)
-  
+
   if (!payload.organization_id) {
     throw new Error('Organization context missing')
   }
-  
+
   return payload.organization_id
 }
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const entity_type = searchParams.get('entity_type')
     const entity_id = searchParams.get('entity_id')
     const include_dynamic = searchParams.get('include_dynamic') !== 'false'
-    
+
     // Get organization_id from JWT token
     const organizationId = await getOrganizationFromAuth(request)
 
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     // If including dynamic data
     if (include_dynamic && entities && entities.length > 0) {
       const entityIds = entities.map(e => e.id)
-      
+
       const { data: dynamicData, error: dynamicError } = await supabaseAdmin
         .from('core_dynamic_data')
         .select('entity_id, field_name, field_value, field_type')
@@ -74,12 +74,12 @@ export async function GET(request: NextRequest) {
         // Merge dynamic data with entities
         const entitiesWithDynamic = entities.map(entity => {
           const entityDynamicData = dynamicData.filter(d => d.entity_id === entity.id)
-          
+
           // Convert dynamic data to object
           const properties: Record<string, any> = {}
           entityDynamicData.forEach(data => {
             let value = data.field_value
-            
+
             // Parse based on field type
             if (data.field_type === 'json') {
               try {
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
             } else if (data.field_type === 'date') {
               value = new Date(data.field_value)
             }
-            
+
             properties[data.field_name] = value
           })
 
@@ -119,19 +119,12 @@ export async function GET(request: NextRequest) {
       data: entity_id ? entities[0] : entities,
       count: entities?.length || 0
     })
-
   } catch (error) {
     console.error('Universal entities API error:', error)
     if (error instanceof Error && error.message.includes('Authentication')) {
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, message: error.message }, { status: 401 })
     }
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -141,7 +134,7 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     const body = await request.json()
-    
+
     // Get organization_id from JWT token
     const organizationId = await getOrganizationFromAuth(request)
 
@@ -227,13 +220,9 @@ export async function POST(request: NextRequest) {
         properties
       }
     })
-
   } catch (error) {
     console.error('Create entity error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -243,7 +232,7 @@ export async function PUT(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     const body = await request.json()
-    
+
     // Get organization_id from JWT token
     const organizationId = await getOrganizationFromAuth(request)
 
@@ -340,15 +329,13 @@ export async function PUT(request: NextRequest) {
           }
         } else {
           // Insert new property
-          const { error: insertError } = await supabaseAdmin
-            .from('core_dynamic_data')
-            .insert({
-              entity_id: id,
-              organization_id: organizationId,
-              field_name: key,
-              field_value,
-              field_type
-            })
+          const { error: insertError } = await supabaseAdmin.from('core_dynamic_data').insert({
+            entity_id: id,
+            organization_id: organizationId,
+            field_name: key,
+            field_value,
+            field_type
+          })
 
           if (insertError) {
             console.error(`Error inserting property ${key}:`, insertError)
@@ -361,13 +348,9 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'Entity updated successfully'
     })
-
   } catch (error) {
     console.error('Update entity error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -378,7 +361,7 @@ export async function DELETE(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     // Get organization_id from JWT token
     const organizationId = await getOrganizationFromAuth(request)
 
@@ -419,12 +402,8 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Entity deleted successfully'
     })
-
   } catch (error) {
     console.error('Delete entity error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

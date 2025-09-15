@@ -4,10 +4,10 @@ import { universalApi } from '@/lib/universal-api'
 /**
  * HERA Email Campaign Management API
  * Universal Architecture for Marketing Email Campaigns → CRM Lead Conversion
- * 
+ *
  * Features:
  * - Campaign creation and management using universal tables
- * - Email list segmentation and targeting  
+ * - Email list segmentation and targeting
  * - Campaign analytics and performance tracking
  * - Integration with CRM lead conversion pipeline
  * - Smart code classification for all campaign activities
@@ -23,7 +23,7 @@ interface EmailCampaign {
   email_template_id: string
   scheduled_send_date?: string
   organizationId: string
-  
+
   // Campaign metrics (stored in core_dynamic_data)
   total_recipients?: number
   emails_sent?: number
@@ -53,10 +53,7 @@ export async function GET(request: NextRequest) {
     const organizationId = request.headers.get('x-organization-id')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
     universalApi.setOrganizationId(organizationId)
@@ -64,39 +61,33 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'list_campaigns':
         return await listEmailCampaigns(searchParams)
-      
+
       case 'get_campaign':
         const campaignId = searchParams.get('campaign_id')
         if (!campaignId) {
           return NextResponse.json({ error: 'Campaign ID required' }, { status: 400 })
         }
         return await getCampaignDetails(campaignId)
-      
+
       case 'get_analytics':
         const analyticsId = searchParams.get('campaign_id')
         if (!analyticsId) {
           return NextResponse.json({ error: 'Campaign ID required' }, { status: 400 })
         }
         return await getCampaignAnalytics(analyticsId)
-      
+
       case 'list_templates':
         return await listEmailTemplates()
-      
+
       case 'get_audience_segments':
         return await getAudienceSegments()
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Email Campaigns API Error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -104,10 +95,7 @@ export async function POST(request: NextRequest) {
   try {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
     universalApi.setOrganizationId(organizationId)
@@ -117,34 +105,28 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'create_campaign':
         return await createEmailCampaign(data, organizationId)
-      
+
       case 'send_campaign':
         return await sendEmailCampaign(data)
-      
+
       case 'create_template':
         return await createEmailTemplate(data, organizationId)
-      
+
       case 'create_audience_segment':
         return await createAudienceSegment(data, organizationId)
-      
+
       case 'schedule_campaign':
         return await scheduleCampaign(data)
-      
+
       case 'track_engagement':
         return await trackEmailEngagement(data, organizationId)
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Email Campaigns API Error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -152,10 +134,7 @@ export async function PUT(request: NextRequest) {
   try {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
     universalApi.setOrganizationId(organizationId)
@@ -165,28 +144,22 @@ export async function PUT(request: NextRequest) {
     switch (action) {
       case 'update_campaign':
         return await updateEmailCampaign(data)
-      
+
       case 'pause_campaign':
         return await pauseCampaign(data.campaign_id)
-      
+
       case 'resume_campaign':
         return await resumeCampaign(data.campaign_id)
-      
+
       case 'update_campaign_status':
         return await updateCampaignStatus(data)
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('Email Campaigns API Error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -208,7 +181,7 @@ async function listEmailCampaigns(searchParams: URLSearchParams) {
 
   // Enrich with campaign metrics from core_dynamic_data
   const enrichedCampaigns = await Promise.all(
-    campaigns.map(async (campaign) => {
+    campaigns.map(async campaign => {
       const metrics = await universalApi.getDynamicData(campaign.id)
       return {
         ...campaign,
@@ -236,7 +209,7 @@ async function getCampaignDetails(campaignId: string) {
 
   // Get campaign metrics and configuration
   const campaignData = await universalApi.getDynamicData(campaignId)
-  
+
   // Get campaign activities from universal_transactions
   const activities = await universalApi.getTransactions({
     filters: { related_entity_id: campaignId },
@@ -336,11 +309,11 @@ async function sendEmailCampaign(data: any) {
   }
 
   const campaignData = await universalApi.getDynamicData(campaign_id)
-  
+
   if (test_send) {
     // Send test email to campaign creator
     await sendTestEmail(campaign, campaignData)
-    
+
     return NextResponse.json({
       success: true,
       data: { message: 'Test email sent successfully' }
@@ -364,8 +337,8 @@ async function sendEmailCampaign(data: any) {
   await universalApi.setDynamicField(campaign_id, 'emails_failed', String(sendResults.failed_count))
 
   // Update campaign status
-  await universalApi.updateEntity(campaign_id, { 
-    status: sendResults.failed_count === 0 ? 'sent' : 'partially_sent' 
+  await universalApi.updateEntity(campaign_id, {
+    status: sendResults.failed_count === 0 ? 'sent' : 'partially_sent'
   })
 
   // Create campaign send transaction
@@ -395,12 +368,12 @@ async function sendEmailCampaign(data: any) {
 }
 
 async function trackEmailEngagement(data: any, organizationId: string) {
-  const { 
-    email_id, 
-    campaign_id, 
+  const {
+    email_id,
+    campaign_id,
     recipient_email,
     engagement_type, // 'open', 'click', 'unsubscribe', 'bounce'
-    engagement_data 
+    engagement_data
   } = data
 
   // Create engagement transaction
@@ -423,7 +396,8 @@ async function trackEmailEngagement(data: any, organizationId: string) {
 
   // Update campaign metrics
   if (campaign_id) {
-    const currentCount = await universalApi.getDynamicField(campaign_id, `emails_${engagement_type}d`) || '0'
+    const currentCount =
+      (await universalApi.getDynamicField(campaign_id, `emails_${engagement_type}d`)) || '0'
     const newCount = parseInt(currentCount) + 1
     await universalApi.setDynamicField(campaign_id, `emails_${engagement_type}d`, String(newCount))
   }
@@ -446,9 +420,9 @@ async function trackEmailEngagement(data: any, organizationId: string) {
 
 async function calculateCampaignPerformance(campaignId: string): Promise<CampaignAnalytics> {
   const campaignData = await universalApi.getDynamicData(campaignId)
-  
+
   const sent = parseInt(campaignData.emails_sent || '0')
-  const delivered = parseInt(campaignData.emails_delivered || '0') 
+  const delivered = parseInt(campaignData.emails_delivered || '0')
   const opened = parseInt(campaignData.emails_opened || '0')
   const clicked = parseInt(campaignData.emails_clicked || '0')
   const leads = parseInt(campaignData.leads_generated || '0')
@@ -469,7 +443,7 @@ async function calculateCampaignPerformance(campaignId: string): Promise<Campaig
 
 async function getCampaignAnalytics(campaignId: string) {
   const analytics = await calculateCampaignPerformance(campaignId)
-  
+
   return NextResponse.json({
     success: true,
     data: analytics
@@ -478,7 +452,7 @@ async function getCampaignAnalytics(campaignId: string) {
 
 async function listEmailTemplates() {
   const templates = await universalApi.getEntities('email_template')
-  
+
   return NextResponse.json({
     success: true,
     data: { templates }
@@ -516,7 +490,7 @@ async function createEmailTemplate(data: any, organizationId: string) {
 
 async function getAudienceSegments() {
   const segments = await universalApi.getEntities('email_audience')
-  
+
   return NextResponse.json({
     success: true,
     data: { segments }
@@ -532,10 +506,10 @@ async function createAudienceSegment(data: any, organizationId: string) {
     entity_code: `AUD-${Date.now()}`,
     organizationId: organizationId,
     status: 'active' as const,
-    metadata: { 
-      description, 
+    metadata: {
+      description,
       estimated_size,
-      created_at: new Date().toISOString() 
+      created_at: new Date().toISOString()
     }
   }
 
@@ -588,7 +562,7 @@ async function updateEmailCampaign(data: any) {
 
 async function pauseCampaign(campaignId: string) {
   await universalApi.updateEntity(campaignId, { status: 'paused' })
-  
+
   return NextResponse.json({
     success: true,
     data: { message: 'Campaign paused successfully' }
@@ -597,7 +571,7 @@ async function pauseCampaign(campaignId: string) {
 
 async function resumeCampaign(campaignId: string) {
   await universalApi.updateEntity(campaignId, { status: 'sending' })
-  
+
   return NextResponse.json({
     success: true,
     data: { message: 'Campaign resumed successfully' }
@@ -608,7 +582,7 @@ async function updateCampaignStatus(data: any) {
   const { campaign_id, status, reason } = data
 
   await universalApi.updateEntity(campaign_id, { status })
-  
+
   if (reason) {
     await universalApi.setDynamicField(campaign_id, 'status_reason', reason)
   }
@@ -665,7 +639,7 @@ async function evaluateLeadConversion(email: string, campaignId: string, organiz
     }
 
     const createdLead = await universalApi.createEntity(leadEntity)
-    
+
     // Store lead contact information
     await universalApi.setDynamicField(createdLead.id, 'email', email)
     await universalApi.setDynamicField(createdLead.id, 'lead_score', '10') // Initial score for email click
@@ -673,7 +647,7 @@ async function evaluateLeadConversion(email: string, campaignId: string, organiz
     await universalApi.setDynamicField(createdLead.id, 'source_campaign_id', campaignId)
 
     // Update campaign lead count
-    const currentLeads = await universalApi.getDynamicField(campaignId, 'leads_generated') || '0'
+    const currentLeads = (await universalApi.getDynamicField(campaignId, 'leads_generated')) || '0'
     const newLeadCount = parseInt(currentLeads) + 1
     await universalApi.setDynamicField(campaignId, 'leads_generated', String(newLeadCount))
 

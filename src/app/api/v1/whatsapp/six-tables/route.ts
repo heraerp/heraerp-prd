@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { 
+import {
   createConversation,
   postMessage,
   assignConversation,
@@ -19,9 +19,11 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -29,11 +31,14 @@ export async function POST(request: NextRequest) {
     // Use environment variable for organization ID in development
     // In production, this should come from the authenticated user's context
     const organizationId = process.env.DEFAULT_ORGANIZATION_ID || 'missing-org-id'
-    
+
     if (organizationId === 'missing-org-id') {
-      return NextResponse.json({ 
-        error: 'Organization ID not configured. Set DEFAULT_ORGANIZATION_ID in .env' 
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Organization ID not configured. Set DEFAULT_ORGANIZATION_ID in .env'
+        },
+        { status: 400 }
+      )
     }
     const body = await request.json()
     const { action, ...params } = body
@@ -65,26 +70,18 @@ export async function POST(request: NextRequest) {
         break
 
       case 'postMessage':
-        result = await postMessage(
-          organizationId,
-          params.threadId,
-          {
-            direction: params.direction || 'outbound',
-            text: params.text,
-            media: params.media,
-            interactive: params.interactive,
-            channelMsgId: params.channelMsgId,
-            cost: params.cost
-          }
-        )
+        result = await postMessage(organizationId, params.threadId, {
+          direction: params.direction || 'outbound',
+          text: params.text,
+          media: params.media,
+          interactive: params.interactive,
+          channelMsgId: params.channelMsgId,
+          cost: params.cost
+        })
         break
 
       case 'assignConversation':
-        result = await assignConversation(
-          organizationId,
-          params.threadId,
-          params.assigneeEntityId
-        )
+        result = await assignConversation(organizationId, params.threadId, params.assigneeEntityId)
         break
 
       case 'addInternalNote':
@@ -97,11 +94,7 @@ export async function POST(request: NextRequest) {
         break
 
       case 'linkThreadToCustomer':
-        result = await linkThreadToCustomer(
-          organizationId,
-          params.threadId,
-          params.customerId
-        )
+        result = await linkThreadToCustomer(organizationId, params.threadId, params.customerId)
         break
 
       case 'getConversations':
@@ -120,43 +113,35 @@ export async function POST(request: NextRequest) {
         break
 
       case 'togglePin':
-        result = await togglePin(
-          organizationId,
-          params.threadId,
-          params.shouldPin
-        )
+        result = await togglePin(organizationId, params.threadId, params.shouldPin)
         break
 
       case 'toggleArchive':
-        result = await toggleArchive(
-          organizationId,
-          params.threadId,
-          params.shouldArchive
-        )
+        result = await toggleArchive(organizationId, params.threadId, params.shouldArchive)
         break
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action', available_actions: [
-            'createConversation',
-            'postMessage',
-            'assignConversation',
-            'addInternalNote',
-            'linkThreadToCustomer',
-            'getConversations',
-            'getAnalytics',
-            'togglePin',
-            'toggleArchive'
-          ]},
+          {
+            error: 'Invalid action',
+            available_actions: [
+              'createConversation',
+              'postMessage',
+              'assignConversation',
+              'addInternalNote',
+              'linkThreadToCustomer',
+              'getConversations',
+              'getAnalytics',
+              'togglePin',
+              'toggleArchive'
+            ]
+          },
           { status: 400 }
         )
     }
 
     if (!result.success) {
-      return NextResponse.json(
-        { status: 'error', error: result.error },
-        { status: 500 }
-      )
+      return NextResponse.json({ status: 'error', error: result.error }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -164,7 +149,6 @@ export async function POST(request: NextRequest) {
       action,
       ...result
     })
-
   } catch (error) {
     console.error('WhatsApp Six Tables API error:', error)
     return NextResponse.json(
@@ -178,9 +162,11 @@ export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -188,11 +174,14 @@ export async function GET(request: NextRequest) {
     // Use environment variable for organization ID in development
     // In production, this should come from the authenticated user's context
     const organizationId = process.env.DEFAULT_ORGANIZATION_ID || 'missing-org-id'
-    
+
     if (organizationId === 'missing-org-id') {
-      return NextResponse.json({ 
-        error: 'Organization ID not configured. Set DEFAULT_ORGANIZATION_ID in .env' 
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Organization ID not configured. Set DEFAULT_ORGANIZATION_ID in .env'
+        },
+        { status: 400 }
+      )
     }
     const searchParams = request.nextUrl.searchParams
     const action = searchParams.get('action')
@@ -203,7 +192,7 @@ export async function GET(request: NextRequest) {
         assigneeEntityId: searchParams.get('assigneeEntityId') || undefined,
         search: searchParams.get('search') || undefined
       })
-      
+
       return NextResponse.json({
         status: result.success ? 'success' : 'error',
         ...result
@@ -212,10 +201,12 @@ export async function GET(request: NextRequest) {
 
     if (action === 'analytics') {
       const result = await getWhatsAppAnalytics(organizationId, {
-        startDate: searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : undefined,
+        startDate: searchParams.get('startDate')
+          ? new Date(searchParams.get('startDate')!)
+          : undefined,
         endDate: searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : undefined
       })
-      
+
       return NextResponse.json({
         status: result.success ? 'success' : 'error',
         ...result
@@ -238,13 +229,9 @@ export async function GET(request: NextRequest) {
           'getConversations',
           'getAnalytics'
         ],
-        GET: [
-          'conversations',
-          'analytics'
-        ]
+        GET: ['conversations', 'analytics']
       }
     })
-
   } catch (error) {
     console.error('WhatsApp Six Tables API error:', error)
     return NextResponse.json(

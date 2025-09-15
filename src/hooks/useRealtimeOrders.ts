@@ -108,10 +108,12 @@ export const useRealtimeOrders = ({
       // Transform data to include dynamic properties
       const transformedOrders: Order[] = (transactions || []).map(transaction => {
         const dynamicData = dynamicDataMap.get(transaction.id) || []
-        
+
         const getFieldValue = (fieldName: string) => {
           const field = dynamicData.find(d => d.field_name === fieldName)
-          return field?.field_value_text || field?.field_value_number || field?.field_value_json || null
+          return (
+            field?.field_value_text || field?.field_value_number || field?.field_value_json || null
+          )
         }
 
         return {
@@ -130,22 +132,19 @@ export const useRealtimeOrders = ({
 
       // Apply additional filters
       let filteredOrders = transformedOrders
-      
+
       if (filters.kitchen_status) {
-        filteredOrders = filteredOrders.filter(order => 
-          order.kitchen_status === filters.kitchen_status
+        filteredOrders = filteredOrders.filter(
+          order => order.kitchen_status === filters.kitchen_status
         )
       }
-      
+
       if (filters.table_number) {
-        filteredOrders = filteredOrders.filter(order => 
-          order.table_number === filters.table_number
-        )
+        filteredOrders = filteredOrders.filter(order => order.table_number === filters.table_number)
       }
 
       setOrders(filteredOrders)
       setLoading(false)
-
     } catch (err) {
       console.error('Error fetching orders:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch orders')
@@ -154,94 +153,94 @@ export const useRealtimeOrders = ({
   }, [organizationId, enabled, filters, supabase])
 
   // Update order status
-  const updateOrderStatus = useCallback(async (
-    orderId: string, 
-    updates: Partial<Order>
-  ): Promise<void> => {
-    try {
-      // Update main transaction if status changed
-      if (updates.status) {
-        const { error: statusError } = await supabase
-          .from('universal_transactions')
-          .update({ 
-            status: updates.status,
-            updated_at: new Date().toISOString()
+  const updateOrderStatus = useCallback(
+    async (orderId: string, updates: Partial<Order>): Promise<void> => {
+      try {
+        // Update main transaction if status changed
+        if (updates.status) {
+          const { error: statusError } = await supabase
+            .from('universal_transactions')
+            .update({
+              status: updates.status,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', orderId)
+            .eq('organization_id', organizationId)
+
+          if (statusError) throw statusError
+        }
+
+        // Update dynamic fields
+        const dynamicUpdates = []
+
+        if (updates.kitchen_status) {
+          dynamicUpdates.push({
+            entity_id: orderId,
+            field_name: 'kitchen_status',
+            field_value_text: updates.kitchen_status,
+            smart_code: 'HERA.REST.ORDER.KITCHEN.STATUS.v1'
           })
-          .eq('id', orderId)
-          .eq('organization_id', organizationId)
+        }
 
-        if (statusError) throw statusError
-      }
+        if (updates.estimated_ready) {
+          dynamicUpdates.push({
+            entity_id: orderId,
+            field_name: 'estimated_ready',
+            field_value_text: updates.estimated_ready,
+            smart_code: 'HERA.REST.ORDER.ESTIMATED.READY.v1'
+          })
+        }
 
-      // Update dynamic fields
-      const dynamicUpdates = []
-      
-      if (updates.kitchen_status) {
-        dynamicUpdates.push({
-          entity_id: orderId,
-          field_name: 'kitchen_status',
-          field_value_text: updates.kitchen_status,
-          smart_code: 'HERA.REST.ORDER.KITCHEN.STATUS.v1'
-        })
-      }
+        if (updates.customer_name) {
+          dynamicUpdates.push({
+            entity_id: orderId,
+            field_name: 'customer_name',
+            field_value_text: updates.customer_name,
+            smart_code: 'HERA.REST.ORDER.CUSTOMER.NAME.v1'
+          })
+        }
 
-      if (updates.estimated_ready) {
-        dynamicUpdates.push({
-          entity_id: orderId,
-          field_name: 'estimated_ready',
-          field_value_text: updates.estimated_ready,
-          smart_code: 'HERA.REST.ORDER.ESTIMATED.READY.v1'
-        })
-      }
+        if (updates.table_number) {
+          dynamicUpdates.push({
+            entity_id: orderId,
+            field_name: 'table_number',
+            field_value_text: updates.table_number,
+            smart_code: 'HERA.REST.ORDER.TABLE.v1'
+          })
+        }
 
-      if (updates.customer_name) {
-        dynamicUpdates.push({
-          entity_id: orderId,
-          field_name: 'customer_name',
-          field_value_text: updates.customer_name,
-          smart_code: 'HERA.REST.ORDER.CUSTOMER.NAME.v1'
-        })
-      }
+        // Upsert dynamic data
+        for (const update of dynamicUpdates) {
+          await supabase.from('core_dynamic_data').upsert(update)
+        }
 
-      if (updates.table_number) {
-        dynamicUpdates.push({
-          entity_id: orderId,
-          field_name: 'table_number',
-          field_value_text: updates.table_number,
-          smart_code: 'HERA.REST.ORDER.TABLE.v1'
-        })
-      }
-
-      // Upsert dynamic data
-      for (const update of dynamicUpdates) {
-        await supabase
-          .from('core_dynamic_data')
-          .upsert(update)
-      }
-
-      // Update local state optimistically
-      setOrders(prevOrders => 
-        prevOrders.map(order => 
-          order.id === orderId 
-            ? { ...order, ...updates, updated_at: new Date().toISOString() }
-            : order
+        // Update local state optimistically
+        setOrders(prevOrders =>
+          prevOrders.map(order =>
+            order.id === orderId
+              ? { ...order, ...updates, updated_at: new Date().toISOString() }
+              : order
+          )
         )
-      )
-
-    } catch (err) {
-      console.error('Error updating order:', err)
-      throw err
-    }
-  }, [organizationId, supabase])
+      } catch (err) {
+        console.error('Error updating order:', err)
+        throw err
+      }
+    },
+    [organizationId, supabase]
+  )
 
   // Calculate stats - memoized to prevent infinite loops
-  const stats = useMemo(() => ({
-    total: orders.length,
-    pending: orders.filter(o => o.kitchen_status === 'pending').length,
-    preparing: orders.filter(o => o.kitchen_status === 'preparing').length,
-    ready: orders.filter(o => o.kitchen_status === 'ready').length,
-    completed: orders.filter(o => o.status === 'completed').length
-  }), [orders])
+  const stats = useMemo(
+    () => ({
+      total: orders.length,
+      pending: orders.filter(o => o.kitchen_status === 'pending').length,
+      preparing: orders.filter(o => o.kitchen_status === 'preparing').length,
+      ready: orders.filter(o => o.kitchen_status === 'ready').length,
+      completed: orders.filter(o => o.status === 'completed').length
+    }),
+    [orders]
+  )
 
   // Set up real-time subscriptions
   useEffect(() => {
@@ -261,26 +260,24 @@ export const useRealtimeOrders = ({
           table: 'universal_transactions',
           filter: `organization_id=eq.${organizationId}`
         },
-        (payload) => {
+        payload => {
           console.log('Order transaction change:', payload)
-          
+
           if (payload.eventType === 'INSERT' && payload.new.transaction_type === 'order') {
             // New order - refetch to get complete data
             fetchOrders()
           } else if (payload.eventType === 'UPDATE' && payload.new.transaction_type === 'order') {
             // Order updated - update local state
-            setOrders(prevOrders => 
-              prevOrders.map(order => 
-                order.id === payload.new.id 
+            setOrders(prevOrders =>
+              prevOrders.map(order =>
+                order.id === payload.new.id
                   ? { ...order, status: payload.new.status, updated_at: payload.new.updated_at }
                   : order
               )
             )
           } else if (payload.eventType === 'DELETE') {
             // Order deleted - remove from local state
-            setOrders(prevOrders => 
-              prevOrders.filter(order => order.id !== payload.old.id)
-            )
+            setOrders(prevOrders => prevOrders.filter(order => order.id !== payload.old.id))
           }
         }
       )
@@ -297,15 +294,21 @@ export const useRealtimeOrders = ({
           table: 'core_dynamic_data',
           filter: `field_name=in.(kitchen_status,customer_name,table_number,estimated_ready)`
         },
-        (payload) => {
+        payload => {
           console.log('Order dynamic data change:', payload)
-          
+
           if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-            const { entity_id, field_name, field_value_text, field_value_number, field_value_json } = payload.new
+            const {
+              entity_id,
+              field_name,
+              field_value_text,
+              field_value_number,
+              field_value_json
+            } = payload.new
             const value = field_value_text || field_value_number || field_value_json
 
             // Update local state
-            setOrders(prevOrders => 
+            setOrders(prevOrders =>
               prevOrders.map(order => {
                 if (order.id === entity_id) {
                   return {
@@ -361,26 +364,35 @@ export const useKitchenDisplay = (organizationId: string) => {
   }
 
   // Kitchen-specific actions
-  const startPreparation = useCallback(async (orderId: string) => {
-    await updateOrderStatus(orderId, {
-      kitchen_status: 'preparing',
-      // Add prep start time
-    })
-  }, [updateOrderStatus])
+  const startPreparation = useCallback(
+    async (orderId: string) => {
+      await updateOrderStatus(orderId, {
+        kitchen_status: 'preparing'
+        // Add prep start time
+      })
+    },
+    [updateOrderStatus]
+  )
 
-  const markReady = useCallback(async (orderId: string) => {
-    await updateOrderStatus(orderId, {
-      kitchen_status: 'ready',
-      // Add prep end time
-    })
-  }, [updateOrderStatus])
+  const markReady = useCallback(
+    async (orderId: string) => {
+      await updateOrderStatus(orderId, {
+        kitchen_status: 'ready'
+        // Add prep end time
+      })
+    },
+    [updateOrderStatus]
+  )
 
-  const completeOrder = useCallback(async (orderId: string) => {
-    await updateOrderStatus(orderId, {
-      status: 'completed',
-      kitchen_status: 'served'
-    })
-  }, [updateOrderStatus])
+  const completeOrder = useCallback(
+    async (orderId: string) => {
+      await updateOrderStatus(orderId, {
+        status: 'completed',
+        kitchen_status: 'served'
+      })
+    },
+    [updateOrderStatus]
+  )
 
   return {
     ordersByStatus,

@@ -14,9 +14,26 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { AlertCircle, Check, Database, Settings, Code, FileText, Zap, Shield, TrendingUp, Award } from 'lucide-react'
+import {
+  AlertCircle,
+  Check,
+  Database,
+  Settings,
+  Code,
+  FileText,
+  Zap,
+  Shield,
+  TrendingUp,
+  Award
+} from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSchemaAdministration } from '@/lib/schema/schema-hooks'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
@@ -37,20 +54,20 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
     entityTypes,
     fieldTypes,
     smartCodes,
-    
+
     // Organization configuration
     orgConfig,
     fieldSelections,
     formConfigs,
-    
+
     // Self-governing standards integration
     qualityMetrics,
-    
+
     // Mutations
     updateOrgConfig,
     updateFieldSelection,
     updateFormConfig,
-    
+
     // Utilities
     validation,
     warmUpCache,
@@ -61,20 +78,26 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
   const isOrgAdmin = user?.role === 'admin' || user?.role === 'owner'
 
   // Filter data based on search term
-  const filteredComponents = components.data?.filter(comp => 
-    comp.component_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    comp.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || []
+  const filteredComponents =
+    components.data?.filter(
+      comp =>
+        comp.component_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        comp.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || []
 
-  const filteredTemplates = templates.data?.filter(template => 
-    template.template_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    template.industry.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || []
+  const filteredTemplates =
+    templates.data?.filter(
+      template =>
+        template.template_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        template.industry.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || []
 
-  const filteredEntityTypes = entityTypes.data?.filter(entity => 
-    entity.entity_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    entity.display_name.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || []
+  const filteredEntityTypes =
+    entityTypes.data?.filter(
+      entity =>
+        entity.entity_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entity.display_name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || []
 
   return (
     <div className="space-y-6">
@@ -108,14 +131,12 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
 
       {/* Validation Status */}
       {validation.data && (
-        <Alert variant={validation.data.valid ? "default" : "destructive"}>
+        <Alert variant={validation.data.valid ? 'default' : 'destructive'}>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {validation.data.valid ? (
-              "Organization configuration is valid"
-            ) : (
-              `Configuration issues found: ${validation.data.errors.join(", ")}`
-            )}
+            {validation.data.valid
+              ? 'Organization configuration is valid'
+              : `Configuration issues found: ${validation.data.errors.join(', ')}`}
           </AlertDescription>
         </Alert>
       )}
@@ -126,7 +147,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
           <Input
             placeholder="Search components, templates, entity types..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
@@ -209,8 +230,9 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                 <div>
                   <Label className="text-sm font-medium">Enabled Components</Label>
                   <p className="text-2xl font-bold">
-                    {orgConfig.data?.enabled_components ? 
-                      Object.keys(orgConfig.data.enabled_components).length : 0}
+                    {orgConfig.data?.enabled_components
+                      ? Object.keys(orgConfig.data.enabled_components).length
+                      : 0}
                   </p>
                 </div>
                 <div>
@@ -221,9 +243,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Custom Field Selections</Label>
-                  <p className="text-2xl font-bold">
-                    {fieldSelections.data?.length || 0}
-                  </p>
+                  <p className="text-2xl font-bold">{fieldSelections.data?.length || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -233,7 +253,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
         {/* Components Tab */}
         <TabsContent value="components" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredComponents.map((component) => (
+            {filteredComponents.map(component => (
               <Card key={component.id}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -258,12 +278,10 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       <span>{Math.round(component.reusability_score * 100)}%</span>
                     </div>
                     {component.description && (
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {component.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">{component.description}</p>
                     )}
                   </div>
-                  
+
                   {isOrgAdmin && (
                     <div className="mt-4 flex items-center justify-between">
                       <Label htmlFor={`component-${component.id}`} className="text-sm">
@@ -271,8 +289,10 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       </Label>
                       <Switch
                         id={`component-${component.id}`}
-                        checked={orgConfig.data?.enabled_components?.[component.component_name] || false}
-                        onCheckedChange={(checked) => {
+                        checked={
+                          orgConfig.data?.enabled_components?.[component.component_name] || false
+                        }
+                        onCheckedChange={checked => {
                           const newEnabledComponents = {
                             ...orgConfig.data?.enabled_components,
                             [component.component_name]: checked
@@ -296,7 +316,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
         {/* Templates Tab */}
         <TabsContent value="templates" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredTemplates.map((template) => (
+            {filteredTemplates.map(template => (
               <Card key={template.id}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -333,13 +353,16 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       </Label>
                       <Switch
                         id={`template-${template.id}`}
-                        checked={orgConfig.data?.active_templates?.includes(template.template_name) || false}
-                        onCheckedChange={(checked) => {
+                        checked={
+                          orgConfig.data?.active_templates?.includes(template.template_name) ||
+                          false
+                        }
+                        onCheckedChange={checked => {
                           const currentTemplates = orgConfig.data?.active_templates || []
                           const newTemplates = checked
                             ? [...currentTemplates, template.template_name]
                             : currentTemplates.filter(t => t !== template.template_name)
-                          
+
                           updateOrgConfig.mutate({
                             organizationId: user?.organization_id!,
                             config: {
@@ -359,7 +382,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
         {/* Entity Types Tab */}
         <TabsContent value="entities" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredEntityTypes.map((entityType) => (
+            {filteredEntityTypes.map(entityType => (
               <Card key={entityType.id}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -373,7 +396,9 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Entity Type:</span>
-                      <code className="text-xs bg-muted px-1 rounded">{entityType.entity_type}</code>
+                      <code className="text-xs bg-muted px-1 rounded">
+                        {entityType.entity_type}
+                      </code>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Base Fields:</span>
@@ -388,9 +413,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       <span>{entityType.hierarchy_support ? 'Yes' : 'No'}</span>
                     </div>
                     {entityType.description && (
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {entityType.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">{entityType.description}</p>
                     )}
                   </div>
 
@@ -401,13 +424,16 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       </Label>
                       <Switch
                         id={`entity-${entityType.id}`}
-                        checked={orgConfig.data?.enabled_entity_types?.includes(entityType.entity_type) || false}
-                        onCheckedChange={(checked) => {
+                        checked={
+                          orgConfig.data?.enabled_entity_types?.includes(entityType.entity_type) ||
+                          false
+                        }
+                        onCheckedChange={checked => {
                           const currentTypes = orgConfig.data?.enabled_entity_types || []
                           const newTypes = checked
                             ? [...currentTypes, entityType.entity_type]
                             : currentTypes.filter(t => t !== entityType.entity_type)
-                          
+
                           updateOrgConfig.mutate({
                             organizationId: user?.organization_id!,
                             config: {
@@ -427,7 +453,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
         {/* Field Types Tab */}
         <TabsContent value="fields" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {fieldTypes.data?.map((fieldType) => (
+            {fieldTypes.data?.map(fieldType => (
               <Card key={fieldType.id}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -450,9 +476,7 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       <span>{fieldType.input_component}</span>
                     </div>
                     {fieldType.description && (
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {fieldType.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">{fieldType.description}</p>
                     )}
                   </div>
 
@@ -463,13 +487,16 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       </Label>
                       <Switch
                         id={`field-${fieldType.id}`}
-                        checked={orgConfig.data?.enabled_field_types?.includes(fieldType.field_type) || false}
-                        onCheckedChange={(checked) => {
+                        checked={
+                          orgConfig.data?.enabled_field_types?.includes(fieldType.field_type) ||
+                          false
+                        }
+                        onCheckedChange={checked => {
                           const currentTypes = orgConfig.data?.enabled_field_types || []
                           const newTypes = checked
                             ? [...currentTypes, fieldType.field_type]
                             : currentTypes.filter(t => t !== fieldType.field_type)
-                          
+
                           updateOrgConfig.mutate({
                             organizationId: user?.organization_id!,
                             config: {
@@ -502,7 +529,9 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-sm font-medium text-muted-foreground">Compliance Score</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Compliance Score
+                        </Label>
                         <div className="flex items-center gap-2">
                           <div className="text-2xl font-bold text-green-600">
                             {Math.round(qualityMetrics.data.compliance_score * 100)}%
@@ -511,25 +540,31 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                         </div>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-muted-foreground">Duplicate Records</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Duplicate Records
+                        </Label>
                         <div className="text-2xl font-bold text-orange-600">
                           {qualityMetrics.data.duplicate_count}
                         </div>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-muted-foreground">Non-Standard Fields</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Non-Standard Fields
+                        </Label>
                         <div className="text-2xl font-bold text-blue-600">
                           {qualityMetrics.data.non_standard_fields}
                         </div>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium text-muted-foreground">Active Violations</Label>
+                        <Label className="text-sm font-medium text-muted-foreground">
+                          Active Violations
+                        </Label>
                         <div className="text-2xl font-bold text-red-600">
                           {qualityMetrics.data.standards_violations.length}
                         </div>
                       </div>
                     </div>
-                    
+
                     {qualityMetrics.data.compliance_score > 0.9 ? (
                       <Alert>
                         <Check className="h-4 w-4" />
@@ -566,7 +601,8 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">🧬 HERA Meta Principle</h4>
                   <p className="text-sm text-muted-foreground mb-3">
-                    HERA manages its own standards using the same 6 universal tables that power your business.
+                    HERA manages its own standards using the same 6 universal tables that power your
+                    business.
                   </p>
                   <div className="space-y-2 text-xs">
                     <div className="flex items-center gap-2">
@@ -602,7 +638,8 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                 <Alert>
                   <Zap className="h-4 w-4" />
                   <AlertDescription className="text-xs">
-                    <strong>Revolutionary:</strong> If HERA can govern itself with 6 tables, it can govern any business.
+                    <strong>Revolutionary:</strong> If HERA can govern itself with 6 tables, it can
+                    govern any business.
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -610,38 +647,41 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
           </div>
 
           {/* Standards Violations (if any) */}
-          {qualityMetrics.data?.standards_violations && qualityMetrics.data.standards_violations.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-red-500" />
-                  Standards Violations
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {qualityMetrics.data.standards_violations.slice(0, 5).map((violation, index) => (
-                    <div key={index} className="border rounded-lg p-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">{violation.entity_name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            Type: {violation.entity_type}
+          {qualityMetrics.data?.standards_violations &&
+            qualityMetrics.data.standards_violations.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                    Standards Violations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {qualityMetrics.data.standards_violations
+                      .slice(0, 5)
+                      .map((violation, index) => (
+                        <div key={index} className="border rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="font-medium">{violation.entity_name}</div>
+                              <div className="text-sm text-muted-foreground">
+                                Type: {violation.entity_type}
+                              </div>
+                            </div>
+                            <Badge variant="destructive">Violation</Badge>
                           </div>
                         </div>
-                        <Badge variant="destructive">Violation</Badge>
+                      ))}
+                    {qualityMetrics.data.standards_violations.length > 5 && (
+                      <div className="text-center text-sm text-muted-foreground">
+                        +{qualityMetrics.data.standards_violations.length - 5} more violations
                       </div>
-                    </div>
-                  ))}
-                  {qualityMetrics.data.standards_violations.length > 5 && (
-                    <div className="text-center text-sm text-muted-foreground">
-                      +{qualityMetrics.data.standards_violations.length - 5} more violations
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
           {/* Universal Smart Codes Registry */}
           <Card>
@@ -658,11 +698,9 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                   Smart codes provide universal business intelligence across all industries.
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {smartCodes.data?.slice(0, 6).map((code) => (
+                  {smartCodes.data?.slice(0, 6).map(code => (
                     <div key={code.id} className="border rounded p-3">
-                      <div className="font-mono text-xs text-blue-600 mb-1">
-                        {code.smart_code}
-                      </div>
+                      <div className="font-mono text-xs text-blue-600 mb-1">{code.smart_code}</div>
                       <div className="text-sm font-medium">{code.description}</div>
                       <div className="text-xs text-muted-foreground mt-1">
                         Industry: {code.industry}
@@ -698,14 +736,13 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                       Version {orgConfig.data?.configuration_version || 1}
                     </p>
                   </div>
-                  
+
                   <div>
                     <Label>Last Updated</Label>
                     <p className="text-sm text-muted-foreground">
-                      {orgConfig.data?.updated_at ? 
-                        new Date(orgConfig.data.updated_at).toLocaleString() : 
-                        'Never'
-                      }
+                      {orgConfig.data?.updated_at
+                        ? new Date(orgConfig.data.updated_at).toLocaleString()
+                        : 'Never'}
                     </p>
                   </div>
 
@@ -730,14 +767,14 @@ export default function SchemaAdministration({ organizationId }: SchemaAdministr
                     { key: 'custom_fields', label: 'Custom Fields' },
                     { key: 'integrations', label: 'Integrations' },
                     { key: 'realtime_sync', label: 'Real-time Sync' },
-                    { key: 'ai_insights', label: 'AI Insights' },
-                  ].map((feature) => (
+                    { key: 'ai_insights', label: 'AI Insights' }
+                  ].map(feature => (
                     <div key={feature.key} className="flex items-center justify-between">
                       <Label htmlFor={feature.key}>{feature.label}</Label>
                       <Switch
                         id={feature.key}
                         checked={orgConfig.data?.feature_flags?.[feature.key] || false}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                           const newFeatureFlags = {
                             ...orgConfig.data?.feature_flags,
                             [feature.key]: checked

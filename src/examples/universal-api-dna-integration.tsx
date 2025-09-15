@@ -45,7 +45,7 @@ export default function UniversalAPIDNAIntegration() {
   // Demonstrate HERA DNA Auto-Enforcement in action
   useEffect(() => {
     const enforcement = universalDNAWithColorEnforcement(
-      "Create enterprise restaurant dashboard with real-time sales data",
+      'Create enterprise restaurant dashboard with real-time sales data',
       {
         urgency: 'high',
         validateColors: true,
@@ -58,7 +58,7 @@ export default function UniversalAPIDNAIntegration() {
   // Fetch enterprise data using Universal API
   const fetchEnterpriseData = async () => {
     setLoading(true)
-    
+
     try {
       // 1. Query restaurant entities with advanced filters
       const restaurantQuery = await universalAPI.query({
@@ -101,20 +101,20 @@ export default function UniversalAPIDNAIntegration() {
           items: [
             {
               transaction_type: 'sale',
-              total_amount: 125.50,
+              total_amount: 125.5,
               line_items: [
-                { item_name: 'Margherita Pizza', quantity: 2, unit_price: 45.00 },
-                { item_name: 'Caesar Salad', quantity: 1, unit_price: 18.50 },
-                { item_name: 'Tiramisu', quantity: 2, unit_price: 8.50 }
+                { item_name: 'Margherita Pizza', quantity: 2, unit_price: 45.0 },
+                { item_name: 'Caesar Salad', quantity: 1, unit_price: 18.5 },
+                { item_name: 'Tiramisu', quantity: 2, unit_price: 8.5 }
               ]
             },
             {
               transaction_type: 'sale',
               total_amount: 89.75,
               line_items: [
-                { item_name: 'Quattro Stagioni', quantity: 1, unit_price: 48.00 },
-                { item_name: 'Bruschetta', quantity: 2, unit_price: 12.50 },
-                { item_name: 'Gelato', quantity: 2, unit_price: 8.50 }
+                { item_name: 'Quattro Stagioni', quantity: 1, unit_price: 48.0 },
+                { item_name: 'Bruschetta', quantity: 2, unit_price: 12.5 },
+                { item_name: 'Gelato', quantity: 2, unit_price: 8.5 }
               ]
             }
           ],
@@ -144,7 +144,6 @@ export default function UniversalAPIDNAIntegration() {
         avgOrderValue: orders > 0 ? revenue / orders : 0,
         growthRate: 15.8 // Simulated
       })
-
     } catch (error) {
       console.error('Enterprise data fetch failed:', error)
     } finally {
@@ -170,7 +169,7 @@ export default function UniversalAPIDNAIntegration() {
             alias: 'new_restaurant',
             data: {
               entity_type: 'restaurant_location',
-              entity_name: 'Mario\'s Authentic Italian - Downtown',
+              entity_name: "Mario's Authentic Italian - Downtown",
               entity_code: 'MARIO-DT-001'
             },
             dynamic_data: [
@@ -222,7 +221,6 @@ export default function UniversalAPIDNAIntegration() {
       })
 
       console.log('Complex workflow completed:', workflow)
-
     } catch (error) {
       console.error('Complex workflow failed:', error)
     } finally {
@@ -233,19 +231,18 @@ export default function UniversalAPIDNAIntegration() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        
         {/* Header with DNA Enforcement Status */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
             HERA Universal API + DNA Integration
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            Demonstrating enterprise-grade ecosystem: Universal API (100% coverage) + 
-            DNA Auto-Enforcement + WCAG AAA Colors + Real-time Components
+            Demonstrating enterprise-grade ecosystem: Universal API (100% coverage) + DNA
+            Auto-Enforcement + WCAG AAA Colors + Real-time Components
           </p>
-          
+
           {dnaEnforcement && (
-            <EnterpriseCard 
+            <EnterpriseCard
               className="max-w-2xl mx-auto"
               glassIntensity="medium"
               animation="fade"
@@ -265,14 +262,12 @@ export default function UniversalAPIDNAIntegration() {
                   </div>
                   <div>
                     <span className="font-medium">Color Compliance:</span>
-                    <div className="text-green-600 dark:text-green-400">
-                      ✅ WCAG AAA Validated
-                    </div>
+                    <div className="text-green-600 dark:text-green-400">✅ WCAG AAA Validated</div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {dnaEnforcement.guarantees?.slice(0, 3).map((guarantee: string, idx: number) => (
-                    <span 
+                    <span
                       key={idx}
                       className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs"
                     >
@@ -298,7 +293,7 @@ export default function UniversalAPIDNAIntegration() {
             layout="vertical"
             className="col-span-1"
           />
-          
+
           <EnterpriseStatsCard
             title="Active Orders"
             value={stats.totalOrders}
@@ -310,7 +305,7 @@ export default function UniversalAPIDNAIntegration() {
             layout="vertical"
             className="col-span-1"
           />
-          
+
           <EnterpriseStatsCard
             title="Avg Order Value"
             value={stats.avgOrderValue}
@@ -322,7 +317,7 @@ export default function UniversalAPIDNAIntegration() {
             layout="vertical"
             className="col-span-1"
           />
-          
+
           <EnterpriseStatsCard
             title="Growth Rate"
             value={stats.growthRate}
@@ -358,7 +353,7 @@ export default function UniversalAPIDNAIntegration() {
               'Fetch Enterprise Data'
             )}
           </button>
-          
+
           <button
             onClick={executeComplexWorkflow}
             disabled={loading}
@@ -376,7 +371,6 @@ export default function UniversalAPIDNAIntegration() {
 
         {/* Enterprise Dashboard with Live Data */}
         <EnterpriseDashboard className="space-y-8">
-          
           {/* Restaurant Locations */}
           <EnterpriseCard
             className="col-span-full"
@@ -394,11 +388,11 @@ export default function UniversalAPIDNAIntegration() {
                   {enterprises.length} Active
                 </span>
               </h3>
-              
+
               {enterprises.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {enterprises.map((restaurant, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700
                                hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
@@ -459,25 +453,25 @@ export default function UniversalAPIDNAIntegration() {
                   Live Updates
                 </span>
               </h3>
-              
+
               {transactions.length > 0 ? (
                 <div className="space-y-3">
                   {transactions.slice(0, 5).map((transaction, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       className="flex items-center justify-between p-4 bg-gradient-to-r from-white to-slate-50 
                                dark:from-slate-800 dark:to-slate-750 rounded-lg border border-slate-200 dark:border-slate-700
                                hover:shadow-md transition-all duration-200"
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center
-                          ${transaction.success ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center
+                          ${transaction.success ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}
+                        >
                           {transaction.success ? '✅' : '❌'}
                         </div>
                         <div>
-                          <div className="font-medium">
-                            Transaction #{transaction.index + 1}
-                          </div>
+                          <div className="font-medium">Transaction #{transaction.index + 1}</div>
                           <div className="text-sm text-slate-500 dark:text-slate-400">
                             {transaction.success ? 'Completed successfully' : 'Processing failed'}
                           </div>
@@ -487,9 +481,7 @@ export default function UniversalAPIDNAIntegration() {
                         <div className="font-semibold text-lg">
                           ${transaction.data?.total_amount || '0.00'}
                         </div>
-                        <div className="text-xs text-slate-500">
-                          Just now
-                        </div>
+                        <div className="text-xs text-slate-500">Just now</div>
                       </div>
                     </div>
                   ))}
@@ -506,7 +498,6 @@ export default function UniversalAPIDNAIntegration() {
               )}
             </div>
           </EnterpriseCard>
-
         </EnterpriseDashboard>
 
         {/* System Status Footer */}
@@ -529,9 +520,8 @@ export default function UniversalAPIDNAIntegration() {
             🧬 HERA DNA: Most modern, enterprise-grade components way ahead of time
           </p>
         </div>
-
       </div>
-      
+
       {/* Inject WCAG AAA Compliant CSS Variables */}
       <style jsx global>{`
         :root {
@@ -548,7 +538,7 @@ export default function UniversalAPIDNAIntegration() {
           --color-text: ${HERA_COLOR_TOKENS_FINAL.tokens.color.text.light};
           --color-border: ${HERA_COLOR_TOKENS_FINAL.tokens.color.border.light};
         }
-        
+
         :root.dark {
           --color-bg: ${HERA_COLOR_TOKENS_FINAL.tokens.color.bg.dark};
           --color-surface: ${HERA_COLOR_TOKENS_FINAL.tokens.color.surface.dark};
@@ -570,7 +560,7 @@ export default function UniversalAPIDNAIntegration() {
 
 /**
  * REVOLUTIONARY INTEGRATION FEATURES DEMONSTRATED:
- * 
+ *
  * ✅ Universal API Enterprise (100% Coverage):
  *    • Advanced queries with joins, filters, aggregations
  *    • Bulk operations with atomicity controls
@@ -578,31 +568,31 @@ export default function UniversalAPIDNAIntegration() {
  *    • AI enhancements and validation
  *    • Real-time streaming capabilities
  *    • Performance optimization and caching
- * 
+ *
  * ✅ HERA DNA Auto-Enforcement:
  *    • Automatic component selection based on request analysis
  *    • WCAG AAA color validation and auto-fixing
  *    • Enterprise quality guarantees
  *    • Accessibility compliance built-in
- * 
+ *
  * ✅ Enterprise Components (Way Ahead of Time):
  *    • EnterpriseCard: Glassmorphism 2.0 with 60fps animations
  *    • EnterpriseStatsCard: Real-time data formatting with trend analysis
  *    • EnterpriseDashboard: Complete dashboard orchestration
  *    • Advanced effects: shimmer, glow, pulse, gradient
- * 
+ *
  * ✅ WCAG AAA Color System:
  *    • 100% accessibility compliance (verified by contrast checker)
  *    • Dynamic CSS variables for theme switching
  *    • Perfect contrast ratios: Primary (5.17:1), Success (4.50:1)
  *    • Auto-migration from non-compliant colors
- * 
+ *
  * ✅ Real-World Business Logic:
  *    • Multi-location restaurant chain operations
  *    • Complex transaction workflows
  *    • Real-time statistics calculation
  *    • Enterprise relationship management
- * 
+ *
  * 🚀 RESULT: The most modern, enterprise-grade component ecosystem
  *    that's literally "way ahead of time" - combining revolutionary
  *    Universal API capabilities with DNA-enforced quality and

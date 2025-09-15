@@ -1,7 +1,7 @@
 /**
  * HERA Workflow Engine
  * Smart Code: HERA.WORKFLOW.ENGINE.CORE.v1
- * 
+ *
  * Core workflow execution engine using the sacred 6-table architecture
  * All workflow state is stored in universal tables with smart codes
  */
@@ -18,12 +18,12 @@ import {
 
 export class WorkflowEngine {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
     universalApi.setOrganizationId(organizationId)
   }
-  
+
   /**
    * Execute a workflow
    */
@@ -32,32 +32,31 @@ export class WorkflowEngine {
     context: Record<string, any>
   }): Promise<WorkflowInstance> {
     const { workflow, context } = params
-    
+
     // Create workflow instance in universal_transactions
     const instance = await this.createWorkflowInstance(workflow, context)
-    
+
     try {
       // Execute steps sequentially (simplified for demo)
       for (const step of workflow.steps) {
         const result = await this.executeStep(step, instance)
-        
+
         if (result.status === 'failed') {
           await this.handleStepFailure(step, instance, result.error)
           break
         }
       }
-      
+
       // Mark workflow as completed
       await this.updateWorkflowStatus(instance.id, 'completed')
-      
     } catch (error) {
       await this.updateWorkflowStatus(instance.id, 'failed', error.message)
       throw error
     }
-    
+
     return instance
   }
-  
+
   /**
    * Create workflow instance in universal_transactions
    */
@@ -75,7 +74,7 @@ export class WorkflowEngine {
       started_at: new Date(),
       started_by: context.started_by || 'system'
     }
-    
+
     // Store in universal_transactions
     const txn = await universalApi.createTransaction({
       transaction_type: 'WORKFLOW_INSTANCE',
@@ -86,13 +85,13 @@ export class WorkflowEngine {
       metadata: instanceData,
       organization_id: this.organizationId
     })
-    
+
     return {
       ...instanceData,
       id: txn.data?.id || instanceData.id
     }
   }
-  
+
   /**
    * Execute a single workflow step
    */
@@ -107,49 +106,48 @@ export class WorkflowEngine {
       status: 'running',
       started_at: new Date()
     }
-    
+
     try {
       // Check guardrails
       if (step.guardrail) {
         await this.checkGuardrail(step.guardrail, instance)
       }
-      
+
       // Execute actions based on step type
       switch (step.type) {
         case 'action':
           await this.executeActions(step.actions || [], instance)
           break
-          
+
         case 'user_action':
           await this.createUserTask(step, instance)
           break
-          
+
         case 'conditional':
           if (this.evaluateCondition(step.condition || '', instance)) {
             await this.executeActions(step.actions || [], instance)
           }
           break
-          
+
         case 'wait':
           await this.scheduleWait(step, instance)
           break
       }
-      
+
       execution.status = 'completed'
       execution.completed_at = new Date()
-      
     } catch (error) {
       execution.status = 'failed'
       execution.error = error.message
       throw error
     }
-    
+
     // Store execution record
     await this.storeStepExecution(execution)
-    
+
     return execution
   }
-  
+
   /**
    * Execute workflow actions
    */
@@ -168,7 +166,7 @@ export class WorkflowEngine {
             metadata: action.metadata
           })
           break
-          
+
         case 'create_relationship':
           await universalApi.createRelationship({
             from_entity_id: this.resolveVariable(action.from_entity_id, instance),
@@ -180,7 +178,7 @@ export class WorkflowEngine {
             organization_id: this.organizationId
           })
           break
-          
+
         case 'update_status':
           // This is a special case that updates status via relationships
           await this.updateEntityStatus(
@@ -188,7 +186,7 @@ export class WorkflowEngine {
             action.new_status
           )
           break
-          
+
         case 'create_transaction':
           await universalApi.createTransaction({
             transaction_type: action.transaction_type,
@@ -201,24 +199,21 @@ export class WorkflowEngine {
             metadata: action.metadata
           })
           break
-          
+
         case 'send_notification':
           // This would integrate with notification service
           console.log(`Sending ${action.channel} notification to ${action.recipient}`)
           break
-          
+
         // Add more action types as needed
       }
     }
   }
-  
+
   /**
    * Update entity status using relationships
    */
-  private async updateEntityStatus(
-    entityId: string,
-    newStatusSmartCode: string
-  ): Promise<void> {
+  private async updateEntityStatus(entityId: string, newStatusSmartCode: string): Promise<void> {
     // Expire current status relationships
     const currentStatusRel = await universalApi.getRelationships({
       from_entity_id: entityId,
@@ -226,20 +221,24 @@ export class WorkflowEngine {
       is_active: true,
       organization_id: this.organizationId
     })
-    
+
     if (currentStatusRel.data && currentStatusRel.data.length > 0) {
       for (const rel of currentStatusRel.data) {
-        await universalApi.updateRelationship(rel.id, {
-          is_active: false,
-          expiration_date: new Date().toISOString()
-        }, this.organizationId)
+        await universalApi.updateRelationship(
+          rel.id,
+          {
+            is_active: false,
+            expiration_date: new Date().toISOString()
+          },
+          this.organizationId
+        )
       }
     }
-    
+
     // Get new status entity
     const statusEntity = await universalApi.getEntities('appointment_status', this.organizationId)
     const newStatus = statusEntity.data?.find(s => s.smart_code === newStatusSmartCode)
-    
+
     if (newStatus) {
       // Create new status relationship
       await universalApi.createRelationship({
@@ -253,14 +252,11 @@ export class WorkflowEngine {
       })
     }
   }
-  
+
   /**
    * Check guardrail conditions
    */
-  private async checkGuardrail(
-    guardrail: any,
-    instance: WorkflowInstance
-  ): Promise<void> {
+  private async checkGuardrail(guardrail: any, instance: WorkflowInstance): Promise<void> {
     if (guardrail.type === 'payment_required') {
       // Check for approved payment linked to appointment
       const appointmentId = instance.variables.appointment_id
@@ -269,25 +265,25 @@ export class WorkflowEngine {
         relationship_type: 'APPOINTMENT_LINKED_TO_PAYMENT',
         organization_id: this.organizationId
       })
-      
+
       if (!paymentRels.data || paymentRels.data.length === 0) {
         throw new Error('Payment required before proceeding')
       }
-      
+
       // Check payment status
       const paymentIds = paymentRels.data.map(r => r.to_entity_id)
       const payments = await universalApi.getTransactionsByIds(paymentIds, this.organizationId)
-      
+
       const hasApprovedPayment = payments.data?.some(
         p => p.transaction_status === 'approved' || p.transaction_status === 'settled'
       )
-      
+
       if (!hasApprovedPayment) {
         throw new Error('No approved payment found')
       }
     }
   }
-  
+
   /**
    * Helper to resolve variables in action parameters
    */
@@ -298,7 +294,7 @@ export class WorkflowEngine {
     }
     return value
   }
-  
+
   /**
    * Evaluate conditions
    */
@@ -312,14 +308,11 @@ export class WorkflowEngine {
     }
     return true
   }
-  
+
   /**
    * Create user task for manual actions
    */
-  private async createUserTask(
-    step: WorkflowStep,
-    instance: WorkflowInstance
-  ): Promise<void> {
+  private async createUserTask(step: WorkflowStep, instance: WorkflowInstance): Promise<void> {
     // Create task entity
     await universalApi.createEntity({
       entity_type: 'workflow_task',
@@ -334,18 +327,15 @@ export class WorkflowEngine {
       }
     })
   }
-  
+
   /**
    * Schedule wait step
    */
-  private async scheduleWait(
-    step: WorkflowStep,
-    instance: WorkflowInstance
-  ): Promise<void> {
+  private async scheduleWait(step: WorkflowStep, instance: WorkflowInstance): Promise<void> {
     // In production, this would create a scheduled job
     console.log(`Scheduling wait until ${step.wait_until || step.delay}`)
   }
-  
+
   /**
    * Handle step failures
    */
@@ -362,7 +352,7 @@ export class WorkflowEngine {
       }
     }
   }
-  
+
   /**
    * Update workflow status
    */
@@ -374,13 +364,11 @@ export class WorkflowEngine {
     // Update the workflow transaction
     console.log(`Updating workflow ${instanceId} status to ${status}`)
   }
-  
+
   /**
    * Store step execution record
    */
-  private async storeStepExecution(
-    execution: WorkflowStepExecution
-  ): Promise<void> {
+  private async storeStepExecution(execution: WorkflowStepExecution): Promise<void> {
     // Store in universal_transactions
     await universalApi.createTransaction({
       transaction_type: 'WORKFLOW_STEP_EXECUTION',
@@ -392,7 +380,7 @@ export class WorkflowEngine {
       organization_id: this.organizationId
     })
   }
-  
+
   /**
    * Calculate due date from duration string
    */

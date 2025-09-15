@@ -5,9 +5,9 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  StatusIndicator, 
-  AnimatedCounter, 
+import {
+  StatusIndicator,
+  AnimatedCounter,
   MetricCard,
   ProgressRing,
   FloatingNotification,
@@ -116,15 +116,18 @@ export function OrdersManagement() {
       setIsLoading(true)
       const response = await fetch('/api/v1/restaurant/orders')
       const result = await response.json()
-      
+
       if (result.success) {
         setOrders(result.data)
         // Update stats based on real data
-        const totalRevenue = result.data.reduce((sum: number, order: Order) => sum + (order.total_amount || 0), 0)
-        const activeOrders = result.data.filter((order: Order) => 
+        const totalRevenue = result.data.reduce(
+          (sum: number, order: Order) => sum + (order.total_amount || 0),
+          0
+        )
+        const activeOrders = result.data.filter((order: Order) =>
           ['pending', 'preparing'].includes(order.status)
         ).length
-        
+
         setStats(prev => ({
           ...prev,
           totalOrders: result.data.length,
@@ -148,7 +151,7 @@ export function OrdersManagement() {
   useEffect(() => {
     setIsClient(true)
     loadOrders()
-    
+
     // Simulate real-time updates
     const interval = setInterval(() => {
       setStats(prev => ({
@@ -157,15 +160,16 @@ export function OrdersManagement() {
         totalRevenue: prev.totalRevenue + Math.floor(Math.random() * 50)
       }))
     }, 10000)
-    
+
     return () => clearInterval(interval)
   }, [])
 
   // Filter orders
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.reference_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.table_number?.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      order.reference_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.table_number?.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === 'all' || order.status === filterStatus
     const matchesType = filterType === 'all' || order.transaction_type === filterType
     return matchesSearch && matchesStatus && matchesType
@@ -190,12 +194,14 @@ export function OrdersManagement() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId, status: newStatus })
       })
-      
+
       const result = await response.json()
       if (result.success) {
-        setOrders(prev => prev.map(order => 
-          order.id === orderId ? { ...order, status: newStatus as Order['status'] } : order
-        ))
+        setOrders(prev =>
+          prev.map(order =>
+            order.id === orderId ? { ...order, status: newStatus as Order['status'] } : order
+          )
+        )
         setNotificationMessage('Order status updated successfully')
         setShowNotification(true)
       } else {
@@ -256,14 +262,14 @@ export function OrdersManagement() {
           icon={<Utensils className="w-5 h-5 text-white" />}
           color="from-blue-500 to-indigo-600"
         />
-        
+
         <MetricCard
           title="Active Orders"
           value={stats.activeOrders}
           icon={<Activity className="w-5 h-5 text-white" />}
           color="from-orange-500 to-red-600"
         />
-        
+
         <MetricCard
           title="Avg Time"
           value={`${stats.averageTime}m`}
@@ -272,7 +278,7 @@ export function OrdersManagement() {
           icon={<Clock className="w-5 h-5 text-white" />}
           color="from-green-500 to-emerald-600"
         />
-        
+
         <MetricCard
           title="Revenue"
           value={stats.totalRevenue}
@@ -281,14 +287,14 @@ export function OrdersManagement() {
           icon={<DollarSign className="w-5 h-5 text-white" />}
           color="from-purple-500 to-violet-600"
         />
-        
+
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-gray-600">Completion Rate</h3>
             <ProgressRing progress={stats.completionRate} size={40} showPercentage={true} />
           </div>
         </div>
-        
+
         <MetricCard
           title="Satisfaction"
           value={stats.customerSatisfaction}
@@ -308,14 +314,14 @@ export function OrdersManagement() {
               <Input
                 placeholder="Search orders..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 w-64"
               />
             </div>
-            
+
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={e => setFilterStatus(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
@@ -324,10 +330,10 @@ export function OrdersManagement() {
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
-            
+
             <select
               value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
+              onChange={e => setFilterType(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Types</option>
@@ -336,7 +342,7 @@ export function OrdersManagement() {
               <option value="delivery">Delivery</option>
             </select>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <Button
@@ -356,7 +362,7 @@ export function OrdersManagement() {
                 List
               </Button>
             </div>
-            
+
             <GlowButton
               onClick={() => setShowNewOrderForm(true)}
               glowColor="rgba(249, 115, 22, 0.4)"
@@ -372,9 +378,9 @@ export function OrdersManagement() {
       {/* Orders Display */}
       {viewMode === 'board' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredOrders.map((order) => (
-            <Card 
-              key={order.id} 
+          {filteredOrders.map(order => (
+            <Card
+              key={order.id}
               className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${getPriorityColor(order)}`}
               onClick={() => setSelectedOrder(order)}
             >
@@ -390,7 +396,9 @@ export function OrdersManagement() {
                   )}
                 </div>
                 <div className="text-right">
-                  <Badge className={statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'}>
+                  <Badge
+                    className={statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'}
+                  >
                     {statusConfig[order.status]?.label || order.status}
                   </Badge>
                   {order.gl_posting && (
@@ -421,9 +429,11 @@ export function OrdersManagement() {
 
               {/* Order Items */}
               <div className="space-y-2 mb-4">
-                {order.items.slice(0, 2).map((item) => (
+                {order.items.slice(0, 2).map(item => (
                   <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-gray-700">{item.quantity}x {item.menu_item_name}</span>
+                    <span className="text-gray-700">
+                      {item.quantity}x {item.menu_item_name}
+                    </span>
                     <span className="text-gray-900 font-medium">${item.unit_price}</span>
                   </div>
                 ))}
@@ -464,9 +474,9 @@ export function OrdersManagement() {
               <div className="mt-4 flex space-x-2">
                 {order.status === 'pending' && (
                   <>
-                    <Button 
-                      size="sm" 
-                      onClick={(e) => {
+                    <Button
+                      size="sm"
+                      onClick={e => {
                         e.stopPropagation()
                         updateOrderStatus(order.id, 'preparing')
                       }}
@@ -475,10 +485,10 @@ export function OrdersManagement() {
                       <ChefHat className="w-4 h-4 mr-2" />
                       Start Cooking
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation()
                         updateOrderStatus(order.id, 'cancelled')
                       }}
@@ -489,9 +499,9 @@ export function OrdersManagement() {
                   </>
                 )}
                 {order.status === 'preparing' && (
-                  <Button 
-                    size="sm" 
-                    onClick={(e) => {
+                  <Button
+                    size="sm"
+                    onClick={e => {
                       e.stopPropagation()
                       updateOrderStatus(order.id, 'completed')
                     }}
@@ -519,9 +529,9 @@ export function OrdersManagement() {
                 )}
                 {/* Legacy status support */}
                 {order.status === 'confirmed' && (
-                  <Button 
-                    size="sm" 
-                    onClick={(e) => {
+                  <Button
+                    size="sm"
+                    onClick={e => {
                       e.stopPropagation()
                       updateOrderStatus(order.id, 'preparing')
                     }}
@@ -532,9 +542,9 @@ export function OrdersManagement() {
                   </Button>
                 )}
                 {order.status === 'ready' && (
-                  <Button 
-                    size="sm" 
-                    onClick={(e) => {
+                  <Button
+                    size="sm"
+                    onClick={e => {
                       e.stopPropagation()
                       updateOrderStatus(order.id, 'completed')
                     }}
@@ -588,13 +598,15 @@ export function OrdersManagement() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrders.map((order) => (
+                {filteredOrders.map(order => (
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <p className="font-medium text-gray-900">{order.reference_number}</p>
                         <p className="text-sm text-gray-500">
-                          {order.table_number ? `Table ${order.table_number}` : order.transaction_type}
+                          {order.table_number
+                            ? `Table ${order.table_number}`
+                            : order.transaction_type}
                         </p>
                         {order.smart_code && (
                           <p className="text-xs text-blue-600 font-mono">{order.smart_code}</p>
@@ -603,9 +615,7 @@ export function OrdersManagement() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p className="text-sm text-gray-900">{order.customer_name || 'Walk-in'}</p>
-                      {order.phone && (
-                        <p className="text-sm text-gray-500">{order.phone}</p>
-                      )}
+                      {order.phone && <p className="text-sm text-gray-500">{order.phone}</p>}
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-900">{order.items.length} items</p>
@@ -613,7 +623,11 @@ export function OrdersManagement() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <Badge className={statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'}>
+                        <Badge
+                          className={
+                            statusConfig[order.status]?.color || 'bg-gray-100 text-gray-800'
+                          }
+                        >
                           {statusConfig[order.status]?.label || order.status}
                         </Badge>
                         {order.gl_posting && (

@@ -2,12 +2,12 @@
 
 // Force dynamic rendering - skip SSG for this route
 export const dynamic = 'force-dynamic'
-export const revalidate = 0              // no static cache
+export const revalidate = 0 // no static cache
 export const fetchCache = 'force-no-store'
 /**
  * HERA Admin Provisioning Dashboard
  * Smart Code: HERA.ADMIN.PROVISIONING.v1
- * 
+ *
  * Manage tenant provisioning, modules, and entitlements
  */
 
@@ -20,9 +20,15 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
+import {
   Building2,
   Package,
   User,
@@ -71,7 +77,11 @@ const mockTenants: Tenant[] = [
     country: 'US',
     plan: 'Professional',
     status: 'active',
-    modules: ['HERA.SALON.POS.MODULE.v1', 'HERA.FIN.ACCOUNTING.MODULE.v1', 'HERA.FIN.AUTO.JOURNAL.MODULE.v1'],
+    modules: [
+      'HERA.SALON.POS.MODULE.v1',
+      'HERA.FIN.ACCOUNTING.MODULE.v1',
+      'HERA.FIN.AUTO.JOURNAL.MODULE.v1'
+    ],
     createdAt: '2024-01-15'
   },
   {
@@ -82,7 +92,11 @@ const mockTenants: Tenant[] = [
     country: 'IT',
     plan: 'Enterprise',
     status: 'active',
-    modules: ['HERA.REST.POS.MODULE.v1', 'HERA.REST.KITCHEN.MODULE.v1', 'HERA.FIN.ACCOUNTING.MODULE.v1'],
+    modules: [
+      'HERA.REST.POS.MODULE.v1',
+      'HERA.REST.KITCHEN.MODULE.v1',
+      'HERA.FIN.ACCOUNTING.MODULE.v1'
+    ],
     createdAt: '2024-02-20'
   },
   {
@@ -105,7 +119,7 @@ export default function ProvisioningDashboard() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null)
   const [isProvisioning, setIsProvisioning] = useState(false)
-  
+
   // New tenant form state
   const [newTenant, setNewTenant] = useState({
     organizationName: '',
@@ -132,7 +146,9 @@ export default function ProvisioningDashboard() {
 
       setCheckingSubdomain(true)
       try {
-        const response = await fetch(`/api/v1/provisioning?action=check&subdomain=${newTenant.subdomain}`)
+        const response = await fetch(
+          `/api/v1/provisioning?action=check&subdomain=${newTenant.subdomain}`
+        )
         const data = await response.json()
         setSubdomainAvailable(data.available)
       } catch (error) {
@@ -156,9 +172,9 @@ export default function ProvisioningDashboard() {
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '')
         .substring(0, 30)
-      
-      setNewTenant(prev => ({ 
-        ...prev, 
+
+      setNewTenant(prev => ({
+        ...prev,
         subdomain: suggested,
         organizationCode: suggested.toUpperCase()
       }))
@@ -206,9 +222,10 @@ export default function ProvisioningDashboard() {
     }
   }
 
-  const filteredTenants = mockTenants.filter(tenant =>
-    tenant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tenant.subdomain.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTenants = mockTenants.filter(
+    tenant =>
+      tenant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tenant.subdomain.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const getModuleInfo = (smartCode: string) => {
@@ -229,10 +246,8 @@ export default function ProvisioningDashboard() {
               Manage multi-tenant provisioning and module entitlements
             </p>
           </div>
-          
-          <Button onClick={() => router.push('/admin')}>
-            Back to Admin
-          </Button>
+
+          <Button onClick={() => router.push('/admin')}>Back to Admin</Button>
         </div>
 
         {/* Key Metrics */}
@@ -296,7 +311,7 @@ export default function ProvisioningDashboard() {
             <CardTitle>Tenant Management</CardTitle>
             <CardDescription>Provision and manage HERA tenants</CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
@@ -304,324 +319,372 @@ export default function ProvisioningDashboard() {
                 <TabsTrigger value="provision">Provision New</TabsTrigger>
                 <TabsTrigger value="modules">Module Catalog</TabsTrigger>
               </TabsList>
-            <TabsContent value="tenants" className="space-y-4">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Search tenants..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+              <TabsContent value="tenants" className="space-y-4">
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="Search tenants..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
 
-              {/* Tenant List */}
-              <div className="space-y-4">
-                {filteredTenants.map((tenant) => (
-                  <Card key={tenant.id} className="cursor-pointer hover:shadow-lg transition-shadow"
-                        onClick={() => setSelectedTenant(tenant)}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <div>
-                            <h3 className="font-semibold text-lg">{tenant.name}</h3>
+                {/* Tenant List */}
+                <div className="space-y-4">
+                  {filteredTenants.map(tenant => (
+                    <Card
+                      key={tenant.id}
+                      className="cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => setSelectedTenant(tenant)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-2">
+                            <div>
+                              <h3 className="font-semibold text-lg">{tenant.name}</h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {tenant.subdomain}.heraerp.com
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-4 text-sm">
+                              <div className="flex items-center gap-1">
+                                <Building2 className="w-3 h-3" />
+                                {tenant.industry}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Globe className="w-3 h-3" />
+                                {tenant.country}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Package className="w-3 h-3" />
+                                {tenant.modules.length} modules
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              {tenant.modules.map(moduleCode => {
+                                const module = getModuleInfo(moduleCode)
+                                return module ? (
+                                  <Badge key={moduleCode} variant="secondary" className="text-xs">
+                                    {module.name}
+                                  </Badge>
+                                ) : null
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="text-right space-y-2">
+                            <Badge
+                              className={cn(
+                                tenant.status === 'active' &&
+                                  'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                                tenant.status === 'trial' &&
+                                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                                tenant.status === 'suspended' &&
+                                  'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                              )}
+                            >
+                              {tenant.status}
+                            </Badge>
+
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {tenant.subdomain}.heraerp.com
+                              {tenant.plan}
                             </p>
-                          </div>
-                          
-                          <div className="flex items-center gap-4 text-sm">
-                            <div className="flex items-center gap-1">
-                              <Building2 className="w-3 h-3" />
-                              {tenant.industry}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Globe className="w-3 h-3" />
-                              {tenant.country}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Package className="w-3 h-3" />
-                              {tenant.modules.length} modules
-                            </div>
-                          </div>
 
-                          <div className="flex items-center gap-2">
-                            {tenant.modules.map((moduleCode) => {
-                              const module = getModuleInfo(moduleCode)
-                              return module ? (
-                                <Badge key={moduleCode} variant="secondary" className="text-xs">
-                                  {module.name}
-                                </Badge>
-                              ) : null
-                            })}
+                            {tenant.trialEndsAt && (
+                              <p className="text-xs text-yellow-600">
+                                Trial ends: {new Date(tenant.trialEndsAt).toLocaleDateString()}
+                              </p>
+                            )}
                           </div>
                         </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
 
-                        <div className="text-right space-y-2">
-                          <Badge className={cn(
-                            tenant.status === 'active' && 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-                            tenant.status === 'trial' && 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-                            tenant.status === 'suspended' && 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          )}>
-                            {tenant.status}
-                          </Badge>
-                          
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{tenant.plan}</p>
-                          
-                          {tenant.trialEndsAt && (
-                            <p className="text-xs text-yellow-600">
-                              Trial ends: {new Date(tenant.trialEndsAt).toLocaleDateString()}
-                            </p>
+              <TabsContent value="provision" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Organization Details */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg">Organization Details</h3>
+
+                    <div>
+                      <Label>Organization Name</Label>
+                      <Input
+                        placeholder="e.g., SK Cuts Premium Salon"
+                        value={newTenant.organizationName}
+                        onChange={e =>
+                          setNewTenant({ ...newTenant, organizationName: e.target.value })
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Subdomain</Label>
+                      <div className="relative">
+                        <Input
+                          placeholder="e.g., skcuts"
+                          value={newTenant.subdomain}
+                          onChange={e =>
+                            setNewTenant({ ...newTenant, subdomain: e.target.value.toLowerCase() })
+                          }
+                          className={cn(
+                            'pr-10',
+                            subdomainAvailable === true && 'border-green-500',
+                            subdomainAvailable === false && 'border-red-500'
+                          )}
+                        />
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          {checkingSubdomain && <Loader2 className="w-4 h-4 animate-spin" />}
+                          {!checkingSubdomain && subdomainAvailable === true && (
+                            <Check className="w-4 h-4 text-green-500" />
+                          )}
+                          {!checkingSubdomain && subdomainAvailable === false && (
+                            <X className="w-4 h-4 text-red-500" />
                           )}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="provision" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Organization Details */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Organization Details</h3>
-                  
-                  <div>
-                    <Label>Organization Name</Label>
-                    <Input
-                      placeholder="e.g., SK Cuts Premium Salon"
-                      value={newTenant.organizationName}
-                      onChange={(e) => setNewTenant({...newTenant, organizationName: e.target.value})}
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Subdomain</Label>
-                    <div className="relative">
-                      <Input
-                        placeholder="e.g., skcuts"
-                        value={newTenant.subdomain}
-                        onChange={(e) => setNewTenant({...newTenant, subdomain: e.target.value.toLowerCase()})}
-                        className={cn(
-                          "pr-10",
-                          subdomainAvailable === true && "border-green-500",
-                          subdomainAvailable === false && "border-red-500"
-                        )}
-                      />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        {checkingSubdomain && <Loader2 className="w-4 h-4 animate-spin" />}
-                        {!checkingSubdomain && subdomainAvailable === true && <Check className="w-4 h-4 text-green-500" />}
-                        {!checkingSubdomain && subdomainAvailable === false && <X className="w-4 h-4 text-red-500" />}
-                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        {newTenant.subdomain}.heraerp.com
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      {newTenant.subdomain}.heraerp.com
-                    </p>
+
+                    <div>
+                      <Label>Industry Type</Label>
+                      <Select
+                        value={newTenant.industryType}
+                        onValueChange={v => setNewTenant({ ...newTenant, industryType: v })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="salon">Salon & Beauty</SelectItem>
+                          <SelectItem value="restaurant">Restaurant</SelectItem>
+                          <SelectItem value="healthcare">Healthcare</SelectItem>
+                          <SelectItem value="retail">Retail</SelectItem>
+                          <SelectItem value="manufacturing">Manufacturing</SelectItem>
+                          <SelectItem value="general">General Business</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Country</Label>
+                      <Select
+                        value={newTenant.country}
+                        onValueChange={v => setNewTenant({ ...newTenant, country: v })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="US">United States</SelectItem>
+                          <SelectItem value="AE">UAE</SelectItem>
+                          <SelectItem value="GB">United Kingdom</SelectItem>
+                          <SelectItem value="IT">Italy</SelectItem>
+                          <SelectItem value="FR">France</SelectItem>
+                          <SelectItem value="IN">India</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Owner Email</Label>
+                      <Input
+                        type="email"
+                        placeholder="owner@example.com"
+                        value={newTenant.ownerEmail}
+                        onChange={e => setNewTenant({ ...newTenant, ownerEmail: e.target.value })}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Owner Name</Label>
+                      <Input
+                        placeholder="John Smith"
+                        value={newTenant.ownerName}
+                        onChange={e => setNewTenant({ ...newTenant, ownerName: e.target.value })}
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Trial Period (days)</Label>
+                      <Input
+                        type="number"
+                        value={newTenant.trialDays}
+                        onChange={e =>
+                          setNewTenant({ ...newTenant, trialDays: parseInt(e.target.value) || 30 })
+                        }
+                      />
+                    </div>
                   </div>
 
-                  <div>
-                    <Label>Industry Type</Label>
-                    <Select value={newTenant.industryType} onValueChange={(v) => setNewTenant({...newTenant, industryType: v})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="salon">Salon & Beauty</SelectItem>
-                        <SelectItem value="restaurant">Restaurant</SelectItem>
-                        <SelectItem value="healthcare">Healthcare</SelectItem>
-                        <SelectItem value="retail">Retail</SelectItem>
-                        <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                        <SelectItem value="general">General Business</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Module Selection */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg">Select Modules</h3>
 
-                  <div>
-                    <Label>Country</Label>
-                    <Select value={newTenant.country} onValueChange={(v) => setNewTenant({...newTenant, country: v})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="US">United States</SelectItem>
-                        <SelectItem value="AE">UAE</SelectItem>
-                        <SelectItem value="GB">United Kingdom</SelectItem>
-                        <SelectItem value="IT">Italy</SelectItem>
-                        <SelectItem value="FR">France</SelectItem>
-                        <SelectItem value="IN">India</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    {(['core', 'industry', 'addon', 'enterprise'] as ModuleCategory[]).map(
+                      category => {
+                        const modules = Array.from(MODULE_REGISTRY.values()).filter(
+                          m => m.category === category
+                        )
+                        return modules.length > 0 ? (
+                          <div key={category} className="space-y-2">
+                            <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase">
+                              {category}
+                            </h4>
 
-                  <div>
-                    <Label>Owner Email</Label>
-                    <Input
-                      type="email"
-                      placeholder="owner@example.com"
-                      value={newTenant.ownerEmail}
-                      onChange={(e) => setNewTenant({...newTenant, ownerEmail: e.target.value})}
-                    />
-                  </div>
+                            <div className="space-y-2">
+                              {modules.map(module => (
+                                <div
+                                  key={module.smartCode}
+                                  className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-800"
+                                >
+                                  <Checkbox
+                                    checked={newTenant.modules.includes(module.smartCode)}
+                                    onCheckedChange={checked => {
+                                      if (checked) {
+                                        setNewTenant({
+                                          ...newTenant,
+                                          modules: [...newTenant.modules, module.smartCode]
+                                        })
+                                      } else {
+                                        setNewTenant({
+                                          ...newTenant,
+                                          modules: newTenant.modules.filter(
+                                            m => m !== module.smartCode
+                                          )
+                                        })
+                                      }
+                                    }}
+                                    disabled={module.category === 'core'}
+                                  />
 
-                  <div>
-                    <Label>Owner Name</Label>
-                    <Input
-                      placeholder="John Smith"
-                      value={newTenant.ownerName}
-                      onChange={(e) => setNewTenant({...newTenant, ownerName: e.target.value})}
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Trial Period (days)</Label>
-                    <Input
-                      type="number"
-                      value={newTenant.trialDays}
-                      onChange={(e) => setNewTenant({...newTenant, trialDays: parseInt(e.target.value) || 30})}
-                    />
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm">{module.name}</div>
+                                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                                      {module.description}
+                                    </div>
+                                    {module.dependencies.length > 0 && (
+                                      <div className="text-xs text-gray-500 mt-1">
+                                        Requires: {module.dependencies.join(', ')}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null
+                      }
+                    )}
                   </div>
                 </div>
 
-                {/* Module Selection */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Select Modules</h3>
-                  
-                  {(['core', 'industry', 'addon', 'enterprise'] as ModuleCategory[]).map((category) => {
-                    const modules = Array.from(MODULE_REGISTRY.values()).filter(m => m.category === category)
-                    return modules.length > 0 ? (
-                      <div key={category} className="space-y-2">
-                        <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase">
-                          {category}
-                        </h4>
-                        
-                        <div className="space-y-2">
-                          {modules.map((module) => (
-                          <div key={module.smartCode} className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <Checkbox
-                              checked={newTenant.modules.includes(module.smartCode)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setNewTenant({
-                                    ...newTenant,
-                                    modules: [...newTenant.modules, module.smartCode]
-                                  })
-                                } else {
-                                  setNewTenant({
-                                    ...newTenant,
-                                    modules: newTenant.modules.filter(m => m !== module.smartCode)
-                                  })
-                                }
-                              }}
-                              disabled={module.category === 'core'}
-                            />
-                            
-                            <div className="flex-1">
-                              <div className="font-medium text-sm">{module.name}</div>
-                              <div className="text-xs text-gray-600 dark:text-gray-400">{module.description}</div>
-                              {module.dependencies.length > 0 && (
-                                <div className="text-xs text-gray-500 mt-1">
-                                  Requires: {module.dependencies.join(', ')}
+                <div className="flex justify-end gap-3">
+                  <Button variant="outline" onClick={() => setActiveTab('tenants')}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleProvisionTenant}
+                    disabled={
+                      !subdomainAvailable ||
+                      isProvisioning ||
+                      !newTenant.organizationName ||
+                      !newTenant.ownerEmail
+                    }
+                  >
+                    {isProvisioning ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Provisioning...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Provision Tenant
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="modules" className="space-y-6">
+                {(['core', 'industry', 'addon', 'enterprise'] as ModuleCategory[]).map(category => {
+                  const modules = Array.from(MODULE_REGISTRY.values()).filter(
+                    m => m.category === category
+                  )
+                  return modules.length > 0 ? (
+                    <div key={category} className="space-y-4">
+                      <h3 className="text-lg font-semibold capitalize">{category} Modules</h3>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {modules.map(module => (
+                          <Card key={module.smartCode}>
+                            <CardHeader>
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <CardTitle className="text-base">{module.name}</CardTitle>
+                                  <CardDescription className="text-xs mt-1">
+                                    {module.smartCode}
+                                  </CardDescription>
                                 </div>
-                              )}
-                            </div>
-                          </div>
+                                <Badge
+                                  variant={module.category === 'core' ? 'default' : 'secondary'}
+                                >
+                                  {module.category}
+                                </Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                {module.description}
+                              </p>
+
+                              <div className="space-y-2">
+                                <div>
+                                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                    Features:
+                                  </p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {module.features.map((feature: any) => (
+                                      <Badge key={feature} variant="outline" className="text-xs">
+                                        {feature}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {module.dependencies.length > 0 && (
+                                  <div>
+                                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                      Dependencies: {module.dependencies.join(', ')}
+                                    </p>
+                                  </div>
+                                )}
+
+                                {module.permissions.length > 0 && (
+                                  <div>
+                                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                      Required Permissions: {module.permissions.length}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
                       </div>
                     </div>
                   ) : null
                 })}
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setActiveTab('tenants')}>
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleProvisionTenant}
-                  disabled={!subdomainAvailable || isProvisioning || !newTenant.organizationName || !newTenant.ownerEmail}
-                >
-                  {isProvisioning ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Provisioning...
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Provision Tenant
-                    </>
-                  )}
-                </Button>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="modules" className="space-y-6">
-              {(['core', 'industry', 'addon', 'enterprise'] as ModuleCategory[]).map((category) => {
-                const modules = Array.from(MODULE_REGISTRY.values()).filter(m => m.category === category)
-                return modules.length > 0 ? (
-                  <div key={category} className="space-y-4">
-                    <h3 className="text-lg font-semibold capitalize">{category} Modules</h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {modules.map((module) => (
-                      <Card key={module.smartCode}>
-                        <CardHeader>
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <CardTitle className="text-base">{module.name}</CardTitle>
-                              <CardDescription className="text-xs mt-1">
-                                {module.smartCode}
-                              </CardDescription>
-                            </div>
-                            <Badge variant={module.category === 'core' ? 'default' : 'secondary'}>
-                              {module.category}
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                            {module.description}
-                          </p>
-                          
-                          <div className="space-y-2">
-                            <div>
-                              <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Features:</p>
-                              <div className="flex flex-wrap gap-1">
-                                {module.features.map((feature: any) => (
-                                  <Badge key={feature} variant="outline" className="text-xs">
-                                    {feature}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                            
-                            {module.dependencies.length > 0 && (
-                              <div>
-                                <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                  Dependencies: {module.dependencies.join(', ')}
-                                </p>
-                              </div>
-                            )}
-
-                            {module.permissions.length > 0 && (
-                              <div>
-                                <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                  Required Permissions: {module.permissions.length}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              ) : null
-            })}
-            </TabsContent>
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
@@ -650,28 +713,52 @@ export default function ProvisioningDashboard() {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-2">Configuration</h4>
                   <div className="space-y-1 text-sm">
-                    <div>Industry: <span className="font-medium">{selectedTenant.industry}</span></div>
-                    <div>Country: <span className="font-medium">{selectedTenant.country}</span></div>
-                    <div>Plan: <span className="font-medium">{selectedTenant.plan}</span></div>
+                    <div>
+                      Industry: <span className="font-medium">{selectedTenant.industry}</span>
+                    </div>
+                    <div>
+                      Country: <span className="font-medium">{selectedTenant.country}</span>
+                    </div>
+                    <div>
+                      Plan: <span className="font-medium">{selectedTenant.plan}</span>
+                    </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-2">Provisioning Info</h4>
                   <div className="space-y-1 text-sm">
-                    <div>Created: <span className="font-medium">{new Date(selectedTenant.createdAt).toLocaleDateString()}</span></div>
-                    <div>Status: <Badge className="ml-2" variant={selectedTenant.status === 'active' ? 'default' : 'secondary'}>{selectedTenant.status}</Badge></div>
+                    <div>
+                      Created:{' '}
+                      <span className="font-medium">
+                        {new Date(selectedTenant.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div>
+                      Status:{' '}
+                      <Badge
+                        className="ml-2"
+                        variant={selectedTenant.status === 'active' ? 'default' : 'secondary'}
+                      >
+                        {selectedTenant.status}
+                      </Badge>
+                    </div>
                     {selectedTenant.trialEndsAt && (
-                      <div>Trial Ends: <span className="font-medium text-yellow-600">{new Date(selectedTenant.trialEndsAt).toLocaleDateString()}</span></div>
+                      <div>
+                        Trial Ends:{' '}
+                        <span className="font-medium text-yellow-600">
+                          {new Date(selectedTenant.trialEndsAt).toLocaleDateString()}
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-6 flex gap-3">
                 <Button size="sm">
                   <Settings className="w-3 h-3 mr-1" />

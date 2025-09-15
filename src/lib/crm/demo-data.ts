@@ -1,7 +1,7 @@
 /**
  * HERA CRM Demo Data - Professional Customer Demo
  * TechVantage Solutions Success Story
- * 
+ *
  * Realistic business scenario for customer presentations
  * - 4 sales reps with individual performance
  * - $1.6M total pipeline value
@@ -84,7 +84,8 @@ export const demoContacts: DemoContact[] = [
     tags: ['Enterprise', 'Hot Lead', 'Decision Maker', 'SAP Migration'],
     assignedTo: 'Michael Harrison',
     source: 'Referral',
-    notes: 'CFO of $500M manufacturing company. Currently struggling with SAP complexity. Looking for modern ERP solution.',
+    notes:
+      'CFO of $500M manufacturing company. Currently struggling with SAP complexity. Looking for modern ERP solution.',
     nextAction: 'Executive Demo',
     nextActionDate: '2024-08-08'
   },
@@ -102,7 +103,8 @@ export const demoContacts: DemoContact[] = [
     tags: ['Enterprise', 'HIPAA Compliant', 'Renewal', 'Success Story'],
     assignedTo: 'Sarah Mitchell',
     source: 'Webinar',
-    notes: 'CTO of regional healthcare network. Already using HERA for 18 months. Expanding to 5 new locations.',
+    notes:
+      'CTO of regional healthcare network. Already using HERA for 18 months. Expanding to 5 new locations.',
     nextAction: 'Expansion Planning',
     nextActionDate: '2024-08-09'
   },
@@ -120,7 +122,8 @@ export const demoContacts: DemoContact[] = [
     tags: ['Mid-Market', 'HubSpot Competitor', 'Fast Growth'],
     assignedTo: 'David Kim',
     source: 'LinkedIn',
-    notes: 'VP Operations at fast-growing SaaS company. Outgrowing current CRM. Needs enterprise features.',
+    notes:
+      'VP Operations at fast-growing SaaS company. Outgrowing current CRM. Needs enterprise features.',
     nextAction: 'Technical Demo',
     nextActionDate: '2024-08-07'
   },
@@ -138,7 +141,8 @@ export const demoContacts: DemoContact[] = [
     tags: ['Enterprise', 'Compliance Heavy', 'Oracle Migration'],
     assignedTo: 'Jennifer Wu',
     source: 'Trade Show',
-    notes: 'Director of Operations at investment firm. Evaluating Oracle alternatives. Needs SOX compliance.',
+    notes:
+      'Director of Operations at investment firm. Evaluating Oracle alternatives. Needs SOX compliance.',
     nextAction: 'Discovery Call',
     nextActionDate: '2024-08-08'
   },
@@ -156,7 +160,8 @@ export const demoContacts: DemoContact[] = [
     tags: ['Multi-Location', 'Inventory Management', 'Salesforce Competitor'],
     assignedTo: 'Michael Harrison',
     source: 'Google Ads',
-    notes: 'Operations Manager for 50-store retail chain. Current system cannot handle multi-location complexity.',
+    notes:
+      'Operations Manager for 50-store retail chain. Current system cannot handle multi-location complexity.',
     nextAction: 'Needs Analysis',
     nextActionDate: '2024-08-09'
   }
@@ -176,7 +181,8 @@ export const demoOpportunities: DemoOpportunity[] = [
     probability: 85,
     assignedTo: 'Michael Harrison',
     source: 'Referral',
-    description: 'Complete SAP replacement for $500M manufacturing company. 500+ users across 12 locations.',
+    description:
+      'Complete SAP replacement for $500M manufacturing company. 500+ users across 12 locations.',
     competitorInfo: 'Competing against Oracle and Microsoft Dynamics',
     winProbability: 'High - CFO is champion, budget approved'
   },
@@ -192,7 +198,8 @@ export const demoOpportunities: DemoOpportunity[] = [
     probability: 90,
     assignedTo: 'Sarah Mitchell',
     source: 'Existing Customer',
-    description: 'Expanding HERA to 5 new hospital locations. HIPAA-compliant healthcare management system.',
+    description:
+      'Expanding HERA to 5 new hospital locations. HIPAA-compliant healthcare management system.',
     winProbability: 'Very High - Existing satisfied customer'
   },
   {
@@ -357,14 +364,14 @@ export const demoAnalytics = {
   averageSalesCycle: 127, // days
   quarterlyTarget: 6000000,
   quarterlyAchieved: 4255000,
-  
+
   stageMetrics: [
     { stage: 'discovery', count: 1, value: 300000 },
     { stage: 'qualification', count: 1, value: 180000 },
     { stage: 'proposal', count: 2, value: 575000 },
     { stage: 'negotiation', count: 1, value: 750000 }
   ],
-  
+
   industryBreakdown: [
     { industry: 'Manufacturing', value: 750000, deals: 1 },
     { industry: 'Healthcare', value: 450000, deals: 1 },
@@ -382,15 +389,21 @@ export const demoSuccessStories = [
     challenge: 'SAP system too complex and expensive',
     solution: 'HERA ERP with 48-hour implementation',
     results: ['90% cost reduction vs SAP', '500% faster implementation', '95% user satisfaction'],
-    testimonial: 'HERA delivered enterprise power with consumer simplicity. Our team is finally productive.'
+    testimonial:
+      'HERA delivered enterprise power with consumer simplicity. Our team is finally productive.'
   },
   {
     company: 'Healthcare Systems Inc',
     industry: 'Healthcare',
     challenge: 'Multiple systems, no integration',
     solution: 'HERA unified platform with HIPAA compliance',
-    results: ['6 systems consolidated to 1', '40% operational efficiency gain', '100% compliance score'],
-    testimonial: 'HERA thinks like a doctor. First time software actually helped instead of hindered.'
+    results: [
+      '6 systems consolidated to 1',
+      '40% operational efficiency gain',
+      '100% compliance score'
+    ],
+    testimonial:
+      'HERA thinks like a doctor. First time software actually helped instead of hindered.'
   }
 ]
 

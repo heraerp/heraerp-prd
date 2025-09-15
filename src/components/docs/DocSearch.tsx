@@ -27,7 +27,7 @@ export default function DocSearch({ docType }: DocSearchProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
-  
+
   const searchRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -121,10 +121,10 @@ export default function DocSearch({ docType }: DocSearchProps) {
 
   const highlightText = (text: string, highlight: string) => {
     if (!highlight.trim()) return text
-    
+
     const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
     const parts = text.split(regex)
-    
+
     return parts.map((part, index) =>
       regex.test(part) ? (
         <mark key={index} className="bg-hera-primary/20 text-hera-primary">
@@ -145,7 +145,7 @@ export default function DocSearch({ docType }: DocSearchProps) {
           type="text"
           placeholder={`Search ${docType === 'dev' ? 'developer' : docType === 'user' ? 'user' : ''} docs...`}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={e => setQuery(e.target.value)}
           onFocus={() => query && setIsOpen(true)}
           className="pl-8 pr-8"
         />
@@ -165,9 +165,7 @@ export default function DocSearch({ docType }: DocSearchProps) {
       {isOpen && (
         <div className="absolute top-full z-50 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-96 overflow-y-auto">
           {isLoading ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              Searching...
-            </div>
+            <div className="p-4 text-center text-sm text-muted-foreground">Searching...</div>
           ) : results.length > 0 ? (
             <div className="py-2">
               {results.map((result, index) => (
@@ -175,8 +173,8 @@ export default function DocSearch({ docType }: DocSearchProps) {
                   key={result.id}
                   onClick={() => handleSelectResult(result)}
                   className={cn(
-                    "w-full px-4 py-3 text-left hover:bg-accent transition-colors",
-                    selectedIndex === index && "bg-accent"
+                    'w-full px-4 py-3 text-left hover:bg-accent transition-colors',
+                    selectedIndex === index && 'bg-accent'
                   )}
                 >
                   <div className="flex items-start gap-3">
@@ -192,14 +190,14 @@ export default function DocSearch({ docType }: DocSearchProps) {
                           {result.docType}
                         </div>
                       </div>
-                      
+
                       {result.section && (
                         <div className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
                           <Hash className="h-3 w-3" />
                           {result.section}
                         </div>
                       )}
-                      
+
                       <div className="text-xs text-muted-foreground line-clamp-2">
                         {highlightText(result.excerpt, query)}
                       </div>
@@ -231,9 +229,7 @@ export default function DocSearch({ docType }: DocSearchProps) {
       )}
 
       {/* Keyboard shortcuts hint */}
-      <div className="sr-only">
-        Use arrow keys to navigate, Enter to select, Escape to close
-      </div>
+      <div className="sr-only">Use arrow keys to navigate, Enter to select, Escape to close</div>
     </div>
   )
 }

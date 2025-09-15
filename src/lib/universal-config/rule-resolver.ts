@@ -1,7 +1,7 @@
 /**
  * HERA Universal Configuration Rule Resolver
  * Smart Code: HERA.UNIV.CONFIG.RESOLVER.v1
- * 
+ *
  * Core resolution engine for configuration rules
  */
 
@@ -25,21 +25,26 @@ export class RuleResolver {
    * Score and rank rules based on match quality
    */
   scoreRules(rules: UniversalRule[], context: Context): RuleMatch[] {
-    return rules.map(rule => {
-      const matchResult = this.calculateMatchScore(rule, context)
-      return {
-        rule,
-        score: matchResult.score,
-        matchedConditions: matchResult.matched,
-        unmatchedConditions: matchResult.unmatched
-      }
-    }).sort((a, b) => b.score - a.score)
+    return rules
+      .map(rule => {
+        const matchResult = this.calculateMatchScore(rule, context)
+        return {
+          rule,
+          score: matchResult.score,
+          matchedConditions: matchResult.matched,
+          unmatchedConditions: matchResult.unmatched
+        }
+      })
+      .sort((a, b) => b.score - a.score)
   }
 
   /**
    * Calculate detailed match score for a rule
    */
-  private calculateMatchScore(rule: UniversalRule, context: Context): {
+  private calculateMatchScore(
+    rule: UniversalRule,
+    context: Context
+  ): {
     score: number
     matched: string[]
     unmatched: string[]
@@ -84,7 +89,10 @@ export class RuleResolver {
   /**
    * Score scope matching with specificity weights
    */
-  private scoreScopeMatch(scope: UniversalRule['scope'], context: Context): {
+  private scoreScopeMatch(
+    scope: UniversalRule['scope'],
+    context: Context
+  ): {
     score: number
     matched: string[]
     unmatched: string[]
@@ -115,9 +123,7 @@ export class RuleResolver {
 
     // Service matching (weight: 30)
     if (scope.services && context.service_ids) {
-      const matchingServices = context.service_ids.filter(id => 
-        scope.services!.includes(id)
-      )
+      const matchingServices = context.service_ids.filter(id => scope.services!.includes(id))
       if (matchingServices.length > 0) {
         score += 30 * (matchingServices.length / context.service_ids.length)
         matched.push(`services:${matchingServices.length}/${context.service_ids.length}`)
@@ -140,7 +146,7 @@ export class RuleResolver {
 
     // Customer segment matching (weight: 20)
     if (scope.customers && context.customer_segments) {
-      const matchingSegments = context.customer_segments.filter(segment => 
+      const matchingSegments = context.customer_segments.filter(segment =>
         scope.customers!.includes(segment)
       )
       if (matchingSegments.length > 0) {
@@ -169,7 +175,10 @@ export class RuleResolver {
   /**
    * Score time-based relevance
    */
-  private scoreTimeRelevance(conditions: UniversalRule['conditions'], context: Context): {
+  private scoreTimeRelevance(
+    conditions: UniversalRule['conditions'],
+    context: Context
+  ): {
     score: number
     matched: string[]
     unmatched: string[]
@@ -217,7 +226,7 @@ export class RuleResolver {
     // Time window matching
     if (conditions.time_windows && conditions.time_windows.length > 0) {
       const currentTime = now.toTimeString().substring(0, 5)
-      const inWindow = conditions.time_windows.some(window => 
+      const inWindow = conditions.time_windows.some(window =>
         this.isTimeInWindow(currentTime, window.start_time, window.end_time)
       )
       if (inWindow) {
@@ -235,7 +244,10 @@ export class RuleResolver {
   /**
    * Score business-specific conditions
    */
-  private scoreBusinessConditions(conditions: UniversalRule['conditions'], context: Context): {
+  private scoreBusinessConditions(
+    conditions: UniversalRule['conditions'],
+    context: Context
+  ): {
     score: number
     matched: string[]
     unmatched: string[]
@@ -260,7 +272,7 @@ export class RuleResolver {
       const appointmentTime = new Date(context.appointment_time)
       const now = context.now || new Date()
       const leadMinutes = (appointmentTime.getTime() - now.getTime()) / (1000 * 60)
-      
+
       if (leadMinutes >= conditions.min_lead_minutes) {
         score += 20
         matched.push(`lead_time:${Math.round(leadMinutes)}min`)
@@ -282,7 +294,10 @@ export class RuleResolver {
   /**
    * Score custom family-specific conditions
    */
-  private scoreCustomConditions(conditions: any, context: Context): {
+  private scoreCustomConditions(
+    conditions: any,
+    context: Context
+  ): {
     score: number
     matched: string[]
     unmatched: string[]
@@ -297,7 +312,7 @@ export class RuleResolver {
       const appointmentTime = new Date(context.appointment_time)
       const now = context.now || new Date()
       const advanceDays = (appointmentTime.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-      
+
       if (advanceDays <= conditions.max_advance_days) {
         score += 15
         matched.push(`advance_days:${Math.round(advanceDays)}`)
@@ -341,21 +356,21 @@ export class RuleResolver {
     if (rules.length <= 1) return rules
 
     const familyPrefix = family.split('.').slice(0, 5).join('.')
-    
+
     switch (familyPrefix) {
       case 'HERA.UNIV.CONFIG.PRICING.DISCOUNT':
         // Stack all discounts
         return this.stackDiscounts(rules)
-      
+
       case 'HERA.UNIV.CONFIG.NOTIFICATION.SMS':
       case 'HERA.UNIV.CONFIG.NOTIFICATION.EMAIL':
         // Merge notification templates
         return this.mergeNotifications(rules)
-      
+
       case 'HERA.UNIV.CONFIG.UI.EXPERIMENT':
         // A/B test rules - pick based on hash
         return this.selectExperiment(rules)
-      
+
       default:
         // Default: highest priority wins
         return [rules[0]]
@@ -417,16 +432,16 @@ export class RuleResolver {
     const experimentKey = rules[0].payload.experiment_key || 'default'
     const hashInput = `${experimentKey}:${rules[0].scope.organization_id}`
     const hash = this.simpleHash(hashInput)
-    
+
     // Distribute based on rule weights
     let totalWeight = 0
     for (const rule of rules) {
       totalWeight += rule.payload.weight || 1
     }
-    
+
     const position = (hash % totalWeight) / totalWeight
     let cumulative = 0
-    
+
     for (const rule of rules) {
       const weight = (rule.payload.weight || 1) / totalWeight
       cumulative += weight
@@ -434,7 +449,7 @@ export class RuleResolver {
         return [rule]
       }
     }
-    
+
     return [rules[0]] // Fallback
   }
 
@@ -445,7 +460,7 @@ export class RuleResolver {
     let hash = 0
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash = hash & hash // Convert to 32-bit integer
     }
     return Math.abs(hash)

@@ -2,7 +2,7 @@
 /**
  * HERA Salon Booking Workflow
  * Smart Code: HERA.SALON.BOOKING.WORKFLOW.v1
- * 
+ *
  * Complete salon booking workflow with service selection, stylist matching, and intelligent scheduling
  */
 
@@ -14,21 +14,27 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  Scissors, 
-  Sparkles, 
-  Star, 
-  DollarSign, 
-  Phone, 
-  Mail, 
-  AlertTriangle, 
+import {
+  Calendar,
+  Clock,
+  User,
+  Scissors,
+  Sparkles,
+  Star,
+  DollarSign,
+  Phone,
+  Mail,
+  AlertTriangle,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
@@ -122,12 +128,12 @@ interface BookingWorkflowProps {
 
 type BookingStep = 'service' | 'stylist' | 'client' | 'timing' | 'confirmation'
 
-export function SalonBookingWorkflow({ 
-  isOpen, 
-  onClose, 
-  selectedDate, 
+export function SalonBookingWorkflow({
+  isOpen,
+  onClose,
+  selectedDate,
   selectedStylist,
-  onBookingComplete 
+  onBookingComplete
 }: BookingWorkflowProps) {
   const [currentStep, setCurrentStep] = useState<BookingStep>('service')
   const [selectedService, setSelectedService] = useState<SalonService | null>(null)
@@ -150,30 +156,58 @@ export function SalonBookingWorkflow({
     {
       id: 'srv-brazilian-001',
       name: 'Brazilian Blowout',
-      description: 'Revolutionary smoothing treatment that eliminates frizz and reduces styling time by 50%',
+      description:
+        'Revolutionary smoothing treatment that eliminates frizz and reduces styling time by 50%',
       duration: 240,
       price: 500,
       category: 'chemical',
       skillLevel: 'celebrity',
-      preparation: ['Hair wash with clarifying shampoo', 'Section hair properly', 'Set up ventilation'],
-      aftercare: ['No washing for 72 hours', 'Use sulfate-free products', 'Deep conditioning weekly'],
+      preparation: [
+        'Hair wash with clarifying shampoo',
+        'Section hair properly',
+        'Set up ventilation'
+      ],
+      aftercare: [
+        'No washing for 72 hours',
+        'Use sulfate-free products',
+        'Deep conditioning weekly'
+      ],
       smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
       popularity: 95,
       addons: [
-        { id: 'addon-1', name: 'Deep Conditioning Treatment', duration: 30, price: 45, optional: true, smartCode: 'HERA.SALON.ADDON.CONDITIONING.v1' },
-        { id: 'addon-2', name: 'Scalp Massage', duration: 15, price: 25, optional: true, smartCode: 'HERA.SALON.ADDON.MASSAGE.v1' }
+        {
+          id: 'addon-1',
+          name: 'Deep Conditioning Treatment',
+          duration: 30,
+          price: 45,
+          optional: true,
+          smartCode: 'HERA.SALON.ADDON.CONDITIONING.v1'
+        },
+        {
+          id: 'addon-2',
+          name: 'Scalp Massage',
+          duration: 15,
+          price: 25,
+          optional: true,
+          smartCode: 'HERA.SALON.ADDON.MASSAGE.v1'
+        }
       ]
     },
     {
       id: 'srv-keratin-001',
       name: 'Keratin Treatment',
-      description: 'Intensive protein treatment that repairs damaged hair and adds incredible shine',
+      description:
+        'Intensive protein treatment that repairs damaged hair and adds incredible shine',
       duration: 180,
       price: 350,
       category: 'chemical',
       skillLevel: 'senior',
       preparation: ['Wash with clarifying shampoo', 'Towel dry to 80%'],
-      aftercare: ['No water contact for 48 hours', 'Sleep on silk pillowcase', 'Use keratin-safe products'],
+      aftercare: [
+        'No water contact for 48 hours',
+        'Sleep on silk pillowcase',
+        'Use keratin-safe products'
+      ],
       smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1',
       popularity: 88
     },
@@ -217,10 +251,15 @@ export function SalonBookingWorkflow({
       id: 'stylist-rocky-001',
       name: 'Rocky',
       title: 'Celebrity Hair Artist',
-      specializations: ['Brazilian Blowout', 'Keratin Treatment', 'Color Specialist', 'Bridal Styling'],
+      specializations: [
+        'Brazilian Blowout',
+        'Keratin Treatment',
+        'Color Specialist',
+        'Bridal Styling'
+      ],
       level: 'celebrity',
       hourlyRate: 200,
-      commissionRate: 0.40,
+      commissionRate: 0.4,
       rating: 4.9,
       reviews: 247,
       bio: '15+ years of experience with celebrity clients. Certified Brazilian Blowout specialist.',
@@ -247,7 +286,7 @@ export function SalonBookingWorkflow({
       specializations: ['Color Correction', 'Balayage', 'Highlights', 'Fashion Colors'],
       level: 'senior',
       hourlyRate: 140,
-      commissionRate: 0.30,
+      commissionRate: 0.3,
       rating: 4.8,
       reviews: 189,
       bio: 'Award-winning colorist specializing in natural-looking highlights.',
@@ -297,30 +336,44 @@ export function SalonBookingWorkflow({
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'cut': return <Scissors className="w-4 h-4" />
-      case 'color': return <Palette className="w-4 h-4" />
-      case 'chemical': return <Zap className="w-4 h-4" />
-      case 'styling': return <Sparkles className="w-4 h-4" />
-      case 'bridal': return <Crown className="w-4 h-4" />
-      case 'treatment': return <Heart className="w-4 h-4" />
-      default: return <Scissors className="w-4 h-4" />
+      case 'cut':
+        return <Scissors className="w-4 h-4" />
+      case 'color':
+        return <Palette className="w-4 h-4" />
+      case 'chemical':
+        return <Zap className="w-4 h-4" />
+      case 'styling':
+        return <Sparkles className="w-4 h-4" />
+      case 'bridal':
+        return <Crown className="w-4 h-4" />
+      case 'treatment':
+        return <Heart className="w-4 h-4" />
+      default:
+        return <Scissors className="w-4 h-4" />
     }
   }
 
   const getStylistColor = (level: string) => {
     switch (level) {
-      case 'celebrity': return 'bg-purple-100 text-purple-800 border-purple-200'
-      case 'senior': return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'junior': return 'bg-gray-100 text-gray-800 border-gray-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'celebrity':
+        return 'bg-purple-100 text-purple-800 border-purple-200'
+      case 'senior':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'junior':
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
 
   const getVipColor = (level?: string) => {
     switch (level) {
-      case 'platinum': return 'bg-purple-100 text-purple-800'
-      case 'gold': return 'bg-yellow-100 text-yellow-800'
-      default: return 'bg-blue-100 text-blue-800'
+      case 'platinum':
+        return 'bg-purple-100 text-purple-800'
+      case 'gold':
+        return 'bg-yellow-100 text-yellow-800'
+      default:
+        return 'bg-blue-100 text-blue-800'
     }
   }
 
@@ -338,24 +391,28 @@ export function SalonBookingWorkflow({
 
   const getCompatibleStylists = () => {
     if (!selectedService) return stylists
-    
-    return stylists.filter(stylist => {
-      const hasSkill = stylist.specializations.some(skill => 
-        selectedService.name.toLowerCase().includes(skill.toLowerCase()) ||
-        skill.toLowerCase().includes(selectedService.category)
-      )
-      const hasLevel = 
-        (selectedService.skillLevel === 'celebrity' && stylist.level === 'celebrity') ||
-        (selectedService.skillLevel === 'senior' && ['senior', 'celebrity'].includes(stylist.level)) ||
-        (selectedService.skillLevel === 'junior')
-      
-      return hasSkill || hasLevel
-    }).sort((a, b) => {
-      // Preferred stylist first, then by rating
-      if (selectedClient?.preferredStylist === a.id) return -1
-      if (selectedClient?.preferredStylist === b.id) return 1
-      return b.rating - a.rating
-    })
+
+    return stylists
+      .filter(stylist => {
+        const hasSkill = stylist.specializations.some(
+          skill =>
+            selectedService.name.toLowerCase().includes(skill.toLowerCase()) ||
+            skill.toLowerCase().includes(selectedService.category)
+        )
+        const hasLevel =
+          (selectedService.skillLevel === 'celebrity' && stylist.level === 'celebrity') ||
+          (selectedService.skillLevel === 'senior' &&
+            ['senior', 'celebrity'].includes(stylist.level)) ||
+          selectedService.skillLevel === 'junior'
+
+        return hasSkill || hasLevel
+      })
+      .sort((a, b) => {
+        // Preferred stylist first, then by rating
+        if (selectedClient?.preferredStylist === a.id) return -1
+        if (selectedClient?.preferredStylist === b.id) return 1
+        return b.rating - a.rating
+      })
   }
 
   const handleNext = () => {
@@ -387,23 +444,29 @@ export function SalonBookingWorkflow({
       totalPrice: calculateTotalPrice(),
       smartCode: 'HERA.SALON.BOOKING.COMPLETE.v1'
     }
-    
+
     onBookingComplete?.(booking)
     toast({
       title: 'Booking Confirmed!',
-      description: `${selectedService?.name} scheduled with ${stylists.find(s => s.id === selectedStylistId)?.name}`,
+      description: `${selectedService?.name} scheduled with ${stylists.find(s => s.id === selectedStylistId)?.name}`
     })
     onClose()
   }
 
   const canProceed = () => {
     switch (currentStep) {
-      case 'service': return selectedService !== null
-      case 'stylist': return selectedStylistId !== ''
-      case 'client': return selectedClient !== null || (isNewClient && newClientData.name && newClientData.phone)
-      case 'timing': return selectedTimeSlot !== null
-      case 'confirmation': return true
-      default: return false
+      case 'service':
+        return selectedService !== null
+      case 'stylist':
+        return selectedStylistId !== ''
+      case 'client':
+        return selectedClient !== null || (isNewClient && newClientData.name && newClientData.phone)
+      case 'timing':
+        return selectedTimeSlot !== null
+      case 'confirmation':
+        return true
+      default:
+        return false
     }
   }
 
@@ -415,17 +478,17 @@ export function SalonBookingWorkflow({
             <Calendar className="w-5 h-5" />
             Book Salon Appointment
           </DialogTitle>
-          
+
           {/* Progress Bar */}
           <div className="space-y-4">
             <Progress value={progress} className="w-full" />
             <div className="flex justify-between text-xs">
               {steps.map((step, index) => (
-                <div 
-                  key={step.id} 
+                <div
+                  key={step.id}
                   className={cn(
-                    "flex items-center gap-1",
-                    index <= currentStepIndex ? "text-blue-600" : "text-gray-400"
+                    'flex items-center gap-1',
+                    index <= currentStepIndex ? 'text-blue-600' : 'text-gray-400'
                   )}
                 >
                   {step.icon}
@@ -443,11 +506,11 @@ export function SalonBookingWorkflow({
               <h3 className="text-lg font-semibold">Select Your Service</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {services.map(service => (
-                  <Card 
+                  <Card
                     key={service.id}
                     className={cn(
-                      "cursor-pointer transition-all hover:shadow-md",
-                      selectedService?.id === service.id && "ring-2 ring-blue-500"
+                      'cursor-pointer transition-all hover:shadow-md',
+                      selectedService?.id === service.id && 'ring-2 ring-blue-500'
                     )}
                     onClick={() => setSelectedService(service)}
                   >
@@ -471,9 +534,7 @@ export function SalonBookingWorkflow({
                         <Badge variant="outline" className={getStylistColor(service.skillLevel)}>
                           {service.skillLevel.toUpperCase()}
                         </Badge>
-                        <Badge variant="outline">
-                          {service.category.toUpperCase()}
-                        </Badge>
+                        <Badge variant="outline">{service.category.toUpperCase()}</Badge>
                         {service.popularity && service.popularity > 90 && (
                           <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
                             <Star className="w-3 h-3 mr-1" />
@@ -497,7 +558,7 @@ export function SalonBookingWorkflow({
                   <h4 className="font-medium">Optional Add-ons</h4>
                   <div className="space-y-2">
                     {selectedService.addons.map(addon => (
-                      <div 
+                      <div
                         key={addon.id}
                         className="flex items-center justify-between p-3 border rounded-lg"
                       >
@@ -506,7 +567,7 @@ export function SalonBookingWorkflow({
                             type="checkbox"
                             id={addon.id}
                             checked={selectedAddons.some(a => a.id === addon.id)}
-                            onChange={(e) => {
+                            onChange={e => {
                               if (e.target.checked) {
                                 setSelectedAddons([...selectedAddons, addon])
                               } else {
@@ -518,9 +579,7 @@ export function SalonBookingWorkflow({
                           <label htmlFor={addon.id} className="font-medium">
                             {addon.name}
                           </label>
-                          <span className="text-sm text-gray-500">
-                            (+{addon.duration}min)
-                          </span>
+                          <span className="text-sm text-gray-500">(+{addon.duration}min)</span>
                         </div>
                         <div className="font-semibold">+AED {addon.price}</div>
                       </div>
@@ -537,11 +596,11 @@ export function SalonBookingWorkflow({
               <h3 className="text-lg font-semibold">Choose Your Stylist</h3>
               <div className="grid grid-cols-1 gap-4">
                 {getCompatibleStylists().map(stylist => (
-                  <Card 
+                  <Card
                     key={stylist.id}
                     className={cn(
-                      "cursor-pointer transition-all hover:shadow-md",
-                      selectedStylistId === stylist.id && "ring-2 ring-blue-500"
+                      'cursor-pointer transition-all hover:shadow-md',
+                      selectedStylistId === stylist.id && 'ring-2 ring-blue-500'
                     )}
                     onClick={() => setSelectedStylistId(stylist.id)}
                   >
@@ -572,7 +631,7 @@ export function SalonBookingWorkflow({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-2 mt-3">
                             <Badge variant="outline" className={getStylistColor(stylist.level)}>
                               {stylist.level.toUpperCase()}
@@ -584,7 +643,7 @@ export function SalonBookingWorkflow({
                               </Badge>
                             )}
                           </div>
-                          
+
                           <div className="mt-2">
                             <div className="text-sm text-gray-600">Specializes in:</div>
                             <div className="flex flex-wrap gap-1 mt-1">
@@ -609,10 +668,7 @@ export function SalonBookingWorkflow({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">Client Information</h3>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsNewClient(!isNewClient)}
-                >
+                <Button variant="outline" onClick={() => setIsNewClient(!isNewClient)}>
                   <Plus className="w-4 h-4 mr-2" />
                   {isNewClient ? 'Select Existing' : 'New Client'}
                 </Button>
@@ -625,11 +681,11 @@ export function SalonBookingWorkflow({
                     <Input placeholder="Search clients..." />
                   </div>
                   {clients.map(client => (
-                    <Card 
+                    <Card
                       key={client.id}
                       className={cn(
-                        "cursor-pointer transition-all hover:shadow-md",
-                        selectedClient?.id === client.id && "ring-2 ring-blue-500"
+                        'cursor-pointer transition-all hover:shadow-md',
+                        selectedClient?.id === client.id && 'ring-2 ring-blue-500'
                       )}
                       onClick={() => setSelectedClient(client)}
                     >
@@ -653,9 +709,7 @@ export function SalonBookingWorkflow({
                                 <Mail className="w-3 h-3" />
                                 {client.email}
                               </div>
-                              {client.hairType && (
-                                <div>Hair Type: {client.hairType}</div>
-                              )}
+                              {client.hairType && <div>Hair Type: {client.hairType}</div>}
                               {client.allergies && client.allergies.length > 0 && (
                                 <div className="flex items-center gap-2 text-orange-600">
                                   <AlertTriangle className="w-3 h-3" />
@@ -679,31 +733,36 @@ export function SalonBookingWorkflow({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Full Name *</Label>
-                    <Input 
+                    <Input
                       value={newClientData.name}
-                      onChange={(e) => setNewClientData({...newClientData, name: e.target.value})}
+                      onChange={e => setNewClientData({ ...newClientData, name: e.target.value })}
                       placeholder="Enter full name"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Phone Number *</Label>
-                    <Input 
+                    <Input
                       value={newClientData.phone}
-                      onChange={(e) => setNewClientData({...newClientData, phone: e.target.value})}
+                      onChange={e => setNewClientData({ ...newClientData, phone: e.target.value })}
                       placeholder="+971 55 XXX XXXX"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Email</Label>
-                    <Input 
+                    <Input
                       value={newClientData.email}
-                      onChange={(e) => setNewClientData({...newClientData, email: e.target.value})}
+                      onChange={e => setNewClientData({ ...newClientData, email: e.target.value })}
                       placeholder="email@example.com"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Hair Type</Label>
-                    <Select value={newClientData.hairType} onValueChange={(value) => setNewClientData({...newClientData, hairType: value})}>
+                    <Select
+                      value={newClientData.hairType}
+                      onValueChange={value =>
+                        setNewClientData({ ...newClientData, hairType: value })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select hair type" />
                       </SelectTrigger>
@@ -719,9 +778,11 @@ export function SalonBookingWorkflow({
                   </div>
                   <div className="md:col-span-2 space-y-2">
                     <Label>Allergies (comma-separated)</Label>
-                    <Input 
+                    <Input
                       value={newClientData.allergies}
-                      onChange={(e) => setNewClientData({...newClientData, allergies: e.target.value})}
+                      onChange={e =>
+                        setNewClientData({ ...newClientData, allergies: e.target.value })
+                      }
                       placeholder="e.g. ammonia, sulfates"
                     />
                   </div>
@@ -737,24 +798,28 @@ export function SalonBookingWorkflow({
               <Alert>
                 <Clock className="w-4 h-4" />
                 <AlertDescription>
-                  Service duration: {Math.floor(calculateTotalDuration() / 60)}h {calculateTotalDuration() % 60}m 
-                  | Total price: AED {calculateTotalPrice()}
+                  Service duration: {Math.floor(calculateTotalDuration() / 60)}h{' '}
+                  {calculateTotalDuration() % 60}m | Total price: AED {calculateTotalPrice()}
                 </AlertDescription>
               </Alert>
-              
+
               {/* Simplified time slot selection - in production this would show available slots */}
               <div className="grid grid-cols-3 gap-4">
                 {['09:00', '10:30', '12:00', '14:00', '15:30', '17:00'].map(time => (
                   <Button
                     key={time}
-                    variant={selectedTimeSlot?.time === time ? "default" : "outline"}
-                    onClick={() => setSelectedTimeSlot({
-                      date: selectedDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
-                      time,
-                      available: true,
-                      stylistId: selectedStylistId,
-                      confidence: 0.9
-                    })}
+                    variant={selectedTimeSlot?.time === time ? 'default' : 'outline'}
+                    onClick={() =>
+                      setSelectedTimeSlot({
+                        date:
+                          selectedDate?.toISOString().split('T')[0] ||
+                          new Date().toISOString().split('T')[0],
+                        time,
+                        available: true,
+                        stylistId: selectedStylistId,
+                        confidence: 0.9
+                      })
+                    }
                     className="h-16 flex flex-col"
                   >
                     <div className="font-semibold">{time}</div>
@@ -769,7 +834,7 @@ export function SalonBookingWorkflow({
           {currentStep === 'confirmation' && (
             <div className="space-y-6">
               <h3 className="text-lg font-semibold">Confirm Your Booking</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
@@ -792,7 +857,8 @@ export function SalonBookingWorkflow({
                       <span>AED {calculateTotalPrice()}</span>
                     </div>
                     <div className="text-sm text-gray-600">
-                      Duration: {Math.floor(calculateTotalDuration() / 60)}h {calculateTotalDuration() % 60}m
+                      Duration: {Math.floor(calculateTotalDuration() / 60)}h{' '}
+                      {calculateTotalDuration() % 60}m
                     </div>
                   </CardContent>
                 </Card>
@@ -826,9 +892,9 @@ export function SalonBookingWorkflow({
 
               <div className="space-y-2">
                 <Label>Special Notes</Label>
-                <Textarea 
+                <Textarea
                   value={specialNotes}
-                  onChange={(e) => setSpecialNotes(e.target.value)}
+                  onChange={e => setSpecialNotes(e.target.value)}
                   placeholder="Any special requirements or notes for the stylist..."
                   className="min-h-[80px]"
                 />
@@ -838,19 +904,21 @@ export function SalonBookingWorkflow({
 
           {/* Navigation */}
           <div className="flex justify-between pt-4 border-t">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={currentStep === 'service' ? onClose : handleBack}
               disabled={currentStep === 'service'}
             >
-              {currentStep === 'service' ? 'Cancel' : (
+              {currentStep === 'service' ? (
+                'Cancel'
+              ) : (
                 <>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </>
               )}
             </Button>
-            
+
             {currentStep === 'confirmation' ? (
               <Button onClick={handleBookingComplete} disabled={!canProceed()}>
                 <CheckCircle2 className="w-4 h-4 mr-2" />

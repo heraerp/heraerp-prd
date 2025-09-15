@@ -8,15 +8,35 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { universalApi } from '@/lib/universal-api'
 import { extractData, formatCurrency, generateSmartCode } from '@/lib/universal-helpers'
 import { StatCardGrid, StatCardData } from '@/components/universal/StatCardGrid'
-import { 
+import {
   ShoppingCart,
   Clock,
   DollarSign,
@@ -121,9 +141,9 @@ const STATUS_COLORS = {
 // Order type icons
 const ORDER_TYPE_ICONS = {
   'dine-in': Utensils,
-  'takeout': Package,
-  'delivery': Truck,
-  'pickup': Home
+  takeout: Package,
+  delivery: Truck,
+  pickup: Home
 }
 
 // Payment status colors
@@ -134,10 +154,10 @@ const PAYMENT_STATUS_COLORS = {
   partial: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
 }
 
-export function OrderManagement({ 
-  organizationId, 
+export function OrderManagement({
+  organizationId,
   smartCodes,
-  isDemoMode = false 
+  isDemoMode = false
 }: OrderManagementProps) {
   const [activeTab, setActiveTab] = useState('active')
   const [loading, setLoading] = useState(true)
@@ -180,7 +200,7 @@ export function OrderManagement({
           id: 'order-1',
           transaction_code: 'ORD-2024-001',
           transaction_date: new Date().toISOString(),
-          total_amount: 125.50,
+          total_amount: 125.5,
           metadata: {
             order_number: '001',
             order_type: 'dine-in',
@@ -240,7 +260,7 @@ export function OrderManagement({
           id: 'order-4',
           transaction_code: 'ORD-2024-004',
           transaction_date: new Date().toISOString(),
-          total_amount: 45.00,
+          total_amount: 45.0,
           metadata: {
             order_number: '004',
             order_type: 'dine-in',
@@ -252,7 +272,7 @@ export function OrderManagement({
             payment_status: 'pending',
             server_name: 'Mike',
             items_count: 2,
-            created_at: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
+            created_at: new Date(Date.now() - 1800000).toISOString() // 30 min ago
           }
         },
         // Completed orders
@@ -260,7 +280,7 @@ export function OrderManagement({
           id: 'order-5',
           transaction_code: 'ORD-2024-005',
           transaction_date: new Date().toISOString(),
-          total_amount: 234.50,
+          total_amount: 234.5,
           metadata: {
             order_number: '005',
             order_type: 'dine-in',
@@ -305,8 +325,8 @@ export function OrderManagement({
             id: 'item-1-1',
             line_number: 1,
             quantity: 1,
-            unit_price: 45.00,
-            line_amount: 45.00,
+            unit_price: 45.0,
+            line_amount: 45.0,
             metadata: {
               item_name: 'Grilled Salmon',
               item_code: 'MAIN-001',
@@ -319,8 +339,8 @@ export function OrderManagement({
             id: 'item-1-2',
             line_number: 2,
             quantity: 2,
-            unit_price: 28.00,
-            line_amount: 56.00,
+            unit_price: 28.0,
+            line_amount: 56.0,
             metadata: {
               item_name: 'Caesar Salad',
               item_code: 'SALAD-002',
@@ -332,8 +352,8 @@ export function OrderManagement({
             id: 'item-1-3',
             line_number: 3,
             quantity: 1,
-            unit_price: 12.50,
-            line_amount: 12.50,
+            unit_price: 12.5,
+            line_amount: 12.5,
             metadata: {
               item_name: 'Garlic Bread',
               item_code: 'APPETIZER-003',
@@ -345,8 +365,8 @@ export function OrderManagement({
             id: 'item-1-4',
             line_number: 4,
             quantity: 2,
-            unit_price: 6.00,
-            line_amount: 12.00,
+            unit_price: 6.0,
+            line_amount: 12.0,
             metadata: {
               item_name: 'Soft Drink',
               item_code: 'BEV-001',
@@ -360,8 +380,8 @@ export function OrderManagement({
             id: 'item-2-1',
             line_number: 1,
             quantity: 1,
-            unit_price: 32.50,
-            line_amount: 32.50,
+            unit_price: 32.5,
+            line_amount: 32.5,
             metadata: {
               item_name: 'Margherita Pizza',
               item_code: 'PIZZA-001',
@@ -387,8 +407,8 @@ export function OrderManagement({
             id: 'item-2-3',
             line_number: 3,
             quantity: 2,
-            unit_price: 8.50,
-            line_amount: 17.00,
+            unit_price: 8.5,
+            line_amount: 17.0,
             metadata: {
               item_name: 'Tiramisu',
               item_code: 'DESSERT-001',
@@ -402,8 +422,8 @@ export function OrderManagement({
             id: 'item-3-1',
             line_number: 1,
             quantity: 2,
-            unit_price: 38.00,
-            line_amount: 76.00,
+            unit_price: 38.0,
+            line_amount: 76.0,
             metadata: {
               item_name: 'BBQ Ribs',
               item_code: 'MAIN-005',
@@ -417,8 +437,8 @@ export function OrderManagement({
             id: 'item-3-2',
             line_number: 2,
             quantity: 2,
-            unit_price: 15.00,
-            line_amount: 30.00,
+            unit_price: 15.0,
+            line_amount: 30.0,
             metadata: {
               item_name: 'French Fries',
               item_code: 'SIDE-001',
@@ -430,8 +450,8 @@ export function OrderManagement({
             id: 'item-3-3',
             line_number: 3,
             quantity: 1,
-            unit_price: 22.50,
-            line_amount: 22.50,
+            unit_price: 22.5,
+            line_amount: 22.5,
             metadata: {
               item_name: 'Chicken Wings',
               item_code: 'APPETIZER-005',
@@ -444,8 +464,8 @@ export function OrderManagement({
             id: 'item-3-4',
             line_number: 4,
             quantity: 2,
-            unit_price: 7.00,
-            line_amount: 14.00,
+            unit_price: 7.0,
+            line_amount: 14.0,
             metadata: {
               item_name: 'Cola',
               item_code: 'BEV-002',
@@ -470,8 +490,8 @@ export function OrderManagement({
             id: 'item-3-6',
             line_number: 6,
             quantity: 1,
-            unit_price: 5.00,
-            line_amount: 5.00,
+            unit_price: 5.0,
+            line_amount: 5.0,
             metadata: {
               item_name: 'Delivery Fee',
               item_code: 'SERVICE-001',
@@ -503,8 +523,8 @@ export function OrderManagement({
       const ordersData = extractData(ordersResponse) as Order[]
 
       // Sort orders by date (newest first)
-      const sortedOrders = ordersData.sort((a, b) => 
-        new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+      const sortedOrders = ordersData.sort(
+        (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
       )
 
       setOrders(sortedOrders)
@@ -558,9 +578,7 @@ export function OrderManagement({
       })
 
       // Update local state
-      setOrders(prev => prev.map(o => 
-        o.id === orderId ? { ...o, metadata: updatedMetadata } : o
-      ))
+      setOrders(prev => prev.map(o => (o.id === orderId ? { ...o, metadata: updatedMetadata } : o)))
     } catch (err) {
       console.error('Error updating order status:', err)
       setError('Failed to update order status')
@@ -569,7 +587,11 @@ export function OrderManagement({
     }
   }
 
-  const updatePaymentStatus = async (orderId: string, paymentStatus: string, paymentMethod?: string) => {
+  const updatePaymentStatus = async (
+    orderId: string,
+    paymentStatus: string,
+    paymentMethod?: string
+  ) => {
     try {
       const order = orders.find(o => o.id === orderId)
       if (!order) return
@@ -586,9 +608,7 @@ export function OrderManagement({
       })
 
       // Update local state
-      setOrders(prev => prev.map(o => 
-        o.id === orderId ? { ...o, metadata: updatedMetadata } : o
-      ))
+      setOrders(prev => prev.map(o => (o.id === orderId ? { ...o, metadata: updatedMetadata } : o)))
     } catch (err) {
       console.error('Error updating payment status:', err)
       setError('Failed to update payment status')
@@ -596,12 +616,14 @@ export function OrderManagement({
   }
 
   // Calculate statistics
-  const activeOrders = orders.filter(o => 
+  const activeOrders = orders.filter(o =>
     ['new', 'confirmed', 'preparing', 'ready'].includes((o.metadata as any)?.status || '')
   )
   const completedOrders = orders.filter(o => (o.metadata as any)?.status === 'completed')
-  const todaysOrders = orders.filter(o => 
-    formatDate(new Date(o.transaction_date), 'yyyy-MM-dd') === formatDate(new Date(), 'yyyy-MM-dd')
+  const todaysOrders = orders.filter(
+    o =>
+      formatDate(new Date(o.transaction_date), 'yyyy-MM-dd') ===
+      formatDate(new Date(), 'yyyy-MM-dd')
   )
   const todaysRevenue = todaysOrders.reduce((sum, o) => sum + o.total_amount, 0)
 
@@ -639,14 +661,19 @@ export function OrderManagement({
     },
     {
       title: 'Delivery/Takeout',
-      value: orders.filter(o => ['delivery', 'takeout', 'pickup'].includes((o.metadata as any)?.order_type || '')).length.toString(),
+      value: orders
+        .filter(o =>
+          ['delivery', 'takeout', 'pickup'].includes((o.metadata as any)?.order_type || '')
+        )
+        .length.toString(),
       icon: Package
     }
   ]
 
   // Filter orders
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch =
+      searchTerm === '' ||
       order.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (order.metadata as any)?.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (order.metadata as any)?.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -655,8 +682,10 @@ export function OrderManagement({
     const matchesType = filterType === 'all' || (order.metadata as any)?.order_type === filterType
     const matchesStatus = filterStatus === 'all' || (order.metadata as any)?.status === filterStatus
 
-    const isActive = ['new', 'confirmed', 'preparing', 'ready'].includes((order.metadata as any)?.status || '')
-    const matchesTab = 
+    const isActive = ['new', 'confirmed', 'preparing', 'ready'].includes(
+      (order.metadata as any)?.status || ''
+    )
+    const matchesTab =
       (activeTab === 'active' && isActive) ||
       (activeTab === 'completed' && !isActive) ||
       activeTab === 'all'
@@ -690,17 +719,10 @@ export function OrderManagement({
             <ShoppingCart className="h-6 w-6" />
             Order Management
           </h2>
-          <p className="text-muted-foreground">
-            Track and manage all restaurant orders
-          </p>
+          <p className="text-muted-foreground">Track and manage all restaurant orders</p>
         </div>
         <div className="flex gap-2">
-          <Button
-            onClick={() => refreshData()}
-            variant="outline"
-            size="sm"
-            disabled={refreshing}
-          >
+          <Button onClick={() => refreshData()} variant="outline" size="sm" disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -718,7 +740,7 @@ export function OrderManagement({
               <Input
                 placeholder="Search orders..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full"
                 icon={<Search className="h-4 w-4" />}
               />
@@ -763,7 +785,7 @@ export function OrderManagement({
 
         <TabsContent value={activeTab}>
           <div className="grid gap-4">
-            {filteredOrders.map((order) => (
+            {filteredOrders.map(order => (
               <Card key={order.id} className="overflow-hidden">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
@@ -772,7 +794,10 @@ export function OrderManagement({
                         <h3 className="font-semibold text-lg">
                           Order #{(order.metadata as any)?.order_number || order.transaction_code}
                         </h3>
-                        <Badge variant="secondary" className={STATUS_COLORS[(order.metadata as any)?.status || 'new']}>
+                        <Badge
+                          variant="secondary"
+                          className={STATUS_COLORS[(order.metadata as any)?.status || 'new']}
+                        >
                           {(order.metadata as any)?.status || 'new'}
                         </Badge>
                         {(order.metadata as any)?.kitchen_status && (
@@ -785,7 +810,9 @@ export function OrderManagement({
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           {getOrderTypeIcon((order.metadata as any)?.order_type || 'dine-in')}
-                          <span className="capitalize">{(order.metadata as any)?.order_type || 'dine-in'}</span>
+                          <span className="capitalize">
+                            {(order.metadata as any)?.order_type || 'dine-in'}
+                          </span>
                         </div>
                         {(order.metadata as any)?.table_number && (
                           <div className="flex items-center gap-1">
@@ -807,16 +834,22 @@ export function OrderManagement({
                         )}
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          {(order.metadata as any)?.created_at ? getTimeSinceOrder(order.metadata.created_at) : 'Just now'}
+                          {(order.metadata as any)?.created_at
+                            ? getTimeSinceOrder(order.metadata.created_at)
+                            : 'Just now'}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
                       <div className="text-right">
                         <p className="text-2xl font-bold">{formatCurrency(order.total_amount)}</p>
-                        <Badge 
-                          variant="secondary" 
-                          className={PAYMENT_STATUS_COLORS[(order.metadata as any)?.payment_status || 'pending']}
+                        <Badge
+                          variant="secondary"
+                          className={
+                            PAYMENT_STATUS_COLORS[
+                              (order.metadata as any)?.payment_status || 'pending'
+                            ]
+                          }
                         >
                           <CreditCard className="h-3 w-3 mr-1" />
                           {(order.metadata as any)?.payment_status || 'pending'}
@@ -838,16 +871,17 @@ export function OrderManagement({
                 <CardContent>
                   {/* Order Items Preview */}
                   <div className="space-y-2 mb-3">
-                    {orderItems[order.id]?.slice(0, 3).map((item) => (
+                    {orderItems[order.id]?.slice(0, 3).map(item => (
                       <div key={item.id} className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2">
                           <span className="text-muted-foreground">{item.quantity}x</span>
                           <span>{(item.metadata as any)?.item_name}</span>
-                          {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
-                            <span className="text-xs text-muted-foreground">
-                              ({item.metadata.modifiers.join(', ')})
-                            </span>
-                          )}
+                          {(item.metadata as any)?.modifiers &&
+                            item.metadata.modifiers.length > 0 && (
+                              <span className="text-xs text-muted-foreground">
+                                ({item.metadata.modifiers.join(', ')})
+                              </span>
+                            )}
                         </div>
                         <span>{formatCurrency(item.line_amount)}</span>
                       </div>
@@ -862,7 +896,8 @@ export function OrderManagement({
                   {/* Special Instructions */}
                   {(order.metadata as any)?.special_instructions && (
                     <div className="mb-3 p-2 bg-amber-50 dark:bg-amber-900/20 rounded text-sm">
-                      <span className="font-medium">Note:</span> {order.metadata.special_instructions}
+                      <span className="font-medium">Note:</span>{' '}
+                      {order.metadata.special_instructions}
                     </div>
                   )}
 
@@ -957,7 +992,8 @@ export function OrderManagement({
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>
-              Order Details - #{selectedOrder?.metadata?.order_number || selectedOrder?.transaction_code}
+              Order Details - #
+              {selectedOrder?.metadata?.order_number || selectedOrder?.transaction_code}
             </DialogTitle>
           </DialogHeader>
           {selectedOrder && (
@@ -966,38 +1002,49 @@ export function OrderManagement({
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Order Type</p>
-                  <p className="font-medium capitalize">{(selectedOrder.metadata as any)?.order_type || 'dine-in'}</p>
+                  <p className="font-medium capitalize">
+                    {(selectedOrder.metadata as any)?.order_type || 'dine-in'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Status</p>
-                  <Badge variant="secondary" className={STATUS_COLORS[(selectedOrder.metadata as any)?.status || 'new']}>
+                  <Badge
+                    variant="secondary"
+                    className={STATUS_COLORS[(selectedOrder.metadata as any)?.status || 'new']}
+                  >
                     {(selectedOrder.metadata as any)?.status || 'new'}
                   </Badge>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Customer</p>
-                  <p className="font-medium">{(selectedOrder.metadata as any)?.customer_name || 'Walk-in'}</p>
+                  <p className="font-medium">
+                    {(selectedOrder.metadata as any)?.customer_name || 'Walk-in'}
+                  </p>
                   {(selectedOrder.metadata as any)?.customer_phone && (
                     <p className="text-xs">{selectedOrder.metadata.customer_phone}</p>
                   )}
                 </div>
                 <div>
                   <p className="text-muted-foreground">Server</p>
-                  <p className="font-medium">{(selectedOrder.metadata as any)?.server_name || 'Not assigned'}</p>
+                  <p className="font-medium">
+                    {(selectedOrder.metadata as any)?.server_name || 'Not assigned'}
+                  </p>
                 </div>
                 {(selectedOrder.metadata as any)?.table_number && (
                   <div>
                     <p className="text-muted-foreground">Table</p>
-                    <p className="font-medium">{selectedOrder.metadata.table_name || `Table ${selectedOrder.metadata.table_number}`}</p>
+                    <p className="font-medium">
+                      {selectedOrder.metadata.table_name ||
+                        `Table ${selectedOrder.metadata.table_number}`}
+                    </p>
                   </div>
                 )}
                 <div>
                   <p className="text-muted-foreground">Order Time</p>
                   <p className="font-medium">
-                    {(selectedOrder.metadata as any)?.created_at 
+                    {(selectedOrder.metadata as any)?.created_at
                       ? formatDate(new Date(selectedOrder.metadata.created_at), 'MMM dd, HH:mm')
-                      : 'Just now'
-                    }
+                      : 'Just now'}
                   </p>
                 </div>
               </div>
@@ -1009,18 +1056,22 @@ export function OrderManagement({
                 <h4 className="font-medium mb-2">Items</h4>
                 <ScrollArea className="max-h-[300px]">
                   <div className="space-y-2">
-                    {orderItems[selectedOrder.id]?.map((item) => (
-                      <div key={item.id} className="flex items-start justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-900/20">
+                    {orderItems[selectedOrder.id]?.map(item => (
+                      <div
+                        key={item.id}
+                        className="flex items-start justify-between p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-900/20"
+                      >
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{item.quantity}x</span>
                             <span>{(item.metadata as any)?.item_name}</span>
                           </div>
-                          {(item.metadata as any)?.modifiers && item.metadata.modifiers.length > 0 && (
-                            <p className="text-xs text-muted-foreground ml-6">
-                              {item.metadata.modifiers.join(', ')}
-                            </p>
-                          )}
+                          {(item.metadata as any)?.modifiers &&
+                            item.metadata.modifiers.length > 0 && (
+                              <p className="text-xs text-muted-foreground ml-6">
+                                {item.metadata.modifiers.join(', ')}
+                              </p>
+                            )}
                           {(item.metadata as any)?.special_requests && (
                             <p className="text-xs text-muted-foreground ml-6">
                               Note: {item.metadata.special_requests}
@@ -1058,9 +1109,13 @@ export function OrderManagement({
                   <CreditCard className="h-4 w-4" />
                   <span>Payment Status:</span>
                 </div>
-                <Badge 
-                  variant="secondary" 
-                  className={PAYMENT_STATUS_COLORS[(selectedOrder.metadata as any)?.payment_status || 'pending']}
+                <Badge
+                  variant="secondary"
+                  className={
+                    PAYMENT_STATUS_COLORS[
+                      (selectedOrder.metadata as any)?.payment_status || 'pending'
+                    ]
+                  }
                 >
                   {(selectedOrder.metadata as any)?.payment_status || 'pending'}
                 </Badge>

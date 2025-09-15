@@ -3,20 +3,24 @@
 ## Critical Learnings from Furniture Module Build
 
 ### 1. Organization Loading Pattern
+
 **BUG FOUND**: `orgLoading = isAuthenticated ? isLoadingOrgs : !demoOrg` causes infinite loading
 **FIX**: `orgLoading = isAuthenticated ? isLoadingOrgs : false`
 
 ### 2. Universal API Pattern
+
 **BUG FOUND**: Universal API `read()` method doesn't accept filter objects
 **FIX**: Use simple `read()` and filter in JavaScript
 
 ### 3. Layout Pattern
+
 - Compact 80px sidebar is better than full navigation
 - Icon-only navigation with tooltips
 - Industry-specific colors
 - Dark theme throughout
 
 ### 4. Component Structure
+
 ```
 /furniture
   /page.tsx          - Dashboard with stats, tabs, and module navigation
@@ -26,6 +30,7 @@
 ```
 
 ### 5. Seed Data Pattern
+
 - Always create seed script in mcp-server/
 - Include products, customers, and sample transactions
 - Use correct organization ID from demo-org-resolver
@@ -33,6 +38,7 @@
 ## Quick Module Creation Checklist
 
 1. **Add to demo-org-resolver.ts**:
+
 ```typescript
 '/modulename': 'org-uuid',
 // ...
@@ -43,6 +49,7 @@
 ```
 
 2. **Create layout.tsx** (use client):
+
 ```typescript
 'use client'
 import ModuleDarkLayout from '@/components/module/ModuleDarkLayout'
@@ -52,6 +59,7 @@ export default function ModuleLayout({ children }) {
 ```
 
 3. **Create dashboard page.tsx**:
+
 ```typescript
 const { organizationId, organizationName, orgLoading } = useDemoOrganization()
 
@@ -63,16 +71,18 @@ if (orgLoading) {
 ```
 
 4. **Create seed script**:
+
 - Products/Services entities
 - Customer entities
 - Sample transactions with proper smart codes
 - Dynamic data for pricing, inventory, etc.
 
 5. **Use Universal API correctly**:
+
 ```typescript
 // WRONG
-const response = await universalApi.read('core_entities', { 
-  entity_type: 'product' 
+const response = await universalApi.read('core_entities', {
+  entity_type: 'product'
 })
 
 // CORRECT
@@ -116,6 +126,7 @@ npm run create-industry-module \
 ```
 
 This would generate:
+
 - Complete module structure
 - Dark sidebar layout
 - Dashboard with real data
@@ -128,13 +139,15 @@ This would generate:
 Based on the successful furniture production module implementation, HERA DNA now includes comprehensive production management patterns:
 
 ### **Production-Specific Entity Types**
+
 - `work_center` - Manufacturing stations/machines
-- `raw_material` - Input materials for production  
+- `raw_material` - Input materials for production
 - `recipe` - Production formulas/bills of materials
 - `production_order` - Main production transactions
 - `production_batch` - Batch production records
 
 ### **Production UI Patterns**
+
 - **Production Metrics Cards**: Active orders, planned units, completion rates, utilization
 - **Work Center Grid**: Real-time status monitoring with progress tracking
 - **Production Order Cards**: Progress bars, status badges, operational details
@@ -142,17 +155,20 @@ Based on the successful furniture production module implementation, HERA DNA now
 - **Planning Views**: Demand analysis, capacity planning, material requirements
 
 ### **Production Data Loading Pattern**
+
 ```typescript
 const production = useProductionData(organizationId)
 // Returns: orders, workCenters, products, materials, stats, helper functions
 ```
 
 ### **Status Workflow Implementation**
+
 - Uses relationships table (never status columns)
 - Standard workflow: Planned → Released → In Progress → Completed
 - Color-coded badges with real-time updates
 
 ### **Progress Tracking via Transaction Lines**
+
 - Real-time progress calculation from completed operations
 - Work center utilization monitoring
 - Active operation display with current status
@@ -160,13 +176,15 @@ const production = useProductionData(organizationId)
 ## Implementation Checklist for New Industry Module
 
 ### Phase 1: Foundation (Day 1)
+
 - [ ] Create organization loading with correct pattern
-- [ ] Set up dark sidebar layout with industry-specific icons  
+- [ ] Set up dark sidebar layout with industry-specific icons
 - [ ] Implement homepage with 4 key metrics cards
 - [ ] Add demo data seeding script with production entities
 - [ ] Test organization context and data loading
 
-### Phase 2: Core Features (Day 2)  
+### Phase 2: Core Features (Day 2)
+
 - [ ] Create production dashboard using ProductionMetricsCards
 - [ ] Implement production orders with ProductionOrderCard
 - [ ] Add work center monitoring with WorkCenterGrid
@@ -174,6 +192,7 @@ const production = useProductionData(organizationId)
 - [ ] Add CRUD operations for production entities
 
 ### Phase 3: Production Features (Day 3)
+
 - [ ] Add production planning page with demand/capacity analysis
 - [ ] Implement real-time production tracking with ActivityFeed
 - [ ] Create status workflows using relationships (never columns)
@@ -181,6 +200,7 @@ const production = useProductionData(organizationId)
 - [ ] Implement industry-specific production patterns
 
 ### Phase 4: Advanced Features (Day 4)
+
 - [ ] Add quality management integration
 - [ ] Create production analytics/performance dashboards
 - [ ] Implement advanced scheduling features

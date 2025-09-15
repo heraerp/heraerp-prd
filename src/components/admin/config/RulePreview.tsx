@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Play, 
-  RotateCcw, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import {
+  Play,
+  RotateCcw,
+  CheckCircle,
+  XCircle,
+  Clock,
   Eye,
   Code2,
   Database,
@@ -25,88 +25,86 @@ import {
   Activity,
   FileText,
   Settings
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface ConfigRule {
-  id?: string;
-  name: string;
-  category: string;
-  type: 'validation' | 'transformation' | 'business_logic' | 'integration';
-  scope: 'global' | 'organization' | 'entity_type' | 'specific';
-  status: 'active' | 'inactive' | 'draft' | 'deprecated';
-  priority: number;
-  description: string;
-  smart_code: string;
+  id?: string
+  name: string
+  category: string
+  type: 'validation' | 'transformation' | 'business_logic' | 'integration'
+  scope: 'global' | 'organization' | 'entity_type' | 'specific'
+  status: 'active' | 'inactive' | 'draft' | 'deprecated'
+  priority: number
+  description: string
+  smart_code: string
   conditions: Array<{
-    field: string;
-    operator: string;
-    value: string;
-    logic?: 'AND' | 'OR';
-  }>;
+    field: string
+    operator: string
+    value: string
+    logic?: 'AND' | 'OR'
+  }>
   actions: Array<{
-    type: string;
-    target: string;
-    value: string;
-    parameters?: Record<string, any>;
-  }>;
+    type: string
+    target: string
+    value: string
+    parameters?: Record<string, any>
+  }>
   configuration: {
-    timeout_ms?: number;
-    retry_count?: number;
-    failure_action?: 'stop' | 'continue' | 'rollback';
-    notification_enabled?: boolean;
-    logging_level?: 'none' | 'basic' | 'detailed';
-  };
+    timeout_ms?: number
+    retry_count?: number
+    failure_action?: 'stop' | 'continue' | 'rollback'
+    notification_enabled?: boolean
+    logging_level?: 'none' | 'basic' | 'detailed'
+  }
 }
 
 interface TestResult {
-  success: boolean;
-  message: string;
-  executionTime: number;
+  success: boolean
+  message: string
+  executionTime: number
   conditionsEvaluated: Array<{
-    condition: string;
-    result: boolean;
-    value: any;
-  }>;
+    condition: string
+    result: boolean
+    value: any
+  }>
   actionsExecuted: Array<{
-    action: string;
-    result: boolean;
-    output: any;
-  }>;
+    action: string
+    result: boolean
+    output: any
+  }>
   logs: Array<{
-    level: 'info' | 'warning' | 'error';
-    message: string;
-    timestamp: string;
-  }>;
+    level: 'info' | 'warning' | 'error'
+    message: string
+    timestamp: string
+  }>
 }
 
 interface RulePreviewProps {
-  rule: ConfigRule;
-  className?: string;
-  onClose?: () => void;
+  rule: ConfigRule
+  className?: string
+  onClose?: () => void
 }
 
 export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [testData, setTestData] = useState('{}');
-  const [isTestRunning, setIsTestRunning] = useState(false);
-  const [testResult, setTestResult] = useState<TestResult | null>(null);
-  const [testHistory, setTestHistory] = useState<TestResult[]>([]);
+  const [activeTab, setActiveTab] = useState('overview')
+  const [testData, setTestData] = useState('{}')
+  const [isTestRunning, setIsTestRunning] = useState(false)
+  const [testResult, setTestResult] = useState<TestResult | null>(null)
+  const [testHistory, setTestHistory] = useState<TestResult[]>([])
 
   // Early return if rule is not provided
   if (!rule) {
     return (
-      <Card className={cn("w-full", className)}>
+      <Card className={cn('w-full', className)}>
         <CardContent className="p-6">
           <Alert>
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              No rule selected for preview
-            </AlertDescription>
+            <AlertDescription>No rule selected for preview</AlertDescription>
           </Alert>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   // Sample test data based on rule type
@@ -123,7 +121,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
       transformation: {
         entity_type: 'product',
         entity_data: {
-          base_price: 100.00,
+          base_price: 100.0,
           markup_percentage: 0.25,
           discount_applicable: true
         }
@@ -141,30 +139,30 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
         entity_data: {
           debit_account: '1100',
           credit_account: '4100',
-          amount: 1250.00
+          amount: 1250.0
         }
       }
-    };
+    }
 
-    return JSON.stringify(samples[rule?.type] || samples.validation, null, 2);
-  };
+    return JSON.stringify(samples[rule?.type] || samples.validation, null, 2)
+  }
 
   useEffect(() => {
     if (rule?.type) {
-      setTestData(getSampleTestData());
+      setTestData(getSampleTestData())
     }
-  }, [rule?.type]);
+  }, [rule?.type])
 
   const runTest = async () => {
-    setIsTestRunning(true);
-    setTestResult(null);
+    setIsTestRunning(true)
+    setTestResult(null)
 
     try {
       // Parse test data
-      const data = JSON.parse(testData);
-      
+      const data = JSON.parse(testData)
+
       // Simulate rule execution
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1500))
 
       // Mock test result
       const mockResult: TestResult = {
@@ -198,10 +196,10 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
             timestamp: new Date().toISOString()
           }
         ]
-      };
+      }
 
-      setTestResult(mockResult);
-      setTestHistory(prev => [mockResult, ...prev.slice(0, 4)]); // Keep last 5 results
+      setTestResult(mockResult)
+      setTestHistory(prev => [mockResult, ...prev.slice(0, 4)]) // Keep last 5 results
     } catch (error) {
       setTestResult({
         success: false,
@@ -209,36 +207,41 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
         executionTime: 0,
         conditionsEvaluated: [],
         actionsExecuted: [],
-        logs: [{
-          level: 'error',
-          message: 'Failed to parse test data JSON',
-          timestamp: new Date().toISOString()
-        }]
-      });
+        logs: [
+          {
+            level: 'error',
+            message: 'Failed to parse test data JSON',
+            timestamp: new Date().toISOString()
+          }
+        ]
+      })
     } finally {
-      setIsTestRunning(false);
+      setIsTestRunning(false)
     }
-  };
+  }
 
   const getStatusIcon = (success: boolean) => {
     return success ? (
       <CheckCircle className="w-4 h-4 text-green-500" />
     ) : (
       <XCircle className="w-4 h-4 text-red-500" />
-    );
-  };
+    )
+  }
 
   const getLogLevelColor = (level: string) => {
     switch (level) {
-      case 'error': return 'text-red-600 dark:text-red-400';
-      case 'warning': return 'text-amber-600 dark:text-amber-400';
-      default: return 'text-blue-600 dark:text-blue-400';
+      case 'error':
+        return 'text-red-600 dark:text-red-400'
+      case 'warning':
+        return 'text-amber-600 dark:text-amber-400'
+      default:
+        return 'text-blue-600 dark:text-blue-400'
     }
-  };
+  }
 
   const formatJSON = (obj: any) => {
-    return JSON.stringify(obj, null, 2);
-  };
+    return JSON.stringify(obj, null, 2)
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -272,16 +275,20 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               <h2 className="text-xl font-semibold !text-gray-900 dark:!text-gray-100">
                 {rule.name}
               </h2>
-              <p className="!text-gray-600 dark:!text-gray-300">
-                {rule.description}
-              </p>
+              <p className="!text-gray-600 dark:!text-gray-300">{rule.description}</p>
               <div className="flex items-center gap-4">
-                <Badge className={cn(
-                  rule.type === 'validation' && 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-                  rule.type === 'transformation' && 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
-                  rule.type === 'business_logic' && 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300',
-                  rule.type === 'integration' && 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-                )}>
+                <Badge
+                  className={cn(
+                    rule.type === 'validation' &&
+                      'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+                    rule.type === 'transformation' &&
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+                    rule.type === 'business_logic' &&
+                      'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300',
+                    rule.type === 'integration' &&
+                      'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+                  )}
+                >
                   {rule.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </Badge>
                 <Badge variant="outline" className="capitalize">
@@ -305,19 +312,31 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+          <TabsTrigger
+            value="overview"
+            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+          >
             <FileText className="w-4 h-4 mr-2" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="test" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+          <TabsTrigger
+            value="test"
+            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+          >
             <Play className="w-4 h-4 mr-2" />
             Test Rule
           </TabsTrigger>
-          <TabsTrigger value="results" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+          <TabsTrigger
+            value="results"
+            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+          >
             <TrendingUp className="w-4 h-4 mr-2" />
             Results
           </TabsTrigger>
-          <TabsTrigger value="logs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+          <TabsTrigger
+            value="logs"
+            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+          >
             <Activity className="w-4 h-4 mr-2" />
             Execution Logs
           </TabsTrigger>
@@ -336,14 +355,18 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               </CardHeader>
               <CardContent className="space-y-3">
                 {rule.conditions.map((condition, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg border border-white/30 dark:border-gray-600/30"
                   >
                     <div className="flex items-center gap-2 text-sm font-mono">
                       <span className="!text-blue-600 dark:!text-blue-400">{condition.field}</span>
-                      <span className="!text-gray-500 dark:!text-gray-500">{condition.operator}</span>
-                      <span className="!text-green-600 dark:!text-green-400">{condition.value}</span>
+                      <span className="!text-gray-500 dark:!text-gray-500">
+                        {condition.operator}
+                      </span>
+                      <span className="!text-green-600 dark:!text-green-400">
+                        {condition.value}
+                      </span>
                     </div>
                     {index < rule.conditions.length - 1 && (
                       <div className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">
@@ -365,7 +388,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               </CardHeader>
               <CardContent className="space-y-3">
                 {rule.actions.map((action, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg border border-white/30 dark:border-gray-600/30"
                   >
@@ -373,7 +396,8 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                       {action.type.replace('_', ' ')}
                     </div>
                     <div className="text-sm !text-gray-600 dark:!text-gray-400 mt-1">
-                      Target: <code className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
+                      Target:{' '}
+                      <code className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
                         {action.target}
                       </code>
                     </div>
@@ -446,7 +470,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   </Label>
                   <Textarea
                     value={testData}
-                    onChange={(e) => setTestData(e.target.value)}
+                    onChange={e => setTestData(e.target.value)}
                     placeholder="Enter test data as JSON"
                     className="min-h-[200px] font-mono text-sm bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                   />
@@ -511,17 +535,21 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
 
                 {testResult && (
                   <div className="space-y-4">
-                    <Alert className={cn(
-                      testResult.success 
-                        ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                        : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-                    )}>
+                    <Alert
+                      className={cn(
+                        testResult.success
+                          ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                          : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                      )}
+                    >
                       {getStatusIcon(testResult.success)}
-                      <AlertDescription className={cn(
-                        testResult.success 
-                          ? 'text-green-800 dark:text-green-300'
-                          : 'text-red-800 dark:text-red-300'
-                      )}>
+                      <AlertDescription
+                        className={cn(
+                          testResult.success
+                            ? 'text-green-800 dark:text-green-300'
+                            : 'text-red-800 dark:text-red-300'
+                        )}
+                      >
                         <div className="font-semibold">{testResult.message}</div>
                         <div className="text-sm mt-1">
                           Execution time: {testResult.executionTime}ms
@@ -535,7 +563,8 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                           Conditions Evaluated
                         </div>
                         <div className="text-lg font-bold text-blue-900 dark:text-blue-200">
-                          {testResult.conditionsEvaluated.filter(c => c.result).length} / {testResult.conditionsEvaluated.length}
+                          {testResult.conditionsEvaluated.filter(c => c.result).length} /{' '}
+                          {testResult.conditionsEvaluated.length}
                         </div>
                       </div>
                       <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
@@ -543,7 +572,8 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                           Actions Executed
                         </div>
                         <div className="text-lg font-bold text-purple-900 dark:text-purple-200">
-                          {testResult.actionsExecuted.filter(a => a.result).length} / {testResult.actionsExecuted.length}
+                          {testResult.actionsExecuted.filter(a => a.result).length} /{' '}
+                          {testResult.actionsExecuted.length}
                         </div>
                       </div>
                     </div>
@@ -569,11 +599,11 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 <CardContent>
                   <div className="space-y-3">
                     {testResult.conditionsEvaluated.map((condition, index) => (
-                      <div 
+                      <div
                         key={index}
                         className={cn(
                           'p-3 rounded-lg border',
-                          condition.result 
+                          condition.result
                             ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                             : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                         )}
@@ -606,11 +636,11 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                 <CardContent>
                   <div className="space-y-3">
                     {testResult.actionsExecuted.map((action, index) => (
-                      <div 
+                      <div
                         key={index}
                         className={cn(
                           'p-3 rounded-lg border',
-                          action.result 
+                          action.result
                             ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                             : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                         )}
@@ -646,7 +676,7 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               <CardContent>
                 <div className="space-y-2">
                   {testHistory.map((result, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="flex items-center justify-between p-3 bg-white/30 dark:bg-gray-800/30 rounded-lg border border-white/30 dark:border-gray-600/30"
                     >
@@ -662,7 +692,8 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                         </div>
                       </div>
                       <div className="text-sm !text-gray-600 dark:!text-gray-400">
-                        {result.conditionsEvaluated.filter(c => c.result).length}/{result.conditionsEvaluated.length} conditions passed
+                        {result.conditionsEvaluated.filter(c => c.result).length}/
+                        {result.conditionsEvaluated.length} conditions passed
                       </div>
                     </div>
                   ))}
@@ -694,23 +725,26 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               {testResult?.logs ? (
                 <div className="space-y-2">
                   {testResult.logs.map((log, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700"
                     >
                       <div className="flex items-start gap-3">
-                        <div className={cn(
-                          'text-xs px-2 py-1 rounded font-mono uppercase font-semibold',
-                          log.level === 'error' && 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-                          log.level === 'warning' && 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
-                          log.level === 'info' && 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                        )}>
+                        <div
+                          className={cn(
+                            'text-xs px-2 py-1 rounded font-mono uppercase font-semibold',
+                            log.level === 'error' &&
+                              'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+                            log.level === 'warning' &&
+                              'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+                            log.level === 'info' &&
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                          )}
+                        >
                           {log.level}
                         </div>
                         <div className="flex-1">
-                          <div className="!text-gray-900 dark:!text-gray-100">
-                            {log.message}
-                          </div>
+                          <div className="!text-gray-900 dark:!text-gray-100">{log.message}</div>
                           <div className="text-xs !text-gray-500 dark:!text-gray-500 mt-1 font-mono">
                             {new Date(log.timestamp).toLocaleTimeString()}
                           </div>
@@ -732,5 +766,5 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

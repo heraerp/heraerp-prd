@@ -40,18 +40,18 @@ export interface UniversalAuthContextType {
   isAuthenticated: boolean
   session: Session | null
   supabaseUser: SupabaseUser | null
-  
+
   // HERA state
   user: User | null
   organization: Organization | null
   heraContext: HeraContext | null
   isHeraLoading: boolean
-  
+
   // Auth actions
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
   refreshHeraContext: () => Promise<void>
-  
+
   // Cache info
   lastContextFetch: number
   isCacheValid: boolean
@@ -70,7 +70,7 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
 
   // Configuration with defaults
   const CACHE_DURATION = config.cacheDuration || 30000 // 30 seconds
-  const THROTTLE_DURATION = config.throttleDuration || 2000 // 2 seconds  
+  const THROTTLE_DURATION = config.throttleDuration || 2000 // 2 seconds
   const AUTH_TIMEOUT = config.authTimeout || 3000 // 3 seconds
 
   // Core auth state
@@ -89,7 +89,7 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
   const [isContextFetching, setIsContextFetching] = useState(false)
 
   // Computed values
-  const isCacheValid = (Date.now() - lastContextFetch) < CACHE_DURATION
+  const isCacheValid = Date.now() - lastContextFetch < CACHE_DURATION
   const isAuthenticated = !!session && (!!heraContext || (isHeraLoading && lastContextFetch > 0))
 
   // Load HERA context with caching and throttling
@@ -103,7 +103,7 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
     }
 
     // Throttle rapid successive calls
-    if (isContextFetching || (now - lastContextFetch) < THROTTLE_DURATION) {
+    if (isContextFetching || now - lastContextFetch < THROTTLE_DURATION) {
       console.log('⏳ Throttling HERA context call')
       return
     }
@@ -114,7 +114,9 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
       console.log('🚀 Loading HERA context for:', supabaseUser.email)
 
       // Get auth token
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      const {
+        data: { session: currentSession }
+      } = await supabase.auth.getSession()
       const authToken = currentSession?.access_token
 
       if (!authToken) {
@@ -124,7 +126,7 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
       // Call HERA context API
       const response = await fetch(`${config.heraApiBaseUrl}/auth/hera-context`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       })
@@ -205,7 +207,10 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
 
       try {
         // Get initial session
-        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession()
+        const {
+          data: { session: initialSession },
+          error: sessionError
+        } = await supabase.auth.getSession()
 
         if (sessionError) {
           console.error('❌ Session error:', sessionError)
@@ -261,7 +266,10 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
   }, [])
 
   // Login function
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true)
 
@@ -334,9 +342,7 @@ export function UniversalAuthProvider({ children, config }: UniversalAuthProvide
   }
 
   return (
-    <UniversalAuthContext.Provider value={contextValue}>
-      {children}
-    </UniversalAuthContext.Provider>
+    <UniversalAuthContext.Provider value={contextValue}>{children}</UniversalAuthContext.Provider>
   )
 }
 

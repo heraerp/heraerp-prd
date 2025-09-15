@@ -3,13 +3,13 @@
  * Returns deterministic demo data
  */
 
-import type { 
-  UniversalTransaction, 
-  UniversalTransactionLine, 
-  ModuleEntity, 
+import type {
+  UniversalTransaction,
+  UniversalTransactionLine,
+  ModuleEntity,
   RelationshipRow,
-  FiscalPeriod 
-} from '../types/factory';
+  FiscalPeriod
+} from '../types/factory'
 
 const DEMO_MODULES: ModuleEntity[] = [
   {
@@ -56,7 +56,7 @@ const DEMO_MODULES: ModuleEntity[] = [
       description: 'HIPAA-compliant patient portal'
     }
   }
-];
+]
 
 const DEMO_TRANSACTIONS: UniversalTransaction[] = [
   // Restaurant Loyalty - Complete pipeline
@@ -100,7 +100,7 @@ const DEMO_TRANSACTIONS: UniversalTransaction[] = [
     ai_confidence: 0.99,
     metadata: { channel: 'beta' }
   },
-  
+
   // Ice Cream - Blocked by compliance
   {
     id: 'txn-005',
@@ -132,7 +132,7 @@ const DEMO_TRANSACTIONS: UniversalTransaction[] = [
     ai_confidence: 0.88,
     metadata: { reason: 'HACCP temperature monitoring compliance failed' }
   },
-  
+
   // Healthcare - Currently running
   {
     id: 'txn-008',
@@ -144,7 +144,7 @@ const DEMO_TRANSACTIONS: UniversalTransaction[] = [
     ai_confidence: 0.91,
     metadata: {}
   }
-];
+]
 
 const DEMO_TRANSACTION_LINES: Record<string, UniversalTransactionLine[]> = {
   'txn-003': [
@@ -250,7 +250,7 @@ const DEMO_TRANSACTION_LINES: Record<string, UniversalTransactionLine[]> = {
       }
     }
   ]
-};
+}
 
 const DEMO_RELATIONSHIPS: RelationshipRow[] = [
   {
@@ -277,7 +277,7 @@ const DEMO_RELATIONSHIPS: RelationshipRow[] = [
     relationship_type: 'DEPENDS_ON',
     metadata: { version_constraint: '>=1.0' }
   }
-];
+]
 
 const DEMO_FISCAL_PERIODS: FiscalPeriod[] = [
   {
@@ -292,40 +292,43 @@ const DEMO_FISCAL_PERIODS: FiscalPeriod[] = [
       fiscal_year: 2024
     }
   }
-];
+]
 
 export const MockAdapter = {
   async getTransactions(orgId: string, from: string, to: string): Promise<UniversalTransaction[]> {
-    return DEMO_TRANSACTIONS.filter(t => t.organization_id === orgId);
+    return DEMO_TRANSACTIONS.filter(t => t.organization_id === orgId)
   },
 
   async getTransactionLines(orgId: string, txnId: string): Promise<UniversalTransactionLine[]> {
-    return DEMO_TRANSACTION_LINES[txnId] || [];
+    return DEMO_TRANSACTION_LINES[txnId] || []
   },
 
   async getModules(orgId: string): Promise<ModuleEntity[]> {
-    return DEMO_MODULES.filter(m => m.organization_id === orgId);
+    return DEMO_MODULES.filter(m => m.organization_id === orgId)
   },
 
   async getRelationships(orgId: string): Promise<RelationshipRow[]> {
-    return DEMO_RELATIONSHIPS.filter(r => r.organization_id === orgId);
+    return DEMO_RELATIONSHIPS.filter(r => r.organization_id === orgId)
   },
 
   async getFiscalPeriods(orgId: string): Promise<FiscalPeriod[]> {
-    return DEMO_FISCAL_PERIODS.filter(f => f.organization_id === orgId);
+    return DEMO_FISCAL_PERIODS.filter(f => f.organization_id === orgId)
   },
 
   async postWaiver(orgId: string, payload: any): Promise<{ ok: boolean }> {
-    console.log('Mock: Creating waiver', payload);
-    return { ok: true };
+    console.log('Mock: Creating waiver', payload)
+    return { ok: true }
   },
 
-  async getAllTransactionLines(orgId: string, txnIds: string[]): Promise<UniversalTransactionLine[]> {
-    const allLines: UniversalTransactionLine[] = [];
+  async getAllTransactionLines(
+    orgId: string,
+    txnIds: string[]
+  ): Promise<UniversalTransactionLine[]> {
+    const allLines: UniversalTransactionLine[] = []
     txnIds.forEach(txnId => {
-      const lines = DEMO_TRANSACTION_LINES[txnId] || [];
-      allLines.push(...lines);
-    });
-    return allLines;
+      const lines = DEMO_TRANSACTION_LINES[txnId] || []
+      allLines.push(...lines)
+    })
+    return allLines
   }
-};
+}

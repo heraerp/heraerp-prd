@@ -9,7 +9,7 @@ import { useRouter, useParams } from 'next/navigation'
 export default function AuditCatchAllRedirectPage() {
   const router = useRouter()
   const params = useParams()
-  
+
   useEffect(() => {
     // Get the full path and redirect to audit-progressive with the same path
     const path = Array.isArray(params.path) ? params.path.join('/') : params.path || ''

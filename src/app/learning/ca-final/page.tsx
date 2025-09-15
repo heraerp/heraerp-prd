@@ -9,12 +9,34 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  GraduationCap, BookOpen, Trophy, Target, Clock, Brain,
-  Play, Pause, RotateCcw, Zap, Star, Award, TrendingUp,
-  Calendar, CheckCircle, AlertCircle, Users, Gamepad2,
-  PieChart, BarChart3, Flame, Shield, Crown, Sparkles,
-  FileText, Layers, Search
+import {
+  GraduationCap,
+  BookOpen,
+  Trophy,
+  Target,
+  Clock,
+  Brain,
+  Play,
+  Pause,
+  RotateCcw,
+  Zap,
+  Star,
+  Award,
+  TrendingUp,
+  Calendar,
+  CheckCircle,
+  AlertCircle,
+  Users,
+  Gamepad2,
+  PieChart,
+  BarChart3,
+  Flame,
+  Shield,
+  Crown,
+  Sparkles,
+  FileText,
+  Layers,
+  Search
 } from 'lucide-react'
 import { caSyllabusService } from '@/lib/ca-syllabus/CASyllabusService'
 
@@ -42,13 +64,13 @@ export default function CALearningPlatform() {
   const [syllabusLoading, setSyllabusLoading] = useState(true)
   const [showSyllabusView, setShowSyllabusView] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState(900) // 15 minutes in seconds
-  
+
   // Immediate feedback system
   const [showFeedback, setShowFeedback] = useState(false)
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false)
   const [currentAnswer, setCurrentAnswer] = useState(null)
   const [canProceed, setCanProceed] = useState(false)
-  
+
   // Millionaire-style lifelines
   const [lifelinesUsed, setLifelinesUsed] = useState({
     fiftyFifty: false,
@@ -96,7 +118,6 @@ export default function CALearningPlatform() {
         setCASyllabusData(finalLevelData)
         setPaper8Details(paper8Data)
         setExamSchedule(scheduleData)
-
       } catch (error) {
         console.error('❌ Error loading CA syllabus:', error)
         // Set fallback data
@@ -157,7 +178,9 @@ export default function CALearningPlatform() {
       const result = await response.json()
       if (result.success) {
         setAiResponse(result.data.content)
-        alert(`${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode activated! AI response: ${result.data.content.substring(0, 100)}...`)
+        alert(
+          `${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode activated! AI response: ${result.data.content.substring(0, 100)}...`
+        )
       }
     } catch (error) {
       console.error('AI Learning Mode Error:', error)
@@ -178,7 +201,8 @@ export default function CALearningPlatform() {
           requestData = {
             smart_code: 'HERA.CA.EDU.AI.EXPLAIN.v1',
             task_type: 'learning',
-            prompt: 'Explain the concept of Input Tax Credit in GST with practical examples and legal sections'
+            prompt:
+              'Explain the concept of Input Tax Credit in GST with practical examples and legal sections'
           }
           break
         case 'practice':
@@ -208,7 +232,7 @@ export default function CALearningPlatform() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action, ...requestData })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         setAiResponse(result.data.content || JSON.stringify(result.data, null, 2))
@@ -227,14 +251,15 @@ export default function CALearningPlatform() {
     setAiLoading(true)
     try {
       console.log('🤖 ChatGPT-First Quick Quiz Generation')
-      
+
       const weakTopics = topicProgress.filter(topic => topic.confidence === 'low').map(t => t.name)
-      const randomTopic = weakTopics[Math.floor(Math.random() * weakTopics.length)] || 'Customs Valuation'
+      const randomTopic =
+        weakTopics[Math.floor(Math.random() * weakTopics.length)] || 'Customs Valuation'
       const topicId = randomTopic.toLowerCase().replace(' ', '_')
-      
+
       // Step 1: Try ChatGPT generation first
       console.log('🤖 Step 1: Generating fresh questions via ChatGPT...')
-      
+
       const chatGPTResponse = await fetch('/api/v1/learning/ca-final', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -247,15 +272,22 @@ export default function CALearningPlatform() {
           }
         })
       })
-      
+
       const chatGPTResult = await chatGPTResponse.json()
       console.log('🤖 ChatGPT Response:', chatGPTResult)
-      
-      if (chatGPTResult.success && chatGPTResult.data.questions && chatGPTResult.data.questions.length > 0) {
-        console.log('✅ Generated fresh questions via ChatGPT:', chatGPTResult.data.questions.length)
-        setQuizData({ 
+
+      if (
+        chatGPTResult.success &&
+        chatGPTResult.data.questions &&
+        chatGPTResult.data.questions.length > 0
+      ) {
+        console.log(
+          '✅ Generated fresh questions via ChatGPT:',
+          chatGPTResult.data.questions.length
+        )
+        setQuizData({
           questions: chatGPTResult.data.questions,
-          config: { 
+          config: {
             total_questions: chatGPTResult.data.questions.length,
             time_limit_minutes: 15,
             topic_ids: [topicId],
@@ -264,13 +296,15 @@ export default function CALearningPlatform() {
         })
         setShowQuiz(true)
         setTimeout(() => handleBeginQuiz(), 2000)
-        alert(`Fresh Quiz generated! ${chatGPTResult.data.questions.length} new questions on ${randomTopic} via ChatGPT. Auto-saved for reuse!`)
+        alert(
+          `Fresh Quiz generated! ${chatGPTResult.data.questions.length} new questions on ${randomTopic} via ChatGPT. Auto-saved for reuse!`
+        )
         return
       }
-      
+
       // Step 2: Fallback to saved questions if ChatGPT fails
       console.log('📚 Step 2: ChatGPT unavailable, checking saved questions...')
-      
+
       const savedQuestionsResponse = await fetch('/api/v1/learning/ca-final', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -285,15 +319,19 @@ export default function CALearningPlatform() {
           }
         })
       })
-      
+
       const savedResult = await savedQuestionsResponse.json()
       console.log('📚 Saved Questions Response:', savedResult)
-      
-      if (savedResult.success && savedResult.data.questions && savedResult.data.questions.length > 0) {
+
+      if (
+        savedResult.success &&
+        savedResult.data.questions &&
+        savedResult.data.questions.length > 0
+      ) {
         console.log('✅ Found saved questions in database:', savedResult.data.questions.length)
-        setQuizData({ 
+        setQuizData({
           questions: savedResult.data.questions,
-          config: { 
+          config: {
             total_questions: savedResult.data.questions.length,
             time_limit_minutes: 15,
             topic_ids: [topicId],
@@ -302,13 +340,15 @@ export default function CALearningPlatform() {
         })
         setShowQuiz(true)
         setTimeout(() => handleBeginQuiz(), 2000)
-        alert(`Quick Quiz loaded! ${savedResult.data.questions.length} questions on ${randomTopic} from database.`)
+        alert(
+          `Quick Quiz loaded! ${savedResult.data.questions.length} questions on ${randomTopic} from database.`
+        )
         return
       }
-      
+
       // Step 2: Generate new quiz if no saved questions found
       console.log('📝 Step 2: Generating new quiz with mock test questions...')
-      
+
       const response = await fetch('/api/v1/learning/ca-final', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -325,19 +365,19 @@ export default function CALearningPlatform() {
           }
         })
       })
-      
+
       const result = await response.json()
       console.log('🎯 Mock Test Response:', result)
-      
+
       if (result.success && result.data) {
         const mockTest = result.data.mock_test || result.data
         console.log('✅ Mock test generated:', mockTest)
-        
+
         setQuizData(mockTest)
         setShowQuiz(true)
         setTimeout(() => handleBeginQuiz(), 2000)
         alert(`Quick Quiz generated! 10 questions on ${randomTopic}. Starting automatically...`)
-        
+
         // Step 3: Try to save the generated questions for future use
         if (mockTest.questions && mockTest.questions.length > 0) {
           console.log('💾 Step 3: Saving generated questions to database...')
@@ -354,7 +394,9 @@ export default function CALearningPlatform() {
                     topic_id: topicId,
                     difficulty_level: question.difficulty || 'medium',
                     question: question.question,
-                    answer: question.options ? question.options[question.correct_answer] : question.answer,
+                    answer: question.options
+                      ? question.options[question.correct_answer]
+                      : question.answer,
                     explanation: question.explanation || '',
                     tags: [randomTopic.toLowerCase(), 'ca_final', 'quiz']
                   }
@@ -371,7 +413,7 @@ export default function CALearningPlatform() {
     } catch (error) {
       console.error('Quiz Generation Error:', error)
       alert(`Quiz generation issue: ${error.message}. Using fallback questions.`)
-      
+
       // Step 4: Final fallback - use built-in questions
       console.log('🔄 Step 4: Using fallback questions')
       setQuizData({ questions: [] }) // This will trigger fallback in getQuizQuestions
@@ -387,7 +429,7 @@ export default function CALearningPlatform() {
     setAiLoading(true)
     try {
       console.log('🤖 ChatGPT-First Mock Test Generation')
-      
+
       const response = await fetch('/api/v1/learning/ca-final', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -405,17 +447,20 @@ export default function CALearningPlatform() {
           }
         })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         const mockTest = result.data.mock_test || result.data
         setMockTestData(mockTest)
         setShowMockTest(true)
-        
+
         const questionSource = result.data.question_source || 'unknown'
-        const sourceText = questionSource === 'chatgpt_fresh' ? 'via ChatGPT (fresh)' : 'from database'
-        
-        alert(`Mock Test created! ${mockTest.questions?.length || 50} questions ${sourceText}, 3 hours.`)
+        const sourceText =
+          questionSource === 'chatgpt_fresh' ? 'via ChatGPT (fresh)' : 'from database'
+
+        alert(
+          `Mock Test created! ${mockTest.questions?.length || 50} questions ${sourceText}, 3 hours.`
+        )
         console.log('Mock Test Data:', result)
         console.log(`📊 Question Source: ${questionSource}`)
       } else {
@@ -434,58 +479,65 @@ export default function CALearningPlatform() {
   const handleBeginQuiz = () => {
     // Ensure we have questions before starting
     let questions = getQuizQuestions()
-    
+
     if (questions.length === 0) {
-      
       // Emergency fallback: Create immediate quiz questions
       const emergencyQuestions = [
         {
           id: 'emergency_1',
-          question: "What is the full form of GST?",
-          options: ["Gross Sales Tax", "Goods and Services Tax", "General State Tax", "Government Service Tax"],
+          question: 'What is the full form of GST?',
+          options: [
+            'Gross Sales Tax',
+            'Goods and Services Tax',
+            'General State Tax',
+            'Government Service Tax'
+          ],
           correct_answer: 1,
-          explanation: "GST stands for Goods and Services Tax, a comprehensive indirect tax system in India.",
+          explanation:
+            'GST stands for Goods and Services Tax, a comprehensive indirect tax system in India.',
           difficulty: 'medium',
           topic: 'indirect_tax_gst'
         },
         {
-          id: 'emergency_2', 
-          question: "Under which Article of the Constitution was GST introduced?",
-          options: ["Article 266", "Article 269A", "Article 270", "Article 279A"],
+          id: 'emergency_2',
+          question: 'Under which Article of the Constitution was GST introduced?',
+          options: ['Article 266', 'Article 269A', 'Article 270', 'Article 279A'],
           correct_answer: 3,
-          explanation: "GST was introduced under Article 279A of the Indian Constitution.",
+          explanation: 'GST was introduced under Article 279A of the Indian Constitution.',
           difficulty: 'medium',
           topic: 'indirect_tax_gst'
         },
         {
           id: 'emergency_3',
-          question: "What is the threshold limit for GST registration for goods?",
-          options: ["₹10 lakhs", "₹20 lakhs", "₹40 lakhs", "₹50 lakhs"],
+          question: 'What is the threshold limit for GST registration for goods?',
+          options: ['₹10 lakhs', '₹20 lakhs', '₹40 lakhs', '₹50 lakhs'],
           correct_answer: 1,
-          explanation: "The threshold limit for GST registration for goods is ₹20 lakhs in most states.",
+          explanation:
+            'The threshold limit for GST registration for goods is ₹20 lakhs in most states.',
           difficulty: 'medium',
           topic: 'indirect_tax_gst'
         },
         {
           id: 'emergency_4',
-          question: "Which GST return is filed monthly by regular taxpayers?",
-          options: ["GSTR-1", "GSTR-3B", "GSTR-9", "GSTR-4"],
+          question: 'Which GST return is filed monthly by regular taxpayers?',
+          options: ['GSTR-1', 'GSTR-3B', 'GSTR-9', 'GSTR-4'],
           correct_answer: 1,
-          explanation: "GSTR-3B is the monthly summary return filed by regular GST taxpayers.",
+          explanation: 'GSTR-3B is the monthly summary return filed by regular GST taxpayers.',
           difficulty: 'medium',
           topic: 'indirect_tax_gst'
         },
         {
           id: 'emergency_5',
-          question: "What is the maximum GST rate applicable in India?",
-          options: ["18%", "24%", "28%", "30%"],
+          question: 'What is the maximum GST rate applicable in India?',
+          options: ['18%', '24%', '28%', '30%'],
           correct_answer: 2,
-          explanation: "The maximum GST rate in India is 28%, applicable to luxury and demerit goods.",
+          explanation:
+            'The maximum GST rate in India is 28%, applicable to luxury and demerit goods.',
           difficulty: 'medium',
           topic: 'indirect_tax_gst'
         }
       ]
-      
+
       // Set the emergency questions and use them
       setQuizData({
         questions: emergencyQuestions,
@@ -496,23 +548,23 @@ export default function CALearningPlatform() {
           source: 'emergency_fallback'
         }
       })
-      
+
       questions = emergencyQuestions
     }
-    
+
     setActiveQuiz(true)
     setCurrentQuestion(0)
     setSelectedAnswers({})
     setQuizStartTime(Date.now())
     setTimeRemaining(900) // 15 minutes
     setShowQuiz(false) // Hide the preview modal
-    
+
     // Reset feedback state
     setShowFeedback(false)
     setIsAnswerCorrect(false)
     setCurrentAnswer(null)
     setCanProceed(false)
-    
+
     // Reset lifelines
     setLifelinesUsed({
       fiftyFifty: false,
@@ -526,18 +578,18 @@ export default function CALearningPlatform() {
   const handleAnswerSelect = (questionIndex: number, answerIndex: number) => {
     const currentQ = getQuizQuestions()[questionIndex]
     const isCorrect = answerIndex === currentQ.correct_answer
-    
+
     // Store the selected answer
     setSelectedAnswers(prev => ({
       ...prev,
       [questionIndex]: answerIndex
     }))
-    
+
     // Show immediate feedback
     setCurrentAnswer(answerIndex)
     setIsAnswerCorrect(isCorrect)
     setShowFeedback(true)
-    
+
     if (isCorrect) {
       // If correct, allow immediate proceed to next question
       setCanProceed(true)
@@ -556,7 +608,7 @@ export default function CALearningPlatform() {
   }
 
   const handleNextQuestion = () => {
-    if (currentQuestion < (getQuizQuestions().length - 1)) {
+    if (currentQuestion < getQuizQuestions().length - 1) {
       // Reset feedback state for next question
       setShowFeedback(false)
       setCurrentAnswer(null)
@@ -577,17 +629,19 @@ export default function CALearningPlatform() {
     const endTime = Date.now()
     const timeTaken = Math.floor((endTime - quizStartTime) / 1000)
     const score = calculateQuizScore()
-    
+
     setActiveQuiz(false)
     setCurrentQuestion(0)
-    
+
     // Show results
-    alert(`Quiz Complete! Score: ${score}/${getQuizQuestions().length} (${Math.round(score/getQuizQuestions().length*100)}%) Time: ${Math.floor(timeTaken/60)}:${(timeTaken%60).toString().padStart(2,'0')}`)
-    
+    alert(
+      `Quiz Complete! Score: ${score}/${getQuizQuestions().length} (${Math.round((score / getQuizQuestions().length) * 100)}%) Time: ${Math.floor(timeTaken / 60)}:${(timeTaken % 60).toString().padStart(2, '0')}`
+    )
+
     console.log('Quiz Results:', {
       score,
       total: getQuizQuestions().length,
-      percentage: Math.round(score/getQuizQuestions().length*100),
+      percentage: Math.round((score / getQuizQuestions().length) * 100),
       timeTaken,
       answers: selectedAnswers
     })
@@ -596,44 +650,44 @@ export default function CALearningPlatform() {
   const calculateQuizScore = () => {
     const questions = getQuizQuestions()
     let correct = 0
-    
+
     questions.forEach((question, index) => {
       if (selectedAnswers[index] === question.correct_answer) {
         correct++
       }
     })
-    
+
     return correct
   }
 
   // Millionaire-style Lifeline Functions
   const use50_50 = () => {
     if (lifelinesUsed.fiftyFifty) return
-    
+
     const currentQ = getQuizQuestions()[currentQuestion]
     const correctAnswer = currentQ.correct_answer
     const wrongAnswers = [0, 1, 2, 3].filter(i => i !== correctAnswer)
-    
+
     // Randomly eliminate 2 wrong answers
     const toEliminate = wrongAnswers.sort(() => 0.5 - Math.random()).slice(0, 2)
-    
+
     setEliminatedOptions(prev => ({
       ...prev,
       [currentQuestion]: toEliminate
     }))
-    
+
     setLifelinesUsed(prev => ({ ...prev, fiftyFifty: true }))
     alert('50/50 Used! Two wrong answers have been eliminated.')
   }
 
   const askTheExpert = async () => {
     if (lifelinesUsed.askExpert) return
-    
+
     setActiveLifeline('expert')
     setShowLifelineModal(true)
-    
+
     const currentQ = getQuizQuestions()[currentQuestion]
-    
+
     try {
       // Get AI hint from expert
       const response = await fetch('/api/v1/ai/universal', {
@@ -648,84 +702,89 @@ export default function CALearningPlatform() {
           temperature: 0.7
         })
       })
-      
+
       const result = await response.json()
-      
+
       if (result.success) {
-        setExpertHint(result.response || 'Think about the fundamental principles of this topic and the key legal provisions.')
+        setExpertHint(
+          result.response ||
+            'Think about the fundamental principles of this topic and the key legal provisions.'
+        )
       } else {
-        setExpertHint('Think about the fundamental principles of this topic and the key legal provisions.')
+        setExpertHint(
+          'Think about the fundamental principles of this topic and the key legal provisions.'
+        )
       }
     } catch (error) {
       setExpertHint('Consider the basic concepts and regulatory framework for this topic.')
     }
-    
+
     setLifelinesUsed(prev => ({ ...prev, askExpert: true }))
   }
 
   const phoneAFriend = () => {
     if (lifelinesUsed.phoneFriend) return
-    
+
     setActiveLifeline('friend')
     setShowLifelineModal(true)
-    
+
     const currentQ = getQuizQuestions()[currentQuestion]
     const friendTips = [
-      "I remember studying this - focus on the key definitions and exceptions!",
-      "This type of question usually has a trick - read carefully!",
-      "Think about what we practiced in class - the professor emphasized this topic.",
-      "Check if there are any recent amendments or changes to this rule.",
-      "Consider the practical application - how would this work in real business?",
-      "Look for keywords in the question that might give away the answer.",
-      "This reminds me of a similar question - think about the underlying principle."
+      'I remember studying this - focus on the key definitions and exceptions!',
+      'This type of question usually has a trick - read carefully!',
+      'Think about what we practiced in class - the professor emphasized this topic.',
+      'Check if there are any recent amendments or changes to this rule.',
+      'Consider the practical application - how would this work in real business?',
+      'Look for keywords in the question that might give away the answer.',
+      'This reminds me of a similar question - think about the underlying principle.'
     ]
-    
+
     const randomTip = friendTips[Math.floor(Math.random() * friendTips.length)]
     setFriendTip(randomTip)
-    
+
     setLifelinesUsed(prev => ({ ...prev, phoneFriend: true }))
   }
 
   const skipQuestion = () => {
     if (lifelinesUsed.skipQuestion) return
-    
+
     // Mark current question as skipped and move to next
     setSelectedAnswers(prev => ({
       ...prev,
       [currentQuestion]: -1 // -1 indicates skipped
     }))
-    
+
     setLifelinesUsed(prev => ({ ...prev, skipQuestion: true }))
-    
+
     if (currentQuestion < getQuizQuestions().length - 1) {
       setCurrentQuestion(prev => prev + 1)
     } else {
       handleQuizComplete()
     }
-    
+
     alert('Question skipped! Moving to the next question.')
   }
 
   const getQuizQuestions = () => {
     let rawQuestions = []
-    
+
     // Try different possible structures from API response
     if (quizData?.questions && Array.isArray(quizData.questions)) {
       rawQuestions = quizData.questions
-    }
-    else if (quizData?.data?.questions && Array.isArray(quizData.data.questions)) {
+    } else if (quizData?.data?.questions && Array.isArray(quizData.data.questions)) {
       rawQuestions = quizData.data.questions
-    }
-    else if (quizData?.mock_test?.questions && Array.isArray(quizData.mock_test.questions)) {
+    } else if (quizData?.mock_test?.questions && Array.isArray(quizData.mock_test.questions)) {
       rawQuestions = quizData.mock_test.questions
-    }
-    else if (quizData?.entity_type === 'mock_test' && quizData?.questions && Array.isArray(quizData.questions)) {
+    } else if (
+      quizData?.entity_type === 'mock_test' &&
+      quizData?.questions &&
+      Array.isArray(quizData.questions)
+    ) {
+      rawQuestions = quizData.questions
+    } else if (quizData?.config && quizData?.questions && Array.isArray(quizData.questions)) {
       rawQuestions = quizData.questions
     }
-    else if (quizData?.config && quizData?.questions && Array.isArray(quizData.questions)) {
-      rawQuestions = quizData.questions
-    }
-    
+
     // Normalize and validate questions
     if (rawQuestions.length > 0) {
       const normalizedQuestions = rawQuestions.map((q, index) => {
@@ -738,127 +797,103 @@ export default function CALearningPlatform() {
           difficulty: q.difficulty || 'medium',
           topic: q.topic || 'general'
         }
-        
+
         // Ensure options is an array with at least 2 items
         if (!Array.isArray(normalized.options) || normalized.options.length < 2) {
           normalized.options = ['Option A', 'Option B', 'Option C', 'Option D']
         }
-        
+
         return normalized
       })
-      
+
       return normalizedQuestions
     }
     return [
       {
-        question: "What is the main objective of FTP (Foreign Trade Policy)?",
+        question: 'What is the main objective of FTP (Foreign Trade Policy)?',
         options: [
-          "To increase imports only",
-          "To promote exports and reduce imports", 
-          "To promote both exports and imports for economic growth",
-          "To ban international trade"
+          'To increase imports only',
+          'To promote exports and reduce imports',
+          'To promote both exports and imports for economic growth',
+          'To ban international trade'
         ],
         correct_answer: 2,
-        explanation: "FTP aims to promote both exports and imports to boost economic growth and competitiveness."
+        explanation:
+          'FTP aims to promote both exports and imports to boost economic growth and competitiveness.'
       },
       {
-        question: "Which scheme under FTP provides duty benefits for export-oriented units?",
-        options: [
-          "EPCG Scheme",
-          "Advance Authorization Scheme", 
-          "MEIS Scheme",
-          "All of the above"
-        ],
+        question: 'Which scheme under FTP provides duty benefits for export-oriented units?',
+        options: ['EPCG Scheme', 'Advance Authorization Scheme', 'MEIS Scheme', 'All of the above'],
         correct_answer: 3,
-        explanation: "All mentioned schemes provide various duty benefits for export promotion."
+        explanation: 'All mentioned schemes provide various duty benefits for export promotion.'
       },
       {
-        question: "Under which section of Customs Act, 1962 is the provision for classification of goods mentioned?",
-        options: [
-          "Section 14",
-          "Section 17",
-          "Section 28",
-          "Section 46"
-        ],
+        question:
+          'Under which section of Customs Act, 1962 is the provision for classification of goods mentioned?',
+        options: ['Section 14', 'Section 17', 'Section 28', 'Section 46'],
         correct_answer: 0,
-        explanation: "Section 14 of Customs Act deals with valuation and classification of imported goods."
+        explanation:
+          'Section 14 of Customs Act deals with valuation and classification of imported goods.'
       },
       {
-        question: "What is the time limit for filing GST returns for regular taxpayers?",
+        question: 'What is the time limit for filing GST returns for regular taxpayers?',
         options: [
-          "10th of next month",
-          "15th of next month", 
-          "20th of next month",
-          "25th of next month"
+          '10th of next month',
+          '15th of next month',
+          '20th of next month',
+          '25th of next month'
         ],
         correct_answer: 2,
-        explanation: "Regular taxpayers must file GSTR-1 by 11th and GSTR-3B by 20th of the following month."
+        explanation:
+          'Regular taxpayers must file GSTR-1 by 11th and GSTR-3B by 20th of the following month.'
       },
       {
-        question: "Which export incentive scheme was replaced by RoDTEP?",
-        options: [
-          "EPCG",
-          "MEIS",
-          "Advance Authorization",
-          "SEIS"
-        ],
+        question: 'Which export incentive scheme was replaced by RoDTEP?',
+        options: ['EPCG', 'MEIS', 'Advance Authorization', 'SEIS'],
         correct_answer: 1,
-        explanation: "MEIS (Merchandise Exports from India Scheme) was replaced by RoDTEP (Remission of Duties and Taxes on Export Products)."
+        explanation:
+          'MEIS (Merchandise Exports from India Scheme) was replaced by RoDTEP (Remission of Duties and Taxes on Export Products).'
       },
       {
-        question: "What is the penalty for late filing of GSTR-3B?",
-        options: [
-          "Rs. 50 per day",
-          "Rs. 100 per day",
-          "Rs. 200 per day", 
-          "Rs. 500 per day"
-        ],
+        question: 'What is the penalty for late filing of GSTR-3B?',
+        options: ['Rs. 50 per day', 'Rs. 100 per day', 'Rs. 200 per day', 'Rs. 500 per day'],
         correct_answer: 1,
-        explanation: "Late filing penalty for GSTR-3B is Rs. 50 per day per act (CGST + SGST = Rs. 100 per day total)."
+        explanation:
+          'Late filing penalty for GSTR-3B is Rs. 50 per day per act (CGST + SGST = Rs. 100 per day total).'
       },
       {
-        question: "Under customs valuation, which method is used when transaction value cannot be determined?",
+        question:
+          'Under customs valuation, which method is used when transaction value cannot be determined?',
         options: [
-          "Computed value method",
-          "Deductive value method",
-          "Comparable goods method",
-          "Residual method"
+          'Computed value method',
+          'Deductive value method',
+          'Comparable goods method',
+          'Residual method'
         ],
         correct_answer: 2,
-        explanation: "When transaction value is not acceptable, comparable goods method is the next preferred method."
+        explanation:
+          'When transaction value is not acceptable, comparable goods method is the next preferred method.'
       },
       {
-        question: "What is the threshold limit for GST registration for goods suppliers?",
-        options: [
-          "Rs. 10 lakhs",
-          "Rs. 20 lakhs",
-          "Rs. 40 lakhs", 
-          "Rs. 50 lakhs"
-        ],
+        question: 'What is the threshold limit for GST registration for goods suppliers?',
+        options: ['Rs. 10 lakhs', 'Rs. 20 lakhs', 'Rs. 40 lakhs', 'Rs. 50 lakhs'],
         correct_answer: 1,
-        explanation: "The threshold limit for GST registration is Rs. 20 lakhs for goods suppliers (Rs. 10 lakhs for special category states)."
+        explanation:
+          'The threshold limit for GST registration is Rs. 20 lakhs for goods suppliers (Rs. 10 lakhs for special category states).'
       },
       {
-        question: "Which form is used for claiming input tax credit in GST?",
-        options: [
-          "GSTR-1",
-          "GSTR-2A",
-          "GSTR-2B",
-          "GSTR-3B"
-        ],
+        question: 'Which form is used for claiming input tax credit in GST?',
+        options: ['GSTR-1', 'GSTR-2A', 'GSTR-2B', 'GSTR-3B'],
         correct_answer: 3,
-        explanation: "Input tax credit is claimed in GSTR-3B, the monthly return for regular taxpayers."
+        explanation:
+          'Input tax credit is claimed in GSTR-3B, the monthly return for regular taxpayers.'
       },
       {
-        question: "What is the rate of interest on delayed payment of GST?",
-        options: [
-          "12% per annum",
-          "15% per annum",
-          "18% per annum",
-          "24% per annum"
-        ],
+        question: 'What is the rate of interest on delayed payment of GST?',
+        options: ['12% per annum', '15% per annum', '18% per annum', '24% per annum'],
         correct_answer: 2,
-        explanation: "Interest on delayed payment of GST is charged at 18% per annum from the due date."
+        explanation:
+          'Interest on delayed payment of GST is charged at 18% per annum from the due date.'
       }
     ]
   }
@@ -871,37 +906,37 @@ export default function CALearningPlatform() {
 
   // Student Progress Data
   const studentData = {
-    name: "Priya Sharma",
-    targetExam: "CA Final Nov 2025",
+    name: 'Priya Sharma',
+    targetExam: 'CA Final Nov 2025',
     daysRemaining: 92,
     syllabusCompleted: 68,
-    currentLevel: "Advanced Learner",
+    currentLevel: 'Advanced Learner',
     rank: 23,
     totalStudents: 1247
   }
 
   const topicProgress = [
-    { name: "GST Basics", progress: 95, confidence: "high", badge: "gst-master" },
-    { name: "Input Tax Credit", progress: 87, confidence: "high", badge: "itc-expert" },
-    { name: "GST Returns", progress: 72, confidence: "medium", badge: null },
-    { name: "Customs Valuation", progress: 45, confidence: "low", badge: null },
-    { name: "FTP Schemes", progress: 23, confidence: "low", badge: null },
-    { name: "Export Benefits", progress: 12, confidence: "low", badge: null }
+    { name: 'GST Basics', progress: 95, confidence: 'high', badge: 'gst-master' },
+    { name: 'Input Tax Credit', progress: 87, confidence: 'high', badge: 'itc-expert' },
+    { name: 'GST Returns', progress: 72, confidence: 'medium', badge: null },
+    { name: 'Customs Valuation', progress: 45, confidence: 'low', badge: null },
+    { name: 'FTP Schemes', progress: 23, confidence: 'low', badge: null },
+    { name: 'Export Benefits', progress: 12, confidence: 'low', badge: null }
   ]
 
   const achievements = [
-    { id: 1, name: "7-Day Streak", icon: Flame, earned: true, color: "text-orange-500" },
-    { id: 2, name: "GST Master", icon: Crown, earned: true, color: "text-yellow-500" },
-    { id: 3, name: "Quiz Champion", icon: Trophy, earned: true, color: "text-blue-500" },
-    { id: 4, name: "Speed Reader", icon: Zap, earned: false, color: "text-gray-400" },
-    { id: 5, name: "Perfect Score", icon: Star, earned: false, color: "text-gray-400" },
-    { id: 6, name: "Study Warrior", icon: Shield, earned: false, color: "text-gray-400" }
+    { id: 1, name: '7-Day Streak', icon: Flame, earned: true, color: 'text-orange-500' },
+    { id: 2, name: 'GST Master', icon: Crown, earned: true, color: 'text-yellow-500' },
+    { id: 3, name: 'Quiz Champion', icon: Trophy, earned: true, color: 'text-blue-500' },
+    { id: 4, name: 'Speed Reader', icon: Zap, earned: false, color: 'text-gray-400' },
+    { id: 5, name: 'Perfect Score', icon: Star, earned: false, color: 'text-gray-400' },
+    { id: 6, name: 'Study Warrior', icon: Shield, earned: false, color: 'text-gray-400' }
   ]
 
   const upcomingRevisions = [
-    { topic: "GST Registration", dueDate: "Today", priority: "high" },
-    { topic: "Customs Procedures", dueDate: "Tomorrow", priority: "medium" },
-    { topic: "Export Documentation", dueDate: "Aug 5", priority: "low" }
+    { topic: 'GST Registration', dueDate: 'Today', priority: 'high' },
+    { topic: 'Customs Procedures', dueDate: 'Tomorrow', priority: 'medium' },
+    { topic: 'Export Documentation', dueDate: 'Aug 5', priority: 'low' }
   ]
 
   return (
@@ -920,17 +955,23 @@ export default function CALearningPlatform() {
               <p className="text-gray-600">AI-Powered Indirect Tax Mastery Platform</p>
             </div>
           </div>
-          
+
           {/* Student Info Banner */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-purple-100 shadow-lg">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-left">
-                <h2 className="text-xl font-semibold text-gray-900">Welcome back, {studentData.name}! 👋</h2>
-                <p className="text-gray-600">{studentData.targetExam} • {studentData.daysRemaining} days remaining</p>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Welcome back, {studentData.name}! 👋
+                </h2>
+                <p className="text-gray-600">
+                  {studentData.targetExam} • {studentData.daysRemaining} days remaining
+                </p>
               </div>
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{studentData.syllabusCompleted}%</div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {studentData.syllabusCompleted}%
+                  </div>
                   <div className="text-sm text-gray-500">Completed</div>
                 </div>
                 <div className="text-center">
@@ -997,7 +1038,9 @@ export default function CALearningPlatform() {
               <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
                 <CardContent className="p-6 text-center">
                   <Trophy className="w-12 h-12 text-purple-500 mx-auto mb-3" />
-                  <div className="text-3xl font-bold text-purple-600">{achievements.filter(a => a.earned).length}</div>
+                  <div className="text-3xl font-bold text-purple-600">
+                    {achievements.filter(a => a.earned).length}
+                  </div>
                   <div className="text-sm text-purple-700">Achievements</div>
                 </CardContent>
               </Card>
@@ -1028,10 +1071,18 @@ export default function CALearningPlatform() {
                     <div className="flex items-center justify-center gap-4">
                       <Button
                         onClick={() => setIsStudying(!isStudying)}
-                        className={isStudying ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"}
+                        className={
+                          isStudying
+                            ? 'bg-red-500 hover:bg-red-600'
+                            : 'bg-green-500 hover:bg-green-600'
+                        }
                       >
-                        {isStudying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-                        {isStudying ? "Pause" : "Start"}
+                        {isStudying ? (
+                          <Pause className="h-4 w-4 mr-2" />
+                        ) : (
+                          <Play className="h-4 w-4 mr-2" />
+                        )}
+                        {isStudying ? 'Pause' : 'Start'}
                       </Button>
                       <Button variant="outline" onClick={() => setStudyTime(0)}>
                         <RotateCcw className="h-4 w-4 mr-2" />
@@ -1051,12 +1102,23 @@ export default function CALearningPlatform() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {upcomingRevisions.map((revision, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
                       <div>
                         <div className="font-medium">{revision.topic}</div>
                         <div className="text-sm text-gray-500">{revision.dueDate}</div>
                       </div>
-                      <Badge variant={revision.priority === 'high' ? 'destructive' : revision.priority === 'medium' ? 'default' : 'secondary'}>
+                      <Badge
+                        variant={
+                          revision.priority === 'high'
+                            ? 'destructive'
+                            : revision.priority === 'medium'
+                              ? 'default'
+                              : 'secondary'
+                        }
+                      >
                         {revision.priority}
                       </Badge>
                     </div>
@@ -1087,7 +1149,15 @@ export default function CALearningPlatform() {
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={topic.confidence === 'high' ? 'default' : topic.confidence === 'medium' ? 'secondary' : 'destructive'}>
+                        <Badge
+                          variant={
+                            topic.confidence === 'high'
+                              ? 'default'
+                              : topic.confidence === 'medium'
+                                ? 'secondary'
+                                : 'destructive'
+                          }
+                        >
                           {topic.confidence}
                         </Badge>
                         <span className="text-sm font-medium">{topic.progress}%</span>
@@ -1104,7 +1174,10 @@ export default function CALearningPlatform() {
           <TabsContent value="study" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* AI-Powered Learning Modes */}
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleLearningMode('concept')}>
+              <Card
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => handleLearningMode('concept')}
+              >
                 <CardContent className="p-6 text-center">
                   <div className="relative">
                     <BookOpen className="w-16 h-16 text-blue-500 mx-auto mb-4" />
@@ -1113,14 +1186,19 @@ export default function CALearningPlatform() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">AI Concept Mode</h3>
-                  <p className="text-gray-600 mb-4">Master fundamentals with AI-powered explanations and adaptive content</p>
+                  <p className="text-gray-600 mb-4">
+                    Master fundamentals with AI-powered explanations and adaptive content
+                  </p>
                   <Button className="w-full" disabled={aiLoading}>
                     {aiLoading ? 'AI Thinking...' : 'Start Learning'}
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleLearningMode('story')}>
+              <Card
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => handleLearningMode('story')}
+              >
                 <CardContent className="p-6 text-center">
                   <div className="relative">
                     <Sparkles className="w-16 h-16 text-purple-500 mx-auto mb-4" />
@@ -1129,14 +1207,19 @@ export default function CALearningPlatform() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">AI Story Mode</h3>
-                  <p className="text-gray-600 mb-4">Learn through AI-generated real-world scenarios and engaging cases</p>
+                  <p className="text-gray-600 mb-4">
+                    Learn through AI-generated real-world scenarios and engaging cases
+                  </p>
                   <Button className="w-full" disabled={aiLoading}>
                     {aiLoading ? 'AI Creating...' : 'Tell Me Stories'}
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleLearningMode('drill')}>
+              <Card
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => handleLearningMode('drill')}
+              >
                 <CardContent className="p-6 text-center">
                   <div className="relative">
                     <Target className="w-16 h-16 text-green-500 mx-auto mb-4" />
@@ -1145,7 +1228,9 @@ export default function CALearningPlatform() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">AI Exam Drill</h3>
-                  <p className="text-gray-600 mb-4">Practice with AI-generated ICAI-style questions and adaptive difficulty</p>
+                  <p className="text-gray-600 mb-4">
+                    Practice with AI-generated ICAI-style questions and adaptive difficulty
+                  </p>
                   <Button className="w-full" disabled={aiLoading}>
                     {aiLoading ? 'AI Generating...' : 'Start Drilling'}
                   </Button>
@@ -1161,28 +1246,33 @@ export default function CALearningPlatform() {
                     <Brain className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">HERA AI Learning Assistant</h3>
-                    <p className="text-gray-600 text-sm mb-3">Ask me anything about CA Final Indirect Tax. I can explain concepts, create practice questions, and provide personalized guidance using advanced AI.</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      HERA AI Learning Assistant
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3">
+                      Ask me anything about CA Final Indirect Tax. I can explain concepts, create
+                      practice questions, and provide personalized guidance using advanced AI.
+                    </p>
                     <div className="flex gap-2 flex-wrap">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleAIAssistant('explain')}
                         disabled={aiLoading}
                       >
                         {aiLoading ? 'AI Processing...' : 'Explain a Concept'}
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleAIAssistant('practice')}
                         disabled={aiLoading}
                       >
                         {aiLoading ? 'AI Generating...' : 'Generate Practice Questions'}
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleAIAssistant('analyze')}
                         disabled={aiLoading}
                       >
@@ -1192,7 +1282,9 @@ export default function CALearningPlatform() {
                     {aiResponse && (
                       <div className="mt-4 p-3 bg-white rounded-lg border text-sm">
                         <p className="text-gray-700">{aiResponse.substring(0, 200)}...</p>
-                        <div className="text-xs text-gray-500 mt-1">Powered by HERA Universal AI</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Powered by HERA Universal AI
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1205,7 +1297,9 @@ export default function CALearningPlatform() {
           <TabsContent value="practice" className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">Practice Arena</h2>
-              <p className="text-gray-600 mb-8">Choose your practice mode and start improving your scores</p>
+              <p className="text-gray-600 mb-8">
+                Choose your practice mode and start improving your scores
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1216,8 +1310,8 @@ export default function CALearningPlatform() {
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">10 random questions from your weak areas</p>
                   <div className="space-y-2">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white" 
+                    <Button
+                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
                       onClick={handleQuickQuiz}
                       disabled={aiLoading}
                     >
@@ -1233,9 +1327,9 @@ export default function CALearningPlatform() {
                         </div>
                       )}
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
-                      className="w-full" 
+                      className="w-full"
                       onClick={async () => {
                         setAiLoading(true)
                         try {
@@ -1253,12 +1347,12 @@ export default function CALearningPlatform() {
                               }
                             })
                           })
-                          
+
                           const result = await freshResponse.json()
                           if (result.success && result.data.questions?.length > 0) {
-                            setQuizData({ 
+                            setQuizData({
                               questions: result.data.questions,
-                              config: { 
+                              config: {
                                 total_questions: result.data.questions.length,
                                 time_limit_minutes: 20,
                                 topic_ids: [topicId],
@@ -1267,7 +1361,9 @@ export default function CALearningPlatform() {
                             })
                             setShowQuiz(true)
                             setTimeout(() => handleBeginQuiz(), 2000)
-                            alert(`🚀 Generated ${result.data.questions.length} brand new questions via ChatGPT!`)
+                            alert(
+                              `🚀 Generated ${result.data.questions.length} brand new questions via ChatGPT!`
+                            )
                           } else {
                             alert('ChatGPT generation failed. Try the main button.')
                           }
@@ -1285,9 +1381,9 @@ export default function CALearningPlatform() {
                         Force Fresh Questions
                       </div>
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
-                      className="w-full" 
+                      className="w-full"
                       onClick={() => {
                         // Use fallback questions immediately
                         setQuizData({ questions: [] }) // This will trigger fallback
@@ -1303,7 +1399,9 @@ export default function CALearningPlatform() {
                   </div>
                   {quizData && (
                     <div className="mt-4 p-3 bg-green-50 rounded-lg border text-sm">
-                      <p className="text-green-700">✅ Quiz Ready! {getQuizQuestions().length} questions available</p>
+                      <p className="text-green-700">
+                        ✅ Quiz Ready! {getQuizQuestions().length} questions available
+                      </p>
                     </div>
                   )}
                 </CardContent>
@@ -1315,16 +1413,15 @@ export default function CALearningPlatform() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">Full-length practice test (3 hours)</p>
-                  <Button 
-                    className="w-full" 
-                    onClick={handleMockTest}
-                    disabled={aiLoading}
-                  >
+                  <Button className="w-full" onClick={handleMockTest} disabled={aiLoading}>
                     {aiLoading ? 'Creating Test...' : 'Take Mock Test'}
                   </Button>
                   {mockTestData && (
                     <div className="mt-4 p-3 bg-blue-50 rounded-lg border text-sm">
-                      <p className="text-blue-700">✅ Mock Test Ready! {mockTestData.questions?.length || '50'} questions, 3 hours</p>
+                      <p className="text-blue-700">
+                        ✅ Mock Test Ready! {mockTestData.questions?.length || '50'} questions, 3
+                        hours
+                      </p>
                     </div>
                   )}
                 </CardContent>
@@ -1338,7 +1435,8 @@ export default function CALearningPlatform() {
                   <CardTitle className="flex items-center justify-between">
                     <span className="flex items-center gap-2">
                       <Target className="h-5 w-5 text-green-600" />
-                      Quick Quiz: {quizData.config?.topic_ids?.[0]?.replace('_', ' ') || 'CA Final Topics'}
+                      Quick Quiz:{' '}
+                      {quizData.config?.topic_ids?.[0]?.replace('_', ' ') || 'CA Final Topics'}
                     </span>
                     <Button variant="outline" size="sm" onClick={() => setShowQuiz(false)}>
                       Close
@@ -1348,7 +1446,10 @@ export default function CALearningPlatform() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>Questions: {quizData.questions?.length || quizData.config?.total_questions || '10'}</span>  
+                      <span>
+                        Questions:{' '}
+                        {quizData.questions?.length || quizData.config?.total_questions || '10'}
+                      </span>
                       <span>Time: {quizData.config?.time_limit_minutes || '15'} minutes</span>
                       <span>Difficulty: Mixed</span>
                     </div>
@@ -1366,10 +1467,14 @@ export default function CALearningPlatform() {
                           </div>
                         </div>
                       ) : (
-                        <p className="text-gray-600">Quiz questions generated successfully! Check console for full details.</p>
+                        <p className="text-gray-600">
+                          Quiz questions generated successfully! Check console for full details.
+                        </p>
                       )}
                     </div>
-                    <Button className="w-full" onClick={handleBeginQuiz}>Begin Quiz</Button>
+                    <Button className="w-full" onClick={handleBeginQuiz}>
+                      Begin Quiz
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1393,11 +1498,17 @@ export default function CALearningPlatform() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div className="text-center p-3 bg-white rounded-lg">
-                        <div className="font-bold text-blue-600">{mockTestData.questions?.length || mockTestData.config?.total_questions || '50'}</div>
+                        <div className="font-bold text-blue-600">
+                          {mockTestData.questions?.length ||
+                            mockTestData.config?.total_questions ||
+                            '50'}
+                        </div>
                         <div className="text-gray-600">Questions</div>
                       </div>
                       <div className="text-center p-3 bg-white rounded-lg">
-                        <div className="font-bold text-blue-600">{mockTestData.config?.time_limit_minutes || '180'}</div>
+                        <div className="font-bold text-blue-600">
+                          {mockTestData.config?.time_limit_minutes || '180'}
+                        </div>
                         <div className="text-gray-600">Minutes</div>
                       </div>
                       <div className="text-center p-3 bg-white rounded-lg">
@@ -1418,11 +1529,14 @@ export default function CALearningPlatform() {
                         <Badge variant="outline">Export Benefits</Badge>
                       </div>
                       <p className="text-sm text-gray-600 mt-3">
-                        Full-length CA Final practice test generated with questions across all major topics. 
-                        Questions include cross-domain universal concepts for comprehensive learning.
+                        Full-length CA Final practice test generated with questions across all major
+                        topics. Questions include cross-domain universal concepts for comprehensive
+                        learning.
                       </p>
                     </div>
-                    <Button className="w-full" size="lg">Start 3-Hour Mock Test</Button>
+                    <Button className="w-full" size="lg">
+                      Start 3-Hour Mock Test
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1442,320 +1556,385 @@ export default function CALearningPlatform() {
                         <div className="text-lg font-mono font-bold text-red-600">
                           ⏰ {formatQuizTime(timeRemaining)}
                         </div>
-                        <Button variant="outline" size="sm" onClick={() => {
-                          if (window.confirm('Are you sure you want to exit the quiz? Your progress will be lost.')) {
-                            setActiveQuiz(false)
-                          }
-                        }}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                'Are you sure you want to exit the quiz? Your progress will be lost.'
+                              )
+                            ) {
+                              setActiveQuiz(false)
+                            }
+                          }}
+                        >
                           Exit Quiz
                         </Button>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>Question {currentQuestion + 1} of {getQuizQuestions().length}</span>
+                      <span>
+                        Question {currentQuestion + 1} of {getQuizQuestions().length}
+                      </span>
                       <div className="flex items-center gap-4">
                         <span>Topic: FTP Schemes</span>
                         <span>Difficulty: Mixed</span>
                       </div>
                     </div>
-                    <Progress value={(currentQuestion + 1) / getQuizQuestions().length * 100} className="h-2" />
+                    <Progress
+                      value={((currentQuestion + 1) / getQuizQuestions().length) * 100}
+                      className="h-2"
+                    />
                   </CardHeader>
-                  
+
                   <CardContent className="p-6">
                     {getQuizQuestions().length > 0 ? (
                       currentQuestion < getQuizQuestions().length && (
-                      <div className="space-y-6">
-                        <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            {getQuizQuestions()[currentQuestion].question}
-                          </h3>
-                          
-                          <div className="space-y-3">
-                            {(getQuizQuestions()[currentQuestion].options || ['A', 'B', 'C', 'D']).map((option, index) => {
-                              const isEliminated = eliminatedOptions[currentQuestion]?.includes(index)
-                              const isSelected = selectedAnswers[currentQuestion] === index
-                              const isCorrectAnswer = index === getQuizQuestions()[currentQuestion].correct_answer
-                              const shouldDisable = isEliminated || (showFeedback && isAnswerCorrect)
-                              
-                              // Determine styling based on feedback state
-                              let buttonClass = 'w-full text-left p-4 rounded-lg border-2 transition-all '
-                              let circleClass = 'w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-bold '
-                              let circleContent = String.fromCharCode(65 + index)
-                              
-                              if (isEliminated) {
-                                buttonClass += 'border-red-200 bg-red-50 text-red-400 opacity-50 cursor-not-allowed line-through'
-                                circleClass += 'border-red-300 bg-red-100 text-red-400'
-                                circleContent = '✗'
-                              } else if (showFeedback) {
-                                if (isCorrectAnswer) {
-                                  // Always show correct answer in green when feedback is shown
-                                  buttonClass += 'border-green-500 bg-green-100 text-green-900 ring-2 ring-green-200'
-                                  circleClass += 'border-green-500 bg-green-500 text-white'
-                                  circleContent = '✓'
-                                } else if (isSelected && !isCorrectAnswer) {
-                                  // Show selected wrong answer in red
-                                  buttonClass += 'border-red-500 bg-red-100 text-red-900 ring-2 ring-red-200'
-                                  circleClass += 'border-red-500 bg-red-500 text-white'
+                        <div className="space-y-6">
+                          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                              {getQuizQuestions()[currentQuestion].question}
+                            </h3>
+
+                            <div className="space-y-3">
+                              {(
+                                getQuizQuestions()[currentQuestion].options || ['A', 'B', 'C', 'D']
+                              ).map((option, index) => {
+                                const isEliminated =
+                                  eliminatedOptions[currentQuestion]?.includes(index)
+                                const isSelected = selectedAnswers[currentQuestion] === index
+                                const isCorrectAnswer =
+                                  index === getQuizQuestions()[currentQuestion].correct_answer
+                                const shouldDisable =
+                                  isEliminated || (showFeedback && isAnswerCorrect)
+
+                                // Determine styling based on feedback state
+                                let buttonClass =
+                                  'w-full text-left p-4 rounded-lg border-2 transition-all '
+                                let circleClass =
+                                  'w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-bold '
+                                let circleContent = String.fromCharCode(65 + index)
+
+                                if (isEliminated) {
+                                  buttonClass +=
+                                    'border-red-200 bg-red-50 text-red-400 opacity-50 cursor-not-allowed line-through'
+                                  circleClass += 'border-red-300 bg-red-100 text-red-400'
                                   circleContent = '✗'
+                                } else if (showFeedback) {
+                                  if (isCorrectAnswer) {
+                                    // Always show correct answer in green when feedback is shown
+                                    buttonClass +=
+                                      'border-green-500 bg-green-100 text-green-900 ring-2 ring-green-200'
+                                    circleClass += 'border-green-500 bg-green-500 text-white'
+                                    circleContent = '✓'
+                                  } else if (isSelected && !isCorrectAnswer) {
+                                    // Show selected wrong answer in red
+                                    buttonClass +=
+                                      'border-red-500 bg-red-100 text-red-900 ring-2 ring-red-200'
+                                    circleClass += 'border-red-500 bg-red-500 text-white'
+                                    circleContent = '✗'
+                                  } else {
+                                    // Other options stay neutral
+                                    buttonClass += 'border-gray-200 bg-gray-50 text-gray-600'
+                                    circleClass += 'border-gray-300 text-gray-500'
+                                  }
+                                } else if (isSelected) {
+                                  buttonClass += 'border-blue-500 bg-blue-100 text-blue-900'
+                                  circleClass += 'border-blue-500 bg-blue-500 text-white'
                                 } else {
-                                  // Other options stay neutral
-                                  buttonClass += 'border-gray-200 bg-gray-50 text-gray-600'
+                                  buttonClass +=
+                                    'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
                                   circleClass += 'border-gray-300 text-gray-500'
                                 }
-                              } else if (isSelected) {
-                                buttonClass += 'border-blue-500 bg-blue-100 text-blue-900'
-                                circleClass += 'border-blue-500 bg-blue-500 text-white'
-                              } else {
-                                buttonClass += 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
-                                circleClass += 'border-gray-300 text-gray-500'
-                              }
-                              
-                              return (
-                                <button
-                                  key={index}
-                                  onClick={() => {
-                                    if (!shouldDisable) {
-                                      handleAnswerSelect(currentQuestion, index)
-                                    }
-                                  }}
-                                  disabled={shouldDisable}
-                                  className={buttonClass}
-                                >
-                                  <div className="flex items-start gap-3">
-                                    <div className={circleClass}>
-                                      {circleContent}
+
+                                return (
+                                  <button
+                                    key={index}
+                                    onClick={() => {
+                                      if (!shouldDisable) {
+                                        handleAnswerSelect(currentQuestion, index)
+                                      }
+                                    }}
+                                    disabled={shouldDisable}
+                                    className={buttonClass}
+                                  >
+                                    <div className="flex items-start gap-3">
+                                      <div className={circleClass}>{circleContent}</div>
+                                      <span className="flex-1">{option}</span>
                                     </div>
-                                    <span className="flex-1">{option}</span>
-                                  </div>
-                                </button>
-                              )
-                            })}
+                                  </button>
+                                )
+                              })}
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Immediate Feedback Section */}
-                        {showFeedback && (
-                          <div className={`p-4 rounded-lg border-2 ${
-                            isAnswerCorrect 
-                              ? 'bg-green-50 border-green-200' 
-                              : 'bg-red-50 border-red-200'
-                          }`}>
-                            <div className="flex items-center gap-3 mb-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                isAnswerCorrect 
-                                  ? 'bg-green-500 text-white' 
-                                  : 'bg-red-500 text-white'
-                              }`}>
-                                {isAnswerCorrect ? '✓' : '✗'}
-                              </div>
-                              <div>
-                                <h4 className={`font-semibold ${
-                                  isAnswerCorrect ? 'text-green-800' : 'text-red-800'
-                                }`}>
-                                  {isAnswerCorrect ? '🎉 Correct!' : '❌ Incorrect'}
-                                </h4>
-                                <p className={`text-sm ${
-                                  isAnswerCorrect ? 'text-green-700' : 'text-red-700'
-                                }`}>
-                                  {isAnswerCorrect 
-                                    ? 'Great job! Moving to next question...' 
-                                    : 'Try again! Click the correct answer to continue.'
-                                  }
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <div className={`p-3 rounded-lg ${
-                              isAnswerCorrect ? 'bg-green-100' : 'bg-red-100'
-                            }`}>
-                              <p className={`text-sm font-medium mb-2 ${
-                                isAnswerCorrect ? 'text-green-800' : 'text-red-800'
-                              }`}>
-                                Explanation:
-                              </p>
-                              <p className={`text-sm ${
-                                isAnswerCorrect ? 'text-green-700' : 'text-red-700'
-                              }`}>
-                                {getQuizQuestions()[currentQuestion].explanation}
-                              </p>
-                            </div>
-                            
-                            {isAnswerCorrect && canProceed && (
-                              <div className="mt-3 flex items-center justify-between">
-                                <span className="text-sm text-green-600">Auto-advancing in 2 seconds...</span>
-                                <Button 
-                                  size="sm" 
-                                  onClick={handleNextQuestion}
-                                  className="bg-green-600 hover:bg-green-700"
+                          {/* Immediate Feedback Section */}
+                          {showFeedback && (
+                            <div
+                              className={`p-4 rounded-lg border-2 ${
+                                isAnswerCorrect
+                                  ? 'bg-green-50 border-green-200'
+                                  : 'bg-red-50 border-red-200'
+                              }`}
+                            >
+                              <div className="flex items-center gap-3 mb-3">
+                                <div
+                                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                    isAnswerCorrect
+                                      ? 'bg-green-500 text-white'
+                                      : 'bg-red-500 text-white'
+                                  }`}
                                 >
-                                  Next Question →
-                                </Button>
+                                  {isAnswerCorrect ? '✓' : '✗'}
+                                </div>
+                                <div>
+                                  <h4
+                                    className={`font-semibold ${
+                                      isAnswerCorrect ? 'text-green-800' : 'text-red-800'
+                                    }`}
+                                  >
+                                    {isAnswerCorrect ? '🎉 Correct!' : '❌ Incorrect'}
+                                  </h4>
+                                  <p
+                                    className={`text-sm ${
+                                      isAnswerCorrect ? 'text-green-700' : 'text-red-700'
+                                    }`}
+                                  >
+                                    {isAnswerCorrect
+                                      ? 'Great job! Moving to next question...'
+                                      : 'Try again! Click the correct answer to continue.'}
+                                  </p>
+                                </div>
                               </div>
-                            )}
-                            
-                            {!isAnswerCorrect && (
-                              <div className="mt-3">
-                                <p className="text-sm text-red-600 font-medium">
-                                  💡 Hint: Look for the option highlighted in green above!
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        )}
 
-                        {/* Millionaire-style Lifelines */}
-                        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
-                          <h4 className="text-sm font-semibold text-purple-800 mb-3 flex items-center gap-2">
-                            <Crown className="h-4 w-4" />
-                            Lifelines (Who Wants to Be a CA?)
-                          </h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={use50_50}
-                              disabled={lifelinesUsed.fiftyFifty}
-                              className={`flex items-center gap-1 ${
-                                lifelinesUsed.fiftyFifty 
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                  : 'bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100'
-                              }`}
-                            >
-                              <div className="text-lg">🎯</div>
-                              <span className="text-xs">50/50</span>
-                            </Button>
-                            
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={askTheExpert}
-                              disabled={lifelinesUsed.askExpert}
-                              className={`flex items-center gap-1 ${
-                                lifelinesUsed.askExpert 
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                  : 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100'
-                              }`}
-                            >
-                              <div className="text-lg">🧠</div>
-                              <span className="text-xs">Expert</span>
-                            </Button>
-                            
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={phoneAFriend}
-                              disabled={lifelinesUsed.phoneFriend}
-                              className={`flex items-center gap-1 ${
-                                lifelinesUsed.phoneFriend 
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                  : 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100'
-                              }`}
-                            >
-                              <div className="text-lg">📞</div>
-                              <span className="text-xs">Friend</span>
-                            </Button>
-                            
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={skipQuestion}
-                              disabled={lifelinesUsed.skipQuestion}
-                              className={`flex items-center gap-1 ${
-                                lifelinesUsed.skipQuestion 
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                                  : 'bg-orange-50 border-orange-300 text-orange-700 hover:bg-orange-100'
-                              }`}
-                            >
-                              <div className="text-lg">⏭️</div>
-                              <span className="text-xs">Skip</span>
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* Navigation and Progress */}
-                        <div className="flex items-center justify-between">
-                          <Button
-                            variant="outline"
-                            onClick={handlePreviousQuestion}
-                            disabled={currentQuestion === 0 || (showFeedback && !isAnswerCorrect)}
-                          >
-                            Previous
-                          </Button>
-                          
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">
-                              {Object.keys(selectedAnswers).length} of {getQuizQuestions().length} answered
-                            </span>
-                            {showFeedback && (
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                isAnswerCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                              }`}>
-                                {isAnswerCorrect ? '✓ Correct' : '✗ Try again'}
-                              </span>
-                            )}
-                          </div>
-                          
-                          {currentQuestion === getQuizQuestions().length - 1 ? (
-                            <Button
-                              onClick={handleQuizComplete}
-                              className={isAnswerCorrect && showFeedback ? 'bg-green-600 hover:bg-green-700' : ''}
-                              disabled={!canProceed && showFeedback}
-                            >
-                              Complete Quiz
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={handleNextQuestion}
-                              disabled={selectedAnswers[currentQuestion] === undefined || (showFeedback && !isAnswerCorrect)}
-                              className={isAnswerCorrect && showFeedback ? 'bg-green-600 hover:bg-green-700' : ''}
-                            >
-                              Next
-                            </Button>
-                          )}
-                        </div>
-
-                        {/* Question Navigator */}
-                        <div className="border-t pt-4">
-                          <h4 className="text-sm font-medium text-gray-700 mb-3">Question Navigator:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {getQuizQuestions().map((_, index) => (
-                              <button
-                                key={index}
-                                onClick={() => setCurrentQuestion(index)}
-                                className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
-                                  index === currentQuestion
-                                    ? 'bg-blue-600 text-white'
-                                    : selectedAnswers[index] !== undefined
-                                    ? 'bg-green-100 text-green-800 border border-green-300'
-                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              <div
+                                className={`p-3 rounded-lg ${
+                                  isAnswerCorrect ? 'bg-green-100' : 'bg-red-100'
                                 }`}
                               >
-                                {index + 1}
-                              </button>
-                            ))}
+                                <p
+                                  className={`text-sm font-medium mb-2 ${
+                                    isAnswerCorrect ? 'text-green-800' : 'text-red-800'
+                                  }`}
+                                >
+                                  Explanation:
+                                </p>
+                                <p
+                                  className={`text-sm ${
+                                    isAnswerCorrect ? 'text-green-700' : 'text-red-700'
+                                  }`}
+                                >
+                                  {getQuizQuestions()[currentQuestion].explanation}
+                                </p>
+                              </div>
+
+                              {isAnswerCorrect && canProceed && (
+                                <div className="mt-3 flex items-center justify-between">
+                                  <span className="text-sm text-green-600">
+                                    Auto-advancing in 2 seconds...
+                                  </span>
+                                  <Button
+                                    size="sm"
+                                    onClick={handleNextQuestion}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    Next Question →
+                                  </Button>
+                                </div>
+                              )}
+
+                              {!isAnswerCorrect && (
+                                <div className="mt-3">
+                                  <p className="text-sm text-red-600 font-medium">
+                                    💡 Hint: Look for the option highlighted in green above!
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Millionaire-style Lifelines */}
+                          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
+                            <h4 className="text-sm font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                              <Crown className="h-4 w-4" />
+                              Lifelines (Who Wants to Be a CA?)
+                            </h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={use50_50}
+                                disabled={lifelinesUsed.fiftyFifty}
+                                className={`flex items-center gap-1 ${
+                                  lifelinesUsed.fiftyFifty
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100'
+                                }`}
+                              >
+                                <div className="text-lg">🎯</div>
+                                <span className="text-xs">50/50</span>
+                              </Button>
+
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={askTheExpert}
+                                disabled={lifelinesUsed.askExpert}
+                                className={`flex items-center gap-1 ${
+                                  lifelinesUsed.askExpert
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100'
+                                }`}
+                              >
+                                <div className="text-lg">🧠</div>
+                                <span className="text-xs">Expert</span>
+                              </Button>
+
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={phoneAFriend}
+                                disabled={lifelinesUsed.phoneFriend}
+                                className={`flex items-center gap-1 ${
+                                  lifelinesUsed.phoneFriend
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100'
+                                }`}
+                              >
+                                <div className="text-lg">📞</div>
+                                <span className="text-xs">Friend</span>
+                              </Button>
+
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={skipQuestion}
+                                disabled={lifelinesUsed.skipQuestion}
+                                className={`flex items-center gap-1 ${
+                                  lifelinesUsed.skipQuestion
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-orange-50 border-orange-300 text-orange-700 hover:bg-orange-100'
+                                }`}
+                              >
+                                <div className="text-lg">⏭️</div>
+                                <span className="text-xs">Skip</span>
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Navigation and Progress */}
+                          <div className="flex items-center justify-between">
+                            <Button
+                              variant="outline"
+                              onClick={handlePreviousQuestion}
+                              disabled={currentQuestion === 0 || (showFeedback && !isAnswerCorrect)}
+                            >
+                              Previous
+                            </Button>
+
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">
+                                {Object.keys(selectedAnswers).length} of {getQuizQuestions().length}{' '}
+                                answered
+                              </span>
+                              {showFeedback && (
+                                <span
+                                  className={`text-xs px-2 py-1 rounded-full ${
+                                    isAnswerCorrect
+                                      ? 'bg-green-100 text-green-700'
+                                      : 'bg-red-100 text-red-700'
+                                  }`}
+                                >
+                                  {isAnswerCorrect ? '✓ Correct' : '✗ Try again'}
+                                </span>
+                              )}
+                            </div>
+
+                            {currentQuestion === getQuizQuestions().length - 1 ? (
+                              <Button
+                                onClick={handleQuizComplete}
+                                className={
+                                  isAnswerCorrect && showFeedback
+                                    ? 'bg-green-600 hover:bg-green-700'
+                                    : ''
+                                }
+                                disabled={!canProceed && showFeedback}
+                              >
+                                Complete Quiz
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={handleNextQuestion}
+                                disabled={
+                                  selectedAnswers[currentQuestion] === undefined ||
+                                  (showFeedback && !isAnswerCorrect)
+                                }
+                                className={
+                                  isAnswerCorrect && showFeedback
+                                    ? 'bg-green-600 hover:bg-green-700'
+                                    : ''
+                                }
+                              >
+                                Next
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Question Navigator */}
+                          <div className="border-t pt-4">
+                            <h4 className="text-sm font-medium text-gray-700 mb-3">
+                              Question Navigator:
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {getQuizQuestions().map((_, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => setCurrentQuestion(index)}
+                                  className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
+                                    index === currentQuestion
+                                      ? 'bg-blue-600 text-white'
+                                      : selectedAnswers[index] !== undefined
+                                        ? 'bg-green-100 text-green-800 border border-green-300'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                  }`}
+                                >
+                                  {index + 1}
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
                       )
                     ) : (
                       <div className="text-center p-8">
                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                          <h3 className="text-lg font-semibold text-yellow-800 mb-2">No Questions Available</h3>
-                          <p className="text-yellow-700 mb-4">The quiz questions are still being generated or there was an issue loading them.</p>
+                          <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+                            No Questions Available
+                          </h3>
+                          <p className="text-yellow-700 mb-4">
+                            The quiz questions are still being generated or there was an issue
+                            loading them.
+                          </p>
                           <div className="space-y-2">
-                            <Button onClick={() => {
-                              console.log('🔄 Using fallback questions immediately')
-                              setQuizData(null) // This will force fallback
-                              setActiveQuiz(false)
-                              setTimeout(() => handleBeginQuiz(), 500)
-                            }}>
+                            <Button
+                              onClick={() => {
+                                console.log('🔄 Using fallback questions immediately')
+                                setQuizData(null) // This will force fallback
+                                setActiveQuiz(false)
+                                setTimeout(() => handleBeginQuiz(), 500)
+                              }}
+                            >
                               Use Practice Questions
                             </Button>
-                            <Button variant="outline" onClick={() => {
-                              console.log('Retrying quiz generation...')
-                              setActiveQuiz(false)
-                              setTimeout(() => handleQuickQuiz(), 1000)
-                            }}>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                console.log('Retrying quiz generation...')
+                                setActiveQuiz(false)
+                                setTimeout(() => handleQuickQuiz(), 1000)
+                              }}
+                            >
                               Retry API Generation
                             </Button>
                           </div>
@@ -1774,12 +1953,20 @@ export default function CALearningPlatform() {
                   <CardHeader className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
                     <CardTitle className="flex items-center justify-between">
                       <span className="flex items-center gap-2">
-                        {activeLifeline === 'expert' && <><Brain className="h-5 w-5" /> Ask the Expert</>}
-                        {activeLifeline === 'friend' && <><Users className="h-5 w-5" /> Phone a Friend</>}
+                        {activeLifeline === 'expert' && (
+                          <>
+                            <Brain className="h-5 w-5" /> Ask the Expert
+                          </>
+                        )}
+                        {activeLifeline === 'friend' && (
+                          <>
+                            <Users className="h-5 w-5" /> Phone a Friend
+                          </>
+                        )}
                       </span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setShowLifelineModal(false)}
                         className="text-white hover:bg-white hover:bg-opacity-20"
                       >
@@ -1804,15 +1991,12 @@ export default function CALearningPlatform() {
                             "{expertHint || 'Loading expert advice...'}"
                           </p>
                         </div>
-                        <Button 
-                          onClick={() => setShowLifelineModal(false)}
-                          className="w-full"
-                        >
+                        <Button onClick={() => setShowLifelineModal(false)} className="w-full">
                           Got it, thanks!
                         </Button>
                       </div>
                     )}
-                    
+
                     {activeLifeline === 'friend' && (
                       <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-4">
@@ -1825,14 +2009,9 @@ export default function CALearningPlatform() {
                           </div>
                         </div>
                         <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                          <p className="text-green-800">
-                            📞 "Hey! {friendTip}"
-                          </p>
+                          <p className="text-green-800">📞 "Hey! {friendTip}"</p>
                         </div>
-                        <Button 
-                          onClick={() => setShowLifelineModal(false)}
-                          className="w-full"
-                        >
+                        <Button onClick={() => setShowLifelineModal(false)} className="w-full">
                           Thanks buddy!
                         </Button>
                       </div>
@@ -1847,7 +2026,9 @@ export default function CALearningPlatform() {
           <TabsContent value="compete" className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-4">Competition Zone</h2>
-              <p className="text-gray-600 mb-8">Challenge other students and climb the leaderboard</p>
+              <p className="text-gray-600 mb-8">
+                Challenge other students and climb the leaderboard
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1875,21 +2056,27 @@ export default function CALearningPlatform() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold">
+                          1
+                        </div>
                         <span>Rahul Kumar</span>
                       </div>
                       <span className="font-bold">3,240 pts</span>
                     </div>
                     <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                        <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold">
+                          2
+                        </div>
                         <span>Anita Sharma</span>
                       </div>
                       <span className="font-bold">3,100 pts</span>
                     </div>
                     <div className="flex items-center justify-between p-2 bg-orange-50 rounded-lg border-2 border-orange-200">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold">23</div>
+                        <div className="w-8 h-8 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold">
+                          23
+                        </div>
                         <span className="font-semibold">You</span>
                       </div>
                       <span className="font-bold">{totalPoints} pts</span>
@@ -1932,21 +2119,33 @@ export default function CALearningPlatform() {
                           <div className="text-sm text-gray-600">Yearly Attempts</div>
                         </div>
                       </div>
-                      
+
                       {examSchedule && (
                         <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg">
-                          <h4 className="font-semibold text-purple-700 mb-2">📅 2025 Exam Schedule</h4>
+                          <h4 className="font-semibold text-purple-700 mb-2">
+                            📅 2025 Exam Schedule
+                          </h4>
                           <div className="text-sm text-gray-600 space-y-1">
-                            <p><strong>Frequency:</strong> {examSchedule.frequency?.replace('_', ' ') || 'Thrice yearly'}</p>
-                            <p><strong>Months:</strong> {examSchedule.months?.join(', ') || 'January, May, September'}</p>
-                            <p><strong>Next Dates:</strong> {examSchedule.next_dates?.slice(0,2).join(', ') || 'Jan 15, May 15'}</p>
+                            <p>
+                              <strong>Frequency:</strong>{' '}
+                              {examSchedule.frequency?.replace('_', ' ') || 'Thrice yearly'}
+                            </p>
+                            <p>
+                              <strong>Months:</strong>{' '}
+                              {examSchedule.months?.join(', ') || 'January, May, September'}
+                            </p>
+                            <p>
+                              <strong>Next Dates:</strong>{' '}
+                              {examSchedule.next_dates?.slice(0, 2).join(', ') || 'Jan 15, May 15'}
+                            </p>
                           </div>
                         </div>
                       )}
 
                       <div className="p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
                         <div className="text-sm text-yellow-800">
-                          <strong>🎯 HERA Universal Schema:</strong> Data loaded from core_entities and core_dynamic_data tables.
+                          <strong>🎯 HERA Universal Schema:</strong> Data loaded from core_entities
+                          and core_dynamic_data tables.
                         </div>
                       </div>
                     </div>
@@ -1965,11 +2164,19 @@ export default function CALearningPlatform() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border-l-4 border-orange-500">
-                      <h4 className="font-semibold text-orange-700 mb-2">Paper 8 - Indirect Tax Laws</h4>
+                      <h4 className="font-semibold text-orange-700 mb-2">
+                        Paper 8 - Indirect Tax Laws
+                      </h4>
                       <div className="text-sm text-gray-600 space-y-1">
-                        <p><strong>Max Marks:</strong> 100</p>
-                        <p><strong>Duration:</strong> 3.5 hours</p>
-                        <p><strong>Complexity:</strong> High</p>
+                        <p>
+                          <strong>Max Marks:</strong> 100
+                        </p>
+                        <p>
+                          <strong>Duration:</strong> 3.5 hours
+                        </p>
+                        <p>
+                          <strong>Complexity:</strong> High
+                        </p>
                       </div>
                     </div>
 
@@ -1986,10 +2193,12 @@ export default function CALearningPlatform() {
                     {/* Section-wise breakdown */}
                     <div className="space-y-3">
                       <h4 className="font-semibold">Section-wise Breakdown:</h4>
-                      
+
                       <div className="p-3 bg-blue-50 rounded-lg">
                         <div className="flex justify-between items-center mb-1">
-                          <span className="font-medium text-blue-700">GST (Goods & Services Tax)</span>
+                          <span className="font-medium text-blue-700">
+                            GST (Goods & Services Tax)
+                          </span>
                           <Badge className="bg-blue-600 text-white">60%</Badge>
                         </div>
                         <div className="text-sm text-gray-600">60 marks • High priority</div>
@@ -2044,7 +2253,9 @@ export default function CALearningPlatform() {
                 </div>
 
                 <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
-                  <h4 className="font-semibold text-indigo-700 mb-2">🏗️ Universal Architecture Benefits</h4>
+                  <h4 className="font-semibold text-indigo-700 mb-2">
+                    🏗️ Universal Architecture Benefits
+                  </h4>
                   <div className="text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>• No separate CA database needed</div>
                     <div>• Automatic cross-subject correlations</div>
@@ -2069,11 +2280,16 @@ export default function CALearningPlatform() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                  {achievements.map((achievement) => (
-                    <div key={achievement.id} className={`text-center p-4 rounded-lg border-2 ${achievement.earned ? 'bg-gradient-to-b from-yellow-50 to-orange-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}>
+                  {achievements.map(achievement => (
+                    <div
+                      key={achievement.id}
+                      className={`text-center p-4 rounded-lg border-2 ${achievement.earned ? 'bg-gradient-to-b from-yellow-50 to-orange-50 border-yellow-200' : 'bg-gray-50 border-gray-200'}`}
+                    >
                       <achievement.icon className={`w-12 h-12 mx-auto mb-2 ${achievement.color}`} />
                       <div className="text-sm font-medium">{achievement.name}</div>
-                      {achievement.earned && <CheckCircle className="w-4 h-4 text-green-500 mx-auto mt-1" />}
+                      {achievement.earned && (
+                        <CheckCircle className="w-4 h-4 text-green-500 mx-auto mt-1" />
+                      )}
                     </div>
                   ))}
                 </div>

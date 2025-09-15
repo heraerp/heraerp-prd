@@ -58,7 +58,12 @@ export class WhatsAppBookingService {
       )
 
       // 4. Create relationships
-      await this.createAppointmentRelationships(appointment.id, customer.id, service.id, stylist?.id)
+      await this.createAppointmentRelationships(
+        appointment.id,
+        customer.id,
+        service.id,
+        stylist?.id
+      )
 
       // 5. Store custom data
       await this.storeCustomData(appointment.id, request)
@@ -67,12 +72,15 @@ export class WhatsAppBookingService {
       const calendarLink = await this.generateCalendarInvite(appointment, request)
 
       // 7. Generate payment link if deposit required
-      const paymentLink = request.depositAmount ? 
-        await this.generatePaymentLink(appointment.id, request.depositAmount) : 
-        undefined
+      const paymentLink = request.depositAmount
+        ? await this.generatePaymentLink(appointment.id, request.depositAmount)
+        : undefined
 
       // 8. Create confirmation message
-      const confirmationMessage = this.generateConfirmationMessage(request, appointment.transaction_code)
+      const confirmationMessage = this.generateConfirmationMessage(
+        request,
+        appointment.transaction_code
+      )
 
       return {
         success: true,
@@ -85,7 +93,8 @@ export class WhatsAppBookingService {
       console.error('Booking creation failed:', error)
       return {
         success: false,
-        confirmationMessage: 'Sorry, we encountered an error creating your booking. Please try again.',
+        confirmationMessage:
+          'Sorry, we encountered an error creating your booking. Please try again.',
         error: error instanceof Error ? error.message : 'Unknown error'
       }
     }
@@ -104,7 +113,7 @@ export class WhatsAppBookingService {
         // Check dynamic data for phone number
         return c.dynamic_data?.phone === request.customerPhone
       })
-      
+
       if (existing) return existing
     }
 
@@ -325,7 +334,10 @@ Thank you for choosing Luxury Salon Dubai! 🌟`
    * Format date for ICS file
    */
   private formatICSDate(date: Date): string {
-    return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+    return date
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .replace(/\.\d{3}/, '')
   }
 
   /**
@@ -334,9 +346,9 @@ Thank you for choosing Luxury Salon Dubai! 🌟`
   async processIncomingMessage(message: any): Promise<string> {
     // This would integrate with WhatsApp Business API webhooks
     // Parse message intent and route to appropriate flow
-    
+
     const messageText = message.text?.body?.toLowerCase() || ''
-    
+
     if (messageText.includes('book') || messageText.includes('appointment')) {
       return this.startBookingFlow(message.from)
     } else if (messageText.includes('cancel')) {

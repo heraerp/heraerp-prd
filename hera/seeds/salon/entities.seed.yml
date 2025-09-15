@@ -1,0 +1,13 @@
+smart_code: HERA.SALON.SEED.ENTITIES.v1
+notes: Entities seeded at Head Office (shared catalog/policies)
+context:
+  organization_code: ORG-HO-DXB
+items:
+  - { slug: price_list:PL-AED-STD,  entity_type: ENTITY, name: "Standard Price List (AED)", metadata: { entity_type: "price_list" } }
+  - { slug: service:HAIRCUT_BASIC,   entity_type: ENTITY, name: "Basic Haircut",         metadata: { entity_type: "service" } }
+  - { slug: service:HAIR_COLOR,      entity_type: ENTITY, name: "Hair Coloring",         metadata: { entity_type: "service" } }
+  - { slug: product:SHAMPOO_RET,     entity_type: ENTITY, name: "Retail Shampoo",        metadata: { entity_type: "product" } }
+  - { slug: product:DYE_COLOR,       entity_type: ENTITY, name: "Color Dye (Consumable)",metadata: { entity_type: "product" } }
+  - { slug: branch:DUBAI_MAIN,       entity_type: ENTITY, name: "Dubai Main Branch",     metadata: { entity_type: "branch" } }
+  - { slug: branch:DUBAI_MARINA,     entity_type: ENTITY, name: "Dubai Marina Branch",   metadata: { entity_type: "branch" } }
+

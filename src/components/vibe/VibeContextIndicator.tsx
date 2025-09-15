@@ -141,9 +141,7 @@ export function VibeContextIndicator({
             <div className="text-sm">
               <div className="font-medium">HERA Vibe System</div>
               <div>Status: {getStatusText()}</div>
-              {isVibeInitialized && (
-                <div>Next save: {autoSaveTimer}s</div>
-              )}
+              {isVibeInitialized && <div>Next save: {autoSaveTimer}s</div>}
             </div>
           </TooltipContent>
         </Tooltip>
@@ -153,11 +151,13 @@ export function VibeContextIndicator({
 
   return (
     <div className={`${getPositionClasses()} ${className}`}>
-      <div className={`bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-300 ${
-        isExpanded ? 'w-80' : 'w-48'
-      }`}>
+      <div
+        className={`bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-300 ${
+          isExpanded ? 'w-80' : 'w-48'
+        }`}
+      >
         {/* Header */}
-        <div 
+        <div
           className="p-3 border-b cursor-pointer flex items-center justify-between hover:bg-gray-50"
           onClick={() => setIsExpanded(!isExpanded)}
         >
@@ -166,8 +166,8 @@ export function VibeContextIndicator({
             <span className="font-medium text-sm">HERA Vibe</span>
           </div>
           <div className="flex items-center gap-2">
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className={`${getStatusColor()} text-white border-none text-xs`}
             >
               {getStatusIcon()}
@@ -188,7 +188,9 @@ export function VibeContextIndicator({
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Quality</span>
-                  <span className="text-green-600 font-semibold">{currentSession.quality_score}%</span>
+                  <span className="text-green-600 font-semibold">
+                    {currentSession.quality_score}%
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-600">Contexts</span>
@@ -209,7 +211,7 @@ export function VibeContextIndicator({
                   <span className="text-blue-700 font-semibold">{autoSaveTimer}s</span>
                 </div>
                 <div className="w-full bg-blue-200 rounded-full h-1">
-                  <div 
+                  <div
                     className="bg-blue-500 h-1 rounded-full transition-all duration-1000"
                     style={{ width: `${((30 - autoSaveTimer) / 30) * 100}%` }}
                   />
@@ -264,7 +266,7 @@ export function VibeContextIndicator({
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant={isVibeInitialized ? "destructive" : "default"}
+                  variant={isVibeInitialized ? 'destructive' : 'default'}
                   onClick={handleToggleVibe}
                   className="flex-1 text-xs"
                   disabled={isInitializing}
@@ -278,7 +280,7 @@ export function VibeContextIndicator({
                   )}
                   {isInitializing ? 'Starting...' : isVibeInitialized ? 'Shutdown' : 'Start'}
                 </Button>
-                
+
                 {isVibeInitialized && (
                   <Button
                     size="sm"

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA ERP - Dubai POS (SoftPOS + Omnichannel)
  * Smart Code: HERA.RETAIL.POS.MODULE.DUBAI.v1
- * 
+ *
  * Complete Point of Sale system built on HERA's 6-table foundation
  * Multi-tenant, VAT-compliant, offline-capable
  */
@@ -22,7 +22,7 @@ import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import { PaymentWhatsAppActions } from '@/components/salon/whatsapp/PaymentWhatsAppActions'
 import type { CartItem, Payment, TransactionData } from '@/types/salon.types'
-import { 
+import {
   CreditCard,
   ShoppingCart,
   Package,
@@ -278,7 +278,7 @@ const calculateTotal = (subtotal: number, tax: number, discount: number) => {
 export default function DubaiPOSSystem() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
-  
+
   // POS State
   const [cart, setCart] = useState<CartItem[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('')
@@ -294,7 +294,7 @@ export default function DubaiPOSSystem() {
   const [lastTransactionData, setLastTransactionData] = useState<any>(null)
   const [customerEmail, setCustomerEmail] = useState<string>('')
   const [customerPhone, setCustomerPhone] = useState<string>('')
-  
+
   // Register & Config State
   const [currentRegister, setCurrentRegister] = useState<Register>({
     id: 'REG-001',
@@ -304,13 +304,13 @@ export default function DubaiPOSSystem() {
     status: 'open',
     float_amount: 500
   })
-  
+
   const [posConfig] = useState<POSConfig>({
     rounding_mode: 'nearest_5',
     receipt_options: {
       show_tax_details: true,
       show_item_codes: true,
-      footer_text: 'Thank you for visiting Hair Talkz!',
+      footer_text: 'Thank you for visiting Hair Talkz!'
     },
     tips_enabled: true,
     split_payment_enabled: true,
@@ -327,14 +327,15 @@ export default function DubaiPOSSystem() {
   }, [currentOrganization])
 
   // ----------------------------- Computed Values ------------------------------------
-  
+
   const filteredProducts = useMemo(() => {
     return mockProducts.filter(product => {
-      const matchesSearch = product.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           product.entity_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           product.barcode?.includes(searchQuery)
+      const matchesSearch =
+        product.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.entity_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.barcode?.includes(searchQuery)
       const matchesCategory = !selectedCategory || product.category_id === selectedCategory
-      
+
       return matchesSearch && matchesCategory
     })
   }, [searchQuery, selectedCategory])
@@ -353,11 +354,11 @@ export default function DubaiPOSSystem() {
   }
 
   const cartTotals = useMemo(() => {
-    const subtotal = cart.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0)
+    const subtotal = cart.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
     const totalDiscount = cart.reduce((sum, item) => sum + item.discount_amount, 0) + discountAmount
     const totalTax = cart.reduce((sum, item) => sum + item.tax_amount, 0)
     const total = subtotal - totalDiscount + totalTax
-    
+
     return {
       subtotal,
       discount: totalDiscount,
@@ -373,7 +374,7 @@ export default function DubaiPOSSystem() {
 
   const addToCart = (product: Product, quantity: number = 1) => {
     const existingItemIndex = cart.findIndex(item => item.product.id === product.id)
-    
+
     if (existingItemIndex >= 0) {
       const updatedCart = [...cart]
       updatedCart[existingItemIndex].quantity += quantity
@@ -387,7 +388,7 @@ export default function DubaiPOSSystem() {
         discount_amount: 0,
         discount_percent: 0,
         tax_amount: taxAmount,
-        line_total: (product.price * quantity) + taxAmount
+        line_total: product.price * quantity + taxAmount
       }
       setCart([...cart, newItem])
     }
@@ -396,17 +397,18 @@ export default function DubaiPOSSystem() {
   const updateCartItem = (index: number, updates: Partial<CartItem>) => {
     const updatedCart = [...cart]
     const item = { ...updatedCart[index], ...updates }
-    
+
     // Recalculate line totals
     const lineSubtotal = item.unit_price * item.quantity
-    const lineDiscountAmount = item.discount_percent > 0 
-      ? lineSubtotal * (item.discount_percent / 100)
-      : item.discount_amount
-    
+    const lineDiscountAmount =
+      item.discount_percent > 0
+        ? lineSubtotal * (item.discount_percent / 100)
+        : item.discount_amount
+
     item.discount_amount = lineDiscountAmount
     item.tax_amount = calculateTax(lineSubtotal - lineDiscountAmount, item.product.vat_rate)
     item.line_total = lineSubtotal - lineDiscountAmount + item.tax_amount
-    
+
     updatedCart[index] = item
     setCart(updatedCart)
   }
@@ -425,33 +427,34 @@ export default function DubaiPOSSystem() {
 
   const handlePayment = async (method: Payment['method'], amount: number) => {
     if (amount <= 0) return
-    
+
     const payment: Payment = {
       method,
       amount: Math.min(amount, remainingAmount),
       reference: method === 'cash' ? undefined : `REF-${Date.now()}`
     }
-    
+
     if (method === 'card' || method === 'softpos') {
       payment.auth_code = `AUTH-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
     }
-    
+
     setPayments([...payments, payment])
-    
+
     // Check if fully paid
-    if (remainingAmount - payment.amount <= 0.01) { // Account for floating point
+    if (remainingAmount - payment.amount <= 0.01) {
+      // Account for floating point
       await completeSale()
     }
   }
 
   const completeSale = async () => {
     setIsProcessing(true)
-    
+
     try {
       // Generate receipt number
       const receipt = `R-${Date.now().toString().slice(-6)}`
       setReceiptNumber(receipt)
-      
+
       // Create sale transaction payload
       const saleTransaction = {
         organization_id: organizationId,
@@ -474,7 +477,7 @@ export default function DubaiPOSSystem() {
           staff_id: 'STAFF-001' // Would come from auth context
         }
       }
-      
+
       // Create transaction lines
       const transactionLines: Array<{
         line_entity_id: string
@@ -486,7 +489,7 @@ export default function DubaiPOSSystem() {
         smart_code: string
       }> = []
       let lineNumber = 1
-      
+
       // Add item lines
       cart.forEach(item => {
         transactionLines.push({
@@ -504,7 +507,7 @@ export default function DubaiPOSSystem() {
             product_code: item.product.entity_code
           }
         })
-        
+
         // Add discount line if applicable
         if (item.discount_amount > 0) {
           transactionLines.push({
@@ -523,7 +526,7 @@ export default function DubaiPOSSystem() {
           })
         }
       })
-      
+
       // Add tax line
       if (cartTotals.tax > 0) {
         transactionLines.push({
@@ -541,7 +544,7 @@ export default function DubaiPOSSystem() {
           }
         })
       }
-      
+
       // Add payment lines
       payments.forEach(payment => {
         transactionLines.push({
@@ -560,7 +563,7 @@ export default function DubaiPOSSystem() {
           }
         })
       })
-      
+
       // Calculate change if cash payment exceeds total
       const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0)
       if (totalPaid > cartTotals.total) {
@@ -576,13 +579,13 @@ export default function DubaiPOSSystem() {
           smart_code: 'HERA.RETAIL.POS.PAYMENT.CHANGE.v1'
         })
       }
-      
+
       // Here you would call universalApi to create the transaction
       // await universalApi.createTransaction(saleTransaction, transactionLines)
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500))
-      
+
       // Store transaction data for receipt
       setLastTransactionData({
         receiptNumber: receipt,
@@ -593,11 +596,10 @@ export default function DubaiPOSSystem() {
         customer: selectedCustomer,
         register: currentRegister
       })
-      
+
       // Show receipt modal instead of alert
       setShowPaymentModal(false)
       setShowReceiptModal(true)
-      
     } catch (error) {
       handleError(error, 'pos-sale', {
         showToast: true,
@@ -629,7 +631,7 @@ export default function DubaiPOSSystem() {
                 </Badge>
               )}
             </div>
-            
+
             <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
               {product.entity_code && (
                 <>
@@ -638,25 +640,24 @@ export default function DubaiPOSSystem() {
                 </>
               )}
             </div>
-            
+
             <div className="flex items-center justify-between">
               <span className="text-lg font-bold text-purple-600 dark:text-purple-400">
                 {formatCurrency(product.price)}
               </span>
               {product.stock_on_hand !== undefined && (
-                <span className="text-xs text-gray-500">
-                  Stock: {product.stock_on_hand}
-                </span>
+                <span className="text-xs text-gray-500">Stock: {product.stock_on_hand}</span>
               )}
             </div>
-            
+
             <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
               <Badge
                 variant="outline"
                 className="text-xs"
                 style={{
                   borderColor: mockCategories.find(c => c.id === product.category_id)?.color + '40',
-                  backgroundColor: mockCategories.find(c => c.id === product.category_id)?.color + '10'
+                  backgroundColor:
+                    mockCategories.find(c => c.id === product.category_id)?.color + '10'
                 }}
               >
                 {product.category_name}
@@ -675,9 +676,7 @@ export default function DubaiPOSSystem() {
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
             <span>Current Sale</span>
-            {cart.length > 0 && (
-              <Badge className="ml-2">{cart.length} items</Badge>
-            )}
+            {cart.length > 0 && <Badge className="ml-2">{cart.length} items</Badge>}
           </div>
           {cart.length > 0 && (
             <Button
@@ -691,7 +690,7 @@ export default function DubaiPOSSystem() {
           )}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col">
         {/* Customer Info */}
         <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -703,7 +702,7 @@ export default function DubaiPOSSystem() {
             </Button>
           </div>
         </div>
-        
+
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto space-y-2 mb-4">
           {cart.length === 0 ? (
@@ -736,21 +735,25 @@ export default function DubaiPOSSystem() {
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-1">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => updateCartItem(index, { quantity: Math.max(1, item.quantity - 1) })}
+                      onClick={() =>
+                        updateCartItem(index, { quantity: Math.max(1, item.quantity - 1) })
+                      }
                       className="h-7 w-7 p-0"
                     >
                       <Minus className="w-3 h-3" />
                     </Button>
                     <Input
                       value={item.quantity}
-                      onChange={(e) => updateCartItem(index, { quantity: parseInt(e.target.value) || 1 })}
+                      onChange={e =>
+                        updateCartItem(index, { quantity: parseInt(e.target.value) || 1 })
+                      }
                       className="h-7 w-12 text-center px-1"
                     />
                     <Button
@@ -762,24 +765,18 @@ export default function DubaiPOSSystem() {
                       <Plus className="w-3 h-3" />
                     </Button>
                   </div>
-                  
+
                   {/* Discount */}
                   <div className="flex items-center gap-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 px-2"
-                    >
+                    <Button variant="outline" size="sm" className="h-7 px-2">
                       <Percent className="w-3 h-3 mr-1" />
                       Disc
                     </Button>
                   </div>
-                  
+
                   {/* Line Total */}
                   <div className="ml-auto text-right">
-                    <p className="font-semibold text-sm">
-                      {formatCurrency(item.line_total)}
-                    </p>
+                    <p className="font-semibold text-sm">{formatCurrency(item.line_total)}</p>
                     {item.discount_amount > 0 && (
                       <p className="text-xs text-red-600">
                         -{formatCurrency(item.discount_amount)}
@@ -791,7 +788,7 @@ export default function DubaiPOSSystem() {
             ))
           )}
         </div>
-        
+
         {/* Totals */}
         {cart.length > 0 && (
           <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
@@ -799,19 +796,21 @@ export default function DubaiPOSSystem() {
               <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
               <span className="font-medium">{formatCurrency(cartTotals.subtotal)}</span>
             </div>
-            
+
             {cartTotals.discount > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Discount</span>
-                <span className="font-medium text-red-600">-{formatCurrency(cartTotals.discount)}</span>
+                <span className="font-medium text-red-600">
+                  -{formatCurrency(cartTotals.discount)}
+                </span>
               </div>
             )}
-            
+
             <div className="flex justify-between text-sm">
               <span className="text-gray-600 dark:text-gray-400">VAT ({posConfig.vat_rate}%)</span>
               <span className="font-medium">{formatCurrency(cartTotals.tax)}</span>
             </div>
-            
+
             <div className="flex justify-between text-lg font-bold pt-2 border-t border-gray-200 dark:border-gray-700">
               <span>Total</span>
               <span className="text-purple-600 dark:text-purple-400">
@@ -820,14 +819,10 @@ export default function DubaiPOSSystem() {
             </div>
           </div>
         )}
-        
+
         {/* Action Buttons */}
         <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button
-            variant="outline"
-            disabled={cart.length === 0}
-            className="h-12"
-          >
+          <Button variant="outline" disabled={cart.length === 0} className="h-12">
             <Receipt className="w-4 h-4 mr-2" />
             Hold
           </Button>
@@ -846,11 +841,11 @@ export default function DubaiPOSSystem() {
 
   const ReceiptModal = () => {
     if (!showReceiptModal || !lastTransactionData) return null
-    
+
     const printReceipt = () => {
       const receiptWindow = window.open('', 'Receipt', 'width=400,height=600')
       if (!receiptWindow) return
-      
+
       const receiptHTML = `
         <!DOCTYPE html>
         <html>
@@ -875,7 +870,9 @@ export default function DubaiPOSSystem() {
           <div class="center">${lastTransactionData.date.toLocaleString()}</div>
           <div class="divider"></div>
           
-          ${lastTransactionData.items.map((item: CartItem) => `
+          ${lastTransactionData.items
+            .map(
+              (item: CartItem) => `
             <div class="item">
               <div>${item.product.entity_name}</div>
               <div class="flex">
@@ -884,7 +881,9 @@ export default function DubaiPOSSystem() {
               </div>
               ${item.discount_amount > 0 ? `<div class="right">Disc: -${formatCurrency(item.discount_amount)}</div>` : ''}
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
           
           <div class="divider"></div>
           <div class="flex"><span>Subtotal:</span><span>${formatCurrency(lastTransactionData.totals.subtotal)}</span></div>
@@ -894,9 +893,13 @@ export default function DubaiPOSSystem() {
           <div class="flex total"><span>TOTAL:</span><span>${formatCurrency(lastTransactionData.totals.total)}</span></div>
           <div class="divider"></div>
           
-          ${lastTransactionData.payments.map((payment: Payment) => `
+          ${lastTransactionData.payments
+            .map(
+              (payment: Payment) => `
             <div class="flex"><span>${payment.method.toUpperCase()}:</span><span>${formatCurrency(payment.amount)}</span></div>
-          `).join('')}
+          `
+            )
+            .join('')}
           
           <div class="divider"></div>
           <div class="center">Thank you for your visit!</div>
@@ -904,12 +907,12 @@ export default function DubaiPOSSystem() {
         </body>
         </html>
       `
-      
+
       receiptWindow.document.write(receiptHTML)
       receiptWindow.document.close()
       receiptWindow.print()
     }
-    
+
     const sendDigitalReceipt = async (method: 'email' | 'sms') => {
       try {
         // Here you would integrate with actual email/SMS service
@@ -923,16 +926,12 @@ export default function DubaiPOSSystem() {
           )
           return
         }
-        
+
         // Simulate sending
-        handleError(
-          new Error(`Receipt sent via ${method} to ${recipient}`),
-          'pos-receipt',
-          { 
-            showToast: true,
-            fallbackMessage: `Receipt sent via ${method} to ${recipient}`
-          }
-        )
+        handleError(new Error(`Receipt sent via ${method} to ${recipient}`), 'pos-receipt', {
+          showToast: true,
+          fallbackMessage: `Receipt sent via ${method} to ${recipient}`
+        })
       } catch (error) {
         handleError(error, 'pos-receipt', {
           showToast: true,
@@ -940,14 +939,14 @@ export default function DubaiPOSSystem() {
         })
       }
     }
-    
+
     const closeAndClearCart = () => {
       setShowReceiptModal(false)
       clearCart()
       setCustomerEmail('')
       setCustomerPhone('')
     }
-    
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto m-4">
@@ -957,16 +956,12 @@ export default function DubaiPOSSystem() {
                 <CheckCircle className="w-6 h-6 text-green-600" />
                 <span>Sale Complete!</span>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={closeAndClearCart}
-              >
+              <Button variant="ghost" size="sm" onClick={closeAndClearCart}>
                 <X className="w-4 h-4" />
               </Button>
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent className="p-6">
             {/* Receipt Summary */}
             <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -974,7 +969,7 @@ export default function DubaiPOSSystem() {
                 <p className="text-sm text-gray-600 dark:text-gray-400">Receipt Number</p>
                 <p className="text-2xl font-bold">{lastTransactionData.receiptNumber}</p>
               </div>
-              
+
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Date:</span>
@@ -992,26 +987,23 @@ export default function DubaiPOSSystem() {
                 </div>
               </div>
             </div>
-            
+
             {/* Receipt Actions */}
             <div className="space-y-4">
-              <Button
-                className="w-full"
-                onClick={printReceipt}
-              >
+              <Button className="w-full" onClick={printReceipt}>
                 <Printer className="w-4 h-4 mr-2" />
                 Print Receipt
               </Button>
-              
+
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm">Send Digital Copy</h4>
-                
+
                 <div className="flex gap-2">
                   <Input
                     type="email"
                     placeholder="Email address"
                     value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    onChange={e => setCustomerEmail(e.target.value)}
                     className="flex-1"
                   />
                   <Button
@@ -1022,13 +1014,13 @@ export default function DubaiPOSSystem() {
                     <Mail className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Input
                     type="tel"
                     placeholder="Phone number"
                     value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    onChange={e => setCustomerPhone(e.target.value)}
                     className="flex-1"
                   />
                   <Button
@@ -1039,7 +1031,7 @@ export default function DubaiPOSSystem() {
                     <Send className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 {/* WhatsApp Payment Confirmation */}
                 {customerPhone && lastTransactionData && (
                   <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
@@ -1048,11 +1040,14 @@ export default function DubaiPOSSystem() {
                         id: lastTransactionData.id,
                         amount: lastTransactionData.totals.total,
                         date: lastTransactionData.date.toISOString(),
-                        customer_name: lastTransactionData.customer?.entity_name || 'Walk-in Customer',
+                        customer_name:
+                          lastTransactionData.customer?.entity_name || 'Walk-in Customer',
                         customer_phone: customerPhone,
                         payment_method: lastTransactionData.payments[0]?.method || 'cash',
                         transaction_id: lastTransactionData.receiptNumber,
-                        services: lastTransactionData.items.map(item => item.product.entity_name).join(', '),
+                        services: lastTransactionData.items
+                          .map(item => item.product.entity_name)
+                          .join(', '),
                         status: 'paid'
                       }}
                       organizationId={organizationId}
@@ -1063,12 +1058,8 @@ export default function DubaiPOSSystem() {
                   </div>
                 )}
               </div>
-              
-              <Button
-                className="w-full"
-                variant="outline"
-                onClick={closeAndClearCart}
-              >
+
+              <Button className="w-full" variant="outline" onClick={closeAndClearCart}>
                 Start New Sale
               </Button>
             </div>
@@ -1080,7 +1071,7 @@ export default function DubaiPOSSystem() {
 
   const PaymentModal = () => {
     if (!showPaymentModal) return null
-    
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
@@ -1097,7 +1088,7 @@ export default function DubaiPOSSystem() {
               </Button>
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent className="p-6">
             {/* Amount Due */}
             <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
@@ -1107,7 +1098,7 @@ export default function DubaiPOSSystem() {
                   {formatCurrency(remainingAmount)}
                 </span>
               </div>
-              
+
               {payments.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-purple-200 dark:border-purple-800 space-y-1">
                   <div className="text-sm font-medium mb-2">Payments Made:</div>
@@ -1122,11 +1113,11 @@ export default function DubaiPOSSystem() {
                 </div>
               )}
             </div>
-            
+
             {/* Payment Methods */}
             <div className="space-y-4">
               <h4 className="font-semibold">Payment Methods</h4>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <Button
                   variant="outline"
@@ -1138,7 +1129,7 @@ export default function DubaiPOSSystem() {
                   <span className="text-sm font-medium">Cash</span>
                   <span className="text-xs text-gray-500">Quick payment</span>
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   className="h-24 flex-col"
@@ -1149,7 +1140,7 @@ export default function DubaiPOSSystem() {
                   <span className="text-sm font-medium">Card</span>
                   <span className="text-xs text-gray-500">Credit/Debit</span>
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   className="h-24 flex-col"
@@ -1160,7 +1151,7 @@ export default function DubaiPOSSystem() {
                   <span className="text-sm font-medium">SoftPOS</span>
                   <span className="text-xs text-gray-500">Tap to pay</span>
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   className="h-24 flex-col"
@@ -1172,7 +1163,7 @@ export default function DubaiPOSSystem() {
                   <span className="text-xs text-gray-500">Apple/Google Pay</span>
                 </Button>
               </div>
-              
+
               {/* Custom Amount */}
               <div className="flex items-center gap-2">
                 <Input
@@ -1181,15 +1172,12 @@ export default function DubaiPOSSystem() {
                   className="flex-1"
                   disabled={isProcessing || remainingAmount <= 0}
                 />
-                <Button
-                  variant="outline"
-                  disabled={isProcessing || remainingAmount <= 0}
-                >
+                <Button variant="outline" disabled={isProcessing || remainingAmount <= 0}>
                   Add Payment
                 </Button>
               </div>
             </div>
-            
+
             {/* Complete Sale Button */}
             {remainingAmount <= 0.01 && (
               <Button
@@ -1243,7 +1231,7 @@ export default function DubaiPOSSystem() {
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </Button>
-              
+
               <div className="hidden md:block">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   HERA POS - Dubai
@@ -1253,7 +1241,7 @@ export default function DubaiPOSSystem() {
                 </p>
               </div>
             </div>
-            
+
             {/* Center Section - Time */}
             <div className="hidden lg:flex items-center gap-2 text-gray-600 dark:text-gray-400">
               <Clock className="w-4 h-4" />
@@ -1265,7 +1253,7 @@ export default function DubaiPOSSystem() {
                 })}
               </span>
             </div>
-            
+
             {/* Right Section - Quick Actions */}
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
@@ -1284,7 +1272,7 @@ export default function DubaiPOSSystem() {
           </div>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="flex h-[calc(100vh-64px)]">
         {/* Products Section */}
@@ -1297,17 +1285,17 @@ export default function DubaiPOSSystem() {
                 <Input
                   placeholder="Search by name, code, or barcode..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="pl-9"
                 />
               </div>
-              
+
               <Button variant="outline">
                 <Barcode className="w-4 h-4 mr-2" />
                 Scan
               </Button>
             </div>
-            
+
             {/* Category Filters */}
             <div className="flex items-center gap-2 flex-wrap">
               <Button
@@ -1335,20 +1323,20 @@ export default function DubaiPOSSystem() {
               ))}
             </div>
           </div>
-          
+
           {/* Products Grid */}
           <ProductGrid />
         </div>
-        
+
         {/* Cart Section */}
         <div className="w-96 border-l border-gray-200 dark:border-gray-800 p-4">
           <CartDisplay />
         </div>
       </div>
-      
+
       {/* Payment Modal */}
       <PaymentModal />
-      
+
       {/* Receipt Modal */}
       <ReceiptModal />
     </div>

@@ -5,12 +5,18 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  X, 
-  Utensils, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import {
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Utensils,
   ShoppingCart,
   ChefHat,
   Users,
@@ -67,8 +73,8 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
             <div>
               <h3 className="text-xl font-bold text-gray-900">Welcome to the Future of Dining</h3>
               <p className="text-gray-600 mt-2">
-                Experience our revolutionary platform that brings together customers, 
-                kitchen staff, and management in perfect harmony.
+                Experience our revolutionary platform that brings together customers, kitchen staff,
+                and management in perfect harmony.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
@@ -105,21 +111,29 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-900">Grilled Salmon</h4>
-                  <p className="text-sm text-gray-600 mb-2">Fresh Atlantic salmon with herb butter</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Fresh Atlantic salmon with herb butter
+                  </p>
                   <div className="flex items-center gap-2 text-xs">
                     <Badge variant="secondary">18min</Badge>
-                    <Badge variant="secondary" className="bg-green-100 text-green-700">Gluten-free</Badge>
+                    <Badge variant="secondary" className="bg-green-100 text-green-700">
+                      Gluten-free
+                    </Badge>
                     <Badge variant="secondary">⭐ 4.8 (124 reviews)</Badge>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-bold text-red-600">$28.99</div>
-                  <Button size="sm" className="mt-2 bg-red-600">Add to Cart</Button>
+                  <Button size="sm" className="mt-2 bg-red-600">
+                    Add to Cart
+                  </Button>
                 </div>
               </div>
             </div>
             <div className="text-sm text-gray-600">
-              <p className="mb-2"><strong>💡 Pro Tips:</strong></p>
+              <p className="mb-2">
+                <strong>💡 Pro Tips:</strong>
+              </p>
               <ul className="space-y-1 ml-4">
                 <li>• Check dietary information and allergens before ordering</li>
                 <li>• View preparation time to plan your meal timing</li>
@@ -160,12 +174,12 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                   </div>
                 </div>
               </div>
-              <Button className="w-full mt-3 bg-green-600">
-                Proceed to Checkout
-              </Button>
+              <Button className="w-full mt-3 bg-green-600">Proceed to Checkout</Button>
             </div>
             <div className="text-sm text-gray-600">
-              <p className="mb-2"><strong>🛡️ Secure Checkout Features:</strong></p>
+              <p className="mb-2">
+                <strong>🛡️ Secure Checkout Features:</strong>
+              </p>
               <ul className="space-y-1 ml-4">
                 <li>• Multiple payment options (card, digital wallets)</li>
                 <li>• Order confirmation via SMS/email</li>
@@ -221,7 +235,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               </div>
             </div>
             <div className="text-sm text-gray-600">
-              <p className="mb-2"><strong>🔔 Notifications:</strong></p>
+              <p className="mb-2">
+                <strong>🔔 Notifications:</strong>
+              </p>
               <ul className="space-y-1 ml-4">
                 <li>• SMS updates at each stage</li>
                 <li>• Push notifications on mobile</li>
@@ -258,7 +274,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               </div>
             </div>
             <div className="text-sm text-gray-600">
-              <p className="mb-2"><strong>🎁 Member Benefits:</strong></p>
+              <p className="mb-2">
+                <strong>🎁 Member Benefits:</strong>
+              </p>
               <ul className="space-y-1 ml-4">
                 <li>• Earn 1 point per $1 spent</li>
                 <li>• Birthday special offers</li>
@@ -454,11 +472,13 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               <X className="h-4 w-4" />
             </Button>
           </div>
-          
+
           <div className="space-y-2">
             <Progress value={progress} className="h-2" />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>Step {currentStep + 1} of {tourSteps.length}</span>
+              <span>
+                Step {currentStep + 1} of {tourSteps.length}
+              </span>
               <span>{Math.round(progress)}% complete</span>
             </div>
           </div>
@@ -466,7 +486,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
 
         <div className="py-4">
           {currentStepData.content}
-          
+
           {currentStepData.tips && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
@@ -496,7 +516,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               </Button>
             )}
           </div>
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -507,7 +527,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               <ChevronLeft className="h-4 w-4" />
               Previous
             </Button>
-            
+
             <Button
               onClick={nextStep}
               className="flex items-center gap-1 bg-red-600 hover:bg-red-700"

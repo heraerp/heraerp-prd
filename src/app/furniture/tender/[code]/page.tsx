@@ -47,9 +47,10 @@ const mockTenderDetail = {
   emdAmount: '₹90,000',
   tenderFee: '₹5,000',
   processingFee: '₹1,180',
-  description: 'Supply of Teak wood logs from Nilambur Forest Range. The tender includes 15 lots of premium quality teak wood with specified dimensions and grading requirements.',
+  description:
+    'Supply of Teak wood logs from Nilambur Forest Range. The tender includes 15 lots of premium quality teak wood with specified dimensions and grading requirements.',
   location: 'Nilambur Forest Division, Malappuram District, Kerala',
-  
+
   lots: [
     {
       id: 'LOT001',
@@ -68,10 +69,10 @@ const mockTenderDetail = {
       reservePrice: '₹2,80,000',
       depot: 'Nilambur Main Depot',
       dimensions: '1.5-2m length, 35-45cm girth'
-    },
+    }
     // ... more lots
   ],
-  
+
   documents: [
     { name: 'Tender Notice', status: 'downloaded', date: '2025-01-10' },
     { name: 'Technical Specifications', status: 'downloaded', date: '2025-01-10' },
@@ -79,7 +80,7 @@ const mockTenderDetail = {
     { name: 'Technical Bid', status: 'pending', date: null },
     { name: 'Price Bid', status: 'pending', date: null }
   ],
-  
+
   bidStrategy: {
     recommendation: 'aggressive',
     confidence: 78,
@@ -88,7 +89,7 @@ const mockTenderDetail = {
     competitorCount: 5,
     historicalWinRate: '42%'
   },
-  
+
   timeline: [
     { event: 'Tender Published', date: '2025-01-10', status: 'completed' },
     { event: 'Document Downloaded', date: '2025-01-10', status: 'completed' },
@@ -132,7 +133,10 @@ export default function TenderDetailPage() {
                 Download All
               </Button>
               <Link href={`/furniture/tender/${params.code}/bid/new`}>
-                <Button size="sm" className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700">
+                <Button
+                  size="sm"
+                  className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                >
                   <Calculator className="h-4 w-4" />
                   Prepare Bid
                 </Button>
@@ -154,7 +158,7 @@ export default function TenderDetailPage() {
               </div>
             </div>
           </Card>
-          
+
           <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-green-600/20">
@@ -162,11 +166,13 @@ export default function TenderDetailPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-400">Estimated Value</p>
-                <p className="text-lg font-semibold text-white">{mockTenderDetail.estimatedValue}</p>
+                <p className="text-lg font-semibold text-white">
+                  {mockTenderDetail.estimatedValue}
+                </p>
               </div>
             </div>
           </Card>
-          
+
           <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-blue-600/20">
@@ -178,7 +184,7 @@ export default function TenderDetailPage() {
               </div>
             </div>
           </Card>
-          
+
           <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-purple-600/20">
@@ -186,7 +192,9 @@ export default function TenderDetailPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-400">AI Strategy</p>
-                <p className="text-lg font-semibold text-white capitalize">{mockTenderDetail.bidStrategy.recommendation}</p>
+                <p className="text-lg font-semibold text-white capitalize">
+                  {mockTenderDetail.bidStrategy.recommendation}
+                </p>
               </div>
             </div>
           </Card>
@@ -238,23 +246,28 @@ export default function TenderDetailPage() {
             <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
               <h3 className="text-lg font-semibold text-white mb-4">Document Status</h3>
               <div className="space-y-3">
-                {mockTenderDetail.documents.map((doc) => (
-                  <div key={doc.name} className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
+                {mockTenderDetail.documents.map(doc => (
+                  <div
+                    key={doc.name}
+                    className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30"
+                  >
                     <div className="flex items-center gap-3">
                       <FileText className="h-5 w-5 text-gray-400" />
                       <div>
                         <p className="text-white font-medium">{doc.name}</p>
-                        {doc.date && (
-                          <p className="text-xs text-gray-400">{doc.date}</p>
-                        )}
+                        {doc.date && <p className="text-xs text-gray-400">{doc.date}</p>}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant={
-                        doc.status === 'downloaded' ? 'default' :
-                        doc.status === 'uploaded' ? 'secondary' :
-                        'outline'
-                      }>
+                      <Badge
+                        variant={
+                          doc.status === 'downloaded'
+                            ? 'default'
+                            : doc.status === 'uploaded'
+                              ? 'secondary'
+                              : 'outline'
+                        }
+                      >
                         {doc.status}
                       </Badge>
                       {doc.status === 'pending' && (
@@ -323,43 +336,57 @@ export default function TenderDetailPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-400 mb-2">Bid Strategy</p>
                     <div className="flex items-center gap-3">
                       <Target className="h-5 w-5 text-amber-400" />
-                      <p className="text-xl font-semibold text-white capitalize">{mockTenderDetail.bidStrategy.recommendation}</p>
+                      <p className="text-xl font-semibold text-white capitalize">
+                        {mockTenderDetail.bidStrategy.recommendation}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm text-gray-400 mb-2">Confidence Level</p>
                     <Progress value={mockTenderDetail.bidStrategy.confidence} className="h-3" />
-                    <p className="text-sm text-white mt-1">{mockTenderDetail.bidStrategy.confidence}% confidence</p>
+                    <p className="text-sm text-white mt-1">
+                      {mockTenderDetail.bidStrategy.confidence}% confidence
+                    </p>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm text-gray-400 mb-2">Suggested Margin</p>
-                    <p className="text-lg font-medium text-white">{mockTenderDetail.bidStrategy.suggestedMargin}</p>
+                    <p className="text-lg font-medium text-white">
+                      {mockTenderDetail.bidStrategy.suggestedMargin}
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
                     <span className="text-gray-400">Risk Level</span>
-                    <Badge variant={mockTenderDetail.bidStrategy.riskLevel === 'low' ? 'default' : 'secondary'}>
+                    <Badge
+                      variant={
+                        mockTenderDetail.bidStrategy.riskLevel === 'low' ? 'default' : 'secondary'
+                      }
+                    >
                       {mockTenderDetail.bidStrategy.riskLevel}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
                     <span className="text-gray-400">Competitors</span>
-                    <span className="text-white font-medium">{mockTenderDetail.bidStrategy.competitorCount}</span>
+                    <span className="text-white font-medium">
+                      {mockTenderDetail.bidStrategy.competitorCount}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg bg-gray-700/30">
                     <span className="text-gray-400">Historical Win Rate</span>
-                    <span className="text-white font-medium">{mockTenderDetail.bidStrategy.historicalWinRate}</span>
+                    <span className="text-white font-medium">
+                      {mockTenderDetail.bidStrategy.historicalWinRate}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -367,10 +394,7 @@ export default function TenderDetailPage() {
           </TabsContent>
 
           <TabsContent value="workflow" className="space-y-6">
-            <TenderWorkflowStatus 
-              tenderCode={mockTenderDetail.code}
-              currentStage="bidding"
-            />
+            <TenderWorkflowStatus tenderCode={mockTenderDetail.code} currentStage="bidding" />
           </TabsContent>
 
           <TabsContent value="timeline" className="space-y-6">
@@ -380,11 +404,15 @@ export default function TenderDetailPage() {
                 {mockTenderDetail.timeline.map((item, index) => (
                   <div key={index} className="flex items-start gap-4">
                     <div className="flex flex-col items-center">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        item.status === 'completed' ? 'bg-green-600/20' :
-                        item.status === 'pending' ? 'bg-amber-600/20' :
-                        'bg-gray-600/20'
-                      }`}>
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          item.status === 'completed'
+                            ? 'bg-green-600/20'
+                            : item.status === 'pending'
+                              ? 'bg-amber-600/20'
+                              : 'bg-gray-600/20'
+                        }`}
+                      >
                         {item.status === 'completed' ? (
                           <CheckCircle className="h-5 w-5 text-green-400" />
                         ) : item.status === 'pending' ? (

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Settings,
   Save,
   Globe,
@@ -53,7 +53,7 @@ export default function FinanceSettingsPage() {
     multiCurrency: true,
     currencyDecimalPlaces: 2,
     dateFormat: 'DD/MM/YYYY',
-    
+
     // Accounting Settings
     accountingMethod: 'accrual',
     defaultPaymentTerms: 'NET30',
@@ -61,7 +61,7 @@ export default function FinanceSettingsPage() {
     defaultTaxRate: 5,
     requireApprovalAbove: 100000,
     allowNegativeInventory: false,
-    
+
     // Document Settings
     invoicePrefix: 'INV',
     receiptPrefix: 'RCP',
@@ -69,21 +69,21 @@ export default function FinanceSettingsPage() {
     journalPrefix: 'JE',
     nextInvoiceNumber: '2024-1616',
     autoGenerateNumbers: true,
-    
+
     // Security Settings
     requireDualApproval: true,
     dualApprovalThreshold: 500000,
     enforceSegregation: true,
     auditTrailRetention: 7,
     sessionTimeout: 30,
-    
+
     // Notifications
     emailMonthlyReports: true,
     emailPaymentReminders: true,
     emailBudgetAlerts: true,
     alertThreshold: 90,
     notificationEmail: 'finance@keralavision.com',
-    
+
     // Integration Settings
     enableBankSync: false,
     enableAutoReconciliation: false,
@@ -93,12 +93,42 @@ export default function FinanceSettingsPage() {
   })
 
   const sections: SettingSection[] = [
-    { id: 'general', title: 'General Settings', description: 'Basic finance configuration', icon: Settings },
-    { id: 'accounting', title: 'Accounting', description: 'Accounting methods and policies', icon: Calculator },
-    { id: 'documents', title: 'Document Numbering', description: 'Invoice and document settings', icon: FileText },
-    { id: 'security', title: 'Security & Compliance', description: 'Access control and audit settings', icon: Shield },
-    { id: 'notifications', title: 'Notifications', description: 'Email alerts and reminders', icon: Bell },
-    { id: 'integration', title: 'Integration', description: 'Third-party connections', icon: Database }
+    {
+      id: 'general',
+      title: 'General Settings',
+      description: 'Basic finance configuration',
+      icon: Settings
+    },
+    {
+      id: 'accounting',
+      title: 'Accounting',
+      description: 'Accounting methods and policies',
+      icon: Calculator
+    },
+    {
+      id: 'documents',
+      title: 'Document Numbering',
+      description: 'Invoice and document settings',
+      icon: FileText
+    },
+    {
+      id: 'security',
+      title: 'Security & Compliance',
+      description: 'Access control and audit settings',
+      icon: Shield
+    },
+    {
+      id: 'notifications',
+      title: 'Notifications',
+      description: 'Email alerts and reminders',
+      icon: Bell
+    },
+    {
+      id: 'integration',
+      title: 'Integration',
+      description: 'Third-party connections',
+      icon: Database
+    }
   ]
 
   const supabase = createClientComponentClient()
@@ -144,7 +174,7 @@ export default function FinanceSettingsPage() {
               <span className="text-emerald-400">Settings saved successfully</span>
             </div>
           )}
-          <button 
+          <button
             onClick={handleSave}
             disabled={isSaving}
             className={`flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg text-white font-medium hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 ${
@@ -166,7 +196,7 @@ export default function FinanceSettingsPage() {
         <div className="lg:w-64">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
             <nav className="space-y-1">
-              {sections.map((section) => {
+              {sections.map(section => {
                 const Icon = section.icon
                 const isActive = activeSection === section.id
                 return (
@@ -181,9 +211,7 @@ export default function FinanceSettingsPage() {
                   >
                     <Icon className={`h-5 w-5 ${isActive ? 'text-emerald-400' : ''}`} />
                     <span>{section.title}</span>
-                    {isActive && (
-                      <ChevronRight className="h-4 w-4 ml-auto text-emerald-400" />
-                    )}
+                    {isActive && <ChevronRight className="h-4 w-4 ml-auto text-emerald-400" />}
                   </button>
                 )
               })}
@@ -209,7 +237,7 @@ export default function FinanceSettingsPage() {
                     <input
                       type="text"
                       value={settings.fiscalYearStart}
-                      onChange={(e) => handleInputChange('fiscalYearStart', e.target.value)}
+                      onChange={e => handleInputChange('fiscalYearStart', e.target.value)}
                       placeholder="MM-DD"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
@@ -222,7 +250,7 @@ export default function FinanceSettingsPage() {
                     <input
                       type="text"
                       value={settings.fiscalYearEnd}
-                      onChange={(e) => handleInputChange('fiscalYearEnd', e.target.value)}
+                      onChange={e => handleInputChange('fiscalYearEnd', e.target.value)}
                       placeholder="MM-DD"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
@@ -234,7 +262,7 @@ export default function FinanceSettingsPage() {
                     </label>
                     <select
                       value={settings.baseCurrency}
-                      onChange={(e) => handleInputChange('baseCurrency', e.target.value)}
+                      onChange={e => handleInputChange('baseCurrency', e.target.value)}
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     >
                       <option value="INR">INR - Indian Rupee</option>
@@ -250,7 +278,7 @@ export default function FinanceSettingsPage() {
                     </label>
                     <select
                       value={settings.dateFormat}
-                      onChange={(e) => handleInputChange('dateFormat', e.target.value)}
+                      onChange={e => handleInputChange('dateFormat', e.target.value)}
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     >
                       <option value="DD/MM/YYYY">DD/MM/YYYY</option>
@@ -264,12 +292,11 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Enable Multi-Currency</p>
-                      <p className="text-sm text-white/60">Support transactions in multiple currencies</p>
+                      <p className="text-sm text-white/60">
+                        Support transactions in multiple currencies
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleToggle('multiCurrency')}
-                      className="relative"
-                    >
+                    <button onClick={() => handleToggle('multiCurrency')} className="relative">
                       {settings.multiCurrency ? (
                         <ToggleRight className="h-8 w-8 text-emerald-400" />
                       ) : (
@@ -328,7 +355,7 @@ export default function FinanceSettingsPage() {
                       </label>
                       <select
                         value={settings.defaultPaymentTerms}
-                        onChange={(e) => handleInputChange('defaultPaymentTerms', e.target.value)}
+                        onChange={e => handleInputChange('defaultPaymentTerms', e.target.value)}
                         className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-emerald-500 transition-colors"
                       >
                         <option value="NET15">Net 15 Days</option>
@@ -346,7 +373,9 @@ export default function FinanceSettingsPage() {
                       <input
                         type="number"
                         value={settings.requireApprovalAbove}
-                        onChange={(e) => handleInputChange('requireApprovalAbove', parseInt(e.target.value))}
+                        onChange={e =>
+                          handleInputChange('requireApprovalAbove', parseInt(e.target.value))
+                        }
                         className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
@@ -356,7 +385,9 @@ export default function FinanceSettingsPage() {
                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                       <div>
                         <p className="font-medium text-white">Enable Tax Calculation</p>
-                        <p className="text-sm text-white/60">Automatically calculate tax on transactions</p>
+                        <p className="text-sm text-white/60">
+                          Automatically calculate tax on transactions
+                        </p>
                       </div>
                       <button
                         onClick={() => handleToggle('enableTaxCalculation')}
@@ -378,7 +409,9 @@ export default function FinanceSettingsPage() {
                         <input
                           type="number"
                           value={settings.defaultTaxRate}
-                          onChange={(e) => handleInputChange('defaultTaxRate', parseFloat(e.target.value))}
+                          onChange={e =>
+                            handleInputChange('defaultTaxRate', parseFloat(e.target.value))
+                          }
                           className="w-32 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
@@ -387,7 +420,9 @@ export default function FinanceSettingsPage() {
                     <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                       <div>
                         <p className="font-medium text-white">Allow Negative Inventory</p>
-                        <p className="text-sm text-white/60">Permit transactions that result in negative stock</p>
+                        <p className="text-sm text-white/60">
+                          Permit transactions that result in negative stock
+                        </p>
                       </div>
                       <button
                         onClick={() => handleToggle('allowNegativeInventory')}
@@ -409,14 +444,18 @@ export default function FinanceSettingsPage() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl font-semibold text-white mb-4">Document Numbering</h2>
-                  <p className="text-white/60 mb-6">Configure document prefixes and numbering sequences</p>
+                  <p className="text-white/60 mb-6">
+                    Configure document prefixes and numbering sequences
+                  </p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Auto-Generate Document Numbers</p>
-                      <p className="text-sm text-white/60">Automatically assign sequential numbers to documents</p>
+                      <p className="text-sm text-white/60">
+                        Automatically assign sequential numbers to documents
+                      </p>
                     </div>
                     <button
                       onClick={() => handleToggle('autoGenerateNumbers')}
@@ -441,7 +480,7 @@ export default function FinanceSettingsPage() {
                       <input
                         type="text"
                         value={settings.invoicePrefix}
-                        onChange={(e) => handleInputChange('invoicePrefix', e.target.value)}
+                        onChange={e => handleInputChange('invoicePrefix', e.target.value)}
                         className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
@@ -456,7 +495,7 @@ export default function FinanceSettingsPage() {
                       <input
                         type="text"
                         value={settings.receiptPrefix}
-                        onChange={(e) => handleInputChange('receiptPrefix', e.target.value)}
+                        onChange={e => handleInputChange('receiptPrefix', e.target.value)}
                         className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
@@ -471,7 +510,7 @@ export default function FinanceSettingsPage() {
                       <input
                         type="text"
                         value={settings.paymentPrefix}
-                        onChange={(e) => handleInputChange('paymentPrefix', e.target.value)}
+                        onChange={e => handleInputChange('paymentPrefix', e.target.value)}
                         className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
@@ -486,7 +525,7 @@ export default function FinanceSettingsPage() {
                       <input
                         type="text"
                         value={settings.journalPrefix}
-                        onChange={(e) => handleInputChange('journalPrefix', e.target.value)}
+                        onChange={e => handleInputChange('journalPrefix', e.target.value)}
                         className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
@@ -500,10 +539,12 @@ export default function FinanceSettingsPage() {
                   <input
                     type="text"
                     value={settings.nextInvoiceNumber}
-                    onChange={(e) => handleInputChange('nextInvoiceNumber', e.target.value)}
+                    onChange={e => handleInputChange('nextInvoiceNumber', e.target.value)}
                     className="w-full max-w-xs px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                   />
-                  <p className="text-xs text-white/40 mt-1">This will be used for the next generated invoice</p>
+                  <p className="text-xs text-white/40 mt-1">
+                    This will be used for the next generated invoice
+                  </p>
                 </div>
               </div>
             )}
@@ -512,14 +553,18 @@ export default function FinanceSettingsPage() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl font-semibold text-white mb-4">Security & Compliance</h2>
-                  <p className="text-white/60 mb-6">Configure access controls and audit requirements</p>
+                  <p className="text-white/60 mb-6">
+                    Configure access controls and audit requirements
+                  </p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Require Dual Approval</p>
-                      <p className="text-sm text-white/60">Two approvals needed for high-value transactions</p>
+                      <p className="text-sm text-white/60">
+                        Two approvals needed for high-value transactions
+                      </p>
                     </div>
                     <button
                       onClick={() => handleToggle('requireDualApproval')}
@@ -541,7 +586,9 @@ export default function FinanceSettingsPage() {
                       <input
                         type="number"
                         value={settings.dualApprovalThreshold}
-                        onChange={(e) => handleInputChange('dualApprovalThreshold', parseInt(e.target.value))}
+                        onChange={e =>
+                          handleInputChange('dualApprovalThreshold', parseInt(e.target.value))
+                        }
                         className="w-48 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
                     </div>
@@ -550,12 +597,11 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Enforce Segregation of Duties</p>
-                      <p className="text-sm text-white/60">Prevent users from approving their own transactions</p>
+                      <p className="text-sm text-white/60">
+                        Prevent users from approving their own transactions
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleToggle('enforceSegregation')}
-                      className="relative"
-                    >
+                    <button onClick={() => handleToggle('enforceSegregation')} className="relative">
                       {settings.enforceSegregation ? (
                         <ToggleRight className="h-8 w-8 text-emerald-400" />
                       ) : (
@@ -573,7 +619,9 @@ export default function FinanceSettingsPage() {
                     <input
                       type="number"
                       value={settings.auditTrailRetention}
-                      onChange={(e) => handleInputChange('auditTrailRetention', parseInt(e.target.value))}
+                      onChange={e =>
+                        handleInputChange('auditTrailRetention', parseInt(e.target.value))
+                      }
                       min="1"
                       max="10"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
@@ -587,7 +635,7 @@ export default function FinanceSettingsPage() {
                     <input
                       type="number"
                       value={settings.sessionTimeout}
-                      onChange={(e) => handleInputChange('sessionTimeout', parseInt(e.target.value))}
+                      onChange={e => handleInputChange('sessionTimeout', parseInt(e.target.value))}
                       min="5"
                       max="120"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
@@ -601,8 +649,8 @@ export default function FinanceSettingsPage() {
                     <div>
                       <p className="text-sm font-medium text-amber-400">Compliance Note</p>
                       <p className="text-sm text-white/60 mt-1">
-                        These settings help ensure compliance with financial regulations. Consult with your compliance
-                        officer before making changes.
+                        These settings help ensure compliance with financial regulations. Consult
+                        with your compliance officer before making changes.
                       </p>
                     </div>
                   </div>
@@ -614,7 +662,9 @@ export default function FinanceSettingsPage() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl font-semibold text-white mb-4">Notification Settings</h2>
-                  <p className="text-white/60 mb-6">Configure email alerts and automated reminders</p>
+                  <p className="text-white/60 mb-6">
+                    Configure email alerts and automated reminders
+                  </p>
                 </div>
 
                 <div>
@@ -626,7 +676,7 @@ export default function FinanceSettingsPage() {
                     <input
                       type="email"
                       value={settings.notificationEmail}
-                      onChange={(e) => handleInputChange('notificationEmail', e.target.value)}
+                      onChange={e => handleInputChange('notificationEmail', e.target.value)}
                       className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       placeholder="finance@company.com"
                     />
@@ -637,7 +687,9 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Monthly Financial Reports</p>
-                      <p className="text-sm text-white/60">Receive monthly P&L, balance sheet, and cash flow</p>
+                      <p className="text-sm text-white/60">
+                        Receive monthly P&L, balance sheet, and cash flow
+                      </p>
                     </div>
                     <button
                       onClick={() => handleToggle('emailMonthlyReports')}
@@ -654,7 +706,9 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Payment Reminders</p>
-                      <p className="text-sm text-white/60">Send automated reminders for overdue payments</p>
+                      <p className="text-sm text-white/60">
+                        Send automated reminders for overdue payments
+                      </p>
                     </div>
                     <button
                       onClick={() => handleToggle('emailPaymentReminders')}
@@ -671,12 +725,11 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Budget Alerts</p>
-                      <p className="text-sm text-white/60">Alert when spending exceeds budget threshold</p>
+                      <p className="text-sm text-white/60">
+                        Alert when spending exceeds budget threshold
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleToggle('emailBudgetAlerts')}
-                      className="relative"
-                    >
+                    <button onClick={() => handleToggle('emailBudgetAlerts')} className="relative">
                       {settings.emailBudgetAlerts ? (
                         <ToggleRight className="h-8 w-8 text-emerald-400" />
                       ) : (
@@ -693,12 +746,16 @@ export default function FinanceSettingsPage() {
                       <input
                         type="number"
                         value={settings.alertThreshold}
-                        onChange={(e) => handleInputChange('alertThreshold', parseInt(e.target.value))}
+                        onChange={e =>
+                          handleInputChange('alertThreshold', parseInt(e.target.value))
+                        }
                         min="50"
                         max="100"
                         className="w-32 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                       />
-                      <p className="text-xs text-white/40 mt-1">Alert when budget usage reaches this percentage</p>
+                      <p className="text-xs text-white/40 mt-1">
+                        Alert when budget usage reaches this percentage
+                      </p>
                     </div>
                   )}
                 </div>
@@ -709,19 +766,20 @@ export default function FinanceSettingsPage() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl font-semibold text-white mb-4">Integration Settings</h2>
-                  <p className="text-white/60 mb-6">Configure third-party connections and data exchange</p>
+                  <p className="text-white/60 mb-6">
+                    Configure third-party connections and data exchange
+                  </p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Bank Account Sync</p>
-                      <p className="text-sm text-white/60">Automatically import bank transactions</p>
+                      <p className="text-sm text-white/60">
+                        Automatically import bank transactions
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleToggle('enableBankSync')}
-                      className="relative"
-                    >
+                    <button onClick={() => handleToggle('enableBankSync')} className="relative">
                       {settings.enableBankSync ? (
                         <ToggleRight className="h-8 w-8 text-emerald-400" />
                       ) : (
@@ -733,7 +791,9 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">Auto-Reconciliation</p>
-                      <p className="text-sm text-white/60">Automatically match transactions with bank records</p>
+                      <p className="text-sm text-white/60">
+                        Automatically match transactions with bank records
+                      </p>
                     </div>
                     <button
                       onClick={() => handleToggle('enableAutoReconciliation')}
@@ -750,12 +810,11 @@ export default function FinanceSettingsPage() {
                   <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                     <div>
                       <p className="font-medium text-white">API Access</p>
-                      <p className="text-sm text-white/60">Enable programmatic access to financial data</p>
+                      <p className="text-sm text-white/60">
+                        Enable programmatic access to financial data
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleToggle('apiAccessEnabled')}
-                      className="relative"
-                    >
+                    <button onClick={() => handleToggle('apiAccessEnabled')} className="relative">
                       {settings.apiAccessEnabled ? (
                         <ToggleRight className="h-8 w-8 text-emerald-400" />
                       ) : (
@@ -772,11 +831,13 @@ export default function FinanceSettingsPage() {
                   <input
                     type="url"
                     value={settings.webhookUrl}
-                    onChange={(e) => handleInputChange('webhookUrl', e.target.value)}
+                    onChange={e => handleInputChange('webhookUrl', e.target.value)}
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                     placeholder="https://your-system.com/webhook"
                   />
-                  <p className="text-xs text-white/40 mt-1">Receive real-time notifications of financial events</p>
+                  <p className="text-xs text-white/40 mt-1">
+                    Receive real-time notifications of financial events
+                  </p>
                 </div>
 
                 <div>
@@ -785,7 +846,7 @@ export default function FinanceSettingsPage() {
                   </label>
                   <select
                     value={settings.dataExportFormat}
-                    onChange={(e) => handleInputChange('dataExportFormat', e.target.value)}
+                    onChange={e => handleInputChange('dataExportFormat', e.target.value)}
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-emerald-500 transition-colors"
                   >
                     <option value="excel">Excel (.xlsx)</option>
@@ -801,9 +862,13 @@ export default function FinanceSettingsPage() {
                     <div>
                       <p className="text-sm font-medium text-blue-400">API Documentation</p>
                       <p className="text-sm text-white/60 mt-1">
-                        Visit our developer portal for complete API documentation and integration guides.
+                        Visit our developer portal for complete API documentation and integration
+                        guides.
                       </p>
-                      <a href="#" className="text-sm text-blue-400 hover:text-blue-300 mt-2 inline-flex items-center space-x-1">
+                      <a
+                        href="#"
+                        className="text-sm text-blue-400 hover:text-blue-300 mt-2 inline-flex items-center space-x-1"
+                      >
                         <span>View API Docs</span>
                         <ChevronRight className="h-4 w-4" />
                       </a>

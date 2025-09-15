@@ -6,10 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
   ShoppingCart,
   Users,
   Package,
@@ -88,7 +88,7 @@ interface MenuPerformance {
 export function RestaurantFinancialDashboard() {
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month' | 'year'>('today')
   const [loading, setLoading] = useState(false)
-  
+
   // Demo data - would come from HERA Universal API
   const metrics: FinancialMetrics = {
     revenue: {
@@ -111,7 +111,7 @@ export function RestaurantFinancialDashboard() {
       netMargin: 22
     },
     kpis: {
-      averageCheck: 48.50,
+      averageCheck: 48.5,
       tablesTurned: 3.2,
       laborCost: 28,
       foodCost: 30,
@@ -133,10 +133,25 @@ export function RestaurantFinancialDashboard() {
       { name: 'Quinoa Salad', category: 'Appetizer', sold: 8, waste: 12 }
     ],
     categoryBreakdown: [
-      { category: 'Mains', revenue: 4350, percentage: 49.7, icon: <Utensils className="w-4 h-4" /> },
-      { category: 'Appetizers', revenue: 1750, percentage: 20, icon: <Salad className="w-4 h-4" /> },
+      {
+        category: 'Mains',
+        revenue: 4350,
+        percentage: 49.7,
+        icon: <Utensils className="w-4 h-4" />
+      },
+      {
+        category: 'Appetizers',
+        revenue: 1750,
+        percentage: 20,
+        icon: <Salad className="w-4 h-4" />
+      },
       { category: 'Beverages', revenue: 1400, percentage: 16, icon: <Wine className="w-4 h-4" /> },
-      { category: 'Desserts', revenue: 1250, percentage: 14.3, icon: <Cookie className="w-4 h-4" /> }
+      {
+        category: 'Desserts',
+        revenue: 1250,
+        percentage: 14.3,
+        icon: <Cookie className="w-4 h-4" />
+      }
     ]
   }
 
@@ -173,10 +188,12 @@ export function RestaurantFinancialDashboard() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
             Financial Dashboard
           </h1>
-          <p className="text-gray-600 mt-1">Real-time financial metrics and profitability analysis</p>
+          <p className="text-gray-600 mt-1">
+            Real-time financial metrics and profitability analysis
+          </p>
         </div>
         <div className="flex gap-2">
-          {(['today', 'week', 'month', 'year'] as const).map((range) => (
+          {(['today', 'week', 'month', 'year'] as const).map(range => (
             <Button
               key={range}
               variant={timeRange === range ? 'default' : 'outline'}
@@ -219,9 +236,7 @@ export function RestaurantFinancialDashboard() {
                 <p className="text-2xl font-bold text-green-600">
                   ${metrics.profitability.netProfit.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-500">
-                  Margin: {metrics.profitability.netMargin}%
-                </p>
+                <p className="text-sm text-gray-500">Margin: {metrics.profitability.netMargin}%</p>
               </div>
               <Target className="w-8 h-8 text-green-400 opacity-50" />
             </div>
@@ -235,12 +250,10 @@ export function RestaurantFinancialDashboard() {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className={cn("text-2xl font-bold", getCostColor(metrics.kpis.foodCost))}>
+                <p className={cn('text-2xl font-bold', getCostColor(metrics.kpis.foodCost))}>
                   {metrics.kpis.foodCost}%
                 </p>
-                <p className="text-sm text-gray-500">
-                  ${metrics.costs.food.toLocaleString()}
-                </p>
+                <p className="text-sm text-gray-500">${metrics.costs.food.toLocaleString()}</p>
               </div>
               <Package className="w-8 h-8 text-amber-400 opacity-50" />
             </div>
@@ -254,12 +267,10 @@ export function RestaurantFinancialDashboard() {
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
-                <p className={cn("text-2xl font-bold", getCostColor(metrics.kpis.laborCost))}>
+                <p className={cn('text-2xl font-bold', getCostColor(metrics.kpis.laborCost))}>
                   {metrics.kpis.laborCost}%
                 </p>
-                <p className="text-sm text-gray-500">
-                  ${metrics.costs.labor.toLocaleString()}
-                </p>
+                <p className="text-sm text-gray-500">${metrics.costs.labor.toLocaleString()}</p>
               </div>
               <Users className="w-8 h-8 text-blue-400 opacity-50" />
             </div>
@@ -311,9 +322,14 @@ export function RestaurantFinancialDashboard() {
                   <div>
                     <div className="flex justify-between mb-1">
                       <span className="text-sm font-bold">Net Profit</span>
-                      <span className="text-sm font-bold text-green-600">{metrics.profitability.netMargin}%</span>
+                      <span className="text-sm font-bold text-green-600">
+                        {metrics.profitability.netMargin}%
+                      </span>
                     </div>
-                    <Progress value={metrics.profitability.netMargin} className="h-2 bg-green-100" />
+                    <Progress
+                      value={metrics.profitability.netMargin}
+                      className="h-2 bg-green-100"
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -331,14 +347,18 @@ export function RestaurantFinancialDashboard() {
                   <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
                     <div>
                       <p className="text-sm text-gray-600">Average Check</p>
-                      <p className="text-xl font-bold text-orange-600">${metrics.kpis.averageCheck}</p>
+                      <p className="text-xl font-bold text-orange-600">
+                        ${metrics.kpis.averageCheck}
+                      </p>
                     </div>
                     <Receipt className="w-6 h-6 text-orange-400" />
                   </div>
                   <div className="flex justify-between items-center p-3 bg-amber-50 rounded-lg">
                     <div>
                       <p className="text-sm text-gray-600">Tables Turned</p>
-                      <p className="text-xl font-bold text-amber-600">{metrics.kpis.tablesTurned}x</p>
+                      <p className="text-xl font-bold text-amber-600">
+                        {metrics.kpis.tablesTurned}x
+                      </p>
                     </div>
                     <Clock className="w-6 h-6 text-amber-400" />
                   </div>
@@ -367,16 +387,17 @@ export function RestaurantFinancialDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {menuPerformance.topSellers.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 hover:bg-orange-50 rounded-lg transition-colors">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 hover:bg-orange-50 rounded-lg transition-colors"
+                    >
                       <div className="flex-1">
                         <p className="font-medium">{item.name}</p>
                         <div className="flex gap-2 mt-1">
                           <Badge variant="outline" className="text-xs">
                             {item.category}
                           </Badge>
-                          <span className="text-xs text-gray-500">
-                            {item.sold} sold
-                          </span>
+                          <span className="text-xs text-gray-500">{item.sold} sold</span>
                         </div>
                       </div>
                       <div className="text-right">
@@ -453,9 +474,9 @@ export function RestaurantFinancialDashboard() {
                     <p className="text-sm text-gray-600 mb-2">Food Cost Target</p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-bold">28-32%</p>
-                      <Badge className={cn(
-                        metrics.kpis.foodCost <= 32 ? 'bg-green-500' : 'bg-red-500'
-                      )}>
+                      <Badge
+                        className={cn(metrics.kpis.foodCost <= 32 ? 'bg-green-500' : 'bg-red-500')}
+                      >
                         {metrics.kpis.foodCost}%
                       </Badge>
                     </div>
@@ -464,9 +485,9 @@ export function RestaurantFinancialDashboard() {
                     <p className="text-sm text-gray-600 mb-2">Labor Cost Target</p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-bold">25-30%</p>
-                      <Badge className={cn(
-                        metrics.kpis.laborCost <= 30 ? 'bg-green-500' : 'bg-red-500'
-                      )}>
+                      <Badge
+                        className={cn(metrics.kpis.laborCost <= 30 ? 'bg-green-500' : 'bg-red-500')}
+                      >
                         {metrics.kpis.laborCost}%
                       </Badge>
                     </div>
@@ -475,9 +496,9 @@ export function RestaurantFinancialDashboard() {
                     <p className="text-sm text-gray-600 mb-2">Prime Cost Target</p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-bold">55-60%</p>
-                      <Badge className={cn(
-                        metrics.kpis.primeCost <= 60 ? 'bg-green-500' : 'bg-red-500'
-                      )}>
+                      <Badge
+                        className={cn(metrics.kpis.primeCost <= 60 ? 'bg-green-500' : 'bg-red-500')}
+                      >
                         {metrics.kpis.primeCost}%
                       </Badge>
                     </div>

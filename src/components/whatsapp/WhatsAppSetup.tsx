@@ -1,54 +1,54 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { 
-  MessageCircle, 
-  Settings, 
-  BarChart3, 
-  CheckCircle2, 
-  Clock, 
+import React, { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import {
+  MessageCircle,
+  Settings,
+  BarChart3,
+  CheckCircle2,
+  Clock,
   AlertCircle,
   Phone,
   Bot,
   Users,
   TrendingUp
-} from 'lucide-react';
-import { createWhatsAppClient } from '@/lib/whatsapp/whatsapp-client';
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider';
+} from 'lucide-react'
+import { createWhatsAppClient } from '@/lib/whatsapp/whatsapp-client'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 export function WhatsAppSetup() {
-  const { currentOrganization } = useMultiOrgAuth();
-  const [loading, setLoading] = useState(false);
-  const [setupComplete, setSetupComplete] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [displayName, setDisplayName] = useState('');
+  const { currentOrganization } = useMultiOrgAuth()
+  const [loading, setLoading] = useState(false)
+  const [setupComplete, setSetupComplete] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [displayName, setDisplayName] = useState('')
 
   const handleSetup = async () => {
-    if (!currentOrganization || !phoneNumber || !displayName) return;
+    if (!currentOrganization || !phoneNumber || !displayName) return
 
-    setLoading(true);
+    setLoading(true)
     try {
-      const client = createWhatsAppClient(currentOrganization.id);
-      
+      const client = createWhatsAppClient(currentOrganization.id)
+
       // Check if account already exists
-      const existing = await client.getWhatsAppAccount();
+      const existing = await client.getWhatsAppAccount()
       if (existing) {
-        setSetupComplete(true);
-        return;
+        setSetupComplete(true)
+        return
       }
 
       // Create new account
       const account = await client.createWhatsAppAccount({
         phone_number: phoneNumber,
         display_name: displayName
-      });
+      })
 
       if (account) {
         // Create default booking flow
@@ -56,26 +56,24 @@ export function WhatsAppSetup() {
           serviceTypes: ['haircut', 'color', 'highlights', 'treatment'],
           enableStylistSelection: true,
           requireDeposit: false
-        });
+        })
 
-        setSetupComplete(true);
+        setSetupComplete(true)
       }
     } catch (error) {
-      console.error('Setup error:', error);
+      console.error('Setup error:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (!currentOrganization) {
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Please select an organization to set up WhatsApp.
-        </AlertDescription>
+        <AlertDescription>Please select an organization to set up WhatsApp.</AlertDescription>
       </Alert>
-    );
+    )
   }
 
   if (setupComplete) {
@@ -86,9 +84,7 @@ export function WhatsAppSetup() {
             <CheckCircle2 className="h-5 w-5 text-green-500" />
             WhatsApp Business Setup Complete
           </CardTitle>
-          <CardDescription>
-            Your WhatsApp Business account is ready to use
-          </CardDescription>
+          <CardDescription>Your WhatsApp Business account is ready to use</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -134,7 +130,7 @@ export function WhatsAppSetup() {
           </div>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
@@ -160,7 +156,7 @@ export function WhatsAppSetup() {
                 id="phone"
                 placeholder="+971 50 123 4567"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={e => setPhoneNumber(e.target.value)}
               />
               <p className="text-sm text-muted-foreground">
                 Enter your WhatsApp Business phone number with country code
@@ -173,15 +169,15 @@ export function WhatsAppSetup() {
                 id="name"
                 placeholder="Hair Talkz Karama"
                 value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
+                onChange={e => setDisplayName(e.target.value)}
               />
               <p className="text-sm text-muted-foreground">
                 This name will appear in WhatsApp conversations
               </p>
             </div>
 
-            <Button 
-              onClick={handleSetup} 
+            <Button
+              onClick={handleSetup}
               disabled={loading || !phoneNumber || !displayName}
               className="w-full"
             >
@@ -302,12 +298,13 @@ export function WhatsAppSetup() {
                   conversion: '45%',
                   icon: <Clock className="h-4 w-4" />
                 }
-              ].map((flow) => (
-                <div key={flow.name} className="flex items-center justify-between p-4 border rounded-lg">
+              ].map(flow => (
+                <div
+                  key={flow.name}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      {flow.icon}
-                    </div>
+                    <div className="p-2 bg-primary/10 rounded-lg">{flow.icon}</div>
                     <div>
                       <p className="font-medium">{flow.name}</p>
                       <p className="text-sm text-muted-foreground">{flow.trigger}</p>
@@ -321,5 +318,5 @@ export function WhatsAppSetup() {
         </Card>
       </TabsContent>
     </Tabs>
-  );
+  )
 }

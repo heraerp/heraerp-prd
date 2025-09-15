@@ -92,9 +92,11 @@ export function RealTimeStatus({
             {getConnectionStatusIcon()}
             <div>
               <Badge className={getConnectionStatusColor()}>
-                {connectionState === 'Open' ? 'Connected' : 
-                 connectionState === 'Fallback' ? 'HTTP Polling' : 
-                 connectionState}
+                {connectionState === 'Open'
+                  ? 'Connected'
+                  : connectionState === 'Fallback'
+                    ? 'HTTP Polling'
+                    : connectionState}
               </Badge>
               <p className="text-xs text-gray-500 mt-1">Real-time Updates</p>
             </div>
@@ -106,21 +108,19 @@ export function RealTimeStatus({
               <Clock className="w-4 h-4" />
               <div>
                 <p className="font-medium">Last Update</p>
-                <p className="text-xs">
-                  {formatDate(new Date(lastUpdate.timestamp), 'HH:mm:ss')}
-                </p>
+                <p className="text-xs">{formatDate(new Date(lastUpdate.timestamp), 'HH:mm:ss')}</p>
               </div>
             </div>
           )}
 
           {/* Activity Indicator */}
           <div className="flex items-center space-x-2">
-            <div className={`w-2 h-2 rounded-full ${
-              isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
-            }`} />
-            <span className="text-xs text-gray-500">
-              {isConnected ? 'Live' : 'Offline'}
-            </span>
+            <div
+              className={`w-2 h-2 rounded-full ${
+                isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
+              }`}
+            />
+            <span className="text-xs text-gray-500">{isConnected ? 'Live' : 'Offline'}</span>
           </div>
         </div>
 
@@ -179,12 +179,17 @@ export function RealTimeStatus({
       {lastUpdate && (
         <div className="mt-4 pt-4 border-t border-gray-100">
           <div className="flex items-center space-x-3 text-sm">
-            <div className={`w-3 h-3 rounded-full ${
-              lastUpdate.new_status === 'occupied' ? 'bg-red-500' :
-              lastUpdate.new_status === 'available' ? 'bg-green-500' :
-              lastUpdate.new_status === 'reserved' ? 'bg-yellow-500' :
-              'bg-blue-500'
-            }`} />
+            <div
+              className={`w-3 h-3 rounded-full ${
+                lastUpdate.new_status === 'occupied'
+                  ? 'bg-red-500'
+                  : lastUpdate.new_status === 'available'
+                    ? 'bg-green-500'
+                    : lastUpdate.new_status === 'reserved'
+                      ? 'bg-yellow-500'
+                      : 'bg-blue-500'
+              }`}
+            />
             <div className="flex-1">
               <p className="font-medium">
                 Table {lastUpdate.table_id} → {lastUpdate.new_status}

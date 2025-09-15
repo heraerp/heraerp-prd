@@ -3,11 +3,11 @@ import { financialSmartCode } from '@/services/FinancialSmartCodeService'
 
 /**
  * Financial Smart Code API - HERA Smart Code Integration for Financial Module
- * 
+ *
  * Endpoints:
  * - POST: Generate smart codes for financial entities/transactions
  * - GET: Search and validate financial smart codes
- * 
+ *
  * Smart Code Pattern: HERA.FIN.{SUB}.{FUNCTION}.{TYPE}.{VERSION}
  */
 
@@ -21,20 +21,16 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'generate':
         return await handleGenerateSmartCode(body)
-      
+
       case 'validate':
         return await handleValidateSmartCode(body)
-        
+
       case 'business_rules':
         return await handleGetBusinessRules(body)
-        
-      default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
-    }
 
+      default:
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
+    }
   } catch (error) {
     console.error('Financial Smart Code API error:', error)
     return NextResponse.json(
@@ -46,12 +42,7 @@ export async function POST(request: NextRequest) {
 
 // Handle smart code generation
 async function handleGenerateSmartCode(body: any) {
-  const {
-    organizationId,
-    businessContext,
-    description,
-    existingCode
-  } = body
+  const { organizationId, businessContext, description, existingCode } = body
 
   // Validation
   if (!organizationId || !businessContext) {
@@ -81,27 +72,20 @@ async function handleGenerateSmartCode(body: any) {
         metadata: result.metadata,
         similarCodes: result.similarCodes,
         validation: result.validation,
-        smartCodePrinciple: 'HERA Smart Code: Intelligent business logic embedded in every transaction'
+        smartCodePrinciple:
+          'HERA Smart Code: Intelligent business logic embedded in every transaction'
       },
       message: 'Financial Smart Code generated successfully'
     })
-
   } catch (error) {
     console.error('❌ Failed to generate Financial Smart Code:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
 // Handle smart code validation
 async function handleValidateSmartCode(body: any) {
-  const {
-    smartCode,
-    organizationId,
-    validationLevel = 'L4_INTEGRATION'
-  } = body
+  const { smartCode, organizationId, validationLevel = 'L4_INTEGRATION' } = body
 
   if (!smartCode || !organizationId) {
     return NextResponse.json(
@@ -130,13 +114,9 @@ async function handleValidateSmartCode(body: any) {
       },
       message: `Smart code validation completed at ${validationLevel} level`
     })
-
   } catch (error) {
     console.error('❌ Smart code validation failed:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -165,13 +145,9 @@ async function handleGetBusinessRules(body: any) {
       },
       message: 'Business rules retrieved successfully'
     })
-
   } catch (error) {
     console.error('❌ Failed to get business rules:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
@@ -192,20 +168,16 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'search':
         return await handleSearchSmartCodes(searchParams)
-        
+
       case 'templates':
         return await handleGetSystemTemplates(searchParams)
-        
+
       case 'analytics':
         return await handleGetSmartCodeAnalytics(searchParams)
-        
-      default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
-    }
 
+      default:
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
+    }
   } catch (error) {
     console.error('Financial Smart Code GET error:', error)
     return NextResponse.json(
@@ -227,16 +199,12 @@ async function handleSearchSmartCodes(searchParams: URLSearchParams) {
   console.log('🔍 Searching Financial Smart Codes:', pattern)
 
   try {
-    const result = await financialSmartCode.searchSmartCodes(
-      organizationId,
-      pattern,
-      {
-        subModule: subModule as any,
-        functionType: functionType as any,
-        entityType,
-        includeSystem
-      }
-    )
+    const result = await financialSmartCode.searchSmartCodes(organizationId, pattern, {
+      subModule: subModule as any,
+      functionType: functionType as any,
+      entityType,
+      includeSystem
+    })
 
     return NextResponse.json({
       success: true,
@@ -254,20 +222,16 @@ async function handleSearchSmartCodes(searchParams: URLSearchParams) {
       },
       message: `Found ${result.totalCount} financial smart codes in ${result.searchTime}ms`
     })
-
   } catch (error) {
     console.error('❌ Smart code search failed:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
 // Handle system templates retrieval
 async function handleGetSystemTemplates(searchParams: URLSearchParams) {
   const organizationId = searchParams.get('organization_id')!
-  
+
   try {
     // Get system-level financial smart codes (templates)
     const result = await financialSmartCode.searchSmartCodes(
@@ -277,13 +241,16 @@ async function handleGetSystemTemplates(searchParams: URLSearchParams) {
     )
 
     // Group by sub-module
-    const groupedTemplates = result.codes.reduce((acc, code) => {
-      if (!acc[code.subModule]) {
-        acc[code.subModule] = []
-      }
-      acc[code.subModule].push(code)
-      return acc
-    }, {} as Record<string, typeof result.codes>)
+    const groupedTemplates = result.codes.reduce(
+      (acc, code) => {
+        if (!acc[code.subModule]) {
+          acc[code.subModule] = []
+        }
+        acc[code.subModule].push(code)
+        return acc
+      },
+      {} as Record<string, typeof result.codes>
+    )
 
     return NextResponse.json({
       success: true,
@@ -295,26 +262,19 @@ async function handleGetSystemTemplates(searchParams: URLSearchParams) {
       },
       message: `Found ${result.totalCount} system templates`
     })
-
   } catch (error) {
     console.error('❌ Failed to get system templates:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }
 
 // Handle smart code analytics
 async function handleGetSmartCodeAnalytics(searchParams: URLSearchParams) {
   const organizationId = searchParams.get('organization_id')!
-  
+
   try {
     // Get all financial smart codes for the organization
-    const result = await financialSmartCode.searchSmartCodes(
-      organizationId,
-      'HERA.FIN.%.%.%.%'
-    )
+    const result = await financialSmartCode.searchSmartCodes(organizationId, 'HERA.FIN.%.%.%.%')
 
     // Calculate analytics
     const analytics = {
@@ -333,7 +293,8 @@ async function handleGetSmartCodeAnalytics(searchParams: URLSearchParams) {
     // Group analytics
     result.codes.forEach(code => {
       analytics.bySubModule[code.subModule] = (analytics.bySubModule[code.subModule] || 0) + 1
-      analytics.byFunctionType[code.functionType] = (analytics.byFunctionType[code.functionType] || 0) + 1
+      analytics.byFunctionType[code.functionType] =
+        (analytics.byFunctionType[code.functionType] || 0) + 1
       analytics.byEntityType[code.entityType] = (analytics.byEntityType[code.entityType] || 0) + 1
     })
 
@@ -351,12 +312,8 @@ async function handleGetSmartCodeAnalytics(searchParams: URLSearchParams) {
       },
       message: 'Smart code analytics generated successfully'
     })
-
   } catch (error) {
     console.error('❌ Failed to generate analytics:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 })
   }
 }

@@ -18,7 +18,7 @@ export interface ValidationResult {
  * Check if a supplier exists in the system
  */
 export async function checkSupplierExists(
-  vendorName: string, 
+  vendorName: string,
   organizationId: string
 ): Promise<{ exists: boolean; supplierId?: string }> {
   try {
@@ -30,11 +30,11 @@ export async function checkSupplierExists(
       .ilike('entity_name', `%${vendorName}%`)
       .limit(1)
       .single()
-    
+
     if (error || !data) {
       return { exists: false }
     }
-    
+
     return { exists: true, supplierId: data.id }
   } catch (error) {
     console.error('Error checking supplier:', error)
@@ -52,34 +52,86 @@ export async function validateFurnitureInvoice(
 ): Promise<ValidationResult> {
   // Check if supplier exists
   const supplierCheck = await checkSupplierExists(vendorName, organizationId)
-  
+
   // Keywords for furniture business
   const furnitureKeywords = [
-    'wood', 'timber', 'plywood', 'veneer', 'lumber', 'mdf', 'particle board',
-    'hardware', 'hinge', 'drawer', 'handle', 'screw', 'nail', 'bracket',
-    'fabric', 'upholstery', 'foam', 'cushion', 'textile', 'leather',
-    'furniture', 'carpenter', 'woodwork', 'joinery', 'cabinet',
-    'polish', 'varnish', 'paint', 'coating', 'finish', 'stain',
-    'adhesive', 'glue', 'sandpaper', 'tools', 'saw', 'drill'
+    'wood',
+    'timber',
+    'plywood',
+    'veneer',
+    'lumber',
+    'mdf',
+    'particle board',
+    'hardware',
+    'hinge',
+    'drawer',
+    'handle',
+    'screw',
+    'nail',
+    'bracket',
+    'fabric',
+    'upholstery',
+    'foam',
+    'cushion',
+    'textile',
+    'leather',
+    'furniture',
+    'carpenter',
+    'woodwork',
+    'joinery',
+    'cabinet',
+    'polish',
+    'varnish',
+    'paint',
+    'coating',
+    'finish',
+    'stain',
+    'adhesive',
+    'glue',
+    'sandpaper',
+    'tools',
+    'saw',
+    'drill'
   ]
-  
+
   // Non-furniture indicators
   const nonFurnitureKeywords = [
-    'restaurant', 'food', 'beverage', 'grocery', 'meal',
-    'medical', 'pharma', 'hospital', 'clinic', 'doctor',
-    'software', 'technology', 'consulting', 'service',
-    'travel', 'hotel', 'flight', 'accommodation',
-    'telecom', 'mobile', 'internet', 'broadband',
-    'insurance', 'premium', 'policy', 'claim',
-    'bank', 'interest', 'loan', 'mortgage'
+    'restaurant',
+    'food',
+    'beverage',
+    'grocery',
+    'meal',
+    'medical',
+    'pharma',
+    'hospital',
+    'clinic',
+    'doctor',
+    'software',
+    'technology',
+    'consulting',
+    'service',
+    'travel',
+    'hotel',
+    'flight',
+    'accommodation',
+    'telecom',
+    'mobile',
+    'internet',
+    'broadband',
+    'insurance',
+    'premium',
+    'policy',
+    'claim',
+    'bank',
+    'interest',
+    'loan',
+    'mortgage'
   ]
-  
+
   const lowerVendor = vendorName.toLowerCase()
-  const itemDescriptions = items.map(item => 
-    (item.description || '').toLowerCase()
-  ).join(' ')
+  const itemDescriptions = items.map(item => (item.description || '').toLowerCase()).join(' ')
   const allText = `${lowerVendor} ${itemDescriptions}`.toLowerCase()
-  
+
   // Check for non-furniture indicators first
   for (const keyword of nonFurnitureKeywords) {
     if (allText.includes(keyword)) {
@@ -93,7 +145,7 @@ export async function validateFurnitureInvoice(
       }
     }
   }
-  
+
   // Check for furniture indicators
   let furnitureScore = 0
   for (const keyword of furnitureKeywords) {
@@ -101,10 +153,10 @@ export async function validateFurnitureInvoice(
       furnitureScore++
     }
   }
-  
+
   // Determine if it's furniture-related
   const isFurnitureRelated = furnitureScore > 0
-  
+
   if (!isFurnitureRelated) {
     return {
       isValid: false,
@@ -112,10 +164,11 @@ export async function validateFurnitureInvoice(
       supplierId: supplierCheck.supplierId,
       isFurnitureRelated: false,
       suggestedCategory: 'general_expense',
-      message: 'This invoice does not contain furniture-related items. Consider recording as a general expense.'
+      message:
+        'This invoice does not contain furniture-related items. Consider recording as a general expense.'
     }
   }
-  
+
   // If supplier doesn't exist, suggest creating them
   if (!supplierCheck.exists) {
     return {
@@ -126,7 +179,7 @@ export async function validateFurnitureInvoice(
       message: `New furniture supplier detected: ${vendorName}. They will be created in the system.`
     }
   }
-  
+
   return {
     isValid: true,
     supplierExists: true,
@@ -142,14 +195,14 @@ export async function validateFurnitureInvoice(
  */
 function determineFurnitureCategory(text: string): string {
   const categories = {
-    'raw_materials': ['wood', 'timber', 'plywood', 'veneer', 'lumber', 'mdf'],
-    'hardware': ['hinge', 'drawer', 'handle', 'screw', 'nail', 'bracket'],
-    'fabric': ['fabric', 'upholstery', 'foam', 'cushion', 'textile', 'leather'],
-    'finishing': ['polish', 'varnish', 'paint', 'coating', 'finish', 'stain'],
-    'tools': ['saw', 'drill', 'sandpaper', 'tool'],
-    'transport': ['transport', 'delivery', 'freight', 'shipping']
+    raw_materials: ['wood', 'timber', 'plywood', 'veneer', 'lumber', 'mdf'],
+    hardware: ['hinge', 'drawer', 'handle', 'screw', 'nail', 'bracket'],
+    fabric: ['fabric', 'upholstery', 'foam', 'cushion', 'textile', 'leather'],
+    finishing: ['polish', 'varnish', 'paint', 'coating', 'finish', 'stain'],
+    tools: ['saw', 'drill', 'sandpaper', 'tool'],
+    transport: ['transport', 'delivery', 'freight', 'shipping']
   }
-  
+
   for (const [category, keywords] of Object.entries(categories)) {
     for (const keyword of keywords) {
       if (text.includes(keyword)) {
@@ -157,7 +210,7 @@ function determineFurnitureCategory(text: string): string {
       }
     }
   }
-  
+
   return 'general_furniture'
 }
 
@@ -175,7 +228,7 @@ export async function createSupplierIfNotExists(
     if (existing.exists) {
       return { success: true, supplierId: existing.supplierId }
     }
-    
+
     // Create new supplier
     const { data, error } = await supabase
       .from('core_entities')
@@ -193,16 +246,16 @@ export async function createSupplierIfNotExists(
       })
       .select()
       .single()
-    
+
     if (error) {
       return { success: false, error: error.message }
     }
-    
+
     return { success: true, supplierId: data.id }
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
 }

@@ -5,15 +5,25 @@ import path from 'path'
 
 /**
  * HERA Module Generator API
- * 
+ *
  * Safely execute npm template generation from frontend
  * Provides secure interface to CLI generator system
  */
 
 // Allowed module names for security
 const ALLOWED_MODULES = [
-  'orders', 'staff', 'inventory', 'menu', 'kitchen', 'delivery', 'customers', 'suppliers',
-  'bom', 'production', 'patients', 'products'
+  'orders',
+  'staff',
+  'inventory',
+  'menu',
+  'kitchen',
+  'delivery',
+  'customers',
+  'suppliers',
+  'bom',
+  'production',
+  'patients',
+  'products'
 ]
 
 // Allowed business types
@@ -36,12 +46,9 @@ export async function POST(request: NextRequest) {
     // Security: Only allow predefined modules or custom names with validation
     const moduleToGenerate = customName || moduleName
     const sanitizedModuleName = moduleToGenerate.toLowerCase().replace(/[^a-z0-9-]/g, '')
-    
+
     if (!customName && !ALLOWED_MODULES.includes(moduleName)) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid module name' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'Invalid module name' }, { status: 400 })
     }
 
     if (!ALLOWED_BUSINESS_TYPES.includes(businessType)) {
@@ -53,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare generation command - call script directly to avoid npm argument passing issues
     const command = `node scripts/generate-module.js --name=${sanitizedModuleName} --type=${businessType}`
-    
+
     console.log(`🚀 Generating module: ${sanitizedModuleName} (${businessType})`)
     console.log(`Command: ${command}`)
 
@@ -99,13 +106,12 @@ export async function POST(request: NextRequest) {
         },
         message: `${sanitizedModuleName} module generated successfully!`
       })
-
     } catch (execError) {
       console.error('Generation execution error:', execError)
-      
+
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           message: 'Module generation failed',
           error: execError.message,
           details: execError.toString()
@@ -113,7 +119,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-
   } catch (error) {
     console.error('API error:', error)
     return NextResponse.json(
@@ -153,7 +158,7 @@ export async function GET(request: NextRequest) {
       try {
         const generatorPath = path.join(process.cwd(), 'scripts', 'generate-module.js')
         const generatorExists = existsSync(generatorPath)
-        
+
         return NextResponse.json({
           success: true,
           data: {
@@ -180,12 +185,8 @@ export async function GET(request: NextRequest) {
         status: 'GET /api/v1/development/generate?action=status'
       }
     })
-
   } catch (error) {
     console.error('API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

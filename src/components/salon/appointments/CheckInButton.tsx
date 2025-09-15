@@ -24,11 +24,11 @@ export function CheckInButton({
   const [isLoading, setIsLoading] = useState(false)
   const { currentOrganization, user } = useMultiOrgAuth()
   const { toast } = useToast()
-  
+
   // Determine if check-in is allowed
   const canCheckIn = currentStatusCode === 'STATUS-APPOINTMENT-SCHEDULED'
   const isCheckedIn = currentStatusCode === 'STATUS-APPOINTMENT-CHECKED_IN'
-  
+
   const handleCheckIn = async () => {
     if (!currentOrganization) {
       toast({
@@ -38,9 +38,9 @@ export function CheckInButton({
       })
       return
     }
-    
+
     setIsLoading(true)
-    
+
     try {
       const response = await fetch('/api/v1/salon/appointments/check-in', {
         method: 'POST',
@@ -53,15 +53,15 @@ export function CheckInButton({
           userId: user?.id
         })
       })
-      
+
       const result = await response.json()
-      
+
       if (response.ok && result.success) {
         toast({
           title: 'Success',
           description: result.message || 'Client checked in successfully'
         })
-        
+
         // Trigger refresh or callback
         if (onCheckInComplete) {
           onCheckInComplete()
@@ -84,37 +84,27 @@ export function CheckInButton({
       setIsLoading(false)
     }
   }
-  
+
   // Already checked in
   if (isCheckedIn) {
     return (
-      <Button
-        variant="outline"
-        size="sm"
-        disabled
-        className={className}
-      >
+      <Button variant="outline" size="sm" disabled className={className}>
         <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
         Checked In
       </Button>
     )
   }
-  
+
   // Can't check in (wrong status)
   if (!canCheckIn) {
     return (
-      <Button
-        variant="outline"
-        size="sm"
-        disabled
-        className={className}
-      >
+      <Button variant="outline" size="sm" disabled className={className}>
         <AlertCircle className="w-4 h-4 mr-2" />
         {currentStatus || 'Cannot Check In'}
       </Button>
     )
   }
-  
+
   // Can check in
   return (
     <Button

@@ -1,0 +1,190 @@
+{
+  "timestamp": "2025-09-15T15:29:30.635Z",
+  "stage": "C",
+  "modules": {
+    "c1_lint": {
+      "passed": 6,
+      "failed": 1,
+      "checks": {
+        "orphan_dynamic_data": {
+          "passed": true,
+          "message": "Found 0 orphaned dynamic data records",
+          "details": null,
+          "timestamp": "2025-09-15T15:29:30.942Z"
+        },
+        "orphan_relationships": {
+          "passed": true,
+          "message": "Found 0 orphaned relationships",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:17.166Z"
+        },
+        "orphan_transaction_lines": {
+          "passed": true,
+          "message": "Found 0 orphaned transaction lines",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:23.772Z"
+        },
+        "cross_org_isolation": {
+          "passed": true,
+          "message": "Found 0 cross-organization violations",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:37.744Z"
+        },
+        "smart_code_validation": {
+          "passed": false,
+          "message": "Found 791 invalid smart codes",
+          "details": {
+            "core_entities": 433,
+            "core_dynamic_data": 270,
+            "core_relationships": 7,
+            "universal_transactions": 66,
+            "universal_transaction_lines": 15
+          },
+          "timestamp": "2025-09-15T15:30:38.240Z"
+        },
+        "amendment_policy": {
+          "passed": true,
+          "message": "All business data stored in Sacred Six tables only",
+          "details": {
+            "policy": "No custom tables or columns allowed",
+            "enforcement": "Schema + guardrails"
+          },
+          "timestamp": "2025-09-15T15:30:38.240Z"
+        },
+        "ai_field_defaults": {
+          "passed": true,
+          "message": "Found 0 entities with missing AI field defaults",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:38.322Z"
+        }
+      }
+    },
+    "c2_dna_consistency": {
+      "passed": 2,
+      "failed": 2,
+      "checks": {
+        "finance_dna_account_semantics": {
+          "passed": false,
+          "message": "Found 348 GL accounts with semantic issues",
+          "details": {
+            "sample": [
+              {
+                "account_code": "1000",
+                "issues": [
+                  "Missing ledger_type in metadata"
+                ]
+              },
+              {
+                "account_code": "1200",
+                "issues": [
+                  "Missing ledger_type in metadata"
+                ]
+              },
+              {
+                "account_code": "1100",
+                "issues": [
+                  "Missing ledger_type in metadata"
+                ]
+              },
+              {
+                "account_code": "1300",
+                "issues": [
+                  "Missing ledger_type in metadata"
+                ]
+              },
+              {
+                "account_code": "1320",
+                "issues": [
+                  "Missing ledger_type in metadata"
+                ]
+              }
+            ]
+          },
+          "timestamp": "2025-09-15T15:30:38.484Z"
+        },
+        "finance_dna_transaction_invariants": {
+          "passed": true,
+          "message": "Found 0 transactions violating invariants",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:38.925Z"
+        },
+        "fiscal_close_config_exists": {
+          "passed": false,
+          "message": "No fiscal period configuration found",
+          "details": {
+            "recommendation": "Create fiscal period configuration before enabling Fiscal Close DNA"
+          },
+          "timestamp": "2025-09-15T15:30:38.988Z"
+        },
+        "fiscal_close_period_integrity": {
+          "passed": true,
+          "message": "Found 0 postings in closed periods",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:39.064Z"
+        }
+      }
+    },
+    "c3_snapshot_drift": {
+      "passed": 2,
+      "failed": 0,
+      "checks": {
+        "drift_detection": {
+          "passed": true,
+          "message": "No drift detected",
+          "details": null,
+          "timestamp": "2025-09-15T15:30:40.248Z"
+        },
+        "snapshot_saved": {
+          "passed": true,
+          "message": "System snapshot saved: system-snapshot-1757950240248.json",
+          "details": {
+            "filename": "system-snapshot-1757950240248.json",
+            "tables": [
+              "core_organizations",
+              "core_entities",
+              "core_dynamic_data",
+              "core_relationships",
+              "universal_transactions",
+              "universal_transaction_lines"
+            ]
+          },
+          "timestamp": "2025-09-15T15:30:40.251Z"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_checks": 13,
+    "passed": 10,
+    "failed": 3,
+    "warnings": 0
+  },
+  "insights": [
+    {
+      "timestamp": "2025-09-15T15:30:38.322Z",
+      "insight": "Invalid smart codes found - run smart code remediation"
+    },
+    {
+      "timestamp": "2025-09-15T15:30:39.064Z",
+      "insight": "Fiscal configuration missing - required for Fiscal Close DNA"
+    }
+  ],
+  "recommendations": [
+    {
+      "timestamp": "2025-09-15T15:30:39.064Z",
+      "recommendation": "Create fiscal period configuration with proper calendar setup"
+    },
+    {
+      "timestamp": "2025-09-15T15:30:40.252Z",
+      "recommendation": "Address failing checks before DNA activation"
+    },
+    {
+      "timestamp": "2025-09-15T15:30:40.252Z",
+      "recommendation": "Run guardrail remediation scripts"
+    },
+    {
+      "timestamp": "2025-09-15T15:30:40.252Z",
+      "recommendation": "Re-run Stage C validation after fixes"
+    }
+  ]
+}

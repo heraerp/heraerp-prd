@@ -1,38 +1,38 @@
 /**
  * HERA Universal Onboarding - Event System
- * 
+ *
  * Emits universal transactions and lines for analytics
  * Follows HERA's 6-table architecture for audit trail
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import type {
   OnboardingTransaction,
   OnboardingTransactionLine,
   OnboardingStatus,
   SmartCode,
-  EmitContext,
-} from './types';
+  EmitContext
+} from './types'
 
 /**
  * Generate unique transaction ID
  */
 function generateTransactionId(): string {
-  return `txn_${uuidv4()}`;
+  return `txn_${uuidv4()}`
 }
 
 /**
  * Generate unique line ID
  */
 function generateLineId(): string {
-  return `line_${uuidv4()}`;
+  return `line_${uuidv4()}`
 }
 
 /**
  * Get current ISO timestamp
  */
 function getCurrentTimestamp(): string {
-  return new Date().toISOString();
+  return new Date().toISOString()
 }
 
 /**
@@ -50,12 +50,13 @@ function buildTransaction(context: EmitContext): OnboardingTransaction {
       ...context.metadata,
       event_type: 'onboarding',
       user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-      screen_resolution: typeof window !== 'undefined' 
-        ? `${window.screen.width}x${window.screen.height}` 
-        : undefined,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    },
-  };
+      screen_resolution:
+        typeof window !== 'undefined'
+          ? `${window.screen.width}x${window.screen.height}`
+          : undefined,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    }
+  }
 }
 
 /**
@@ -66,10 +67,9 @@ function buildTransactionLine(
   lineIndex: number,
   context: EmitContext
 ): OnboardingTransactionLine {
-  const duration = context.startTime && context.endTime
-    ? context.endTime - context.startTime
-    : undefined;
-  
+  const duration =
+    context.startTime && context.endTime ? context.endTime - context.startTime : undefined
+
   return {
     id: generateLineId(),
     transaction_id: transactionId,
@@ -79,9 +79,9 @@ function buildTransactionLine(
     duration_ms: duration,
     metadata: {
       ...context.metadata,
-      timestamp: getCurrentTimestamp(),
-    },
-  };
+      timestamp: getCurrentTimestamp()
+    }
+  }
 }
 
 /**
@@ -93,22 +93,22 @@ export function emitTourStart(
   metadata?: Record<string, unknown>,
   onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
 ): void {
-  if (!onEmit) return;
-  
+  if (!onEmit) return
+
   const context: EmitContext = {
     organizationId,
     tourCode,
     status: 'started',
     metadata: {
       ...metadata,
-      event: 'tour_start',
-    },
-  };
-  
-  const transaction = buildTransaction(context);
-  const line = buildTransactionLine(transaction.id, 0, context);
-  
-  onEmit(transaction, [line]);
+      event: 'tour_start'
+    }
+  }
+
+  const transaction = buildTransaction(context)
+  const line = buildTransactionLine(transaction.id, 0, context)
+
+  onEmit(transaction, [line])
 }
 
 /**
@@ -122,8 +122,8 @@ export function emitStepShown(
   metadata?: Record<string, unknown>,
   onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
 ): void {
-  if (!onEmit) return;
-  
+  if (!onEmit) return
+
   const context: EmitContext = {
     organizationId,
     tourCode,
@@ -132,14 +132,14 @@ export function emitStepShown(
     metadata: {
       ...metadata,
       event: 'step_shown',
-      step_index: stepIndex,
-    },
-  };
-  
-  const transaction = buildTransaction(context);
-  const line = buildTransactionLine(transaction.id, 0, context);
-  
-  onEmit(transaction, [line]);
+      step_index: stepIndex
+    }
+  }
+
+  const transaction = buildTransaction(context)
+  const line = buildTransactionLine(transaction.id, 0, context)
+
+  onEmit(transaction, [line])
 }
 
 /**
@@ -154,9 +154,9 @@ export function emitStepCompleted(
   metadata?: Record<string, unknown>,
   onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
 ): void {
-  if (!onEmit) return;
-  
-  const endTime = Date.now();
+  if (!onEmit) return
+
+  const endTime = Date.now()
   const context: EmitContext = {
     organizationId,
     tourCode,
@@ -167,14 +167,14 @@ export function emitStepCompleted(
     metadata: {
       ...metadata,
       event: 'step_completed',
-      step_index: stepIndex,
-    },
-  };
-  
-  const transaction = buildTransaction(context);
-  const line = buildTransactionLine(transaction.id, 0, context);
-  
-  onEmit(transaction, [line]);
+      step_index: stepIndex
+    }
+  }
+
+  const transaction = buildTransaction(context)
+  const line = buildTransactionLine(transaction.id, 0, context)
+
+  onEmit(transaction, [line])
 }
 
 /**
@@ -190,12 +190,12 @@ export function emitTourCompleted(
   metadata?: Record<string, unknown>,
   onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
 ): void {
-  if (!onEmit) return;
-  
-  const endTime = Date.now();
-  const totalDuration = endTime - startTime;
-  const avgStepDuration = Object.values(stepDurations).reduce((a, b) => a + b, 0) / completedSteps;
-  
+  if (!onEmit) return
+
+  const endTime = Date.now()
+  const totalDuration = endTime - startTime
+  const avgStepDuration = Object.values(stepDurations).reduce((a, b) => a + b, 0) / completedSteps
+
   const context: EmitContext = {
     organizationId,
     tourCode,
@@ -209,20 +209,20 @@ export function emitTourCompleted(
       completed_steps: completedSteps,
       total_duration_ms: totalDuration,
       avg_step_duration_ms: avgStepDuration,
-      completion_rate: (completedSteps / totalSteps) * 100,
-    },
-  };
-  
-  const transaction = buildTransaction(context);
-  
+      completion_rate: (completedSteps / totalSteps) * 100
+    }
+  }
+
+  const transaction = buildTransaction(context)
+
   // Create lines for summary and each step duration
-  const lines: OnboardingTransactionLine[] = [];
-  
+  const lines: OnboardingTransactionLine[] = []
+
   // Summary line
-  lines.push(buildTransactionLine(transaction.id, 0, context));
-  
+  lines.push(buildTransactionLine(transaction.id, 0, context))
+
   // Step duration lines
-  let lineIndex = 1;
+  let lineIndex = 1
   Object.entries(stepDurations).forEach(([stepCode, duration]) => {
     lines.push({
       id: generateLineId(),
@@ -232,12 +232,12 @@ export function emitTourCompleted(
       status: 'completed',
       duration_ms: duration,
       metadata: {
-        event: 'step_duration',
-      },
-    });
-  });
-  
-  onEmit(transaction, lines);
+        event: 'step_duration'
+      }
+    })
+  })
+
+  onEmit(transaction, lines)
 }
 
 /**
@@ -253,9 +253,9 @@ export function emitTourDismissed(
   metadata?: Record<string, unknown>,
   onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
 ): void {
-  if (!onEmit) return;
-  
-  const endTime = Date.now();
+  if (!onEmit) return
+
+  const endTime = Date.now()
   const context: EmitContext = {
     organizationId,
     tourCode,
@@ -267,14 +267,14 @@ export function emitTourDismissed(
       event: `tour_${status}`,
       current_step: currentStep,
       total_steps: totalSteps,
-      progress_percentage: (currentStep / totalSteps) * 100,
-    },
-  };
-  
-  const transaction = buildTransaction(context);
-  const line = buildTransactionLine(transaction.id, 0, context);
-  
-  onEmit(transaction, [line]);
+      progress_percentage: (currentStep / totalSteps) * 100
+    }
+  }
+
+  const transaction = buildTransaction(context)
+  const line = buildTransactionLine(transaction.id, 0, context)
+
+  onEmit(transaction, [line])
 }
 
 /**
@@ -289,8 +289,8 @@ export function emitStepError(
   metadata?: Record<string, unknown>,
   onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
 ): void {
-  if (!onEmit) return;
-  
+  if (!onEmit) return
+
   const context: EmitContext = {
     organizationId,
     tourCode,
@@ -300,52 +300,52 @@ export function emitStepError(
       ...metadata,
       event: 'step_error',
       step_index: stepIndex,
-      error_message: error,
-    },
-  };
-  
-  const transaction = buildTransaction(context);
-  const line = buildTransactionLine(transaction.id, 0, context);
-  
-  onEmit(transaction, [line]);
+      error_message: error
+    }
+  }
+
+  const transaction = buildTransaction(context)
+  const line = buildTransactionLine(transaction.id, 0, context)
+
+  onEmit(transaction, [line])
 }
 
 /**
  * Create event emitter for a tour session
  */
 export class OnboardingEventEmitter {
-  private organizationId: string;
-  private tourCode: SmartCode;
-  private startTime: number;
-  private stepStartTimes: Map<string, number> = new Map();
-  private stepDurations: Record<string, number> = {};
-  private onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void;
-  
+  private organizationId: string
+  private tourCode: SmartCode
+  private startTime: number
+  private stepStartTimes: Map<string, number> = new Map()
+  private stepDurations: Record<string, number> = {}
+  private onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
+
   constructor(
     organizationId: string,
     tourCode: SmartCode,
     onEmit?: (txn: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
   ) {
-    this.organizationId = organizationId;
-    this.tourCode = tourCode;
-    this.startTime = Date.now();
-    this.onEmit = onEmit;
+    this.organizationId = organizationId
+    this.tourCode = tourCode
+    this.startTime = Date.now()
+    this.onEmit = onEmit
   }
-  
+
   tourStart(metadata?: Record<string, unknown>): void {
-    emitTourStart(this.organizationId, this.tourCode, metadata, this.onEmit);
+    emitTourStart(this.organizationId, this.tourCode, metadata, this.onEmit)
   }
-  
+
   stepShown(stepCode: SmartCode, stepIndex: number, metadata?: Record<string, unknown>): void {
-    this.stepStartTimes.set(stepCode, Date.now());
-    emitStepShown(this.organizationId, this.tourCode, stepCode, stepIndex, metadata, this.onEmit);
+    this.stepStartTimes.set(stepCode, Date.now())
+    emitStepShown(this.organizationId, this.tourCode, stepCode, stepIndex, metadata, this.onEmit)
   }
-  
+
   stepCompleted(stepCode: SmartCode, stepIndex: number, metadata?: Record<string, unknown>): void {
-    const startTime = this.stepStartTimes.get(stepCode) || Date.now();
-    const duration = Date.now() - startTime;
-    this.stepDurations[stepCode] = duration;
-    
+    const startTime = this.stepStartTimes.get(stepCode) || Date.now()
+    const duration = Date.now() - startTime
+    this.stepDurations[stepCode] = duration
+
     emitStepCompleted(
       this.organizationId,
       this.tourCode,
@@ -354,10 +354,14 @@ export class OnboardingEventEmitter {
       startTime,
       metadata,
       this.onEmit
-    );
+    )
   }
-  
-  tourCompleted(totalSteps: number, completedSteps: number, metadata?: Record<string, unknown>): void {
+
+  tourCompleted(
+    totalSteps: number,
+    completedSteps: number,
+    metadata?: Record<string, unknown>
+  ): void {
     emitTourCompleted(
       this.organizationId,
       this.tourCode,
@@ -367,9 +371,9 @@ export class OnboardingEventEmitter {
       this.stepDurations,
       metadata,
       this.onEmit
-    );
+    )
   }
-  
+
   tourDismissed(
     status: 'skipped' | 'dismissed',
     currentStep: number,
@@ -385,10 +389,15 @@ export class OnboardingEventEmitter {
       this.startTime,
       metadata,
       this.onEmit
-    );
+    )
   }
-  
-  stepError(stepCode: SmartCode, stepIndex: number, error: string, metadata?: Record<string, unknown>): void {
+
+  stepError(
+    stepCode: SmartCode,
+    stepIndex: number,
+    error: string,
+    metadata?: Record<string, unknown>
+  ): void {
     emitStepError(
       this.organizationId,
       this.tourCode,
@@ -397,14 +406,14 @@ export class OnboardingEventEmitter {
       error,
       metadata,
       this.onEmit
-    );
+    )
   }
-  
+
   getStepDurations(): Record<string, number> {
-    return { ...this.stepDurations };
+    return { ...this.stepDurations }
   }
-  
+
   getTotalDuration(): number {
-    return Date.now() - this.startTime;
+    return Date.now() - this.startTime
   }
 }

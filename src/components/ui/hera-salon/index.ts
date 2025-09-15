@@ -10,28 +10,17 @@ export type { InputProps } from './Input'
 export { Textarea } from './Textarea'
 export type { TextareaProps } from './Textarea'
 
-export { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from './Card'
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card'
 
 export { Badge, badgeVariants } from './Badge'
 export type { BadgeProps } from './Badge'
 
-export { 
-  Alert, 
-  AlertDescription, 
-  AlertTitle 
-} from './Alert'
+export { Alert, AlertDescription, AlertTitle } from './Alert'
 
-export { 
+export {
   Modal,
   ModalClose,
-  ModalContent, 
+  ModalContent,
   ModalDescription,
   ModalFooter,
   ModalHeader,

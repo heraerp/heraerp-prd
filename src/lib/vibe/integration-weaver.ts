@@ -15,29 +15,28 @@ export class IntegrationWeaver {
   async initialize(organizationId?: string): Promise<void> {
     try {
       this.organizationId = organizationId || ''
-      
+
       // Load existing integrations
       await this.loadExistingIntegrations()
-      
+
       // Initialize compatibility matrix
       await this.initializeCompatibilityMatrix()
-      
+
       // Start health monitoring
       this.startHealthMonitoring()
-      
+
       this.isInitialized = true
-      
+
       console.log('🔀 Integration Weaver initialized')
       console.log(`   Organization: ${this.organizationId}`)
       console.log(`   Loaded integrations: ${this.integrations.size}`)
       console.log(`   Compatibility patterns: ${this.compatibilityMatrix.size}`)
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      throw new IntegrationError(
-        `Failed to initialize Integration Weaver: ${errorMessage}`,
-        { organization_id: organizationId, error: errorMessage }
-      )
+      throw new IntegrationError(`Failed to initialize Integration Weaver: ${errorMessage}`, {
+        organization_id: organizationId,
+        error: errorMessage
+      })
     }
   }
 
@@ -102,7 +101,10 @@ export class IntegrationWeaver {
     const integrations: IntegrationWeave[] = []
 
     for (const integration of this.integrations.values()) {
-      if (integration.source_component === smartCode || integration.target_component === smartCode) {
+      if (
+        integration.source_component === smartCode ||
+        integration.target_component === smartCode
+      ) {
         integrations.push(integration)
       }
     }
@@ -114,10 +116,9 @@ export class IntegrationWeaver {
   async validateIntegrationHealth(integrationId: string): Promise<HealthReport> {
     const integration = this.integrations.get(integrationId)
     if (!integration) {
-      throw new IntegrationError(
-        `Integration not found: ${integrationId}`,
-        { integration_id: integrationId }
-      )
+      throw new IntegrationError(`Integration not found: ${integrationId}`, {
+        integration_id: integrationId
+      })
     }
 
     const healthReport: HealthReport = {
@@ -140,7 +141,8 @@ export class IntegrationWeaver {
     ]
 
     healthReport.health_checks = checks
-    healthReport.performance_score = checks.reduce((sum, check) => sum + check.score, 0) / checks.length
+    healthReport.performance_score =
+      checks.reduce((sum, check) => sum + check.score, 0) / checks.length
     healthReport.overall_status = this.determineOverallStatus(checks)
     healthReport.recommendations = this.generateHealthRecommendations(checks)
 
@@ -157,7 +159,7 @@ export class IntegrationWeaver {
   // Get integration statistics
   getIntegrationStatistics(): IntegrationStatistics {
     const integrations = Array.from(this.integrations.values())
-    
+
     return {
       total_integrations: integrations.length,
       healthy_integrations: integrations.filter(i => i.health_status === 'healthy').length,
@@ -173,10 +175,9 @@ export class IntegrationWeaver {
   async removeIntegration(integrationId: string): Promise<void> {
     const integration = this.integrations.get(integrationId)
     if (!integration) {
-      throw new IntegrationError(
-        `Integration not found: ${integrationId}`,
-        { integration_id: integrationId }
-      )
+      throw new IntegrationError(`Integration not found: ${integrationId}`, {
+        integration_id: integrationId
+      })
     }
 
     // Execute rollback strategy before removal
@@ -211,7 +212,7 @@ export class IntegrationWeaver {
     const targetModule = this.extractModule(targetSmartCode)
 
     const compatibleTargets = this.compatibilityMatrix.get(sourceModule) || []
-    
+
     if (!compatibleTargets.includes(targetModule) && !compatibleTargets.includes('*')) {
       throw new IntegrationError(
         `Incompatible components: ${sourceSmartCode} cannot integrate with ${targetSmartCode}`,
@@ -307,12 +308,16 @@ export class IntegrationWeaver {
 
   private async initializeCompatibilityMatrix(): Promise<void> {
     // Initialize component compatibility matrix
-    this.compatibilityMatrix.set('HERA.VIBE.FOUNDATION', ['HERA.VIBE.*', 'HERA.CRM.*', 'HERA.FINANCIAL.*'])
+    this.compatibilityMatrix.set('HERA.VIBE.FOUNDATION', [
+      'HERA.VIBE.*',
+      'HERA.CRM.*',
+      'HERA.FINANCIAL.*'
+    ])
     this.compatibilityMatrix.set('HERA.VIBE.AUTODOC', ['HERA.VIBE.*', '*'])
     this.compatibilityMatrix.set('HERA.VIBE.MANUFACTURING', ['HERA.VIBE.*', '*'])
     this.compatibilityMatrix.set('HERA.CRM.*', ['HERA.VIBE.*', 'HERA.FINANCIAL.*'])
     this.compatibilityMatrix.set('HERA.FINANCIAL.*', ['HERA.VIBE.*', 'HERA.CRM.*'])
-    
+
     console.log('🔗 Compatibility matrix initialized')
   }
 
@@ -321,7 +326,8 @@ export class IntegrationWeaver {
     this.healthMonitoring = setInterval(async () => {
       try {
         for (const [integrationId, integration] of this.integrations) {
-          if (Date.now() - integration.last_validated.getTime() > 300000) { // 5 minutes
+          if (Date.now() - integration.last_validated.getTime() > 300000) {
+            // 5 minutes
             await this.validateIntegrationHealth(integrationId)
           }
         }
@@ -384,7 +390,7 @@ export class IntegrationWeaver {
 
   private determineOverallStatus(checks: HealthCheck[]): 'healthy' | 'warning' | 'unhealthy' {
     const averageScore = checks.reduce((sum, check) => sum + check.score, 0) / checks.length
-    
+
     if (averageScore >= 95) return 'healthy'
     if (averageScore >= 80) return 'warning'
     return 'unhealthy'
@@ -392,7 +398,7 @@ export class IntegrationWeaver {
 
   private generateHealthRecommendations(checks: HealthCheck[]): string[] {
     const recommendations: string[] = []
-    
+
     checks.forEach(check => {
       if (check.score < 90) {
         recommendations.push(`Improve ${check.name.toLowerCase()}: ${check.details}`)
@@ -404,7 +410,7 @@ export class IntegrationWeaver {
 
   private getPatternStatistics(): object {
     const patterns: { [key: string]: number } = {}
-    
+
     for (const integration of this.integrations.values()) {
       patterns[integration.weave_pattern] = (patterns[integration.weave_pattern] || 0) + 1
     }
@@ -428,7 +434,7 @@ export class IntegrationWeaver {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',
@@ -466,7 +472,7 @@ export class IntegrationWeaver {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',
@@ -499,11 +505,11 @@ export class IntegrationWeaver {
       clearInterval(this.healthMonitoring)
       this.healthMonitoring = null
     }
-    
+
     this.integrations.clear()
     this.compatibilityMatrix.clear()
     this.isInitialized = false
-    
+
     console.log('🧹 Integration Weaver destroyed')
   }
 }

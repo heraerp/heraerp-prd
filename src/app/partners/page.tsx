@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 export default function PartnersPage() {
   const router = useRouter()
-  
+
   useEffect(() => {
     // Redirect to new franchise system
     router.replace('/franchise')
@@ -40,22 +40,30 @@ function OldPartnersPage() {
               <Sparkles className="h-4 w-4" />
               Partner Program Now Open
             </div>
-            
+
             <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
               Join the HERA Partner Revolution
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
-              Help businesses break free from SAP complexity. Deliver enterprise power to SMBs, 
-              then scale to conquer the enterprise market.
+              Help businesses break free from SAP complexity. Deliver enterprise power to SMBs, then
+              scale to conquer the enterprise market.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link href="/partner-system/register" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg font-semibold text-lg hover:shadow-xl transition-all">
+              <Link
+                href="/partner-system/register"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg font-semibold text-lg hover:shadow-xl transition-all"
+              >
                 Become a Partner
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <button onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all">
+              <button
+                onClick={() =>
+                  document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })
+                }
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all"
+              >
                 Calculate My Earnings
               </button>
             </div>
@@ -88,7 +96,9 @@ function OldPartnersPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">See Your Potential</h2>
-            <p className="text-xl text-slate-600">Every customer you help becomes recurring revenue. Forever.</p>
+            <p className="text-xl text-slate-600">
+              Every customer you help becomes recurring revenue. Forever.
+            </p>
           </div>
 
           <EarningsCalculator />
@@ -112,8 +122,8 @@ function OldPartnersPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">1. Dominate SMB Market</h3>
                 <p className="text-slate-700 mb-6">
-                  Give small businesses enterprise-grade features that SAP reserves for Fortune 500s. 
-                  No complexity, no consultants, no compromise.
+                  Give small businesses enterprise-grade features that SAP reserves for Fortune
+                  500s. No complexity, no consultants, no compromise.
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
@@ -143,8 +153,8 @@ function OldPartnersPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">2. Scale to Mid-Market</h3>
                 <p className="text-slate-700 mb-6">
-                  As SMBs grow, HERA grows with them. Same simple system, more powerful features. 
-                  No migration, no disruption.
+                  As SMBs grow, HERA grows with them. Same simple system, more powerful features. No
+                  migration, no disruption.
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
@@ -174,7 +184,7 @@ function OldPartnersPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">3. Disrupt Enterprise</h3>
                 <p className="text-slate-700 mb-6">
-                  Proven success stories from SMB to enterprise. Replace SAP with 90% cost savings 
+                  Proven success stories from SMB to enterprise. Replace SAP with 90% cost savings
                   and 100% of the features.
                 </p>
                 <ul className="space-y-3">
@@ -202,7 +212,9 @@ function OldPartnersPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Why Partners Choose HERA Over SAP</h2>
-            <p className="text-xl text-slate-600">Deliver more value, earn more revenue, with less complexity</p>
+            <p className="text-xl text-slate-600">
+              Deliver more value, earn more revenue, with less complexity
+            </p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -215,31 +227,41 @@ function OldPartnersPage() {
                   </div>
                   <h3 className="text-2xl font-bold">HERA Partner Benefits</h3>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div>
                     <h4 className="font-semibold text-emerald-600 mb-2">Implementation Speed</h4>
-                    <p className="text-slate-700">Deploy in 48 hours. Bill immediately. Happy customers from day one.</p>
+                    <p className="text-slate-700">
+                      Deploy in 48 hours. Bill immediately. Happy customers from day one.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-emerald-600 mb-2">Revenue Model</h4>
-                    <p className="text-slate-700">50% recurring revenue share. No limits. Grow your book of business.</p>
+                    <p className="text-slate-700">
+                      50% recurring revenue share. No limits. Grow your book of business.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-emerald-600 mb-2">Market Reach</h4>
-                    <p className="text-slate-700">Serve SMBs to Fortune 500 with one platform. No market limits.</p>
+                    <p className="text-slate-700">
+                      Serve SMBs to Fortune 500 with one platform. No market limits.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-emerald-600 mb-2">Support Required</h4>
-                    <p className="text-slate-700">Minimal. Customers self-serve. You focus on growth, not support.</p>
+                    <p className="text-slate-700">
+                      Minimal. Customers self-serve. You focus on growth, not support.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-emerald-600 mb-2">Competitive Edge</h4>
-                    <p className="text-slate-700">Only partner offering enterprise features at SMB prices and simplicity.</p>
+                    <p className="text-slate-700">
+                      Only partner offering enterprise features at SMB prices and simplicity.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -252,31 +274,41 @@ function OldPartnersPage() {
                   </div>
                   <h3 className="text-2xl font-bold text-slate-700">SAP Partner Reality</h3>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div>
                     <h4 className="font-semibold text-slate-600 mb-2">Implementation Speed</h4>
-                    <p className="text-slate-600">12-24 months. Massive upfront investment. Risk of failure.</p>
+                    <p className="text-slate-600">
+                      12-24 months. Massive upfront investment. Risk of failure.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-slate-600 mb-2">Revenue Model</h4>
-                    <p className="text-slate-600">One-time implementation fees. Compete with Accenture, Deloitte.</p>
+                    <p className="text-slate-600">
+                      One-time implementation fees. Compete with Accenture, Deloitte.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-slate-600 mb-2">Market Reach</h4>
-                    <p className="text-slate-600">Enterprise only. SMBs can't afford. Limited addressable market.</p>
+                    <p className="text-slate-600">
+                      Enterprise only. SMBs can't afford. Limited addressable market.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-slate-600 mb-2">Support Required</h4>
-                    <p className="text-slate-600">Enormous. Constant hand-holding. Expensive consultants needed.</p>
+                    <p className="text-slate-600">
+                      Enormous. Constant hand-holding. Expensive consultants needed.
+                    </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold text-slate-600 mb-2">Competitive Edge</h4>
-                    <p className="text-slate-600">None. Competing with thousands of SAP partners globally.</p>
+                    <p className="text-slate-600">
+                      None. Competing with thousands of SAP partners globally.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -290,7 +322,9 @@ function OldPartnersPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Enterprise Features for Everyone</h2>
-            <p className="text-xl text-slate-600">What took SAP 50 years to build, HERA delivers on day one</p>
+            <p className="text-xl text-slate-600">
+              What took SAP 50 years to build, HERA delivers on day one
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -475,7 +509,9 @@ function OldPartnersPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Partner Success Program</h2>
-            <p className="text-xl text-slate-600">Everything you need to build a thriving HERA practice</p>
+            <p className="text-xl text-slate-600">
+              Everything you need to build a thriving HERA practice
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -530,11 +566,17 @@ function OldPartnersPage() {
                 Help businesses escape SAP complexity while building your empire.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/auth?type=partner" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-900 rounded-lg font-semibold hover:shadow-xl transition-all">
+                <Link
+                  href="/auth?type=partner"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-900 rounded-lg font-semibold hover:shadow-xl transition-all"
+                >
                   Apply Now
                   <ArrowRight className="h-5 w-5" />
                 </Link>
-                <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-white/20 backdrop-blur border border-white/30 rounded-lg font-semibold hover:bg-white/30 transition-all">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-white/20 backdrop-blur border border-white/30 rounded-lg font-semibold hover:bg-white/30 transition-all"
+                >
                   Schedule a Call
                 </Link>
               </div>
@@ -547,46 +589,49 @@ function OldPartnersPage() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16">Partner Questions Answered</h2>
-          
+
           <div className="space-y-6">
             <div className="bg-slate-50 rounded-xl p-8">
               <h3 className="text-xl font-bold mb-3">Who makes a great HERA partner?</h3>
               <p className="text-slate-700">
-                Consultants tired of SAP complexity. Digital agencies wanting to offer ERP. 
-                Industry experts who understand business needs. Anyone who believes software 
-                should be simple and powerful.
+                Consultants tired of SAP complexity. Digital agencies wanting to offer ERP. Industry
+                experts who understand business needs. Anyone who believes software should be simple
+                and powerful.
               </p>
             </div>
 
             <div className="bg-slate-50 rounded-xl p-8">
-              <h3 className="text-xl font-bold mb-3">How is HERA different from other partner programs?</h3>
+              <h3 className="text-xl font-bold mb-3">
+                How is HERA different from other partner programs?
+              </h3>
               <p className="text-slate-700">
-                We share 50% of recurring revenue forever. No quotas. No tiers. No politics. 
-                You can implement in days, not months. Your customers actually love the product. 
-                You build a real business, not just billable hours.
+                We share 50% of recurring revenue forever. No quotas. No tiers. No politics. You can
+                implement in days, not months. Your customers actually love the product. You build a
+                real business, not just billable hours.
               </p>
             </div>
 
             <div className="bg-slate-50 rounded-xl p-8">
               <h3 className="text-xl font-bold mb-3">Can HERA really replace SAP?</h3>
               <p className="text-slate-700">
-                Yes. We deliver 100% of SAP functionality with 90% less complexity. 
-                Our architecture handles everything from 10-person startups to 10,000-person 
-                enterprises. Same system, same simplicity, infinite scale.
+                Yes. We deliver 100% of SAP functionality with 90% less complexity. Our architecture
+                handles everything from 10-person startups to 10,000-person enterprises. Same
+                system, same simplicity, infinite scale.
               </p>
             </div>
 
             <div className="bg-slate-50 rounded-xl p-8">
               <h3 className="text-xl font-bold mb-3">What training is required?</h3>
               <p className="text-slate-700">
-                2-day certification program covers everything. Compare that to months of SAP training. 
-                HERA is designed to be intuitive. If you understand business, you can implement HERA.
+                2-day certification program covers everything. Compare that to months of SAP
+                training. HERA is designed to be intuitive. If you understand business, you can
+                implement HERA.
               </p>
             </div>
           </div>
         </div>
       </section>
-      
+
       {/* Seamless Navigation */}
       <SeamlessNavigation partnerId="demo-visitor" />
     </div>

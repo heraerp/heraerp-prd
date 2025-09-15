@@ -105,33 +105,138 @@ export function RestaurantPOS() {
   // Sample menu data with costing info
   const menuItems: MenuItem[] = [
     // Appetizers
-    { id: '1', name: 'Caesar Salad', category: 'appetizers', price: 9.00, cost: 2.00, available: true, popular: true, allergens: ['dairy', 'gluten'] },
-    { id: '2', name: 'Bruschetta', category: 'appetizers', price: 8.00, cost: 1.80, available: true, allergens: ['gluten'] },
-    { id: '3', name: 'Soup of the Day', category: 'appetizers', price: 7.00, cost: 1.50, available: true },
-    { id: '4', name: 'Garlic Bread', category: 'appetizers', price: 6.00, cost: 1.20, available: true, allergens: ['gluten', 'dairy'] },
-    
+    {
+      id: '1',
+      name: 'Caesar Salad',
+      category: 'appetizers',
+      price: 9.0,
+      cost: 2.0,
+      available: true,
+      popular: true,
+      allergens: ['dairy', 'gluten']
+    },
+    {
+      id: '2',
+      name: 'Bruschetta',
+      category: 'appetizers',
+      price: 8.0,
+      cost: 1.8,
+      available: true,
+      allergens: ['gluten']
+    },
+    {
+      id: '3',
+      name: 'Soup of the Day',
+      category: 'appetizers',
+      price: 7.0,
+      cost: 1.5,
+      available: true
+    },
+    {
+      id: '4',
+      name: 'Garlic Bread',
+      category: 'appetizers',
+      price: 6.0,
+      cost: 1.2,
+      available: true,
+      allergens: ['gluten', 'dairy']
+    },
+
     // Main Courses
-    { id: '5', name: 'Grilled Salmon', category: 'mains', price: 24.00, cost: 5.31, available: true, popular: true, allergens: ['fish'] },
-    { id: '6', name: 'Truffle Pasta', category: 'mains', price: 25.00, cost: 3.23, available: true, popular: true, allergens: ['gluten', 'dairy'] },
-    { id: '7', name: 'Ribeye Steak', category: 'mains', price: 32.00, cost: 8.50, available: true, modifiers: [
-      { name: 'Medium Rare', price: 0 },
-      { name: 'Medium', price: 0 },
-      { name: 'Well Done', price: 0 }
-    ]},
-    { id: '8', name: 'Chicken Parmesan', category: 'mains', price: 18.00, cost: 4.20, available: true, allergens: ['gluten', 'dairy'] },
-    { id: '9', name: 'Vegetarian Bowl', category: 'mains', price: 16.00, cost: 3.00, available: true },
-    
+    {
+      id: '5',
+      name: 'Grilled Salmon',
+      category: 'mains',
+      price: 24.0,
+      cost: 5.31,
+      available: true,
+      popular: true,
+      allergens: ['fish']
+    },
+    {
+      id: '6',
+      name: 'Truffle Pasta',
+      category: 'mains',
+      price: 25.0,
+      cost: 3.23,
+      available: true,
+      popular: true,
+      allergens: ['gluten', 'dairy']
+    },
+    {
+      id: '7',
+      name: 'Ribeye Steak',
+      category: 'mains',
+      price: 32.0,
+      cost: 8.5,
+      available: true,
+      modifiers: [
+        { name: 'Medium Rare', price: 0 },
+        { name: 'Medium', price: 0 },
+        { name: 'Well Done', price: 0 }
+      ]
+    },
+    {
+      id: '8',
+      name: 'Chicken Parmesan',
+      category: 'mains',
+      price: 18.0,
+      cost: 4.2,
+      available: true,
+      allergens: ['gluten', 'dairy']
+    },
+    {
+      id: '9',
+      name: 'Vegetarian Bowl',
+      category: 'mains',
+      price: 16.0,
+      cost: 3.0,
+      available: true
+    },
+
     // Desserts
-    { id: '10', name: 'Chocolate Lava Cake', category: 'desserts', price: 9.00, cost: 2.10, available: true, popular: true, allergens: ['dairy', 'eggs', 'gluten'] },
-    { id: '11', name: 'Tiramisu', category: 'desserts', price: 8.00, cost: 1.80, available: true, allergens: ['dairy', 'eggs'] },
-    { id: '12', name: 'Ice Cream', category: 'desserts', price: 6.00, cost: 1.20, available: true, allergens: ['dairy'] },
-    
+    {
+      id: '10',
+      name: 'Chocolate Lava Cake',
+      category: 'desserts',
+      price: 9.0,
+      cost: 2.1,
+      available: true,
+      popular: true,
+      allergens: ['dairy', 'eggs', 'gluten']
+    },
+    {
+      id: '11',
+      name: 'Tiramisu',
+      category: 'desserts',
+      price: 8.0,
+      cost: 1.8,
+      available: true,
+      allergens: ['dairy', 'eggs']
+    },
+    {
+      id: '12',
+      name: 'Ice Cream',
+      category: 'desserts',
+      price: 6.0,
+      cost: 1.2,
+      available: true,
+      allergens: ['dairy']
+    },
+
     // Beverages
-    { id: '13', name: 'House Wine', category: 'beverages', price: 8.00, cost: 1.50, available: true },
-    { id: '14', name: 'Craft Beer', category: 'beverages', price: 7.00, cost: 1.80, available: true },
-    { id: '15', name: 'Soft Drinks', category: 'beverages', price: 3.00, cost: 0.50, available: true },
-    { id: '16', name: 'Coffee', category: 'beverages', price: 4.00, cost: 0.60, available: true },
-    { id: '17', name: 'Fresh Juice', category: 'beverages', price: 5.00, cost: 1.20, available: true }
+    { id: '13', name: 'House Wine', category: 'beverages', price: 8.0, cost: 1.5, available: true },
+    { id: '14', name: 'Craft Beer', category: 'beverages', price: 7.0, cost: 1.8, available: true },
+    {
+      id: '15',
+      name: 'Soft Drinks',
+      category: 'beverages',
+      price: 3.0,
+      cost: 0.5,
+      available: true
+    },
+    { id: '16', name: 'Coffee', category: 'beverages', price: 4.0, cost: 0.6, available: true },
+    { id: '17', name: 'Fresh Juice', category: 'beverages', price: 5.0, cost: 1.2, available: true }
   ]
 
   const categories = [
@@ -150,14 +255,15 @@ export function RestaurantPOS() {
 
   const addToOrder = (item: MenuItem) => {
     const existingItemIndex = currentOrder.findIndex(
-      orderItem => orderItem.menuItem.id === item.id && 
-      JSON.stringify(orderItem.modifiers) === JSON.stringify(selectedModifiers[item.id] || [])
+      orderItem =>
+        orderItem.menuItem.id === item.id &&
+        JSON.stringify(orderItem.modifiers) === JSON.stringify(selectedModifiers[item.id] || [])
     )
 
     if (existingItemIndex >= 0) {
       const updatedOrder = [...currentOrder]
       updatedOrder[existingItemIndex].quantity += 1
-      updatedOrder[existingItemIndex].subtotal = 
+      updatedOrder[existingItemIndex].subtotal =
         updatedOrder[existingItemIndex].quantity * item.price
       setCurrentOrder(updatedOrder)
     } else {
@@ -174,14 +280,14 @@ export function RestaurantPOS() {
   const updateQuantity = (index: number, change: number) => {
     const updatedOrder = [...currentOrder]
     updatedOrder[index].quantity += change
-    
+
     if (updatedOrder[index].quantity <= 0) {
       updatedOrder.splice(index, 1)
     } else {
-      updatedOrder[index].subtotal = 
+      updatedOrder[index].subtotal =
         updatedOrder[index].quantity * updatedOrder[index].menuItem.price
     }
-    
+
     setCurrentOrder(updatedOrder)
   }
 
@@ -206,8 +312,9 @@ export function RestaurantPOS() {
   }
 
   const calculateProfit = () => {
-    const totalCost = currentOrder.reduce((sum, item) => 
-      sum + (item.menuItem.cost * item.quantity), 0
+    const totalCost = currentOrder.reduce(
+      (sum, item) => sum + item.menuItem.cost * item.quantity,
+      0
     )
     const { subtotal } = calculateTotals()
     const profit = subtotal - totalCost
@@ -235,7 +342,7 @@ export function RestaurantPOS() {
 
     // Here you would send to HERA Universal API
     console.log('Processing order:', newOrder)
-    
+
     // Reset for next order
     setCurrentOrder([])
     setTableNumber('')
@@ -259,7 +366,7 @@ export function RestaurantPOS() {
               <Input
                 placeholder="Search menu items..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-9"
               />
             </div>
@@ -298,10 +405,18 @@ export function RestaurantPOS() {
               >
                 <CardContent className="p-4">
                   <div className="aspect-square bg-gradient-to-br from-orange-100 to-amber-100 rounded-lg mb-3 flex items-center justify-center">
-                    {item.category === 'appetizers' && <Salad className="w-12 h-12 text-orange-500" />}
-                    {item.category === 'mains' && <Utensils className="w-12 h-12 text-orange-500" />}
-                    {item.category === 'desserts' && <Cookie className="w-12 h-12 text-orange-500" />}
-                    {item.category === 'beverages' && <Coffee className="w-12 h-12 text-orange-500" />}
+                    {item.category === 'appetizers' && (
+                      <Salad className="w-12 h-12 text-orange-500" />
+                    )}
+                    {item.category === 'mains' && (
+                      <Utensils className="w-12 h-12 text-orange-500" />
+                    )}
+                    {item.category === 'desserts' && (
+                      <Cookie className="w-12 h-12 text-orange-500" />
+                    )}
+                    {item.category === 'beverages' && (
+                      <Coffee className="w-12 h-12 text-orange-500" />
+                    )}
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-start justify-between">
@@ -314,11 +429,13 @@ export function RestaurantPOS() {
                       )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-orange-600">${item.price.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-orange-600">
+                        ${item.price.toFixed(2)}
+                      </span>
                       <Button
                         size="sm"
                         className="restaurant-btn-primary h-8 w-8 p-0"
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation()
                           addToOrder(item)
                         }}
@@ -383,7 +500,7 @@ export function RestaurantPOS() {
               <Input
                 placeholder="Table Number"
                 value={tableNumber}
-                onChange={(e) => setTableNumber(e.target.value)}
+                onChange={e => setTableNumber(e.target.value)}
                 className="text-center"
               />
             )}
@@ -392,12 +509,12 @@ export function RestaurantPOS() {
                 <Input
                   placeholder="Customer Name"
                   value={customerInfo.name}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={e => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
                 />
                 <Input
                   placeholder="Phone Number"
                   value={customerInfo.phone}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
+                  onChange={e => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
                 />
               </>
             )}
@@ -406,17 +523,17 @@ export function RestaurantPOS() {
                 <Input
                   placeholder="Customer Name"
                   value={customerInfo.name}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={e => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
                 />
                 <Input
                   placeholder="Phone Number"
                   value={customerInfo.phone}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
+                  onChange={e => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
                 />
                 <Input
                   placeholder="Delivery Address"
                   value={customerInfo.address}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
+                  onChange={e => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
                 />
               </>
             )}
@@ -485,7 +602,7 @@ export function RestaurantPOS() {
               type="number"
               placeholder="Discount %"
               value={discount || ''}
-              onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
+              onChange={e => setDiscount(parseFloat(e.target.value) || 0)}
               className="w-24"
               min="0"
               max="100"
@@ -596,11 +713,7 @@ export function RestaurantPOS() {
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setShowPayment(false)}
-              >
+              <Button variant="outline" className="flex-1" onClick={() => setShowPayment(false)}>
                 Cancel
               </Button>
               <Button className="flex-1 restaurant-btn-primary">

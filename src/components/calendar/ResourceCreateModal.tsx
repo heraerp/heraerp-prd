@@ -10,17 +10,23 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
+import {
   Users,
   Wrench,
   MapPin,
@@ -33,9 +39,7 @@ import {
   Calendar
 } from 'lucide-react'
 
-import { 
-  UniversalResource
-} from '@/types/calendar.types'
+import { UniversalResource } from '@/types/calendar.types'
 import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
 
 interface ResourceCreateModalProps {
@@ -47,11 +51,31 @@ interface ResourceCreateModalProps {
 }
 
 const RESOURCE_TYPES = [
-  { value: 'STAFF', label: 'Staff', icon: Users, description: 'People resources (doctors, chefs, consultants)' },
-  { value: 'EQUIPMENT', label: 'Equipment', icon: Wrench, description: 'Machines, tools, medical devices' },
-  { value: 'ROOM', label: 'Room/Space', icon: MapPin, description: 'Physical spaces (rooms, tables, venues)' },
+  {
+    value: 'STAFF',
+    label: 'Staff',
+    icon: Users,
+    description: 'People resources (doctors, chefs, consultants)'
+  },
+  {
+    value: 'EQUIPMENT',
+    label: 'Equipment',
+    icon: Wrench,
+    description: 'Machines, tools, medical devices'
+  },
+  {
+    value: 'ROOM',
+    label: 'Room/Space',
+    icon: MapPin,
+    description: 'Physical spaces (rooms, tables, venues)'
+  },
   { value: 'VEHICLE', label: 'Vehicle', icon: Activity, description: 'Transportation resources' },
-  { value: 'VIRTUAL', label: 'Virtual', icon: Settings, description: 'Online resources (video calls, virtual spaces)' }
+  {
+    value: 'VIRTUAL',
+    label: 'Virtual',
+    icon: Settings,
+    description: 'Online resources (video calls, virtual spaces)'
+  }
 ]
 
 const BUSINESS_DAYS = [
@@ -66,28 +90,72 @@ const BUSINESS_DAYS = [
 
 const INDUSTRY_SKILL_SETS = {
   healthcare: [
-    'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Surgery', 'Emergency Medicine',
-    'Internal Medicine', 'Radiology', 'Pathology', 'Anesthesiology', 'Patient Care',
-    'Medical Procedures', 'Lab Work', 'Diagnostics'
+    'Cardiology',
+    'Neurology',
+    'Orthopedics',
+    'Pediatrics',
+    'Surgery',
+    'Emergency Medicine',
+    'Internal Medicine',
+    'Radiology',
+    'Pathology',
+    'Anesthesiology',
+    'Patient Care',
+    'Medical Procedures',
+    'Lab Work',
+    'Diagnostics'
   ],
   restaurant: [
-    'Italian Cuisine', 'French Cuisine', 'Asian Cuisine', 'Pastry', 'Grilling', 'Wine Service',
-    'Customer Service', 'Food Safety', 'Kitchen Management', 'Bartending', 'Sommelier',
-    'Event Planning', 'Catering'
+    'Italian Cuisine',
+    'French Cuisine',
+    'Asian Cuisine',
+    'Pastry',
+    'Grilling',
+    'Wine Service',
+    'Customer Service',
+    'Food Safety',
+    'Kitchen Management',
+    'Bartending',
+    'Sommelier',
+    'Event Planning',
+    'Catering'
   ],
   professional: [
-    'Project Management', 'Strategy Consulting', 'Financial Analysis', 'Legal Advisory',
-    'Marketing', 'Sales', 'IT Consulting', 'HR Consulting', 'Change Management',
-    'Business Development', 'Public Speaking', 'Training'
+    'Project Management',
+    'Strategy Consulting',
+    'Financial Analysis',
+    'Legal Advisory',
+    'Marketing',
+    'Sales',
+    'IT Consulting',
+    'HR Consulting',
+    'Change Management',
+    'Business Development',
+    'Public Speaking',
+    'Training'
   ],
   manufacturing: [
-    'CNC Operation', 'Quality Control', 'Welding', 'Assembly', 'Maintenance',
-    'Safety Inspection', 'Production Planning', 'Equipment Calibration',
-    'Process Engineering', 'Lean Manufacturing', 'Six Sigma'
+    'CNC Operation',
+    'Quality Control',
+    'Welding',
+    'Assembly',
+    'Maintenance',
+    'Safety Inspection',
+    'Production Planning',
+    'Equipment Calibration',
+    'Process Engineering',
+    'Lean Manufacturing',
+    'Six Sigma'
   ],
   universal: [
-    'Communication', 'Problem Solving', 'Leadership', 'Time Management',
-    'Customer Service', 'Technical Skills', 'Organization', 'Teamwork'
+    'Communication',
+    'Problem Solving',
+    'Leadership',
+    'Time Management',
+    'Customer Service',
+    'Technical Skills',
+    'Organization',
+    'Teamwork'
   ]
 }
 
@@ -98,7 +166,6 @@ export function ResourceCreateModal({
   on_close,
   on_save
 }: ResourceCreateModalProps) {
-
   // ==================== STATE MANAGEMENT ====================
   const [formData, setFormData] = useState<Partial<UniversalResource>>({
     entity_name: '',
@@ -123,29 +190,31 @@ export function ResourceCreateModal({
   // ==================== COMPUTED VALUES ====================
   const smartCodeSuggestion = useMemo(() => {
     if (formData.entity_name && formData.resource_type) {
-      return calendarSmartCodeService.autoClassifyResource(
-        formData.entity_name,
-        industry_type
-      )
+      return calendarSmartCodeService.autoClassifyResource(formData.entity_name, industry_type)
     }
     return null
   }, [formData.entity_name, formData.resource_type, industry_type])
 
   const availableSkills = useMemo(() => {
-    return INDUSTRY_SKILL_SETS[industry_type as keyof typeof INDUSTRY_SKILL_SETS] || 
-           INDUSTRY_SKILL_SETS.universal
+    return (
+      INDUSTRY_SKILL_SETS[industry_type as keyof typeof INDUSTRY_SKILL_SETS] ||
+      INDUSTRY_SKILL_SETS.universal
+    )
   }, [industry_type])
 
   // ==================== FORM HANDLERS ====================
   const handleInputChange = (field: keyof UniversalResource, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-    
+
     // Auto-generate entity code if name changes
     if (field === 'entity_name' && value) {
-      const code = value.toUpperCase().replace(/[^A-Z0-9]/g, '_').substring(0, 15)
+      const code = value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, '_')
+        .substring(0, 15)
       setFormData(prev => ({ ...prev, entity_code: code }))
     }
-    
+
     // Clear validation error
     if (validationErrors[field]) {
       setValidationErrors(prev => {
@@ -159,29 +228,29 @@ export function ResourceCreateModal({
   const handleSkillToggle = (skill: string) => {
     setFormData(prev => ({
       ...prev,
-      skills: prev.skills?.includes(skill) 
+      skills: prev.skills?.includes(skill)
         ? prev.skills.filter(s => s !== skill)
         : [...(prev.skills || []), skill]
     }))
   }
 
   const handleAvailabilityChange = (index: number, field: string, value: any) => {
-    setAvailabilityWindows(prev => 
-      prev.map((window, i) => 
-        i === index ? { ...window, [field]: value } : window
-      )
+    setAvailabilityWindows(prev =>
+      prev.map((window, i) => (i === index ? { ...window, [field]: value } : window))
     )
   }
 
   const handleDayToggle = (windowIndex: number, dayId: string) => {
-    setAvailabilityWindows(prev => 
-      prev.map((window, i) => 
-        i === windowIndex ? {
-          ...window,
-          days: window.days.includes(dayId)
-            ? window.days.filter(d => d !== dayId)
-            : [...window.days, dayId]
-        } : window
+    setAvailabilityWindows(prev =>
+      prev.map((window, i) =>
+        i === windowIndex
+          ? {
+              ...window,
+              days: window.days.includes(dayId)
+                ? window.days.filter(d => d !== dayId)
+                : [...window.days, dayId]
+            }
+          : window
       )
     )
   }
@@ -267,7 +336,7 @@ export function ResourceCreateModal({
       }
 
       await on_save(resourceData)
-      
+
       // Reset form
       setFormData({
         entity_name: '',
@@ -284,7 +353,6 @@ export function ResourceCreateModal({
         { start: '09:00', end: '17:00', days: ['MON', 'TUE', 'WED', 'THU', 'FRI'] }
       ])
       setMaintenanceSchedule([])
-      
     } catch (error) {
       console.error('Failed to create resource:', error)
     } finally {
@@ -296,7 +364,7 @@ export function ResourceCreateModal({
   const getResourceTypeIcon = (type: string) => {
     const resourceType = RESOURCE_TYPES.find(rt => rt.value === type)
     if (!resourceType) return <Users className="h-4 w-4" />
-    
+
     const IconComponent = resourceType.icon
     return <IconComponent className="h-4 w-4" />
   }
@@ -329,7 +397,7 @@ export function ResourceCreateModal({
                   <Input
                     id="entity_name"
                     value={formData.entity_name || ''}
-                    onChange={(e) => handleInputChange('entity_name', e.target.value)}
+                    onChange={e => handleInputChange('entity_name', e.target.value)}
                     placeholder="e.g., Dr. Smith, Table 5, Conference Room A"
                     className={validationErrors.entity_name ? 'border-red-500' : ''}
                   />
@@ -343,7 +411,7 @@ export function ResourceCreateModal({
                   <Input
                     id="entity_code"
                     value={formData.entity_code || ''}
-                    onChange={(e) => handleInputChange('entity_code', e.target.value)}
+                    onChange={e => handleInputChange('entity_code', e.target.value)}
                     placeholder="e.g., DR_SMITH, TBL_005, CONF_A"
                     className={validationErrors.entity_code ? 'border-red-500' : ''}
                   />
@@ -358,9 +426,11 @@ export function ResourceCreateModal({
                   <Label htmlFor="resource_type">Resource Type *</Label>
                   <Select
                     value={formData.resource_type || ''}
-                    onValueChange={(value) => handleInputChange('resource_type', value)}
+                    onValueChange={value => handleInputChange('resource_type', value)}
                   >
-                    <SelectTrigger className={validationErrors.resource_type ? 'border-red-500' : ''}>
+                    <SelectTrigger
+                      className={validationErrors.resource_type ? 'border-red-500' : ''}
+                    >
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -383,7 +453,7 @@ export function ResourceCreateModal({
                   <Label htmlFor="status">Status</Label>
                   <Select
                     value={formData.status || 'active'}
-                    onValueChange={(value) => handleInputChange('status', value)}
+                    onValueChange={value => handleInputChange('status', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -403,7 +473,7 @@ export function ResourceCreateModal({
                     type="number"
                     min="1"
                     value={formData.capacity || 1}
-                    onChange={(e) => handleInputChange('capacity', parseInt(e.target.value) || 1)}
+                    onChange={e => handleInputChange('capacity', parseInt(e.target.value) || 1)}
                     className={validationErrors.capacity ? 'border-red-500' : ''}
                   />
                   {validationErrors.capacity && (
@@ -418,7 +488,7 @@ export function ResourceCreateModal({
                   <Input
                     id="location"
                     value={formData.location || ''}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    onChange={e => handleInputChange('location', e.target.value)}
                     placeholder="e.g., Floor 3, Kitchen, Building A"
                   />
                 </div>
@@ -431,7 +501,9 @@ export function ResourceCreateModal({
                     min="0"
                     step="0.01"
                     value={formData.cost_per_hour || 0}
-                    onChange={(e) => handleInputChange('cost_per_hour', parseFloat(e.target.value) || 0)}
+                    onChange={e =>
+                      handleInputChange('cost_per_hour', parseFloat(e.target.value) || 0)
+                    }
                     className={validationErrors.cost_per_hour ? 'border-red-500' : ''}
                   />
                   {validationErrors.cost_per_hour && (
@@ -447,9 +519,7 @@ export function ResourceCreateModal({
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Skills & Capabilities</CardTitle>
-                <CardDescription>
-                  Select skills and capabilities for this resource
-                </CardDescription>
+                <CardDescription>Select skills and capabilities for this resource</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-2">
@@ -460,16 +530,13 @@ export function ResourceCreateModal({
                         checked={formData.skills?.includes(skill) || false}
                         onCheckedChange={() => handleSkillToggle(skill)}
                       />
-                      <Label 
-                        htmlFor={`skill_${skill}`} 
-                        className="text-sm cursor-pointer"
-                      >
+                      <Label htmlFor={`skill_${skill}`} className="text-sm cursor-pointer">
                         {skill}
                       </Label>
                     </div>
                   ))}
                 </div>
-                
+
                 {formData.skills && formData.skills.length > 0 && (
                   <div className="mt-4">
                     <p className="text-sm font-medium mb-2">Selected Skills:</p>
@@ -498,9 +565,7 @@ export function ResourceCreateModal({
                   Add Window
                 </Button>
               </CardTitle>
-              <CardDescription>
-                Define when this resource is available for booking
-              </CardDescription>
+              <CardDescription>Define when this resource is available for booking</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {availabilityWindows.map((window, index) => (
@@ -510,7 +575,7 @@ export function ResourceCreateModal({
                     {availabilityWindows.length > 1 && (
                       <Button
                         variant="ghost"
-                        size="sm" 
+                        size="sm"
                         onClick={() => removeAvailabilityWindow(index)}
                         className="text-red-600"
                       >
@@ -518,7 +583,7 @@ export function ResourceCreateModal({
                       </Button>
                     )}
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 mb-3">
                     <div>
                       <Label htmlFor={`start_${index}`}>Start Time</Label>
@@ -526,7 +591,7 @@ export function ResourceCreateModal({
                         id={`start_${index}`}
                         type="time"
                         value={window.start}
-                        onChange={(e) => handleAvailabilityChange(index, 'start', e.target.value)}
+                        onChange={e => handleAvailabilityChange(index, 'start', e.target.value)}
                       />
                     </div>
                     <div>
@@ -535,16 +600,20 @@ export function ResourceCreateModal({
                         id={`end_${index}`}
                         type="time"
                         value={window.end}
-                        onChange={(e) => handleAvailabilityChange(index, 'end', e.target.value)}
-                        className={validationErrors[`availability_${index}`] ? 'border-red-500' : ''}
+                        onChange={e => handleAvailabilityChange(index, 'end', e.target.value)}
+                        className={
+                          validationErrors[`availability_${index}`] ? 'border-red-500' : ''
+                        }
                       />
                     </div>
                   </div>
-                  
+
                   {validationErrors[`availability_${index}`] && (
-                    <p className="text-sm text-red-600 mb-3">{validationErrors[`availability_${index}`]}</p>
+                    <p className="text-sm text-red-600 mb-3">
+                      {validationErrors[`availability_${index}`]}
+                    </p>
                   )}
-                  
+
                   <div>
                     <Label>Available Days</Label>
                     <div className="flex flex-wrap gap-2 mt-2">
@@ -555,22 +624,21 @@ export function ResourceCreateModal({
                             checked={window.days.includes(day.id)}
                             onCheckedChange={() => handleDayToggle(index, day.id)}
                           />
-                          <Label 
-                            htmlFor={`${index}_${day.id}`} 
-                            className="text-sm cursor-pointer"
-                          >
+                          <Label htmlFor={`${index}_${day.id}`} className="text-sm cursor-pointer">
                             {day.label.substring(0, 3)}
                           </Label>
                         </div>
                       ))}
                     </div>
                     {validationErrors[`availability_days_${index}`] && (
-                      <p className="text-sm text-red-600 mt-1">{validationErrors[`availability_days_${index}`]}</p>
+                      <p className="text-sm text-red-600 mt-1">
+                        {validationErrors[`availability_days_${index}`]}
+                      </p>
                     )}
                   </div>
                 </Card>
               ))}
-              
+
               {validationErrors.availability && (
                 <p className="text-sm text-red-600">{validationErrors.availability}</p>
               )}
@@ -594,7 +662,9 @@ export function ResourceCreateModal({
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">Confidence Score:</span>
-                    <span className="text-sm">{Math.round(smartCodeSuggestion.confidence * 100)}%</span>
+                    <span className="text-sm">
+                      {Math.round(smartCodeSuggestion.confidence * 100)}%
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="font-medium">Smart Code:</span>

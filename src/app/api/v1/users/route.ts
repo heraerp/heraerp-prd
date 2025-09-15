@@ -14,11 +14,11 @@ async function getOrganizationFromAuth(request: NextRequest): Promise<string> {
 
   const token = authHeader.replace('Bearer ', '')
   const payload = await jwtService.verifyToken(token)
-  
+
   if (!payload.organization_id) {
     throw new Error('Organization context missing')
   }
-  
+
   return payload.organization_id
 }
 
@@ -31,7 +31,7 @@ async function getUserFromAuth(request: NextRequest) {
 
   const token = authHeader.replace('Bearer ', '')
   const payload = await jwtService.verifyToken(token)
-  
+
   return {
     id: payload.sub,
     organization_id: payload.organization_id,
@@ -42,9 +42,11 @@ async function getUserFromAuth(request: NextRequest) {
 
 // Check if user has required permission
 function hasPermission(userPermissions: string[], requiredPermission: string): boolean {
-  return userPermissions.includes(requiredPermission) || 
-         userPermissions.includes('users:manage') ||
-         userPermissions.includes('*')
+  return (
+    userPermissions.includes(requiredPermission) ||
+    userPermissions.includes('users:manage') ||
+    userPermissions.includes('*')
+  )
 }
 
 // GET /api/v1/users - Fetch organization users
@@ -57,11 +59,11 @@ export async function GET(request: NextRequest) {
     const role = searchParams.get('role')
     const status = searchParams.get('status')
     const include_inactive = searchParams.get('include_inactive') === 'true'
-    
+
     // Get organization_id and verify permissions
     const organizationId = await getOrganizationFromAuth(request)
     const currentUser = await getUserFromAuth(request)
-    
+
     if (!hasPermission(currentUser.permissions, 'users:read')) {
       return NextResponse.json(
         { success: false, message: 'Insufficient permissions to view users' },
@@ -104,14 +106,12 @@ export async function GET(request: NextRequest) {
     // Filter by metadata if needed
     let filteredUsers = users || []
     if (department) {
-      filteredUsers = filteredUsers.filter(user => 
-        user.metadata && user.metadata.department === department
+      filteredUsers = filteredUsers.filter(
+        user => user.metadata && user.metadata.department === department
       )
     }
     if (role) {
-      filteredUsers = filteredUsers.filter(user => 
-        user.metadata && user.metadata.role === role
-      )
+      filteredUsers = filteredUsers.filter(user => user.metadata && user.metadata.role === role)
     }
 
     // Get user statistics
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
     filteredUsers.forEach(user => {
       const dept = (user.metadata as any)?.department || 'Unassigned'
       stats.by_department[dept] = (stats.by_department[dept] || 0) + 1
-      
+
       const userRole = (user.metadata as any)?.role || 'user'
       stats.by_role[userRole] = (stats.by_role[userRole] || 0) + 1
     })
@@ -140,19 +140,12 @@ export async function GET(request: NextRequest) {
       statistics: stats,
       organization_id: organizationId
     })
-
   } catch (error) {
     console.error('User fetch error:', error)
     if (error instanceof Error && error.message.includes('Authentication')) {
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, message: error.message }, { status: 401 })
     }
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -162,11 +155,11 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     const body = await request.json()
-    
+
     // Get organization_id and verify permissions
     const organizationId = await getOrganizationFromAuth(request)
     const currentUser = await getUserFromAuth(request)
-    
+
     if (!hasPermission(currentUser.permissions, 'users:create')) {
       return NextResponse.json(
         { success: false, message: 'Insufficient permissions to create users' },
@@ -291,19 +284,12 @@ export async function POST(request: NextRequest) {
       data: sanitizedUser,
       message: `User ${entity_name} created successfully`
     })
-
   } catch (error) {
     console.error('Create user error:', error)
     if (error instanceof Error && error.message.includes('Authentication')) {
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, message: error.message }, { status: 401 })
     }
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -313,11 +299,11 @@ export async function PUT(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     const body = await request.json()
-    
+
     // Get organization_id and verify permissions
     const organizationId = await getOrganizationFromAuth(request)
     const currentUser = await getUserFromAuth(request)
-    
+
     if (!hasPermission(currentUser.permissions, 'users:update')) {
       return NextResponse.json(
         { success: false, message: 'Insufficient permissions to update users' },
@@ -345,10 +331,7 @@ export async function PUT(request: NextRequest) {
     } = body
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, message: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'User ID is required' }, { status: 400 })
     }
 
     // Get existing user
@@ -361,15 +344,15 @@ export async function PUT(request: NextRequest) {
       .single()
 
     if (fetchError || !existingUser) {
-      return NextResponse.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 })
     }
 
     // Prevent users from editing their own role/permissions unless they're owner
     if (existingUser.id === currentUser.id && currentUser.role !== 'owner') {
-      if (role !== (existingUser.metadata as any)?.role || JSON.stringify(permissions) !== JSON.stringify((existingUser.metadata as any)?.permissions)) {
+      if (
+        role !== (existingUser.metadata as any)?.role ||
+        JSON.stringify(permissions) !== JSON.stringify((existingUser.metadata as any)?.permissions)
+      ) {
         return NextResponse.json(
           { success: false, message: 'You cannot modify your own role or permissions' },
           { status: 403 }
@@ -390,7 +373,7 @@ export async function PUT(request: NextRequest) {
 
     // Update metadata
     const updatedMetadata = { ...existingUser.metadata }
-    
+
     if (email !== undefined) {
       // Check if new email already exists
       if (email !== (existingUser.metadata as any)?.email) {
@@ -421,7 +404,7 @@ export async function PUT(request: NextRequest) {
     if (location !== undefined) updatedMetadata.location = location
     if (role !== undefined) updatedMetadata.role = role
     if (permissions !== undefined) updatedMetadata.permissions = permissions
-    
+
     updatedMetadata.last_updated_by = currentUser.id
 
     // Handle password update
@@ -459,19 +442,12 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'User updated successfully'
     })
-
   } catch (error) {
     console.error('Update user error:', error)
     if (error instanceof Error && error.message.includes('Authentication')) {
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, message: error.message }, { status: 401 })
     }
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -482,11 +458,11 @@ export async function DELETE(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     // Get organization_id and verify permissions
     const organizationId = await getOrganizationFromAuth(request)
     const currentUser = await getUserFromAuth(request)
-    
+
     if (!hasPermission(currentUser.permissions, 'users:delete')) {
       return NextResponse.json(
         { success: false, message: 'Insufficient permissions to delete users' },
@@ -495,10 +471,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, message: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'User ID is required' }, { status: 400 })
     }
 
     // Prevent self-deletion
@@ -519,10 +492,7 @@ export async function DELETE(request: NextRequest) {
       .single()
 
     if (fetchError || !user) {
-      return NextResponse.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 })
     }
 
     // Prevent deletion of owner accounts
@@ -560,30 +530,28 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'User deleted successfully'
     })
-
   } catch (error) {
     console.error('Delete user error:', error)
     if (error instanceof Error && error.message.includes('Authentication')) {
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 401 }
-      )
+      return NextResponse.json({ success: false, message: error.message }, { status: 401 })
     }
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
 // Helper function to send welcome email
-async function sendWelcomeEmail(email: string, name: string, password: string, organizationId: string): Promise<void> {
+async function sendWelcomeEmail(
+  email: string,
+  name: string,
+  password: string,
+  organizationId: string
+): Promise<void> {
   // In production, this would integrate with your email service (SendGrid, AWS SES, etc.)
   console.log(`📧 Welcome email would be sent to ${email} for ${name}`)
   console.log(`   Organization: ${organizationId}`)
   console.log(`   Temporary password: ${password}`)
   console.log(`   Instructions: Log in and change password on first use`)
-  
+
   // Example email content:
   // Subject: Welcome to HERA - Your Account is Ready
   // Body: Welcome ${name}, your HERA account has been created...

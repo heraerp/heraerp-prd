@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   BookOpen,
   Search,
   Filter,
@@ -67,41 +67,306 @@ export default function GeneralLedgerPage() {
   // GL Accounts with hierarchical structure
   const [glAccounts] = useState<GLAccount[]>([
     // Assets
-    { id: '1', accountCode: '1000', accountName: 'Assets', accountType: 'asset', balance: 185000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '2', accountCode: '1100', accountName: 'Current Assets', accountType: 'asset', parentAccount: '1000', balance: 103000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '3', accountCode: '1110', accountName: 'Cash and Cash Equivalents', accountType: 'asset', parentAccount: '1100', balance: 45000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '4', accountCode: '1120', accountName: 'Accounts Receivable', accountType: 'asset', parentAccount: '1100', balance: 125000000, currency: 'INR', status: 'active', lastActivity: '2024-06-14' },
-    { id: '5', accountCode: '1130', accountName: 'Inventory', accountType: 'asset', parentAccount: '1100', balance: 8000000, currency: 'INR', status: 'active', lastActivity: '2024-06-13' },
-    { id: '6', accountCode: '1200', accountName: 'Fixed Assets', accountType: 'asset', parentAccount: '1000', balance: 82000000, currency: 'INR', status: 'active', lastActivity: '2024-06-10' },
-    { id: '7', accountCode: '1210', accountName: 'Network Equipment', accountType: 'asset', parentAccount: '1200', balance: 65000000, currency: 'INR', status: 'active', lastActivity: '2024-06-10' },
-    { id: '8', accountCode: '1220', accountName: 'Buildings', accountType: 'asset', parentAccount: '1200', balance: 17000000, currency: 'INR', status: 'active', lastActivity: '2024-05-31' },
-    
+    {
+      id: '1',
+      accountCode: '1000',
+      accountName: 'Assets',
+      accountType: 'asset',
+      balance: 185000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '2',
+      accountCode: '1100',
+      accountName: 'Current Assets',
+      accountType: 'asset',
+      parentAccount: '1000',
+      balance: 103000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '3',
+      accountCode: '1110',
+      accountName: 'Cash and Cash Equivalents',
+      accountType: 'asset',
+      parentAccount: '1100',
+      balance: 45000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '4',
+      accountCode: '1120',
+      accountName: 'Accounts Receivable',
+      accountType: 'asset',
+      parentAccount: '1100',
+      balance: 125000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-14'
+    },
+    {
+      id: '5',
+      accountCode: '1130',
+      accountName: 'Inventory',
+      accountType: 'asset',
+      parentAccount: '1100',
+      balance: 8000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-13'
+    },
+    {
+      id: '6',
+      accountCode: '1200',
+      accountName: 'Fixed Assets',
+      accountType: 'asset',
+      parentAccount: '1000',
+      balance: 82000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-10'
+    },
+    {
+      id: '7',
+      accountCode: '1210',
+      accountName: 'Network Equipment',
+      accountType: 'asset',
+      parentAccount: '1200',
+      balance: 65000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-10'
+    },
+    {
+      id: '8',
+      accountCode: '1220',
+      accountName: 'Buildings',
+      accountType: 'asset',
+      parentAccount: '1200',
+      balance: 17000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-05-31'
+    },
+
     // Liabilities
-    { id: '9', accountCode: '2000', accountName: 'Liabilities', accountType: 'liability', balance: 82000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '10', accountCode: '2100', accountName: 'Current Liabilities', accountType: 'liability', parentAccount: '2000', balance: 52000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '11', accountCode: '2110', accountName: 'Accounts Payable', accountType: 'liability', parentAccount: '2100', balance: 82000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '12', accountCode: '2120', accountName: 'Accrued Expenses', accountType: 'liability', parentAccount: '2100', balance: 15000000, currency: 'INR', status: 'active', lastActivity: '2024-06-14' },
-    { id: '13', accountCode: '2200', accountName: 'Long-term Liabilities', accountType: 'liability', parentAccount: '2000', balance: 30000000, currency: 'INR', status: 'active', lastActivity: '2024-06-01' },
-    
+    {
+      id: '9',
+      accountCode: '2000',
+      accountName: 'Liabilities',
+      accountType: 'liability',
+      balance: 82000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '10',
+      accountCode: '2100',
+      accountName: 'Current Liabilities',
+      accountType: 'liability',
+      parentAccount: '2000',
+      balance: 52000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '11',
+      accountCode: '2110',
+      accountName: 'Accounts Payable',
+      accountType: 'liability',
+      parentAccount: '2100',
+      balance: 82000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '12',
+      accountCode: '2120',
+      accountName: 'Accrued Expenses',
+      accountType: 'liability',
+      parentAccount: '2100',
+      balance: 15000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-14'
+    },
+    {
+      id: '13',
+      accountCode: '2200',
+      accountName: 'Long-term Liabilities',
+      accountType: 'liability',
+      parentAccount: '2000',
+      balance: 30000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-01'
+    },
+
     // Equity
-    { id: '14', accountCode: '3000', accountName: 'Equity', accountType: 'equity', balance: 226000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '15', accountCode: '3100', accountName: 'Share Capital', accountType: 'equity', parentAccount: '3000', balance: 100000000, currency: 'INR', status: 'active', lastActivity: '2024-01-01' },
-    { id: '16', accountCode: '3200', accountName: 'Retained Earnings', accountType: 'equity', parentAccount: '3000', balance: 126000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    
+    {
+      id: '14',
+      accountCode: '3000',
+      accountName: 'Equity',
+      accountType: 'equity',
+      balance: 226000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '15',
+      accountCode: '3100',
+      accountName: 'Share Capital',
+      accountType: 'equity',
+      parentAccount: '3000',
+      balance: 100000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-01-01'
+    },
+    {
+      id: '16',
+      accountCode: '3200',
+      accountName: 'Retained Earnings',
+      accountType: 'equity',
+      parentAccount: '3000',
+      balance: 126000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+
     // Revenue
-    { id: '17', accountCode: '4000', accountName: 'Revenue', accountType: 'revenue', balance: 540000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '18', accountCode: '4100', accountName: 'Service Revenue', accountType: 'revenue', parentAccount: '4000', balance: 486000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '19', accountCode: '4110', accountName: 'Broadband Revenue', accountType: 'revenue', parentAccount: '4100', balance: 324000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '20', accountCode: '4120', accountName: 'Cable TV Revenue', accountType: 'revenue', parentAccount: '4100', balance: 129600000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '21', accountCode: '4200', accountName: 'Other Revenue', accountType: 'revenue', parentAccount: '4000', balance: 54000000, currency: 'INR', status: 'active', lastActivity: '2024-06-14' },
-    
+    {
+      id: '17',
+      accountCode: '4000',
+      accountName: 'Revenue',
+      accountType: 'revenue',
+      balance: 540000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '18',
+      accountCode: '4100',
+      accountName: 'Service Revenue',
+      accountType: 'revenue',
+      parentAccount: '4000',
+      balance: 486000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '19',
+      accountCode: '4110',
+      accountName: 'Broadband Revenue',
+      accountType: 'revenue',
+      parentAccount: '4100',
+      balance: 324000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '20',
+      accountCode: '4120',
+      accountName: 'Cable TV Revenue',
+      accountType: 'revenue',
+      parentAccount: '4100',
+      balance: 129600000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '21',
+      accountCode: '4200',
+      accountName: 'Other Revenue',
+      accountType: 'revenue',
+      parentAccount: '4000',
+      balance: 54000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-14'
+    },
+
     // Expenses
-    { id: '22', accountCode: '5000', accountName: 'Expenses', accountType: 'expense', balance: 417400000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '23', accountCode: '5100', accountName: 'Operating Expenses', accountType: 'expense', parentAccount: '5000', balance: 350000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '24', accountCode: '5110', accountName: 'Network Operations', accountType: 'expense', parentAccount: '5100', balance: 150000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '25', accountCode: '5120', accountName: 'Staff Costs', accountType: 'expense', parentAccount: '5100', balance: 120000000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' },
-    { id: '26', accountCode: '5130', accountName: 'Marketing & Sales', accountType: 'expense', parentAccount: '5100', balance: 40000000, currency: 'INR', status: 'active', lastActivity: '2024-06-14' },
-    { id: '27', accountCode: '5200', accountName: 'Administrative Expenses', accountType: 'expense', parentAccount: '5000', balance: 67400000, currency: 'INR', status: 'active', lastActivity: '2024-06-15' }
+    {
+      id: '22',
+      accountCode: '5000',
+      accountName: 'Expenses',
+      accountType: 'expense',
+      balance: 417400000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '23',
+      accountCode: '5100',
+      accountName: 'Operating Expenses',
+      accountType: 'expense',
+      parentAccount: '5000',
+      balance: 350000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '24',
+      accountCode: '5110',
+      accountName: 'Network Operations',
+      accountType: 'expense',
+      parentAccount: '5100',
+      balance: 150000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '25',
+      accountCode: '5120',
+      accountName: 'Staff Costs',
+      accountType: 'expense',
+      parentAccount: '5100',
+      balance: 120000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    },
+    {
+      id: '26',
+      accountCode: '5130',
+      accountName: 'Marketing & Sales',
+      accountType: 'expense',
+      parentAccount: '5100',
+      balance: 40000000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-14'
+    },
+    {
+      id: '27',
+      accountCode: '5200',
+      accountName: 'Administrative Expenses',
+      accountType: 'expense',
+      parentAccount: '5000',
+      balance: 67400000,
+      currency: 'INR',
+      status: 'active',
+      lastActivity: '2024-06-15'
+    }
   ])
 
   // Recent Journal Entries
@@ -146,7 +411,12 @@ export default function GeneralLedgerPage() {
       totalCredit: 10000000,
       lines: [
         { accountCode: '5120', accountName: 'Staff Costs', debit: 10000000, credit: 0 },
-        { accountCode: '1110', accountName: 'Cash and Cash Equivalents', debit: 0, credit: 10000000 }
+        {
+          accountCode: '1110',
+          accountName: 'Cash and Cash Equivalents',
+          debit: 0,
+          credit: 10000000
+        }
       ]
     }
   ])
@@ -167,29 +437,42 @@ export default function GeneralLedgerPage() {
 
   const getAccountTypeColor = (type: string) => {
     switch (type) {
-      case 'asset': return 'text-emerald-400'
-      case 'liability': return 'text-red-400'
-      case 'equity': return 'text-purple-400'
-      case 'revenue': return 'text-[#00DDFF]'
-      case 'expense': return 'text-yellow-400'
-      default: return 'text-white'
+      case 'asset':
+        return 'text-emerald-400'
+      case 'liability':
+        return 'text-red-400'
+      case 'equity':
+        return 'text-purple-400'
+      case 'revenue':
+        return 'text-[#00DDFF]'
+      case 'expense':
+        return 'text-yellow-400'
+      default:
+        return 'text-white'
     }
   }
 
   const getAccountTypeIcon = (type: string) => {
     switch (type) {
-      case 'asset': return '📊'
-      case 'liability': return '📉'
-      case 'equity': return '💰'
-      case 'revenue': return '📈'
-      case 'expense': return '💸'
-      default: return '📁'
+      case 'asset':
+        return '📊'
+      case 'liability':
+        return '📉'
+      case 'equity':
+        return '💰'
+      case 'revenue':
+        return '📈'
+      case 'expense':
+        return '💸'
+      default:
+        return '📁'
     }
   }
 
   const filteredAccounts = glAccounts.filter(account => {
-    const matchesSearch = account.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         account.accountCode.includes(searchTerm)
+    const matchesSearch =
+      account.accountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      account.accountCode.includes(searchTerm)
     const matchesType = selectedAccountType === 'all' || account.accountType === selectedAccountType
     return matchesSearch && matchesType
   })
@@ -197,7 +480,7 @@ export default function GeneralLedgerPage() {
   const renderAccountRow = (account: GLAccount, level: number = 0) => {
     const hasChildren = glAccounts.some(a => a.parentAccount === account.accountCode)
     const isExpanded = expandedAccounts.has(account.accountCode)
-    
+
     return (
       <>
         <tr key={account.id} className="hover:bg-white/5 transition-colors">
@@ -208,7 +491,11 @@ export default function GeneralLedgerPage() {
                   onClick={() => toggleAccountExpansion(account.accountCode)}
                   className="mr-2 text-white/40 hover:text-white transition-colors"
                 >
-                  {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                  {isExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
                 </button>
               )}
               <span className="font-mono text-sm text-white/80">{account.accountCode}</span>
@@ -221,7 +508,9 @@ export default function GeneralLedgerPage() {
             </div>
           </td>
           <td className="py-3">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAccountTypeColor(account.accountType)}`}>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getAccountTypeColor(account.accountType)}`}
+            >
               {account.accountType}
             </span>
           </td>
@@ -231,11 +520,13 @@ export default function GeneralLedgerPage() {
             </span>
           </td>
           <td className="py-3 text-center">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              account.status === 'active' 
-                ? 'bg-emerald-500/20 text-emerald-400' 
-                : 'bg-gray-500/20 text-gray-400'
-            }`}>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                account.status === 'active'
+                  ? 'bg-emerald-500/20 text-emerald-400'
+                  : 'bg-gray-500/20 text-gray-400'
+              }`}
+            >
               {account.status}
             </span>
           </td>
@@ -245,11 +536,11 @@ export default function GeneralLedgerPage() {
             </button>
           </td>
         </tr>
-        {hasChildren && isExpanded && 
+        {hasChildren &&
+          isExpanded &&
           glAccounts
             .filter(a => a.parentAccount === account.accountCode)
-            .map(childAccount => renderAccountRow(childAccount, level + 1))
-        }
+            .map(childAccount => renderAccountRow(childAccount, level + 1))}
       </>
     )
   }
@@ -271,7 +562,7 @@ export default function GeneralLedgerPage() {
           <p className="text-white/60 mt-1">Chart of accounts and journal entries management</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -319,14 +610,14 @@ export default function GeneralLedgerPage() {
                 type="text"
                 placeholder="Search by account name or code..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
-            
+
             <select
               value={selectedAccountType}
-              onChange={(e) => setSelectedAccountType(e.target.value)}
+              onChange={e => setSelectedAccountType(e.target.value)}
               className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-emerald-500 transition-colors"
             >
               <option value="all">All Account Types</option>
@@ -350,12 +641,18 @@ export default function GeneralLedgerPage() {
               <table className="w-full">
                 <thead className="bg-white/5 border-b border-white/10">
                   <tr>
-                    <th className="text-left py-4 pl-4 text-sm font-medium text-white/60">Account Code</th>
-                    <th className="text-left py-4 text-sm font-medium text-white/60">Account Name</th>
+                    <th className="text-left py-4 pl-4 text-sm font-medium text-white/60">
+                      Account Code
+                    </th>
+                    <th className="text-left py-4 text-sm font-medium text-white/60">
+                      Account Name
+                    </th>
                     <th className="text-left py-4 text-sm font-medium text-white/60">Type</th>
                     <th className="text-right py-4 text-sm font-medium text-white/60">Balance</th>
                     <th className="text-center py-4 text-sm font-medium text-white/60">Status</th>
-                    <th className="text-right py-4 pr-4 text-sm font-medium text-white/60">Actions</th>
+                    <th className="text-right py-4 pr-4 text-sm font-medium text-white/60">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -377,11 +674,11 @@ export default function GeneralLedgerPage() {
                 type="text"
                 placeholder="Search journal entries..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
-            
+
             <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
               <Calendar className="h-5 w-5" />
               <span>Date Range</span>
@@ -395,7 +692,7 @@ export default function GeneralLedgerPage() {
 
           {/* Journal Entries List */}
           <div className="space-y-4">
-            {journalEntries.map((entry) => (
+            {journalEntries.map(entry => (
               <div key={entry.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -403,13 +700,15 @@ export default function GeneralLedgerPage() {
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-semibold text-white">{entry.entryNumber}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          entry.status === 'posted' 
-                            ? 'bg-emerald-500/20 text-emerald-400'
-                            : entry.status === 'pending'
-                            ? 'bg-yellow-500/20 text-yellow-400'
-                            : 'bg-gray-500/20 text-gray-400'
-                        }`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            entry.status === 'posted'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : entry.status === 'pending'
+                                ? 'bg-yellow-500/20 text-yellow-400'
+                                : 'bg-gray-500/20 text-gray-400'
+                          }`}
+                        >
                           {entry.status}
                         </span>
                       </div>
@@ -430,8 +729,12 @@ export default function GeneralLedgerPage() {
                       <thead>
                         <tr className="text-left border-b border-white/10">
                           <th className="pb-2 text-sm font-medium text-white/60">Account</th>
-                          <th className="pb-2 text-sm font-medium text-white/60 text-right">Debit</th>
-                          <th className="pb-2 text-sm font-medium text-white/60 text-right">Credit</th>
+                          <th className="pb-2 text-sm font-medium text-white/60 text-right">
+                            Debit
+                          </th>
+                          <th className="pb-2 text-sm font-medium text-white/60 text-right">
+                            Credit
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
@@ -439,7 +742,9 @@ export default function GeneralLedgerPage() {
                           <tr key={index}>
                             <td className="py-2">
                               <div>
-                                <span className="font-mono text-sm text-white/60">{line.accountCode}</span>
+                                <span className="font-mono text-sm text-white/60">
+                                  {line.accountCode}
+                                </span>
                                 <span className="ml-2 text-white">{line.accountName}</span>
                               </div>
                             </td>

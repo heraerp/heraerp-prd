@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   MessageCircle,
   Calendar,
   Clock,
@@ -80,7 +80,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         language: 'en',
         parameters: ['customer_name', 'service', 'time', 'stylist']
       },
-      sampleText: 'Hi Sarah, this is a reminder about your Brazilian Blowout appointment tomorrow at 2:00 PM with Rocky. Reply CONFIRM to confirm or RESCHEDULE to change.'
+      sampleText:
+        'Hi Sarah, this is a reminder about your Brazilian Blowout appointment tomorrow at 2:00 PM with Rocky. Reply CONFIRM to confirm or RESCHEDULE to change.'
     },
     {
       id: '2',
@@ -95,7 +96,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         language: 'en',
         parameters: ['service', 'date', 'time', 'stylist', 'price']
       },
-      sampleText: 'Your appointment for Hair Color & Highlights on Dec 25, 2024 at 3:00 PM with Maya has been confirmed. Total: AED 280. We look forward to seeing you!'
+      sampleText:
+        'Your appointment for Hair Color & Highlights on Dec 25, 2024 at 3:00 PM with Maya has been confirmed. Total: AED 280. We look forward to seeing you!'
     },
     {
       id: '3',
@@ -110,7 +112,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         language: 'en',
         parameters: ['customer_name', 'service']
       },
-      sampleText: 'Hi Emma, how was your Premium Cut & Style experience yesterday? We\'d love to hear your feedback! Rate us 1-5 ⭐'
+      sampleText:
+        "Hi Emma, how was your Premium Cut & Style experience yesterday? We'd love to hear your feedback! Rate us 1-5 ⭐"
     },
     {
       id: '4',
@@ -125,7 +128,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         language: 'en',
         parameters: ['customer_name']
       },
-      sampleText: 'Welcome back, Aisha! As our VIP client, you get priority booking and 10% off all services. How can we pamper you today?'
+      sampleText:
+        'Welcome back, Aisha! As our VIP client, you get priority booking and 10% off all services. How can we pamper you today?'
     },
     {
       id: '5',
@@ -139,7 +143,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         language: 'en',
         parameters: ['customer_name', 'discount']
       },
-      sampleText: 'Happy Birthday Sarah! 🎉 Treat yourself to 25% off any service this month. Book your birthday glow-up with us!'
+      sampleText:
+        'Happy Birthday Sarah! 🎉 Treat yourself to 25% off any service this month. Book your birthday glow-up with us!'
     },
     {
       id: '6',
@@ -153,7 +158,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         language: 'en',
         parameters: ['service_name', 'special_price']
       },
-      sampleText: 'Introducing our new Keratin Treatment! Transform your hair with smooth, frizz-free results. Book now for special launch price: AED 299'
+      sampleText:
+        'Introducing our new Keratin Treatment! Transform your hair with smooth, frizz-free results. Book now for special launch price: AED 299'
     }
   ]
 
@@ -224,7 +230,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           triggerValue: 'hi',
           action: 'send_message',
           actionValue: {
-            message: 'Welcome to Luxury Salon Dubai! 💇‍♀️✨\n\nHow can we help you today?\n• Book an appointment\n• View our services\n• Check our location\n• Speak to our team\n\nReply with the option that interests you!'
+            message:
+              'Welcome to Luxury Salon Dubai! 💇‍♀️✨\n\nHow can we help you today?\n• Book an appointment\n• View our services\n• Check our location\n• Speak to our team\n\nReply with the option that interests you!'
           }
         },
         {
@@ -233,7 +240,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           triggerValue: 'hours',
           action: 'send_message',
           actionValue: {
-            message: '⏰ Our salon hours:\n\nMon-Thu: 9:00 AM - 9:00 PM\nFri: 9:00 AM - 1:00 PM\nSat-Sun: 10:00 AM - 9:00 PM\n\n📍 Location: Dubai Marina Walk\n☎️ Call us: +971 4 423 4567'
+            message:
+              '⏰ Our salon hours:\n\nMon-Thu: 9:00 AM - 9:00 PM\nFri: 9:00 AM - 1:00 PM\nSat-Sun: 10:00 AM - 9:00 PM\n\n📍 Location: Dubai Marina Walk\n☎️ Call us: +971 4 423 4567'
           }
         },
         {
@@ -242,7 +250,8 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           triggerValue: 'services',
           action: 'send_message',
           actionValue: {
-            message: '💅 Our Premium Services:\n\n✨ Brazilian Blowout - AED 500\n💇‍♀️ Premium Cut & Style - AED 150\n🌈 Hair Color & Highlights - AED 280\n👰 Complete Bridal Package - AED 800\n🔥 Keratin Treatment - AED 350\n\nBook your appointment now! Reply BOOK to get started.'
+            message:
+              '💅 Our Premium Services:\n\n✨ Brazilian Blowout - AED 500\n💇‍♀️ Premium Cut & Style - AED 150\n🌈 Hair Color & Highlights - AED 280\n👰 Complete Bridal Package - AED 800\n🔥 Keratin Treatment - AED 350\n\nBook your appointment now! Reply BOOK to get started.'
           }
         }
       ]
@@ -267,7 +276,11 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
     }
   }
 
-  const sendTemplateMessage = async (templateId: string, customerPhone: string, parameters: Record<string, string>) => {
+  const sendTemplateMessage = async (
+    templateId: string,
+    customerPhone: string,
+    parameters: Record<string, string>
+  ) => {
     if (!currentOrganization?.id) return
 
     const template = salonTemplates.find(t => t.id === templateId)
@@ -308,7 +321,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
   }, [currentOrganization])
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -320,7 +333,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
             Engage clients with automated messages and bookings
           </p>
         </div>
-        <Button 
+        <Button
           onClick={setupSalonIntegration}
           disabled={loading}
           className="bg-green-500 hover:bg-green-600 !text-white dark:!text-white"
@@ -336,8 +349,12 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-green-700 dark:text-green-300">Total Messages</p>
-                <p className="text-2xl font-bold text-green-900 dark:text-green-100">{stats.totalMessages}</p>
+                <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                  Total Messages
+                </p>
+                <p className="text-2xl font-bold text-green-900 dark:text-green-100">
+                  {stats.totalMessages}
+                </p>
               </div>
               <MessageCircle className="w-8 h-8 text-green-600 opacity-50" />
             </div>
@@ -348,8 +365,12 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-700 dark:text-blue-300">Response Rate</p>
-                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{stats.responseRate}%</p>
+                <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                  Response Rate
+                </p>
+                <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                  {stats.responseRate}%
+                </p>
               </div>
               <TrendingUp className="w-8 h-8 text-blue-600 opacity-50" />
             </div>
@@ -360,8 +381,12 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-700 dark:text-purple-300">Avg Response</p>
-                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{stats.avgResponseTime}m</p>
+                <p className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                  Avg Response
+                </p>
+                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                  {stats.avgResponseTime}m
+                </p>
               </div>
               <Clock className="w-8 h-8 text-purple-600 opacity-50" />
             </div>
@@ -373,7 +398,9 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-orange-700 dark:text-orange-300">Bookings</p>
-                <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">{stats.appointmentBookings}</p>
+                <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">
+                  {stats.appointmentBookings}
+                </p>
               </div>
               <Calendar className="w-8 h-8 text-orange-600 opacity-50" />
             </div>
@@ -385,7 +412,9 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-pink-700 dark:text-pink-300">Satisfaction</p>
-                <p className="text-2xl font-bold text-pink-900 dark:text-pink-100">{stats.customerSatisfaction}</p>
+                <p className="text-2xl font-bold text-pink-900 dark:text-pink-100">
+                  {stats.customerSatisfaction}
+                </p>
               </div>
               <Star className="w-8 h-8 text-pink-600 opacity-50" />
             </div>
@@ -410,12 +439,12 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {quickActions.map((action) => (
+                {quickActions.map(action => (
                   <Button
                     key={action.id}
                     variant="outline"
                     className={cn(
-                      "h-auto p-4 flex-col gap-2 hover:scale-105 transition-transform",
+                      'h-auto p-4 flex-col gap-2 hover:scale-105 transition-transform',
                       action.color.replace('bg-', 'hover:bg-').replace('hover:hover:', 'hover:')
                     )}
                   >
@@ -423,8 +452,12 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                       {action.icon}
                     </div>
                     <div className="text-center">
-                      <p className="font-medium text-sm text-gray-900 dark:text-white">{action.label}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{action.description}</p>
+                      <p className="font-medium text-sm text-gray-900 dark:text-white">
+                        {action.label}
+                      </p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        {action.description}
+                      </p>
                     </div>
                   </Button>
                 ))}
@@ -436,7 +469,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           {currentOrganization?.id && (
             <Card>
               <CardContent className="p-0">
-                <WhatsAppManager 
+                <WhatsAppManager
                   organizationId={currentOrganization.id}
                   industryType="salon"
                   className="min-h-[600px]"
@@ -453,7 +486,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {salonTemplates.map((template) => (
+                {salonTemplates.map(template => (
                   <Card key={template.id} className="hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-3">
@@ -462,24 +495,24 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                             {template.icon}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white">{template.name}</h3>
+                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                              {template.name}
+                            </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               {template.description}
                             </p>
                           </div>
                         </div>
-                        <Badge variant="outline">
-                          {template.category}
-                        </Badge>
+                        <Badge variant="outline">{template.category}</Badge>
                       </div>
-                      
+
                       <div className="space-y-3">
                         <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                           <p className="text-sm font-mono text-gray-800 dark:text-gray-200">
                             {template.sampleText}
                           </p>
                         </div>
-                        
+
                         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                           <span>Used {template.usageCount} times</span>
                           {template.lastUsed && (
@@ -488,9 +521,9 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                             </span>
                           )}
                         </div>
-                        
-                        <Button 
-                          size="sm" 
+
+                        <Button
+                          size="sm"
                           className="w-full"
                           onClick={() => {
                             // In production, show parameter form first
@@ -552,7 +585,9 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                 ].map((automation, index) => (
                   <div key={index} className="p-4 border rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{automation.name}</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        {automation.name}
+                      </h3>
                       <Badge variant={automation.status === 'active' ? 'default' : 'secondary'}>
                         {automation.status}
                       </Badge>
@@ -591,7 +626,9 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
             <CardContent>
               <div className="text-center py-8">
                 <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">Analytics dashboard coming soon...</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Analytics dashboard coming soon...
+                </p>
                 <p className="text-sm text-gray-400 mt-2">
                   Track message performance, response rates, and customer engagement
                 </p>

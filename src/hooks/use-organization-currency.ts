@@ -7,14 +7,17 @@ import { formatCurrency, getOrganizationCurrency, getCurrencyConfig } from '@/li
 
 export function useOrganizationCurrency() {
   const { currentOrganization } = useMultiOrgAuth()
-  
+
   const currencyCode = getOrganizationCurrency(currentOrganization)
   const currencyConfig = getCurrencyConfig(currencyCode)
-  
-  const format = (amount: number | string | null | undefined, options?: Parameters<typeof formatCurrency>[2]) => {
+
+  const format = (
+    amount: number | string | null | undefined,
+    options?: Parameters<typeof formatCurrency>[2]
+  ) => {
     return formatCurrency(amount, currencyCode, options)
   }
-  
+
   return {
     currencyCode,
     currencySymbol: currencyConfig.symbol,

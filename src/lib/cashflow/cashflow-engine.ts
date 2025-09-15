@@ -71,7 +71,6 @@ interface ReconciliationItem {
 // ================================================================================
 
 export class CashflowClassifier {
-  
   /**
    * Classifies transactions into cashflow categories using Smart Codes and GL accounts
    */
@@ -87,11 +86,15 @@ export class CashflowClassifier {
     // ============================================================================
     // OPERATING ACTIVITIES CLASSIFICATION
     // ============================================================================
-    
+
     if (this.isOperatingActivity(smart_code, transaction_type, glAccountCode)) {
       return {
         category: 'operating',
-        classification: this.getOperatingClassification(smart_code, transaction_type, glAccountCode),
+        classification: this.getOperatingClassification(
+          smart_code,
+          transaction_type,
+          glAccountCode
+        ),
         confidence: 0.95,
         method_applicable: ['direct', 'indirect']
       }
@@ -100,11 +103,15 @@ export class CashflowClassifier {
     // ============================================================================
     // INVESTING ACTIVITIES CLASSIFICATION
     // ============================================================================
-    
+
     if (this.isInvestingActivity(smart_code, transaction_type, glAccountCode)) {
       return {
         category: 'investing',
-        classification: this.getInvestingClassification(smart_code, transaction_type, glAccountCode),
+        classification: this.getInvestingClassification(
+          smart_code,
+          transaction_type,
+          glAccountCode
+        ),
         confidence: 0.95,
         method_applicable: ['direct', 'indirect']
       }
@@ -113,11 +120,15 @@ export class CashflowClassifier {
     // ============================================================================
     // FINANCING ACTIVITIES CLASSIFICATION
     // ============================================================================
-    
+
     if (this.isFinancingActivity(smart_code, transaction_type, glAccountCode)) {
       return {
         category: 'financing',
-        classification: this.getFinancingClassification(smart_code, transaction_type, glAccountCode),
+        classification: this.getFinancingClassification(
+          smart_code,
+          transaction_type,
+          glAccountCode
+        ),
         confidence: 0.95,
         method_applicable: ['direct', 'indirect']
       }
@@ -127,26 +138,41 @@ export class CashflowClassifier {
     return {
       category: 'operating',
       classification: 'other_operating_activities',
-      confidence: 0.60,
+      confidence: 0.6,
       method_applicable: ['direct', 'indirect']
     }
   }
 
-  private isOperatingActivity(smartCode: string, transactionType: string, glAccountCode?: string): boolean {
+  private isOperatingActivity(
+    smartCode: string,
+    transactionType: string,
+    glAccountCode?: string
+  ): boolean {
     // Operating activities involve the principal revenue-producing activities
-    
+
     // Smart Code patterns for operating activities
-    if (smartCode.includes('.SALE.') || smartCode.includes('.PUR.') ||
-        smartCode.includes('.PAY.') || smartCode.includes('.RCP.') ||
-        smartCode.includes('.EXP.') || smartCode.includes('.REV.') ||
-        smartCode.includes('.COGS.') || smartCode.includes('.OPEX.')) {
+    if (
+      smartCode.includes('.SALE.') ||
+      smartCode.includes('.PUR.') ||
+      smartCode.includes('.PAY.') ||
+      smartCode.includes('.RCP.') ||
+      smartCode.includes('.EXP.') ||
+      smartCode.includes('.REV.') ||
+      smartCode.includes('.COGS.') ||
+      smartCode.includes('.OPEX.')
+    ) {
       return true
     }
 
     // Transaction type patterns
-    if (transactionType.includes('sale') || transactionType.includes('purchase') ||
-        transactionType.includes('payment') || transactionType.includes('receipt') ||
-        transactionType.includes('expense') || transactionType.includes('revenue')) {
+    if (
+      transactionType.includes('sale') ||
+      transactionType.includes('purchase') ||
+      transactionType.includes('payment') ||
+      transactionType.includes('receipt') ||
+      transactionType.includes('expense') ||
+      transactionType.includes('revenue')
+    ) {
       return true
     }
 
@@ -168,20 +194,33 @@ export class CashflowClassifier {
     return false
   }
 
-  private isInvestingActivity(smartCode: string, transactionType: string, glAccountCode?: string): boolean {
+  private isInvestingActivity(
+    smartCode: string,
+    transactionType: string,
+    glAccountCode?: string
+  ): boolean {
     // Investing activities involve acquisition/disposal of long-term assets
-    
+
     // Smart Code patterns for investing activities
-    if (smartCode.includes('.CAPEX.') || smartCode.includes('.PPE.') ||
-        smartCode.includes('.ASSET.') || smartCode.includes('.INVEST.') ||
-        smartCode.includes('.DISPOSAL.') || smartCode.includes('.ACQUIRE.')) {
+    if (
+      smartCode.includes('.CAPEX.') ||
+      smartCode.includes('.PPE.') ||
+      smartCode.includes('.ASSET.') ||
+      smartCode.includes('.INVEST.') ||
+      smartCode.includes('.DISPOSAL.') ||
+      smartCode.includes('.ACQUIRE.')
+    ) {
       return true
     }
 
     // Transaction type patterns
-    if (transactionType.includes('asset_purchase') || transactionType.includes('asset_sale') ||
-        transactionType.includes('investment') || transactionType.includes('capex') ||
-        transactionType.includes('disposal')) {
+    if (
+      transactionType.includes('asset_purchase') ||
+      transactionType.includes('asset_sale') ||
+      transactionType.includes('investment') ||
+      transactionType.includes('capex') ||
+      transactionType.includes('disposal')
+    ) {
       return true
     }
 
@@ -197,20 +236,34 @@ export class CashflowClassifier {
     return false
   }
 
-  private isFinancingActivity(smartCode: string, transactionType: string, glAccountCode?: string): boolean {
+  private isFinancingActivity(
+    smartCode: string,
+    transactionType: string,
+    glAccountCode?: string
+  ): boolean {
     // Financing activities involve equity and borrowings
-    
+
     // Smart Code patterns for financing activities
-    if (smartCode.includes('.LOAN.') || smartCode.includes('.EQUITY.') ||
-        smartCode.includes('.DEBT.') || smartCode.includes('.DIVIDEND.') ||
-        smartCode.includes('.CAPITAL.') || smartCode.includes('.BORROW.')) {
+    if (
+      smartCode.includes('.LOAN.') ||
+      smartCode.includes('.EQUITY.') ||
+      smartCode.includes('.DEBT.') ||
+      smartCode.includes('.DIVIDEND.') ||
+      smartCode.includes('.CAPITAL.') ||
+      smartCode.includes('.BORROW.')
+    ) {
       return true
     }
 
     // Transaction type patterns
-    if (transactionType.includes('loan') || transactionType.includes('equity') ||
-        transactionType.includes('dividend') || transactionType.includes('capital') ||
-        transactionType.includes('debt') || transactionType.includes('borrowing')) {
+    if (
+      transactionType.includes('loan') ||
+      transactionType.includes('equity') ||
+      transactionType.includes('dividend') ||
+      transactionType.includes('capital') ||
+      transactionType.includes('debt') ||
+      transactionType.includes('borrowing')
+    ) {
       return true
     }
 
@@ -229,7 +282,11 @@ export class CashflowClassifier {
     return false
   }
 
-  private getOperatingClassification(smartCode: string, transactionType: string, glAccountCode?: string): string {
+  private getOperatingClassification(
+    smartCode: string,
+    transactionType: string,
+    glAccountCode?: string
+  ): string {
     // Detailed operating activity classifications
     if (smartCode.includes('.SALE.') || transactionType.includes('sale')) {
       return 'receipts_from_customers'
@@ -252,7 +309,11 @@ export class CashflowClassifier {
     return 'other_operating_activities'
   }
 
-  private getInvestingClassification(smartCode: string, transactionType: string, glAccountCode?: string): string {
+  private getInvestingClassification(
+    smartCode: string,
+    transactionType: string,
+    glAccountCode?: string
+  ): string {
     // Detailed investing activity classifications
     if (smartCode.includes('.PPE.') && smartCode.includes('.PURCHASE.')) {
       return 'acquisition_of_ppe'
@@ -269,7 +330,11 @@ export class CashflowClassifier {
     return 'other_investing_activities'
   }
 
-  private getFinancingClassification(smartCode: string, transactionType: string, glAccountCode?: string): string {
+  private getFinancingClassification(
+    smartCode: string,
+    transactionType: string,
+    glAccountCode?: string
+  ): string {
     // Detailed financing activity classifications
     if (smartCode.includes('.LOAN.') && smartCode.includes('.RECEIVE.')) {
       return 'proceeds_from_borrowings'
@@ -308,12 +373,11 @@ export class DirectMethodCashflowGenerator {
     endDate: string,
     currency: string = 'AED'
   ): Promise<CashflowStatement> {
-    
     console.log(`💰 Generating direct method cashflow for ${startDate} to ${endDate}`)
 
     // Get all cash-related transactions for the period
     const cashTransactions = await this.getCashTransactions(organizationId, startDate, endDate)
-    
+
     // Classify and group transactions
     const classifiedTransactions = cashTransactions.map(txn => ({
       ...txn,
@@ -334,9 +398,18 @@ export class DirectMethodCashflowGenerator {
     )
 
     // Calculate totals
-    const operatingCashFlow = operatingActivities.reduce((sum, activity) => sum + activity.amount, 0)
-    const investingCashFlow = investingActivities.reduce((sum, activity) => sum + activity.amount, 0)
-    const financingCashFlow = financingActivities.reduce((sum, activity) => sum + activity.amount, 0)
+    const operatingCashFlow = operatingActivities.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    )
+    const investingCashFlow = investingActivities.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    )
+    const financingCashFlow = financingActivities.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    )
     const netChangeInCash = operatingCashFlow + investingCashFlow + financingCashFlow
 
     // Get opening and closing cash balances
@@ -385,10 +458,12 @@ export class DirectMethodCashflowGenerator {
     // Get transactions that affect cash accounts (1000-1099 typically)
     const { data } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         lines:universal_transaction_lines(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .gte('transaction_date', startDate)
       .lte('transaction_date', endDate)
@@ -396,15 +471,13 @@ export class DirectMethodCashflowGenerator {
       .order('transaction_date')
 
     // Filter for transactions that actually affect cash
-    return (data || []).filter(txn => 
-      this.transactionAffectsCash(txn)
-    )
+    return (data || []).filter(txn => this.transactionAffectsCash(txn))
   }
 
   private transactionAffectsCash(transaction: any): boolean {
     // Check if transaction involves cash accounts
     const cashAccountPatterns = ['1000', '1001', '1002', '1010'] // Common cash account codes
-    
+
     // Check main transaction
     if ((transaction.metadata as any)?.gl_account_code) {
       const accountCode = transaction.metadata.gl_account_code
@@ -417,16 +490,21 @@ export class DirectMethodCashflowGenerator {
     if (transaction.lines) {
       return transaction.lines.some((line: any) => {
         const lineAccountCode = (line.metadata as any)?.account_code
-        return lineAccountCode && cashAccountPatterns.some(pattern => lineAccountCode.startsWith(pattern))
+        return (
+          lineAccountCode &&
+          cashAccountPatterns.some(pattern => lineAccountCode.startsWith(pattern))
+        )
       })
     }
 
     // Check smart codes for cash-related transactions
     if (transaction.smart_code) {
-      return transaction.smart_code.includes('.CASH.') || 
-             transaction.smart_code.includes('.BANK.') ||
-             transaction.transaction_type === 'payment' ||
-             transaction.transaction_type === 'receipt'
+      return (
+        transaction.smart_code.includes('.CASH.') ||
+        transaction.smart_code.includes('.BANK.') ||
+        transaction.transaction_type === 'payment' ||
+        transaction.transaction_type === 'receipt'
+      )
     }
 
     return false
@@ -450,7 +528,7 @@ export class DirectMethodCashflowGenerator {
 
       const activity = activities.get(classification)!
       activity.amount += amount
-      
+
       if (!activity.line_items) activity.line_items = []
       activity.line_items.push({
         description: txn.description || txn.transaction_code,
@@ -481,7 +559,7 @@ export class DirectMethodCashflowGenerator {
 
       const activity = activities.get(classification)!
       activity.amount += amount
-      
+
       if (!activity.line_items) activity.line_items = []
       activity.line_items.push({
         description: txn.description || txn.transaction_code,
@@ -512,7 +590,7 @@ export class DirectMethodCashflowGenerator {
 
       const activity = activities.get(classification)!
       activity.amount += amount
-      
+
       if (!activity.line_items) activity.line_items = []
       activity.line_items.push({
         description: txn.description || txn.transaction_code,
@@ -528,29 +606,38 @@ export class DirectMethodCashflowGenerator {
   private getCashImpactAmount(transaction: any): number {
     // Determine the actual cash impact amount
     // Positive = cash inflow, Negative = cash outflow
-    
-    if (transaction.transaction_type === 'receipt' || 
-        transaction.smart_code.includes('.RCP.') ||
-        transaction.smart_code.includes('.INFLOW.')) {
+
+    if (
+      transaction.transaction_type === 'receipt' ||
+      transaction.smart_code.includes('.RCP.') ||
+      transaction.smart_code.includes('.INFLOW.')
+    ) {
       return Math.abs(transaction.total_amount)
     }
 
-    if (transaction.transaction_type === 'payment' || 
-        transaction.smart_code.includes('.PAY.') ||
-        transaction.smart_code.includes('.OUTFLOW.')) {
+    if (
+      transaction.transaction_type === 'payment' ||
+      transaction.smart_code.includes('.PAY.') ||
+      transaction.smart_code.includes('.OUTFLOW.')
+    ) {
       return -Math.abs(transaction.total_amount)
     }
 
     // For sales, typically cash inflow
-    if (transaction.transaction_type.includes('sale') || transaction.smart_code.includes('.SALE.')) {
+    if (
+      transaction.transaction_type.includes('sale') ||
+      transaction.smart_code.includes('.SALE.')
+    ) {
       return Math.abs(transaction.total_amount)
     }
 
     // For purchases/expenses, typically cash outflow
-    if (transaction.transaction_type.includes('purchase') || 
-        transaction.transaction_type.includes('expense') ||
-        transaction.smart_code.includes('.PUR.') ||
-        transaction.smart_code.includes('.EXP.')) {
+    if (
+      transaction.transaction_type.includes('purchase') ||
+      transaction.transaction_type.includes('expense') ||
+      transaction.smart_code.includes('.PUR.') ||
+      transaction.smart_code.includes('.EXP.')
+    ) {
       return -Math.abs(transaction.total_amount)
     }
 
@@ -566,10 +653,14 @@ export class DirectMethodCashflowGenerator {
     return transaction.total_amount
   }
 
-  private async getCashBalanceAtDate(organizationId: string, date: string, currency: string): Promise<number> {
+  private async getCashBalanceAtDate(
+    organizationId: string,
+    date: string,
+    currency: string
+  ): Promise<number> {
     // Get cash account balances at a specific date
     // This would typically sum all transactions affecting cash accounts up to that date
-    
+
     const { data } = await supabase
       .from('universal_transactions')
       .select('total_amount, metadata')
@@ -591,26 +682,29 @@ export class DirectMethodCashflowGenerator {
 
   private getActivityDescription(classification: string): string {
     const descriptions: Record<string, string> = {
-      'receipts_from_customers': 'Cash Receipts from Customers',
-      'payments_to_suppliers': 'Cash Payments to Suppliers',
-      'payments_to_employees': 'Cash Payments to Employees',
-      'tax_payments': 'Tax Payments',
-      'interest_payments': 'Interest Payments',
-      'interest_received': 'Interest Received',
-      'other_operating_activities': 'Other Operating Activities',
-      'acquisition_of_ppe': 'Acquisition of Property, Plant & Equipment',
-      'proceeds_from_ppe_disposal': 'Proceeds from Disposal of PPE',
-      'acquisition_of_investments': 'Acquisition of Investments',
-      'proceeds_from_investments': 'Proceeds from Sale of Investments',
-      'other_investing_activities': 'Other Investing Activities',
-      'proceeds_from_borrowings': 'Proceeds from Borrowings',
-      'repayment_of_borrowings': 'Repayment of Borrowings',
-      'proceeds_from_equity': 'Proceeds from Equity Issuance',
-      'dividend_payments': 'Dividend Payments',
-      'other_financing_activities': 'Other Financing Activities'
+      receipts_from_customers: 'Cash Receipts from Customers',
+      payments_to_suppliers: 'Cash Payments to Suppliers',
+      payments_to_employees: 'Cash Payments to Employees',
+      tax_payments: 'Tax Payments',
+      interest_payments: 'Interest Payments',
+      interest_received: 'Interest Received',
+      other_operating_activities: 'Other Operating Activities',
+      acquisition_of_ppe: 'Acquisition of Property, Plant & Equipment',
+      proceeds_from_ppe_disposal: 'Proceeds from Disposal of PPE',
+      acquisition_of_investments: 'Acquisition of Investments',
+      proceeds_from_investments: 'Proceeds from Sale of Investments',
+      other_investing_activities: 'Other Investing Activities',
+      proceeds_from_borrowings: 'Proceeds from Borrowings',
+      repayment_of_borrowings: 'Repayment of Borrowings',
+      proceeds_from_equity: 'Proceeds from Equity Issuance',
+      dividend_payments: 'Dividend Payments',
+      other_financing_activities: 'Other Financing Activities'
     }
 
-    return descriptions[classification] || classification.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    return (
+      descriptions[classification] ||
+      classification.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    )
   }
 }
 
@@ -635,22 +729,29 @@ export class IndirectMethodCashflowGenerator {
     endDate: string,
     currency: string = 'AED'
   ): Promise<CashflowStatement> {
-    
     console.log(`💰 Generating indirect method cashflow for ${startDate} to ${endDate}`)
 
     // Get net income for the period
     const netIncome = await this.getNetIncome(organizationId, startDate, endDate)
-    
+
     // Get reconciliation items (non-cash adjustments)
-    const reconciliationItems = await this.getReconciliationItems(organizationId, startDate, endDate)
-    
+    const reconciliationItems = await this.getReconciliationItems(
+      organizationId,
+      startDate,
+      endDate
+    )
+
     // Get working capital changes
-    const workingCapitalChanges = await this.getWorkingCapitalChanges(organizationId, startDate, endDate)
-    
+    const workingCapitalChanges = await this.getWorkingCapitalChanges(
+      organizationId,
+      startDate,
+      endDate
+    )
+
     // Get investing and financing activities (same as direct method)
     const directGenerator = new DirectMethodCashflowGenerator()
     const cashTransactions = await this.getCashTransactions(organizationId, startDate, endDate)
-    
+
     const classifiedTransactions = cashTransactions.map(txn => ({
       ...txn,
       classification: this.classifier.classifyTransaction(txn)
@@ -666,15 +767,24 @@ export class IndirectMethodCashflowGenerator {
 
     // Build indirect operating activities
     const operatingActivities = this.buildIndirectOperatingActivities(
-      netIncome, 
-      reconciliationItems, 
+      netIncome,
+      reconciliationItems,
       workingCapitalChanges
     )
 
     // Calculate totals
-    const operatingCashFlow = operatingActivities.reduce((sum, activity) => sum + activity.amount, 0)
-    const investingCashFlow = investingActivities.reduce((sum, activity) => sum + activity.amount, 0)
-    const financingCashFlow = financingActivities.reduce((sum, activity) => sum + activity.amount, 0)
+    const operatingCashFlow = operatingActivities.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    )
+    const investingCashFlow = investingActivities.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    )
+    const financingCashFlow = financingActivities.reduce(
+      (sum, activity) => sum + activity.amount,
+      0
+    )
     const netChangeInCash = operatingCashFlow + investingCashFlow + financingCashFlow
 
     // Get opening and closing cash balances
@@ -712,7 +822,11 @@ export class IndirectMethodCashflowGenerator {
     }
   }
 
-  private async getNetIncome(organizationId: string, startDate: string, endDate: string): Promise<number> {
+  private async getNetIncome(
+    organizationId: string,
+    startDate: string,
+    endDate: string
+  ): Promise<number> {
     // Calculate net income from P&L accounts (Revenue - Expenses)
     const { data } = await supabase
       .from('universal_transactions')
@@ -728,7 +842,7 @@ export class IndirectMethodCashflowGenerator {
     if (data) {
       data.forEach(txn => {
         const glAccountCode = (txn.metadata as any)?.gl_account_code
-        
+
         if (glAccountCode) {
           // Revenue accounts (4xxx)
           if (glAccountCode.startsWith('4')) {
@@ -742,8 +856,7 @@ export class IndirectMethodCashflowGenerator {
         // Alternative classification by smart code
         else if (txn.smart_code.includes('.REV.') || txn.transaction_type.includes('sale')) {
           revenue += Math.abs(txn.total_amount)
-        }
-        else if (txn.smart_code.includes('.EXP.') || txn.transaction_type.includes('expense')) {
+        } else if (txn.smart_code.includes('.EXP.') || txn.transaction_type.includes('expense')) {
           expenses += Math.abs(txn.total_amount)
         }
       })
@@ -752,7 +865,11 @@ export class IndirectMethodCashflowGenerator {
     return revenue - expenses
   }
 
-  private async getReconciliationItems(organizationId: string, startDate: string, endDate: string): Promise<ReconciliationItem[]> {
+  private async getReconciliationItems(
+    organizationId: string,
+    startDate: string,
+    endDate: string
+  ): Promise<ReconciliationItem[]> {
     // Get non-cash items that need to be added back to net income
     const reconciliationItems: ReconciliationItem[] = []
 
@@ -777,7 +894,10 @@ export class IndirectMethodCashflowGenerator {
         }
 
         // Bad debt expense (non-cash - add back)
-        if (txn.smart_code.includes('.BADDEBT.') || txn.description?.toLowerCase().includes('bad debt')) {
+        if (
+          txn.smart_code.includes('.BADDEBT.') ||
+          txn.description?.toLowerCase().includes('bad debt')
+        ) {
           reconciliationItems.push({
             description: 'Bad Debt Expense',
             amount: Math.abs(txn.total_amount),
@@ -799,7 +919,11 @@ export class IndirectMethodCashflowGenerator {
     return reconciliationItems
   }
 
-  private async getWorkingCapitalChanges(organizationId: string, startDate: string, endDate: string) {
+  private async getWorkingCapitalChanges(
+    organizationId: string,
+    startDate: string,
+    endDate: string
+  ) {
     // Calculate changes in working capital accounts
     const workingCapitalChanges: ReconciliationItem[] = []
 
@@ -821,7 +945,6 @@ export class IndirectMethodCashflowGenerator {
     reconciliationItems: ReconciliationItem[],
     workingCapitalChanges: ReconciliationItem[]
   ): CashflowActivity[] {
-    
     const activities: CashflowActivity[] = []
 
     // Start with net income
@@ -854,7 +977,7 @@ export class IndirectMethodCashflowGenerator {
 
     // Calculate operating cash flow total
     const operatingCashFlow = activities.reduce((sum, activity) => sum + activity.amount, 0)
-    
+
     activities.push({
       category: 'operating',
       description: 'Net Cash from Operating Activities',
@@ -871,7 +994,11 @@ export class IndirectMethodCashflowGenerator {
     return (directGenerator as any).getCashTransactions(organizationId, startDate, endDate)
   }
 
-  private async getCashBalanceAtDate(organizationId: string, date: string, currency: string): Promise<number> {
+  private async getCashBalanceAtDate(
+    organizationId: string,
+    date: string,
+    currency: string
+  ): Promise<number> {
     const directGenerator = new DirectMethodCashflowGenerator()
     return (directGenerator as any).getCashBalanceAtDate(organizationId, date, currency)
   }
@@ -902,15 +1029,24 @@ export class UniversalCashflowAPI {
     method: 'direct' | 'indirect'
     currency?: string
   }): Promise<CashflowStatement> {
-    
     const { organizationId, startDate, endDate, method, currency = 'AED' } = params
 
     console.log(`💰 Generating ${method} method cashflow statement`)
 
     if (method === 'direct') {
-      return await this.directGenerator.generateDirectCashflow(organizationId, startDate, endDate, currency)
+      return await this.directGenerator.generateDirectCashflow(
+        organizationId,
+        startDate,
+        endDate,
+        currency
+      )
     } else {
-      return await this.indirectGenerator.generateIndirectCashflow(organizationId, startDate, endDate, currency)
+      return await this.indirectGenerator.generateIndirectCashflow(
+        organizationId,
+        startDate,
+        endDate,
+        currency
+      )
     }
   }
 
@@ -923,7 +1059,6 @@ export class UniversalCashflowAPI {
     baselineMonths: number
     currency?: string
   }): Promise<CashflowStatement[]> {
-    
     const { organizationId, forecastMonths, baselineMonths, currency = 'AED' } = params
 
     console.log(`🔮 Generating ${forecastMonths}-month cashflow forecast`)
@@ -933,7 +1068,8 @@ export class UniversalCashflowAPI {
     // Get historical data for baseline
     const baselineEndDate = new Date().toISOString().split('T')[0]
     const baselineStartDate = new Date(Date.now() - baselineMonths * 30 * 24 * 60 * 60 * 1000)
-      .toISOString().split('T')[0]
+      .toISOString()
+      .split('T')[0]
 
     const historicalCashflow = await this.generateCashflowStatement({
       organizationId,
@@ -946,9 +1082,11 @@ export class UniversalCashflowAPI {
     // Generate monthly forecasts
     for (let month = 1; month <= forecastMonths; month++) {
       const forecastStart = new Date(Date.now() + (month - 1) * 30 * 24 * 60 * 60 * 1000)
-        .toISOString().split('T')[0]
+        .toISOString()
+        .split('T')[0]
       const forecastEnd = new Date(Date.now() + month * 30 * 24 * 60 * 60 * 1000)
-        .toISOString().split('T')[0]
+        .toISOString()
+        .split('T')[0]
 
       const forecastCashflow = await this.generateForecastForPeriod(
         organizationId,
@@ -971,10 +1109,9 @@ export class UniversalCashflowAPI {
     historicalData: CashflowStatement,
     currency: string
   ): Promise<CashflowStatement> {
-    
     // This is a simplified forecasting approach
     // In practice, you'd use more sophisticated methods like trend analysis, seasonality, etc.
-    
+
     const growthRate = 1.05 // 5% growth assumption
     const seasonalityFactor = 1.0 // No seasonality adjustment for now
 
@@ -1013,7 +1150,6 @@ export class UniversalCashflowAPI {
     recommendations: string[]
     risk_indicators: any[]
   }> {
-    
     const { organizationId, periods, currency = 'AED' } = params
 
     console.log(`📊 Analyzing cashflow trends over ${periods} periods`)
@@ -1024,8 +1160,12 @@ export class UniversalCashflowAPI {
 
     // Generate statements for multiple periods
     for (let i = 0; i < periods; i++) {
-      const endDate = new Date(Date.now() - i * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-      const startDate = new Date(Date.now() - (i + 1) * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      const endDate = new Date(Date.now() - i * 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0]
+      const startDate = new Date(Date.now() - (i + 1) * 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0]
 
       const statement = await this.generateCashflowStatement({
         organizationId,
@@ -1051,7 +1191,9 @@ export class UniversalCashflowAPI {
 
     // Generate recommendations based on analysis
     if (operatingTrend.slope < 0) {
-      recommendations.push('Operating cash flow is declining. Review revenue generation and cost management.')
+      recommendations.push(
+        'Operating cash flow is declining. Review revenue generation and cost management.'
+      )
       riskIndicators.push({
         type: 'declining_operating_cf',
         severity: 'medium',
@@ -1060,7 +1202,9 @@ export class UniversalCashflowAPI {
     }
 
     if (analyses[0].cash_ending < 0) {
-      recommendations.push('Negative cash balance detected. Consider improving cash management or securing additional financing.')
+      recommendations.push(
+        'Negative cash balance detected. Consider improving cash management or securing additional financing.'
+      )
       riskIndicators.push({
         type: 'negative_cash',
         severity: 'high',
@@ -1086,11 +1230,11 @@ export class UniversalCashflowAPI {
     const n = values.length
     const sumX = (n * (n - 1)) / 2
     const sumY = values.reduce((sum, val) => sum + val, 0)
-    const sumXY = values.reduce((sum, val, idx) => sum + (idx * val), 0)
-    const sumX2 = values.reduce((sum, val, idx) => sum + (idx * idx), 0)
+    const sumXY = values.reduce((sum, val, idx) => sum + idx * val, 0)
+    const sumX2 = values.reduce((sum, val, idx) => sum + idx * idx, 0)
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
-    
+
     return {
       slope,
       direction: slope > 0 ? 'increasing' : slope < 0 ? 'decreasing' : 'stable'
@@ -1105,25 +1249,28 @@ export class UniversalCashflowAPI {
     console.log(`⚙️ Setting up cashflow tracking for organization: ${organizationId}`)
 
     // Create cashflow tracking transaction
-    await universalApi.createTransaction({
-      transaction_type: 'cashflow_setup',
-      transaction_code: `CF-SETUP-${Date.now()}`,
-      description: 'Cashflow tracking system setup',
-      reference_number: `CF-${organizationId}`,
-      total_amount: 0,
-      smart_code: 'HERA.FIN.CF.SETUP.v1',
-      metadata: {
-        industry,
-        setup_date: new Date().toISOString(),
-        features_enabled: [
-          'direct_method',
-          'indirect_method',
-          'cashflow_forecasting',
-          'trend_analysis',
-          'industry_benchmarking'
-        ]
-      }
-    }, organizationId)
+    await universalApi.createTransaction(
+      {
+        transaction_type: 'cashflow_setup',
+        transaction_code: `CF-SETUP-${Date.now()}`,
+        description: 'Cashflow tracking system setup',
+        reference_number: `CF-${organizationId}`,
+        total_amount: 0,
+        smart_code: 'HERA.FIN.CF.SETUP.v1',
+        metadata: {
+          industry,
+          setup_date: new Date().toISOString(),
+          features_enabled: [
+            'direct_method',
+            'indirect_method',
+            'cashflow_forecasting',
+            'trend_analysis',
+            'industry_benchmarking'
+          ]
+        }
+      },
+      organizationId
+    )
 
     return {
       success: true,

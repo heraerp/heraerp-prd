@@ -5,10 +5,20 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  AlertCircle, AlertTriangle, Info, RefreshCw, 
-  X, ChevronDown, ChevronUp, ExternalLink,
-  Shield, Wifi, Database, User, Settings
+import {
+  AlertCircle,
+  AlertTriangle,
+  Info,
+  RefreshCw,
+  X,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Shield,
+  Wifi,
+  Database,
+  User,
+  Settings
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CRMError, crmErrorHandler } from '@/lib/crm/error-handler'
@@ -40,17 +50,17 @@ interface ErrorToastProps {
 /**
  * Main Error Display Component
  */
-export function ErrorDisplay({ 
-  error, 
-  onRetry, 
-  onDismiss, 
+export function ErrorDisplay({
+  error,
+  onRetry,
+  onDismiss,
   onAction,
   showDetails = false,
-  className = ""
+  className = ''
 }: ErrorDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const errorMessage = crmErrorHandler.getErrorMessage(error)
-  
+
   const getIcon = () => {
     switch (error.category) {
       case 'authentication':
@@ -64,11 +74,13 @@ export function ErrorDisplay({
       case 'system':
         return <Settings className="h-5 w-5" />
       default:
-        return error.severity === 'high' || error.severity === 'critical' 
-          ? <AlertCircle className="h-5 w-5" />
-          : error.severity === 'medium'
-          ? <AlertTriangle className="h-5 w-5" />
-          : <Info className="h-5 w-5" />
+        return error.severity === 'high' || error.severity === 'critical' ? (
+          <AlertCircle className="h-5 w-5" />
+        ) : error.severity === 'medium' ? (
+          <AlertTriangle className="h-5 w-5" />
+        ) : (
+          <Info className="h-5 w-5" />
+        )
     }
   }
 
@@ -94,14 +106,18 @@ export function ErrorDisplay({
     >
       <Alert variant={getVariant()} className="relative">
         <div className="flex items-start gap-3">
-          <div className={`mt-0.5 ${
-            errorMessage.type === 'error' ? 'text-red-600' :
-            errorMessage.type === 'warning' ? 'text-yellow-600' :
-            'text-blue-600'
-          }`}>
+          <div
+            className={`mt-0.5 ${
+              errorMessage.type === 'error'
+                ? 'text-red-600'
+                : errorMessage.type === 'warning'
+                  ? 'text-yellow-600'
+                  : 'text-blue-600'
+            }`}
+          >
             {getIcon()}
           </div>
-          
+
           <div className="flex-1 min-w-0">
             <AlertTitle className="flex items-center gap-2 mb-1">
               {errorMessage.title}
@@ -109,31 +125,20 @@ export function ErrorDisplay({
                 {error.code}
               </Badge>
             </AlertTitle>
-            
-            <AlertDescription className="text-sm">
-              {errorMessage.message}
-            </AlertDescription>
+
+            <AlertDescription className="text-sm">{errorMessage.message}</AlertDescription>
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2 mt-3">
               {onRetry && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onRetry}
-                  className="h-8"
-                >
+                <Button size="sm" variant="outline" onClick={onRetry} className="h-8">
                   <RefreshCw className="h-3 w-3 mr-1" />
                   Retry
                 </Button>
               )}
-              
+
               {onAction && errorMessage.action && (
-                <Button
-                  size="sm"
-                  onClick={onAction}
-                  className="h-8"
-                >
+                <Button size="sm" onClick={onAction} className="h-8">
                   {errorMessage.action}
                 </Button>
               )}
@@ -248,13 +253,7 @@ export function ErrorToast({ error, onClose, duration = 5000 }: ErrorToastProps)
 /**
  * Error Page Component for Critical Errors
  */
-export function ErrorPage({ 
-  error, 
-  onRetry 
-}: { 
-  error: CRMError
-  onRetry: () => void 
-}) {
+export function ErrorPage({ error, onRetry }: { error: CRMError; onRetry: () => void }) {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -265,25 +264,15 @@ export function ErrorPage({
           <CardTitle className="text-xl">Something went wrong</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <ErrorDisplay 
-            error={error} 
-            onRetry={onRetry}
-            showDetails={true}
-          />
-          
+          <ErrorDisplay error={error} onRetry={onRetry} showDetails={true} />
+
           <div className="text-center text-sm text-gray-600">
             If this problem persists, please{' '}
-            <a 
-              href="mailto:support@heraerp.com" 
-              className="text-blue-600 hover:underline"
-            >
+            <a href="mailto:support@heraerp.com" className="text-blue-600 hover:underline">
               contact support
-            </a>
-            {' '}or{' '}
-            <a 
-              href="/docs" 
-              className="text-blue-600 hover:underline inline-flex items-center"
-            >
+            </a>{' '}
+            or{' '}
+            <a href="/docs" className="text-blue-600 hover:underline inline-flex items-center">
               view documentation
               <ExternalLink className="h-3 w-3 ml-1" />
             </a>
@@ -313,10 +302,10 @@ export class CRMErrorBoundary extends React.Component<
       { originalError: error.message, stack: error.stack },
       { component: 'ErrorBoundary' }
     )
-    
-    return { 
-      hasError: true, 
-      error: crmError.error || null 
+
+    return {
+      hasError: true,
+      error: crmError.error || null
     }
   }
 
@@ -328,7 +317,7 @@ export class CRMErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError && this.state.error) {
       const FallbackComponent = this.props.fallback || ErrorPage
-      
+
       return (
         <FallbackComponent
           error={this.state.error}
@@ -369,15 +358,11 @@ export function ErrorStatsDashboard() {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-red-600">
-              {stats.totalErrors}
-            </div>
+            <div className="text-2xl font-bold text-red-600">{stats.totalErrors}</div>
             <div className="text-sm text-gray-600">Total Errors (24h)</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
-              {stats.recentErrors.length}
-            </div>
+            <div className="text-2xl font-bold text-blue-600">{stats.recentErrors.length}</div>
             <div className="text-sm text-gray-600">Recent Errors</div>
           </div>
         </div>
@@ -397,10 +382,13 @@ export function ErrorStatsDashboard() {
           {Object.entries(stats.errorsBySeverity).map(([severity, count]) => (
             <div key={severity} className="flex justify-between text-sm">
               <span className="capitalize">{severity}</span>
-              <Badge 
+              <Badge
                 variant={
-                  severity === 'critical' || severity === 'high' ? 'destructive' :
-                  severity === 'medium' ? 'default' : 'secondary'
+                  severity === 'critical' || severity === 'high'
+                    ? 'destructive'
+                    : severity === 'medium'
+                      ? 'default'
+                      : 'secondary'
                 }
               >
                 {count}

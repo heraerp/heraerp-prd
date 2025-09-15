@@ -7,16 +7,22 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
-import { 
-  FileText, 
-  Send, 
-  Download, 
-  Upload, 
-  Clock, 
-  CheckCircle2, 
+import {
+  FileText,
+  Send,
+  Download,
+  Upload,
+  Clock,
+  CheckCircle2,
   AlertCircle,
   Eye,
   MessageSquare,
@@ -28,7 +34,11 @@ import {
   Paperclip,
   Building2
 } from 'lucide-react'
-import { DOCUMENT_CATEGORIES, type DocumentCategory, type DocumentLineItem } from '@/types/audit.types'
+import {
+  DOCUMENT_CATEGORIES,
+  type DocumentCategory,
+  type DocumentLineItem
+} from '@/types/audit.types'
 import { EnhancedDocumentList } from './EnhancedDocumentList'
 
 interface DocumentRequisitionProps {
@@ -38,7 +48,12 @@ interface DocumentRequisitionProps {
   organizationId: string
 }
 
-export function DocumentRequisition({ clientId, clientName, auditYear, organizationId }: DocumentRequisitionProps) {
+export function DocumentRequisition({
+  clientId,
+  clientName,
+  auditYear,
+  organizationId
+}: DocumentRequisitionProps) {
   const [requisition, setRequisition] = useState({
     id: '',
     reference_number: `DOC-REQ-${auditYear}-001`,
@@ -58,7 +73,7 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
   const [documentItems, setDocumentItems] = useState<DocumentLineItem[]>(() => {
     const items: DocumentLineItem[] = []
     Object.entries(DOCUMENT_CATEGORIES).forEach(([categoryKey, category]) => {
-      category.items.forEach((item) => {
+      category.items.forEach(item => {
         items.push({
           id: `doc_${categoryKey.toLowerCase()}_${item.code.toLowerCase().replace('.', '_')}`,
           requisition_id: requisition.id,
@@ -83,29 +98,42 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-gray-100 text-gray-800'
-      case 'received': return 'bg-blue-100 text-blue-800'
-      case 'under_review': return 'bg-yellow-100 text-yellow-800'
-      case 'approved': return 'bg-green-100 text-green-800'
-      case 'rejected': return 'bg-red-100 text-red-800'
-      case 'resubmission_required': return 'bg-orange-100 text-orange-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'pending':
+        return 'bg-gray-100 text-gray-800'
+      case 'received':
+        return 'bg-blue-100 text-blue-800'
+      case 'under_review':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'approved':
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
+        return 'bg-red-100 text-red-800'
+      case 'resubmission_required':
+        return 'bg-orange-100 text-orange-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'low': return 'text-green-600 bg-green-50 border-green-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'critical':
+        return 'text-red-600 bg-red-50 border-red-200'
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'medium':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'low':
+        return 'text-green-600 bg-green-50 border-green-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
   const filteredItems = documentItems.filter(item => {
-    const matchesSearch = item.document_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.document_code.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      item.document_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.document_code.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || item.status === statusFilter
     const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
     return matchesSearch && matchesStatus && matchesCategory
@@ -117,13 +145,13 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
       pending: documentItems.filter(item => item.status === 'pending').length,
       received: documentItems.filter(item => item.status === 'received').length,
       approved: documentItems.filter(item => item.status === 'approved').length,
-      overdue: documentItems.filter(item => 
-        item.status === 'pending' && new Date(item.due_date) < new Date()
+      overdue: documentItems.filter(
+        item => item.status === 'pending' && new Date(item.due_date) < new Date()
       ).length
     }
-    
+
     const completion_percentage = Math.round((stats.approved / stats.total_documents) * 100)
-    
+
     return { ...stats, completion_percentage }
   }
 
@@ -137,7 +165,13 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
   const updateDocumentStatus = (docId: string, status: DocumentLineItem['status']) => {
     setDocumentItems(items =>
       items.map(item =>
-        item.id === docId ? { ...item, status, received_date: status === 'received' ? new Date().toISOString() : item.received_date } : item
+        item.id === docId
+          ? {
+              ...item,
+              status,
+              received_date: status === 'received' ? new Date().toISOString() : item.received_date
+            }
+          : item
       )
     )
   }
@@ -152,12 +186,20 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Document Requisition</h2>
-            <p className="text-gray-600">{clientName} - FY{auditYear}</p>
+            <p className="text-gray-600">
+              {clientName} - FY{auditYear}
+            </p>
             <p className="text-xs text-gray-500 font-mono">Org: {organizationId}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Badge className={requisition.status === 'draft' ? 'bg-gray-100 text-gray-800' : 'bg-blue-100 text-blue-800'}>
+          <Badge
+            className={
+              requisition.status === 'draft'
+                ? 'bg-gray-100 text-gray-800'
+                : 'bg-blue-100 text-blue-800'
+            }
+          >
             {requisition.status.replace('_', ' ').toUpperCase()}
           </Badge>
           {requisition.status === 'draft' && (
@@ -259,11 +301,14 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
               <Input
                 placeholder="Search documents..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Select value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as DocumentCategory)}>
+            <Select
+              value={selectedCategory}
+              onValueChange={value => setSelectedCategory(value as DocumentCategory)}
+            >
               <SelectTrigger className="w-48">
                 <SelectValue />
               </SelectTrigger>
@@ -294,7 +339,11 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
       </Card>
 
       {/* Document Categories Tabs */}
-      <Tabs value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as DocumentCategory)} className="space-y-4">
+      <Tabs
+        value={selectedCategory}
+        onValueChange={value => setSelectedCategory(value as DocumentCategory)}
+        className="space-y-4"
+      >
         <TabsList className="grid w-full grid-cols-6">
           {Object.entries(DOCUMENT_CATEGORIES).map(([key, category]) => (
             <TabsTrigger key={key} value={key} className="text-xs">
@@ -308,20 +357,30 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>Section {categoryKey}: {category.title}</span>
+                  <span>
+                    Section {categoryKey}: {category.title}
+                  </span>
                   <Badge variant="outline">
-                    {documentItems.filter(item => item.category === categoryKey && item.status === 'approved').length} / {category.items.length} Complete
+                    {
+                      documentItems.filter(
+                        item => item.category === categoryKey && item.status === 'approved'
+                      ).length
+                    }{' '}
+                    / {category.items.length} Complete
                   </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {category.items.map((item) => {
+                  {category.items.map(item => {
                     const docItem = documentItems.find(d => d.document_code === item.code)
                     if (!docItem) return null
 
                     return (
-                      <div key={item.code} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                      <div
+                        key={item.code}
+                        className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                      >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
@@ -368,7 +427,12 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
                             </Button>
                             <Select
                               value={docItem.status}
-                              onValueChange={(status) => updateDocumentStatus(docItem.id, status as DocumentLineItem['status'])}
+                              onValueChange={status =>
+                                updateDocumentStatus(
+                                  docItem.id,
+                                  status as DocumentLineItem['status']
+                                )
+                              }
                             >
                               <SelectTrigger className="w-32">
                                 <SelectValue />
@@ -427,7 +491,9 @@ export function DocumentRequisition({ clientId, clientName, auditYear, organizat
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Last updated: {new Date().toLocaleString()}</span>
+              <span className="text-sm text-gray-600">
+                Last updated: {new Date().toLocaleString()}
+              </span>
             </div>
           </div>
         </CardContent>

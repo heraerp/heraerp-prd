@@ -9,5 +9,5 @@ export default function P2PPage() {
 
 export const metadata = {
   title: 'Procure-to-Pay | HERA ERP',
-  description: 'Complete P2P cycle management on 6 universal tables',
+  description: 'Complete P2P cycle management on 6 universal tables'
 }

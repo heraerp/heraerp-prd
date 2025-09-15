@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { cn } from '@/lib/utils'
 
 interface VirtualListProps<T> {
-  items: T[];
-  itemHeight: number | ((index: number) => number);
-  renderItem: (item: T, index: number) => React.ReactNode;
-  className?: string;
-  overscan?: number; // Number of items to render outside viewport
-  onEndReached?: () => void;
-  endReachedThreshold?: number; // Pixels from bottom
-  loading?: boolean;
-  emptyMessage?: string;
+  items: T[]
+  itemHeight: number | ((index: number) => number)
+  renderItem: (item: T, index: number) => React.ReactNode
+  className?: string
+  overscan?: number // Number of items to render outside viewport
+  onEndReached?: () => void
+  endReachedThreshold?: number // Pixels from bottom
+  loading?: boolean
+  emptyMessage?: string
 }
 
 export function VirtualList<T>({
@@ -24,92 +24,98 @@ export function VirtualList<T>({
   loading = false,
   emptyMessage = 'No items to display'
 }: VirtualListProps<T>) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollTop, setScrollTop] = useState(0);
-  const [containerHeight, setContainerHeight] = useState(0);
-  const endReachedRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [scrollTop, setScrollTop] = useState(0)
+  const [containerHeight, setContainerHeight] = useState(0)
+  const endReachedRef = useRef(false)
 
   // Calculate item heights and positions
-  const getItemHeight = useCallback((index: number) => {
-    return typeof itemHeight === 'function' ? itemHeight(index) : itemHeight;
-  }, [itemHeight]);
+  const getItemHeight = useCallback(
+    (index: number) => {
+      return typeof itemHeight === 'function' ? itemHeight(index) : itemHeight
+    },
+    [itemHeight]
+  )
 
-  const itemPositions = useRef<number[]>([]);
-  
+  const itemPositions = useRef<number[]>([])
+
   // Calculate all item positions
   useEffect(() => {
-    let position = 0;
+    let position = 0
     itemPositions.current = items.map((_, index) => {
-      const currentPosition = position;
-      position += getItemHeight(index);
-      return currentPosition;
-    });
-  }, [items, getItemHeight]);
+      const currentPosition = position
+      position += getItemHeight(index)
+      return currentPosition
+    })
+  }, [items, getItemHeight])
 
-  const totalHeight = itemPositions.current[items.length - 1] + 
-    (items.length > 0 ? getItemHeight(items.length - 1) : 0);
+  const totalHeight =
+    itemPositions.current[items.length - 1] +
+    (items.length > 0 ? getItemHeight(items.length - 1) : 0)
 
   // Calculate visible range
   const getVisibleRange = useCallback(() => {
-    const start = Math.max(0, 
+    const start = Math.max(
+      0,
       itemPositions.current.findIndex(pos => pos + getItemHeight(0) > scrollTop) - overscan
-    );
-    
-    const end = Math.min(items.length - 1,
+    )
+
+    const end = Math.min(
+      items.length - 1,
       itemPositions.current.findIndex(pos => pos > scrollTop + containerHeight) + overscan
-    );
+    )
 
-    return { start, end: end === -1 ? items.length - 1 : end };
-  }, [scrollTop, containerHeight, items.length, overscan, getItemHeight]);
+    return { start, end: end === -1 ? items.length - 1 : end }
+  }, [scrollTop, containerHeight, items.length, overscan, getItemHeight])
 
-  const { start, end } = getVisibleRange();
+  const { start, end } = getVisibleRange()
 
   // Handle scroll
   const handleScroll = useCallback(() => {
-    if (!containerRef.current) return;
-    
-    const newScrollTop = containerRef.current.scrollTop;
-    setScrollTop(newScrollTop);
+    if (!containerRef.current) return
+
+    const newScrollTop = containerRef.current.scrollTop
+    setScrollTop(newScrollTop)
 
     // Check if end reached
     if (onEndReached && !endReachedRef.current && !loading) {
-      const distanceFromBottom = totalHeight - newScrollTop - containerHeight;
+      const distanceFromBottom = totalHeight - newScrollTop - containerHeight
       if (distanceFromBottom < endReachedThreshold) {
-        endReachedRef.current = true;
-        onEndReached();
+        endReachedRef.current = true
+        onEndReached()
       }
     }
-  }, [totalHeight, containerHeight, endReachedThreshold, onEndReached, loading]);
+  }, [totalHeight, containerHeight, endReachedThreshold, onEndReached, loading])
 
   // Reset end reached flag when loading completes
   useEffect(() => {
     if (!loading) {
-      endReachedRef.current = false;
+      endReachedRef.current = false
     }
-  }, [loading]);
+  }, [loading])
 
   // Handle resize
   useEffect(() => {
     const updateContainerHeight = () => {
       if (containerRef.current) {
-        setContainerHeight(containerRef.current.clientHeight);
+        setContainerHeight(containerRef.current.clientHeight)
       }
-    };
+    }
 
-    updateContainerHeight();
+    updateContainerHeight()
 
-    const resizeObserver = new ResizeObserver(updateContainerHeight);
+    const resizeObserver = new ResizeObserver(updateContainerHeight)
     if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
+      resizeObserver.observe(containerRef.current)
     }
 
     return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
+      resizeObserver.disconnect()
+    }
+  }, [])
 
   // Visible items to render
-  const visibleItems = [];
+  const visibleItems = []
   for (let i = start; i <= end; i++) {
     if (items[i]) {
       visibleItems.push({
@@ -122,12 +128,12 @@ export function VirtualList<T>({
           right: 0,
           height: getItemHeight(i)
         }
-      });
+      })
     }
   }
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={cn('relative overflow-auto', className)}
       onScroll={handleScroll}
@@ -143,7 +149,7 @@ export function VirtualList<T>({
 
         {/* Loading indicator */}
         {loading && (
-          <div 
+          <div
             className="absolute left-0 right-0 flex items-center justify-center p-4"
             style={{ top: totalHeight }}
           >
@@ -162,5 +168,5 @@ export function VirtualList<T>({
         )}
       </div>
     </div>
-  );
+  )
 }

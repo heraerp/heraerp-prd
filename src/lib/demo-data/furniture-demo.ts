@@ -72,10 +72,10 @@ export async function createFurnitureDemoData(organizationId: string) {
           specifications: product.specs
         }
       })
-      
+
       if (result.id) {
         productIds[product.code] = result.id
-        
+
         // Add pricing
         await universalApi.setDynamicField(result.id, 'list_price', product.price.toString())
         await universalApi.setDynamicField(result.id, 'hsn_code', product.hsn)
@@ -84,11 +84,46 @@ export async function createFurnitureDemoData(organizationId: string) {
 
     // 3. Create Raw Materials
     const rawMaterials = [
-      { name: 'Teak Wood Plank 2x4', code: 'RM-WOOD-001', hsn: '4407', gst_rate: 0.12, unit: 'sq.ft', price: 150 },
-      { name: 'MDF Board 18mm', code: 'RM-MDF-001', hsn: '4411', gst_rate: 0.18, unit: 'sheet', price: 800 },
-      { name: 'Wood Polish - Glossy', code: 'RM-POL-001', hsn: '3405', gst_rate: 0.18, unit: 'liter', price: 450 },
-      { name: 'Drawer Slide 18"', code: 'HW-SLIDE-001', hsn: '8302', gst_rate: 0.18, unit: 'pair', price: 250 },
-      { name: 'Furniture Handle - Chrome', code: 'HW-HANDLE-001', hsn: '8302', gst_rate: 0.18, unit: 'piece', price: 120 }
+      {
+        name: 'Teak Wood Plank 2x4',
+        code: 'RM-WOOD-001',
+        hsn: '4407',
+        gst_rate: 0.12,
+        unit: 'sq.ft',
+        price: 150
+      },
+      {
+        name: 'MDF Board 18mm',
+        code: 'RM-MDF-001',
+        hsn: '4411',
+        gst_rate: 0.18,
+        unit: 'sheet',
+        price: 800
+      },
+      {
+        name: 'Wood Polish - Glossy',
+        code: 'RM-POL-001',
+        hsn: '3405',
+        gst_rate: 0.18,
+        unit: 'liter',
+        price: 450
+      },
+      {
+        name: 'Drawer Slide 18"',
+        code: 'HW-SLIDE-001',
+        hsn: '8302',
+        gst_rate: 0.18,
+        unit: 'pair',
+        price: 250
+      },
+      {
+        name: 'Furniture Handle - Chrome',
+        code: 'HW-HANDLE-001',
+        hsn: '8302',
+        gst_rate: 0.18,
+        unit: 'piece',
+        price: 120
+      }
     ]
 
     const materialIds: Record<string, string> = {}
@@ -108,7 +143,7 @@ export async function createFurnitureDemoData(organizationId: string) {
           cost_per_unit: material.price
         }
       })
-      
+
       if (result.id) {
         materialIds[material.code] = result.id
       }
@@ -181,7 +216,7 @@ export async function createFurnitureDemoData(organizationId: string) {
           state_code: '32' // Kerala
         }
       })
-      
+
       if (result.id) {
         await universalApi.setDynamicField(result.id, 'gstin', customer.gstin)
         await universalApi.setDynamicField(result.id, 'credit_limit', '500000')
@@ -209,7 +244,7 @@ export async function createFurnitureDemoData(organizationId: string) {
           state_code: '32'
         }
       })
-      
+
       if (result.id) {
         await universalApi.setDynamicField(result.id, 'gstin', vendor.gstin)
         await universalApi.setDynamicField(result.id, 'payment_terms', '45')
@@ -237,18 +272,21 @@ export async function createFurnitureDemoData(organizationId: string) {
           basic_salary: emp.salary
         }
       })
-      
+
       if (result.id) {
         // Add PF/ESI details
         await universalApi.setDynamicField(result.id, 'pf_number', `KN/KOC/12345/${emp.code}`)
-        await universalApi.setDynamicField(result.id, 'esi_number', `31001234560000${emp.code.slice(-3)}`)
+        await universalApi.setDynamicField(
+          result.id,
+          'esi_number',
+          `31001234560000${emp.code.slice(-3)}`
+        )
         await universalApi.setDynamicField(result.id, 'basic_salary', emp.salary.toString())
       }
     }
 
     console.log('✅ Furniture demo data created successfully')
     return { success: true }
-
   } catch (error) {
     console.error('Error creating furniture demo data:', error)
     return { success: false, error }

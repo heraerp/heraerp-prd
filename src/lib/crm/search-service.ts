@@ -1,12 +1,16 @@
 /**
  * HERA CRM Search Service
  * Advanced search and filtering functionality for production CRM
- * 
+ *
  * Project Manager Task: Advanced Search and Filtering Capabilities (Task #7)
  */
 
 import { heraApi } from '@/lib/hera-api'
-import type { SearchFilters, SortOptions, SearchResult } from '@/components/crm/AdvancedSearchFilter'
+import type {
+  SearchFilters,
+  SortOptions,
+  SearchResult
+} from '@/components/crm/AdvancedSearchFilter'
 
 // Types for search results
 export interface CRMContact {
@@ -69,7 +73,7 @@ export class CRMSearchService {
 
     try {
       let results: CRMEntity[] = []
-      
+
       // Global search across all entity types
       if (filters.entityType === 'all' || !filters.entityType) {
         const [contacts, opportunities, tasks] = await Promise.all([
@@ -77,7 +81,7 @@ export class CRMSearchService {
           this.searchOpportunities(filters, sort),
           this.searchTasks(filters, sort)
         ])
-        
+
         results = [...contacts.results, ...opportunities.results, ...tasks.results]
       } else {
         // Search specific entity type
@@ -112,9 +116,7 @@ export class CRMSearchService {
 
       // Apply tag filtering
       if (filters.tags.length > 0) {
-        results = results.filter(item => 
-          filters.tags.some(tag => item.tags?.includes(tag))
-        )
+        results = results.filter(item => filters.tags.some(tag => item.tags?.includes(tag)))
       }
 
       const endTime = performance.now()
@@ -139,7 +141,10 @@ export class CRMSearchService {
   /**
    * Search contacts with specific filters
    */
-  private async searchContacts(filters: SearchFilters, sort: SortOptions): Promise<SearchResult<CRMContact>> {
+  private async searchContacts(
+    filters: SearchFilters,
+    sort: SortOptions
+  ): Promise<SearchResult<CRMContact>> {
     try {
       // In production, this would call the HERA API
       // For now, we'll use demo data with filtering logic
@@ -233,9 +238,7 @@ export class CRMSearchService {
       }
 
       if (filters.phone) {
-        filteredContacts = filteredContacts.filter(contact =>
-          contact.phone.includes(filters.phone)
-        )
+        filteredContacts = filteredContacts.filter(contact => contact.phone.includes(filters.phone))
       }
 
       if (filters.contactStatus.length > 0) {
@@ -252,8 +255,9 @@ export class CRMSearchService {
 
       // Apply value range filter
       if (filters.valueRange.min > 0 || filters.valueRange.max < 1000000) {
-        filteredContacts = filteredContacts.filter(contact =>
-          contact.value >= filters.valueRange.min && contact.value <= filters.valueRange.max
+        filteredContacts = filteredContacts.filter(
+          contact =>
+            contact.value >= filters.valueRange.min && contact.value <= filters.valueRange.max
         )
       }
 
@@ -279,7 +283,10 @@ export class CRMSearchService {
   /**
    * Search opportunities with specific filters
    */
-  private async searchOpportunities(filters: SearchFilters, sort: SortOptions): Promise<SearchResult<CRMOpportunity>> {
+  private async searchOpportunities(
+    filters: SearchFilters,
+    sort: SortOptions
+  ): Promise<SearchResult<CRMOpportunity>> {
     try {
       const demoOpportunities: CRMOpportunity[] = [
         {
@@ -352,14 +359,16 @@ export class CRMSearchService {
       }
 
       if (filters.valueRange.min > 0 || filters.valueRange.max < 1000000) {
-        filteredOpportunities = filteredOpportunities.filter(opp =>
-          opp.value >= filters.valueRange.min && opp.value <= filters.valueRange.max
+        filteredOpportunities = filteredOpportunities.filter(
+          opp => opp.value >= filters.valueRange.min && opp.value <= filters.valueRange.max
         )
       }
 
       if (filters.probabilityRange.min > 0 || filters.probabilityRange.max < 100) {
-        filteredOpportunities = filteredOpportunities.filter(opp =>
-          opp.probability >= filters.probabilityRange.min && opp.probability <= filters.probabilityRange.max
+        filteredOpportunities = filteredOpportunities.filter(
+          opp =>
+            opp.probability >= filters.probabilityRange.min &&
+            opp.probability <= filters.probabilityRange.max
         )
       }
 
@@ -368,7 +377,7 @@ export class CRMSearchService {
           const closeDate = new Date(opp.close_date)
           const startDate = filters.closeDate.start ? new Date(filters.closeDate.start) : null
           const endDate = filters.closeDate.end ? new Date(filters.closeDate.end) : null
-          
+
           return (!startDate || closeDate >= startDate) && (!endDate || closeDate <= endDate)
         })
       }
@@ -395,7 +404,10 @@ export class CRMSearchService {
   /**
    * Search tasks with specific filters
    */
-  private async searchTasks(filters: SearchFilters, sort: SortOptions): Promise<SearchResult<CRMTask>> {
+  private async searchTasks(
+    filters: SearchFilters,
+    sort: SortOptions
+  ): Promise<SearchResult<CRMTask>> {
     try {
       const demoTasks: CRMTask[] = [
         {
@@ -446,28 +458,23 @@ export class CRMSearchService {
 
       // Apply task-specific filters
       if (filters.taskTitle) {
-        filteredTasks = filteredTasks.filter(task =>
-          task.title.toLowerCase().includes(filters.taskTitle.toLowerCase()) ||
-          task.description.toLowerCase().includes(filters.taskTitle.toLowerCase())
+        filteredTasks = filteredTasks.filter(
+          task =>
+            task.title.toLowerCase().includes(filters.taskTitle.toLowerCase()) ||
+            task.description.toLowerCase().includes(filters.taskTitle.toLowerCase())
         )
       }
 
       if (filters.taskStatus.length > 0) {
-        filteredTasks = filteredTasks.filter(task =>
-          filters.taskStatus.includes(task.status)
-        )
+        filteredTasks = filteredTasks.filter(task => filters.taskStatus.includes(task.status))
       }
 
       if (filters.priority.length > 0) {
-        filteredTasks = filteredTasks.filter(task =>
-          filters.priority.includes(task.priority)
-        )
+        filteredTasks = filteredTasks.filter(task => filters.priority.includes(task.priority))
       }
 
       if (filters.assignee.length > 0) {
-        filteredTasks = filteredTasks.filter(task =>
-          filters.assignee.includes(task.assignee)
-        )
+        filteredTasks = filteredTasks.filter(task => filters.assignee.includes(task.assignee))
       }
 
       if (filters.dueDate.start || filters.dueDate.end) {
@@ -475,7 +482,7 @@ export class CRMSearchService {
           const dueDate = new Date(task.due_date)
           const startDate = filters.dueDate.start ? new Date(filters.dueDate.start) : null
           const endDate = filters.dueDate.end ? new Date(filters.dueDate.end) : null
-          
+
           return (!startDate || dueDate >= startDate) && (!endDate || dueDate <= endDate)
         })
       }
@@ -504,16 +511,17 @@ export class CRMSearchService {
    */
   private applyGlobalSearch(results: CRMEntity[], searchTerm: string): CRMEntity[] {
     const term = searchTerm.toLowerCase()
-    
+
     return results.filter(item => {
       // Search in all text fields
-      const searchableFields = Object.values(item).filter(value => 
-        typeof value === 'string'
-      ).join(' ').toLowerCase()
-      
+      const searchableFields = Object.values(item)
+        .filter(value => typeof value === 'string')
+        .join(' ')
+        .toLowerCase()
+
       // Also search in tags if they exist
       const tagsString = item.tags ? item.tags.join(' ').toLowerCase() : ''
-      
+
       return searchableFields.includes(term) || tagsString.includes(term)
     })
   }
@@ -525,9 +533,9 @@ export class CRMSearchService {
     return results.sort((a, b) => {
       const aValue = (a as any)[sort.field]
       const bValue = (b as any)[sort.field]
-      
+
       let comparison = 0
-      
+
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         comparison = aValue.localeCompare(bValue)
       } else if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -536,7 +544,7 @@ export class CRMSearchService {
         // Handle dates and other types
         comparison = new Date(aValue).getTime() - new Date(bValue).getTime()
       }
-      
+
       return sort.direction === 'desc' ? -comparison : comparison
     })
   }
@@ -544,15 +552,18 @@ export class CRMSearchService {
   /**
    * Apply date range filtering
    */
-  private applyDateRangeFilter(results: CRMEntity[], dateRange: { start: string; end: string }): CRMEntity[] {
+  private applyDateRangeFilter(
+    results: CRMEntity[],
+    dateRange: { start: string; end: string }
+  ): CRMEntity[] {
     if (!dateRange.start && !dateRange.end) return results
-    
+
     return results.filter(item => {
       // Use updated_at as the primary date field
       const itemDate = new Date(item.updated_at)
       const startDate = dateRange.start ? new Date(dateRange.start) : null
       const endDate = dateRange.end ? new Date(dateRange.end) : null
-      
+
       return (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate)
     })
   }
@@ -560,9 +571,11 @@ export class CRMSearchService {
   /**
    * Generate facets for filtering UI
    */
-  private generateFacets(results: CRMEntity[]): Record<string, Array<{ value: string; count: number }>> {
+  private generateFacets(
+    results: CRMEntity[]
+  ): Record<string, Array<{ value: string; count: number }>> {
     const facets: Record<string, Record<string, number>> = {}
-    
+
     // Generate facets for common fields
     results.forEach(item => {
       // Status facet
@@ -570,7 +583,7 @@ export class CRMSearchService {
         facets.status = facets.status || {}
         facets.status[item.status] = (facets.status[item.status] || 0) + 1
       }
-      
+
       // Tags facet
       if (item.tags) {
         facets.tags = facets.tags || {}
@@ -578,28 +591,31 @@ export class CRMSearchService {
           facets.tags[tag] = (facets.tags[tag] || 0) + 1
         })
       }
-      
+
       // Priority facet (for tasks)
       if ('priority' in item) {
         facets.priority = facets.priority || {}
-        facets.priority[(item as CRMTask).priority] = (facets.priority[(item as CRMTask).priority] || 0) + 1
+        facets.priority[(item as CRMTask).priority] =
+          (facets.priority[(item as CRMTask).priority] || 0) + 1
       }
-      
+
       // Stage facet (for opportunities)
       if ('stage' in item) {
         facets.stage = facets.stage || {}
-        facets.stage[(item as CRMOpportunity).stage] = (facets.stage[(item as CRMOpportunity).stage] || 0) + 1
+        facets.stage[(item as CRMOpportunity).stage] =
+          (facets.stage[(item as CRMOpportunity).stage] || 0) + 1
       }
     })
-    
+
     // Convert to the expected format
     const result: Record<string, Array<{ value: string; count: number }>> = {}
-    
+
     Object.keys(facets).forEach(key => {
-      result[key] = Object.entries(facets[key]).map(([value, count]) => ({ value, count }))
+      result[key] = Object.entries(facets[key])
+        .map(([value, count]) => ({ value, count }))
         .sort((a, b) => b.count - a.count) // Sort by count descending
     })
-    
+
     return result
   }
 
@@ -617,7 +633,7 @@ export class CRMSearchService {
       'renewal opportunities',
       'overdue tasks'
     ]
-    
+
     return commonSuggestions.filter(suggestion =>
       suggestion.toLowerCase().includes(query.toLowerCase())
     )
@@ -626,7 +642,10 @@ export class CRMSearchService {
   /**
    * Export search results
    */
-  async exportResults(results: CRMEntity[], format: 'csv' | 'json' | 'excel'): Promise<{
+  async exportResults(
+    results: CRMEntity[],
+    format: 'csv' | 'json' | 'excel'
+  ): Promise<{
     success: boolean
     data?: string
     filename?: string
@@ -634,7 +653,7 @@ export class CRMSearchService {
   }> {
     try {
       const timestamp = new Date().toISOString().split('T')[0]
-      
+
       if (format === 'json') {
         return {
           success: true,
@@ -646,31 +665,33 @@ export class CRMSearchService {
         if (results.length === 0) {
           return { success: false, error: 'No results to export' }
         }
-        
+
         const headers = Object.keys(results[0]).filter(key => key !== 'tags')
         const csvContent = [
           headers.join(','),
-          ...results.map(row => 
-            headers.map(header => {
-              const value = (row as any)[header]
-              return typeof value === 'string' ? `"${value}"` : value
-            }).join(',')
+          ...results.map(row =>
+            headers
+              .map(header => {
+                const value = (row as any)[header]
+                return typeof value === 'string' ? `"${value}"` : value
+              })
+              .join(',')
           )
         ].join('\n')
-        
+
         return {
           success: true,
           data: csvContent,
           filename: `crm-search-results-${timestamp}.csv`
         }
       }
-      
+
       return { success: false, error: 'Unsupported format' }
     } catch (error) {
       console.error('Export error:', error)
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Export failed' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Export failed'
       }
     }
   }

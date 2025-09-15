@@ -60,38 +60,38 @@ export class TestOrchestrator {
    */
   async executeTestStage(pipelineId: string): Promise<TestResult[]> {
     console.log('🧪 Executing TEST stage for pipeline:', pipelineId)
-    
+
     // Create TEST transaction
     const testTransaction = await this.createTestTransaction(pipelineId)
-    
+
     // Execute test matrix
     const results: TestResult[] = []
-    
+
     // 1. Unit Tests (Jest API)
     const unitResult = await this.runUnitTests(testTransaction.id)
     results.push(unitResult)
     await this.recordTestLine(testTransaction.id, 'STEP.UNIT', unitResult)
-    
+
     // 2. Contract Tests (Jest + OpenAPI)
     const contractResult = await this.runContractTests(testTransaction.id)
     results.push(contractResult)
     await this.recordTestLine(testTransaction.id, 'STEP.CONTRACT', contractResult)
-    
+
     // 3. E2E Tests (Playwright)
     const e2eResult = await this.runE2ETests(testTransaction.id)
     results.push(e2eResult)
     await this.recordTestLine(testTransaction.id, 'STEP.E2E', e2eResult)
-    
+
     // 4. Security Tests (Optional)
     if (this.config.guardrailPacks.includes('SECURITY')) {
       const securityResult = await this.runSecurityTests(testTransaction.id)
       results.push(securityResult)
       await this.recordTestLine(testTransaction.id, 'STEP.SECURITY', securityResult)
     }
-    
+
     // Evaluate guardrails
     await this.evaluateTestGuardrails(results)
-    
+
     return results
   }
 
@@ -119,30 +119,28 @@ export class TestOrchestrator {
    */
   private async runUnitTests(transactionId: string): Promise<TestResult> {
     const startTime = Date.now()
-    
+
     try {
       // Execute Jest with coverage
       const { stdout, stderr } = await execAsync(
         'npm run test:api -- --coverage --json --outputFile=artifacts/jest-results.json',
         { env: { ...process.env, CI: 'true' } }
       )
-      
+
       // Parse results
-      const results = JSON.parse(
-        await readFile('artifacts/jest-results.json', 'utf-8')
-      )
-      
+      const results = JSON.parse(await readFile('artifacts/jest-results.json', 'utf-8'))
+
       // Upload artifacts
       const coverageUri = await this.uploadArtifact(
         'artifacts/coverage/lcov.info',
         `${this.config.moduleSmartCode}/unit-coverage.lcov`
       )
-      
+
       const junitUri = await this.uploadArtifact(
         'artifacts/junit/jest-junit.xml',
         `${this.config.moduleSmartCode}/unit-junit.xml`
       )
-      
+
       return {
         type: 'unit',
         status: results.success ? 'PASSED' : 'FAILED',
@@ -175,16 +173,15 @@ export class TestOrchestrator {
    */
   private async runContractTests(transactionId: string): Promise<TestResult> {
     const startTime = Date.now()
-    
+
     try {
       // Execute contract tests
-      const { stdout } = await execAsync(
-        'npm run test:contract -- --reporter json',
-        { env: { ...process.env, CI: 'true' } }
-      )
-      
+      const { stdout } = await execAsync('npm run test:contract -- --reporter json', {
+        env: { ...process.env, CI: 'true' }
+      })
+
       const results = JSON.parse(stdout)
-      
+
       return {
         type: 'contract',
         status: results.failures === 0 ? 'PASSED' : 'FAILED',
@@ -218,24 +215,24 @@ export class TestOrchestrator {
    */
   private async runE2ETests(transactionId: string): Promise<TestResult> {
     const startTime = Date.now()
-    
+
     try {
       // Execute Playwright tests for each browser in matrix
       const browsers = this.config.testMatrix.browsers || ['chromium']
       let totalPassed = 0
       let totalFailed = 0
-      
+
       for (const browser of browsers) {
         const { stdout } = await execAsync(
           `npm run test:e2e -- --project="${browser}" --reporter=json`,
           { env: { ...process.env, CI: 'true', BROWSER: browser } }
         )
-        
+
         const results = JSON.parse(stdout)
         totalPassed += results.stats.expected
         totalFailed += results.stats.unexpected
       }
-      
+
       // Upload artifacts
       const artifacts = {
         report_uri: await this.uploadArtifact(
@@ -259,7 +256,7 @@ export class TestOrchestrator {
           `${this.config.moduleSmartCode}/e2e-junit.xml`
         )
       }
-      
+
       return {
         type: 'e2e',
         status: totalFailed === 0 ? 'PASSED' : 'FAILED',
@@ -288,26 +285,27 @@ export class TestOrchestrator {
    */
   private async runSecurityTests(transactionId: string): Promise<TestResult> {
     const startTime = Date.now()
-    
+
     try {
       // Run dependency audit
       const { stdout: auditOutput } = await execAsync('npm audit --json')
       const auditResults = JSON.parse(auditOutput)
-      
+
       // Run OWASP dependency check if available
       let owaspViolations = 0
       try {
-        await execAsync('dependency-check --project test --scan . --format JSON --out artifacts/owasp-report.json')
-        const owaspReport = JSON.parse(
-          await readFile('artifacts/owasp-report.json', 'utf-8')
+        await execAsync(
+          'dependency-check --project test --scan . --format JSON --out artifacts/owasp-report.json'
         )
-        owaspViolations = owaspReport.dependencies?.filter(d => d.vulnerabilities?.length > 0).length || 0
+        const owaspReport = JSON.parse(await readFile('artifacts/owasp-report.json', 'utf-8'))
+        owaspViolations =
+          owaspReport.dependencies?.filter(d => d.vulnerabilities?.length > 0).length || 0
       } catch (e) {
         // OWASP not installed, skip
       }
-      
+
       const totalViolations = auditResults.metadata.vulnerabilities.total + owaspViolations
-      
+
       return {
         type: 'security',
         status: totalViolations === 0 ? 'PASSED' : 'FAILED',
@@ -367,19 +365,19 @@ export class TestOrchestrator {
     const overallCoverage = this.calculateOverallCoverage(results)
     const hasFailures = results.some(r => r.status === 'FAILED')
     const hasSecurityViolations = results.some(r => r.violations && r.violations.length > 0)
-    
+
     // Check coverage threshold
     if (overallCoverage < this.config.coverageThreshold) {
       throw new Error(
         `Coverage ${overallCoverage.toFixed(2)}% below required ${this.config.coverageThreshold}%`
       )
     }
-    
+
     // Check for critical failures
     if (hasFailures && this.config.ucrPolicies.block_on_test_fail) {
       throw new Error('Tests failed - pipeline blocked by guardrail')
     }
-    
+
     // Check security violations
     if (hasSecurityViolations && this.config.guardrailPacks.includes('SECURITY')) {
       throw new Error('Security violations detected - pipeline blocked')
@@ -396,7 +394,7 @@ export class TestOrchestrator {
     // Simplified coverage calculation
     let totalStatements = 0
     let coveredStatements = 0
-    
+
     for (const file of Object.values(coverageMap)) {
       const statements = (file as any).s || {}
       for (const count of Object.values(statements)) {
@@ -404,15 +402,13 @@ export class TestOrchestrator {
         if ((count as number) > 0) coveredStatements++
       }
     }
-    
+
     return totalStatements > 0 ? (coveredStatements / totalStatements) * 100 : 0
   }
 
   private calculateOverallCoverage(results: TestResult[]): number {
     const coverages = results.filter(r => r.coverage !== undefined).map(r => r.coverage!)
-    return coverages.length > 0 
-      ? coverages.reduce((sum, c) => sum + c, 0) / coverages.length 
-      : 0
+    return coverages.length > 0 ? coverages.reduce((sum, c) => sum + c, 0) / coverages.length : 0
   }
 
   private async uploadArtifact(localPath: string, remotePath: string): Promise<string> {
@@ -433,39 +429,34 @@ export class TestOrchestrator {
 export async function integrateTestingIntoFactory(factory: any) {
   // Override the existing testStage method
   const originalTestStage = factory.testStage.bind(factory)
-  
-  factory.testStage = async function(pipelineId: string) {
+
+  factory.testStage = async function (pipelineId: string) {
     const pipeline = await universalApi.getTransaction(pipelineId)
     const moduleSmartCode = pipeline.data.metadata.module_smart_code
     const params = pipeline.data.metadata.params || {}
-    
+
     // Get module manifest
     const module = await factory.resolveModule(moduleSmartCode)
-    const manifest = JSON.parse(
-      await universalApi.getDynamicField(module.id, 'module_manifest')
-    )
-    
+    const manifest = JSON.parse(await universalApi.getDynamicField(module.id, 'module_manifest'))
+
     // Create test orchestrator
-    const orchestrator = new TestOrchestrator(
-      this.organizationId,
-      {
-        moduleSmartCode,
-        testMatrix: params.test_matrix || {
-          browsers: ['chromium'],
-          personas: ['user'],
-          locales: ['en-US'],
-          datasets: ['happy_path']
-        },
-        coverageThreshold: params.coverage_threshold || 0.8,
-        artifactBasePath: 'artifacts/',
-        guardrailPacks: manifest.guardrail_packs || ['GENERAL'],
-        ucrPolicies: params.ucr_policies || { block_on_test_fail: true }
-      }
-    )
-    
+    const orchestrator = new TestOrchestrator(this.organizationId, {
+      moduleSmartCode,
+      testMatrix: params.test_matrix || {
+        browsers: ['chromium'],
+        personas: ['user'],
+        locales: ['en-US'],
+        datasets: ['happy_path']
+      },
+      coverageThreshold: params.coverage_threshold || 0.8,
+      artifactBasePath: 'artifacts/',
+      guardrailPacks: manifest.guardrail_packs || ['GENERAL'],
+      ucrPolicies: params.ucr_policies || { block_on_test_fail: true }
+    })
+
     // Execute comprehensive test stage
     const results = await orchestrator.executeTestStage(pipelineId)
-    
+
     // Return summary
     return {
       test_suites_run: results.length,

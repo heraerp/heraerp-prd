@@ -34,7 +34,13 @@ export class HeraSacredValidator {
       query: ['organization_id']
     },
     core_relationships: {
-      create: ['organization_id', 'from_entity_id', 'to_entity_id', 'relationship_type', 'smart_code'],
+      create: [
+        'organization_id',
+        'from_entity_id',
+        'to_entity_id',
+        'relationship_type',
+        'smart_code'
+      ],
       update: [],
       query: ['organization_id']
     },
@@ -67,8 +73,10 @@ export class HeraSacredValidator {
 
     if (!this.SACRED_TABLES.includes(tableName as any)) {
       result.isValid = false
-      result.errors.push(`Table '${tableName}' violates HERA's sacred 6-table architecture. Use only: ${this.SACRED_TABLES.join(', ')}`)
-      
+      result.errors.push(
+        `Table '${tableName}' violates HERA's sacred 6-table architecture. Use only: ${this.SACRED_TABLES.join(', ')}`
+      )
+
       // Suggest migrations for common violations
       if (tableName === 'core_clients') {
         result.autoFixes = {
@@ -83,7 +91,9 @@ export class HeraSacredValidator {
           entity_type: 'account',
           business_rules: { ledger_type: 'GL' }
         }
-        result.warnings.push("Migrate to core_entities with entity_type='account' and business_rules.ledger_type='GL'")
+        result.warnings.push(
+          "Migrate to core_entities with entity_type='account' and business_rules.ledger_type='GL'"
+        )
       }
     }
 
@@ -111,19 +121,24 @@ export class HeraSacredValidator {
     }
 
     // Check required fields
-    const requiredFields = this.REQUIRED_FIELDS[table as keyof typeof this.REQUIRED_FIELDS]?.[operation] || []
+    const requiredFields =
+      this.REQUIRED_FIELDS[table as keyof typeof this.REQUIRED_FIELDS]?.[operation] || []
     const missingFields = requiredFields.filter(field => !data[field])
 
     if (missingFields.length > 0) {
       result.isValid = false
-      result.errors.push(`Missing required fields for ${operation} on ${table}: ${missingFields.join(', ')}`)
+      result.errors.push(
+        `Missing required fields for ${operation} on ${table}: ${missingFields.join(', ')}`
+      )
     }
 
     // Special validations
     if (table === 'core_entities' && operation === 'create') {
       // Normalize entity types
       if (data.entity_type === 'gl_account') {
-        result.warnings.push("Use entity_type='account' with business_rules.ledger_type='GL' instead of 'gl_account'")
+        result.warnings.push(
+          "Use entity_type='account' with business_rules.ledger_type='GL' instead of 'gl_account'"
+        )
         result.autoFixes = {
           entity_type: 'account',
           business_rules: { ...data.business_rules, ledger_type: 'GL' }
@@ -135,7 +150,9 @@ export class HeraSacredValidator {
       // Check for wrong column names
       if ('source_entity_id' in data || 'target_entity_id' in data) {
         result.isValid = false
-        result.errors.push("Use 'from_entity_id' and 'to_entity_id' instead of 'source_entity_id' and 'target_entity_id'")
+        result.errors.push(
+          "Use 'from_entity_id' and 'to_entity_id' instead of 'source_entity_id' and 'target_entity_id'"
+        )
         result.autoFixes = {
           from_entity_id: data.source_entity_id || data.from_entity_id,
           to_entity_id: data.target_entity_id || data.to_entity_id
@@ -144,7 +161,14 @@ export class HeraSacredValidator {
     }
 
     // Validate smart codes
-    if (['core_entities', 'core_relationships', 'universal_transactions', 'universal_transaction_lines'].includes(table)) {
+    if (
+      [
+        'core_entities',
+        'core_relationships',
+        'universal_transactions',
+        'universal_transaction_lines'
+      ].includes(table)
+    ) {
       if (operation === 'create' && data.smart_code) {
         const smartCodeValidation = this.validateSmartCode(data.smart_code)
         if (!smartCodeValidation.isValid) {
@@ -169,7 +193,9 @@ export class HeraSacredValidator {
     const pattern = /^HERA\.[A-Z0-9]+\.[A-Z0-9]+\.[A-Z0-9]+\.[A-Z0-9]+\.v\d+$/
     if (!pattern.test(smartCode)) {
       result.isValid = false
-      result.errors.push(`Invalid smart code format: ${smartCode}. Expected: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}`)
+      result.errors.push(
+        `Invalid smart code format: ${smartCode}. Expected: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}`
+      )
     }
 
     return result
@@ -196,7 +222,9 @@ export class HeraSacredValidator {
 
     if (!data.organization_id) {
       result.isValid = false
-      result.errors.push(`SACRED VIOLATION: organization_id is required for all ${operation} operations on ${table}`)
+      result.errors.push(
+        `SACRED VIOLATION: organization_id is required for all ${operation} operations on ${table}`
+      )
     }
 
     return result
@@ -205,13 +233,16 @@ export class HeraSacredValidator {
   /**
    * Apply auto-fixes to data
    */
-  static applyAutoFixes(data: Record<string, any>, fixes: Record<string, any>): Record<string, any> {
+  static applyAutoFixes(
+    data: Record<string, any>,
+    fixes: Record<string, any>
+  ): Record<string, any> {
     const fixed = { ...data }
-    
+
     // Remove deprecated fields
     delete fixed.source_entity_id
     delete fixed.target_entity_id
-    
+
     // Apply fixes
     Object.entries(fixes).forEach(([key, value]) => {
       if (key === 'business_rules' && fixed.business_rules) {

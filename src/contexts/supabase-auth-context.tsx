@@ -31,8 +31,11 @@ export function SupabaseAuthProvider({ children }: AuthProviderProps) {
     const initializeAuth = async () => {
       try {
         // Get initial session
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession()
+
         if (mounted) {
           if (error) {
             console.warn('Supabase session error:', error.message)
@@ -53,7 +56,7 @@ export function SupabaseAuthProvider({ children }: AuthProviderProps) {
     let subscription: any = null
     try {
       const {
-        data: { subscription: authSubscription },
+        data: { subscription: authSubscription }
       } = supabase.auth.onAuthStateChange((_event, session) => {
         if (mounted) {
           setSession(session)
@@ -80,7 +83,7 @@ export function SupabaseAuthProvider({ children }: AuthProviderProps) {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password
       })
 
       if (error) {
@@ -112,8 +115,8 @@ export function SupabaseAuthProvider({ children }: AuthProviderProps) {
         email,
         password,
         options: {
-          data: userData,
-        },
+          data: userData
+        }
       })
 
       if (error) {
@@ -134,7 +137,7 @@ export function SupabaseAuthProvider({ children }: AuthProviderProps) {
     isLoading,
     login,
     logout,
-    register,
+    register
   }
 
   return (

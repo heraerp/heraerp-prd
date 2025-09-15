@@ -12,10 +12,7 @@ export async function GET(request: NextRequest) {
     const year = searchParams.get('year') || new Date().getFullYear().toString()
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
@@ -32,52 +29,58 @@ export async function GET(request: NextRequest) {
 
     // For each account, calculate balances
     const accountsWithBalances = await Promise.all(
-      glAccounts.map(async (account) => {
+      glAccounts.map(async account => {
         // Get period dates
         const { startDate, endDate } = getPeriodDates(period, parseInt(year))
 
         // Calculate balances from transactions
         const { data: lines } = await supabase
           .from('universal_transaction_lines')
-          .select(`
+          .select(
+            `
             debit_amount,
             credit_amount,
             universal_transactions!inner(
               transaction_date,
               transaction_status
             )
-          `)
+          `
+          )
           .eq('organization_id', organizationId)
           .eq('gl_account_code', account.entity_code)
           .eq('universal_transactions.transaction_status', 'posted')
           .gte('universal_transactions.transaction_date', startDate.toISOString())
           .lte('universal_transactions.transaction_date', endDate.toISOString())
 
-        const currentBalance = lines?.reduce((acc, line) => {
-          return acc + (line.debit_amount || 0) - (line.credit_amount || 0)
-        }, 0) || 0
+        const currentBalance =
+          lines?.reduce((acc, line) => {
+            return acc + (line.debit_amount || 0) - (line.credit_amount || 0)
+          }, 0) || 0
 
         // Get YTD balance
         const ytdStartDate = new Date(parseInt(year), 0, 1)
         const { data: ytdLines } = await supabase
           .from('universal_transaction_lines')
-          .select(`
+          .select(
+            `
             debit_amount,
             credit_amount,
             universal_transactions!inner(
               transaction_date,
               transaction_status
             )
-          `)
+          `
+          )
           .eq('organization_id', organizationId)
           .eq('gl_account_code', account.entity_code)
           .eq('universal_transactions.transaction_status', 'posted')
           .gte('universal_transactions.transaction_date', ytdStartDate.toISOString())
           .lte('universal_transactions.transaction_date', endDate.toISOString())
 
-        const ytdBalance = ytdLines?.reduce((acc, line) => {
-          return acc + (line.debit_amount || 0) - (line.credit_amount || 0)
-        }, 0) || 0
+        const ytdBalance =
+          ytdLines?.reduce((acc, line) => {
+            return acc + (line.debit_amount || 0) - (line.credit_amount || 0)
+          }, 0) || 0
 
         // Get account type from metadata or smart code
         const accountType = getAccountType(account.entity_code)
@@ -103,10 +106,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('GL balances API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -149,15 +149,21 @@ function getPeriodDates(period: string, year: number) {
 function getAccountType(accountCode: string): string {
   const firstDigit = accountCode.charAt(0)
   switch (firstDigit) {
-    case '1': return 'asset'
-    case '2': return 'liability'
-    case '3': return 'equity'
-    case '4': return 'revenue'
+    case '1':
+      return 'asset'
+    case '2':
+      return 'liability'
+    case '3':
+      return 'equity'
+    case '4':
+      return 'revenue'
     case '5':
     case '6':
     case '7':
     case '8':
-    case '9': return 'expense'
-    default: return 'asset'
+    case '9':
+      return 'expense'
+    default:
+      return 'asset'
   }
 }

@@ -85,7 +85,7 @@ export default function ExpenseCategoriesPage() {
           {
             key: 'gl_account',
             header: 'GL Account',
-            render: (item) => (
+            render: item => (
               <code className="text-xs bg-muted px-1 py-0.5 rounded">
                 {item.gl_account_code || 'Not Set'}
               </code>
@@ -94,31 +94,29 @@ export default function ExpenseCategoriesPage() {
           {
             key: 'budget',
             header: 'Monthly Budget',
-            render: (item) => (
-              <CurrencyDisplay 
-                value={item.budget_limit || 0} 
-                className="font-medium"
-              />
+            render: item => (
+              <CurrencyDisplay value={item.budget_limit || 0} className="font-medium" />
             )
           },
           {
             key: 'ytd_spending',
             header: 'YTD Spending',
-            render: (item) => {
+            render: item => {
               const spending = item.ytd_spending || 0
               const budget = (item.budget_limit || 0) * 12
               const percentage = budget > 0 ? (spending / budget) * 100 : 0
               const isOverBudget = percentage > 100
-              
+
               return (
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <CurrencyDisplay value={spending} />
-                    {percentage > 80 && (
-                      isOverBudget ? 
-                        <TrendingUp className="w-4 h-4 text-destructive" /> :
+                    {percentage > 80 &&
+                      (isOverBudget ? (
+                        <TrendingUp className="w-4 h-4 text-destructive" />
+                      ) : (
                         <TrendingDown className="w-4 h-4 text-warning" />
-                    )}
+                      ))}
                   </div>
                   {budget > 0 && (
                     <div className="text-xs text-muted-foreground">
@@ -132,7 +130,7 @@ export default function ExpenseCategoriesPage() {
           {
             key: 'attributes',
             header: 'Attributes',
-            render: (item) => (
+            render: item => (
               <div className="flex gap-1">
                 {item.tax_deductible && (
                   <Badge variant="secondary" className="text-xs">
@@ -153,7 +151,7 @@ export default function ExpenseCategoriesPage() {
             )
           }
         ]}
-        onItemClick={(item) => {
+        onItemClick={item => {
           // Navigate to expense transactions filtered by this category
           router.push(`/finance/expenses?category=${item.entity_code}`)
         }}
@@ -163,39 +161,28 @@ export default function ExpenseCategoriesPage() {
           metrics: [
             {
               label: 'Total YTD Spending',
-              value: (items) => {
-                const total = items.reduce((sum, item) => 
-                  sum + (item.ytd_spending || 0), 0
-                )
+              value: items => {
+                const total = items.reduce((sum, item) => sum + (item.ytd_spending || 0), 0)
                 return <CurrencyDisplay value={total} className="text-2xl font-bold" />
               }
             },
             {
               label: 'Categories Over Budget',
-              value: (items) => {
+              value: items => {
                 const overBudget = items.filter(item => {
                   const spending = item.ytd_spending || 0
                   const budget = (item.budget_limit || 0) * 12
                   return budget > 0 && spending > budget
                 }).length
-                return (
-                  <div className="text-2xl font-bold text-destructive">
-                    {overBudget}
-                  </div>
-                )
+                return <div className="text-2xl font-bold text-destructive">{overBudget}</div>
               }
             },
             {
               label: 'Tax Deductible %',
-              value: (items) => {
+              value: items => {
                 const deductible = items.filter(item => item.tax_deductible).length
-                const percentage = items.length > 0 ? 
-                  (deductible / items.length) * 100 : 0
-                return (
-                  <div className="text-2xl font-bold">
-                    {percentage.toFixed(0)}%
-                  </div>
-                )
+                const percentage = items.length > 0 ? (deductible / items.length) * 100 : 0
+                return <div className="text-2xl font-bold">{percentage.toFixed(0)}%</div>
               }
             }
           ]

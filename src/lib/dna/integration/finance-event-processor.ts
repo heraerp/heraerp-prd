@@ -1,6 +1,6 @@
 /**
  * Universal Finance Event Processor
- * 
+ *
  * Central processor that all apps (restaurant, salon, etc.) use
  * to emit financial events that automatically post to GL
  */
@@ -14,12 +14,12 @@ export class FinanceEventProcessor {
   private financeService: FinanceDNAService
   private organizationId: string
   private isInitialized = false
-  
+
   private constructor(organizationId: string) {
     this.organizationId = organizationId
     this.financeService = new FinanceDNAService(organizationId)
   }
-  
+
   /**
    * Get or create processor instance for an organization
    */
@@ -31,15 +31,15 @@ export class FinanceEventProcessor {
     }
     return this.instances.get(organizationId)!
   }
-  
+
   private async initialize() {
     if (this.isInitialized) return
-    
+
     // Load org config and posting rules
     await this.financeService.initialize()
     this.isInitialized = true
   }
-  
+
   /**
    * Process any business event and automatically create GL postings
    */
@@ -84,10 +84,10 @@ export class FinanceEventProcessor {
           metadata: line.metadata
         }))
       }
-      
+
       // Process through finance DNA
       const result = await this.financeService.processEvent(event)
-      
+
       if (result.outcome === 'posted') {
         return {
           success: true,
@@ -118,7 +118,7 @@ export class FinanceEventProcessor {
       }
     }
   }
-  
+
   /**
    * Helper method for simple revenue posting
    */
@@ -145,7 +145,7 @@ export class FinanceEventProcessor {
         type: 'credit' as const
       }
     ]
-    
+
     if (params.tax_amount) {
       lines.push({
         entity_id: 'TAX:OUTPUT',
@@ -154,7 +154,7 @@ export class FinanceEventProcessor {
         type: 'credit' as const
       })
     }
-    
+
     return this.processBusinessEvent({
       smart_code: `HERA.APP.REVENUE.${params.revenue_type.toUpperCase()}.v1`,
       source_system: 'APP',
@@ -164,7 +164,7 @@ export class FinanceEventProcessor {
       lines
     })
   }
-  
+
   /**
    * Helper method for simple expense posting
    */
@@ -186,7 +186,7 @@ export class FinanceEventProcessor {
         type: 'debit' as const
       }
     ]
-    
+
     if (params.tax_amount) {
       lines.push({
         entity_id: 'TAX:INPUT',
@@ -195,7 +195,7 @@ export class FinanceEventProcessor {
         type: 'debit' as const
       })
     }
-    
+
     if (params.payment_method === 'ap' && params.vendor) {
       lines.push({
         entity_id: `VENDOR:${params.vendor}`,
@@ -212,7 +212,7 @@ export class FinanceEventProcessor {
         type: 'credit' as const
       })
     }
-    
+
     return this.processBusinessEvent({
       smart_code: `HERA.APP.EXPENSE.${params.expense_type.toUpperCase()}.v1`,
       source_system: 'APP',
@@ -233,10 +233,10 @@ export function useFinanceProcessor(organizationId: string) {
   const [processor, setProcessor] = useState<FinanceEventProcessor | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   useEffect(() => {
     let mounted = true
-    
+
     async function loadProcessor() {
       try {
         const proc = await FinanceEventProcessor.getInstance(organizationId)
@@ -251,22 +251,22 @@ export function useFinanceProcessor(organizationId: string) {
         }
       }
     }
-    
+
     loadProcessor()
-    
+
     return () => {
       mounted = false
     }
   }, [organizationId])
-  
+
   return { processor, loading, error }
 }
 
 /**
  * Example usage in a restaurant POS component:
- * 
+ *
  * const { processor } = useFinanceProcessor(organizationId)
- * 
+ *
  * const handleOrderComplete = async (order) => {
  *   const result = await processor.postRevenue({
  *     amount: order.total,
@@ -280,7 +280,7 @@ export function useFinanceProcessor(organizationId: string) {
  *       server: order.server_id
  *     }
  *   })
- *   
+ *
  *   if (result.success) {
  *     console.log('Posted to GL:', result.journal_code)
  *   }

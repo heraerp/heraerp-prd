@@ -2,7 +2,7 @@
 /**
  * Salon Appointments – Faceted Grid (React + Tailwind)
  * Smart Code: HERA.SALON.APPOINTMENTS.FACETED.GRID.v1
- * 
+ *
  * Features:
  * - Facet filters with live counts (Stylist, Service, Status, Payment)
  * - Range filters (Date, Price, Duration) + quick date chips
@@ -19,12 +19,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  DollarSign, 
-  Clock, 
+import {
+  Search,
+  Filter,
+  Calendar,
+  DollarSign,
+  Clock,
   Download,
   X,
   ChevronDown,
@@ -90,7 +90,18 @@ function daysFromNow(n: number): Date {
   return d
 }
 
-const stylists = ['Ava', 'Mia', 'Noah', 'Liam', 'Olivia', 'Ethan', 'Rocky', 'Vinay', 'Maya', 'Sophia']
+const stylists = [
+  'Ava',
+  'Mia',
+  'Noah',
+  'Liam',
+  'Olivia',
+  'Ethan',
+  'Rocky',
+  'Vinay',
+  'Maya',
+  'Sophia'
+]
 const services = [
   'Brazilian Blowout',
   'Complete Bridal Package',
@@ -98,33 +109,53 @@ const services = [
   'Hair Color & Highlights',
   'Premium Cut & Style',
   'Luxury Spa Treatment',
-  'Men\'s Cut',
-  'Women\'s Cut',
+  "Men's Cut",
+  "Women's Cut",
   'Balayage',
   'Updo'
 ]
 const statuses: Appointment['status'][] = ['Booked', 'Completed', 'Cancelled', 'No-show']
 const payments: Appointment['payment'][] = ['Card', 'Cash', 'Gift Card', 'Online']
 
-function randomOf<T>(arr: T[]): T { 
-  return arr[Math.floor(Math.random() * arr.length)] 
+function randomOf<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]
 }
 
-function chance(p: number): boolean { 
-  return Math.random() < p 
+function chance(p: number): boolean {
+  return Math.random() < p
 }
 
 function generateAppointments(count = 150): Appointment[] {
   const names = [
-    'Sophia Johnson', 'Jackson Lee', 'Amelia Brown', 'Lucas Davis', 'Isabella Wilson',
-    'Mason Martinez', 'Mia Anderson', 'Ethan Thomas', 'Ava Taylor', 'Oliver Moore',
-    'James White', 'Charlotte Harris', 'Benjamin Clark', 'Harper Lewis', 'Elijah Walker',
-    'Emily Hall', 'Michael Allen', 'Abigail Young', 'Daniel King', 'Evelyn Wright',
-    'Sarah Al-Rashid', 'Ahmed Hassan', 'Fatima Al-Zahra', 'Omar Khalil', 'Layla Mansour'
+    'Sophia Johnson',
+    'Jackson Lee',
+    'Amelia Brown',
+    'Lucas Davis',
+    'Isabella Wilson',
+    'Mason Martinez',
+    'Mia Anderson',
+    'Ethan Thomas',
+    'Ava Taylor',
+    'Oliver Moore',
+    'James White',
+    'Charlotte Harris',
+    'Benjamin Clark',
+    'Harper Lewis',
+    'Elijah Walker',
+    'Emily Hall',
+    'Michael Allen',
+    'Abigail Young',
+    'Daniel King',
+    'Evelyn Wright',
+    'Sarah Al-Rashid',
+    'Ahmed Hassan',
+    'Fatima Al-Zahra',
+    'Omar Khalil',
+    'Layla Mansour'
   ]
 
   const appointments: Appointment[] = []
-  
+
   for (let i = 0; i < count; i++) {
     const date = daysFromNow(Math.floor(Math.random() * 60) - 15) // -15..+44 days
     const hour = 9 + Math.floor(Math.random() * 9) // 9..17
@@ -143,8 +174,20 @@ function generateAppointments(count = 150): Appointment[] {
       payment: randomOf(payments),
       duration,
       price,
-      notes: chance(0.3) ? 'Special requests: ' + randomOf(['Allergy to sulfates', 'Pregnant - no chemicals', 'First time client', 'VIP client']) : '',
-      phone: `+971 ${50 + Math.floor(Math.random() * 9)} ${Math.floor(Math.random() * 999).toString().padStart(3, '0')} ${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`
+      notes: chance(0.3)
+        ? 'Special requests: ' +
+          randomOf([
+            'Allergy to sulfates',
+            'Pregnant - no chemicals',
+            'First time client',
+            'VIP client'
+          ])
+        : '',
+      phone: `+971 ${50 + Math.floor(Math.random() * 9)} ${Math.floor(Math.random() * 999)
+        .toString()
+        .padStart(3, '0')} ${Math.floor(Math.random() * 9999)
+        .toString()
+        .padStart(4, '0')}`
     })
   }
 
@@ -182,13 +225,16 @@ export default function SalonAppointmentsFacetedGrid() {
     { label: 'Today', getValue: () => ({ start: daysFromNow(0), end: daysFromNow(0) }) },
     { label: 'Tomorrow', getValue: () => ({ start: daysFromNow(1), end: daysFromNow(1) }) },
     { label: 'Next 7 days', getValue: () => ({ start: daysFromNow(0), end: daysFromNow(7) }) },
-    { label: 'This month', getValue: () => {
-      const start = new Date()
-      start.setDate(1)
-      start.setHours(0, 0, 0, 0)
-      const end = new Date(start.getFullYear(), start.getMonth() + 1, 0)
-      return { start, end }
-    }},
+    {
+      label: 'This month',
+      getValue: () => {
+        const start = new Date()
+        start.setDate(1)
+        start.setHours(0, 0, 0, 0)
+        const end = new Date(start.getFullYear(), start.getMonth() + 1, 0)
+        return { start, end }
+      }
+    },
     { label: 'Past 30 days', getValue: () => ({ start: daysFromNow(-30), end: daysFromNow(0) }) }
   ]
 
@@ -198,11 +244,12 @@ export default function SalonAppointmentsFacetedGrid() {
 
     // Text search
     if (searchQuery) {
-      result = result.filter(apt => 
-        apt.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        apt.notes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        apt.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        apt.stylist.toLowerCase().includes(searchQuery.toLowerCase())
+      result = result.filter(
+        apt =>
+          apt.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          apt.notes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          apt.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          apt.stylist.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
@@ -233,7 +280,9 @@ export default function SalonAppointmentsFacetedGrid() {
     result = result.filter(apt => apt.price >= priceRange.min && apt.price <= priceRange.max)
 
     // Duration range
-    result = result.filter(apt => apt.duration >= durationRange.min && apt.duration <= durationRange.max)
+    result = result.filter(
+      apt => apt.duration >= durationRange.min && apt.duration <= durationRange.max
+    )
 
     return result
   }, [appointments, searchQuery, facetFilters, dateRange, priceRange, durationRange])
@@ -274,11 +323,12 @@ export default function SalonAppointmentsFacetedGrid() {
 
       // Apply text search
       if (searchQuery) {
-        base = base.filter(apt => 
-          apt.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          apt.notes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          apt.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          apt.stylist.toLowerCase().includes(searchQuery.toLowerCase())
+        base = base.filter(
+          apt =>
+            apt.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            apt.notes?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            apt.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            apt.stylist.toLowerCase().includes(searchQuery.toLowerCase())
         )
       }
 
@@ -298,7 +348,9 @@ export default function SalonAppointmentsFacetedGrid() {
         })
       }
       base = base.filter(apt => apt.price >= priceRange.min && apt.price <= priceRange.max)
-      base = base.filter(apt => apt.duration >= durationRange.min && apt.duration <= durationRange.max)
+      base = base.filter(
+        apt => apt.duration >= durationRange.min && apt.duration <= durationRange.max
+      )
 
       return base
     }
@@ -345,21 +397,34 @@ export default function SalonAppointmentsFacetedGrid() {
   }
 
   const exportToCSV = () => {
-    const headers = ['Date', 'Time', 'Client', 'Stylist', 'Service', 'Status', 'Payment', 'Duration', 'Price', 'Notes']
+    const headers = [
+      'Date',
+      'Time',
+      'Client',
+      'Stylist',
+      'Service',
+      'Status',
+      'Payment',
+      'Duration',
+      'Price',
+      'Notes'
+    ]
     const csvContent = [
       headers.join(','),
-      ...sortedAppointments.map(apt => [
-        apt.date.toISOString().split('T')[0],
-        apt.time,
-        `"${apt.client}"`,
-        apt.stylist,
-        `"${apt.service}"`,
-        apt.status,
-        apt.payment,
-        apt.duration,
-        apt.price,
-        `"${apt.notes || ''}"`
-      ].join(','))
+      ...sortedAppointments.map(apt =>
+        [
+          apt.date.toISOString().split('T')[0],
+          apt.time,
+          `"${apt.client}"`,
+          apt.stylist,
+          `"${apt.service}"`,
+          apt.status,
+          apt.payment,
+          apt.duration,
+          apt.price,
+          `"${apt.notes || ''}"`
+        ].join(',')
+      )
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
@@ -372,8 +437,8 @@ export default function SalonAppointmentsFacetedGrid() {
   }
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
       year: date.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
     })
@@ -388,20 +453,24 @@ export default function SalonAppointmentsFacetedGrid() {
 
   const getStatusColor = (status: Appointment['status']) => {
     const colors = {
-      'Booked': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200 border-blue-200 dark:border-blue-700',
-      'Completed': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200 border-green-200 dark:border-green-700',
-      'Cancelled': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200 border-red-200 dark:border-red-700',
-      'No-show': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600'
+      Booked:
+        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200 border-blue-200 dark:border-blue-700',
+      Completed:
+        'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200 border-green-200 dark:border-green-700',
+      Cancelled:
+        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200 border-red-200 dark:border-red-700',
+      'No-show':
+        'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600'
     }
     return colors[status]
   }
 
-  const FacetSection = ({ 
-    title, 
-    facet, 
-    values, 
-    icon 
-  }: { 
+  const FacetSection = ({
+    title,
+    facet,
+    values,
+    icon
+  }: {
     title: string
     facet: keyof FacetFilter
     values: string[]
@@ -423,52 +492,60 @@ export default function SalonAppointmentsFacetedGrid() {
             </Badge>
           )}
         </div>
-        <div className={cn(
-          "transition-transform duration-200",
-          expandedFacets[facet] ? "rotate-180" : ""
-        )}>
+        <div
+          className={cn(
+            'transition-transform duration-200',
+            expandedFacets[facet] ? 'rotate-180' : ''
+          )}
+        >
           <ChevronDown className="w-4 h-4 text-gray-400" />
         </div>
       </button>
-      
+
       {expandedFacets[facet] && (
         <div className="mt-2 mb-4 px-4 space-y-1 animate-in slide-in-from-top-1 duration-200">
           <div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-300 dark:scrollbar-thumb-purple-600 scrollbar-track-purple-100 dark:scrollbar-track-gray-800 hover:scrollbar-thumb-purple-400 dark:hover:scrollbar-thumb-purple-500">
             {values.map(value => {
               const count = facetCounts[facet].get(value) || 0
               const isSelected = facetFilters[facet].includes(value)
-              
+
               return (
-                <label 
-                  key={value} 
+                <label
+                  key={value}
                   className={cn(
-                    "flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all duration-150",
-                    isSelected 
-                      ? "bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800" 
-                      : "hover:bg-gray-50 dark:hover:bg-gray-800/30"
+                    'flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all duration-150',
+                    isSelected
+                      ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'
                   )}
                 >
                   <div className="flex items-center gap-2.5">
                     <Checkbox
                       checked={isSelected}
                       onCheckedChange={() => toggleFacetValue(facet, value)}
-                      className={isSelected ? "border-purple-500 data-[state=checked]:bg-purple-500" : ""}
+                      className={
+                        isSelected ? 'border-purple-500 data-[state=checked]:bg-purple-500' : ''
+                      }
                     />
-                    <span className={cn(
-                      "text-sm",
-                      isSelected 
-                        ? "!text-purple-900 dark:!text-purple-100 font-medium" 
-                        : "!text-gray-700 dark:!text-gray-300"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-sm',
+                        isSelected
+                          ? '!text-purple-900 dark:!text-purple-100 font-medium'
+                          : '!text-gray-700 dark:!text-gray-300'
+                      )}
+                    >
                       {value}
                     </span>
                   </div>
-                  <span className={cn(
-                    "text-xs font-semibold px-2 py-0.5 rounded-full",
-                    count > 0 
-                      ? "bg-gray-100 dark:bg-gray-700 !text-gray-700 dark:!text-gray-300" 
-                      : "!text-gray-400 dark:!text-gray-500"
-                  )}>
+                  <span
+                    className={cn(
+                      'text-xs font-semibold px-2 py-0.5 rounded-full',
+                      count > 0
+                        ? 'bg-gray-100 dark:bg-gray-700 !text-gray-700 dark:!text-gray-300'
+                        : '!text-gray-400 dark:!text-gray-500'
+                    )}
+                  >
                     {count}
                   </span>
                 </label>
@@ -513,26 +590,26 @@ export default function SalonAppointmentsFacetedGrid() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <Button 
-              onClick={exportToCSV} 
+            <Button
+              onClick={exportToCSV}
               className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 shadow-sm"
               size="sm"
             >
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
-            {(Object.values(facetFilters).some(f => f.length > 0) || 
-              searchQuery || 
-              dateRange.start || 
-              priceRange.min > 0 || 
+            {(Object.values(facetFilters).some(f => f.length > 0) ||
+              searchQuery ||
+              dateRange.start ||
+              priceRange.min > 0 ||
               priceRange.max < 1000 ||
-              durationRange.min > 0 || 
+              durationRange.min > 0 ||
               durationRange.max < 360) && (
-              <Button 
-                onClick={clearAllFilters} 
-                variant="outline" 
+              <Button
+                onClick={clearAllFilters}
+                variant="outline"
                 size="sm"
                 className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
               >
@@ -554,287 +631,319 @@ export default function SalonAppointmentsFacetedGrid() {
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center shadow-lg">
                     <Filter className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-lg font-semibold !text-gray-900 dark:!text-white">Advanced Filters</span>
+                  <span className="text-lg font-semibold !text-gray-900 dark:!text-white">
+                    Advanced Filters
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-300 dark:scrollbar-thumb-purple-600 scrollbar-track-purple-50 dark:scrollbar-track-gray-800 hover:scrollbar-thumb-purple-400 dark:hover:scrollbar-thumb-purple-500">
                 <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {/* Search Section */}
-                    <div className="p-4">
-                      <button
-                        onClick={() => setExpandedFacets(prev => ({ ...prev, search: !prev.search }))}
-                        className="w-full flex items-center justify-between px-4 py-3 -mx-4 -my-3 hover:bg-purple-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
+                  {/* Search Section */}
+                  <div className="p-4">
+                    <button
+                      onClick={() => setExpandedFacets(prev => ({ ...prev, search: !prev.search }))}
+                      className="w-full flex items-center justify-between px-4 py-3 -mx-4 -my-3 hover:bg-purple-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                          <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <span className="font-semibold !text-gray-900 dark:!text-white text-sm">
+                          Search
+                        </span>
+                        {searchQuery && (
+                          <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200 text-xs">
+                            Active
+                          </Badge>
+                        )}
+                      </div>
+                      <div
+                        className={cn(
+                          'transition-transform duration-200',
+                          expandedFacets.search ? 'rotate-180' : ''
+                        )}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                            <Search className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                          </div>
-                          <span className="font-semibold !text-gray-900 dark:!text-white text-sm">Search</span>
-                          {searchQuery && (
-                            <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200 text-xs">
-                              Active
-                            </Badge>
-                          )}
-                        </div>
-                        <div className={cn(
-                          "transition-transform duration-200",
-                          expandedFacets.search ? "rotate-180" : ""
-                        )}>
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                        </div>
-                      </button>
-                      
-                      {expandedFacets.search && (
-                        <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
-                          <div className="relative">
-                            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                            <Input
-                              placeholder="Client name, notes, service..."
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              className="pl-9 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
-                          </div>
-                          {searchQuery && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSearchQuery('')}
-                              className="w-full mt-2 text-xs h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
-                            >
-                              <X className="w-3 h-3 mr-1" />
-                              Clear search
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </button>
 
-                    {/* Date Filters Section */}
-                    <div className="p-4">
-                      <button
-                        onClick={() => setExpandedFacets(prev => ({ ...prev, dates: !prev.dates }))}
-                        className="w-full flex items-center justify-between px-4 py-3 -mx-4 -my-3 hover:bg-purple-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                            <Calendar className="w-4 h-4 text-green-600 dark:text-green-400" />
-                          </div>
-                          <span className="font-semibold !text-gray-900 dark:!text-white text-sm">Date Filters</span>
-                          {(dateRange.start || dateRange.end) && (
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200 text-xs">
-                              Active
-                            </Badge>
-                          )}
+                    {expandedFacets.search && (
+                      <div className="mt-4 animate-in slide-in-from-top-1 duration-200">
+                        <div className="relative">
+                          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <Input
+                            placeholder="Client name, notes, service..."
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            className="pl-9 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          />
                         </div>
-                        <div className={cn(
-                          "transition-transform duration-200",
-                          expandedFacets.dates ? "rotate-180" : ""
-                        )}>
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                        </div>
-                      </button>
-                      
-                      {expandedFacets.dates && (
-                        <div className="mt-4 space-y-4 animate-in slide-in-from-top-1 duration-200">
-                          {/* Quick Date Chips */}
-                          <div className="flex flex-wrap gap-2">
-                            {quickDateFilters.map(filter => (
-                              <Button
-                                key={filter.label}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setDateRange(filter.getValue())}
-                                className="text-xs h-8 border-gray-200 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700"
-                              >
-                                {filter.label}
-                              </Button>
-                            ))}
-                          </div>
-                          
-                          {/* Date Range Inputs */}
-                          <div className="space-y-2">
-                            <Input
-                              type="date"
-                              value={dateRange.start?.toISOString().split('T')[0] || ''}
-                              onChange={(e) => setDateRange(prev => ({ 
-                                ...prev, 
-                                start: e.target.value ? new Date(e.target.value) : null 
-                              }))}
-                              className="text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700"
-                            />
-                            <Input
-                              type="date"
-                              value={dateRange.end?.toISOString().split('T')[0] || ''}
-                              onChange={(e) => setDateRange(prev => ({ 
-                                ...prev, 
-                                end: e.target.value ? new Date(e.target.value) : null 
-                              }))}
-                              className="text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700"
-                            />
-                          </div>
-                          
-                          {(dateRange.start || dateRange.end) && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setDateRange({ start: null, end: null })}
-                              className="w-full text-xs h-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20"
-                            >
-                              <X className="w-3 h-3 mr-1" />
-                              Clear dates
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Range Filters Section */}
-                    <div className="p-4">
-                      <button
-                        onClick={() => setExpandedFacets(prev => ({ ...prev, ranges: !prev.ranges }))}
-                        className="w-full flex items-center justify-between px-4 py-3 -mx-4 -my-3 hover:bg-purple-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                            <DollarSign className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                          </div>
-                          <span className="font-semibold !text-gray-900 dark:!text-white text-sm">Price & Duration</span>
-                          {((priceRange.min > 0 || priceRange.max < 1000) || (durationRange.min > 0 || durationRange.max < 360)) && (
-                            <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200 text-xs">
-                              Active
-                            </Badge>
-                          )}
-                        </div>
-                        <div className={cn(
-                          "transition-transform duration-200",
-                          expandedFacets.ranges ? "rotate-180" : ""
-                        )}>
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                        </div>
-                      </button>
-                      
-                      {expandedFacets.ranges && (
-                        <div className="mt-4 space-y-4 animate-in slide-in-from-top-1 duration-200">
-                          {/* Price Range */}
-                          <div>
-                            <label className="text-xs font-medium !text-gray-700 dark:!text-gray-300 mb-2 block uppercase tracking-wider">
-                              Price Range (AED)
-                            </label>
-                            <div className="flex items-center gap-2">
-                              <Input
-                                type="number"
-                                placeholder="Min"
-                                value={priceRange.min}
-                                onChange={(e) => setPriceRange(prev => ({ 
-                                  ...prev, 
-                                  min: Number(e.target.value) || 0 
-                                }))}
-                                className="text-sm bg-gray-50 dark:bg-gray-900"
-                              />
-                              <span className="text-gray-400 text-sm">—</span>
-                              <Input
-                                type="number"
-                                placeholder="Max"
-                                value={priceRange.max}
-                                onChange={(e) => setPriceRange(prev => ({ 
-                                  ...prev, 
-                                  max: Number(e.target.value) || 1000 
-                                }))}
-                                className="text-sm bg-gray-50 dark:bg-gray-900"
-                              />
-                            </div>
-                          </div>
-                          
-                          {/* Duration Range */}
-                          <div>
-                            <label className="text-xs font-medium !text-gray-700 dark:!text-gray-300 mb-2 block uppercase tracking-wider">
-                              Duration (minutes)
-                            </label>
-                            <div className="flex items-center gap-2">
-                              <Input
-                                type="number"
-                                placeholder="Min"
-                                value={durationRange.min}
-                                onChange={(e) => setDurationRange(prev => ({ 
-                                  ...prev, 
-                                  min: Number(e.target.value) || 0 
-                                }))}
-                                className="text-sm bg-gray-50 dark:bg-gray-900"
-                              />
-                              <span className="text-gray-400 text-sm">—</span>
-                              <Input
-                                type="number"
-                                placeholder="Max"
-                                value={durationRange.max}
-                                onChange={(e) => setDurationRange(prev => ({ 
-                                  ...prev, 
-                                  max: Number(e.target.value) || 360 
-                                }))}
-                                className="text-sm bg-gray-50 dark:bg-gray-900"
-                              />
-                            </div>
-                          </div>
-                          
-                          {((priceRange.min > 0 || priceRange.max < 1000) || (durationRange.min > 0 || durationRange.max < 360)) && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                setPriceRange({ min: 0, max: 1000 })
-                                setDurationRange({ min: 0, max: 360 })
-                              }}
-                              className="w-full text-xs h-8 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/20"
-                            >
-                              <X className="w-3 h-3 mr-1" />
-                              Clear ranges
-                            </Button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Facet Filters - Stylists */}
-                    <div className="p-4">
-                      <FacetSection
-                        title="Stylist"
-                        facet="stylist"
-                        values={stylists}
-                        icon={<User className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
-                      />
-                    </div>
-
-                    {/* Facet Filters - Services */}
-                    <div className="p-4">
-                      <FacetSection
-                        title="Service"
-                        facet="service"
-                        values={services}
-                        icon={<Scissors className="w-4 h-4 text-purple-600 dark:text-purple-400" />}
-                      />
-                    </div>
-
-                    {/* Facet Filters - Status */}
-                    <div className="p-4">
-                      <FacetSection
-                        title="Status"
-                        facet="status"
-                        values={statuses}
-                        icon={<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />}
-                      />
-                    </div>
-
-                    {/* Facet Filters - Payment */}
-                    <div className="p-4">
-                      <FacetSection
-                        title="Payment"
-                        facet="payment"
-                        values={payments}
-                        icon={<CreditCard className="w-4 h-4 text-orange-600 dark:text-orange-400" />}
-                      />
-                    </div>
+                        {searchQuery && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSearchQuery('')}
+                            className="w-full mt-2 text-xs h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                          >
+                            <X className="w-3 h-3 mr-1" />
+                            Clear search
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
-                </CardContent>
+
+                  {/* Date Filters Section */}
+                  <div className="p-4">
+                    <button
+                      onClick={() => setExpandedFacets(prev => ({ ...prev, dates: !prev.dates }))}
+                      className="w-full flex items-center justify-between px-4 py-3 -mx-4 -my-3 hover:bg-purple-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                          <Calendar className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </div>
+                        <span className="font-semibold !text-gray-900 dark:!text-white text-sm">
+                          Date Filters
+                        </span>
+                        {(dateRange.start || dateRange.end) && (
+                          <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200 text-xs">
+                            Active
+                          </Badge>
+                        )}
+                      </div>
+                      <div
+                        className={cn(
+                          'transition-transform duration-200',
+                          expandedFacets.dates ? 'rotate-180' : ''
+                        )}
+                      >
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </button>
+
+                    {expandedFacets.dates && (
+                      <div className="mt-4 space-y-4 animate-in slide-in-from-top-1 duration-200">
+                        {/* Quick Date Chips */}
+                        <div className="flex flex-wrap gap-2">
+                          {quickDateFilters.map(filter => (
+                            <Button
+                              key={filter.label}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDateRange(filter.getValue())}
+                              className="text-xs h-8 border-gray-200 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700"
+                            >
+                              {filter.label}
+                            </Button>
+                          ))}
+                        </div>
+
+                        {/* Date Range Inputs */}
+                        <div className="space-y-2">
+                          <Input
+                            type="date"
+                            value={dateRange.start?.toISOString().split('T')[0] || ''}
+                            onChange={e =>
+                              setDateRange(prev => ({
+                                ...prev,
+                                start: e.target.value ? new Date(e.target.value) : null
+                              }))
+                            }
+                            className="text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700"
+                          />
+                          <Input
+                            type="date"
+                            value={dateRange.end?.toISOString().split('T')[0] || ''}
+                            onChange={e =>
+                              setDateRange(prev => ({
+                                ...prev,
+                                end: e.target.value ? new Date(e.target.value) : null
+                              }))
+                            }
+                            className="text-sm bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700"
+                          />
+                        </div>
+
+                        {(dateRange.start || dateRange.end) && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDateRange({ start: null, end: null })}
+                            className="w-full text-xs h-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20"
+                          >
+                            <X className="w-3 h-3 mr-1" />
+                            Clear dates
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Range Filters Section */}
+                  <div className="p-4">
+                    <button
+                      onClick={() => setExpandedFacets(prev => ({ ...prev, ranges: !prev.ranges }))}
+                      className="w-full flex items-center justify-between px-4 py-3 -mx-4 -my-3 hover:bg-purple-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
+                          <DollarSign className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                        </div>
+                        <span className="font-semibold !text-gray-900 dark:!text-white text-sm">
+                          Price & Duration
+                        </span>
+                        {(priceRange.min > 0 ||
+                          priceRange.max < 1000 ||
+                          durationRange.min > 0 ||
+                          durationRange.max < 360) && (
+                          <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200 text-xs">
+                            Active
+                          </Badge>
+                        )}
+                      </div>
+                      <div
+                        className={cn(
+                          'transition-transform duration-200',
+                          expandedFacets.ranges ? 'rotate-180' : ''
+                        )}
+                      >
+                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </button>
+
+                    {expandedFacets.ranges && (
+                      <div className="mt-4 space-y-4 animate-in slide-in-from-top-1 duration-200">
+                        {/* Price Range */}
+                        <div>
+                          <label className="text-xs font-medium !text-gray-700 dark:!text-gray-300 mb-2 block uppercase tracking-wider">
+                            Price Range (AED)
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              placeholder="Min"
+                              value={priceRange.min}
+                              onChange={e =>
+                                setPriceRange(prev => ({
+                                  ...prev,
+                                  min: Number(e.target.value) || 0
+                                }))
+                              }
+                              className="text-sm bg-gray-50 dark:bg-gray-900"
+                            />
+                            <span className="text-gray-400 text-sm">—</span>
+                            <Input
+                              type="number"
+                              placeholder="Max"
+                              value={priceRange.max}
+                              onChange={e =>
+                                setPriceRange(prev => ({
+                                  ...prev,
+                                  max: Number(e.target.value) || 1000
+                                }))
+                              }
+                              className="text-sm bg-gray-50 dark:bg-gray-900"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Duration Range */}
+                        <div>
+                          <label className="text-xs font-medium !text-gray-700 dark:!text-gray-300 mb-2 block uppercase tracking-wider">
+                            Duration (minutes)
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              placeholder="Min"
+                              value={durationRange.min}
+                              onChange={e =>
+                                setDurationRange(prev => ({
+                                  ...prev,
+                                  min: Number(e.target.value) || 0
+                                }))
+                              }
+                              className="text-sm bg-gray-50 dark:bg-gray-900"
+                            />
+                            <span className="text-gray-400 text-sm">—</span>
+                            <Input
+                              type="number"
+                              placeholder="Max"
+                              value={durationRange.max}
+                              onChange={e =>
+                                setDurationRange(prev => ({
+                                  ...prev,
+                                  max: Number(e.target.value) || 360
+                                }))
+                              }
+                              className="text-sm bg-gray-50 dark:bg-gray-900"
+                            />
+                          </div>
+                        </div>
+
+                        {(priceRange.min > 0 ||
+                          priceRange.max < 1000 ||
+                          durationRange.min > 0 ||
+                          durationRange.max < 360) && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setPriceRange({ min: 0, max: 1000 })
+                              setDurationRange({ min: 0, max: 360 })
+                            }}
+                            className="w-full text-xs h-8 text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/20"
+                          >
+                            <X className="w-3 h-3 mr-1" />
+                            Clear ranges
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Facet Filters - Stylists */}
+                  <div className="p-4">
+                    <FacetSection
+                      title="Stylist"
+                      facet="stylist"
+                      values={stylists}
+                      icon={<User className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
+                    />
+                  </div>
+
+                  {/* Facet Filters - Services */}
+                  <div className="p-4">
+                    <FacetSection
+                      title="Service"
+                      facet="service"
+                      values={services}
+                      icon={<Scissors className="w-4 h-4 text-purple-600 dark:text-purple-400" />}
+                    />
+                  </div>
+
+                  {/* Facet Filters - Status */}
+                  <div className="p-4">
+                    <FacetSection
+                      title="Status"
+                      facet="status"
+                      values={statuses}
+                      icon={<CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />}
+                    />
+                  </div>
+
+                  {/* Facet Filters - Payment */}
+                  <div className="p-4">
+                    <FacetSection
+                      title="Payment"
+                      facet="payment"
+                      values={payments}
+                      icon={<CreditCard className="w-4 h-4 text-orange-600 dark:text-orange-400" />}
+                    />
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           </div>
 
@@ -843,10 +952,14 @@ export default function SalonAppointmentsFacetedGrid() {
             <Card className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-gray-200/50 dark:border-gray-700/50 shadow-xl overflow-hidden border-l-0 rounded-l-none -mt-1">
               <CardContent className="p-0">
                 {/* Applied Filters Summary */}
-                {(Object.values(facetFilters).some(f => f.length > 0) || searchQuery || dateRange.start) && (
+                {(Object.values(facetFilters).some(f => f.length > 0) ||
+                  searchQuery ||
+                  dateRange.start) && (
                   <div className="px-6 py-3 bg-purple-50 dark:bg-purple-900/20 border-b border-purple-100 dark:border-purple-800">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium !text-purple-900 dark:!text-purple-100">Active filters:</span>
+                      <span className="text-sm font-medium !text-purple-900 dark:!text-purple-100">
+                        Active filters:
+                      </span>
                       {searchQuery && (
                         <Badge className="bg-white dark:bg-gray-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
                           Search: {searchQuery}
@@ -854,20 +967,25 @@ export default function SalonAppointmentsFacetedGrid() {
                       )}
                       {dateRange.start && (
                         <Badge className="bg-white dark:bg-gray-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
-                          {formatDate(dateRange.start)} - {dateRange.end ? formatDate(dateRange.end) : 'Present'}
+                          {formatDate(dateRange.start)} -{' '}
+                          {dateRange.end ? formatDate(dateRange.end) : 'Present'}
                         </Badge>
                       )}
-                      {Object.entries(facetFilters).map(([key, values]) => 
-                        values.length > 0 && (
-                          <Badge key={key} className="bg-white dark:bg-gray-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
-                            {key}: {values.length} selected
-                          </Badge>
-                        )
+                      {Object.entries(facetFilters).map(
+                        ([key, values]) =>
+                          values.length > 0 && (
+                            <Badge
+                              key={key}
+                              className="bg-white dark:bg-gray-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700"
+                            >
+                              {key}: {values.length} selected
+                            </Badge>
+                          )
                       )}
                     </div>
                   </div>
                 )}
-                
+
                 {/* Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -878,10 +996,26 @@ export default function SalonAppointmentsFacetedGrid() {
                           { key: 'time', label: 'Time', icon: <Clock className="w-4 h-4" /> },
                           { key: 'client', label: 'Client', icon: <User className="w-4 h-4" /> },
                           { key: 'stylist', label: 'Stylist', icon: <User className="w-4 h-4" /> },
-                          { key: 'service', label: 'Service', icon: <Scissors className="w-4 h-4" /> },
-                          { key: 'status', label: 'Status', icon: <CheckCircle className="w-4 h-4" /> },
-                          { key: 'payment', label: 'Payment', icon: <CreditCard className="w-4 h-4" /> },
-                          { key: 'duration', label: 'Duration', icon: <Clock className="w-4 h-4" /> },
+                          {
+                            key: 'service',
+                            label: 'Service',
+                            icon: <Scissors className="w-4 h-4" />
+                          },
+                          {
+                            key: 'status',
+                            label: 'Status',
+                            icon: <CheckCircle className="w-4 h-4" />
+                          },
+                          {
+                            key: 'payment',
+                            label: 'Payment',
+                            icon: <CreditCard className="w-4 h-4" />
+                          },
+                          {
+                            key: 'duration',
+                            label: 'Duration',
+                            icon: <Clock className="w-4 h-4" />
+                          },
                           { key: 'price', label: 'Price', icon: <DollarSign className="w-4 h-4" /> }
                         ].map(col => (
                           <th
@@ -890,13 +1024,17 @@ export default function SalonAppointmentsFacetedGrid() {
                             onClick={() => toggleSort(col.key as keyof Appointment)}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="opacity-60 group-hover:opacity-100 transition-opacity">{col.icon}</span>
+                              <span className="opacity-60 group-hover:opacity-100 transition-opacity">
+                                {col.icon}
+                              </span>
                               <span>{col.label}</span>
                               {sortConfig.field === col.key ? (
-                                <ChevronUp className={cn(
-                                  "w-3 h-3 transition-transform",
-                                  sortConfig.direction === 'desc' && "rotate-180"
-                                )} />
+                                <ChevronUp
+                                  className={cn(
+                                    'w-3 h-3 transition-transform',
+                                    sortConfig.direction === 'desc' && 'rotate-180'
+                                  )}
+                                />
                               ) : (
                                 <ArrowUpDown className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-opacity" />
                               )}
@@ -907,63 +1045,65 @@ export default function SalonAppointmentsFacetedGrid() {
                     </thead>
                     <tbody className="bg-white dark:bg-gray-800">
                       {sortedAppointments.map((apt, index) => (
-                        <tr 
-                          key={apt.id} 
+                        <tr
+                          key={apt.id}
                           className={cn(
-                            "hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all duration-150 border-b border-gray-100 dark:border-gray-800",
-                            index % 2 === 0 ? "bg-white dark:bg-gray-800" : "bg-gray-50/50 dark:bg-gray-800/50"
+                            'hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-all duration-150 border-b border-gray-100 dark:border-gray-800',
+                            index % 2 === 0
+                              ? 'bg-white dark:bg-gray-800'
+                              : 'bg-gray-50/50 dark:bg-gray-800/50'
                           )}
                         >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-900 dark:!text-white font-medium">
-                          {formatDate(apt.date)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
-                          {apt.time}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm font-medium !text-gray-900 dark:!text-white">
-                              {apt.client}
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-900 dark:!text-white font-medium">
+                            {formatDate(apt.date)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                            {apt.time}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium !text-gray-900 dark:!text-white">
+                                {apt.client}
+                              </div>
+                              {apt.phone && (
+                                <div className="text-xs !text-gray-500 dark:!text-gray-400">
+                                  {apt.phone}
+                                </div>
+                              )}
                             </div>
-                            {apt.phone && (
-                              <div className="text-xs !text-gray-500 dark:!text-gray-400">
-                                {apt.phone}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                            {apt.stylist}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-sm !text-gray-900 dark:!text-white font-medium">
+                              {apt.service}
+                            </div>
+                            {apt.notes && (
+                              <div className="text-xs !text-gray-500 dark:!text-gray-400 mt-1 max-w-xs truncate">
+                                {apt.notes}
                               </div>
                             )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
-                          {apt.stylist}
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm !text-gray-900 dark:!text-white font-medium">
-                            {apt.service}
-                          </div>
-                          {apt.notes && (
-                            <div className="text-xs !text-gray-500 dark:!text-gray-400 mt-1 max-w-xs truncate">
-                              {apt.notes}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge className={cn("border", getStatusColor(apt.status))}>
-                            {apt.status}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
-                          {apt.payment}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
-                          {formatDuration(apt.duration)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium !text-gray-900 dark:!text-white">
-                          AED {apt.price}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Badge className={cn('border', getStatusColor(apt.status))}>
+                              {apt.status}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                            {apt.payment}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                            {formatDuration(apt.duration)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium !text-gray-900 dark:!text-white">
+                            AED {apt.price}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
                 {sortedAppointments.length === 0 && (
                   <div className="text-center py-24 px-6">

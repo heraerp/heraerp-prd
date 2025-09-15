@@ -37,89 +37,80 @@ export async function POST(req: NextRequest) {
       // Order Management
       case 'create_order':
         return await createOrder(data, payload.organization_id)
-      
+
       case 'approve_order':
         return await approveOrder(order_id!, payload.organization_id)
-      
+
       case 'fulfill_order':
         return await fulfillOrder(order_id!, data, payload.organization_id)
-      
+
       case 'ship_order':
         return await shipOrder(order_id!, data, payload.organization_id)
-      
+
       // Invoicing
       case 'create_invoice':
         return await createInvoice(data, payload.organization_id)
-      
+
       case 'send_invoice':
         return await sendInvoice(invoice_id!, data, payload.organization_id)
-      
+
       case 'cancel_invoice':
         return await cancelInvoice(invoice_id!, data, payload.organization_id)
-      
+
       // Payments
       case 'record_payment':
         return await recordPayment(data, payload.organization_id)
-      
+
       case 'refund_payment':
         return await refundPayment(data, payload.organization_id)
-      
+
       // Credit Management
       case 'check_credit':
         return await checkCredit(customer_id!, data, payload.organization_id)
-      
+
       case 'update_credit_limit':
         return await updateCreditLimit(customer_id!, data, payload.organization_id)
-      
+
       // Collections
       case 'run_dunning':
         return await runDunningProcess(payload.organization_id)
-      
+
       case 'send_collection_notice':
         return await sendCollectionNotice(data, payload.organization_id)
-      
+
       // Analytics & AI
       case 'get_revenue_analytics':
         return await getRevenueAnalytics(data, payload.organization_id)
-      
+
       case 'predict_cash_flow':
         return await predictCashFlow(data, payload.organization_id)
-      
+
       case 'optimize_pricing':
         return await optimizePricing(data, payload.organization_id)
-      
+
       case 'detect_anomalies':
         return await detectAnomalies(payload.organization_id)
-      
+
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('O2C API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // Order Management Functions
 async function createOrder(data: any, organizationId: string) {
-  const { 
-    customer_id, 
-    items, 
-    delivery_date, 
-    payment_terms = 'NET30',
-    sales_rep_id,
-    notes 
-  } = data
+  const { customer_id, items, delivery_date, payment_terms = 'NET30', sales_rep_id, notes } = data
 
   // Generate order number
   const orderNumber = `SO-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Date.now()).slice(-6)}`
 
   // Calculate total
-  const totalAmount = items.reduce((sum: number, item: any) => 
-    sum + (item.quantity * item.unit_price), 0
+  const totalAmount = items.reduce(
+    (sum: number, item: any) => sum + item.quantity * item.unit_price,
+    0
   )
 
   // Create order transaction
@@ -134,7 +125,8 @@ async function createOrder(data: any, organizationId: string) {
       from_entity_id: customer_id,
       total_amount: totalAmount,
       metadata: {
-        delivery_date: delivery_date || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        delivery_date:
+          delivery_date || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
         payment_terms,
         sales_rep_id,
         notes,
@@ -149,26 +141,24 @@ async function createOrder(data: any, organizationId: string) {
 
   // Create line items
   for (let i = 0; i < items.length; i++) {
-    await supabase
-      .from('universal_transaction_lines')
-      .insert({
-        transaction_id: order.id,
-        line_number: i + 1,
-        line_entity_id: items[i].product_id,
-        quantity: items[i].quantity,
-        unit_price: items[i].unit_price,
-        line_amount: items[i].quantity * items[i].unit_price,
-        metadata: {
-          product_name: items[i].product_name,
-          discount: items[i].discount || 0
-        }
-      })
+    await supabase.from('universal_transaction_lines').insert({
+      transaction_id: order.id,
+      line_number: i + 1,
+      line_entity_id: items[i].product_id,
+      quantity: items[i].quantity,
+      unit_price: items[i].unit_price,
+      line_amount: items[i].quantity * items[i].unit_price,
+      metadata: {
+        product_name: items[i].product_name,
+        discount: items[i].discount || 0
+      }
+    })
   }
 
   // The trigger will handle credit check automatically
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: order,
     message: 'Order created successfully'
   })
@@ -188,8 +178,8 @@ async function approveOrder(orderId: string, organizationId: string) {
 
   if (error) throw error
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data,
     message: 'Order approved successfully'
   })
@@ -228,8 +218,8 @@ async function fulfillOrder(orderId: string, data: any, organizationId: string) 
     })
     .eq('id', orderId)
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: picking,
     message: 'Order fulfillment started'
   })
@@ -280,8 +270,8 @@ async function shipOrder(orderId: string, data: any, organizationId: string) {
     })
     .eq('id', orderId)
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: shipment,
     message: 'Order shipped successfully'
   })
@@ -289,21 +279,13 @@ async function shipOrder(orderId: string, data: any, organizationId: string) {
 
 // Invoicing Functions
 async function createInvoice(data: any, organizationId: string) {
-  const { 
-    customer_id, 
-    order_id,
-    line_items,
-    due_date,
-    terms 
-  } = data
+  const { customer_id, order_id, line_items, due_date, terms } = data
 
   // Generate invoice number
   const invoiceNumber = `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Date.now()).slice(-6)}`
 
   // Calculate total
-  const totalAmount = line_items.reduce((sum: number, item: any) => 
-    sum + item.amount, 0
-  )
+  const totalAmount = line_items.reduce((sum: number, item: any) => sum + item.amount, 0)
 
   // Create invoice
   const { data: invoice, error } = await supabase
@@ -332,22 +314,20 @@ async function createInvoice(data: any, organizationId: string) {
 
   // Create line items
   for (let i = 0; i < line_items.length; i++) {
-    await supabase
-      .from('universal_transaction_lines')
-      .insert({
-        transaction_id: invoice.id,
-        line_number: i + 1,
-        line_amount: line_items[i].amount,
-        metadata: {
-          description: line_items[i].description,
-          quantity: line_items[i].quantity,
-          unit_price: line_items[i].unit_price
-        }
-      })
+    await supabase.from('universal_transaction_lines').insert({
+      transaction_id: invoice.id,
+      line_number: i + 1,
+      line_amount: line_items[i].amount,
+      metadata: {
+        description: line_items[i].description,
+        quantity: line_items[i].quantity,
+        unit_price: line_items[i].unit_price
+      }
+    })
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: invoice,
     message: 'Invoice created successfully'
   })
@@ -374,24 +354,22 @@ async function sendInvoice(invoiceId: string, data: any, organizationId: string)
   if (error) throw error
 
   // Create send record
-  await supabase
-    .from('universal_transactions')
-    .insert({
-      organization_id: organizationId,
-      transaction_type: 'invoice_transmission',
-      transaction_code: `SEND-${invoice.transaction_code}`,
-      smart_code: 'HERA.O2C.INVOICE.SEND.v1',
-      transaction_date: new Date().toISOString(),
-      reference_entity_id: invoiceId,
-      metadata: {
-        send_method,
-        recipient: recipient_email,
-        status: 'sent'
-      }
-    })
+  await supabase.from('universal_transactions').insert({
+    organization_id: organizationId,
+    transaction_type: 'invoice_transmission',
+    transaction_code: `SEND-${invoice.transaction_code}`,
+    smart_code: 'HERA.O2C.INVOICE.SEND.v1',
+    transaction_date: new Date().toISOString(),
+    reference_entity_id: invoiceId,
+    metadata: {
+      send_method,
+      recipient: recipient_email,
+      status: 'sent'
+    }
+  })
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: invoice,
     message: `Invoice sent via ${send_method}`
   })
@@ -420,28 +398,26 @@ async function cancelInvoice(invoiceId: string, data: any, organizationId: strin
   // Create credit memo if requested
   if (credit_memo) {
     const creditMemoNumber = `CM-${invoice.transaction_code.slice(4)}`
-    
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: organizationId,
-        transaction_type: 'credit_memo',
-        transaction_code: creditMemoNumber,
-        smart_code: 'HERA.O2C.INVOICE.CANCEL.v1',
-        transaction_date: new Date().toISOString(),
-        from_entity_id: invoice.from_entity_id,
-        reference_entity_id: invoiceId,
-        total_amount: -invoice.total_amount, // Negative amount
-        metadata: {
-          original_invoice: invoice.transaction_code,
-          reason,
-          status: 'issued'
-        }
-      })
+
+    await supabase.from('universal_transactions').insert({
+      organization_id: organizationId,
+      transaction_type: 'credit_memo',
+      transaction_code: creditMemoNumber,
+      smart_code: 'HERA.O2C.INVOICE.CANCEL.v1',
+      transaction_date: new Date().toISOString(),
+      from_entity_id: invoice.from_entity_id,
+      reference_entity_id: invoiceId,
+      total_amount: -invoice.total_amount, // Negative amount
+      metadata: {
+        original_invoice: invoice.transaction_code,
+        reason,
+        status: 'issued'
+      }
+    })
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: invoice,
     message: 'Invoice cancelled successfully'
   })
@@ -449,13 +425,7 @@ async function cancelInvoice(invoiceId: string, data: any, organizationId: strin
 
 // Payment Functions
 async function recordPayment(data: any, organizationId: string) {
-  const { 
-    customer_id, 
-    amount, 
-    payment_method,
-    reference,
-    invoice_id 
-  } = data
+  const { customer_id, amount, payment_method, reference, invoice_id } = data
 
   // Generate payment code
   const paymentCode = `PAY-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Date.now()).slice(-6)}`
@@ -486,20 +456,15 @@ async function recordPayment(data: any, organizationId: string) {
 
   // The trigger will handle automatic payment application
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: payment,
     message: 'Payment recorded successfully'
   })
 }
 
 async function refundPayment(data: any, organizationId: string) {
-  const { 
-    payment_id, 
-    amount, 
-    reason,
-    refund_method 
-  } = data
+  const { payment_id, amount, reason, refund_method } = data
 
   // Get original payment
   const { data: originalPayment } = await supabase
@@ -513,7 +478,7 @@ async function refundPayment(data: any, organizationId: string) {
 
   // Create refund transaction
   const refundCode = `REF-${originalPayment.transaction_code.slice(4)}`
-  
+
   const { data: refund, error } = await supabase
     .from('universal_transactions')
     .insert({
@@ -538,8 +503,8 @@ async function refundPayment(data: any, organizationId: string) {
 
   if (error) throw error
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: refund,
     message: 'Refund processed successfully'
   })
@@ -569,36 +534,38 @@ async function checkCredit(customerId: string, data: any, organizationId: string
     .neq('metadata->status', 'paid')
     .neq('metadata->status', 'cancelled')
 
-  const outstandingAmount = outstandingInvoices?.reduce(
-    (sum, inv) => sum + (inv.total_amount || 0), 0
-  ) || 0
+  const outstandingAmount =
+    outstandingInvoices?.reduce((sum, inv) => sum + (inv.total_amount || 0), 0) || 0
 
   const creditLimit = (customer.metadata as any)?.credit_limit || 0
   const availableCredit = Math.max(creditLimit - outstandingAmount, 0)
 
   // Call edge function for detailed evaluation if needed
   if (order_amount && order_amount > 0) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        action: 'evaluate_credit',
-        data: { customer_id: customerId, order_amount, organization_id: organizationId }
-      })
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'evaluate_credit',
+          data: { customer_id: customerId, order_amount, organization_id: organizationId }
+        })
+      }
+    )
 
     const result = await response.json()
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       data: result.data
     })
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: {
       credit_limit: creditLimit,
       outstanding_amount: outstandingAmount,
@@ -651,26 +618,24 @@ async function updateCreditLimit(customerId: string, data: any, organizationId: 
   if (error) throw error
 
   // Create audit record
-  await supabase
-    .from('universal_transactions')
-    .insert({
-      organization_id: organizationId,
-      transaction_type: 'credit_limit_change',
-      transaction_code: `CREDIT-${customerId.slice(-8)}-${Date.now()}`,
-      smart_code: 'HERA.O2C.CREDIT.LIMIT.v1',
-      transaction_date: new Date().toISOString(),
-      from_entity_id: customerId,
-      metadata: {
-        old_limit: oldLimit,
-        new_limit: new_limit,
-        change_amount: new_limit - oldLimit,
-        reason,
-        approved_by
-      }
-    })
+  await supabase.from('universal_transactions').insert({
+    organization_id: organizationId,
+    transaction_type: 'credit_limit_change',
+    transaction_code: `CREDIT-${customerId.slice(-8)}-${Date.now()}`,
+    smart_code: 'HERA.O2C.CREDIT.LIMIT.v1',
+    transaction_date: new Date().toISOString(),
+    from_entity_id: customerId,
+    metadata: {
+      old_limit: oldLimit,
+      new_limit: new_limit,
+      change_amount: new_limit - oldLimit,
+      reason,
+      approved_by
+    }
+  })
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: updated,
     message: 'Credit limit updated successfully'
   })
@@ -683,8 +648,8 @@ async function runDunningProcess(organizationId: string) {
 
   if (error) throw error
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     message: 'Dunning process completed',
     data: { processed: true }
   })
@@ -731,8 +696,8 @@ async function sendCollectionNotice(data: any, organizationId: string) {
       .eq('organization_id', organizationId)
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: notice,
     message: 'Collection notice sent'
   })
@@ -743,26 +708,29 @@ async function getRevenueAnalytics(data: any, organizationId: string) {
   const { period = 'MTD', start_date, end_date } = data
 
   // Call edge function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      action: 'analyze_revenue',
-      data: { organization_id: organizationId, period, start_date, end_date }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        action: 'analyze_revenue',
+        data: { organization_id: organizationId, period, start_date, end_date }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     throw new Error(result.error || 'Failed to get analytics')
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: result.data
   })
 }
@@ -771,26 +739,29 @@ async function predictCashFlow(data: any, organizationId: string) {
   const { days = 90 } = data
 
   // Call edge function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      action: 'forecast_cash_flow',
-      data: { organization_id: organizationId, days }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        action: 'forecast_cash_flow',
+        data: { organization_id: organizationId, days }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     throw new Error(result.error || 'Failed to predict cash flow')
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: result.data
   })
 }
@@ -799,52 +770,58 @@ async function optimizePricing(data: any, organizationId: string) {
   const { customer_id, items } = data
 
   // Call edge function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      action: 'calculate_pricing',
-      data: { customer_id, items, organization_id: organizationId }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        action: 'calculate_pricing',
+        data: { customer_id, items, organization_id: organizationId }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     throw new Error(result.error || 'Failed to optimize pricing')
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: result.data
   })
 }
 
 async function detectAnomalies(organizationId: string) {
   // Call edge function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      action: 'detect_anomalies',
-      data: { organization_id: organizationId }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/o2c-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        action: 'detect_anomalies',
+        data: { organization_id: organizationId }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     throw new Error(result.error || 'Failed to detect anomalies')
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: result.data
   })
 }
@@ -872,11 +849,13 @@ export async function GET(req: NextRequest) {
 
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         customer:core_entities!from_entity_id(*),
         lines:universal_transaction_lines(*)
-      `)
+      `
+      )
       .eq('organization_id', payload.organization_id)
 
     // Filter by type
@@ -885,8 +864,8 @@ export async function GET(req: NextRequest) {
     } else {
       // Default to O2C transaction types
       query = query.in('transaction_type', [
-        'sales_order', 
-        'customer_invoice', 
+        'sales_order',
+        'customer_invoice',
         'customer_payment',
         'customer_refund',
         'credit_memo'
@@ -923,25 +902,27 @@ export async function GET(req: NextRequest) {
       total_orders: data?.filter(t => t.transaction_type === 'sales_order').length || 0,
       total_invoices: data?.filter(t => t.transaction_type === 'customer_invoice').length || 0,
       total_payments: data?.filter(t => t.transaction_type === 'customer_payment').length || 0,
-      order_value: data?.filter(t => t.transaction_type === 'sales_order')
-        .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0,
-      invoice_value: data?.filter(t => t.transaction_type === 'customer_invoice')
-        .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0,
-      payment_value: data?.filter(t => t.transaction_type === 'customer_payment')
-        .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+      order_value:
+        data
+          ?.filter(t => t.transaction_type === 'sales_order')
+          .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0,
+      invoice_value:
+        data
+          ?.filter(t => t.transaction_type === 'customer_invoice')
+          .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0,
+      payment_value:
+        data
+          ?.filter(t => t.transaction_type === 'customer_payment')
+          .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       data,
       summary
     })
-
   } catch (error) {
     console.error('O2C GET error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

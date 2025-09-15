@@ -58,18 +58,14 @@ export default function ProductCategoriesPage() {
           {
             key: 'products',
             header: 'Products',
-            render: (item) => (
-              <Badge variant="outline">
-                {item.product_count || 0} products
-              </Badge>
-            )
+            render: item => <Badge variant="outline">{item.product_count || 0} products</Badge>
           },
           {
             key: 'color',
             header: 'Color',
-            render: (item) => (
+            render: item => (
               <div className="flex items-center gap-2">
-                <div 
+                <div
                   className="w-4 h-4 rounded"
                   style={{ backgroundColor: item.color || '#3B82F6' }}
                 />
@@ -78,7 +74,7 @@ export default function ProductCategoriesPage() {
             )
           }
         ]}
-        onItemClick={(item) => {
+        onItemClick={item => {
           // Navigate to products filtered by this category
           router.push(`/inventory/products?category=${item.entity_code}`)
         }}

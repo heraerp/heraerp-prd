@@ -1,42 +1,45 @@
-import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
-import { QueryProvider } from "@/components/providers/QueryProvider";
-import { HeraThemeProvider } from "@/components/universal/ui/HeraThemeProvider";
-import { MultiOrgAuthProvider } from "@/components/auth/MultiOrgAuthProvider";
-import { DemoAuthHandler } from "@/components/auth/DemoAuthHandler";
-import { ToastProvider } from "@/components/ui/use-toast";
+import type { Metadata, Viewport } from 'next'
+import { Inter, JetBrains_Mono } from 'next/font/google'
+import { QueryProvider } from '@/components/providers/QueryProvider'
+import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
+import { MultiOrgAuthProvider } from '@/components/auth/MultiOrgAuthProvider'
+// import { DemoAuthHandler } from "@/components/auth/DemoAuthHandler"; // Temporarily disabled due to runtime error
+import { ToastProvider } from '@/components/ui/use-toast'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
-import "./globals-migration-test.css"; // Migration test - imports both styles
+import './globals-migration-test.css' // Migration test - imports both styles
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+  variable: '--font-inter',
+  subsets: ['latin']
+})
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
+  variable: '--font-jetbrains-mono',
+  subsets: ['latin']
+})
 
 export const metadata: Metadata = {
-  title: "HERA Universal ERP",
-  description: "Run your entire business in one beautiful platform. From day one to enterprise scale.",
-  authors: [{ name: "HERA Team" }],
-  creator: "HERA Corporation",
-  publisher: "HERA Corporation",
+  title: 'HERA Universal ERP',
+  description:
+    'Run your entire business in one beautiful platform. From day one to enterprise scale.',
+  authors: [{ name: 'HERA Team' }],
+  creator: 'HERA Corporation',
+  publisher: 'HERA Corporation',
   formatDetection: {
-    telephone: false,
+    telephone: false
   },
   openGraph: {
-    title: "HERA Universal ERP",
-    description: "Run your entire business in one beautiful platform. From day one to enterprise scale.",
-    type: "website",
+    title: 'HERA Universal ERP',
+    description:
+      'Run your entire business in one beautiful platform. From day one to enterprise scale.',
+    type: 'website'
   },
   twitter: {
-    card: "summary_large_image",
-    title: "HERA Universal ERP",
-    description: "Run your entire business in one beautiful platform. From day one to enterprise scale.",
+    card: 'summary_large_image',
+    title: 'HERA Universal ERP',
+    description:
+      'Run your entire business in one beautiful platform. From day one to enterprise scale.'
   },
   icons: {
     icon: [
@@ -44,25 +47,23 @@ export const metadata: Metadata = {
       { url: '/favicon-32.svg', sizes: '32x32', type: 'image/svg+xml' },
       { url: '/favicon.svg', type: 'image/svg+xml' }
     ],
-    apple: [
-      { url: '/apple-touch-icon.svg', sizes: '180x180', type: 'image/svg+xml' }
-    ],
+    apple: [{ url: '/apple-touch-icon.svg', sizes: '180x180', type: 'image/svg+xml' }],
     shortcut: '/favicon.svg'
-  },
-};
+  }
+}
 
 export const viewport: Viewport = {
-  themeColor: "#1E293B",
-  width: "device-width",
+  themeColor: '#1E293B',
+  width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false,
-};
+  userScalable: false
+}
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -80,15 +81,11 @@ export default function RootLayout({
         <HeraThemeProvider defaultTheme="dark">
           <QueryProvider>
             <MultiOrgAuthProvider>
-              <DemoAuthHandler>
-                <ToastProvider>
-                  {children}
-                </ToastProvider>
-              </DemoAuthHandler>
+              <ToastProvider>{children}</ToastProvider>
             </MultiOrgAuthProvider>
           </QueryProvider>
         </HeraThemeProvider>
       </body>
     </html>
-  );
+  )
 }

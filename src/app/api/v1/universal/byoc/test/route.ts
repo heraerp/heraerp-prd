@@ -6,7 +6,7 @@ const byocService = new BYOCService()
 
 // Mock storage reference
 declare global {
-  var mockConfigurations: Record<string, any[]> | undefined;
+  var mockConfigurations: Record<string, any[]> | undefined
 }
 
 if (!global.mockConfigurations) {
@@ -45,37 +45,37 @@ export async function POST(request: NextRequest) {
         case 'connection':
           testResult = await testConnection(config)
           break
-        
+
         case 'permissions':
           testResult = await testPermissions(config)
           break
-        
+
         case 'performance':
           testResult = await testPerformance(config)
           break
-        
+
         case 'security':
           testResult = await testSecurity(config)
           break
-        
+
         case 'full':
           // Run all tests
-          const [connectionResult, permissionsResult, performanceResult, securityResult] = await Promise.all([
-            testConnection(config),
-            testPermissions(config),
-            testPerformance(config),
-            testSecurity(config)
-          ])
-          
+          const [connectionResult, permissionsResult, performanceResult, securityResult] =
+            await Promise.all([
+              testConnection(config),
+              testPermissions(config),
+              testPerformance(config),
+              testSecurity(config)
+            ])
+
           testResult = {
             connection: connectionResult,
             permissions: permissionsResult,
             performance: performanceResult,
             security: securityResult,
             overall: {
-              success: connectionResult.connected && 
-                      permissionsResult.read && 
-                      permissionsResult.write,
+              success:
+                connectionResult.connected && permissionsResult.read && permissionsResult.write,
               score: calculateOverallScore({
                 connection: connectionResult,
                 permissions: permissionsResult,
@@ -124,7 +124,6 @@ export async function POST(request: NextRequest) {
         },
         message: `${testType} test completed successfully`
       })
-
     } catch (testError) {
       // Update error count
       config.audit.errorCount += 1
@@ -143,12 +142,11 @@ export async function POST(request: NextRequest) {
         error: 'Test execution failed'
       })
     }
-
   } catch (error) {
     console.error('Error in BYOC test endpoint:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -160,7 +158,7 @@ export async function POST(request: NextRequest) {
 // Test connection to cloud storage provider
 async function testConnection(config: any): Promise<any> {
   const startTime = Date.now()
-  
+
   // Simulate connection test based on provider
   await new Promise(resolve => {
     const delay = getProviderDelay(config.provider)
@@ -223,8 +221,8 @@ async function testPerformance(config: any): Promise<any> {
   const regionMultiplier = getRegionMultiplier(config.config?.region || 'us-east-1')
 
   return {
-    uploadSpeed: Math.round((baseSpeed.upload * regionMultiplier) * 100) / 100,
-    downloadSpeed: Math.round((baseSpeed.download * regionMultiplier) * 100) / 100,
+    uploadSpeed: Math.round(baseSpeed.upload * regionMultiplier * 100) / 100,
+    downloadSpeed: Math.round(baseSpeed.download * regionMultiplier * 100) / 100,
     latency: Math.round(Math.random() * 200 + 50), // 50-250ms
     throughput: Math.round(baseSpeed.throughput * regionMultiplier),
     concurrency: Math.min(config.advanced?.concurrency || 10, 50),
@@ -273,61 +271,63 @@ async function testSecurity(config: any): Promise<any> {
 // Helper functions
 function getProviderDelay(provider: string): number {
   const delays = {
-    'default': 50,
-    'aws': 150,
-    'azure': 180,
-    'gcp': 200,
-    'custom': 300
+    default: 50,
+    aws: 150,
+    azure: 180,
+    gcp: 200,
+    custom: 300
   }
   return delays[provider as keyof typeof delays] || 200
 }
 
 function getProviderRegion(config: any): string {
-  return config.config?.region || 
-         config.config?.location || 
-         'default-region'
+  return config.config?.region || config.config?.location || 'default-region'
 }
 
 function getProviderEndpoint(config: any): string {
   const endpoints = {
-    'aws': `s3.${config.config?.region || 'us-east-1'}.amazonaws.com`,
-    'azure': `${config.config?.accountName}.blob.core.windows.net`,
-    'gcp': 'storage.googleapis.com',
-    'custom': config.config?.endpoint || 'custom-endpoint.com',
-    'default': 'hera-storage.com'
+    aws: `s3.${config.config?.region || 'us-east-1'}.amazonaws.com`,
+    azure: `${config.config?.accountName}.blob.core.windows.net`,
+    gcp: 'storage.googleapis.com',
+    custom: config.config?.endpoint || 'custom-endpoint.com',
+    default: 'hera-storage.com'
   }
   return endpoints[config.provider as keyof typeof endpoints] || 'unknown'
 }
 
 function getProviderVersion(provider: string): string {
   const versions = {
-    'default': 'HERA-1.0',
-    'aws': 'S3-2006-03-01',
-    'azure': 'Blob-2020-10-02',
-    'gcp': 'GCS-v1',
-    'custom': 'S3-Compatible'
+    default: 'HERA-1.0',
+    aws: 'S3-2006-03-01',
+    azure: 'Blob-2020-10-02',
+    gcp: 'GCS-v1',
+    custom: 'S3-Compatible'
   }
   return versions[provider as keyof typeof versions] || 'unknown'
 }
 
 function getProviderFeatures(provider: string): string[] {
   const features = {
-    'default': ['encryption', 'backup', 'monitoring', 'compliance'],
-    'aws': ['versioning', 'encryption', 'cdn', 'analytics', 'lifecycle'],
-    'azure': ['tiering', 'encryption', 'backup', 'compliance', 'cdn'],
-    'gcp': ['ml-integration', 'encryption', 'cdn', 'analytics'],
-    'custom': ['basic-storage', 'encryption']
+    default: ['encryption', 'backup', 'monitoring', 'compliance'],
+    aws: ['versioning', 'encryption', 'cdn', 'analytics', 'lifecycle'],
+    azure: ['tiering', 'encryption', 'backup', 'compliance', 'cdn'],
+    gcp: ['ml-integration', 'encryption', 'cdn', 'analytics'],
+    custom: ['basic-storage', 'encryption']
   }
   return features[provider as keyof typeof features] || ['basic-storage']
 }
 
-function getProviderBaseSpeed(provider: string): { upload: number; download: number; throughput: number } {
+function getProviderBaseSpeed(provider: string): {
+  upload: number
+  download: number
+  throughput: number
+} {
   const speeds = {
-    'default': { upload: 50, download: 80, throughput: 1000 },
-    'aws': { upload: 100, download: 150, throughput: 2000 },
-    'azure': { upload: 85, download: 120, throughput: 1800 },
-    'gcp': { upload: 90, download: 140, throughput: 1900 },
-    'custom': { upload: 60, download: 90, throughput: 1200 }
+    default: { upload: 50, download: 80, throughput: 1000 },
+    aws: { upload: 100, download: 150, throughput: 2000 },
+    azure: { upload: 85, download: 120, throughput: 1800 },
+    gcp: { upload: 90, download: 140, throughput: 1900 },
+    custom: { upload: 60, download: 90, throughput: 1200 }
   }
   return speeds[provider as keyof typeof speeds] || speeds.default
 }
@@ -336,31 +336,31 @@ function getRegionMultiplier(region: string): number {
   const multipliers: Record<string, number> = {
     'us-east-1': 1.0,
     'us-west-2': 0.95,
-    'eu-west-1': 0.90,
+    'eu-west-1': 0.9,
     'ap-southeast-1': 0.85,
-    'ap-south-1': 0.80
+    'ap-south-1': 0.8
   }
-  return multipliers[region] || 0.90
+  return multipliers[region] || 0.9
 }
 
 function getAuthMethod(provider: string): string {
   const methods = {
-    'default': 'HERA-Token',
-    'aws': 'IAM-Signature-v4',
-    'azure': 'Shared-Key',
-    'gcp': 'OAuth-2.0',
-    'custom': 'S3-Signature'
+    default: 'HERA-Token',
+    aws: 'IAM-Signature-v4',
+    azure: 'Shared-Key',
+    gcp: 'OAuth-2.0',
+    custom: 'S3-Signature'
   }
   return methods[provider as keyof typeof methods] || 'Unknown'
 }
 
 function getComplianceFeatures(provider: string): string[] {
   const compliance = {
-    'default': ['SOC2', 'ISO27001', 'GDPR'],
-    'aws': ['SOC1', 'SOC2', 'ISO27001', 'HIPAA', 'PCI-DSS', 'GDPR', 'FedRAMP'],
-    'azure': ['SOC1', 'SOC2', 'ISO27001', 'HIPAA', 'PCI-DSS', 'GDPR', 'FedRAMP'],
-    'gcp': ['SOC1', 'SOC2', 'ISO27001', 'HIPAA', 'PCI-DSS', 'GDPR'],
-    'custom': ['Basic-Compliance']
+    default: ['SOC2', 'ISO27001', 'GDPR'],
+    aws: ['SOC1', 'SOC2', 'ISO27001', 'HIPAA', 'PCI-DSS', 'GDPR', 'FedRAMP'],
+    azure: ['SOC1', 'SOC2', 'ISO27001', 'HIPAA', 'PCI-DSS', 'GDPR', 'FedRAMP'],
+    gcp: ['SOC1', 'SOC2', 'ISO27001', 'HIPAA', 'PCI-DSS', 'GDPR'],
+    custom: ['Basic-Compliance']
   }
   return compliance[provider as keyof typeof compliance] || ['Basic-Compliance']
 }
@@ -378,49 +378,58 @@ function calculatePerformanceGrade(baseSpeed: any, regionMultiplier: number): st
 
 function calculateSecurityScore(provider: string, advanced: any): number {
   let score = 60 // Base score
-  
+
   // Provider bonuses
   if (provider === 'aws' || provider === 'azure') score += 25
   else if (provider === 'gcp') score += 20
   else if (provider === 'default') score += 15
-  
+
   // Advanced feature bonuses
   if (advanced.encryption) score += 10
   if (advanced.monitoring) score += 5
-  
+
   return Math.min(score, 100)
 }
 
 function calculateOverallScore(results: any): number {
   let score = 0
   let weight = 0
-  
+
   // Connection (40% weight)
   if (results.connection?.connected) {
     score += 40
     if (results.connection.latency < 200) score += 10
   }
   weight += 40
-  
+
   // Permissions (30% weight)
-  const permScore = Object.values(results.permissions || {}).filter((p: any) => p === true).length * 7.5
+  const permScore =
+    Object.values(results.permissions || {}).filter((p: any) => p === true).length * 7.5
   score += Math.min(permScore, 30)
   weight += 30
-  
+
   // Performance (20% weight)
   const perfGrade = results.performance?.grade
   if (perfGrade) {
-    const gradeScores: Record<string, number> = { 'A+': 20, 'A': 18, 'B+': 16, 'B': 14, 'C+': 12, 'C': 10, 'D': 5 }
+    const gradeScores: Record<string, number> = {
+      'A+': 20,
+      A: 18,
+      'B+': 16,
+      B: 14,
+      'C+': 12,
+      C: 10,
+      D: 5
+    }
     score += gradeScores[perfGrade] || 5
   }
   weight += 20
-  
+
   // Security (10% weight)
   if (results.security?.score) {
     score += (results.security.score / 100) * 10
   }
   weight += 10
-  
+
   return Math.round((score / weight) * 100)
 }
 

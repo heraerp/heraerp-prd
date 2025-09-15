@@ -24,17 +24,17 @@ export class WhatsAppService {
   async sendTextMessage(to: string, message: string): Promise<any> {
     try {
       console.log(`📤 Sending WhatsApp message to ${to}`)
-      
+
       // Remove any non-digit characters and ensure it starts with country code
       const cleanNumber = to.replace(/\D/g, '')
-      
+
       const response = await fetch(
         `https://graph.facebook.com/v18.0/${this.phoneNumberId}/messages`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             messaging_product: 'whatsapp',
@@ -50,7 +50,7 @@ export class WhatsAppService {
       )
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         console.error('❌ WhatsApp API error:', result)
         throw new Error(result.error?.message || 'Failed to send message')
@@ -67,16 +67,16 @@ export class WhatsAppService {
   async sendInteractiveMessage(to: string, interactive: any): Promise<any> {
     try {
       console.log(`📤 Sending WhatsApp interactive message to ${to}`)
-      
+
       const cleanNumber = to.replace(/\D/g, '')
-      
+
       const response = await fetch(
         `https://graph.facebook.com/v18.0/${this.phoneNumberId}/messages`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             messaging_product: 'whatsapp',
@@ -89,7 +89,7 @@ export class WhatsAppService {
       )
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         console.error('❌ WhatsApp API error:', result)
         throw new Error(result.error?.message || 'Failed to send interactive message')
@@ -103,19 +103,23 @@ export class WhatsAppService {
     }
   }
 
-  async sendTemplateMessage(to: string, templateName: string, parameters: any[] = []): Promise<any> {
+  async sendTemplateMessage(
+    to: string,
+    templateName: string,
+    parameters: any[] = []
+  ): Promise<any> {
     try {
       console.log(`📤 Sending WhatsApp template message to ${to}`)
-      
+
       const cleanNumber = to.replace(/\D/g, '')
-      
+
       const response = await fetch(
         `https://graph.facebook.com/v18.0/${this.phoneNumberId}/messages`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.accessToken}`,
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             messaging_product: 'whatsapp',
@@ -127,19 +131,22 @@ export class WhatsAppService {
               language: {
                 code: 'en'
               },
-              components: parameters.length > 0 ? [
-                {
-                  type: 'body',
-                  parameters
-                }
-              ] : undefined
+              components:
+                parameters.length > 0
+                  ? [
+                      {
+                        type: 'body',
+                        parameters
+                      }
+                    ]
+                  : undefined
             }
           })
         }
       )
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         console.error('❌ WhatsApp API error:', result)
         throw new Error(result.error?.message || 'Failed to send template message')

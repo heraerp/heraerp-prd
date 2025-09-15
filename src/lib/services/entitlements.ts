@@ -1,6 +1,6 @@
 /**
  * 🔐 HERA Entitlements Service
- * 
+ *
  * Manages module entitlements and feature access
  * - Module subscription management
  * - Feature flag checking
@@ -83,7 +83,12 @@ const INDUSTRY_MODULES: ModuleDefinition[] = [
     name: 'Salon POS System',
     smartCode: 'HERA.SALON.POS.MODULE.v1',
     description: 'Complete salon point-of-sale system',
-    features: ['Appointment booking', 'Service management', 'Staff scheduling', 'Client management'],
+    features: [
+      'Appointment booking',
+      'Service management',
+      'Staff scheduling',
+      'Client management'
+    ],
     pricing: { monthly: 99, yearly: 990, currency: 'USD' },
     dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.TRANSACTIONS.MODULE.v1'],
     category: 'industry'
@@ -166,7 +171,12 @@ const ENTERPRISE_MODULES: ModuleDefinition[] = [
   }
 ]
 
-export const ALL_MODULES = [...CORE_MODULES, ...INDUSTRY_MODULES, ...ADDON_MODULES, ...ENTERPRISE_MODULES]
+export const ALL_MODULES = [
+  ...CORE_MODULES,
+  ...INDUSTRY_MODULES,
+  ...ADDON_MODULES,
+  ...ENTERPRISE_MODULES
+]
 
 export class EntitlementsService {
   private supabase: any
@@ -189,7 +199,7 @@ export class EntitlementsService {
   async grantModuleAccess(grant: EntitlementGrant): Promise<{ success: boolean; error?: string }> {
     try {
       const supabase = await this.getSupabase()
-      
+
       // 1. Find the module entity
       const module = ALL_MODULES.find(m => m.smartCode === grant.moduleSmartCode)
       if (!module) {
@@ -198,7 +208,7 @@ export class EntitlementsService {
 
       // 2. Create or find module entity
       let moduleEntityId: string
-      
+
       const { data: existingModule } = await supabase
         .from('core_entities')
         .select('id')
@@ -253,9 +263,7 @@ export class EntitlementsService {
         }
       }
 
-      const { error: relError } = await supabase
-        .from('core_relationships')
-        .insert(relationshipData)
+      const { error: relError } = await supabase.from('core_relationships').insert(relationshipData)
 
       if (relError) {
         return { success: false, error: 'Failed to create entitlement relationship' }
@@ -263,16 +271,14 @@ export class EntitlementsService {
 
       // 4. Store configuration if provided
       if (grant.configuration) {
-        await supabase
-          .from('core_dynamic_data')
-          .insert({
-            organization_id: grant.organizationId,
-            entity_id: moduleEntityId,
-            field_name: 'configuration',
-            field_type: 'json',
-            field_value_json: grant.configuration,
-            smart_code: 'HERA.CONFIG.MODULE.SETTINGS.v1'
-          })
+        await supabase.from('core_dynamic_data').insert({
+          organization_id: grant.organizationId,
+          entity_id: moduleEntityId,
+          field_name: 'configuration',
+          field_type: 'json',
+          field_value_json: grant.configuration,
+          smart_code: 'HERA.CONFIG.MODULE.SETTINGS.v1'
+        })
       }
 
       // 5. Grant access to dependencies
@@ -286,7 +292,6 @@ export class EntitlementsService {
       }
 
       return { success: true }
-
     } catch (error) {
       console.error('[Entitlements] Error granting access:', error)
       return { success: false, error: 'Failed to grant module access' }
@@ -296,14 +301,17 @@ export class EntitlementsService {
   /**
    * Revoke module access
    */
-  async revokeModuleAccess(organizationId: string, moduleSmartCode: string): Promise<{ success: boolean; error?: string }> {
+  async revokeModuleAccess(
+    organizationId: string,
+    moduleSmartCode: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const supabase = await this.getSupabase()
 
       // Find and deactivate the relationship
       const { error } = await supabase
         .from('core_relationships')
-        .update({ 
+        .update({
           is_active: false,
           updated_at: new Date().toISOString()
         })
@@ -317,7 +325,6 @@ export class EntitlementsService {
       }
 
       return { success: true }
-
     } catch (error) {
       console.error('[Entitlements] Error revoking access:', error)
       return { success: false, error: 'Failed to revoke module access' }
@@ -349,7 +356,6 @@ export class EntitlementsService {
       }
 
       return true
-
     } catch (error) {
       console.error('[Entitlements] Error checking access:', error)
       return false
@@ -365,7 +371,8 @@ export class EntitlementsService {
 
       const { data: relationships, error } = await supabase
         .from('core_relationships')
-        .select(`
+        .select(
+          `
           *,
           module:to_entity_id (
             id,
@@ -374,7 +381,8 @@ export class EntitlementsService {
             smart_code,
             metadata
           )
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('relationship_type', 'HAS_MODULE')
         .eq('is_active', true)
@@ -396,7 +404,6 @@ export class EntitlementsService {
         .filter(Boolean) as ModuleDefinition[]
 
       return modules
-
     } catch (error) {
       console.error('[Entitlements] Error getting modules:', error)
       return []

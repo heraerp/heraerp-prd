@@ -4,7 +4,7 @@ import React, { ReactNode, FormEvent } from 'react'
 
 /**
  * Universal Form Components
- * 
+ *
  * Based on lessons learned from EditMenuItemForm issues:
  * - Always use native HTML elements with explicit styling
  * - Avoid shadcn/ui components in modals for better visibility
@@ -14,18 +14,24 @@ import React, { ReactNode, FormEvent } from 'react'
 
 // Base styling constants
 const FORM_STYLES = {
-  input: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder:text-gray-500",
-  textarea: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder:text-gray-500 resize-none",
-  label: "block text-sm font-medium text-gray-700 mb-1",
-  select: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900",
+  input:
+    'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder:text-gray-500',
+  textarea:
+    'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder:text-gray-500 resize-none',
+  label: 'block text-sm font-medium text-gray-700 mb-1',
+  select:
+    'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900',
   button: {
-    primary: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
-    secondary: "px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
-    danger: "px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    primary:
+      'px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+    secondary:
+      'px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+    danger:
+      'px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
   },
-  fieldGroup: "space-y-4 bg-gray-50 p-4 rounded-lg",
-  error: "text-red-600 text-sm mt-1",
-  required: "text-red-500"
+  fieldGroup: 'space-y-4 bg-gray-50 p-4 rounded-lg',
+  error: 'text-red-600 text-sm mt-1',
+  required: 'text-red-500'
 }
 
 // Form field props
@@ -116,7 +122,7 @@ export function UniversalInput({
   onBlur
 }: InputProps) {
   const fieldId = id || name || 'input'
-  
+
   return (
     <div className="space-y-1">
       {label && (
@@ -137,7 +143,7 @@ export function UniversalInput({
         min={min}
         max={max}
         className={`${FORM_STYLES.input} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
-        onChange={(e) => onChange?.(e.target.value)}
+        onChange={e => onChange?.(e.target.value)}
         onBlur={onBlur}
       />
       {error && <p className={FORM_STYLES.error}>{error}</p>}
@@ -161,14 +167,14 @@ export function UniversalTextarea({
   onBlur
 }: TextareaProps) {
   const fieldId = id || name || 'textarea'
-  
+
   return (
     <div className="space-y-1">
       {label && (
         <label htmlFor={fieldId} className={FORM_STYLES.label}>
           {label}
           {required && <span className={FORM_STYLES.required}> *</span>}
-        </label>        
+        </label>
       )}
       <textarea
         id={fieldId}
@@ -179,7 +185,7 @@ export function UniversalTextarea({
         required={required}
         disabled={disabled}
         className={`${FORM_STYLES.textarea} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
-        onChange={(e) => onChange?.(e.target.value)}
+        onChange={e => onChange?.(e.target.value)}
         onBlur={onBlur}
       />
       {error && <p className={FORM_STYLES.error}>{error}</p>}
@@ -202,7 +208,7 @@ export function UniversalSelect({
   onChange
 }: SelectProps) {
   const fieldId = id || name || 'select'
-  
+
   return (
     <div className="space-y-1">
       {label && (
@@ -218,10 +224,10 @@ export function UniversalSelect({
         required={required}
         disabled={disabled}
         className={`${FORM_STYLES.select} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
-        onChange={(e) => onChange?.(e.target.value)}
+        onChange={e => onChange?.(e.target.value)}
       >
         {placeholder && <option value="">{placeholder}</option>}
-        {options.map((option) => (
+        {options.map(option => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
@@ -248,10 +254,10 @@ export function UniversalButton({
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base'
   }
-  
+
   const baseClasses = FORM_STYLES.button[variant]
   const sizeClass = sizeClasses[size]
-  
+
   return (
     <button
       type={type}
@@ -270,56 +276,49 @@ export function UniversalButton({
 // Universal Form Container
 export function UniversalForm({ onSubmit, className = '', children }: FormProps) {
   return (
-    <form
-      onSubmit={onSubmit}
-      className={`space-y-6 ${className}`}
-      noValidate
-    >
+    <form onSubmit={onSubmit} className={`space-y-6 ${className}`} noValidate>
       {children}
     </form>
   )
 }
 
 // Universal Field Group
-export function UniversalFieldGroup({ title, description, children, className = '' }: FieldGroupProps) {
+export function UniversalFieldGroup({
+  title,
+  description,
+  children,
+  className = ''
+}: FieldGroupProps) {
   return (
     <div className={`${FORM_STYLES.fieldGroup} ${className}`}>
       {title && (
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-          {description && (
-            <p className="text-sm text-gray-600 mt-1">{description}</p>
-          )}
+          {description && <p className="text-sm text-gray-600 mt-1">{description}</p>}
         </div>
       )}
-      <div className="space-y-4">
-        {children}
-      </div>
+      <div className="space-y-4">{children}</div>
     </div>
   )
 }
 
 // Universal Modal (with proper visibility)
-export function UniversalModal({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children, 
-  maxWidth = 'lg' 
-}: ModalProps) {
+export function UniversalModal({ isOpen, onClose, title, children, maxWidth = 'lg' }: ModalProps) {
   if (!isOpen) return null
-  
+
   const maxWidthClasses = {
     sm: 'max-w-sm',
-    md: 'max-w-md', 
+    md: 'max-w-md',
     lg: 'max-w-2xl',
     xl: 'max-w-4xl',
     '2xl': 'max-w-6xl'
   }
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className={`bg-white rounded-lg shadow-xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] overflow-hidden`}>
+      <div
+        className={`bg-white rounded-lg shadow-xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] overflow-hidden`}
+      >
         {/* Header */}
         <div className="bg-white p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -330,16 +329,19 @@ export function UniversalModal({
               className="text-gray-400 hover:text-gray-500 bg-white p-1 rounded transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
         </div>
-        
+
         {/* Content */}
-        <div className="bg-white p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
-          {children}
-        </div>
+        <div className="bg-white p-6 overflow-y-auto max-h-[calc(90vh-80px)]">{children}</div>
       </div>
     </div>
   )
@@ -353,35 +355,35 @@ export const FormValidation = {
     }
     return null
   },
-  
+
   email: (value: string) => {
     if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       return 'Please enter a valid email address'
     }
     return null
   },
-  
+
   minLength: (min: number) => (value: string) => {
     if (value && value.length < min) {
       return `Must be at least ${min} characters long`
     }
     return null
   },
-  
+
   maxLength: (max: number) => (value: string) => {
     if (value && value.length > max) {
       return `Must be no more than ${max} characters long`
     }
     return null
   },
-  
+
   number: (value: string) => {
     if (value && isNaN(Number(value))) {
       return 'Must be a valid number'
     }
     return null
   },
-  
+
   positive: (value: string) => {
     if (value && Number(value) <= 0) {
       return 'Must be a positive number'
@@ -395,7 +397,7 @@ export function useFormState<T extends Record<string, any>>(initialState: T) {
   const [values, setValues] = React.useState<T>(initialState)
   const [errors, setErrors] = React.useState<Partial<Record<keyof T, string>>>({})
   const [touched, setTouched] = React.useState<Partial<Record<keyof T, boolean>>>({})
-  
+
   const setValue = (name: keyof T, value: any) => {
     setValues(prev => ({ ...prev, [name]: value }))
     // Clear error when user starts typing
@@ -403,18 +405,20 @@ export function useFormState<T extends Record<string, any>>(initialState: T) {
       setErrors(prev => ({ ...prev, [name]: undefined }))
     }
   }
-  
+
   const setError = (name: keyof T, error: string) => {
     setErrors(prev => ({ ...prev, [name]: error }))
   }
-  
+
   const setFieldTouched = (name: keyof T) => {
     setTouched(prev => ({ ...prev, [name]: true }))
   }
-  
-  const validate = (validationRules: Partial<Record<keyof T, ((value: any) => string | null)[]>>) => {
+
+  const validate = (
+    validationRules: Partial<Record<keyof T, ((value: any) => string | null)[]>>
+  ) => {
     const newErrors: Partial<Record<keyof T, string>> = {}
-    
+
     Object.entries(validationRules).forEach(([field, rules]) => {
       const value = values[field as keyof T]
       for (const rule of rules as ((value: any) => string | null)[]) {
@@ -425,17 +429,17 @@ export function useFormState<T extends Record<string, any>>(initialState: T) {
         }
       }
     })
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
-  
+
   const reset = () => {
     setValues(initialState)
     setErrors({})
     setTouched({})
   }
-  
+
   return {
     values,
     errors,

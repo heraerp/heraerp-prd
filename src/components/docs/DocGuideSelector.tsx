@@ -20,8 +20,8 @@ export default function DocGuideSelector({ currentType }: DocGuideSelectorProps)
         variant={currentType === 'dev' ? 'default' : 'ghost'}
         size="sm"
         className={cn(
-          "h-7 text-xs",
-          currentType === 'dev' && "bg-hera-primary hover:bg-hera-primary/90"
+          'h-7 text-xs',
+          currentType === 'dev' && 'bg-hera-primary hover:bg-hera-primary/90'
         )}
       >
         <Link href="/docs/dev" className="flex items-center gap-1">
@@ -30,14 +30,14 @@ export default function DocGuideSelector({ currentType }: DocGuideSelectorProps)
           <span className="sm:hidden">Dev</span>
         </Link>
       </Button>
-      
+
       <Button
         asChild
         variant={currentType === 'user' ? 'default' : 'ghost'}
         size="sm"
         className={cn(
-          "h-7 text-xs",
-          currentType === 'user' && "bg-hera-primary hover:bg-hera-primary/90"
+          'h-7 text-xs',
+          currentType === 'user' && 'bg-hera-primary hover:bg-hera-primary/90'
         )}
       >
         <Link href="/docs/user" className="flex items-center gap-1">

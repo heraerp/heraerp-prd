@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const smartCode = searchParams.get('smart_code')
   const viewType = searchParams.get('view_type')
   const organizationId = searchParams.get('organization_id')
-  
+
   if (!organizationId) {
     return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
   }
@@ -25,16 +25,16 @@ export async function GET(request: NextRequest) {
         if (!smartCode) {
           return NextResponse.json({ error: 'Smart code is required' }, { status: 400 })
         }
-        
+
         const metaService = new ViewMetaService(organizationId)
         const metadata = await metaService.getViewMeta(smartCode, viewType || 'detail')
-        
+
         if (!metadata) {
           return NextResponse.json({ error: 'No metadata found' }, { status: 404 })
         }
-        
+
         return NextResponse.json({ metadata })
-        
+
       case 'list_views':
         // List all available views for an organization
         const { data: views, error } = await supabase
@@ -42,11 +42,11 @@ export async function GET(request: NextRequest) {
           .select('*')
           .eq('organization_id', organizationId)
           .eq('entity_type', 'view_metadata')
-        
+
         if (error) throw error
-        
+
         return NextResponse.json({ views })
-        
+
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const body = await request.json()
   const { action, organizationId } = body
-  
+
   if (!organizationId) {
     return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
   }
@@ -72,16 +72,16 @@ export async function POST(request: NextRequest) {
         const { metadata } = body
         const metaService = new ViewMetaService(organizationId)
         const success = await metaService.saveViewMeta(metadata)
-        
+
         if (!success) {
           return NextResponse.json({ error: 'Failed to save metadata' }, { status: 500 })
         }
-        
+
         return NextResponse.json({ success: true })
-        
+
       case 'execute_action':
         const { actionConfig, entityId, data } = body
-        
+
         // Handle different action types
         switch (actionConfig.type) {
           case 'create':
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
               smart_code: actionConfig.smart_code
             })
             return NextResponse.json({ success: true, data: createResult })
-            
+
           case 'edit':
             const { data: updateData, error: updateError } = await supabase
               .from('core_entities')
@@ -100,33 +100,33 @@ export async function POST(request: NextRequest) {
               .eq('organization_id', organizationId)
               .select()
               .single()
-              
+
             if (updateError) throw updateError
             return NextResponse.json({ success: true, data: updateData })
-            
+
           case 'delete':
             const { error: deleteError } = await supabase
               .from('core_entities')
               .delete()
               .eq('id', entityId)
               .eq('organization_id', organizationId)
-              
+
             if (deleteError) throw deleteError
             return NextResponse.json({ success: true })
-            
+
           case 'workflow':
             // Handle workflow actions (e.g., status changes)
             return await handleWorkflowAction(actionConfig, entityId, organizationId)
-            
+
           default:
             return NextResponse.json({ error: 'Unknown action type' }, { status: 400 })
         }
-        
+
       case 'calculate_bom_cost':
         const { bomId } = body
         const cost = await calculateBOMTotalCost(bomId, organizationId)
         return NextResponse.json({ success: true, total_cost: cost })
-        
+
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
@@ -147,7 +147,7 @@ async function handleWorkflowAction(actionConfig: any, entityId: string, organiz
       .eq('entity_type', 'workflow_status')
       .eq('entity_code', 'STATUS-RELEASED')
       .single()
-    
+
     if (statusEntity) {
       // Remove existing status relationship
       await supabase
@@ -156,7 +156,7 @@ async function handleWorkflowAction(actionConfig: any, entityId: string, organiz
         .eq('from_entity_id', entityId)
         .eq('relationship_type', 'has_status')
         .eq('organization_id', organizationId)
-      
+
       // Create new status relationship
       await universalApi.createRelationship({
         from_entity_id: entityId,
@@ -169,7 +169,7 @@ async function handleWorkflowAction(actionConfig: any, entityId: string, organiz
         }
       })
     }
-    
+
     // 2. Create revision transaction
     await universalApi.createTransaction({
       transaction_type: 'bom_revision',
@@ -181,10 +181,10 @@ async function handleWorkflowAction(actionConfig: any, entityId: string, organiz
         revision: 'B'
       }
     })
-    
+
     return NextResponse.json({ success: true, message: 'BOM released successfully' })
   }
-  
+
   return NextResponse.json({ error: 'Unknown workflow action' }, { status: 400 })
 }
 
@@ -196,16 +196,16 @@ async function calculateBOMTotalCost(bomId: string, organizationId: string): Pro
     .eq('from_entity_id', bomId)
     .eq('relationship_type', 'has_component')
     .eq('organization_id', organizationId)
-  
+
   if (!relationships) return 0
-  
+
   let totalCost = 0
-  
+
   for (const rel of relationships) {
     const quantity = rel.metadata?.quantity || 1
     const unitCost = rel.to_entity?.metadata?.unit_cost || 0
     totalCost += quantity * unitCost
   }
-  
+
   return totalCost
 }

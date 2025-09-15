@@ -3,13 +3,31 @@
 import React, { useEffect, useState } from 'react'
 import { Widget } from '@/lib/universal-ui/view-meta-service'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Search, ChevronLeft, ChevronRight, Filter } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
 import { format } from 'date-fns'
@@ -40,11 +58,11 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
   const loadData = async () => {
     try {
       setLoading(true)
-      
+
       // Determine data source
       const source = widget.data_source
       let result: any = { data: [] }
-      
+
       if (source?.type === 'entities') {
         result = await universalApi.query('core_entities', {
           organization_id: organizationId,
@@ -68,11 +86,11 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
           organization_id: organizationId
         })
       }
-      
+
       if (result.data) {
         // Apply client-side filtering and sorting
         let filteredData = result.data
-        
+
         // Search filter
         if (searchTerm) {
           filteredData = filteredData.filter((row: any) =>
@@ -81,25 +99,25 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
             )
           )
         }
-        
+
         // Sorting
         if (sortColumn) {
           filteredData.sort((a: any, b: any) => {
             const aVal = a[sortColumn]
             const bVal = b[sortColumn]
             const direction = sortDirection === 'asc' ? 1 : -1
-            
+
             if (aVal === null) return 1
             if (bVal === null) return -1
-            
+
             if (aVal < bVal) return -direction
             if (aVal > bVal) return direction
             return 0
           })
         }
-        
+
         setTotalRows(filteredData.length)
-        
+
         // Pagination
         const startIndex = (currentPage - 1) * pageSize
         const endIndex = startIndex + pageSize
@@ -149,24 +167,24 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
 
   const renderCellValue = (row: any, column: any) => {
     const value = row[column.field]
-    
+
     if (value === null || value === undefined) {
       return <span className="text-muted-foreground">-</span>
     }
-    
+
     switch (column.type) {
       case 'date':
         return format(new Date(value), 'PPP')
-        
+
       case 'money':
         return `$${Number(value).toFixed(2)}`
-        
+
       case 'percentage':
         return `${Number(value).toFixed(1)}%`
-        
+
       case 'boolean':
         return value ? '✓' : '✗'
-        
+
       case 'status':
         const statusColors: any = {
           draft: 'secondary',
@@ -175,12 +193,8 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
           superseded: 'destructive',
           archived: 'secondary'
         }
-        return (
-          <Badge variant={statusColors[value] || 'default'}>
-            {value}
-          </Badge>
-        )
-        
+        return <Badge variant={statusColors[value] || 'default'}>{value}</Badge>
+
       case 'entity_link':
         return (
           <Button
@@ -191,7 +205,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
             {value}
           </Button>
         )
-        
+
       case 'actions':
         return (
           <DropdownMenu>
@@ -212,7 +226,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
             </DropdownMenuContent>
           </DropdownMenu>
         )
-        
+
       default:
         return String(value)
     }
@@ -225,7 +239,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{widget.title}</CardTitle>
-          
+
           <div className="flex items-center gap-2">
             {/* Search */}
             <div className="relative">
@@ -233,42 +247,40 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
               <Input
                 placeholder="Search..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-8 w-64"
               />
             </div>
-            
+
             {/* Bulk actions */}
             {selectedRows.size > 0 && widget.config.bulk_actions && (
               <>
-                <Badge variant="secondary">
-                  {selectedRows.size} selected
-                </Badge>
+                <Badge variant="secondary">{selectedRows.size} selected</Badge>
                 {widget.config.bulk_actions.map(action => (
                   <Button
                     key={action.id}
                     variant="outline"
                     size="sm"
-                    onClick={() => onAction?.({ ...action, selectedRows: Array.from(selectedRows) })}
+                    onClick={() =>
+                      onAction?.({ ...action, selectedRows: Array.from(selectedRows) })
+                    }
                   >
                     {action.label}
                   </Button>
                 ))}
               </>
             )}
-            
+
             {/* Standard bulk actions when no rows selected */}
-            {selectedRows.size === 0 && widget.config.bulk_actions && (
-              widget.config.bulk_actions.filter(a => a.type === 'create').map(action => (
-                <Button
-                  key={action.id}
-                  size="sm"
-                  onClick={() => onAction?.(action)}
-                >
-                  {action.label}
-                </Button>
-              ))
-            )}
+            {selectedRows.size === 0 &&
+              widget.config.bulk_actions &&
+              widget.config.bulk_actions
+                .filter(a => a.type === 'create')
+                .map(action => (
+                  <Button key={action.id} size="sm" onClick={() => onAction?.(action)}>
+                    {action.label}
+                  </Button>
+                ))}
           </div>
         </div>
       </CardHeader>
@@ -306,9 +318,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
                     </div>
                   </TableHead>
                 ))}
-                {widget.config.row_actions && (
-                  <TableHead className="w-12"></TableHead>
-                )}
+                {widget.config.row_actions && <TableHead className="w-12"></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -331,7 +341,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
                       <TableCell>
                         <Checkbox
                           checked={selectedRows.has(row.id)}
-                          onCheckedChange={(checked) => handleSelectRow(row.id, checked as boolean)}
+                          onCheckedChange={checked => handleSelectRow(row.id, checked as boolean)}
                         />
                       </TableCell>
                     )}
@@ -347,9 +357,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
                       </TableCell>
                     ))}
                     {widget.config.row_actions && (
-                      <TableCell>
-                        {renderCellValue(row, { type: 'actions' })}
-                      </TableCell>
+                      <TableCell>{renderCellValue(row, { type: 'actions' })}</TableCell>
                     )}
                   </TableRow>
                 ))
@@ -357,13 +365,13 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
             </TableBody>
           </Table>
         </div>
-        
+
         {/* Pagination */}
         {widget.config.pagination && totalPages > 1 && (
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Rows per page:</span>
-              <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+              <Select value={String(pageSize)} onValueChange={v => setPageSize(Number(v))}>
                 <SelectTrigger className="w-20">
                   <SelectValue />
                 </SelectTrigger>
@@ -376,7 +384,7 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -386,11 +394,11 @@ export function GridWidget({ widget, entityId, organizationId, onAction }: GridW
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              
+
               <span className="text-sm">
                 Page {currentPage} of {totalPages}
               </span>
-              
+
               <Button
                 variant="outline"
                 size="sm"

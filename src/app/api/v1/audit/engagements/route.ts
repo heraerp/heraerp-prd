@@ -109,16 +109,16 @@ const mockEngagements = [
 export async function POST(request: NextRequest) {
   try {
     const body: CreateEngagementRequest = await request.json()
-    
+
     if (body.action === 'create_engagement') {
       // Generate new engagement ID and unique organization ID for this GSPU audit client
       const engagementId = `eng_${Date.now()}`
       const clientOrgId = `gspu_client_${body.data.client_code.toLowerCase().replace(/[^a-z0-9]/g, '_')}_org`
-      
+
       // Create new engagement object
       const newEngagement = {
         id: engagementId,
-        
+
         // Core engagement details
         entity_type: 'audit_engagement',
         entity_code: body.data.client_code,
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
         organization_id: clientOrgId, // Each GSPU audit client gets their own organization
         smart_code: 'HERA.AUD.ENG.ENT.MASTER.v1',
         status: 'planning',
-        
+
         // Client information
         client_name: body.data.client_name,
         client_code: body.data.client_code,
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
         total_assets: parseFloat(body.data.total_assets) || 0,
         public_interest_entity: body.data.public_interest_entity,
         previous_auditor: body.data.previous_auditor,
-        
+
         // Engagement details
         engagement_type: body.data.engagement_type,
         audit_year: body.data.audit_year,
@@ -145,37 +145,38 @@ export async function POST(request: NextRequest) {
         target_completion_date: body.data.target_completion_date,
         estimated_hours: parseFloat(body.data.estimated_hours) || 0,
         estimated_fees: parseFloat(body.data.estimated_fees) || 0,
-        
+
         // Risk assessment
         risk_rating: body.data.risk_rating,
         risk_factors: body.data.risk_factors,
         materiality_planning: parseFloat(body.data.materiality_planning) || 0,
         materiality_performance: parseFloat(body.data.materiality_performance) || 0,
-        
+
         // Team assignment
         engagement_partner: body.data.engagement_partner,
         audit_manager: body.data.audit_manager,
         eqcr_partner: body.data.eqcr_partner,
-        eqcr_required: body.data.public_interest_entity || 
-                      body.data.risk_rating === 'high' || 
-                      body.data.risk_rating === 'very_high',
-        
+        eqcr_required:
+          body.data.public_interest_entity ||
+          body.data.risk_rating === 'high' ||
+          body.data.risk_rating === 'very_high',
+
         // Compliance
         independence_confirmed: body.data.independence_confirmed,
         conflict_check_completed: body.data.conflict_check_completed,
         aml_assessment_done: body.data.aml_assessment_done,
         compliance_approval: body.data.compliance_approval,
-        
+
         // Metadata
         created_date: new Date().toISOString(),
         created_by: 'current_user',
         phase: 1, // Client Engagement & Acceptance
         completion_percentage: 10,
-        
+
         // GSPU Client tracking
         gspu_client_id: body.data.client_code, // Internal GSPU client reference
         audit_firm: 'GSPU_AUDIT_PARTNERS', // GSPU is the audit firm using HERA
-        
+
         // Universal transaction for engagement creation
         transaction_data: {
           transaction_type: 'engagement_creation',
@@ -189,13 +190,14 @@ export async function POST(request: NextRequest) {
             organization_id: clientOrgId, // Include org ID in transaction metadata
             gspu_client_id: body.data.client_code,
             audit_firm: 'GSPU_AUDIT_PARTNERS',
-            eqcr_required: body.data.public_interest_entity || 
-                          body.data.risk_rating === 'high' || 
-                          body.data.risk_rating === 'very_high'
+            eqcr_required:
+              body.data.public_interest_entity ||
+              body.data.risk_rating === 'high' ||
+              body.data.risk_rating === 'very_high'
           }
         }
       }
-      
+
       // Add to mock data (in production, this would be saved to database)
       const newMockEngagement: any = {
         id: engagementId,
@@ -210,28 +212,33 @@ export async function POST(request: NextRequest) {
         created_date: new Date().toISOString().split('T')[0],
         organization_id: clientOrgId
       }
-      
+
       mockEngagements.push(newMockEngagement)
-      
+
       return NextResponse.json({
         success: true,
         message: 'Engagement created successfully',
         data: newEngagement
       })
     }
-    
-    return NextResponse.json({
-      success: false,
-      message: 'Invalid action specified'
-    }, { status: 400 })
-    
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Invalid action specified'
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Error creating engagement:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to create engagement',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to create engagement',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -240,23 +247,26 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action')
     const id = searchParams.get('id')
-    
+
     // Get specific engagement by ID
     if (id) {
       const engagement = mockEngagements.find(e => e.id === id)
       if (!engagement) {
-        return NextResponse.json({
-          success: false,
-          message: 'Engagement not found'
-        }, { status: 404 })
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Engagement not found'
+          },
+          { status: 404 }
+        )
       }
-      
+
       return NextResponse.json({
         success: true,
         data: { engagement }
       })
     }
-    
+
     // List all engagements (default behavior for Steve Jobs simplicity)
     const engagements = mockEngagements.map(eng => ({
       ...eng,
@@ -264,7 +274,7 @@ export async function GET(request: NextRequest) {
       organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
       smart_code: 'HERA.AUD.ENG.ENT.MASTER.v1'
     }))
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -279,12 +289,14 @@ export async function GET(request: NextRequest) {
         }
       }
     })
-    
   } catch (error) {
     console.error('Error fetching engagements:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch engagements'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to fetch engagements'
+      },
+      { status: 500 }
+    )
   }
 }

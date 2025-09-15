@@ -1,6 +1,6 @@
 /**
  * HERA Validation Service
- * 
+ *
  * Provides validation services for HERA entities, transactions, and other data
  * against registered standards. Uses HERA's own architecture to store and retrieve
  * validation rules.
@@ -39,20 +39,23 @@ export class HeraValidationService {
    */
   async loadStandards(organizationId: string): Promise<void> {
     const now = new Date()
-    
+
     // Check if cache is still valid
-    if (this.lastCacheUpdate && 
-        (now.getTime() - this.lastCacheUpdate.getTime()) < this.cacheTimeout) {
+    if (
+      this.lastCacheUpdate &&
+      now.getTime() - this.lastCacheUpdate.getTime() < this.cacheTimeout
+    ) {
       return
     }
 
     try {
       // Load all standard definitions from the system organization
       const systemOrgId = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
-      
+
       const { data: standards, error } = await this.supabase
         .from('core_entities')
-        .select(`
+        .select(
+          `
           id,
           entity_type,
           entity_name,
@@ -65,7 +68,8 @@ export class HeraValidationService {
             field_value_number,
             field_value_boolean
           )
-        `)
+        `
+        )
         .in('entity_type', [
           'entity_type_definition',
           'transaction_type_definition',
@@ -79,7 +83,7 @@ export class HeraValidationService {
 
       // Process and cache the standards
       this.standards.clear()
-      
+
       for (const standard of standards || []) {
         const category = standard.entity_type
         if (!this.standards.has(category)) {
@@ -111,7 +115,7 @@ export class HeraValidationService {
    */
   private loadHardcodedStandards(): void {
     this.standards.clear()
-    
+
     // Load entity type standards
     const entityTypes = Object.entries(STANDARD_ENTITY_TYPES).map(([key, value]) => ({
       code: value,
@@ -166,42 +170,46 @@ export class HeraValidationService {
   /**
    * Get dynamic field value from array
    */
-  private getDynamicFieldValue(dynamicData: any[], fieldName: string): string | number | boolean | null {
+  private getDynamicFieldValue(
+    dynamicData: any[],
+    fieldName: string
+  ): string | number | boolean | null {
     if (!dynamicData || !Array.isArray(dynamicData)) return null
-    
+
     const field = dynamicData.find(d => d.field_name === fieldName)
     if (!field) return null
-    
+
     return field.field_value_text || field.field_value_number || field.field_value_boolean
   }
 
   /**
    * Validate entity data against standards
    */
-  async validateEntity(
-    entityData: {
-      entity_type: string
-      entity_name: string
-      entity_code?: string
-      smart_code?: string
-      organization_id: string
-    }
-  ): Promise<ValidationResult> {
+  async validateEntity(entityData: {
+    entity_type: string
+    entity_name: string
+    entity_code?: string
+    smart_code?: string
+    organization_id: string
+  }): Promise<ValidationResult> {
     await this.loadStandards(entityData.organization_id)
-    
+
     const errors: ValidationError[] = []
     const warnings: ValidationWarning[] = []
 
     // Validate entity type
     const entityTypeStandards = this.standards.get('entity_type_definition') || []
     const isValidEntityType = entityTypeStandards.some(std => std.code === entityData.entity_type)
-    
+
     if (!isValidEntityType) {
       errors.push({
         field: 'entity_type',
         value: entityData.entity_type,
         message: `Entity type '${entityData.entity_type}' is not a recognized standard type`,
-        suggestion: this.suggestSimilar(entityData.entity_type, entityTypeStandards.map(s => s.code))
+        suggestion: this.suggestSimilar(
+          entityData.entity_type,
+          entityTypeStandards.map(s => s.code)
+        )
       })
     }
 
@@ -260,30 +268,33 @@ export class HeraValidationService {
   /**
    * Validate transaction data against standards
    */
-  async validateTransaction(
-    transactionData: {
-      transaction_type: string
-      transaction_code?: string
-      smart_code?: string
-      organization_id: string
-      total_amount?: number
-    }
-  ): Promise<ValidationResult> {
+  async validateTransaction(transactionData: {
+    transaction_type: string
+    transaction_code?: string
+    smart_code?: string
+    organization_id: string
+    total_amount?: number
+  }): Promise<ValidationResult> {
     await this.loadStandards(transactionData.organization_id)
-    
+
     const errors: ValidationError[] = []
     const warnings: ValidationWarning[] = []
 
     // Validate transaction type
     const transactionTypeStandards = this.standards.get('transaction_type_definition') || []
-    const isValidTransactionType = transactionTypeStandards.some(std => std.code === transactionData.transaction_type)
-    
+    const isValidTransactionType = transactionTypeStandards.some(
+      std => std.code === transactionData.transaction_type
+    )
+
     if (!isValidTransactionType) {
       errors.push({
         field: 'transaction_type',
         value: transactionData.transaction_type,
         message: `Transaction type '${transactionData.transaction_type}' is not a recognized standard type`,
-        suggestion: this.suggestSimilar(transactionData.transaction_type, transactionTypeStandards.map(s => s.code))
+        suggestion: this.suggestSimilar(
+          transactionData.transaction_type,
+          transactionTypeStandards.map(s => s.code)
+        )
       })
     }
 
@@ -300,7 +311,8 @@ export class HeraValidationService {
       errors.push({
         field: 'smart_code',
         value: null,
-        message: 'Smart code is required for all transactions to enable auto-journal posting and business intelligence'
+        message:
+          'Smart code is required for all transactions to enable auto-journal posting and business intelligence'
       })
     }
 
@@ -332,29 +344,32 @@ export class HeraValidationService {
   /**
    * Validate relationship data against standards
    */
-  async validateRelationship(
-    relationshipData: {
-      relationship_type: string
-      from_entity_id: string
-      to_entity_id: string
-      organization_id: string
-    }
-  ): Promise<ValidationResult> {
+  async validateRelationship(relationshipData: {
+    relationship_type: string
+    from_entity_id: string
+    to_entity_id: string
+    organization_id: string
+  }): Promise<ValidationResult> {
     await this.loadStandards(relationshipData.organization_id)
-    
+
     const errors: ValidationError[] = []
     const warnings: ValidationWarning[] = []
 
     // Validate relationship type
     const relationshipTypeStandards = this.standards.get('relationship_type_definition') || []
-    const isValidRelationshipType = relationshipTypeStandards.some(std => std.code === relationshipData.relationship_type)
-    
+    const isValidRelationshipType = relationshipTypeStandards.some(
+      std => std.code === relationshipData.relationship_type
+    )
+
     if (!isValidRelationshipType) {
       errors.push({
         field: 'relationship_type',
         value: relationshipData.relationship_type,
         message: `Relationship type '${relationshipData.relationship_type}' is not a recognized standard type`,
-        suggestion: this.suggestSimilar(relationshipData.relationship_type, relationshipTypeStandards.map(s => s.code))
+        suggestion: this.suggestSimilar(
+          relationshipData.relationship_type,
+          relationshipTypeStandards.map(s => s.code)
+        )
       })
     }
 
@@ -387,18 +402,19 @@ export class HeraValidationService {
    */
   private suggestSimilar(input: string, options: string[]): string | undefined {
     if (!input || options.length === 0) return undefined
-    
+
     let bestMatch = ''
     let bestScore = 0
-    
+
     for (const option of options) {
       const score = this.calculateSimilarity(input.toLowerCase(), option.toLowerCase())
-      if (score > bestScore && score > 0.3) { // Minimum similarity threshold
+      if (score > bestScore && score > 0.3) {
+        // Minimum similarity threshold
         bestScore = score
         bestMatch = option
       }
     }
-    
+
     return bestMatch || undefined
   }
 
@@ -408,7 +424,7 @@ export class HeraValidationService {
   private calculateSimilarity(str1: string, str2: string): number {
     const maxLength = Math.max(str1.length, str2.length)
     if (maxLength === 0) return 1
-    
+
     const distance = this.levenshteinDistance(str1, str2)
     return (maxLength - distance) / maxLength
   }
@@ -418,15 +434,15 @@ export class HeraValidationService {
    */
   private levenshteinDistance(str1: string, str2: string): number {
     const matrix = []
-    
+
     for (let i = 0; i <= str2.length; i++) {
       matrix[i] = [i]
     }
-    
+
     for (let j = 0; j <= str1.length; j++) {
       matrix[0][j] = j
     }
-    
+
     for (let i = 1; i <= str2.length; i++) {
       for (let j = 1; j <= str1.length; j++) {
         if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
@@ -434,13 +450,13 @@ export class HeraValidationService {
         } else {
           matrix[i][j] = Math.min(
             matrix[i - 1][j - 1] + 1, // substitution
-            matrix[i][j - 1] + 1,     // insertion
-            matrix[i - 1][j] + 1      // deletion
+            matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j] + 1 // deletion
           )
         }
       }
     }
-    
+
     return matrix[str2.length][str1.length]
   }
 
@@ -473,7 +489,7 @@ export class HeraValidationService {
       await this.loadStandards(organizationId)
       const entityTypeStandards = this.standards.get('entity_type_definition') || []
       const validEntityTypes = entityTypeStandards.map(s => s.code)
-      
+
       const { count: standardCompliantEntities } = await this.supabase
         .from('core_entities')
         .select('*', { count: 'exact', head: true })
@@ -489,7 +505,7 @@ export class HeraValidationService {
       // Get transactions with valid transaction types
       const transactionTypeStandards = this.standards.get('transaction_type_definition') || []
       const validTransactionTypes = transactionTypeStandards.map(s => s.code)
-      
+
       const { count: standardCompliantTransactions } = await this.supabase
         .from('universal_transactions')
         .select('*', { count: 'exact', head: true })

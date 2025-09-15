@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,7 +21,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { TrendingUp, TrendingDown, RefreshCw } from 'lucide-react'
 
@@ -76,13 +76,13 @@ export function StockMovementModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const data = {
       ...formData,
       quantity: parseInt(formData.quantity),
       unitCost: parseFloat(formData.unitCost) || 0
     }
-    
+
     onSave(data)
   }
 
@@ -95,21 +95,8 @@ export function StockMovementModal({
       'Found Stock',
       'Other'
     ],
-    out: [
-      'Sold',
-      'Used in Service',
-      'Transfer Out',
-      'Damaged',
-      'Expired',
-      'Sample',
-      'Other'
-    ],
-    adjustment: [
-      'Stock Count Correction',
-      'System Adjustment',
-      'Reconciliation',
-      'Other'
-    ]
+    out: ['Sold', 'Used in Service', 'Transfer Out', 'Damaged', 'Expired', 'Sample', 'Other'],
+    adjustment: ['Stock Count Correction', 'System Adjustment', 'Reconciliation', 'Other']
   }
 
   const getReasonOptions = () => {
@@ -121,12 +108,8 @@ export function StockMovementModal({
       <DialogContent className="sm:max-w-[600px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>
-              {movement ? 'Pencil Stock Movement' : 'Add Stock Movement'}
-            </DialogTitle>
-            <DialogDescription>
-              Record inventory changes for products
-            </DialogDescription>
+            <DialogTitle>{movement ? 'Pencil Stock Movement' : 'Add Stock Movement'}</DialogTitle>
+            <DialogDescription>Record inventory changes for products</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
@@ -135,19 +118,15 @@ export function StockMovementModal({
               <Label htmlFor="product">Product</Label>
               <Select
                 value={formData.productId}
-                onValueChange={(value) => setFormData({ ...formData, productId: value })}
+                onValueChange={value => setFormData({ ...formData, productId: value })}
                 required
               >
                 <SelectTrigger id="product">
                   <SelectValue placeholder="Select a product" />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
-                  {products.map((product) => (
-                    <SelectItem 
-                      key={product.id} 
-                      value={product.id}
-                      className="hera-select-item"
-                    >
+                  {products.map(product => (
+                    <SelectItem key={product.id} value={product.id} className="hera-select-item">
                       <div className="flex justify-between items-center w-full">
                         <span>{product.entity_name}</span>
                         <span className="text-sm text-muted-foreground ml-2">
@@ -185,7 +164,9 @@ export function StockMovementModal({
                 <Button
                   type="button"
                   variant={formData.movementType === 'adjustment' ? 'default' : 'outline'}
-                  onClick={() => setFormData({ ...formData, movementType: 'adjustment', reason: '' })}
+                  onClick={() =>
+                    setFormData({ ...formData, movementType: 'adjustment', reason: '' })
+                  }
                   className="flex items-center justify-center gap-2"
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -202,7 +183,7 @@ export function StockMovementModal({
                   id="quantity"
                   type="number"
                   value={formData.quantity}
-                  onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                  onChange={e => setFormData({ ...formData, quantity: e.target.value })}
                   placeholder="Enter quantity"
                   min="1"
                   required
@@ -215,7 +196,7 @@ export function StockMovementModal({
                   type="number"
                   step="0.01"
                   value={formData.unitCost}
-                  onChange={(e) => setFormData({ ...formData, unitCost: e.target.value })}
+                  onChange={e => setFormData({ ...formData, unitCost: e.target.value })}
                   placeholder="0.00"
                 />
               </div>
@@ -226,19 +207,15 @@ export function StockMovementModal({
               <Label htmlFor="reason">Reason</Label>
               <Select
                 value={formData.reason}
-                onValueChange={(value) => setFormData({ ...formData, reason: value })}
+                onValueChange={value => setFormData({ ...formData, reason: value })}
                 required
               >
                 <SelectTrigger id="reason">
                   <SelectValue placeholder="Select a reason" />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
-                  {getReasonOptions().map((reason) => (
-                    <SelectItem 
-                      key={reason} 
-                      value={reason}
-                      className="hera-select-item"
-                    >
+                  {getReasonOptions().map(reason => (
+                    <SelectItem key={reason} value={reason} className="hera-select-item">
                       {reason}
                     </SelectItem>
                   ))}
@@ -251,17 +228,27 @@ export function StockMovementModal({
               <Label htmlFor="location">Location</Label>
               <Select
                 value={formData.location}
-                onValueChange={(value) => setFormData({ ...formData, location: value })}
+                onValueChange={value => setFormData({ ...formData, location: value })}
               >
                 <SelectTrigger id="location">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
-                  <SelectItem value="main" className="hera-select-item">Main Storage</SelectItem>
-                  <SelectItem value="display" className="hera-select-item">Display Area</SelectItem>
-                  <SelectItem value="backroom" className="hera-select-item">Back Room</SelectItem>
-                  <SelectItem value="station1" className="hera-select-item">Station 1</SelectItem>
-                  <SelectItem value="station2" className="hera-select-item">Station 2</SelectItem>
+                  <SelectItem value="main" className="hera-select-item">
+                    Main Storage
+                  </SelectItem>
+                  <SelectItem value="display" className="hera-select-item">
+                    Display Area
+                  </SelectItem>
+                  <SelectItem value="backroom" className="hera-select-item">
+                    Back Room
+                  </SelectItem>
+                  <SelectItem value="station1" className="hera-select-item">
+                    Station 1
+                  </SelectItem>
+                  <SelectItem value="station2" className="hera-select-item">
+                    Station 2
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -272,7 +259,7 @@ export function StockMovementModal({
               <Textarea
                 id="notes"
                 value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                onChange={e => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Add any additional notes..."
                 rows={3}
               />
@@ -283,9 +270,7 @@ export function StockMovementModal({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">
-              {movement ? 'Update Movement' : 'Add Movement'}
-            </Button>
+            <Button type="submit">{movement ? 'Update Movement' : 'Add Movement'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -10,15 +10,18 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.substring(7)
-    
+
     // Create Supabase client
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    
+
     // Verify token
-    const { data: { user }, error } = await supabase.auth.getUser(token)
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser(token)
     if (error || !user) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
@@ -32,10 +35,13 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (entityError || !userEntity) {
-      return NextResponse.json({ 
-        error: 'User profile not found',
-        details: entityError?.message 
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          error: 'User profile not found',
+          details: entityError?.message
+        },
+        { status: 404 }
+      )
     }
 
     // Get user's current organization context
@@ -43,10 +49,11 @@ export async function GET(request: NextRequest) {
     // 2. Check user metadata for current organization
     // 3. Get primary organization from relationships
     const requestedOrgId = request.nextUrl.searchParams.get('organization_id')
-    
-    let currentOrganizationId = requestedOrgId || 
-                               (userEntity.metadata as any)?.current_organization_id ||
-                               user.user_metadata?.organization_id
+
+    let currentOrganizationId =
+      requestedOrgId ||
+      (userEntity.metadata as any)?.current_organization_id ||
+      user.user_metadata?.organization_id
 
     // If no current org specified, get user's primary organization
     if (!currentOrganizationId) {
@@ -77,12 +84,15 @@ export async function GET(request: NextRequest) {
 
       if (membershipError || !membership) {
         // User doesn't have access to this organization
-        return NextResponse.json({ 
-          error: 'Access denied to organization',
-          code: 'ORGANIZATION_ACCESS_DENIED'
-        }, { status: 403 })
+        return NextResponse.json(
+          {
+            error: 'Access denied to organization',
+            code: 'ORGANIZATION_ACCESS_DENIED'
+          },
+          { status: 403 }
+        )
       }
-      
+
       userMembership = membership
     }
 
@@ -101,25 +111,33 @@ export async function GET(request: NextRequest) {
         .select('*')
         .eq('id', currentOrganizationId)
         .single()
-      
+
       organizationData = org
 
       // Verify organization is active
       if (org && org.status !== 'active') {
-        return NextResponse.json({ 
-          error: 'Organization is not active',
-          code: 'ORGANIZATION_INACTIVE'
-        }, { status: 403 })
+        return NextResponse.json(
+          {
+            error: 'Organization is not active',
+            code: 'ORGANIZATION_INACTIVE'
+          },
+          { status: 403 }
+        )
       }
     }
 
     // Build enhanced user context with membership information
-    const userRole = userMembership?.metadata?.role || 
-                    dynamicFields?.find(f => f.field_name === 'role')?.field_value_text || 
-                    'user'
-    
-    const userPermissions = userMembership?.metadata?.permissions || 
-                           ['entities:read', 'entities:write', 'transactions:read', 'transactions:write']
+    const userRole =
+      userMembership?.metadata?.role ||
+      dynamicFields?.find(f => f.field_name === 'role')?.field_value_text ||
+      'user'
+
+    const userPermissions = userMembership?.metadata?.permissions || [
+      'entities:read',
+      'entities:write',
+      'transactions:read',
+      'transactions:write'
+    ]
 
     const userContext = {
       user_entity: {
@@ -130,22 +148,26 @@ export async function GET(request: NextRequest) {
         role: userRole,
         metadata: userEntity.metadata || {}
       },
-      organization: organizationData ? {
-        id: organizationData.id,
-        organization_name: organizationData.organization_name,
-        organization_type: organizationData.organization_type,
-        organization_code: organizationData.organization_code,
-        subscription_tier: organizationData.subscription_tier,
-        status: organizationData.status
-      } : null,
-      membership: userMembership ? {
-        membership_id: userMembership.id,
-        role: userRole,
-        permissions: userPermissions,
-        is_primary: (userMembership.metadata as any)?.is_primary || false,
-        joined_at: (userMembership.metadata as any)?.joined_at || userMembership.created_at,
-        relationship_strength: userMembership.relationship_strength
-      } : null,
+      organization: organizationData
+        ? {
+            id: organizationData.id,
+            organization_name: organizationData.organization_name,
+            organization_type: organizationData.organization_type,
+            organization_code: organizationData.organization_code,
+            subscription_tier: organizationData.subscription_tier,
+            status: organizationData.status
+          }
+        : null,
+      membership: userMembership
+        ? {
+            membership_id: userMembership.id,
+            role: userRole,
+            permissions: userPermissions,
+            is_primary: (userMembership.metadata as any)?.is_primary || false,
+            joined_at: (userMembership.metadata as any)?.joined_at || userMembership.created_at,
+            relationship_strength: userMembership.relationship_strength
+          }
+        : null,
       permissions: userPermissions,
       context: {
         current_organization_id: currentOrganizationId,
@@ -167,12 +189,8 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(userContext)
-
   } catch (error) {
     console.error('User context error:', error)
-    return NextResponse.json(
-      { error: 'Failed to load user context' }, 
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to load user context' }, { status: 500 })
   }
 }

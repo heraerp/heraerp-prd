@@ -11,7 +11,11 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 let supabase: ReturnType<typeof createClient> | null = null
 
 function getSupabase() {
-  if (!supabase && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (
+    !supabase &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
     supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -66,15 +70,15 @@ export function StaffStatusDisplay() {
   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { currentOrganization } = useMultiOrgAuth()
-  
+
   useEffect(() => {
     if (!currentOrganization) return
-    
+
     const db = getSupabase()
     if (!db) return
-    
+
     fetchStaffStatuses()
-    
+
     // Set up real-time subscription
     const subscription = db
       .channel('staff-status')
@@ -92,27 +96,28 @@ export function StaffStatusDisplay() {
         }
       )
       .subscribe()
-    
+
     return () => {
       subscription.unsubscribe()
     }
   }, [currentOrganization])
-  
+
   const fetchStaffStatuses = async () => {
     if (!currentOrganization) return
-    
+
     const db = getSupabase()
     if (!db) {
       // No Supabase configured - show empty state
       setIsLoading(false)
       return
     }
-    
+
     try {
       // Get all staff members
       const { data: staff } = await db
         .from('core_entities')
-        .select(`
+        .select(
+          `
           *,
           status_relationships:core_relationships!from_entity_id(
             to_entity:to_entity_id(id, entity_name, entity_code),
@@ -124,24 +129,27 @@ export function StaffStatusDisplay() {
             client:source_entity_id(entity_name),
             metadata
           )
-        `)
+        `
+        )
         .eq('organization_id', currentOrganization.id)
         .eq('entity_type', 'employee')
         .eq('status_relationships.relationship_type', 'has_workflow_status')
         .eq('status_relationships.relationship_data->is_active', 'true')
-      
+
       // Transform staff data
       const transformed = (staff || []).map(member => {
         const currentStatus = member.status_relationships?.[0]?.to_entity
         const statusCode = currentStatus?.entity_code || 'STATUS-STAFF-AVAILABLE'
-        const statusConfig = STATUS_CONFIG[statusCode as keyof typeof STATUS_CONFIG] || STATUS_CONFIG['STATUS-STAFF-AVAILABLE']
-        
+        const statusConfig =
+          STATUS_CONFIG[statusCode as keyof typeof STATUS_CONFIG] ||
+          STATUS_CONFIG['STATUS-STAFF-AVAILABLE']
+
         // Find current appointment if busy
         const currentAppointment = member.current_appointments?.find(
-          apt => apt.transaction_type === 'appointment' && 
-                 (apt.metadata as any)?.status === 'checked_in'
+          apt =>
+            apt.transaction_type === 'appointment' && (apt.metadata as any)?.status === 'checked_in'
         )
-        
+
         return {
           id: member.id,
           name: member.entity_name,
@@ -153,14 +161,16 @@ export function StaffStatusDisplay() {
           statusChangedAt: member.status_relationships?.[0]?.relationship_data?.transitioned_at
         }
       })
-      
+
       // Sort: Available first, then by name
       transformed.sort((a, b) => {
-        if (a.statusCode === 'STATUS-STAFF-AVAILABLE' && b.statusCode !== 'STATUS-STAFF-AVAILABLE') return -1
-        if (a.statusCode !== 'STATUS-STAFF-AVAILABLE' && b.statusCode === 'STATUS-STAFF-AVAILABLE') return 1
+        if (a.statusCode === 'STATUS-STAFF-AVAILABLE' && b.statusCode !== 'STATUS-STAFF-AVAILABLE')
+          return -1
+        if (a.statusCode !== 'STATUS-STAFF-AVAILABLE' && b.statusCode === 'STATUS-STAFF-AVAILABLE')
+          return 1
         return a.name.localeCompare(b.name)
       })
-      
+
       setStaffMembers(transformed)
     } catch (error) {
       console.error('Failed to fetch staff statuses:', error)
@@ -168,18 +178,18 @@ export function StaffStatusDisplay() {
       setIsLoading(false)
     }
   }
-  
+
   const getStatusIcon = (statusCode: string) => {
     const config = STATUS_CONFIG[statusCode as keyof typeof STATUS_CONFIG]
     const Icon = config?.icon || User
     return <Icon className="w-4 h-4" />
   }
-  
+
   const getStatusBadgeVariant = (statusCode: string) => {
     const config = STATUS_CONFIG[statusCode as keyof typeof STATUS_CONFIG]
     return config?.variant || 'default'
   }
-  
+
   if (isLoading) {
     return (
       <Card>
@@ -187,17 +197,15 @@ export function StaffStatusDisplay() {
           <CardTitle>Staff Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
-            Loading staff status...
-          </div>
+          <div className="text-center py-8 text-muted-foreground">Loading staff status...</div>
         </CardContent>
       </Card>
     )
   }
-  
+
   const availableCount = staffMembers.filter(s => s.statusCode === 'STATUS-STAFF-AVAILABLE').length
   const busyCount = staffMembers.filter(s => s.statusCode === 'STATUS-STAFF-BUSY').length
-  
+
   return (
     <Card>
       <CardHeader>

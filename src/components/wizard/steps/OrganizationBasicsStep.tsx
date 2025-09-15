@@ -3,7 +3,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import type { WizardData } from '../BusinessSetupWizard'
@@ -79,7 +85,7 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
         [field]: value
       }
     }
-    
+
     // Auto-set currency based on country
     if (field === 'country') {
       const country = COUNTRIES.find(c => c.code === value)
@@ -87,7 +93,7 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
         updatedData.organizationBasics.base_currency_code = country.currency
       }
     }
-    
+
     onChange(updatedData)
   }
 
@@ -123,12 +129,10 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
             id="organization_name"
             placeholder="Enter your business name"
             value={orgData.organization_name}
-            onChange={(e) => handleChange('organization_name', e.target.value)}
+            onChange={e => handleChange('organization_name', e.target.value)}
             className="w-full"
           />
-          <p className="text-xs text-muted-foreground">
-            The legal name of your business
-          </p>
+          <p className="text-xs text-muted-foreground">The legal name of your business</p>
         </div>
 
         {/* Organization Code */}
@@ -140,7 +144,7 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
             id="organization_code"
             placeholder="ACME-US"
             value={orgData.organization_code}
-            onChange={(e) => handleChange('organization_code', e.target.value.toUpperCase())}
+            onChange={e => handleChange('organization_code', e.target.value.toUpperCase())}
             className="w-full"
             maxLength={10}
           />
@@ -154,12 +158,12 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
           <Label htmlFor="country" className="text-sm font-medium">
             Primary Country <span className="text-red-500">*</span>
           </Label>
-          <Select value={orgData.country} onValueChange={(value) => handleChange('country', value)}>
+          <Select value={orgData.country} onValueChange={value => handleChange('country', value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select your primary country" />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
-              {COUNTRIES.map((country) => (
+              {COUNTRIES.map(country => (
                 <SelectItem key={country.code} value={country.code} className="hera-select-item">
                   <div className="flex items-center space-x-2">
                     <span>{country.name}</span>
@@ -176,15 +180,15 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
           <Label htmlFor="industry_classification" className="text-sm font-medium">
             Industry Type <span className="text-red-500">*</span>
           </Label>
-          <Select 
-            value={orgData.industry_classification} 
-            onValueChange={(value) => handleChange('industry_classification', value)}
+          <Select
+            value={orgData.industry_classification}
+            onValueChange={value => handleChange('industry_classification', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select your industry" />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
-              {INDUSTRIES.map((industry) => (
+              {INDUSTRIES.map(industry => (
                 <SelectItem key={industry.code} value={industry.code} className="hera-select-item">
                   {industry.name}
                 </SelectItem>
@@ -198,15 +202,15 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
           <Label htmlFor="base_currency_code" className="text-sm font-medium">
             Base Currency <span className="text-red-500">*</span>
           </Label>
-          <Select 
-            value={orgData.base_currency_code} 
-            onValueChange={(value) => handleChange('base_currency_code', value)}
+          <Select
+            value={orgData.base_currency_code}
+            onValueChange={value => handleChange('base_currency_code', value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select base currency" />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
-              {CURRENCIES.map((currency) => (
+              {CURRENCIES.map(currency => (
                 <SelectItem key={currency.code} value={currency.code} className="hera-select-item">
                   <div className="flex items-center space-x-2">
                     <span>{currency.code}</span>
@@ -223,12 +227,15 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
           <Label htmlFor="time_zone" className="text-sm font-medium">
             Time Zone <span className="text-red-500">*</span>
           </Label>
-          <Select value={orgData.time_zone} onValueChange={(value) => handleChange('time_zone', value)}>
+          <Select
+            value={orgData.time_zone}
+            onValueChange={value => handleChange('time_zone', value)}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select your time zone" />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
-              {TIME_ZONES.map((tz) => (
+              {TIME_ZONES.map(tz => (
                 <SelectItem key={tz.code} value={tz.code} className="hera-select-item">
                   {tz.name}
                 </SelectItem>
@@ -249,22 +256,20 @@ export const OrganizationBasicsStep: React.FC<OrganizationBasicsStepProps> = ({
             <span className="font-medium">Code:</span> {orgData.organization_code || 'Not set'}
           </div>
           <div>
-            <span className="font-medium">Country:</span> {
-              COUNTRIES.find(c => c.code === orgData.country)?.name || 'Not selected'
-            }
+            <span className="font-medium">Country:</span>{' '}
+            {COUNTRIES.find(c => c.code === orgData.country)?.name || 'Not selected'}
           </div>
           <div>
-            <span className="font-medium">Industry:</span> {
-              INDUSTRIES.find(i => i.code === orgData.industry_classification)?.name || 'Not selected'
-            }
+            <span className="font-medium">Industry:</span>{' '}
+            {INDUSTRIES.find(i => i.code === orgData.industry_classification)?.name ||
+              'Not selected'}
           </div>
           <div>
             <span className="font-medium">Currency:</span> {orgData.base_currency_code || 'Not set'}
           </div>
           <div>
-            <span className="font-medium">Time Zone:</span> {
-              TIME_ZONES.find(tz => tz.code === orgData.time_zone)?.name || 'Not selected'
-            }
+            <span className="font-medium">Time Zone:</span>{' '}
+            {TIME_ZONES.find(tz => tz.code === orgData.time_zone)?.name || 'Not selected'}
           </div>
         </div>
       </div>

@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Users, 
-  DollarSign, 
+import {
+  Users,
+  DollarSign,
   Calendar,
   TrendingUp,
   AlertCircle,
@@ -89,7 +89,7 @@ export function HCMDashboard() {
 
   const loadHCMMetrics = async () => {
     if (!currentOrganization) return
-    
+
     try {
       setLoading(true)
       universalApi.setOrganizationId(currentOrganization.id)
@@ -100,9 +100,8 @@ export function HCMDashboard() {
         filters: { entity_type: 'employee' }
       })
 
-      const activeEmployees = employees.data?.filter(e => 
-        (e.metadata as any)?.status === 'active'
-      ) || []
+      const activeEmployees =
+        employees.data?.filter(e => (e.metadata as any)?.status === 'active') || []
 
       // Calculate metrics
       const totalEmployees = employees.data?.length || 0
@@ -111,28 +110,29 @@ export function HCMDashboard() {
       // Get recent hires (last 30 days)
       const thirtyDaysAgo = new Date()
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-      const newHires = activeEmployees.filter(e => 
-        new Date((e.metadata as any)?.hire_date || e.created_at) > thirtyDaysAgo
+      const newHires = activeEmployees.filter(
+        e => new Date((e.metadata as any)?.hire_date || e.created_at) > thirtyDaysAgo
       ).length
 
       // Get terminations
       const terminations = await universalApi.queryUniversal({
         table: 'universal_transactions',
-        filters: { 
+        filters: {
           transaction_type: 'employee_termination',
           transaction_date: { gte: thirtyDaysAgo.toISOString() }
         }
       })
 
       // Calculate payroll cost
-      const totalPayrollCost = activeEmployees.reduce((sum, emp) => 
-        sum + parseFloat((emp.metadata as any)?.base_salary || 0), 0
+      const totalPayrollCost = activeEmployees.reduce(
+        (sum, emp) => sum + parseFloat((emp.metadata as any)?.base_salary || 0),
+        0
       )
 
       // Get leave requests
       const leaveRequests = await universalApi.queryUniversal({
         table: 'universal_transactions',
-        filters: { 
+        filters: {
           transaction_type: 'leave_request',
           'metadata->status': 'pending'
         }
@@ -142,11 +142,11 @@ export function HCMDashboard() {
       const deptMap = new Map<string, DepartmentStats>()
       activeEmployees.forEach(emp => {
         const dept = (emp.metadata as any)?.department || 'Unknown'
-        const current = deptMap.get(dept) || { 
-          name: dept, 
-          headcount: 0, 
-          payrollCost: 0, 
-          turnoverRate: 0 
+        const current = deptMap.get(dept) || {
+          name: dept,
+          headcount: 0,
+          payrollCost: 0,
+          turnoverRate: 0
         }
         current.headcount++
         current.payrollCost += parseFloat((emp.metadata as any)?.base_salary || 0)
@@ -154,9 +154,8 @@ export function HCMDashboard() {
       })
 
       // Calculate turnover rate
-      const turnoverRate = totalEmployees > 0 
-        ? ((terminations.data?.length || 0) / totalEmployees) * 100 
-        : 0
+      const turnoverRate =
+        totalEmployees > 0 ? ((terminations.data?.length || 0) / totalEmployees) * 100 : 0
 
       // Calculate diversity index (simplified Shannon index)
       const genderMap = new Map()
@@ -164,7 +163,7 @@ export function HCMDashboard() {
         const gender = (emp.metadata as any)?.gender || 'Unknown'
         genderMap.set(gender, (genderMap.get(gender) || 0) + 1)
       })
-      
+
       let diversityIndex = 0
       if (activeCount > 0) {
         genderMap.forEach(count => {
@@ -197,7 +196,6 @@ export function HCMDashboard() {
         overtimeHours: 156,
         departmentStats: Array.from(deptMap.values())
       })
-
     } catch (error) {
       console.error('Error loading HCM metrics:', error)
     } finally {
@@ -209,7 +207,9 @@ export function HCMDashboard() {
     const insights = []
 
     if (data.turnoverRate > 15) {
-      insights.push('⚠️ High turnover rate detected. Consider conducting exit interviews and reviewing compensation packages.')
+      insights.push(
+        '⚠️ High turnover rate detected. Consider conducting exit interviews and reviewing compensation packages.'
+      )
     }
 
     if (data.diversityIndex < 0.5) {
@@ -217,22 +217,26 @@ export function HCMDashboard() {
     }
 
     if (data.overtimeHours > 100) {
-      insights.push('⏰ Excessive overtime detected. Review workload distribution and consider additional hiring.')
+      insights.push(
+        '⏰ Excessive overtime detected. Review workload distribution and consider additional hiring.'
+      )
     }
 
     const largestDept = data.departmentStats.sort((a: any, b: any) => b.headcount - a.headcount)[0]
     if (largestDept) {
-      insights.push(`💡 ${largestDept.name} is your largest department. Consider succession planning for key roles.`)
+      insights.push(
+        `💡 ${largestDept.name} is your largest department. Consider succession planning for key roles.`
+      )
     }
 
     setAiInsights(insights)
   }
 
-  const MetricCard = ({ 
-    title, 
-    value, 
-    icon: Icon, 
-    trend, 
+  const MetricCard = ({
+    title,
+    value,
+    icon: Icon,
+    trend,
     color = 'text-blue-600',
     suffix = ''
   }: {
@@ -247,11 +251,10 @@ export function HCMDashboard() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-              {title}
-            </p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
             <p className="text-2xl font-bold mt-1">
-              {value}{suffix}
+              {value}
+              {suffix}
             </p>
             {trend && (
               <p className="text-xs text-green-600 mt-1 flex items-center">
@@ -363,27 +366,23 @@ export function HCMDashboard() {
           <Card className="hera-card">
             <CardHeader>
               <CardTitle>Department Overview</CardTitle>
-              <CardDescription>
-                Headcount and costs by department
-              </CardDescription>
+              <CardDescription>Headcount and costs by department</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {departmentStats.map((dept) => (
+                {departmentStats.map(dept => (
                   <div key={dept.name} className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">{dept.name}</span>
                       <div className="flex items-center space-x-4">
-                        <Badge variant="secondary">
-                          {dept.headcount} employees
-                        </Badge>
+                        <Badge variant="secondary">{dept.headcount} employees</Badge>
                         <span className="text-sm text-gray-600">
                           {formatCurrency(dept.payrollCost / 12)}/month
                         </span>
                       </div>
                     </div>
-                    <Progress 
-                      value={(dept.headcount / metrics.activeEmployees) * 100} 
+                    <Progress
+                      value={(dept.headcount / metrics.activeEmployees) * 100}
                       className="h-2"
                     />
                   </div>
@@ -405,7 +404,7 @@ export function HCMDashboard() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span>Visa Expiries</span>
-                    <Badge variant={metrics.complianceAlerts > 0 ? "destructive" : "default"}>
+                    <Badge variant={metrics.complianceAlerts > 0 ? 'destructive' : 'default'}>
                       {metrics.complianceAlerts} alerts
                     </Badge>
                   </div>
@@ -467,7 +466,9 @@ export function HCMDashboard() {
                   <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <DollarSign className="w-8 h-8 mx-auto mb-2 text-green-600" />
                     <p className="text-sm text-gray-600">This Month</p>
-                    <p className="text-2xl font-bold">{formatCurrency(metrics.totalPayrollCost / 12)}</p>
+                    <p className="text-2xl font-bold">
+                      {formatCurrency(metrics.totalPayrollCost / 12)}
+                    </p>
                   </div>
                   <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <Clock className="w-8 h-8 mx-auto mb-2 text-orange-600" />
@@ -475,9 +476,7 @@ export function HCMDashboard() {
                     <p className="text-2xl font-bold">2 hrs</p>
                   </div>
                 </div>
-                <Button className="w-full">
-                  Run Monthly Payroll
-                </Button>
+                <Button className="w-full">Run Monthly Payroll</Button>
               </div>
             </CardContent>
           </Card>
@@ -487,9 +486,7 @@ export function HCMDashboard() {
           <Card className="hera-card">
             <CardHeader>
               <CardTitle>Time & Attendance</CardTitle>
-              <CardDescription>
-                Biometric integration and real-time tracking
-              </CardDescription>
+              <CardDescription>Biometric integration and real-time tracking</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-400">
@@ -503,9 +500,7 @@ export function HCMDashboard() {
           <Card className="hera-card">
             <CardHeader>
               <CardTitle>Performance Management</CardTitle>
-              <CardDescription>
-                360° reviews and goal tracking
-              </CardDescription>
+              <CardDescription>360° reviews and goal tracking</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-400">
@@ -519,9 +514,7 @@ export function HCMDashboard() {
           <Card className="hera-card">
             <CardHeader>
               <CardTitle>Benefits Administration</CardTitle>
-              <CardDescription>
-                Health, retirement, and other benefits management
-              </CardDescription>
+              <CardDescription>Health, retirement, and other benefits management</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-400">
@@ -538,9 +531,7 @@ export function HCMDashboard() {
                 <BarChart3 className="w-5 h-5 mr-2" />
                 Workforce Analytics
               </CardTitle>
-              <CardDescription>
-                Real-time insights and predictive analytics
-              </CardDescription>
+              <CardDescription>Real-time insights and predictive analytics</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">

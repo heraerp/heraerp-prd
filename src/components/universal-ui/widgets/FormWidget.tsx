@@ -6,7 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -74,7 +80,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
         return (
           <Input
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={e => handleFieldChange(field.name, e.target.value)}
             placeholder={field.placeholder}
             required={field.required}
           />
@@ -85,7 +91,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
           <Input
             type="number"
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.valueAsNumber)}
+            onChange={e => handleFieldChange(field.name, e.target.valueAsNumber)}
             placeholder={field.placeholder}
             required={field.required}
           />
@@ -94,12 +100,14 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
       case 'money':
         return (
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              $
+            </span>
             <Input
               type="number"
               step="0.01"
               value={value}
-              onChange={(e) => handleFieldChange(field.name, e.target.valueAsNumber)}
+              onChange={e => handleFieldChange(field.name, e.target.valueAsNumber)}
               className="pl-8"
               placeholder={field.placeholder}
               required={field.required}
@@ -115,12 +123,14 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
               step="0.01"
               max="100"
               value={value}
-              onChange={(e) => handleFieldChange(field.name, e.target.valueAsNumber)}
+              onChange={e => handleFieldChange(field.name, e.target.valueAsNumber)}
               className="pr-8"
               placeholder={field.placeholder}
               required={field.required}
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              %
+            </span>
           </div>
         )
 
@@ -128,7 +138,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
         return (
           <Textarea
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={e => handleFieldChange(field.name, e.target.value)}
             placeholder={field.placeholder}
             required={field.required}
             rows={4}
@@ -142,8 +152,8 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !value && "text-muted-foreground"
+                  'w-full justify-start text-left font-normal',
+                  !value && 'text-muted-foreground'
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -154,7 +164,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
               <Calendar
                 mode="single"
                 selected={value ? new Date(value) : undefined}
-                onSelect={(date) => handleFieldChange(field.name, date?.toISOString())}
+                onSelect={date => handleFieldChange(field.name, date?.toISOString())}
                 initialFocus
               />
             </PopoverContent>
@@ -163,7 +173,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
 
       case 'select':
         return (
-          <Select value={value} onValueChange={(v) => handleFieldChange(field.name, v)}>
+          <Select value={value} onValueChange={v => handleFieldChange(field.name, v)}>
             <SelectTrigger>
               <SelectValue placeholder={field.placeholder || 'Select...'} />
             </SelectTrigger>
@@ -182,7 +192,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
           loadEntityOptions(field.name, field.entity_type)
         }
         return (
-          <Select value={value} onValueChange={(v) => handleFieldChange(field.name, v)}>
+          <Select value={value} onValueChange={v => handleFieldChange(field.name, v)}>
             <SelectTrigger>
               <SelectValue placeholder={field.placeholder || `Select ${field.entity_type}...`} />
             </SelectTrigger>
@@ -200,7 +210,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
         return (
           <Switch
             checked={value === true}
-            onCheckedChange={(checked) => handleFieldChange(field.name, checked)}
+            onCheckedChange={checked => handleFieldChange(field.name, checked)}
           />
         )
 
@@ -208,7 +218,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
         return (
           <Input
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={e => handleFieldChange(field.name, e.target.value)}
             placeholder={field.placeholder}
           />
         )
@@ -218,7 +228,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
   const renderFormFields = () => {
     const fields = widget.config.fields || []
     const sections: Record<string, any[]> = {}
-    
+
     // Group fields by section
     fields.forEach((field: any) => {
       const section = field.layout?.section || 'default'
@@ -236,12 +246,15 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
         <div className="grid grid-cols-12 gap-4">
           {sectionFields.map((field: any) => {
             const colSpan = field.layout?.col_span || 12
-            
+
             // Check conditional display
-            if (field.conditional_display && !evaluateCondition(field.conditional_display, formData)) {
+            if (
+              field.conditional_display &&
+              !evaluateCondition(field.conditional_display, formData)
+            ) {
               return null
             }
-            
+
             return (
               <div key={field.name} className={`col-span-${colSpan}`}>
                 <div className="space-y-2">
@@ -264,7 +277,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
 
   const evaluateCondition = (condition: any, data: any): boolean => {
     const fieldValue = data[condition.field]
-    
+
     switch (condition.operator) {
       case 'equals':
         return fieldValue === condition.value
@@ -303,7 +316,7 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
           smart_code: widget.smart_code
         })
       }
-      
+
       if (onAction) {
         onAction({ type: 'save', success: true })
       }
@@ -325,14 +338,18 @@ export function FormWidget({ widget, entityId, organizationId, onAction }: FormW
       <CardContent>
         <div className="space-y-6">
           {renderFormFields()}
-          
+
           {widget.actions && widget.actions.length > 0 && (
             <div className="flex justify-end gap-2 pt-4 border-t">
               {widget.actions.map(action => (
                 <Button
                   key={action.id}
                   variant={action.type === 'delete' ? 'destructive' : 'default'}
-                  onClick={() => action.type === 'custom' && action.id === 'save' ? handleSave() : onAction?.(action)}
+                  onClick={() =>
+                    action.type === 'custom' && action.id === 'save'
+                      ? handleSave()
+                      : onAction?.(action)
+                  }
                   disabled={loading}
                 >
                   {action.label}

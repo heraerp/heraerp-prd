@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Furniture Digital Accountant Integration
  * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.v1
- * 
+ *
  * Simplified accounting interface for furniture manufacturers
  * Natural language processing for non-accountants
  */
@@ -23,7 +23,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { 
+import {
   Brain,
   Send,
   Loader2,
@@ -160,7 +160,7 @@ export default function FurnitureDigitalAccountantPage() {
   const router = useRouter()
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  
+
   const [messages, setMessages] = useState<FurnitureMessage[]>([
     {
       id: '1',
@@ -179,7 +179,7 @@ I'll handle all the technical accounting for you! 🪑`,
       status: 'success'
     }
   ])
-  
+
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [showExamples, setShowExamples] = useState(true)
@@ -190,7 +190,7 @@ I'll handle all the technical accounting for you! 🪑`,
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  
+
   // Auto-scroll to bottom with smooth animation
   useEffect(() => {
     const scrollToBottom = () => {
@@ -204,26 +204,26 @@ I'll handle all the technical accounting for you! 🪑`,
         }
       }
     }
-    
+
     const timer = setTimeout(() => {
       requestAnimationFrame(scrollToBottom)
     }, 50)
-    
+
     return () => clearTimeout(timer)
   }, [messages])
-  
+
   const processFurnitureTransaction = async (text: string) => {
     setLoading(true)
-    
+
     const userMessage: FurnitureMessage = {
       id: Date.now().toString(),
       type: 'user',
       content: text,
       timestamp: new Date()
     }
-    
+
     setMessages(prev => [...prev, userMessage])
-    
+
     try {
       // Call the furniture digital accountant API
       const response = await fetch('/api/v1/furniture/digital-accountant', {
@@ -237,13 +237,13 @@ I'll handle all the technical accounting for you! 🪑`,
           useMCP: useMCP
         })
       })
-      
+
       if (!response.ok) {
         throw new Error('Failed to process transaction')
       }
-      
+
       const data = await response.json()
-      
+
       const assistantMessage: FurnitureMessage = {
         id: Date.now().toString(),
         type: 'assistant',
@@ -255,7 +255,7 @@ I'll handle all the technical accounting for you! 🪑`,
         journalEntry: data.journalEntry,
         actions: data.actions
       }
-      
+
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       const errorMessage: FurnitureMessage = {
@@ -272,21 +272,21 @@ I'll handle all the technical accounting for you! 🪑`,
       inputRef.current?.focus()
     }
   }
-  
+
   const handleQuickPrompt = (prompt: string) => {
     setInput(prompt)
     inputRef.current?.focus()
   }
-  
+
   const handleQuickExpense = async (expense: any) => {
     const prompt = `Paid ${expense.amount} for ${expense.label}`
     await processFurnitureTransaction(prompt)
   }
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || loading) return
-    
+
     await processFurnitureTransaction(input.trim())
   }
 
@@ -295,7 +295,7 @@ I'll handle all the technical accounting for you! 🪑`,
     if (result.suggestedMessage) {
       setInput(result.suggestedMessage)
       inputRef.current?.focus()
-      
+
       // Add system message about document analysis
       const systemMessage: FurnitureMessage = {
         id: Date.now().toString(),
@@ -311,7 +311,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
         timestamp: new Date(),
         status: 'success'
       }
-      
+
       setMessages(prev => [...prev, systemMessage])
     }
   }
@@ -334,7 +334,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode ? "bg-gray-900" : "bg-gray-50")}>
+    <div className={cn('min-h-screen', isDarkMode ? 'bg-gray-900' : 'bg-gray-50')}>
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -346,69 +346,75 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                 variant="outline"
                 size="sm"
                 onClick={() => setUseMCP(!useMCP)}
-                className={cn(
-                  "gap-2",
-                  useMCP ? "bg-green-500/10 hover:bg-green-500/20" : ""
-                )}
+                className={cn('gap-2', useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : '')}
               >
-                <Zap className={cn("h-4 w-4", useMCP && "text-green-500")} />
+                <Zap className={cn('h-4 w-4', useMCP && 'text-green-500')} />
                 {useMCP ? 'MCP Mode' : 'API Mode'}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsDarkMode(!isDarkMode)}
-              >
+              <Button variant="outline" size="sm" onClick={() => setIsDarkMode(!isDarkMode)}>
                 {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
             </>
           }
         />
-        
+
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Chat Area */}
           <div className="lg:col-span-3">
-            <Card className={cn(
-              "h-[600px] flex flex-col",
-              isDarkMode ? "bg-gray-800/50 border-gray-700" : "bg-white"
-            )}>
+            <Card
+              className={cn(
+                'h-[600px] flex flex-col',
+                isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white'
+              )}
+            >
               {/* Chat Messages */}
-              <ScrollArea 
-                ref={scrollAreaRef}
-                className="flex-1 p-4"
-              >
+              <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
                 <div className="space-y-4">
-                  {messages.map((message) => (
+                  {messages.map(message => (
                     <div
                       key={message.id}
                       className={cn(
-                        "flex gap-3",
-                        message.type === 'user' ? "justify-end" : "justify-start"
+                        'flex gap-3',
+                        message.type === 'user' ? 'justify-end' : 'justify-start'
                       )}
                     >
                       {message.type === 'assistant' && (
-                        <div className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center",
-                          isDarkMode ? "bg-blue-500/20" : "bg-blue-500/10"
-                        )}>
+                        <div
+                          className={cn(
+                            'w-8 h-8 rounded-full flex items-center justify-center',
+                            isDarkMode ? 'bg-blue-500/20' : 'bg-blue-500/10'
+                          )}
+                        >
                           <Brain className="h-4 w-4 text-blue-500" />
                         </div>
                       )}
-                      
-                      <div className={cn(
-                        "max-w-[80%] rounded-lg p-3",
-                        message.type === 'user' 
-                          ? isDarkMode ? "bg-blue-600 text-white" : "bg-blue-500 text-white"
-                          : message.type === 'system'
-                          ? isDarkMode ? "bg-yellow-600/20 border border-yellow-600/40" : "bg-yellow-100 border border-yellow-400"
-                          : isDarkMode ? "bg-gray-700" : "bg-gray-100"
-                      )}>
-                        <p className={cn(
-                          "whitespace-pre-wrap",
-                          message.type === 'system' && "text-yellow-200"
-                        )}>{message.content}</p>
-                        
+
+                      <div
+                        className={cn(
+                          'max-w-[80%] rounded-lg p-3',
+                          message.type === 'user'
+                            ? isDarkMode
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-blue-500 text-white'
+                            : message.type === 'system'
+                              ? isDarkMode
+                                ? 'bg-yellow-600/20 border border-yellow-600/40'
+                                : 'bg-yellow-100 border border-yellow-400'
+                              : isDarkMode
+                                ? 'bg-gray-700'
+                                : 'bg-gray-100'
+                        )}
+                      >
+                        <p
+                          className={cn(
+                            'whitespace-pre-wrap',
+                            message.type === 'system' && 'text-yellow-200'
+                          )}
+                        >
+                          {message.content}
+                        </p>
+
                         {message.amount && (
                           <div className="mt-2 pt-2 border-t border-gray-600">
                             <p className="text-2xl font-bold">
@@ -416,7 +422,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                             </p>
                           </div>
                         )}
-                        
+
                         {message.journalEntry && (
                           <div className="mt-3 p-2 bg-black/20 rounded text-xs font-mono">
                             <p className="text-gray-400 mb-1">Journal Entry:</p>
@@ -432,7 +438,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                             ))}
                           </div>
                         )}
-                        
+
                         {message.actions && message.actions.length > 0 && (
                           <div className="mt-3 flex gap-2 flex-wrap">
                             {message.actions.map((action, i) => (
@@ -449,30 +455,33 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                           </div>
                         )}
                       </div>
-                      
+
                       {message.type === 'user' && (
-                        <div className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center",
-                          isDarkMode ? "bg-gray-700" : "bg-gray-200"
-                        )}>
+                        <div
+                          className={cn(
+                            'w-8 h-8 rounded-full flex items-center justify-center',
+                            isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+                          )}
+                        >
                           <Users className="h-4 w-4" />
                         </div>
                       )}
                     </div>
                   ))}
-                  
+
                   {loading && (
                     <div className="flex gap-3 justify-start">
-                      <div className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center",
-                        isDarkMode ? "bg-blue-500/20" : "bg-blue-500/10"
-                      )}>
+                      <div
+                        className={cn(
+                          'w-8 h-8 rounded-full flex items-center justify-center',
+                          isDarkMode ? 'bg-blue-500/20' : 'bg-blue-500/10'
+                        )}
+                      >
                         <Brain className="h-4 w-4 text-blue-500" />
                       </div>
-                      <div className={cn(
-                        "rounded-lg p-3",
-                        isDarkMode ? "bg-gray-700" : "bg-gray-100"
-                      )}>
+                      <div
+                        className={cn('rounded-lg p-3', isDarkMode ? 'bg-gray-700' : 'bg-gray-100')}
+                      >
                         <div className="flex items-center gap-2">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           <span className="text-sm">Processing...</span>
@@ -482,7 +491,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                   )}
                 </div>
               </ScrollArea>
-              
+
               {/* Quick Actions */}
               {showExamples && (
                 <div className="p-3 border-t border-gray-700">
@@ -494,18 +503,18 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         variant="outline"
                         onClick={() => handleQuickPrompt(prompt.prompt)}
                         className={cn(
-                          "gap-2",
-                          isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                          'gap-2',
+                          isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
                         )}
                       >
-                        <prompt.icon className={cn("h-4 w-4", prompt.color)} />
+                        <prompt.icon className={cn('h-4 w-4', prompt.color)} />
                         {prompt.label}
                       </Button>
                     ))}
                   </div>
                 </div>
               )}
-              
+
               {/* Input Area */}
               <form onSubmit={handleSubmit} className="p-4 border-t border-gray-700">
                 <div className="flex gap-2">
@@ -513,13 +522,11 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                     ref={inputRef}
                     placeholder="Tell me about your transaction..."
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={e => setInput(e.target.value)}
                     disabled={loading}
                     className={cn(
-                      "flex-1",
-                      isDarkMode 
-                        ? "bg-gray-900/50 border-gray-600" 
-                        : "bg-white border-gray-300"
+                      'flex-1',
+                      isDarkMode ? 'bg-gray-900/50 border-gray-600' : 'bg-white border-gray-300'
                     )}
                   />
                   <Button type="submit" disabled={loading || !input.trim()}>
@@ -533,13 +540,11 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
               </form>
             </Card>
           </div>
-          
+
           {/* Side Panel */}
           <div className="space-y-4">
             {/* Quick Expenses */}
-            <Card className={cn(
-              isDarkMode ? "bg-gray-800/50 border-gray-700" : "bg-white"
-            )}>
+            <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium">Quick Expenses</CardTitle>
               </CardHeader>
@@ -552,8 +557,8 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                       size="sm"
                       onClick={() => handleQuickExpense(expense)}
                       className={cn(
-                        "h-auto flex-col py-3 gap-1",
-                        isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                        'h-auto flex-col py-3 gap-1',
+                        isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
                       )}
                     >
                       <expense.icon className="h-4 w-4 text-orange-500" />
@@ -564,11 +569,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Today's Summary */}
-            <Card className={cn(
-              isDarkMode ? "bg-gray-800/50 border-gray-700" : "bg-white"
-            )}>
+            <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium">Today's Summary</CardTitle>
               </CardHeader>
@@ -591,18 +594,16 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Document Upload */}
             <FurnitureDocumentUpload
               organizationId={organizationId || ''}
               onDocumentAnalyzed={handleDocumentAnalyzed}
               isDarkMode={isDarkMode}
             />
-            
+
             {/* Help Tips */}
-            <Card className={cn(
-              isDarkMode ? "bg-gray-800/50 border-gray-700" : "bg-white"
-            )}>
+            <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" />

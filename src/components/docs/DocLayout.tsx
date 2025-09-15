@@ -19,11 +19,11 @@ interface DocLayoutProps {
   currentPath?: string
 }
 
-export default function DocLayout({ 
-  children, 
-  navigation, 
-  docType, 
-  currentPath = '' 
+export default function DocLayout({
+  children,
+  navigation,
+  docType,
+  currentPath = ''
 }: DocLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
@@ -36,12 +36,10 @@ export default function DocLayout({
           <div className="mr-4 hidden md:flex">
             <Link href="/docs" className="mr-6 flex items-center space-x-2">
               <BookOpen className="h-6 w-6 text-hera-primary" />
-              <span className="hidden font-bold sm:inline-block">
-                HERA Docs
-              </span>
+              <span className="hidden font-bold sm:inline-block">HERA Docs</span>
             </Link>
           </div>
-          
+
           <Button
             variant="ghost"
             className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
@@ -63,27 +61,25 @@ export default function DocLayout({
 
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
         {/* Sidebar */}
-        <aside className={cn(
-          "fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block",
-          sidebarOpen && "block"
-        )}>
+        <aside
+          className={cn(
+            'fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block',
+            sidebarOpen && 'block'
+          )}
+        >
           {sidebarOpen && (
             <div className="fixed inset-0 z-20 bg-background/80 backdrop-blur-sm md:hidden">
               <div className="fixed right-4 top-16 z-30">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarOpen(false)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </div>
           )}
-          
+
           <div className="relative overflow-hidden h-full py-6 pr-6 lg:py-8">
             <div className="h-full w-full">
-              <DocNavigation 
+              <DocNavigation
                 navigation={navigation}
                 docType={docType}
                 currentPath={currentPath}
@@ -101,10 +97,7 @@ export default function DocLayout({
                 Docs
               </Link>
               <span>/</span>
-              <Link 
-                href={`/docs/${docType}`} 
-                className="hover:text-foreground capitalize"
-              >
+              <Link href={`/docs/${docType}`} className="hover:text-foreground capitalize">
                 {docType === 'dev' ? 'Developer' : 'User'} Guide
               </Link>
               {currentPath && (

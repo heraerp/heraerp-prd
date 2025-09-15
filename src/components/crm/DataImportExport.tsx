@@ -1,7 +1,7 @@
 /**
  * HERA CRM Data Import/Export Component
  * Professional data migration tools for customer onboarding
- * 
+ *
  * Project Manager Task: Data Import/Export UI
  */
 
@@ -12,21 +12,43 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Upload, Download, FileText, AlertCircle, CheckCircle, 
-  X, Database, Users, Target, CheckSquare, Loader2,
-  Eye, Settings, Filter, Calendar, RefreshCw,
-  ArrowRight, FileSpreadsheet, FileText as FileJson, File as FileCsv
+import {
+  Upload,
+  Download,
+  FileText,
+  AlertCircle,
+  CheckCircle,
+  X,
+  Database,
+  Users,
+  Target,
+  CheckSquare,
+  Loader2,
+  Eye,
+  Settings,
+  Filter,
+  Calendar,
+  RefreshCw,
+  ArrowRight,
+  FileSpreadsheet,
+  FileText as FileJson,
+  File as FileCsv
 } from 'lucide-react'
-import { 
-  createImportExportService, 
-  ImportTemplate, 
-  ImportResult, 
-  ExportOptions 
+import {
+  createImportExportService,
+  ImportTemplate,
+  ImportResult,
+  ExportOptions
 } from '@/lib/crm/import-export-service'
 
 interface DataImportExportProps {
@@ -36,27 +58,31 @@ interface DataImportExportProps {
   onImportComplete?: (result: ImportResult) => void
 }
 
-export function DataImportExport({ 
-  isOpen, 
-  onClose, 
-  organizationId, 
-  onImportComplete 
+export function DataImportExport({
+  isOpen,
+  onClose,
+  organizationId,
+  onImportComplete
 }: DataImportExportProps) {
   const [importExportService] = useState(() => createImportExportService(organizationId))
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
+
   // Import state
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
-  const [importEntityType, setImportEntityType] = useState<'contact' | 'opportunity' | 'task'>('contact')
+  const [importEntityType, setImportEntityType] = useState<'contact' | 'opportunity' | 'task'>(
+    'contact'
+  )
   const [isImporting, setIsImporting] = useState(false)
   const [importProgress, setImportProgress] = useState(0)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
   const [parsedData, setParsedData] = useState<any[] | null>(null)
   const [showPreview, setShowPreview] = useState(false)
-  
+
   // Export state
-  const [exportEntityType, setExportEntityType] = useState<'contact' | 'opportunity' | 'task' | 'all'>('contact')
+  const [exportEntityType, setExportEntityType] = useState<
+    'contact' | 'opportunity' | 'task' | 'all'
+  >('contact')
   const [exportFormat, setExportFormat] = useState<'csv' | 'json' | 'excel'>('csv')
   const [isExporting, setIsExporting] = useState(false)
   const [exportFilters, setExportFilters] = useState({
@@ -73,11 +99,11 @@ export function DataImportExport({
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
-    
+
     setSelectedFile(file)
     setImportResult(null)
     setShowPreview(false)
-    
+
     // Parse file for preview
     if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
       parseCSVFile(file)
@@ -89,7 +115,7 @@ export function DataImportExport({
   // Parse CSV file
   const parseCSVFile = (file: File) => {
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       try {
         const csvText = e.target?.result as string
         const parsed = importExportService.parseCSV(csvText)
@@ -102,10 +128,10 @@ export function DataImportExport({
     reader.readAsText(file)
   }
 
-  // Parse JSON file  
+  // Parse JSON file
   const parseJSONFile = (file: File) => {
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       try {
         const jsonText = e.target?.result as string
         const parsed = JSON.parse(jsonText)
@@ -129,10 +155,10 @@ export function DataImportExport({
     try {
       // Get full data for import
       const reader = new FileReader()
-      reader.onload = async (e) => {
+      reader.onload = async e => {
         try {
           let fullData: any[]
-          
+
           if (selectedFile.name.endsWith('.csv')) {
             const csvText = e.target?.result as string
             fullData = importExportService.parseCSV(csvText)
@@ -143,7 +169,7 @@ export function DataImportExport({
           }
 
           // Get selected template
-          const template = selectedTemplate 
+          const template = selectedTemplate
             ? importTemplates.find(t => t.id === selectedTemplate)
             : undefined
 
@@ -203,9 +229,10 @@ export function DataImportExport({
         entityType: exportEntityType,
         format: exportFormat,
         filters: {
-          dateRange: exportFilters.dateRange.start && exportFilters.dateRange.end 
-            ? exportFilters.dateRange 
-            : undefined,
+          dateRange:
+            exportFilters.dateRange.start && exportFilters.dateRange.end
+              ? exportFilters.dateRange
+              : undefined,
           status: exportFilters.status.length > 0 ? exportFilters.status : undefined
         }
       }
@@ -214,8 +241,8 @@ export function DataImportExport({
 
       if (result.success && result.data && result.filename) {
         // Create download link
-        const blob = new Blob([result.data], { 
-          type: exportFormat === 'json' ? 'application/json' : 'text/csv' 
+        const blob = new Blob([result.data], {
+          type: exportFormat === 'json' ? 'application/json' : 'text/csv'
         })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -282,7 +309,10 @@ export function DataImportExport({
                     {/* Entity Type */}
                     <div>
                       <Label>Data Type</Label>
-                      <Select value={importEntityType} onValueChange={(value) => setImportEntityType(value as any)}>
+                      <Select
+                        value={importEntityType}
+                        onValueChange={value => setImportEntityType(value as any)}
+                      >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -325,7 +355,7 @@ export function DataImportExport({
                           </SelectItem>
                           {importTemplates
                             .filter(t => t.entityType === importEntityType)
-                            .map((template) => (
+                            .map(template => (
                               <SelectItem key={template.id} value={template.id}>
                                 <div className="flex items-center gap-2">
                                   <Database className="h-4 w-4" />
@@ -340,8 +370,8 @@ export function DataImportExport({
                     {/* File Upload */}
                     <div>
                       <Label>Select File</Label>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         onClick={() => fileInputRef.current?.click()}
                         className="w-full justify-start"
                       >
@@ -366,12 +396,14 @@ export function DataImportExport({
                           {importTemplates.find(t => t.id === selectedTemplate)?.name}
                         </h4>
                         <p className="text-sm text-blue-600 mb-2">
-                          Pre-configured for {importTemplates.find(t => t.id === selectedTemplate)?.sourceSystem} data
+                          Pre-configured for{' '}
+                          {importTemplates.find(t => t.id === selectedTemplate)?.sourceSystem} data
                         </p>
                         <div className="text-xs text-blue-600">
-                          <strong>Field Mappings:</strong> {' '}
-                          {importTemplates.find(t => t.id === selectedTemplate)?.fieldMappings
-                            .map(m => `${m.sourceField} → ${m.targetField}`)
+                          <strong>Field Mappings:</strong>{' '}
+                          {importTemplates
+                            .find(t => t.id === selectedTemplate)
+                            ?.fieldMappings.map(m => `${m.sourceField} → ${m.targetField}`)
                             .join(', ')}
                         </div>
                       </CardContent>
@@ -404,11 +436,12 @@ export function DataImportExport({
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b">
-                              {parsedData[0] && Object.keys(parsedData[0]).map((key) => (
-                                <th key={key} className="text-left p-2 font-medium bg-gray-50">
-                                  {key}
-                                </th>
-                              ))}
+                              {parsedData[0] &&
+                                Object.keys(parsedData[0]).map(key => (
+                                  <th key={key} className="text-left p-2 font-medium bg-gray-50">
+                                    {key}
+                                  </th>
+                                ))}
                             </tr>
                           </thead>
                           <tbody>
@@ -444,7 +477,9 @@ export function DataImportExport({
 
               {/* Import Results */}
               {importResult && (
-                <Card className={`border ${importResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+                <Card
+                  className={`border ${importResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
+                >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       {importResult.success ? (
@@ -485,9 +520,14 @@ export function DataImportExport({
                         </h4>
                         <div className="max-h-40 overflow-y-auto space-y-2">
                           {importResult.errors.slice(0, 10).map((error, idx) => (
-                            <div key={idx} className="text-sm p-2 bg-red-100 border border-red-200 rounded">
+                            <div
+                              key={idx}
+                              className="text-sm p-2 bg-red-100 border border-red-200 rounded"
+                            >
                               <strong>Row {error.row}:</strong> {error.error}
-                              {error.field && <span className="text-red-600"> (Field: {error.field})</span>}
+                              {error.field && (
+                                <span className="text-red-600"> (Field: {error.field})</span>
+                              )}
                             </div>
                           ))}
                           {importResult.errors.length > 10 && (
@@ -547,7 +587,10 @@ export function DataImportExport({
                     {/* Data Type */}
                     <div>
                       <Label>Data Type</Label>
-                      <Select value={exportEntityType} onValueChange={(value) => setExportEntityType(value as any)}>
+                      <Select
+                        value={exportEntityType}
+                        onValueChange={value => setExportEntityType(value as any)}
+                      >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -583,7 +626,10 @@ export function DataImportExport({
                     {/* Format */}
                     <div>
                       <Label>Export Format</Label>
-                      <Select value={exportFormat} onValueChange={(value) => setExportFormat(value as any)}>
+                      <Select
+                        value={exportFormat}
+                        onValueChange={value => setExportFormat(value as any)}
+                      >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -617,19 +663,23 @@ export function DataImportExport({
                         <Input
                           type="date"
                           value={exportFilters.dateRange.start}
-                          onChange={(e) => setExportFilters(prev => ({
-                            ...prev,
-                            dateRange: { ...prev.dateRange, start: e.target.value }
-                          }))}
+                          onChange={e =>
+                            setExportFilters(prev => ({
+                              ...prev,
+                              dateRange: { ...prev.dateRange, start: e.target.value }
+                            }))
+                          }
                           className="text-xs"
                         />
                         <Input
                           type="date"
                           value={exportFilters.dateRange.end}
-                          onChange={(e) => setExportFilters(prev => ({
-                            ...prev,
-                            dateRange: { ...prev.dateRange, end: e.target.value }
-                          }))}
+                          onChange={e =>
+                            setExportFilters(prev => ({
+                              ...prev,
+                              dateRange: { ...prev.dateRange, end: e.target.value }
+                            }))
+                          }
                           className="text-xs"
                         />
                       </div>

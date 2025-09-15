@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
+import {
   MetricCard,
   AnimatedCounter,
   StatusIndicator,
@@ -132,20 +132,24 @@ export function KitchenDisplay() {
       setIsLoading(true)
       const response = await fetch('/api/v1/restaurant/orders')
       const result = await response.json()
-      
+
       if (result.success) {
         // Filter to only show orders that need kitchen attention (pending + preparing)
-        const kitchenOrders = result.data.filter((order: KitchenOrder) => 
+        const kitchenOrders = result.data.filter((order: KitchenOrder) =>
           ['pending', 'preparing'].includes(order.status)
         )
-        
+
         setOrders(kitchenOrders)
-        
+
         // Update kitchen stats
         const totalOrders = result.data.length
-        const inProgress = result.data.filter((order: KitchenOrder) => order.status === 'preparing').length
-        const pending = result.data.filter((order: KitchenOrder) => order.status === 'pending').length
-        
+        const inProgress = result.data.filter(
+          (order: KitchenOrder) => order.status === 'preparing'
+        ).length
+        const pending = result.data.filter(
+          (order: KitchenOrder) => order.status === 'pending'
+        ).length
+
         setStats(prev => ({
           ...prev,
           totalOrders,
@@ -168,12 +172,12 @@ export function KitchenDisplay() {
 
   useEffect(() => {
     loadOrders()
-    
+
     // Refresh orders every 30 seconds
     const interval = setInterval(() => {
       loadOrders()
     }, 30000)
-    
+
     return () => clearInterval(interval)
   }, [])
 
@@ -185,15 +189,17 @@ export function KitchenDisplay() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId, status: newStatus })
       })
-      
+
       const result = await response.json()
       if (result.success) {
-        setOrders(prev => prev.map(order => 
-          order.id === orderId ? { ...order, status: newStatus as KitchenOrder['status'] } : order
-        ))
+        setOrders(prev =>
+          prev.map(order =>
+            order.id === orderId ? { ...order, status: newStatus as KitchenOrder['status'] } : order
+          )
+        )
         setNotificationMessage(`Order ${newStatus === 'preparing' ? 'started' : 'completed'}`)
         setShowNotification(true)
-        
+
         // Reload orders to get updated data
         loadOrders()
       } else {
@@ -257,35 +263,35 @@ export function KitchenDisplay() {
           icon={<Utensils className="w-5 h-5 text-white" />}
           color="from-blue-500 to-indigo-600"
         />
-        
+
         <MetricCard
           title="In Progress"
           value={stats.inProgress}
           icon={<ChefHat className="w-5 h-5 text-white" />}
           color="from-orange-500 to-red-600"
         />
-        
+
         <MetricCard
           title="New Orders"
           value={stats.readyToServe}
           icon={<Bell className="w-5 h-5 text-white" />}
           color="from-yellow-500 to-amber-600"
         />
-        
+
         <MetricCard
           title="Avg Cook Time"
           value={`${stats.averageCookTime}m`}
           icon={<Clock className="w-5 h-5 text-white" />}
           color="from-green-500 to-emerald-600"
         />
-        
+
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-gray-600">On Time Rate</h3>
             <ProgressRing progress={stats.onTimeRate} size={40} showPercentage={true} />
           </div>
         </div>
-        
+
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-gray-600">Efficiency</h3>
@@ -298,18 +304,14 @@ export function KitchenDisplay() {
       <Card className="p-6">
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div className="flex items-center space-x-4">
-            <Button
-              onClick={loadOrders}
-              variant="outline"
-              size="sm"
-            >
+            <Button onClick={loadOrders} variant="outline" size="sm">
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
             </Button>
-            
+
             <select
               value={filterStation}
-              onChange={(e) => setFilterStation(e.target.value)}
+              onChange={e => setFilterStation(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Stations</option>
@@ -319,19 +321,15 @@ export function KitchenDisplay() {
               <option value="cold">Cold Station</option>
             </select>
           </div>
-          
+
           <div className="flex items-center space-x-3">
-            <StatusIndicator 
-              status={isConnected ? 'success' : 'error'} 
+            <StatusIndicator
+              status={isConnected ? 'success' : 'error'}
               text={isConnected ? 'Connected' : 'Disconnected'}
               showText={true}
             />
-            
-            <Button
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              variant="outline"
-              size="sm"
-            >
+
+            <Button onClick={() => setSoundEnabled(!soundEnabled)} variant="outline" size="sm">
               {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </Button>
           </div>
@@ -347,9 +345,9 @@ export function KitchenDisplay() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredOrders.map((order) => (
-            <Card 
-              key={order.id} 
+          {filteredOrders.map(order => (
+            <Card
+              key={order.id}
               className={`p-6 transition-all hover:shadow-lg hover:scale-105 ${getPriorityColor(order)}`}
             >
               {/* Order Header */}
@@ -375,9 +373,11 @@ export function KitchenDisplay() {
 
               {/* Order Items */}
               <div className="space-y-2 mb-4">
-                {order.items.map((item) => (
+                {order.items.map(item => (
                   <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-gray-700">{item.quantity}x {item.menu_item_name}</span>
+                    <span className="text-gray-700">
+                      {item.quantity}x {item.menu_item_name}
+                    </span>
                     {item.special_instructions && (
                       <span className="text-xs text-orange-600">*</span>
                     )}
@@ -417,16 +417,16 @@ export function KitchenDisplay() {
               <div className="flex space-x-2">
                 {order.status === 'pending' && (
                   <>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       onClick={() => updateOrderStatus(order.id, 'preparing')}
                       className="flex-1 bg-orange-600 hover:bg-orange-700"
                     >
                       <ChefHat className="w-4 h-4 mr-2" />
                       Start Cooking
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline"
                       onClick={() => updateOrderStatus(order.id, 'cancelled')}
                       className="text-red-600 border-red-300 hover:bg-red-50"
@@ -436,8 +436,8 @@ export function KitchenDisplay() {
                   </>
                 )}
                 {order.status === 'preparing' && (
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     onClick={() => updateOrderStatus(order.id, 'completed')}
                     className="flex-1 bg-green-600 hover:bg-green-700"
                   >

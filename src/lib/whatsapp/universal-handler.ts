@@ -44,11 +44,11 @@ export class UniversalWhatsAppHandler {
   async handleIncomingMessage(ctx: ProcessingContext): Promise<ProcessingResult> {
     // Start transaction for full audit trail
     const tx = await this.startTransaction(ctx)
-    
+
     try {
       // Load organization configurations
       const configs = await this.configService.loadConfigurations()
-      
+
       if (!configs.channel || !configs.routing) {
         return await this.handleNoConfiguration(ctx, tx)
       }
@@ -56,18 +56,18 @@ export class UniversalWhatsAppHandler {
       // Check cost guardrails
       const costCheck = await this.configService.checkCostGuardrails(configs.routing)
       if (!costCheck.allowed) {
-        await this.appendTransactionLine(tx, 'COST_GUARDRAIL_BLOCKED', { 
-          reason: costCheck.reason 
+        await this.appendTransactionLine(tx, 'COST_GUARDRAIL_BLOCKED', {
+          reason: costCheck.reason
         })
         return await this.fallbackToRuleBased(ctx, tx, configs)
       }
 
       // Try providers in priority order
       const failedProviders: string[] = []
-      
+
       while (true) {
         const provider = await this.configService.getNextProvider(configs.routing, failedProviders)
-        
+
         if (!provider) {
           // All providers failed, use final fallback
           return await this.handleAllProvidersFailed(ctx, tx, configs)
@@ -75,7 +75,7 @@ export class UniversalWhatsAppHandler {
 
         try {
           const result = await this.processWithProvider(ctx, tx, provider, configs)
-          
+
           if (result.success) {
             await this.finalizeTransaction(tx, {
               provider_selected: provider.name,
@@ -83,7 +83,7 @@ export class UniversalWhatsAppHandler {
               confidence: result.confidence,
               cost: result.cost
             })
-            
+
             return {
               success: true,
               providerUsed: provider.name,
@@ -95,15 +95,15 @@ export class UniversalWhatsAppHandler {
           }
         } catch (error) {
           console.error(`Provider ${provider.name} failed:`, error)
-          
+
           await this.appendTransactionLine(tx, 'FALLBACK_TRIGGER', {
             provider: provider.name,
             error: error instanceof Error ? error.message : 'Unknown error',
             timestamp: new Date().toISOString()
           })
-          
+
           failedProviders.push(provider.name)
-          
+
           // Check if this error should trigger fallback
           if (this.shouldTriggerFallback(error, provider.fallback_on || [])) {
             continue
@@ -118,7 +118,7 @@ export class UniversalWhatsAppHandler {
         status: 'FAILED',
         error: error instanceof Error ? error.message : 'Unknown error'
       })
-      
+
       return {
         success: false,
         providerUsed: 'none',
@@ -137,7 +137,6 @@ export class UniversalWhatsAppHandler {
     provider: any,
     configs: any
   ): Promise<{ success: boolean; confidence?: number; intent?: string; cost?: number }> {
-    
     await this.appendTransactionLine(txId, 'PROVIDER_ATTEMPT', {
       provider: provider.name,
       priority: provider.priority,
@@ -150,15 +149,15 @@ export class UniversalWhatsAppHandler {
 
     // AI provider processing
     const aiService = new UniversalWhatsAppAI(this.organizationId)
-    
+
     // Extract intent with timeout
     const intentPromise = aiService.extractIntent(ctx.text, ctx.customerData)
-    const timeoutPromise = new Promise<never>((_, reject) => 
+    const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error('Provider timeout')), provider.timeout_ms)
     )
-    
+
     const intent = await Promise.race([intentPromise, timeoutPromise])
-    
+
     await this.appendTransactionLine(txId, 'PARSED_INTENT', {
       provider: provider.name,
       intent: intent.intent,
@@ -169,13 +168,13 @@ export class UniversalWhatsAppHandler {
     // Execute MCP tools if configured
     if (configs.toolmap) {
       const toolResults = await this.executeMCPTools(ctx, txId, intent, configs.toolmap)
-      
+
       // Generate response
       const response = await this.generateResponse(ctx, intent, toolResults, configs.prompts)
-      
+
       // Send response
       await this.sendWhatsAppMessage(ctx, response, configs.channel)
-      
+
       await this.appendTransactionLine(txId, 'OUTBOUND_TEXT', {
         provider: provider.name,
         message: response,
@@ -202,7 +201,6 @@ export class UniversalWhatsAppHandler {
     txId: string,
     keywords: any
   ): Promise<{ success: boolean; confidence?: number; intent?: string; cost?: number }> {
-    
     if (!keywords || !keywords.rules) {
       throw new Error('No keyword rules configured')
     }
@@ -231,7 +229,7 @@ export class UniversalWhatsAppHandler {
       // Generate simple response
       const response = this.generateRuleBasedResponse(bestMatch.intent)
       await this.sendWhatsAppMessage(ctx, response, null)
-      
+
       await this.appendTransactionLine(txId, 'OUTBOUND_TEXT', {
         provider: 'rule_based',
         message: response,
@@ -259,11 +257,9 @@ export class UniversalWhatsAppHandler {
     toolmap: any
   ): Promise<any[]> {
     const results: any[] = []
-    
-    const intentMapping = toolmap.intents.find((mapping: any) => 
-      mapping.intent === intent.intent
-    )
-    
+
+    const intentMapping = toolmap.intents.find((mapping: any) => mapping.intent === intent.intent)
+
     if (!intentMapping) {
       await this.appendTransactionLine(txId, 'MCP_SKIP', {
         reason: 'No tools mapped for intent',
@@ -273,7 +269,7 @@ export class UniversalWhatsAppHandler {
     }
 
     const mcp = new MCPTools(this.organizationId)
-    
+
     for (const toolName of intentMapping.tools) {
       try {
         await this.appendTransactionLine(txId, 'MCP_CALL', {
@@ -295,7 +291,7 @@ export class UniversalWhatsAppHandler {
               location_id: 'default'
             })
             break
-            
+
           case 'ucr.availability.getSlots':
             result = await mcp.findSlots({
               organization_id: this.organizationId,
@@ -307,13 +303,13 @@ export class UniversalWhatsAppHandler {
               stylist_id: intent.entities.preferred_stylist
             })
             break
-            
+
           case 'ucr.calendar.cancelBooking':
           case 'ucr.calendar.moveBooking':
           case 'ucr.knowledge.lookup':
             result = { success: true, data: { message: `${toolName} executed` } }
             break
-            
+
           default:
             result = { success: false, error: `Unknown tool: ${toolName}` }
         }
@@ -359,7 +355,7 @@ export class UniversalWhatsAppHandler {
     // Simple template replacement
     let response = template.user_template
     response = response.replace('{{message}}', ctx.text)
-    
+
     // Add tool results context
     if (toolResults.length > 0) {
       const toolContext = toolResults.map(r => `${r.tool}: ${JSON.stringify(r.result)}`).join(', ')
@@ -418,7 +414,7 @@ export class UniversalWhatsAppHandler {
 
   private shouldTriggerFallback(error: any, fallbackTriggers: string[]): boolean {
     const errorStr = error.toString().toLowerCase()
-    
+
     return fallbackTriggers.some(trigger => {
       switch (trigger) {
         case 'timeout':
@@ -439,7 +435,7 @@ export class UniversalWhatsAppHandler {
     // Simplified cost calculation
     const inputTokens = Math.ceil(text.length / 4)
     const outputTokens = 50 // Estimated
-    
+
     switch (provider.name) {
       case 'anthropic_claude':
         return (inputTokens * 0.003 + outputTokens * 0.015) / 1000
@@ -454,16 +450,16 @@ export class UniversalWhatsAppHandler {
     // Extract slot information from intent entities
     const now = new Date()
     let slotDate = now
-    
+
     if (intent.entities.date_hint === 'tomorrow') {
       slotDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
     } else if (intent.entities.date_hint === 'today') {
       slotDate = now
     }
-    
+
     // Default to 10 AM if no specific time
     slotDate.setHours(10, 0, 0, 0)
-    
+
     return {
       start: slotDate.toISOString(),
       end: new Date(slotDate.getTime() + 60 * 60 * 1000).toISOString(), // 1 hour slot
@@ -476,7 +472,7 @@ export class UniversalWhatsAppHandler {
       case 'BOOK':
         return "I'd be happy to help you book an appointment! What service would you like?"
       case 'CANCEL':
-        return "I can help you cancel your appointment. Can you provide your booking details?"
+        return 'I can help you cancel your appointment. Can you provide your booking details?'
       case 'RESCHEDULE':
         return "I'll help you reschedule. When would you like to move your appointment to?"
       default:
@@ -487,37 +483,48 @@ export class UniversalWhatsAppHandler {
   private generateRuleBasedResponse(intent: string): string {
     switch (intent) {
       case 'BOOK':
-        return "Hi! I can help you book an appointment. What service are you interested in?"
+        return 'Hi! I can help you book an appointment. What service are you interested in?'
       case 'CANCEL':
-        return "I can help cancel your appointment. Please provide your booking reference."
+        return 'I can help cancel your appointment. Please provide your booking reference.'
       case 'RESCHEDULE':
         return "I can help reschedule your appointment. What's your preferred new time?"
       case 'FAQ':
-        return "Here are our services and prices. How can I help you today?"
+        return 'Here are our services and prices. How can I help you today?'
       default:
-        return "Hello! Try sending BOOK to make an appointment."
+        return 'Hello! Try sending BOOK to make an appointment.'
     }
   }
 
-  private async sendWhatsAppMessage(ctx: ProcessingContext, message: string, channelConfig: any): Promise<void> {
+  private async sendWhatsAppMessage(
+    ctx: ProcessingContext,
+    message: string,
+    channelConfig: any
+  ): Promise<void> {
     const whatsapp = new WhatsAppService(
       process.env.WHATSAPP_ACCESS_TOKEN || '',
       process.env.WHATSAPP_PHONE_NUMBER_ID || '',
       process.env.WHATSAPP_WEBHOOK_TOKEN || '',
       this.organizationId
     )
-    
+
     await whatsapp.sendTextMessage(ctx.from, message)
   }
 
-  private async handleNoConfiguration(ctx: ProcessingContext, txId: string): Promise<ProcessingResult> {
+  private async handleNoConfiguration(
+    ctx: ProcessingContext,
+    txId: string
+  ): Promise<ProcessingResult> {
     await this.appendTransactionLine(txId, 'NO_CONFIG', {
       reason: 'Organization has no WhatsApp configuration'
     })
 
     // Send basic response
-    await this.sendWhatsAppMessage(ctx, 'Service temporarily unavailable. Please try again later.', null)
-    
+    await this.sendWhatsAppMessage(
+      ctx,
+      'Service temporarily unavailable. Please try again later.',
+      null
+    )
+
     await this.finalizeTransaction(txId, {
       provider_selected: 'none',
       status: 'NO_CONFIG'
@@ -531,10 +538,14 @@ export class UniversalWhatsAppHandler {
     }
   }
 
-  private async fallbackToRuleBased(ctx: ProcessingContext, txId: string, configs: any): Promise<ProcessingResult> {
+  private async fallbackToRuleBased(
+    ctx: ProcessingContext,
+    txId: string,
+    configs: any
+  ): Promise<ProcessingResult> {
     try {
       const result = await this.processWithRuleBased(ctx, txId, configs.keywords)
-      
+
       await this.finalizeTransaction(txId, {
         provider_selected: 'rule_based',
         status: 'SUCCESS_COST_FALLBACK',
@@ -554,15 +565,20 @@ export class UniversalWhatsAppHandler {
     }
   }
 
-  private async handleAllProvidersFailed(ctx: ProcessingContext, txId: string, configs: any): Promise<ProcessingResult> {
+  private async handleAllProvidersFailed(
+    ctx: ProcessingContext,
+    txId: string,
+    configs: any
+  ): Promise<ProcessingResult> {
     await this.appendTransactionLine(txId, 'ALL_PROVIDERS_FAILED', {
       timestamp: new Date().toISOString()
     })
 
     // Send fallback message
-    const fallbackMessage = "I'm having trouble understanding. Please try sending BOOK, CANCEL, or RESCHEDULE."
+    const fallbackMessage =
+      "I'm having trouble understanding. Please try sending BOOK, CANCEL, or RESCHEDULE."
     await this.sendWhatsAppMessage(ctx, fallbackMessage, configs.channel)
-    
+
     await this.appendTransactionLine(txId, 'FALLBACK_MESSAGE', {
       message: fallbackMessage,
       recipient: ctx.from

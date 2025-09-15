@@ -190,7 +190,7 @@ const CUSTOMERS = [
     entity_code: 'CUST-MAR-001',
     entity_name: 'Marriott Hotels India',
     smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.v1',
-    metadata: { 
+    metadata: {
       industry: 'Hospitality',
       segment: 'Enterprise'
     },
@@ -208,7 +208,7 @@ const CUSTOMERS = [
     entity_code: 'CUST-ITC-001',
     entity_name: 'ITC Hotels Ltd',
     smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.v1',
-    metadata: { 
+    metadata: {
       industry: 'Hospitality',
       segment: 'Enterprise'
     },
@@ -226,7 +226,7 @@ const CUSTOMERS = [
     entity_code: 'CUST-TM-001',
     entity_name: 'Tech Mahindra Limited',
     smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.v1',
-    metadata: { 
+    metadata: {
       industry: 'IT Services',
       segment: 'Enterprise'
     },
@@ -247,7 +247,7 @@ export async function POST(request: NextRequest) {
     // Get organization from request or use default
     const body = await request.json().catch(() => ({}))
     const organizationId = body.organization_id || process.env.DEFAULT_ORGANIZATION_ID || ''
-    
+
     if (!organizationId) {
       return NextResponse.json(
         { error: 'organization_id is required or DEFAULT_ORGANIZATION_ID must be set' },
@@ -364,7 +364,7 @@ export async function POST(request: NextRequest) {
         })
       }
     }
-    
+
     // Create some sample sales orders
     const salesOrders = []
     if (customerResults.length > 0 && productResults.length > 0) {
@@ -372,7 +372,7 @@ export async function POST(request: NextRequest) {
       const marriott = customerResults[0]
       const desk = productResults[0]
       const chair = productResults[1]
-      
+
       const order1 = await universalApi.createTransaction({
         transaction_type: 'sales_order',
         transaction_code: 'SO-FRN-2025-0001',
@@ -386,7 +386,7 @@ export async function POST(request: NextRequest) {
           status: 'confirmed'
         }
       })
-      
+
       // Add line items
       await universalApi.createTransactionLine({
         transaction_id: order1.id,
@@ -402,7 +402,7 @@ export async function POST(request: NextRequest) {
           delivery_location: 'Mumbai'
         }
       })
-      
+
       await universalApi.createTransactionLine({
         transaction_id: order1.id,
         line_number: 2,
@@ -417,19 +417,19 @@ export async function POST(request: NextRequest) {
           delivery_location: 'Mumbai'
         }
       })
-      
+
       // Update order total
       await universalApi.updateTransaction(order1.id, {
         total_amount: 920000
       })
-      
+
       salesOrders.push(order1)
-      
+
       // Order 2: ITC Hotels - Conference Table
       if (customerResults[1] && productResults[2]) {
         const itc = customerResults[1]
         const confTable = productResults[2]
-        
+
         const order2 = await universalApi.createTransaction({
           transaction_type: 'sales_order',
           transaction_code: 'SO-FRN-2025-0002',
@@ -443,7 +443,7 @@ export async function POST(request: NextRequest) {
             status: 'in_production'
           }
         })
-        
+
         await universalApi.createTransactionLine({
           transaction_id: order2.id,
           line_number: 1,
@@ -453,11 +453,11 @@ export async function POST(request: NextRequest) {
           line_amount: 475000,
           smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.v1'
         })
-        
+
         await universalApi.updateTransaction(order2.id, {
           total_amount: 475000
         })
-        
+
         salesOrders.push(order2)
       }
     }
@@ -473,7 +473,6 @@ export async function POST(request: NextRequest) {
       },
       message: 'Furniture module seed data created successfully'
     })
-
   } catch (error: any) {
     console.error('Furniture seed error:', error)
     return NextResponse.json(

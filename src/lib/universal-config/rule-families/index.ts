@@ -1,6 +1,6 @@
 /**
  * HERA Universal Configuration - Rule Families Index
- * 
+ *
  * Central export for all rule family definitions
  */
 
@@ -20,26 +20,35 @@ export const RuleFamilyRegistry = {
   [BookingRuleFamily.family]: BookingRuleFamily,
   [NotificationRuleFamily.family]: NotificationRuleFamily,
   [PricingRuleFamily.family]: PricingRuleFamily,
-  
+
   // Sub-family mappings for quick lookup
   subFamilies: {
     // Booking sub-families
-    ...Object.entries(BookingRuleFamily.subFamilies).reduce((acc, [key, value]) => ({
-      ...acc,
-      [value]: { family: BookingRuleFamily.family, subFamily: key }
-    }), {}),
-    
+    ...Object.entries(BookingRuleFamily.subFamilies).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [value]: { family: BookingRuleFamily.family, subFamily: key }
+      }),
+      {}
+    ),
+
     // Notification sub-families
-    ...Object.entries(NotificationRuleFamily.subFamilies).reduce((acc, [key, value]) => ({
-      ...acc,
-      [value]: { family: NotificationRuleFamily.family, subFamily: key }
-    }), {}),
-    
+    ...Object.entries(NotificationRuleFamily.subFamilies).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [value]: { family: NotificationRuleFamily.family, subFamily: key }
+      }),
+      {}
+    ),
+
     // Pricing sub-families
-    ...Object.entries(PricingRuleFamily.subFamilies).reduce((acc, [key, value]) => ({
-      ...acc,
-      [value]: { family: PricingRuleFamily.family, subFamily: key }
-    }), {}),
+    ...Object.entries(PricingRuleFamily.subFamilies).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [value]: { family: PricingRuleFamily.family, subFamily: key }
+      }),
+      {}
+    )
   }
 } as const
 
@@ -66,7 +75,7 @@ export function validateRule(rule: any): {
       errors: ['Invalid smart code format']
     }
   }
-  
+
   const familyDef = RuleFamilyRegistry[family]
   if (!familyDef) {
     return {
@@ -74,7 +83,7 @@ export function validateRule(rule: any): {
       errors: [`Unknown rule family: ${family}`]
     }
   }
-  
+
   const errors = familyDef.validate(rule)
   return {
     isValid: errors.length === 0,
@@ -84,7 +93,7 @@ export function validateRule(rule: any): {
 }
 
 // Type exports for convenience
-export type RuleFamily = 
+export type RuleFamily =
   | typeof BookingRuleFamily
   | typeof NotificationRuleFamily
   | typeof PricingRuleFamily
@@ -95,25 +104,25 @@ export type RuleFamilyName = keyof typeof RuleFamilyRegistry
 export const SmartCodePatterns = {
   booking: /^HERA\.UNIV\.CONFIG\.BOOKING\./,
   notification: /^HERA\.UNIV\.CONFIG\.NOTIFICATION\./,
-  pricing: /^HERA\.UNIV\.CONFIG\.PRICING\./,
+  pricing: /^HERA\.UNIV\.CONFIG\.PRICING\./
 } as const
 
 // Default priority by family (can be overridden)
 export const DefaultPriorities = {
   'HERA.UNIV.CONFIG.BOOKING': 100,
   'HERA.UNIV.CONFIG.NOTIFICATION': 50,
-  'HERA.UNIV.CONFIG.PRICING': 150,
+  'HERA.UNIV.CONFIG.PRICING': 150
 } as const
 
 // Merge strategies
-export type MergeStrategy = 
-  | 'first'        // First matching rule wins
-  | 'last'         // Last matching rule wins
-  | 'highest'      // Highest priority wins
-  | 'stack'        // Stack/combine multiple rules
-  | 'restrictive'  // Most restrictive rule wins
-  | 'permissive'   // Most permissive rule wins
-  | 'combine'      // Combine payloads from all rules
+export type MergeStrategy =
+  | 'first' // First matching rule wins
+  | 'last' // Last matching rule wins
+  | 'highest' // Highest priority wins
+  | 'stack' // Stack/combine multiple rules
+  | 'restrictive' // Most restrictive rule wins
+  | 'permissive' // Most permissive rule wins
+  | 'combine' // Combine payloads from all rules
 
 // Get merge strategy for a family
 export function getMergeStrategy(family: string): MergeStrategy {
@@ -138,13 +147,13 @@ export function validateContext(family: string, context: any): string[] {
   if (!familyDef || !familyDef.requiredContext) {
     return []
   }
-  
+
   const errors: string[] = []
   for (const field of familyDef.requiredContext) {
     if (context[field] === undefined) {
       errors.push(`Missing required context field: ${field}`)
     }
   }
-  
+
   return errors
 }

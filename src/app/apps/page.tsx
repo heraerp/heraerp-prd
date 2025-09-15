@@ -8,12 +8,29 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Scissors, Heart, ShoppingBag, Stethoscope, Package,
-  Gem, Utensils, Building2, Briefcase, Plane,
-  DollarSign, GraduationCap, Calculator, ChevronRight,
-  Sparkles, TrendingUp, Users, Globe, Shield, Zap,
-  AlertCircle, Snowflake
+import {
+  Scissors,
+  Heart,
+  ShoppingBag,
+  Stethoscope,
+  Package,
+  Gem,
+  Utensils,
+  Building2,
+  Briefcase,
+  Plane,
+  DollarSign,
+  GraduationCap,
+  Calculator,
+  ChevronRight,
+  Sparkles,
+  TrendingUp,
+  Users,
+  Globe,
+  Shield,
+  Zap,
+  AlertCircle,
+  Snowflake
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
@@ -35,7 +52,8 @@ const apps: AppCard[] = [
   {
     id: 'salon',
     title: 'Salon & Spa',
-    description: 'Complete beauty salon and spa management with appointments, inventory, and client management',
+    description:
+      'Complete beauty salon and spa management with appointments, inventory, and client management',
     icon: Scissors,
     href: '/salon',
     category: 'industry',
@@ -46,7 +64,8 @@ const apps: AppCard[] = [
   {
     id: 'icecream',
     title: 'Ice Cream Manufacturing',
-    description: 'Production planning, inventory management, and distribution for ice cream manufacturers',
+    description:
+      'Production planning, inventory management, and distribution for ice cream manufacturers',
     icon: Snowflake,
     href: '/icecream',
     category: 'industry',
@@ -57,7 +76,8 @@ const apps: AppCard[] = [
   {
     id: 'restaurant',
     title: 'Restaurant',
-    description: 'Full-service restaurant management with POS, kitchen display, and inventory control',
+    description:
+      'Full-service restaurant management with POS, kitchen display, and inventory control',
     icon: Utensils,
     href: '/restaurant',
     category: 'industry',
@@ -85,12 +105,18 @@ const apps: AppCard[] = [
     category: 'industry',
     status: 'coming-soon',
     gradient: 'from-yellow-500 to-orange-600',
-    features: ['Multi-Store POS', 'Inventory Management', 'Customer Loyalty', 'E-commerce Integration']
+    features: [
+      'Multi-Store POS',
+      'Inventory Management',
+      'Customer Loyalty',
+      'E-commerce Integration'
+    ]
   },
   {
     id: 'jewelry',
     title: 'Jewelry',
-    description: 'Specialized jewelry retail with custom orders, repairs, and precious metal tracking',
+    description:
+      'Specialized jewelry retail with custom orders, repairs, and precious metal tracking',
     icon: Gem,
     href: '/jewelry',
     category: 'industry',
@@ -138,13 +164,19 @@ const apps: AppCard[] = [
   {
     id: 'digital-accountant',
     title: 'Digital Accountant',
-    description: 'AI-powered accounting assistant for journal entries, reconciliation, and reporting',
+    description:
+      'AI-powered accounting assistant for journal entries, reconciliation, and reporting',
     icon: Calculator,
     href: '/digital-accountant',
     category: 'ai',
     status: 'production',
     gradient: 'from-violet-500 to-purple-600',
-    features: ['Natural Language Processing', 'Auto Journal Entry', 'Smart Reconciliation', 'AI Reports']
+    features: [
+      'Natural Language Processing',
+      'Auto Journal Entry',
+      'Smart Reconciliation',
+      'AI Reports'
+    ]
   },
   {
     id: 'auto-journal',
@@ -162,7 +194,9 @@ const apps: AppCard[] = [
 export default function AppsPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading, currentOrganization, contextLoading } = useMultiOrgAuth()
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>('all')
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>(
+    'all'
+  )
   const [redirectTimer, setRedirectTimer] = useState<NodeJS.Timeout | null>(null)
 
   // Check authentication status
@@ -181,12 +215,12 @@ export default function AppsPage() {
       console.log('Not authenticated, redirecting to login...')
       // Store the intended destination
       localStorage.setItem('redirectAfterLogin', '/apps')
-      
+
       // Set a timer to redirect (prevents infinite loops)
       const timer = setTimeout(() => {
         router.push('/auth/login')
       }, 100)
-      
+
       setRedirectTimer(timer)
     }
 
@@ -201,7 +235,7 @@ export default function AppsPage() {
     if (app.status === 'coming-soon') {
       return
     }
-    
+
     // If no organization, redirect to create one
     if (!currentOrganization) {
       localStorage.setItem('redirectAfterOrg', app.href)
@@ -211,9 +245,8 @@ export default function AppsPage() {
     }
   }
 
-  const filteredApps = selectedCategory === 'all' 
-    ? apps 
-    : apps.filter(app => app.category === selectedCategory)
+  const filteredApps =
+    selectedCategory === 'all' ? apps : apps.filter(app => app.category === selectedCategory)
 
   if (isLoading || contextLoading) {
     return (
@@ -234,10 +267,7 @@ export default function AppsPage() {
           <CardContent className="py-8">
             <div className="text-center space-y-4">
               <p className="text-gray-600">Redirecting to login...</p>
-              <Button 
-                onClick={() => router.push('/auth/login')}
-                variant="outline"
-              >
+              <Button onClick={() => router.push('/auth/login')} variant="outline">
                 Go to Login Now
               </Button>
             </div>
@@ -261,12 +291,10 @@ export default function AppsPage() {
                 <span className="text-xl font-light">HERA Apps</span>
               </Link>
             </div>
-            
+
             <div className="flex items-center gap-4">
               {currentOrganization && (
-                <span className="text-sm text-gray-600">
-                  {currentOrganization.name}
-                </span>
+                <span className="text-sm text-gray-600">{currentOrganization.name}</span>
               )}
               <Button
                 variant="outline"
@@ -284,12 +312,10 @@ export default function AppsPage() {
       <main className="container mx-auto px-6 py-12">
         {/* Page Title */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-light text-gray-900 mb-4">
-            Choose Your HERA Application
-          </h1>
+          <h1 className="text-4xl font-light text-gray-900 mb-4">Choose Your HERA Application</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Select an industry-specific solution or universal business application. 
-            All apps include sample data to help you get started immediately.
+            Select an industry-specific solution or universal business application. All apps include
+            sample data to help you get started immediately.
           </p>
         </div>
 
@@ -343,39 +369,41 @@ export default function AppsPage() {
 
         {/* App Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {filteredApps.map((app) => {
+          {filteredApps.map(app => {
             const Icon = app.icon
             const isDisabled = app.status === 'coming-soon'
-            
+
             return (
               <Card
                 key={app.id}
                 className={`relative overflow-hidden transition-all duration-300 ${
-                  isDisabled 
-                    ? 'opacity-60 cursor-not-allowed' 
+                  isDisabled
+                    ? 'opacity-60 cursor-not-allowed'
                     : 'hover:shadow-xl hover:-translate-y-1 cursor-pointer'
                 }`}
                 onClick={() => !isDisabled && handleAppClick(app)}
               >
                 {/* Status Badge */}
                 {app.status !== 'production' && (
-                  <div className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${
-                    app.status === 'beta' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'bg-gray-100 text-gray-700'
-                  }`}>
+                  <div
+                    className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${
+                      app.status === 'beta'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
                     {app.status === 'beta' ? 'Beta' : 'Coming Soon'}
                   </div>
                 )}
 
                 <CardHeader>
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${app.gradient} flex items-center justify-center mb-4`}>
+                  <div
+                    className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${app.gradient} flex items-center justify-center mb-4`}
+                  >
                     <Icon className="w-8 h-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">{app.title}</CardTitle>
-                  <CardDescription className="text-sm">
-                    {app.description}
-                  </CardDescription>
+                  <CardDescription className="text-sm">{app.description}</CardDescription>
                 </CardHeader>
 
                 <CardContent>
@@ -390,9 +418,7 @@ export default function AppsPage() {
 
                   {!isDisabled && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-900">
-                        Open App
-                      </span>
+                      <span className="text-sm font-medium text-gray-900">Open App</span>
                       <ChevronRight className="w-5 h-5 text-gray-400" />
                     </div>
                   )}

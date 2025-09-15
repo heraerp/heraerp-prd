@@ -28,11 +28,9 @@ export function IceCreamManagerExample() {
       subtitle="AI-Powered Ice Cream Business Management"
       apiEndpoint="/api/v1/icecream-manager/chat"
       organizationId="1471e87b-b27e-42ef-8192-343cc5e0d656"
-      
       // Customization
       icon={IceCream}
       iconGradient="from-blue-600 to-cyan-400"
-      
       // Quick Actions
       quickActions={[
         {
@@ -71,7 +69,6 @@ export function IceCreamManagerExample() {
           color: 'from-red-600 to-pink-400'
         }
       ]}
-      
       // Metrics
       quickMetrics={[
         {
@@ -103,14 +100,12 @@ export function IceCreamManagerExample() {
           color: 'from-orange-600 to-amber-400'
         }
       ]}
-      
       // Example prompts
       examplePrompts={[
         'Which flavors are selling best this week?',
         'Plan production for Mango Kulfi based on demand',
         'Check temperature compliance for all freezers'
       ]}
-      
       // Welcome message
       welcomeMessage={`🍦 Welcome to HERA Ice Cream Manager!
 
@@ -123,26 +118,22 @@ I'm your AI assistant for ice cream business operations. I can help you with:
 📈 **Business Analytics** - Sales insights and recommendations
 
 How can I help you optimize your ice cream business today?`}
-      
       // Features
       enableHistory={true}
       enableAnalytics={true}
       enableProduction={true}
       enableDarkMode={true}
       defaultDarkMode={true}
-      
       // Colors
       userMessageColorDark="from-[#0EA5E9] to-[#2563EB]"
       userMessageColorLight="from-[#3B82F6] to-[#1E40AF]"
-      
       // Placeholder
       placeholder="Ask about sales, production, inventory, or deliveries..."
-      
       // Callbacks
-      onMessageSent={(message) => {
+      onMessageSent={message => {
         console.log('Message sent:', message)
       }}
-      onActionClicked={(action) => {
+      onActionClicked={action => {
         console.log('Action clicked:', action)
       }}
     />
@@ -157,10 +148,8 @@ export function SalonManagerExample() {
       subtitle="AI-Powered Salon Operations"
       apiEndpoint="/api/v1/salon-manager/chat"
       organizationId="550e8400-e29b-41d4-a716-446655440000"
-      
       icon={Sparkles}
       iconGradient="from-purple-600 to-pink-400"
-      
       quickActions={[
         {
           icon: Calendar,
@@ -191,13 +180,11 @@ export function SalonManagerExample() {
           color: 'from-orange-600 to-orange-400'
         }
       ]}
-      
       examplePrompts={[
         'Book Sarah Johnson for highlights tomorrow at 2pm',
         "Who's available for a haircut today?",
         'Check blonde toner stock'
       ]}
-      
       enableHistory={true}
       enableDarkMode={true}
       defaultDarkMode={false} // Start in light mode for salon
@@ -213,7 +200,6 @@ export function MinimalChatExample() {
       subtitle="How can we help you today?"
       apiEndpoint="/api/v1/support/chat"
       organizationId="default-org-id"
-      
       // Minimal configuration - everything else uses defaults
       enableDarkMode={true}
       defaultDarkMode={false}
@@ -232,7 +218,7 @@ export function DynamicConfigExample() {
           icon: Calendar,
           label: 'Reservations',
           description: 'Manage bookings',
-          prompt: 'Show today\'s reservations',
+          prompt: "Show today's reservations",
           color: 'from-blue-600 to-cyan-400'
         }
       ]
@@ -245,27 +231,25 @@ export function DynamicConfigExample() {
           icon: Calendar,
           label: 'Appointments',
           description: 'Patient scheduling',
-          prompt: 'Show today\'s appointments',
+          prompt: "Show today's appointments",
           color: 'from-blue-600 to-cyan-400'
         }
       ]
     }
   }
-  
+
   const businessType = 'restaurant' // or 'healthcare'
   const selectedConfig = config[businessType]
-  
+
   return (
     <HeraChatInterface
       title={`HERA ${businessType.charAt(0).toUpperCase() + businessType.slice(1)} Manager`}
       subtitle="AI-Powered Business Management"
       apiEndpoint={`/api/v1/${businessType}/chat`}
       organizationId="dynamic-org-id"
-      
       icon={selectedConfig.icon}
       iconGradient={selectedConfig.iconGradient}
       quickActions={selectedConfig.quickActions}
-      
       enableDarkMode={true}
       defaultDarkMode={true}
     />
@@ -281,11 +265,9 @@ export function FullFeatureShowcase() {
       subtitle="AI-Powered Business Intelligence"
       apiEndpoint="/api/v1/enterprise/chat"
       organizationId="enterprise-org-id"
-      
       // Visual Customization
       icon={Sparkles}
       iconGradient="from-indigo-600 to-purple-400"
-      
       // Quick Actions - All gradient colors supported
       quickActions={[
         {
@@ -324,7 +306,6 @@ export function FullFeatureShowcase() {
           color: 'from-red-600 to-pink-400'
         }
       ]}
-      
       // Comprehensive Metrics
       quickMetrics={[
         {
@@ -356,16 +337,14 @@ export function FullFeatureShowcase() {
           color: 'from-orange-600 to-amber-400'
         }
       ]}
-      
       // Rich Example Prompts
       examplePrompts={[
         'Analyze revenue trends for Q3 2024',
-        'Compare this month\'s performance to last year',
+        "Compare this month's performance to last year",
         'Identify top performing products by region',
         'Generate executive summary for board meeting',
         'Forecast sales for next quarter'
       ]}
-      
       // Detailed Welcome Message
       welcomeMessage={`🚀 Welcome to HERA Enterprise Assistant!
 
@@ -380,31 +359,26 @@ I'm your AI-powered business intelligence companion. I can help you with:
 📋 **Report Generation** - Executive summaries and deep dives
 
 I use advanced analytics to provide actionable insights. How can I help you make better business decisions today?`}
-      
       // All Features Enabled
       enableHistory={true}
       enableAnalytics={true}
       enableProduction={true}
       enableDarkMode={true}
       defaultDarkMode={true}
-      
       // Custom Colors
       userMessageColorDark="from-[#0EA5E9] to-[#2563EB]"
       userMessageColorLight="from-[#3B82F6] to-[#1E40AF]"
-      
       // Custom Placeholder
       placeholder="Ask me anything about your business metrics, analytics, or insights..."
-      
       // Event Handlers
-      onMessageSent={(message) => {
+      onMessageSent={message => {
         console.log('Enterprise message:', message)
         // Could trigger analytics tracking here
       }}
-      
-      onActionClicked={(action) => {
+      onActionClicked={action => {
         console.log('Enterprise action:', action)
         // Could handle custom actions here
-        switch(action.action) {
+        switch (action.action) {
           case 'view-report':
             // Open report viewer
             break

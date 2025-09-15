@@ -9,7 +9,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Loader2, Send, Terminal, Database, Bot, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -33,7 +39,7 @@ const MCP_TOOLS: MCPTool[] = [
   { name: 'Appointments', description: 'Book/reschedule appointments', category: 'appointment' },
   { name: 'Reports', description: 'Generate business reports', category: 'report' },
   { name: 'Customer', description: 'Manage customer data', category: 'pos' },
-  { name: 'Products', description: 'Manage product catalog', category: 'inventory' },
+  { name: 'Products', description: 'Manage product catalog', category: 'inventory' }
 ]
 
 const ORGANIZATIONS = [
@@ -41,7 +47,7 @@ const ORGANIZATIONS = [
   { id: '3df8cc52-3d81-42d5-b088-7736ae26cc7c', name: "Mario's Restaurant" },
   { id: '7b4f0f90-49af-4b98-9a07-953c0eef7c17', name: 'HERA Vibe Coding' },
   { id: '44d2d8f8-167d-46a7-a704-c0e5435863d6', name: 'HERA Software Inc' },
-  { id: 'd56e8661-228e-4351-b391-5a36785dcc37', name: 'Default Organization' },
+  { id: 'd56e8661-228e-4351-b391-5a36785dcc37', name: 'Default Organization' }
 ]
 
 export default function MCPConsolePage() {
@@ -53,7 +59,7 @@ export default function MCPConsolePage() {
   const [selectedServer, setSelectedServer] = useState<'general' | 'salon'>('salon')
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  
+
   // Get MCP server URLs
   const generalMcpUrl = process.env.NEXT_PUBLIC_MCP_SERVER_URL || 'http://localhost:3001'
   const salonMcpUrl = process.env.NEXT_PUBLIC_SALON_MCP_URL || 'http://localhost:3002'
@@ -67,9 +73,10 @@ export default function MCPConsolePage() {
         {
           id: '1',
           type: 'system',
-          content: '✨ Welcome to HERA Salon Magic Console! Try these natural commands:\n\n📅 Appointments:\n• "Book Emma for highlights tomorrow at 2pm"\n• "Who\'s available for a haircut now?"\n• "Show me tomorrow\'s appointments"\n• "Cancel Sarah\'s appointment"\n\n👥 Clients:\n• "Create profile for Jennifer Smith"\n• "Show Emma\'s history"\n• "Birthday clients this month"\n• "Find clients who love balayage"\n\n💰 Business:\n• "How\'s business today?"\n• "Calculate Sarah\'s commission"\n• "Show revenue this week"\n• "Top services this month"\n\n📦 Inventory:\n• "Check blonde toner stock"\n• "What needs reordering?"\n• "Add 10 bottles of shampoo"\n\n🎯 Marketing:\n• "Create birthday campaign"\n• "Find inactive clients"\n• "Show VIP clients"',
-          timestamp: new Date(),
-        },
+          content:
+            '✨ Welcome to HERA Salon Magic Console! Try these natural commands:\n\n📅 Appointments:\n• "Book Emma for highlights tomorrow at 2pm"\n• "Who\'s available for a haircut now?"\n• "Show me tomorrow\'s appointments"\n• "Cancel Sarah\'s appointment"\n\n👥 Clients:\n• "Create profile for Jennifer Smith"\n• "Show Emma\'s history"\n• "Birthday clients this month"\n• "Find clients who love balayage"\n\n💰 Business:\n• "How\'s business today?"\n• "Calculate Sarah\'s commission"\n• "Show revenue this week"\n• "Top services this month"\n\n📦 Inventory:\n• "Check blonde toner stock"\n• "What needs reordering?"\n• "Add 10 bottles of shampoo"\n\n🎯 Marketing:\n• "Create birthday campaign"\n• "Find inactive clients"\n• "Show VIP clients"',
+          timestamp: new Date()
+        }
       ])
       setInitialized(true)
     }
@@ -81,10 +88,9 @@ export default function MCPConsolePage() {
     }
   }, [messages])
 
-
   const normalizeMessage = (message: string): string => {
     const lower = message.toLowerCase()
-    
+
     // Convert common database queries to UAT format
     if (lower.includes('show tables') || lower.includes('database summary')) {
       return 'generate sales report for today'
@@ -98,22 +104,22 @@ export default function MCPConsolePage() {
     if (lower.includes('universal transaction') || lower.includes('show transactions')) {
       return 'generate sales report for today'
     }
-    
+
     // Handle exact matches for report commands
     if (lower === 'generate sales summary report') {
       return 'generate sales report for today'
     }
-    
+
     // Handle transaction details query
     if (lower.includes('transaction') && lower.includes('details')) {
       return 'generate sales report for today'
     }
-    
+
     // Don't send button labels as commands
     if (lower === 'pos sale create sales tranaction' || lower === 'manage customer data') {
       return 'generate sales report for today'
     }
-    
+
     return message
   }
 
@@ -121,10 +127,10 @@ export default function MCPConsolePage() {
     try {
       // Use selected organization ID
       const organizationId = selectedOrgId
-      
+
       // Normalize message for UAT server
       const normalizedMessage = normalizeMessage(message)
-      
+
       const endpoint = selectedServer === 'salon' ? '/api/salon/chat' : '/api/chat'
       console.log('Calling MCP server at:', `${mcpServerUrl}${endpoint}`)
       console.log('Normalized message:', normalizedMessage)
@@ -132,13 +138,13 @@ export default function MCPConsolePage() {
       const response = await fetch(`${mcpServerUrl}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           message: normalizedMessage,
           organizationId: organizationId,
           context: {}
-        }),
+        })
       })
 
       if (!response.ok) {
@@ -165,10 +171,10 @@ export default function MCPConsolePage() {
       id: Date.now().toString(),
       type: 'user',
       content: input,
-      timestamp: new Date(),
+      timestamp: new Date()
     }
 
-    setMessages((prev) => [...prev, userMessage])
+    setMessages(prev => [...prev, userMessage])
     setInput('')
     setLoading(true)
 
@@ -178,10 +184,10 @@ export default function MCPConsolePage() {
 
       // Format response based on the result
       let responseContent = ''
-      
+
       if (result.success && result.response) {
         responseContent = result.response
-        
+
         // Add additional formatting based on interpretation
         if (result.interpretation?.action === 'database_summary' && result.result?.summary) {
           responseContent = '📊 Database Summary:\n\n'
@@ -215,18 +221,18 @@ export default function MCPConsolePage() {
         type: result.success ? 'assistant' : 'error',
         content: responseContent,
         timestamp: new Date(),
-        data: result,
+        data: result
       }
 
-      setMessages((prev) => [...prev, assistantMessage])
+      setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       const errorMessage: Message = {
         id: Date.now().toString() + '-error',
         type: 'error',
         content: `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`,
-        timestamp: new Date(),
+        timestamp: new Date()
       }
-      setMessages((prev) => [...prev, errorMessage])
+      setMessages(prev => [...prev, errorMessage])
     } finally {
       setLoading(false)
       inputRef.current?.focus()
@@ -258,7 +264,10 @@ export default function MCPConsolePage() {
               <CardTitle>HERA MCP Console</CardTitle>
             </div>
             <div className="flex items-center gap-2">
-              <Select value={selectedServer} onValueChange={(value: 'general' | 'salon') => setSelectedServer(value)}>
+              <Select
+                value={selectedServer}
+                onValueChange={(value: 'general' | 'salon') => setSelectedServer(value)}
+              >
                 <SelectTrigger className="w-[150px]">
                   <SelectValue />
                 </SelectTrigger>
@@ -272,7 +281,7 @@ export default function MCPConsolePage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {ORGANIZATIONS.map((org) => (
+                  {ORGANIZATIONS.map(org => (
                     <SelectItem key={org.id} value={org.id}>
                       {org.name}
                     </SelectItem>
@@ -292,13 +301,10 @@ export default function MCPConsolePage() {
             <div className="flex-1 flex flex-col">
               <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                 <div className="space-y-4">
-                  {messages.map((message) => (
+                  {messages.map(message => (
                     <div
                       key={message.id}
-                      className={cn(
-                        'flex gap-3',
-                        message.type === 'user' && 'justify-end'
-                      )}
+                      className={cn('flex gap-3', message.type === 'user' && 'justify-end')}
                     >
                       {message.type !== 'user' && (
                         <div className="flex-shrink-0 h-8 w-8 rounded-full bg-muted flex items-center justify-center">
@@ -310,8 +316,10 @@ export default function MCPConsolePage() {
                           'rounded-lg px-4 py-2 max-w-[80%]',
                           message.type === 'user' && 'bg-primary text-primary-foreground',
                           message.type === 'assistant' && 'bg-muted',
-                          message.type === 'system' && 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300',
-                          message.type === 'error' && 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300'
+                          message.type === 'system' &&
+                            'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300',
+                          message.type === 'error' &&
+                            'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300'
                         )}
                       >
                         <pre className="whitespace-pre-wrap font-mono text-sm">
@@ -349,7 +357,7 @@ export default function MCPConsolePage() {
                   <Input
                     ref={inputRef}
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={e => setInput(e.target.value)}
                     placeholder="Try: 'Show database summary' or 'Create a customer named Acme Corp'"
                     className="flex-1"
                     disabled={loading}
@@ -414,10 +422,10 @@ export default function MCPConsolePage() {
                   Inventory Report
                 </Button>
               </div>
-              
+
               <h3 className="font-semibold mb-3 text-sm mt-6">Available Features</h3>
               <div className="space-y-2">
-                {MCP_TOOLS.map((tool) => (
+                {MCP_TOOLS.map(tool => (
                   <div key={tool.name} className="text-xs space-y-1">
                     <div className="font-mono text-primary">{tool.name}</div>
                     <div className="text-muted-foreground">{tool.description}</div>

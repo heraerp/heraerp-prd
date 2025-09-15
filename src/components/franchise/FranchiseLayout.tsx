@@ -5,15 +5,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { 
-  Menu, 
-  X, 
-  Home, 
-  Settings, 
-  TrendingUp, 
-  DollarSign, 
-  Award, 
-  CheckCircle, 
+import {
+  Menu,
+  X,
+  Home,
+  Settings,
+  TrendingUp,
+  DollarSign,
+  Award,
+  CheckCircle,
   HelpCircle,
   FileText,
   Rocket
@@ -32,7 +32,7 @@ const navigation = [
   { name: 'Proof', href: '/franchise/proof', icon: CheckCircle },
   { name: 'FAQ', href: '/franchise/faq', icon: HelpCircle },
   { name: 'Apply', href: '/franchise/apply', icon: FileText },
-  { name: 'Start Today', href: '/franchise/start', icon: Rocket },
+  { name: 'Start Today', href: '/franchise/start', icon: Rocket }
 ]
 
 export function FranchiseLayout({ children }: FranchiseLayoutProps) {
@@ -59,7 +59,7 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1">
-            {navigation.map((item) => {
+            {navigation.map(item => {
               const isActive = pathname === item.href
               return (
                 <Link
@@ -81,7 +81,7 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button 
+            <Button
               asChild
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6"
             >
@@ -106,7 +106,7 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
         <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-lg">
           <div className="container mx-auto px-4 py-4">
             <nav className="space-y-2">
-              {navigation.map((item) => {
+              {navigation.map(item => {
                 const isActive = pathname === item.href
                 return (
                   <Link
@@ -127,7 +127,7 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
               })}
             </nav>
             <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-              <Button 
+              <Button
                 asChild
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 w-full"
               >
@@ -139,9 +139,7 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
       )}
 
       {/* Main Content */}
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
 
       {/* Footer */}
       <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
@@ -160,30 +158,80 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
                 </span>
               </Link>
               <p className="text-slate-600 dark:text-slate-400 max-w-md">
-                Join the ERP revolution. Work from home, disrupt a $50B industry, and earn $25K–$500K+ annually.
+                Join the ERP revolution. Work from home, disrupt a $50B industry, and earn
+                $25K–$500K+ annually.
               </p>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-3">Quick Links</h3>
               <ul className="space-y-2">
-                <li><Link href="/franchise/opportunity" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">Opportunity</Link></li>
-                <li><Link href="/franchise/income" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">Income Potential</Link></li>
-                <li><Link href="/franchise/proof" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">Case Studies</Link></li>
-                <li><Link href="/franchise/apply" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">Apply Now</Link></li>
+                <li>
+                  <Link
+                    href="/franchise/opportunity"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    Opportunity
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/franchise/income"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    Income Potential
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/franchise/proof"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    Case Studies
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/franchise/apply"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    Apply Now
+                  </Link>
+                </li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-slate-900 dark:text-white mb-3">Support</h3>
               <ul className="space-y-2">
-                <li><Link href="/franchise/faq" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">FAQ</Link></li>
-                <li><Link href="/franchise/how-it-works" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">How It Works</Link></li>
-                <li><a href="mailto:franchise@hera.com" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">Contact</a></li>
+                <li>
+                  <Link
+                    href="/franchise/faq"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/franchise/how-it-works"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    How It Works
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="mailto:franchise@hera.com"
+                    className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    Contact
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
-          
+
           <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-700 text-center text-slate-600 dark:text-slate-400">
             <p>&copy; 2024 HERA. All rights reserved.</p>
           </div>

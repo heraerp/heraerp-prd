@@ -18,10 +18,21 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Database, Code, Wand2, Copy, Download, CheckCircle, 
-  AlertTriangle, ArrowRight, Sparkles, FileCode, 
-  Terminal, Zap, Play, ArrowLeft
+import {
+  Database,
+  Code,
+  Wand2,
+  Copy,
+  Download,
+  CheckCircle,
+  AlertTriangle,
+  ArrowRight,
+  Sparkles,
+  FileCode,
+  Terminal,
+  Zap,
+  Play,
+  ArrowLeft
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -65,11 +76,11 @@ export default function MCPSQLConverter() {
     try {
       // Extract path from URL
       const urlPath = pageUrl.replace(/^https?:\/\/[^\/]+/, '')
-      
+
       // Fetch the page content
       const response = await fetch(`/api/fetch-page-content?path=${encodeURIComponent(urlPath)}`)
       const data = await response.json()
-      
+
       if (data.success && data.content) {
         setProgressiveCode(data.content)
         // Auto-detect business type from URL
@@ -90,12 +101,12 @@ export default function MCPSQLConverter() {
 
   const analyzeProgressiveCode = async () => {
     setIsAnalyzing(true)
-    
+
     // If URL mode and no code yet, fetch it first
     if (inputMode === 'url' && !progressiveCode && pageUrl) {
       await fetchPageContent()
     }
-    
+
     // Simulate analysis - in production, this would use AI/parsing
     setTimeout(() => {
       const result: AnalysisResult = {
@@ -109,7 +120,9 @@ export default function MCPSQLConverter() {
       }
 
       // Extract customer data
-      const customerMatches = progressiveCode.matchAll(/name:\s*'([^']+)'[^}]*email:\s*'([^']+)'[^}]*phone:\s*'([^']+)'/g)
+      const customerMatches = progressiveCode.matchAll(
+        /name:\s*'([^']+)'[^}]*email:\s*'([^']+)'[^}]*phone:\s*'([^']+)'/g
+      )
       for (const match of customerMatches) {
         result.entities.push({
           type: 'customer',
@@ -220,20 +233,24 @@ SELECT
 
   const generateMCPCommands = (analysis: AnalysisResult) => {
     const commands: string[] = []
-    
+
     // Organization creation
-    commands.push(`Create organization ${analysis.organizationInfo.name} with type ${analysis.organizationInfo.type}`)
-    
+    commands.push(
+      `Create organization ${analysis.organizationInfo.name} with type ${analysis.organizationInfo.type}`
+    )
+
     // Entity creation
     analysis.entities.forEach(entity => {
-      commands.push(`Create ${entity.type} entity ${entity.name} for ${analysis.organizationInfo.name} with smart code ${entity.smartCode}`)
-      
+      commands.push(
+        `Create ${entity.type} entity ${entity.name} for ${analysis.organizationInfo.name} with smart code ${entity.smartCode}`
+      )
+
       // Dynamic fields
       Object.entries(entity.fields).forEach(([field, value]) => {
         commands.push(`Set dynamic field ${field} to ${value} for ${entity.type} ${entity.name}`)
       })
     })
-    
+
     setMcpCommands(commands)
   }
 
@@ -270,7 +287,9 @@ SELECT
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   MCP SQL Converter
                 </h1>
-                <p className="text-slate-800 font-semibold">Convert Progressive Demo Data to Production Database</p>
+                <p className="text-slate-800 font-semibold">
+                  Convert Progressive Demo Data to Production Database
+                </p>
               </div>
             </div>
             <Badge className="px-4 py-2 bg-blue-600/20 text-blue-900 border-blue-600/50 font-medium">
@@ -298,17 +317,17 @@ SELECT
                     id="org-name"
                     placeholder="e.g., Elite Beauty Salon"
                     value={organizationName}
-                    onChange={(e) => setOrganizationName(e.target.value)}
+                    onChange={e => setOrganizationName(e.target.value)}
                     className="bg-white/80 border-slate-200"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="business-type">Business Type</Label>
                   <select
                     id="business-type"
                     value={businessType}
-                    onChange={(e) => setBusinessType(e.target.value)}
+                    onChange={e => setBusinessType(e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white/50"
                   >
                     <option value="salon">Salon</option>
@@ -318,7 +337,7 @@ SELECT
                     <option value="automotive">Automotive</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <Label>Input Method</Label>
                   <div className="flex gap-4 mb-4">
@@ -341,7 +360,7 @@ SELECT
                       Paste Code
                     </Button>
                   </div>
-                  
+
                   {inputMode === 'url' ? (
                     <div className="space-y-4">
                       <div>
@@ -350,7 +369,7 @@ SELECT
                           id="page-url"
                           placeholder="e.g., https://heraerp.com/salon-progressive/customers"
                           value={pageUrl}
-                          onChange={(e) => setPageUrl(e.target.value)}
+                          onChange={e => setPageUrl(e.target.value)}
                           className="bg-white/80 border-slate-200"
                         />
                         <p className="text-xs text-slate-700 mt-1 font-medium">
@@ -362,21 +381,27 @@ SELECT
                           <div className="flex flex-wrap gap-2">
                             <button
                               type="button"
-                              onClick={() => setPageUrl('https://heraerp.com/salon-progressive/customers')}
+                              onClick={() =>
+                                setPageUrl('https://heraerp.com/salon-progressive/customers')
+                              }
                               className="text-xs text-blue-700 hover:text-blue-900 underline font-medium"
                             >
                               Salon Customers
                             </button>
                             <button
                               type="button"
-                              onClick={() => setPageUrl('https://heraerp.com/restaurant-progressive/menu')}
+                              onClick={() =>
+                                setPageUrl('https://heraerp.com/restaurant-progressive/menu')
+                              }
                               className="text-xs text-blue-700 hover:text-blue-900 underline font-medium"
                             >
                               Restaurant Menu
                             </button>
                             <button
                               type="button"
-                              onClick={() => setPageUrl('https://heraerp.com/healthcare-progressive/patients')}
+                              onClick={() =>
+                                setPageUrl('https://heraerp.com/healthcare-progressive/patients')
+                              }
                               className="text-xs text-blue-700 hover:text-blue-900 underline font-medium"
                             >
                               Healthcare Patients
@@ -414,13 +439,13 @@ SELECT
                         id="code-input"
                         placeholder="Paste your progressive page code here (the demo data section)..."
                         value={progressiveCode}
-                        onChange={(e) => setProgressiveCode(e.target.value)}
+                        onChange={e => setProgressiveCode(e.target.value)}
                         className="h-64 font-mono text-sm bg-white/80 border-slate-200 text-slate-800"
                       />
                     </div>
                   )}
                 </div>
-                
+
                 <Button
                   onClick={analyzeProgressiveCode}
                   disabled={(!progressiveCode && !pageUrl) || !organizationName || isAnalyzing}
@@ -453,7 +478,9 @@ SELECT
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Entities Found:</span>
-                      <span className="font-semibold text-slate-900">{analysisResult.entities.length}</span>
+                      <span className="font-semibold text-slate-900">
+                        {analysisResult.entities.length}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Customers:</span>
@@ -480,7 +507,7 @@ SELECT
                 <TabsTrigger value="sql">SQL Output</TabsTrigger>
                 <TabsTrigger value="mcp">MCP Commands</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="sql">
                 <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
                   <CardHeader>
@@ -518,7 +545,7 @@ SELECT
                   </CardContent>
                 </Card>
               </TabsContent>
-              
+
               <TabsContent value="mcp">
                 <Card className="bg-white/70 backdrop-blur-xl border-white/30 shadow-xl">
                   <CardHeader>
@@ -560,19 +587,29 @@ SELECT
                   <ol className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
                       <span className="font-semibold text-blue-600">1.</span>
-                      <span className="text-slate-800">Execute the SQL in your Supabase database or use MCP commands in Claude Desktop</span>
+                      <span className="text-slate-800">
+                        Execute the SQL in your Supabase database or use MCP commands in Claude
+                        Desktop
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="font-semibold text-blue-600">2.</span>
-                      <span className="text-slate-800">Use the Page Production Wizard to update your progressive page code</span>
+                      <span className="text-slate-800">
+                        Use the Page Production Wizard to update your progressive page code
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="font-semibold text-blue-600">3.</span>
-                      <span className="text-slate-800">Deploy your production-ready application with real data</span>
+                      <span className="text-slate-800">
+                        Deploy your production-ready application with real data
+                      </span>
                     </li>
                   </ol>
-                  
-                  <Button asChild className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium">
+
+                  <Button
+                    asChild
+                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium"
+                  >
                     <Link href="/mcp-page-wizard">
                       <ArrowRight className="h-4 w-4 mr-2" />
                       Go to Page Production Wizard

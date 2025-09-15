@@ -14,26 +14,26 @@ const sizeMap = {
   xl: { width: 280, height: 88, fontSize: 46, iconSize: 56 }
 }
 
-export function HeraEnterpriseLogo({ 
-  className = '', 
+export function HeraEnterpriseLogo({
+  className = '',
   size = 'lg',
   variant = 'full',
   theme = 'gradient'
 }: HeraEnterpriseLogoProps) {
   const { width, height, fontSize, iconSize } = sizeMap[size]
-  
+
   const gradientId = `heraEnterpriseGrad-${Math.random().toString(36).substr(2, 9)}`
   const meshId = `heraEnterpriseMesh-${Math.random().toString(36).substr(2, 9)}`
-  
+
   // Adjust width for icon-only variant
   const actualWidth = variant === 'icon' ? iconSize + 16 : width
-  
+
   return (
-    <svg 
-      width={actualWidth} 
-      height={height} 
-      viewBox={`0 0 ${actualWidth} ${height}`} 
-      fill="none" 
+    <svg
+      width={actualWidth}
+      height={height}
+      viewBox={`0 0 ${actualWidth} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -45,18 +45,18 @@ export function HeraEnterpriseLogo({
           <stop offset="66%" style={{ stopColor: '#a855f7' }} />
           <stop offset="100%" style={{ stopColor: '#6366f1' }} />
         </linearGradient>
-        
+
         {/* Mesh gradient for modern depth */}
         <radialGradient id={meshId} cx="50%" cy="50%" r="50%">
           <stop offset="0%" style={{ stopColor: '#8b5cf6', stopOpacity: 0.2 }} />
           <stop offset="100%" style={{ stopColor: '#6366f1', stopOpacity: 0 }} />
         </radialGradient>
-        
+
         {/* Professional shadow */}
         <filter id="enterpriseShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.1"/>
+          <feDropShadow dx="0" dy="2" stdDeviation="4" floodOpacity="0.1" />
         </filter>
-        
+
         {/* Inner shadow for depth */}
         <filter id="innerShadow">
           <feOffset dx="0" dy="1" />
@@ -65,7 +65,7 @@ export function HeraEnterpriseLogo({
           <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0" />
         </filter>
       </defs>
-      
+
       {/* Icon Section - Always visible */}
       {(variant === 'full' || variant === 'icon') && (
         <g transform={`translate(8, ${(height - iconSize) / 2})`}>
@@ -77,15 +77,10 @@ export function HeraEnterpriseLogo({
             fill={theme === 'gradient' ? `url(#${gradientId})` : '#5046e5'}
             filter="url(#enterpriseShadow)"
           />
-          
+
           {/* Mesh overlay for depth */}
-          <circle
-            cx={iconSize / 2}
-            cy={iconSize / 2}
-            r={iconSize / 2}
-            fill={`url(#${meshId})`}
-          />
-          
+          <circle cx={iconSize / 2} cy={iconSize / 2} r={iconSize / 2} fill={`url(#${meshId})`} />
+
           {/* HERA Symbol - Abstract H with data nodes */}
           <g transform={`translate(${iconSize * 0.2}, ${iconSize * 0.2})`}>
             {/* Main H structure */}
@@ -103,23 +98,55 @@ export function HeraEnterpriseLogo({
               strokeLinecap="round"
               fill="none"
             />
-            
+
             {/* Data nodes representing universal architecture */}
             <circle cx="0" cy="0" r="4" fill="white" />
             <circle cx={iconSize * 0.6} cy="0" r="4" fill="white" />
             <circle cx="0" cy={iconSize * 0.6} r="4" fill="white" />
             <circle cx={iconSize * 0.6} cy={iconSize * 0.6} r="4" fill="white" />
             <circle cx={iconSize * 0.3} cy={iconSize * 0.3} r="5" fill="white" opacity="0.9" />
-            
+
             {/* Connecting lines for network effect */}
-            <line x1="0" y1="0" x2={iconSize * 0.3} y2={iconSize * 0.3} stroke="white" strokeWidth="1" opacity="0.4" />
-            <line x1={iconSize * 0.6} y1="0" x2={iconSize * 0.3} y2={iconSize * 0.3} stroke="white" strokeWidth="1" opacity="0.4" />
-            <line x1="0" y1={iconSize * 0.6} x2={iconSize * 0.3} y2={iconSize * 0.3} stroke="white" strokeWidth="1" opacity="0.4" />
-            <line x1={iconSize * 0.6} y1={iconSize * 0.6} x2={iconSize * 0.3} y2={iconSize * 0.3} stroke="white" strokeWidth="1" opacity="0.4" />
+            <line
+              x1="0"
+              y1="0"
+              x2={iconSize * 0.3}
+              y2={iconSize * 0.3}
+              stroke="white"
+              strokeWidth="1"
+              opacity="0.4"
+            />
+            <line
+              x1={iconSize * 0.6}
+              y1="0"
+              x2={iconSize * 0.3}
+              y2={iconSize * 0.3}
+              stroke="white"
+              strokeWidth="1"
+              opacity="0.4"
+            />
+            <line
+              x1="0"
+              y1={iconSize * 0.6}
+              x2={iconSize * 0.3}
+              y2={iconSize * 0.3}
+              stroke="white"
+              strokeWidth="1"
+              opacity="0.4"
+            />
+            <line
+              x1={iconSize * 0.6}
+              y1={iconSize * 0.6}
+              x2={iconSize * 0.3}
+              y2={iconSize * 0.3}
+              stroke="white"
+              strokeWidth="1"
+              opacity="0.4"
+            />
           </g>
         </g>
       )}
-      
+
       {/* Text Section */}
       {(variant === 'full' || variant === 'text') && (
         <g transform={variant === 'text' ? 'translate(0, 0)' : `translate(${iconSize + 24}, 0)`}>
@@ -135,7 +162,7 @@ export function HeraEnterpriseLogo({
           >
             HERA
           </text>
-          
+
           {/* Subtitle for larger sizes */}
           {(size === 'lg' || size === 'xl') && (
             <text
@@ -150,7 +177,7 @@ export function HeraEnterpriseLogo({
               UNIVERSAL ERP
             </text>
           )}
-          
+
           {/* Version indicator */}
           <text
             x={fontSize * 3.5}
@@ -165,7 +192,7 @@ export function HeraEnterpriseLogo({
           </text>
         </g>
       )}
-      
+
       {/* Accent line for full variant */}
       {variant === 'full' && size !== 'sm' && (
         <rect

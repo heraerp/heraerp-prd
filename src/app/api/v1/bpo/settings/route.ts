@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId') || 'default-user'
-    
+
     // Return stored settings or defaults
     const userSettings = mockSettings[userId] || {
       profile: {
@@ -109,8 +109,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error retrieving BPO settings:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to retrieve settings',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -133,10 +133,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (settings.profile?.email && !/\S+@\S+\.\S+/.test(settings.profile.email)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid email format' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Invalid email format' }, { status: 400 })
     }
 
     // Store settings (in production, save to database)
@@ -170,8 +167,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error saving BPO settings:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to save settings',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -214,8 +211,8 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Error updating BPO settings:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to update settings',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -248,15 +245,12 @@ export async function DELETE(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Settings not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ success: false, error: 'Settings not found' }, { status: 404 })
   } catch (error) {
     console.error('Error deleting BPO settings:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to delete settings',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

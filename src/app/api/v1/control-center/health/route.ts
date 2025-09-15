@@ -10,11 +10,15 @@ export async function GET(request: NextRequest) {
   try {
     // Quick health check (cached)
     const report = await controlCenterService.runSystemHealthCheck()
-    
+
     const response = NextResponse.json({
       overall: report.overallHealth,
-      status: report.overallHealth >= 90 ? 'healthy' : 
-              report.overallHealth >= 70 ? 'warning' : 'critical',
+      status:
+        report.overallHealth >= 90
+          ? 'healthy'
+          : report.overallHealth >= 70
+            ? 'warning'
+            : 'critical',
       components: report.healthChecks.map(h => ({
         name: h.component,
         status: h.status,
@@ -24,15 +28,11 @@ export async function GET(request: NextRequest) {
       deploymentReady: report.deploymentReady,
       timestamp: report.timestamp
     })
-    
+
     // Add health header
-    response.headers.set(
-      'X-HERA-Health', 
-      report.overallHealth >= 70 ? 'healthy' : 'degraded'
-    )
-    
+    response.headers.set('X-HERA-Health', report.overallHealth >= 70 ? 'healthy' : 'degraded')
+
     return response
-    
   } catch (error) {
     return NextResponse.json(
       { error: 'Health check failed', message: error.message },

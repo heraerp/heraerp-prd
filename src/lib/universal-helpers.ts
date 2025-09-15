@@ -35,22 +35,25 @@ export async function ensureDefaultEntities<T extends Record<string, any>>(
   // Check existing entities
   const response = await universalApi.getEntities()
   const existing = extractData(response).filter(e => e.entity_type === entityType)
-  
+
   // Create defaults if none exist
   if (existing.length === 0) {
     for (const item of defaults) {
-      await universalApi.createEntity({
-        entity_type: entityType,
-        smart_code: smartCode,
-        ...item
-      }, organizationId)
+      await universalApi.createEntity(
+        {
+          entity_type: entityType,
+          smart_code: smartCode,
+          ...item
+        },
+        organizationId
+      )
     }
-    
+
     // Fetch again to get created entities
     const newResponse = await universalApi.getEntities()
     return extractData(newResponse).filter(e => e.entity_type === entityType)
   }
-  
+
   return existing
 }
 
@@ -63,7 +66,7 @@ export function calculatePeriodStats(
 ) {
   const now = new Date()
   const startOfPeriod = new Date()
-  
+
   switch (period) {
     case 'today':
       startOfPeriod.setHours(0, 0, 0, 0)
@@ -78,23 +81,26 @@ export function calculatePeriodStats(
       startOfPeriod.setFullYear(now.getFullYear() - 1)
       break
   }
-  
+
   const filtered = transactions.filter(t => {
     const txDate = new Date(t.transaction_date || t.created_at)
     return txDate >= startOfPeriod
   })
-  
+
   const total = filtered.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-  
+
   // Group by type
-  const byType = filtered.reduce((acc, t) => {
-    const type = t.transaction_type || 'unknown'
-    if (!acc[type]) acc[type] = { count: 0, total: 0 }
-    acc[type].count++
-    acc[type].total += t.total_amount || 0
-    return acc
-  }, {} as Record<string, { count: number; total: number }>)
-  
+  const byType = filtered.reduce(
+    (acc, t) => {
+      const type = t.transaction_type || 'unknown'
+      if (!acc[type]) acc[type] = { count: 0, total: 0 }
+      acc[type].count++
+      acc[type].total += t.total_amount || 0
+      return acc
+    },
+    {} as Record<string, { count: number; total: number }>
+  )
+
   return {
     count: filtered.length,
     total,
@@ -141,24 +147,27 @@ export async function createTransactionWithLines(
 ) {
   // Create main transaction
   const txResponse = await universalApi.createTransaction(transaction, organizationId)
-  
+
   if (!txResponse.success || !txResponse.data) {
     throw new Error(txResponse.error || 'Failed to create transaction')
   }
-  
+
   const transactionId = txResponse.data.id
-  
+
   // Create line items
   const linePromises = lines.map((line, index) =>
-    universalApi.createTransactionLine({
-      transaction_id: transactionId,
-      line_number: index + 1,
-      ...line
-    }, organizationId)
+    universalApi.createTransactionLine(
+      {
+        transaction_id: transactionId,
+        line_number: index + 1,
+        ...line
+      },
+      organizationId
+    )
   )
-  
+
   const lineResults = await Promise.all(linePromises)
-  
+
   return {
     transaction: txResponse.data,
     lines: lineResults.map(r => r.data).filter(Boolean)
@@ -174,10 +183,8 @@ export function filterTransactionsByDate(
   endDate?: string | Date
 ): any[] {
   const start = typeof startDate === 'string' ? new Date(startDate) : startDate
-  const end = endDate 
-    ? (typeof endDate === 'string' ? new Date(endDate) : endDate)
-    : new Date()
-  
+  const end = endDate ? (typeof endDate === 'string' ? new Date(endDate) : endDate) : new Date()
+
   return transactions.filter(t => {
     const txDate = new Date(t.transaction_date || t.created_at)
     return txDate >= start && txDate <= end
@@ -188,12 +195,15 @@ export function filterTransactionsByDate(
  * Group items by a key
  */
 export function groupBy<T>(items: T[], key: keyof T): Record<string, T[]> {
-  return items.reduce((groups, item) => {
-    const groupKey = String(item[key])
-    if (!groups[groupKey]) groups[groupKey] = []
-    groups[groupKey].push(item)
-    return groups
-  }, {} as Record<string, T[]>)
+  return items.reduce(
+    (groups, item) => {
+      const groupKey = String(item[key])
+      if (!groups[groupKey]) groups[groupKey] = []
+      groups[groupKey].push(item)
+      return groups
+    },
+    {} as Record<string, T[]>
+  )
 }
 
 /**
@@ -225,17 +235,17 @@ export async function handleApiOperation<T>(
   } catch (err) {
     const error = err instanceof Error ? err : new Error('Unknown error')
     const message = options?.errorMessage || error.message
-    
+
     console.error('API operation error:', error)
-    
+
     if (options?.onError) {
       options.onError(error)
     }
-    
+
     if (options?.throwOnError) {
       throw error
     }
-    
+
     return { success: false, error: message }
   }
 }

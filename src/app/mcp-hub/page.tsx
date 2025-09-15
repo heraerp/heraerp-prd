@@ -50,11 +50,17 @@ const MCP_CHATS: MCPChat[] = [
   {
     id: 'salon-manager',
     title: 'Salon Manager',
-    description: 'AI-powered salon operations with appointment booking, inventory tracking, and revenue analytics',
+    description:
+      'AI-powered salon operations with appointment booking, inventory tracking, and revenue analytics',
     icon: Scissors,
     path: '/salon-manager',
     category: 'business',
-    features: ['Appointment Booking', 'Inventory Management', 'Revenue Analytics', 'Staff Performance'],
+    features: [
+      'Appointment Booking',
+      'Inventory Management',
+      'Revenue Analytics',
+      'Staff Performance'
+    ],
     status: 'production',
     gradient: 'from-purple-600 to-pink-400',
     popular: true
@@ -73,7 +79,8 @@ const MCP_CHATS: MCPChat[] = [
   {
     id: 'digital-accountant',
     title: 'Digital Accountant',
-    description: 'Enterprise accounting automation with journal entries, GL posting, and financial reporting',
+    description:
+      'Enterprise accounting automation with journal entries, GL posting, and financial reporting',
     icon: Calculator,
     path: '/digital-accountant',
     category: 'business',
@@ -85,11 +92,17 @@ const MCP_CHATS: MCPChat[] = [
   {
     id: 'icecream-manager',
     title: 'Ice Cream Manager',
-    description: 'Complete ice cream factory operations with cold chain monitoring, production planning, and distribution',
+    description:
+      'Complete ice cream factory operations with cold chain monitoring, production planning, and distribution',
     icon: IceCream,
     path: '/icecream-manager',
     category: 'business',
-    features: ['Cold Chain Monitoring', 'Production Planning', 'Inventory Tracking', 'Distribution Routes'],
+    features: [
+      'Cold Chain Monitoring',
+      'Production Planning',
+      'Inventory Tracking',
+      'Distribution Routes'
+    ],
     status: 'production',
     gradient: 'from-blue-600 to-cyan-400',
     popular: true,
@@ -102,7 +115,12 @@ const MCP_CHATS: MCPChat[] = [
     icon: Heart,
     path: '/healthcare-assistant',
     category: 'business',
-    features: ['Patient Records', 'Appointment Management', 'Prescription Tracking', 'Insurance Processing'],
+    features: [
+      'Patient Records',
+      'Appointment Management',
+      'Prescription Tracking',
+      'Insurance Processing'
+    ],
     status: 'coming-soon',
     gradient: 'from-red-600 to-pink-400'
   },
@@ -124,14 +142,20 @@ const MCP_CHATS: MCPChat[] = [
     icon: Users,
     path: '/hr-assistant',
     category: 'business',
-    features: ['Employee Records', 'Recruitment Pipeline', 'Performance Reviews', 'Leave Management'],
+    features: [
+      'Employee Records',
+      'Recruitment Pipeline',
+      'Performance Reviews',
+      'Leave Management'
+    ],
     status: 'coming-soon',
     gradient: 'from-indigo-600 to-purple-400'
   },
   {
     id: 'project-planner',
     title: 'Project Planner',
-    description: 'Project management with task tracking, resource allocation, and timeline visualization',
+    description:
+      'Project management with task tracking, resource allocation, and timeline visualization',
     icon: Briefcase,
     path: '/project-planner',
     category: 'analytics',
@@ -189,11 +213,12 @@ export default function MCPHubPage() {
   // Filter chats based on category and search
   const filteredChats = MCP_CHATS.filter(chat => {
     const matchesCategory = selectedCategory === 'all' || chat.category === selectedCategory
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch =
+      searchQuery === '' ||
       chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       chat.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       chat.features.some(f => f.toLowerCase().includes(searchQuery.toLowerCase()))
-    
+
     return matchesCategory && matchesSearch
   })
 
@@ -213,8 +238,10 @@ export default function MCPHubPage() {
     .filter(Boolean) as MCPChat[]
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")} 
-         style={{ backgroundColor: isDarkMode ? '#0a0a0a' : '#fafafa' }}>
+    <div
+      className={cn('min-h-screen', isDarkMode && 'dark')}
+      style={{ backgroundColor: isDarkMode ? '#0a0a0a' : '#fafafa' }}
+    >
       <div className="relative overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 opacity-30">
@@ -234,7 +261,8 @@ export default function MCPHubPage() {
               HERA AI Assistants
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choose your AI-powered assistant for specialized business operations, analytics, and creative tasks
+              Choose your AI-powered assistant for specialized business operations, analytics, and
+              creative tasks
             </p>
           </div>
 
@@ -245,7 +273,7 @@ export default function MCPHubPage() {
               <Input
                 placeholder="Search assistants by name, feature, or category..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 h-12 text-lg"
               />
             </div>
@@ -259,18 +287,20 @@ export default function MCPHubPage() {
                 Recently Used
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {recentChatObjects.map((chat) => (
-                  <Card 
-                    key={chat.id} 
+                {recentChatObjects.map(chat => (
+                  <Card
+                    key={chat.id}
                     className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2"
                     onClick={() => handleChatClick(chat)}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className={cn(
-                          "w-10 h-10 rounded-lg bg-gradient-to-br flex items-center justify-center",
-                          chat.gradient
-                        )}>
+                        <div
+                          className={cn(
+                            'w-10 h-10 rounded-lg bg-gradient-to-br flex items-center justify-center',
+                            chat.gradient
+                          )}
+                        >
                           <chat.icon className="h-5 w-5 text-white" />
                         </div>
                         <div className="flex-1">
@@ -289,7 +319,7 @@ export default function MCPHubPage() {
           {/* Category Tabs */}
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
             <TabsList className="grid grid-cols-5 w-full max-w-2xl mx-auto">
-              {CATEGORIES.map((category) => (
+              {CATEGORIES.map(category => (
                 <TabsTrigger key={category.id} value={category.id} className="gap-2">
                   <category.icon className="h-4 w-4" />
                   <span className="hidden md:inline">{category.label}</span>
@@ -300,14 +330,14 @@ export default function MCPHubPage() {
 
           {/* Assistant Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {filteredChats.map((chat) => (
-              <Card 
+            {filteredChats.map(chat => (
+              <Card
                 key={chat.id}
                 className={cn(
-                  "relative overflow-hidden transition-all duration-300",
-                  chat.status === 'production' 
-                    ? "cursor-pointer hover:shadow-xl hover:scale-105 border-2" 
-                    : "opacity-75"
+                  'relative overflow-hidden transition-all duration-300',
+                  chat.status === 'production'
+                    ? 'cursor-pointer hover:shadow-xl hover:scale-105 border-2'
+                    : 'opacity-75'
                 )}
                 onClick={() => handleChatClick(chat)}
               >
@@ -328,18 +358,23 @@ export default function MCPHubPage() {
 
                 <CardHeader className="pb-4">
                   <div className="flex items-start gap-4">
-                    <div className={cn(
-                      "w-14 h-14 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg",
-                      chat.gradient
-                    )}>
+                    <div
+                      className={cn(
+                        'w-14 h-14 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg',
+                        chat.gradient
+                      )}
+                    >
                       <chat.icon className="h-7 w-7 text-white" />
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-xl mb-1">{chat.title}</CardTitle>
-                      <Badge 
+                      <Badge
                         variant={
-                          chat.status === 'production' ? 'default' : 
-                          chat.status === 'beta' ? 'secondary' : 'outline'
+                          chat.status === 'production'
+                            ? 'default'
+                            : chat.status === 'beta'
+                              ? 'secondary'
+                              : 'outline'
                         }
                         className="text-xs"
                       >
@@ -353,7 +388,7 @@ export default function MCPHubPage() {
                   <CardDescription className="mb-4 line-clamp-2">
                     {chat.description}
                   </CardDescription>
-                  
+
                   {chat.demo && (
                     <div className="mb-3 text-xs text-blue-600 flex items-center gap-1">
                       <Sparkles className="h-3 w-3" />
@@ -363,7 +398,9 @@ export default function MCPHubPage() {
 
                   <div className="space-y-3">
                     <div>
-                      <h4 className="text-xs font-medium text-muted-foreground mb-2">Key Features</h4>
+                      <h4 className="text-xs font-medium text-muted-foreground mb-2">
+                        Key Features
+                      </h4>
                       <div className="flex flex-wrap gap-1">
                         {chat.features.slice(0, 3).map((feature, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
@@ -388,10 +425,12 @@ export default function MCPHubPage() {
                 </CardContent>
 
                 {/* Gradient Border Effect on Hover */}
-                <div className={cn(
-                  "absolute inset-0 opacity-0 hover:opacity-10 transition-opacity duration-300 pointer-events-none",
-                  `bg-gradient-to-br ${chat.gradient}`
-                )} />
+                <div
+                  className={cn(
+                    'absolute inset-0 opacity-0 hover:opacity-10 transition-opacity duration-300 pointer-events-none',
+                    `bg-gradient-to-br ${chat.gradient}`
+                  )}
+                />
               </Card>
             ))}
           </div>
@@ -404,8 +443,8 @@ export default function MCPHubPage() {
               </div>
               <h3 className="text-lg font-medium mb-2">No assistants found</h3>
               <p className="text-muted-foreground">Try adjusting your search or category filter</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setSearchQuery('')
                   setSelectedCategory('all')

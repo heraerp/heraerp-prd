@@ -1,24 +1,18 @@
 /**
  * HERA Universal Onboarding System - Type Definitions
- * 
+ *
  * Smart Code-driven onboarding with universal transaction tracking
  * Follows HERA DNA principles - 6 tables, infinite complexity
  */
 
 // Smart Code pattern for onboarding
-export type SmartCode = `HERA.UI.ONBOARD.${string}`;
+export type SmartCode = `HERA.UI.ONBOARD.${string}`
 
 // Placement options for tour steps
-export type StepPlacement = 'top' | 'right' | 'bottom' | 'left' | 'auto' | 'center';
+export type StepPlacement = 'top' | 'right' | 'bottom' | 'left' | 'auto' | 'center'
 
 // Tour and step status for analytics
-export type OnboardingStatus = 
-  | 'started' 
-  | 'shown' 
-  | 'completed' 
-  | 'skipped' 
-  | 'dismissed' 
-  | 'error';
+export type OnboardingStatus = 'started' | 'shown' | 'completed' | 'skipped' | 'dismissed' | 'error'
 
 /**
  * Individual onboarding step configuration
@@ -26,46 +20,46 @@ export type OnboardingStatus =
  */
 export interface HeraStep {
   /** Smart Code identifying this step */
-  smartCode: SmartCode;
-  
+  smartCode: SmartCode
+
   /** CSS selector for target element */
-  selector: string;
-  
+  selector: string
+
   /** i18n key for step title */
-  titleKey: string;
-  
+  titleKey: string
+
   /** i18n key for step body content */
-  bodyKey: string;
-  
+  bodyKey: string
+
   /** Preferred placement of tooltip */
-  placement?: StepPlacement;
-  
+  placement?: StepPlacement
+
   /** Padding around spotlight area */
-  spotlightPadding?: number;
-  
+  spotlightPadding?: number
+
   /** Route to navigate to before showing step */
-  route?: string | ((router: any) => Promise<void>);
-  
+  route?: string | ((router: any) => Promise<void>)
+
   /** Wait condition before showing step */
-  waitFor?: string | (() => boolean | Promise<boolean>);
-  
+  waitFor?: string | (() => boolean | Promise<boolean>)
+
   /** Timeout for wait condition (default: 5000ms) */
-  timeoutMs?: number;
-  
+  timeoutMs?: number
+
   /** Disable beacon (pulsing indicator) */
-  disableBeacon?: boolean;
-  
+  disableBeacon?: boolean
+
   /** Hide close button on this step */
-  hideCloseButton?: boolean;
-  
+  hideCloseButton?: boolean
+
   /** Hide back button on this step */
-  hideBackButton?: boolean;
-  
+  hideBackButton?: boolean
+
   /** Explicit step ordering (optional) */
-  stepIndex?: number;
-  
+  stepIndex?: number
+
   /** Additional metadata for analytics */
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -74,19 +68,19 @@ export interface HeraStep {
  */
 export interface HeraTour {
   /** Smart Code for the entire tour */
-  tourSmartCode: SmartCode;
-  
+  tourSmartCode: SmartCode
+
   /** Ordered list of steps in the tour */
-  steps: HeraStep[];
-  
+  steps: HeraStep[]
+
   /** Auto-start tour when component mounts */
-  autoStart?: boolean;
-  
+  autoStart?: boolean
+
   /** Allow users to skip the tour */
-  allowSkip?: boolean;
-  
+  allowSkip?: boolean
+
   /** Smart Code to emit when tour is skipped */
-  skipSmartCode?: SmartCode;
+  skipSmartCode?: SmartCode
 }
 
 /**
@@ -95,31 +89,31 @@ export interface HeraTour {
  */
 export interface OnboardingTransaction {
   /** Unique transaction ID */
-  id: string;
-  
+  id: string
+
   /** Organization isolation (sacred boundary) */
-  organization_id: string;
-  
+  organization_id: string
+
   /** Smart Code for the event */
-  smart_code: SmartCode;
-  
+  smart_code: SmartCode
+
   /** ISO timestamp */
-  occurred_at: string;
-  
+  occurred_at: string
+
   /** AI confidence placeholder */
-  ai_confidence: number | null;
-  
+  ai_confidence: number | null
+
   /** AI insights placeholder */
-  ai_insights: string | null;
-  
+  ai_insights: string | null
+
   /** Event metadata */
   metadata: {
-    tour_id?: string;
-    step_id?: string;
-    user_id?: string;
-    session_id?: string;
-    [key: string]: unknown;
-  };
+    tour_id?: string
+    step_id?: string
+    user_id?: string
+    session_id?: string
+    [key: string]: unknown
+  }
 }
 
 /**
@@ -128,50 +122,50 @@ export interface OnboardingTransaction {
  */
 export interface OnboardingTransactionLine {
   /** Unique line ID */
-  id: string;
-  
+  id: string
+
   /** Parent transaction ID */
-  transaction_id: string;
-  
+  transaction_id: string
+
   /** Line order */
-  line_index: number;
-  
+  line_index: number
+
   /** Step Smart Code */
-  smart_code: SmartCode;
-  
+  smart_code: SmartCode
+
   /** Step status */
-  status: OnboardingStatus;
-  
+  status: OnboardingStatus
+
   /** Time spent on step (milliseconds) */
-  duration_ms?: number;
-  
+  duration_ms?: number
+
   /** Step metadata */
   metadata: {
-    selector?: string;
-    route?: string;
-    error_message?: string;
-    [key: string]: unknown;
-  };
+    selector?: string
+    route?: string
+    error_message?: string
+    [key: string]: unknown
+  }
 }
 
 /**
  * Theme configuration for onboarding UI
  */
 export interface OnboardingTheme {
-  name: 'light' | 'dark' | 'highContrast';
+  name: 'light' | 'dark' | 'highContrast'
   tokens: {
-    bubbleBackground: string;
-    bubbleText: string;
-    beaconColor: string;
-    overlayColor: string;
-    spotlightBorder: string;
-    buttonBackground: string;
-    buttonText: string;
-    buttonHover: string;
-    skipLinkColor: string;
-    progressBarBackground: string;
-    progressBarFill: string;
-  };
+    bubbleBackground: string
+    bubbleText: string
+    beaconColor: string
+    overlayColor: string
+    spotlightBorder: string
+    buttonBackground: string
+    buttonText: string
+    buttonHover: string
+    skipLinkColor: string
+    progressBarBackground: string
+    progressBarFill: string
+  }
 }
 
 /**
@@ -179,34 +173,34 @@ export interface OnboardingTheme {
  */
 export interface HeraOnboardingConfig {
   /** Organization ID for multi-tenant isolation */
-  organizationId: string;
-  
+  organizationId: string
+
   /** Enabled tour Smart Codes (feature flags) */
-  enabledTours?: SmartCode[];
-  
+  enabledTours?: SmartCode[]
+
   /** i18n message overrides */
-  messages?: Record<string, string>;
-  
+  messages?: Record<string, string>
+
   /** Theme selection */
-  theme?: 'light' | 'dark' | 'highContrast';
-  
+  theme?: 'light' | 'dark' | 'highContrast'
+
   /** Analytics callback for transaction emission */
-  onEmit?: (transaction: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void;
-  
+  onEmit?: (transaction: OnboardingTransaction, lines: OnboardingTransactionLine[]) => void
+
   /** Router instance for navigation */
-  router?: any;
-  
+  router?: any
+
   /** Debug mode for development */
-  debug?: boolean;
-  
+  debug?: boolean
+
   /** Global timeout for all steps */
-  globalTimeout?: number;
-  
+  globalTimeout?: number
+
   /** Keyboard shortcuts enabled */
-  keyboardNavigation?: boolean;
-  
+  keyboardNavigation?: boolean
+
   /** Respect prefers-reduced-motion */
-  respectReducedMotion?: boolean;
+  respectReducedMotion?: boolean
 }
 
 /**
@@ -214,28 +208,28 @@ export interface HeraOnboardingConfig {
  */
 export interface UseOnboardingReturn {
   /** Start a tour by Smart Code */
-  startTour: (code: SmartCode, options?: StartTourOptions) => void;
-  
+  startTour: (code: SmartCode, options?: StartTourOptions) => void
+
   /** Stop current tour */
-  stopTour: () => void;
-  
+  stopTour: () => void
+
   /** Navigate to next step */
-  next: () => void;
-  
+  next: () => void
+
   /** Navigate to previous step */
-  back: () => void;
-  
+  back: () => void
+
   /** Get current state */
-  getState: () => OnboardingState;
-  
+  getState: () => OnboardingState
+
   /** Check if tour is active */
-  isActive: boolean;
-  
+  isActive: boolean
+
   /** Current step index */
-  currentStep: number;
-  
+  currentStep: number
+
   /** Total steps in current tour */
-  totalSteps: number;
+  totalSteps: number
 }
 
 /**
@@ -243,13 +237,13 @@ export interface UseOnboardingReturn {
  */
 export interface StartTourOptions {
   /** Auto-start without user interaction */
-  auto?: boolean;
-  
+  auto?: boolean
+
   /** Start from specific step index */
-  startAt?: number;
-  
+  startAt?: number
+
   /** Override tour configuration */
-  overrides?: Partial<HeraTour>;
+  overrides?: Partial<HeraTour>
 }
 
 /**
@@ -257,41 +251,41 @@ export interface StartTourOptions {
  */
 export interface OnboardingState {
   /** Active tour Smart Code */
-  activeTour: SmartCode | null;
-  
+  activeTour: SmartCode | null
+
   /** Current step index */
-  currentStep: number;
-  
+  currentStep: number
+
   /** Total steps */
-  totalSteps: number;
-  
+  totalSteps: number
+
   /** Tour running status */
-  isRunning: boolean;
-  
+  isRunning: boolean
+
   /** Loading state */
-  isLoading: boolean;
-  
+  isLoading: boolean
+
   /** Error state */
-  error: string | null;
-  
+  error: string | null
+
   /** Start timestamp */
-  startedAt: string | null;
-  
+  startedAt: string | null
+
   /** Step durations */
-  stepDurations: Record<string, number>;
+  stepDurations: Record<string, number>
 }
 
 /**
  * Event emission context
  */
 export interface EmitContext {
-  organizationId: string;
-  tourCode: SmartCode;
-  stepCode?: SmartCode;
-  status: OnboardingStatus;
-  metadata?: Record<string, unknown>;
-  startTime?: number;
-  endTime?: number;
+  organizationId: string
+  tourCode: SmartCode
+  stepCode?: SmartCode
+  status: OnboardingStatus
+  metadata?: Record<string, unknown>
+  startTime?: number
+  endTime?: number
 }
 
 // Joyride types removed - using React 18 compatible implementation

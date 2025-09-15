@@ -5,16 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { DocumentUpload } from './DocumentUpload'
-import { 
-  FileText, 
+import {
+  FileText,
   Search,
   Filter,
-  Upload, 
+  Upload,
   Download,
   Eye,
   MessageSquare,
@@ -50,7 +56,13 @@ interface EnhancedDocument {
   document_name: string
   category: 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
   priority: 'critical' | 'high' | 'medium' | 'low'
-  status: 'pending' | 'received' | 'under_review' | 'approved' | 'rejected' | 'resubmission_required'
+  status:
+    | 'pending'
+    | 'received'
+    | 'under_review'
+    | 'approved'
+    | 'rejected'
+    | 'resubmission_required'
   due_date: string
   received_date?: string
   reviewed_date?: string
@@ -156,10 +168,11 @@ export function EnhancedDocumentList({
 
     if (searchTerm) {
       const search = searchTerm.toLowerCase()
-      filtered = filtered.filter(doc =>
-        doc.document_name.toLowerCase().includes(search) ||
-        doc.document_code.toLowerCase().includes(search) ||
-        doc.review_notes?.toLowerCase().includes(search)
+      filtered = filtered.filter(
+        doc =>
+          doc.document_name.toLowerCase().includes(search) ||
+          doc.document_code.toLowerCase().includes(search) ||
+          doc.review_notes?.toLowerCase().includes(search)
       )
     }
 
@@ -180,8 +193,8 @@ export function EnhancedDocumentList({
 
   // Update document status
   const updateDocumentStatus = async (
-    documentId: string, 
-    status: string, 
+    documentId: string,
+    status: string,
     notes?: string,
     rejectionReason?: string
   ) => {
@@ -220,7 +233,11 @@ export function EnhancedDocumentList({
     setDocuments(prevDocs =>
       prevDocs.map(doc =>
         doc.id === documentId
-          ? { ...doc, files, status: files.length > 0 && doc.status === 'pending' ? 'received' : doc.status }
+          ? {
+              ...doc,
+              files,
+              status: files.length > 0 && doc.status === 'pending' ? 'received' : doc.status
+            }
           : doc
       )
     )
@@ -246,23 +263,35 @@ export function EnhancedDocumentList({
   // Get status styling
   const getStatusStyling = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-gray-100 text-gray-800'
-      case 'received': return 'bg-blue-100 text-blue-800'
-      case 'under_review': return 'bg-yellow-100 text-yellow-800'
-      case 'approved': return 'bg-green-100 text-green-800'
-      case 'rejected': return 'bg-red-100 text-red-800'
-      case 'resubmission_required': return 'bg-orange-100 text-orange-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'pending':
+        return 'bg-gray-100 text-gray-800'
+      case 'received':
+        return 'bg-blue-100 text-blue-800'
+      case 'under_review':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'approved':
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
+        return 'bg-red-100 text-red-800'
+      case 'resubmission_required':
+        return 'bg-orange-100 text-orange-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
   const getPriorityStyling = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'low': return 'text-green-600 bg-green-50 border-green-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'critical':
+        return 'text-red-600 bg-red-50 border-red-200'
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'medium':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'low':
+        return 'text-green-600 bg-green-50 border-green-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
@@ -337,7 +366,9 @@ export function EnhancedDocumentList({
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Overall Progress</h3>
-            <span className="text-2xl font-bold text-blue-600">{statistics.completion_percentage}%</span>
+            <span className="text-2xl font-bold text-blue-600">
+              {statistics.completion_percentage}%
+            </span>
           </div>
           <Progress value={statistics.completion_percentage} className="w-full h-3" />
           <div className="flex justify-between text-sm text-gray-600 mt-2">
@@ -356,11 +387,11 @@ export function EnhancedDocumentList({
               <Input
                 placeholder="Search documents..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
-            
+
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filter by status" />
@@ -390,8 +421,8 @@ export function EnhancedDocumentList({
               </SelectContent>
             </Select>
 
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 fetchDocuments()
                 fetchStatistics()
@@ -406,12 +437,15 @@ export function EnhancedDocumentList({
 
       {/* Documents List */}
       <div className="space-y-4">
-        {filteredDocuments.map((document) => {
+        {filteredDocuments.map(document => {
           const isExpanded = expandedDocuments.has(document.id)
           const overdue = isOverdue(document.due_date, document.status)
-          
+
           return (
-            <Card key={document.id} className={`border-0 shadow-lg ${overdue ? 'border-l-4 border-red-500' : ''}`}>
+            <Card
+              key={document.id}
+              className={`border-0 shadow-lg ${overdue ? 'border-l-4 border-red-500' : ''}`}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4 flex-1">
@@ -423,14 +457,16 @@ export function EnhancedDocumentList({
                         {document.priority}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex-1">
                       <CardTitle className="text-lg font-bold text-gray-900 mb-1">
                         {document.document_name}
                       </CardTitle>
                       <p className="text-sm text-gray-600 mb-2">
                         Due: {new Date(document.due_date).toLocaleDateString()}
-                        {overdue && <span className="text-red-600 font-medium ml-2">(OVERDUE)</span>}
+                        {overdue && (
+                          <span className="text-red-600 font-medium ml-2">(OVERDUE)</span>
+                        )}
                       </p>
                       <div className="flex items-center gap-3">
                         <Badge className={getStatusStyling(document.status)}>
@@ -439,7 +475,9 @@ export function EnhancedDocumentList({
                         {document.files.length > 0 && (
                           <div className="flex items-center gap-1 text-sm text-gray-600">
                             <Paperclip className="w-4 h-4" />
-                            <span>{document.files.length} file{document.files.length !== 1 ? 's' : ''}</span>
+                            <span>
+                              {document.files.length} file{document.files.length !== 1 ? 's' : ''}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -457,7 +495,7 @@ export function EnhancedDocumentList({
                         Start Review
                       </Button>
                     )}
-                    
+
                     {document.status === 'under_review' && (
                       <>
                         <Button
@@ -473,7 +511,14 @@ export function EnhancedDocumentList({
                           size="sm"
                           variant="outline"
                           className="text-red-600 hover:text-red-700"
-                          onClick={() => updateDocumentStatus(document.id, 'rejected', undefined, 'Requires clarification')}
+                          onClick={() =>
+                            updateDocumentStatus(
+                              document.id,
+                              'rejected',
+                              undefined,
+                              'Requires clarification'
+                            )
+                          }
                         >
                           <X className="w-4 h-4 mr-1" />
                           Reject
@@ -486,7 +531,11 @@ export function EnhancedDocumentList({
                       size="sm"
                       onClick={() => toggleDocumentExpansion(document.id)}
                     >
-                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -500,32 +549,46 @@ export function EnhancedDocumentList({
                       <TabsTrigger value="details">Details</TabsTrigger>
                       <TabsTrigger value="history">History</TabsTrigger>
                     </TabsList>
-                    
+
                     <TabsContent value="files" className="mt-4">
                       <DocumentUpload
                         documentId={document.id}
                         documentName={document.document_name}
                         organizationId={organizationId}
                         currentFiles={document.files}
-                        onFilesUpdate={(files) => handleFilesUpdate(document.id, files)}
-                        onStatusChange={(status) => updateDocumentStatus(document.id, status)}
+                        onFilesUpdate={files => handleFilesUpdate(document.id, files)}
+                        onStatusChange={status => updateDocumentStatus(document.id, status)}
                       />
                     </TabsContent>
-                    
+
                     <TabsContent value="details" className="mt-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-3">
                           <div>
-                            <label className="text-sm font-medium text-gray-700">Document Code</label>
-                            <p className="text-sm text-gray-900 font-mono">{document.document_code}</p>
+                            <label className="text-sm font-medium text-gray-700">
+                              Document Code
+                            </label>
+                            <p className="text-sm text-gray-900 font-mono">
+                              {document.document_code}
+                            </p>
                           </div>
                           <div>
                             <label className="text-sm font-medium text-gray-700">Category</label>
-                            <p className="text-sm text-gray-900">{document.category} - {document.category === 'A' ? 'Company Formation' : document.category === 'B' ? 'Financial Documents' : 'Other'}</p>
+                            <p className="text-sm text-gray-900">
+                              {document.category} -{' '}
+                              {document.category === 'A'
+                                ? 'Company Formation'
+                                : document.category === 'B'
+                                  ? 'Financial Documents'
+                                  : 'Other'}
+                            </p>
                           </div>
                           <div>
                             <label className="text-sm font-medium text-gray-700">Priority</label>
-                            <Badge className={getPriorityStyling(document.priority)} variant="outline">
+                            <Badge
+                              className={getPriorityStyling(document.priority)}
+                              variant="outline"
+                            >
                               {document.priority}
                             </Badge>
                           </div>
@@ -533,12 +596,18 @@ export function EnhancedDocumentList({
                         <div className="space-y-3">
                           <div>
                             <label className="text-sm font-medium text-gray-700">Due Date</label>
-                            <p className="text-sm text-gray-900">{new Date(document.due_date).toLocaleDateString()}</p>
+                            <p className="text-sm text-gray-900">
+                              {new Date(document.due_date).toLocaleDateString()}
+                            </p>
                           </div>
                           {document.received_date && (
                             <div>
-                              <label className="text-sm font-medium text-gray-700">Received Date</label>
-                              <p className="text-sm text-gray-900">{new Date(document.received_date).toLocaleDateString()}</p>
+                              <label className="text-sm font-medium text-gray-700">
+                                Received Date
+                              </label>
+                              <p className="text-sm text-gray-900">
+                                {new Date(document.received_date).toLocaleDateString()}
+                              </p>
                             </div>
                           )}
                           <div>
@@ -547,7 +616,7 @@ export function EnhancedDocumentList({
                           </div>
                         </div>
                       </div>
-                      
+
                       {document.review_notes && (
                         <div className="mt-4">
                           <label className="text-sm font-medium text-gray-700">Review Notes</label>
@@ -557,29 +626,37 @@ export function EnhancedDocumentList({
                         </div>
                       )}
                     </TabsContent>
-                    
+
                     <TabsContent value="history" className="mt-4">
                       <div className="space-y-3">
                         <div className="flex items-center gap-3 text-sm">
                           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <span className="text-gray-600">Created: {new Date(document.created_at).toLocaleString()}</span>
+                          <span className="text-gray-600">
+                            Created: {new Date(document.created_at).toLocaleString()}
+                          </span>
                         </div>
                         {document.received_date && (
                           <div className="flex items-center gap-3 text-sm">
                             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span className="text-gray-600">Received: {new Date(document.received_date).toLocaleString()}</span>
+                            <span className="text-gray-600">
+                              Received: {new Date(document.received_date).toLocaleString()}
+                            </span>
                           </div>
                         )}
                         {document.reviewed_date && (
                           <div className="flex items-center gap-3 text-sm">
                             <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                            <span className="text-gray-600">Reviewed: {new Date(document.reviewed_date).toLocaleString()}</span>
+                            <span className="text-gray-600">
+                              Reviewed: {new Date(document.reviewed_date).toLocaleString()}
+                            </span>
                           </div>
                         )}
                         {document.approved_date && (
                           <div className="flex items-center gap-3 text-sm">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                            <span className="text-gray-600">Approved: {new Date(document.approved_date).toLocaleString()}</span>
+                            <span className="text-gray-600">
+                              Approved: {new Date(document.approved_date).toLocaleString()}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -597,10 +674,9 @@ export function EnhancedDocumentList({
           <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No documents found</h3>
           <p className="text-gray-600">
-            {searchTerm || statusFilter !== 'all' || categoryFilter !== 'all' 
+            {searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
               ? 'Try adjusting your search or filter criteria'
-              : 'No documents have been created yet'
-            }
+              : 'No documents have been created yet'}
           </p>
         </div>
       )}

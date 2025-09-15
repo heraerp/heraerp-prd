@@ -26,7 +26,7 @@ const industryDefaults = {
     inventory: 200
   },
   restaurant: {
-    name: "Demo Restaurant",
+    name: 'Demo Restaurant',
     description: 'Experience HERA with a full-service restaurant',
     menuItems: 45,
     tables: 20,
@@ -53,8 +53,9 @@ const industryDefaults = {
 
 export async function createDemoOrganization(config: DemoOrgConfig) {
   const { userId, industry, orgName } = config
-  const defaults = industryDefaults[industry as keyof typeof industryDefaults] || industryDefaults.salon
-  
+  const defaults =
+    industryDefaults[industry as keyof typeof industryDefaults] || industryDefaults.salon
+
   try {
     // Create organization with demo flag
     const { data: org, error: orgError } = await supabase
@@ -77,14 +78,12 @@ export async function createDemoOrganization(config: DemoOrgConfig) {
     if (orgError) throw orgError
 
     // Create user membership
-    const { error: memberError } = await supabase
-      .from('organization_members')
-      .insert({
-        organization_id: org.id,
-        user_id: userId,
-        role: 'owner',
-        joined_at: new Date().toISOString()
-      })
+    const { error: memberError } = await supabase.from('organization_members').insert({
+      organization_id: org.id,
+      user_id: userId,
+      role: 'owner',
+      joined_at: new Date().toISOString()
+    })
 
     if (memberError) throw memberError
 
@@ -170,8 +169,12 @@ async function setupSalonDemoData(orgId: string) {
 
   // Create sample clients
   const clients = [
-    'Jennifer Smith', 'Robert Johnson', 'Maria Garcia', 
-    'James Williams', 'Patricia Brown', 'Michael Davis'
+    'Jennifer Smith',
+    'Robert Johnson',
+    'Maria Garcia',
+    'James Williams',
+    'Patricia Brown',
+    'Michael Davis'
   ]
 
   for (const clientName of clients) {
@@ -192,11 +195,11 @@ async function setupSalonDemoData(orgId: string) {
 async function setupIceCreamDemoData(orgId: string) {
   // Create ice cream flavors
   const flavors = [
-    { name: 'Classic Vanilla', category: 'classic', costPerLiter: 3.50 },
-    { name: 'Rich Chocolate', category: 'classic', costPerLiter: 4.00 },
-    { name: 'Fresh Strawberry', category: 'fruit', costPerLiter: 4.50 },
-    { name: 'Mint Chocolate Chip', category: 'specialty', costPerLiter: 5.00 },
-    { name: 'Cookie Dough Delight', category: 'specialty', costPerLiter: 5.50 }
+    { name: 'Classic Vanilla', category: 'classic', costPerLiter: 3.5 },
+    { name: 'Rich Chocolate', category: 'classic', costPerLiter: 4.0 },
+    { name: 'Fresh Strawberry', category: 'fruit', costPerLiter: 4.5 },
+    { name: 'Mint Chocolate Chip', category: 'specialty', costPerLiter: 5.0 },
+    { name: 'Cookie Dough Delight', category: 'specialty', costPerLiter: 5.5 }
   ]
 
   for (const flavor of flavors) {
@@ -240,24 +243,24 @@ async function setupRestaurantDemoData(orgId: string) {
     {
       name: 'Appetizers',
       items: [
-        { name: 'Bruschetta', price: 8.95, cost: 2.50 },
-        { name: 'Calamari Fritti', price: 12.95, cost: 4.00 },
-        { name: 'Caesar Salad', price: 9.95, cost: 2.00 }
+        { name: 'Bruschetta', price: 8.95, cost: 2.5 },
+        { name: 'Calamari Fritti', price: 12.95, cost: 4.0 },
+        { name: 'Caesar Salad', price: 9.95, cost: 2.0 }
       ]
     },
     {
       name: 'Main Courses',
       items: [
-        { name: 'Grilled Salmon', price: 24.95, cost: 8.00 },
-        { name: 'Chicken Parmesan', price: 19.95, cost: 6.00 },
-        { name: 'Ribeye Steak', price: 32.95, cost: 12.00 }
+        { name: 'Grilled Salmon', price: 24.95, cost: 8.0 },
+        { name: 'Chicken Parmesan', price: 19.95, cost: 6.0 },
+        { name: 'Ribeye Steak', price: 32.95, cost: 12.0 }
       ]
     },
     {
       name: 'Desserts',
       items: [
-        { name: 'Tiramisu', price: 7.95, cost: 2.00 },
-        { name: 'Chocolate Lava Cake', price: 8.95, cost: 2.50 }
+        { name: 'Tiramisu', price: 7.95, cost: 2.0 },
+        { name: 'Chocolate Lava Cake', price: 8.95, cost: 2.5 }
       ]
     }
   ]

@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
 
     // Parse the message to understand intent
     const lowerMessage = message.toLowerCase()
-    
+
     // Initialize analytical framework
     let analyticalFramework: AnalyticalFramework = { stage: 'analyze' }
     let response = ''
@@ -36,14 +36,38 @@ export async function POST(request: NextRequest) {
     // Cold Chain Monitoring
     if (lowerMessage.includes('cold chain') || lowerMessage.includes('temperature')) {
       analyticalFramework.stage = 'investigate'
-      
+
       // Simulate temperature data
       const temperatureData = {
         freezers: [
-          { id: 'FREEZER-01', location: 'Main Storage', temp: -22, status: 'optimal', lastCheck: '5 mins ago' },
-          { id: 'FREEZER-02', location: 'Production', temp: -20, status: 'optimal', lastCheck: '3 mins ago' },
-          { id: 'FREEZER-03', location: 'Distribution', temp: -19, status: 'optimal', lastCheck: '7 mins ago' },
-          { id: 'TRUCK-01', location: 'Delivery Vehicle 1', temp: -16, status: 'warning', lastCheck: '15 mins ago' }
+          {
+            id: 'FREEZER-01',
+            location: 'Main Storage',
+            temp: -22,
+            status: 'optimal',
+            lastCheck: '5 mins ago'
+          },
+          {
+            id: 'FREEZER-02',
+            location: 'Production',
+            temp: -20,
+            status: 'optimal',
+            lastCheck: '3 mins ago'
+          },
+          {
+            id: 'FREEZER-03',
+            location: 'Distribution',
+            temp: -19,
+            status: 'optimal',
+            lastCheck: '7 mins ago'
+          },
+          {
+            id: 'TRUCK-01',
+            location: 'Delivery Vehicle 1',
+            temp: -16,
+            status: 'warning',
+            lastCheck: '15 mins ago'
+          }
         ],
         compliance: {
           percentage: 94,
@@ -51,15 +75,15 @@ export async function POST(request: NextRequest) {
           alerts: ['TRUCK-01 temperature rising - needs attention']
         }
       }
-      
+
       response = `🌡️ **Cold Chain Status Report**
 
 **Overall Compliance: ${temperatureData.compliance.percentage}%**
 
 **Freezer Status:**
-${temperatureData.freezers.map(f => 
-  `• ${f.location}: ${f.temp}°C ${f.status === 'optimal' ? '✅' : '⚠️'} (${f.lastCheck})`
-).join('\n')}
+${temperatureData.freezers
+  .map(f => `• ${f.location}: ${f.temp}°C ${f.status === 'optimal' ? '✅' : '⚠️'} (${f.lastCheck})`)
+  .join('\n')}
 
 ${temperatureData.compliance.violations > 0 ? `\n⚠️ **Alert:** ${temperatureData.compliance.alerts[0]}` : '\n✅ All systems operating within compliance range'}
 
@@ -72,21 +96,26 @@ ${temperatureData.compliance.violations > 0 ? `\n⚠️ **Alert:** ${temperature
       status = temperatureData.compliance.violations > 0 ? 'warning' : 'optimal'
       actions = [
         { label: 'View Temperature Logs', action: 'logs', variant: 'outline' },
-        { label: 'Check Vehicle', action: 'check', variant: 'default', data: { location: 'TRUCK-01' } }
+        {
+          label: 'Check Vehicle',
+          action: 'check',
+          variant: 'default',
+          data: { location: 'TRUCK-01' }
+        }
       ]
     }
-    
+
     // Production Planning
     else if (lowerMessage.includes('production') || lowerMessage.includes('plan')) {
       analyticalFramework.stage = 'target'
-      
+
       const productionPlan = {
         date: new Date().toLocaleDateString(),
         weather: { temp: 32, condition: 'Sunny' },
         demandForecast: {
           totalUnits: 1200,
           byCategory: {
-            'Kulfi': 350,
+            Kulfi: 350,
             'Family Packs': 280,
             'Sugar Free': 150,
             'Cups & Cones': 420
@@ -98,21 +127,21 @@ ${temperatureData.compliance.violations > 0 ? `\n⚠️ **Alert:** ${temperature
           'Chocolate Cone': { units: 180, reason: 'School orders expected' }
         }
       }
-      
+
       response = `🏭 **Production Plan for ${productionPlan.date}**
 
 **Weather Forecast:** ${productionPlan.weather.temp}°C, ${productionPlan.weather.condition}
 **Total Demand Forecast:** ${productionPlan.demandForecast.totalUnits} units
 
 **Category Breakdown:**
-${Object.entries(productionPlan.demandForecast.byCategory).map(([cat, units]) => 
-  `• ${cat}: ${units} units`
-).join('\n')}
+${Object.entries(productionPlan.demandForecast.byCategory)
+  .map(([cat, units]) => `• ${cat}: ${units} units`)
+  .join('\n')}
 
 **🎯 Optimized Production Schedule:**
-${Object.entries(productionPlan.recommendations).map(([product, info]) => 
-  `• ${product}: ${info.units} units (${info.reason})`
-).join('\n')}
+${Object.entries(productionPlan.recommendations)
+  .map(([product, info]) => `• ${product}: ${info.units} units (${info.reason})`)
+  .join('\n')}
 
 **Production Timeline:**
 - 6:00 AM - Start Kulfi production (needs 4 hours setting time)
@@ -128,11 +157,15 @@ ${Object.entries(productionPlan.recommendations).map(([product, info]) =>
       ]
       confidence = 92
     }
-    
+
     // Inventory Status
-    else if (lowerMessage.includes('inventory') || lowerMessage.includes('stock') || lowerMessage.includes('expir')) {
+    else if (
+      lowerMessage.includes('inventory') ||
+      lowerMessage.includes('stock') ||
+      lowerMessage.includes('expir')
+    ) {
       analyticalFramework.stage = 'investigate'
-      
+
       const inventoryData = {
         summary: {
           totalProducts: 23,
@@ -146,7 +179,7 @@ ${Object.entries(productionPlan.recommendations).map(([product, info]) =>
           { product: 'Sugar Free Mix', expiryDate: '2024-02-05', daysLeft: 5, status: 'expiring' }
         ]
       }
-      
+
       response = `📦 **Inventory Status Report**
 
 **Summary:**
@@ -156,13 +189,15 @@ ${Object.entries(productionPlan.recommendations).map(([product, info]) =>
 • Expiring Soon: ${inventoryData.summary.expiringSoon} 🕐
 
 **⚠️ Immediate Attention Required:**
-${inventoryData.alerts.map(alert => {
-  if (alert.status === 'low') {
-    return `• ${alert.product}: ${alert.currentStock} (Reorder at ${alert.reorderPoint})`
-  } else {
-    return `• ${alert.product}: Expires ${alert.expiryDate} (${alert.daysLeft} days)`
-  }
-}).join('\n')}
+${inventoryData.alerts
+  .map(alert => {
+    if (alert.status === 'low') {
+      return `• ${alert.product}: ${alert.currentStock} (Reorder at ${alert.reorderPoint})`
+    } else {
+      return `• ${alert.product}: Expires ${alert.expiryDate} (${alert.daysLeft} days)`
+    }
+  })
+  .join('\n')}
 
 **Recommendations:**
 1. Place order for Vanilla Extract and Mango Pulp today
@@ -176,11 +211,15 @@ ${inventoryData.alerts.map(alert => {
         { label: 'View Full Inventory', action: 'view', variant: 'outline' }
       ]
     }
-    
+
     // Sales Analytics
-    else if (lowerMessage.includes('sales') || lowerMessage.includes('best') || lowerMessage.includes('revenue')) {
+    else if (
+      lowerMessage.includes('sales') ||
+      lowerMessage.includes('best') ||
+      lowerMessage.includes('revenue')
+    ) {
       analyticalFramework.stage = 'investigate'
-      
+
       const salesData = {
         period: 'This Week',
         totalRevenue: 425000,
@@ -196,21 +235,23 @@ ${inventoryData.alerts.map(alert => {
           { name: 'Beach Road', revenue: 98000, percentage: 23.1 }
         ]
       }
-      
+
       response = `📊 **Sales Analytics - ${salesData.period}**
 
 **Total Revenue:** ₹${salesData.totalRevenue.toLocaleString()}
 **Units Sold:** ${salesData.totalUnits.toLocaleString()}
 
 **🏆 Top Selling Products:**
-${salesData.topProducts.map((p, i) => 
-  `${i+1}. ${p.name}: ${p.units} units | ₹${p.revenue.toLocaleString()} | ${p.growth}`
-).join('\n')}
+${salesData.topProducts
+  .map(
+    (p, i) => `${i + 1}. ${p.name}: ${p.units} units | ₹${p.revenue.toLocaleString()} | ${p.growth}`
+  )
+  .join('\n')}
 
 **💰 Revenue by Outlet:**
-${salesData.outlets.map(o => 
-  `• ${o.name}: ₹${o.revenue.toLocaleString()} (${o.percentage}%)`
-).join('\n')}
+${salesData.outlets
+  .map(o => `• ${o.name}: ₹${o.revenue.toLocaleString()} (${o.percentage}%)`)
+  .join('\n')}
 
 **📈 Key Insights:**
 • Mango Kulfi showing strong growth (+18%)
@@ -225,19 +266,44 @@ ${salesData.outlets.map(o =>
         { label: 'Forecast Next Week', action: 'forecast', variant: 'default' }
       ]
     }
-    
+
     // Distribution Routes
-    else if (lowerMessage.includes('distribution') || lowerMessage.includes('delivery') || lowerMessage.includes('route')) {
+    else if (
+      lowerMessage.includes('distribution') ||
+      lowerMessage.includes('delivery') ||
+      lowerMessage.includes('route')
+    ) {
       analyticalFramework.stage = 'target'
-      
+
       const distributionData = {
         activeRoutes: 4,
         completedDeliveries: 38,
         pendingDeliveries: 12,
         vehicles: [
-          { id: 'ICE-001', driver: 'Kumar', route: 'North Zone', stops: 8, status: 'on-route', completion: 75 },
-          { id: 'ICE-002', driver: 'Ravi', route: 'South Zone', stops: 6, status: 'on-route', completion: 50 },
-          { id: 'ICE-003', driver: 'Suresh', route: 'Central', stops: 10, status: 'completed', completion: 100 }
+          {
+            id: 'ICE-001',
+            driver: 'Kumar',
+            route: 'North Zone',
+            stops: 8,
+            status: 'on-route',
+            completion: 75
+          },
+          {
+            id: 'ICE-002',
+            driver: 'Ravi',
+            route: 'South Zone',
+            stops: 6,
+            status: 'on-route',
+            completion: 50
+          },
+          {
+            id: 'ICE-003',
+            driver: 'Suresh',
+            route: 'Central',
+            stops: 10,
+            status: 'completed',
+            completion: 100
+          }
         ],
         optimization: {
           originalDistance: 187,
@@ -246,7 +312,7 @@ ${salesData.outlets.map(o =>
           fuelSaved: '₹380'
         }
       }
-      
+
       response = `🚚 **Distribution Status**
 
 **Today's Overview:**
@@ -255,9 +321,12 @@ ${salesData.outlets.map(o =>
 • Pending: ${distributionData.pendingDeliveries} deliveries
 
 **Vehicle Status:**
-${distributionData.vehicles.map(v => 
-  `• ${v.id} (${v.driver}) - ${v.route}: ${v.completion}% complete ${v.status === 'completed' ? '✅' : '🚛'}`
-).join('\n')}
+${distributionData.vehicles
+  .map(
+    v =>
+      `• ${v.id} (${v.driver}) - ${v.route}: ${v.completion}% complete ${v.status === 'completed' ? '✅' : '🚛'}`
+  )
+  .join('\n')}
 
 **🎯 Route Optimization Results:**
 • Distance reduced: ${distributionData.optimization.originalDistance}km → ${distributionData.optimization.optimizedDistance}km
@@ -272,11 +341,15 @@ ${distributionData.vehicles.map(v =>
         { label: 'Optimize Tomorrow', action: 'optimize', variant: 'outline' }
       ]
     }
-    
+
     // Demand Forecasting
-    else if (lowerMessage.includes('forecast') || lowerMessage.includes('predict') || lowerMessage.includes('demand')) {
+    else if (
+      lowerMessage.includes('forecast') ||
+      lowerMessage.includes('predict') ||
+      lowerMessage.includes('demand')
+    ) {
       analyticalFramework.stage = 'target'
-      
+
       const forecastData = {
         period: 'Next 7 Days',
         weatherImpact: 'High temperatures expected (34-36°C)',
@@ -298,7 +371,7 @@ ${distributionData.vehicles.map(v =>
           'Ensure sufficient delivery capacity for Fri-Sat'
         ]
       }
-      
+
       response = `🔮 **Demand Forecast - ${forecastData.period}**
 
 **Forecast Confidence:** ${forecastData.confidence}%
@@ -306,12 +379,12 @@ ${distributionData.vehicles.map(v =>
 **Total Predicted Demand:** ${forecastData.totalDemand.toLocaleString()} units
 
 **Daily Breakdown:**
-${forecastData.byDay.map(d => 
-  `• ${d.day}: ${d.units} units (${d.temp}°C) ${d.units > 1300 ? '📈' : ''}`
-).join('\n')}
+${forecastData.byDay
+  .map(d => `• ${d.day}: ${d.units} units (${d.temp}°C) ${d.units > 1300 ? '📈' : ''}`)
+  .join('\n')}
 
 **🎯 Strategic Recommendations:**
-${forecastData.recommendations.map((r, i) => `${i+1}. ${r}`).join('\n')}
+${forecastData.recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}
 
 **Production Planning:**
 • Weekday average: 1,160 units/day
@@ -325,7 +398,7 @@ ${forecastData.recommendations.map((r, i) => `${i+1}. ${r}`).join('\n')}
         { label: 'Adjust Parameters', action: 'adjust', variant: 'outline' }
       ]
     }
-    
+
     // Default helpful response
     else {
       analyticalFramework.stage = 'clarify'
@@ -340,7 +413,7 @@ I can assist with:
 • 🔮 **Demand forecasting** - Weather-based predictions
 
 Could you please specify which area you'd like to explore?`
-      
+
       confidence = 75
       status = 'clarify'
     }
@@ -353,12 +426,8 @@ Could you please specify which area you'd like to explore?`
       actions,
       analyticalFramework
     })
-
   } catch (error) {
     console.error('Ice Cream Manager API Error:', error)
-    return NextResponse.json(
-      { error: 'Failed to process request' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to process request' }, { status: 500 })
   }
 }

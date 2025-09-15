@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
-import { 
+import {
   Code,
   Scale,
   CalendarCheck,
@@ -43,7 +43,7 @@ export default function SalonUCRSettings() {
   const [salonConfig, setSalonConfig] = useState<any>({})
   const [configLoading, setConfigLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
-  
+
   const organizationId = currentOrganization?.id || DEFAULT_SALON_ORG_ID
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function SalonUCRSettings() {
       }
     }
   }, [])
-  
+
   useEffect(() => {
     loadSalonConfig()
   }, [organizationId])
@@ -92,7 +92,7 @@ export default function SalonUCRSettings() {
   ]
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="min-h-screen relative overflow-hidden"
       style={{
@@ -116,7 +116,7 @@ export default function SalonUCRSettings() {
     >
       {/* Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, transparent 70%)`,
@@ -126,7 +126,7 @@ export default function SalonUCRSettings() {
             filter: 'blur(40px)'
           }}
         />
-        <div 
+        <div
           className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%)`,
@@ -136,7 +136,7 @@ export default function SalonUCRSettings() {
             filter: 'blur(40px)'
           }}
         />
-        <div 
+        <div
           className="absolute w-72 h-72 rounded-full transition-all duration-[5000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)`,
@@ -153,8 +153,8 @@ export default function SalonUCRSettings() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/salon-data/settings">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 className="text-gray-400 hover:text-white hover:bg-white/10 transition-all"
               >
@@ -166,9 +166,7 @@ export default function SalonUCRSettings() {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Universal Configuration Rules
               </h1>
-              <p className="text-gray-400 mt-2">
-                Manage salon business logic without code changes
-              </p>
+              <p className="text-gray-400 mt-2">Manage salon business logic without code changes</p>
             </div>
           </div>
         </div>
@@ -177,7 +175,7 @@ export default function SalonUCRSettings() {
         <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl">
           <div className="p-4 border-b border-white/10">
             <div className="flex gap-2 overflow-x-auto">
-              {tabs.map((tab) => {
+              {tabs.map(tab => {
                 const Icon = tab.icon
                 return (
                   <Button
@@ -186,10 +184,10 @@ export default function SalonUCRSettings() {
                     size="sm"
                     onClick={() => setActiveTab(tab.id)}
                     className={cn(
-                      "min-w-fit transition-all",
-                      activeTab === tab.id 
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600" 
-                        : "text-gray-400 hover:text-white hover:bg-white/10"
+                      'min-w-fit transition-all',
+                      activeTab === tab.id
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
+                        : 'text-gray-400 hover:text-white hover:bg-white/10'
                     )}
                   >
                     <Icon className="h-4 w-4 mr-2" />
@@ -208,7 +206,9 @@ export default function SalonUCRSettings() {
                   <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-lg border border-purple-500/20 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <CalendarCheck className="h-5 w-5 text-purple-400" />
-                      <Badge className="bg-purple-500/20 text-purple-300 border border-purple-500/30">Active</Badge>
+                      <Badge className="bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                        Active
+                      </Badge>
                     </div>
                     <h3 className="font-semibold text-white/90">Booking Rules</h3>
                     <p className="text-2xl font-bold text-white">
@@ -216,11 +216,13 @@ export default function SalonUCRSettings() {
                     </p>
                     <p className="text-sm text-purple-300 mt-1">Configuration rules</p>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 backdrop-blur-lg border border-pink-500/20 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <DollarSign className="h-5 w-5 text-pink-400" />
-                      <Badge className="bg-pink-500/20 text-pink-300 border border-pink-500/30">Active</Badge>
+                      <Badge className="bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                        Active
+                      </Badge>
                     </div>
                     <h3 className="font-semibold text-white/90">Pricing Rules</h3>
                     <p className="text-2xl font-bold text-white">
@@ -228,11 +230,13 @@ export default function SalonUCRSettings() {
                     </p>
                     <p className="text-sm text-pink-300 mt-1">Dynamic pricing</p>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-lg border border-blue-500/20 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <MessageCircle className="h-5 w-5 text-blue-400" />
-                      <Badge className="bg-blue-500/20 text-blue-300 border border-blue-500/30">Active</Badge>
+                      <Badge className="bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        Active
+                      </Badge>
                     </div>
                     <h3 className="font-semibold text-white/90">Notifications</h3>
                     <p className="text-2xl font-bold text-white">
@@ -256,15 +260,33 @@ export default function SalonUCRSettings() {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between p-3 rounded bg-purple-500/10 border border-purple-500/20">
                           <span className="text-sm text-purple-300">VIP Client Pricing</span>
-                          <Button size="sm" variant="ghost" className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/20">Apply</Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/20"
+                          >
+                            Apply
+                          </Button>
                         </div>
                         <div className="flex items-center justify-between p-3 rounded bg-pink-500/10 border border-pink-500/20">
                           <span className="text-sm text-pink-300">Peak Hour Surcharge</span>
-                          <Button size="sm" variant="ghost" className="text-pink-400 hover:text-pink-300 hover:bg-pink-500/20">Apply</Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-pink-400 hover:text-pink-300 hover:bg-pink-500/20"
+                          >
+                            Apply
+                          </Button>
                         </div>
                         <div className="flex items-center justify-between p-3 rounded bg-blue-500/10 border border-blue-500/20">
                           <span className="text-sm text-blue-300">Loyalty Program</span>
-                          <Button size="sm" variant="ghost" className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20">Apply</Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
+                          >
+                            Apply
+                          </Button>
                         </div>
                       </div>
                       <Link href="/salon-data/templates">
@@ -281,12 +303,11 @@ export default function SalonUCRSettings() {
                         <Brain className="h-5 w-5 text-pink-400" />
                         AI Configuration Assistant
                       </h3>
-                      <p className="text-gray-400 mb-4">
-                        Natural language rule creation with AI
-                      </p>
+                      <p className="text-gray-400 mb-4">Natural language rule creation with AI</p>
                       <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4 mb-4">
                         <p className="text-purple-300">
-                          Describe your business rule in plain language and AI will create the configuration for you.
+                          Describe your business rule in plain language and AI will create the
+                          configuration for you.
                         </p>
                       </div>
                       <Link href="/salon-data/config">
@@ -307,44 +328,58 @@ export default function SalonUCRSettings() {
                 {!configLoading && salonConfig.booking && (
                   <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-6">Current Booking Configuration</h3>
+                      <h3 className="text-xl font-semibold text-white mb-6">
+                        Current Booking Configuration
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <h4 className="font-semibold text-purple-400">General Settings</h4>
                           <div className="space-y-2">
                             <div className="flex justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">Advance Booking</span>
-                              <span className="font-medium text-white">{salonConfig.booking.advance_booking_days || 30} days</span>
+                              <span className="font-medium text-white">
+                                {salonConfig.booking.advance_booking_days || 30} days
+                              </span>
                             </div>
                             <div className="flex justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">Minimum Lead Time</span>
-                              <span className="font-medium text-white">{salonConfig.booking.min_lead_minutes || 60} minutes</span>
+                              <span className="font-medium text-white">
+                                {salonConfig.booking.min_lead_minutes || 60} minutes
+                              </span>
                             </div>
                             <div className="flex justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">Same Day Booking</span>
-                              <Badge className={cn(
-                                "border",
-                                salonConfig.booking.allow_same_day ? 
-                                "bg-green-500/20 text-green-300 border-green-500/30" : 
-                                "bg-red-500/20 text-red-300 border-red-500/30"
-                              )}>
+                              <Badge
+                                className={cn(
+                                  'border',
+                                  salonConfig.booking.allow_same_day
+                                    ? 'bg-green-500/20 text-green-300 border-green-500/30'
+                                    : 'bg-red-500/20 text-red-300 border-red-500/30'
+                                )}
+                              >
                                 {salonConfig.booking.allow_same_day ? 'Allowed' : 'Disabled'}
                               </Badge>
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="space-y-3">
                           <h4 className="font-semibold text-pink-400">Business Hours</h4>
                           <div className="space-y-2">
-                            {salonConfig.booking.business_hours && Object.entries(salonConfig.booking.business_hours).map(([day, hours]: [string, any]) => (
-                              <div key={day} className="flex justify-between p-3 bg-pink-500/10 border border-pink-500/20 rounded-lg">
-                                <span className="text-sm text-gray-300 capitalize">{day}</span>
-                                <span className="font-medium text-white">
-                                  {hours.open} - {hours.close}
-                                </span>
-                              </div>
-                            ))}
+                            {salonConfig.booking.business_hours &&
+                              Object.entries(salonConfig.booking.business_hours).map(
+                                ([day, hours]: [string, any]) => (
+                                  <div
+                                    key={day}
+                                    className="flex justify-between p-3 bg-pink-500/10 border border-pink-500/20 rounded-lg"
+                                  >
+                                    <span className="text-sm text-gray-300 capitalize">{day}</span>
+                                    <span className="font-medium text-white">
+                                      {hours.open} - {hours.close}
+                                    </span>
+                                  </div>
+                                )
+                              )}
                           </div>
                         </div>
                       </div>
@@ -360,46 +395,60 @@ export default function SalonUCRSettings() {
                 {!configLoading && salonConfig.pricing && (
                   <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-6">Current Pricing Configuration</h3>
+                      <h3 className="text-xl font-semibold text-white mb-6">
+                        Current Pricing Configuration
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 backdrop-blur-lg border border-pink-500/20 rounded-xl p-4">
                           <h4 className="font-semibold text-pink-300 mb-3">Discounts</h4>
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">VIP Discount</span>
-                              <span className="font-medium text-white">{salonConfig.pricing.vip_discount || 10}%</span>
+                              <span className="font-medium text-white">
+                                {salonConfig.pricing.vip_discount || 10}%
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Early Bird</span>
-                              <span className="font-medium text-white">{salonConfig.pricing.early_bird_discount || 15}%</span>
+                              <span className="font-medium text-white">
+                                {salonConfig.pricing.early_bird_discount || 15}%
+                              </span>
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-lg border border-purple-500/20 rounded-xl p-4">
                           <h4 className="font-semibold text-purple-300 mb-3">Surcharges</h4>
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Peak Hours</span>
-                              <span className="font-medium text-white">+{((salonConfig.pricing.peak_surcharge || 1.2) - 1) * 100}%</span>
+                              <span className="font-medium text-white">
+                                +{((salonConfig.pricing.peak_surcharge || 1.2) - 1) * 100}%
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Last Minute</span>
-                              <span className="font-medium text-white">+{((salonConfig.pricing.last_minute_surcharge || 1.1) - 1) * 100}%</span>
+                              <span className="font-medium text-white">
+                                +{((salonConfig.pricing.last_minute_surcharge || 1.1) - 1) * 100}%
+                              </span>
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-lg border border-blue-500/20 rounded-xl p-4">
                           <h4 className="font-semibold text-blue-300 mb-3">Policies</h4>
                           <div className="space-y-2">
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">Cancellation Fee</span>
-                              <span className="font-medium text-white">{salonConfig.pricing.cancellation_fee || 25}%</span>
+                              <span className="font-medium text-white">
+                                {salonConfig.pricing.cancellation_fee || 25}%
+                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-300">No-show Fee</span>
-                              <span className="font-medium text-white">{salonConfig.pricing.no_show_fee || 50}%</span>
+                              <span className="font-medium text-white">
+                                {salonConfig.pricing.no_show_fee || 50}%
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -416,40 +465,48 @@ export default function SalonUCRSettings() {
                 {!configLoading && salonConfig.notifications && (
                   <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl">
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white mb-6">Notification Settings</h3>
+                      <h3 className="text-xl font-semibold text-white mb-6">
+                        Notification Settings
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <h4 className="font-semibold text-blue-400">Channels</h4>
                           <div className="space-y-2">
                             <div className="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">SMS Notifications</span>
-                              <Badge className={cn(
-                                "border",
-                                salonConfig.notifications.sms_enabled ? 
-                                "bg-green-500/20 text-green-300 border-green-500/30" : 
-                                "bg-gray-500/20 text-gray-300 border-gray-500/30"
-                              )}>
+                              <Badge
+                                className={cn(
+                                  'border',
+                                  salonConfig.notifications.sms_enabled
+                                    ? 'bg-green-500/20 text-green-300 border-green-500/30'
+                                    : 'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                                )}
+                              >
                                 {salonConfig.notifications.sms_enabled ? 'Enabled' : 'Disabled'}
                               </Badge>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">Email Notifications</span>
-                              <Badge className={cn(
-                                "border",
-                                salonConfig.notifications.email_enabled ? 
-                                "bg-green-500/20 text-green-300 border-green-500/30" : 
-                                "bg-gray-500/20 text-gray-300 border-gray-500/30"
-                              )}>
+                              <Badge
+                                className={cn(
+                                  'border',
+                                  salonConfig.notifications.email_enabled
+                                    ? 'bg-green-500/20 text-green-300 border-green-500/30'
+                                    : 'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                                )}
+                              >
                                 {salonConfig.notifications.email_enabled ? 'Enabled' : 'Disabled'}
                               </Badge>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                               <span className="text-sm text-gray-300">WhatsApp</span>
-                              <Badge className="bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">Coming Soon</Badge>
+                              <Badge className="bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
+                                Coming Soon
+                              </Badge>
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="space-y-3">
                           <h4 className="font-semibold text-purple-400">Reminder Schedule</h4>
                           <div className="space-y-2">
@@ -457,7 +514,10 @@ export default function SalonUCRSettings() {
                               <span className="text-sm text-gray-300">Appointment Reminders</span>
                               <div className="mt-2">
                                 {salonConfig.notifications.reminder_hours?.map((hours: number) => (
-                                  <Badge key={hours} className="mr-2 mb-1 bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                                  <Badge
+                                    key={hours}
+                                    className="mr-2 mb-1 bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                                  >
                                     {hours}h before
                                   </Badge>
                                 ))}
@@ -489,13 +549,14 @@ export default function SalonUCRSettings() {
                       <span className="text-sm text-green-300">Active Rules</span>
                     </div>
                     <p className="text-2xl font-bold text-white">
-                      {salonConfig.rules_applied ? 
-                        salonConfig.rules_applied.booking_rules + 
-                        salonConfig.rules_applied.pricing_rules + 
-                        salonConfig.rules_applied.notification_rules : 0}
+                      {salonConfig.rules_applied
+                        ? salonConfig.rules_applied.booking_rules +
+                          salonConfig.rules_applied.pricing_rules +
+                          salonConfig.rules_applied.notification_rules
+                        : 0}
                     </p>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 backdrop-blur-lg border border-yellow-500/20 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Clock className="h-5 h-5 text-yellow-400" />
@@ -503,7 +564,7 @@ export default function SalonUCRSettings() {
                     </div>
                     <p className="text-2xl font-bold text-white">3</p>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-lg border border-blue-500/20 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <TestTube className="h-5 h-5 text-blue-400" />
@@ -511,7 +572,7 @@ export default function SalonUCRSettings() {
                     </div>
                     <p className="text-2xl font-bold text-white">24</p>
                   </div>
-                  
+
                   <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-lg border border-purple-500/20 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Rocket className="h-5 h-5 text-purple-400" />
@@ -532,13 +593,17 @@ export default function SalonUCRSettings() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-white">Deployed "Salon Cancellation Policy"</h4>
+                            <h4 className="font-medium text-white">
+                              Deployed "Salon Cancellation Policy"
+                            </h4>
                             <span className="text-sm text-gray-400">2h ago</span>
                           </div>
-                          <p className="text-sm text-gray-400">Updated policy to production environment</p>
+                          <p className="text-sm text-gray-400">
+                            Updated policy to production environment
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mt-0.5">
                           <TestTube className="h-4 w-4 text-blue-400" />
@@ -548,10 +613,12 @@ export default function SalonUCRSettings() {
                             <h4 className="font-medium text-white">Tested "VIP Discount Rules"</h4>
                             <span className="text-sm text-gray-400">5h ago</span>
                           </div>
-                          <p className="text-sm text-gray-400">100% pass rate on all test scenarios</p>
+                          <p className="text-sm text-gray-400">
+                            100% pass rate on all test scenarios
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center mt-0.5">
                           <Rocket className="h-4 w-4 text-purple-400" />
@@ -585,7 +652,8 @@ export default function SalonUCRSettings() {
           <div className="flex items-center gap-3">
             <Zap className="h-5 w-5 text-purple-400" />
             <p className="text-gray-300">
-              Configuration managed via HERA Universal Configuration Rules (UCR) - Smart Codes: HERA.SALON.CONFIG.*
+              Configuration managed via HERA Universal Configuration Rules (UCR) - Smart Codes:
+              HERA.SALON.CONFIG.*
             </p>
           </div>
         </div>
@@ -593,7 +661,8 @@ export default function SalonUCRSettings() {
         {/* Add animation styles */}
         <style jsx global>{`
           @keyframes float {
-            0%, 100% {
+            0%,
+            100% {
               transform: translateY(0) translateX(0);
             }
             33% {

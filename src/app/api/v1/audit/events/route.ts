@@ -14,19 +14,16 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '100')
 
   if (!organizationId) {
-    return NextResponse.json(
-      { error: 'organization_id is required' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
   }
 
   try {
     const supabase = getSupabase()
-    
+
     // Calculate time filter
     const now = new Date()
     let startTime = new Date()
-    
+
     switch (timeRange) {
       case '1h':
         startTime.setHours(now.getHours() - 1)
@@ -45,13 +42,15 @@ export async function GET(request: NextRequest) {
     // Build query
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         id,
         transaction_date,
         transaction_type,
         smart_code,
         metadata
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .in('transaction_type', ['audit', 'security_event', 'policy_check', 'data_access'])
       .gte('transaction_date', startTime.toISOString())
@@ -76,16 +75,18 @@ export async function GET(request: NextRequest) {
       user_name: (event.metadata as any)?.user_name || 'System',
       action: (event.metadata as any)?.action || event.transaction_type,
       resource: (event.metadata as any)?.resource || 'unknown',
-      result: (event.metadata as any)?.decision === 'DENY' || (event.metadata as any)?.result === 'failure' ? 'failure' : 'success',
+      result:
+        (event.metadata as any)?.decision === 'DENY' ||
+        (event.metadata as any)?.result === 'failure'
+          ? 'failure'
+          : 'success',
       ip_address: (event.metadata as any)?.ip_address || 'unknown',
       smart_code: event.smart_code,
       details: (event.metadata as any)?.details || {}
     }))
 
     // Apply result filter
-    const filteredEvents = result === 'all' 
-      ? events 
-      : events.filter(e => e.result === result)
+    const filteredEvents = result === 'all' ? events : events.filter(e => e.result === result)
 
     return NextResponse.json({
       success: true,
@@ -94,10 +95,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching audit events:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch audit events' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch audit events' }, { status: 500 })
   }
 }
 

@@ -4,12 +4,25 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
-  Calculator, GitBranch, Settings, Play, RefreshCw,
-  AlertCircle, CheckCircle, Info, ArrowRight
+import {
+  Calculator,
+  GitBranch,
+  Settings,
+  Play,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle,
+  Info,
+  ArrowRight
 } from 'lucide-react'
 
 interface CostPool {
@@ -37,14 +50,16 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
   const [allocationMethod, setAllocationMethod] = useState('activity_based')
   const [isAllocating, setIsAllocating] = useState(false)
   const [lastAllocation, setLastAllocation] = useState<any>(null)
-  
+
   useEffect(() => {
     loadCostPools()
   }, [organizationId])
-  
+
   const loadCostPools = async () => {
     try {
-      const response = await fetch(`/api/v1/profitability?action=list&entity_type=cost_pools&organization_id=${organizationId}`)
+      const response = await fetch(
+        `/api/v1/profitability?action=list&entity_type=cost_pools&organization_id=${organizationId}`
+      )
       const data = await response.json()
       if (data.success) {
         setCostPools(data.data)
@@ -53,7 +68,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
       console.error('Failed to load cost pools:', error)
     }
   }
-  
+
   const runAllocation = async () => {
     setIsAllocating(true)
     try {
@@ -69,7 +84,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
           }
         })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         setLastAllocation(result.data)
@@ -80,7 +95,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
       setIsAllocating(false)
     }
   }
-  
+
   const getMethodDescription = (method: string) => {
     const descriptions: Record<string, string> = {
       activity_based: 'Allocate costs based on actual consumption of activities',
@@ -90,7 +105,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
     }
     return descriptions[method] || ''
   }
-  
+
   return (
     <div className="space-y-6">
       {/* Allocation Method Selection */}
@@ -115,54 +130,61 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 <SelectItem value="activity_based">
                   <div>
                     <div className="font-medium">Activity-Based Costing (ABC)</div>
-                    <div className="text-xs text-gray-500">Most accurate for complex operations</div>
+                    <div className="text-xs text-gray-500">
+                      Most accurate for complex operations
+                    </div>
                   </div>
                 </SelectItem>
                 <SelectItem value="step_down">
                   <div>
                     <div className="font-medium">Step-Down Method</div>
-                    <div className="text-xs text-gray-500">Good for service department allocation</div>
+                    <div className="text-xs text-gray-500">
+                      Good for service department allocation
+                    </div>
                   </div>
                 </SelectItem>
                 <SelectItem value="direct">
                   <div>
                     <div className="font-medium">Direct Method</div>
-                    <div className="text-xs text-gray-500">Simple, ignores interdepartmental services</div>
+                    <div className="text-xs text-gray-500">
+                      Simple, ignores interdepartmental services
+                    </div>
                   </div>
                 </SelectItem>
                 <SelectItem value="reciprocal">
                   <div>
                     <div className="font-medium">Reciprocal Method</div>
-                    <div className="text-xs text-gray-500">Most accurate but computationally intensive</div>
+                    <div className="text-xs text-gray-500">
+                      Most accurate but computationally intensive
+                    </div>
                   </div>
                 </SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-sm text-gray-600 mt-2">
-              {getMethodDescription(allocationMethod)}
-            </p>
+            <p className="text-sm text-gray-600 mt-2">{getMethodDescription(allocationMethod)}</p>
           </div>
-          
+
           <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
             <Info className="w-4 h-4 text-blue-600" />
             <p className="text-sm text-blue-800">
-              Using Smart Code: <Badge variant="outline" className="ml-1">HERA.COST.ALLOC.ABC.v1</Badge>
+              Using Smart Code:{' '}
+              <Badge variant="outline" className="ml-1">
+                HERA.COST.ALLOC.ABC.v1
+              </Badge>
             </p>
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Cost Pools Overview */}
       <Card>
         <CardHeader>
           <CardTitle>Active Cost Pools</CardTitle>
-          <CardDescription>
-            Cost pools ready for allocation
-          </CardDescription>
+          <CardDescription>Cost pools ready for allocation</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {costPools.map((pool) => (
+            {costPools.map(pool => (
               <div key={pool.id} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <div>
@@ -186,7 +208,9 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                   </div>
                   <div>
                     <p className="text-gray-600">Rate</p>
-                    <p className="font-medium">${pool.rate_per_unit}/{pool.cost_driver}</p>
+                    <p className="font-medium">
+                      ${pool.rate_per_unit}/{pool.cost_driver}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -194,14 +218,12 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Allocation Actions */}
       <Card>
         <CardHeader>
           <CardTitle>Run Cost Allocation</CardTitle>
-          <CardDescription>
-            Execute cost allocation for the current period
-          </CardDescription>
+          <CardDescription>Execute cost allocation for the current period</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -211,11 +233,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </p>
             </div>
-            <Button 
-              onClick={runAllocation}
-              disabled={isAllocating}
-              size="lg"
-            >
+            <Button onClick={runAllocation} disabled={isAllocating} size="lg">
               {isAllocating ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
@@ -229,7 +247,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
               )}
             </Button>
           </div>
-          
+
           {/* Last Allocation Results */}
           {lastAllocation && (
             <div className="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -257,7 +275,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
               </div>
             </div>
           )}
-          
+
           {/* Allocation Rules Preview */}
           <div className="space-y-3">
             <h4 className="font-medium flex items-center gap-2">

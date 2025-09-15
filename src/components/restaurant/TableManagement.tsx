@@ -8,13 +8,38 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { universalApi } from '@/lib/universal-api'
-import { extractData, ensureDefaultEntities, formatCurrency, generateSmartCode } from '@/lib/universal-helpers'
+import {
+  extractData,
+  ensureDefaultEntities,
+  formatCurrency,
+  generateSmartCode
+} from '@/lib/universal-helpers'
 import { StatCardGrid, StatCardData } from '@/components/universal/StatCardGrid'
-import { 
+import {
   TableProperties,
   Users,
   Clock,
@@ -112,10 +137,10 @@ const STATUS_ICONS = {
   maintenance: Settings
 }
 
-export function TableManagement({ 
-  organizationId, 
+export function TableManagement({
+  organizationId,
   smartCodes,
-  isDemoMode = false 
+  isDemoMode = false
 }: TableManagementProps) {
   const [activeTab, setActiveTab] = useState('floor-plan')
   const [loading, setLoading] = useState(true)
@@ -180,8 +205,9 @@ export function TableManagement({
       // Create 24 tables across different sections
       for (let i = 1; i <= 24; i++) {
         const section = sections[Math.floor((i - 1) / 6)]
-        const status = i <= 8 ? 'occupied' : i <= 12 ? 'reserved' : i <= 20 ? 'available' : 'cleaning'
-        
+        const status =
+          i <= 8 ? 'occupied' : i <= 12 ? 'reserved' : i <= 20 ? 'available' : 'cleaning'
+
         demoTables.push({
           id: `table-${i}`,
           entity_name: `Table ${i}`,
@@ -192,13 +218,20 @@ export function TableManagement({
             capacity: [2, 4, 6, 8][i % 4],
             status: status as any,
             shape: shapes[i % 3],
-            position: { 
-              x: ((i - 1) % 6) * 150 + 50, 
-              y: Math.floor((i - 1) / 6) * 150 + 50 
+            position: {
+              x: ((i - 1) % 6) * 150 + 50,
+              y: Math.floor((i - 1) / 6) * 150 + 50
             },
-            server_name: status === 'occupied' ? ['Sarah', 'John', 'Maria', 'Mike'][i % 4] : undefined,
-            occupied_since: status === 'occupied' ? new Date(Date.now() - Math.random() * 3600000).toISOString() : undefined,
-            estimated_clear_time: status === 'occupied' ? addMinutesSafe(new Date(), Math.floor(Math.random() * 60) + 15).toISOString() : undefined
+            server_name:
+              status === 'occupied' ? ['Sarah', 'John', 'Maria', 'Mike'][i % 4] : undefined,
+            occupied_since:
+              status === 'occupied'
+                ? new Date(Date.now() - Math.random() * 3600000).toISOString()
+                : undefined,
+            estimated_clear_time:
+              status === 'occupied'
+                ? addMinutesSafe(new Date(), Math.floor(Math.random() * 60) + 15).toISOString()
+                : undefined
           }
         })
       }
@@ -318,7 +351,7 @@ export function TableManagement({
           }
         }
       })
-      
+
       if (result.success && result.data) {
         createdTables.push(result.data as RestaurantTable)
       }
@@ -345,7 +378,8 @@ export function TableManagement({
       ...table.metadata,
       status: newStatus,
       occupied_since: newStatus === 'occupied' ? new Date().toISOString() : undefined,
-      estimated_clear_time: newStatus === 'occupied' ? addMinutesSafe(new Date(), 90).toISOString() : undefined,
+      estimated_clear_time:
+        newStatus === 'occupied' ? addMinutesSafe(new Date(), 90).toISOString() : undefined,
       server_name: newStatus === 'occupied' ? 'Current Server' : undefined
     }
 
@@ -355,9 +389,7 @@ export function TableManagement({
       })
 
       // Update local state
-      setTables(prev => prev.map(t => 
-        t.id === tableId ? { ...t, metadata: updatedMetadata } : t
-      ))
+      setTables(prev => prev.map(t => (t.id === tableId ? { ...t, metadata: updatedMetadata } : t)))
     } catch (err) {
       console.error('Error updating table status:', err)
       setError('Failed to update table status')
@@ -404,7 +436,7 @@ export function TableManagement({
       if (!selectedTable) return
 
       const confirmationCode = `RES${Date.now().toString().slice(-6)}`
-      
+
       const result = await universalApi.createEntity({
         entity_type: 'reservation',
         entity_name: `${reservationForm.customer_name} Party`,
@@ -427,12 +459,12 @@ export function TableManagement({
 
       if (result.success && result.data) {
         setReservations(prev => [...prev, result.data as Reservation])
-        
+
         // Update table status to reserved if reservation is today
         if (reservationForm.reservation_date === formatDate(new Date(), 'yyyy-MM-dd')) {
           await updateTableStatus(reservationForm.table_id, 'reserved')
         }
-        
+
         setShowReservationDialog(false)
         setReservationForm({
           table_id: '',
@@ -485,27 +517,34 @@ export function TableManagement({
     },
     {
       title: 'Reservations Today',
-      value: reservations.filter(r => 
-        (r.metadata as any)?.reservation_date === formatDate(new Date(), 'yyyy-MM-dd') &&
-        (r.metadata as any)?.status === 'confirmed'
-      ).length.toString(),
+      value: reservations
+        .filter(
+          r =>
+            (r.metadata as any)?.reservation_date === formatDate(new Date(), 'yyyy-MM-dd') &&
+            (r.metadata as any)?.status === 'confirmed'
+        )
+        .length.toString(),
       icon: Calendar
     }
   ]
 
   // Filter tables
   const filteredTables = tables.filter(table => {
-    const matchesSection = selectedSection === 'all' || (table.metadata as any)?.section === selectedSection
-    const matchesSearch = searchTerm === '' || 
+    const matchesSection =
+      selectedSection === 'all' || (table.metadata as any)?.section === selectedSection
+    const matchesSearch =
+      searchTerm === '' ||
       table.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       table.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (table.metadata as any)?.server_name?.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     return matchesSection && matchesSearch
   })
 
   // Get unique sections
-  const sections = Array.from(new Set(tables.map(t => (t.metadata as any)?.section).filter(Boolean)))
+  const sections = Array.from(
+    new Set(tables.map(t => (t.metadata as any)?.section).filter(Boolean))
+  )
 
   if (loading) {
     return (
@@ -524,17 +563,10 @@ export function TableManagement({
             <TableProperties className="h-6 w-6" />
             Table Management
           </h2>
-          <p className="text-muted-foreground">
-            Manage floor plan, table status, and reservations
-          </p>
+          <p className="text-muted-foreground">Manage floor plan, table status, and reservations</p>
         </div>
         <div className="flex gap-2">
-          <Button
-            onClick={() => refreshData()}
-            variant="outline"
-            size="sm"
-            disabled={refreshing}
-          >
+          <Button onClick={() => refreshData()} variant="outline" size="sm" disabled={refreshing}>
             <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
@@ -556,7 +588,7 @@ export function TableManagement({
                     <Input
                       id="table_number"
                       value={tableForm.table_number}
-                      onChange={(e) => setTableForm({ ...tableForm, table_number: e.target.value })}
+                      onChange={e => setTableForm({ ...tableForm, table_number: e.target.value })}
                       placeholder="e.g. 25"
                     />
                   </div>
@@ -564,7 +596,7 @@ export function TableManagement({
                     <Label htmlFor="capacity">Capacity</Label>
                     <Select
                       value={tableForm.capacity}
-                      onValueChange={(value) => setTableForm({ ...tableForm, capacity: value })}
+                      onValueChange={value => setTableForm({ ...tableForm, capacity: value })}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -584,14 +616,16 @@ export function TableManagement({
                     <Label htmlFor="section">Section</Label>
                     <Select
                       value={tableForm.section}
-                      onValueChange={(value) => setTableForm({ ...tableForm, section: value })}
+                      onValueChange={value => setTableForm({ ...tableForm, section: value })}
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {DEFAULT_SECTIONS.map(section => (
-                          <SelectItem key={section} value={section}>{section}</SelectItem>
+                          <SelectItem key={section} value={section}>
+                            {section}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -600,7 +634,7 @@ export function TableManagement({
                     <Label htmlFor="shape">Shape</Label>
                     <Select
                       value={tableForm.shape}
-                      onValueChange={(value) => setTableForm({ ...tableForm, shape: value })}
+                      onValueChange={value => setTableForm({ ...tableForm, shape: value })}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -618,7 +652,7 @@ export function TableManagement({
                   <Input
                     id="notes"
                     value={tableForm.notes}
-                    onChange={(e) => setTableForm({ ...tableForm, notes: e.target.value })}
+                    onChange={e => setTableForm({ ...tableForm, notes: e.target.value })}
                     placeholder="Any special notes"
                   />
                 </div>
@@ -687,7 +721,7 @@ export function TableManagement({
                     const Icon = STATUS_ICONS[status]
                     const position = (table.metadata as any)?.position || { x: 50, y: 50 }
                     const shape = (table.metadata as any)?.shape || 'square'
-                    
+
                     return (
                       <div
                         key={table.id}
@@ -704,13 +738,9 @@ export function TableManagement({
                         <div className="flex flex-col items-center justify-center h-full p-2">
                           <Icon className="h-5 w-5 mb-1" />
                           <div className="font-semibold text-sm">{table.entity_name}</div>
-                          <div className="text-xs">
-                            {(table.metadata as any)?.capacity} seats
-                          </div>
+                          <div className="text-xs">{(table.metadata as any)?.capacity} seats</div>
                           {(table.metadata as any)?.server_name && (
-                            <div className="text-xs mt-1">
-                              {table.metadata.server_name}
-                            </div>
+                            <div className="text-xs mt-1">{table.metadata.server_name}</div>
                           )}
                         </div>
                       </div>
@@ -723,18 +753,19 @@ export function TableManagement({
                   <div className="absolute bottom-4 right-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg max-w-[300px]">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold">{selectedTable.entity_name}</h3>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => setSelectedTable(null)}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => setSelectedTable(null)}>
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Status:</span>
-                        <Badge variant="secondary" className={STATUS_COLORS[(selectedTable.metadata as any)?.status || 'available']}>
+                        <Badge
+                          variant="secondary"
+                          className={
+                            STATUS_COLORS[(selectedTable.metadata as any)?.status || 'available']
+                          }
+                        >
                           {(selectedTable.metadata as any)?.status || 'available'}
                         </Badge>
                       </div>
@@ -755,7 +786,9 @@ export function TableManagement({
                       {(selectedTable.metadata as any)?.occupied_since && (
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Since:</span>
-                          <span>{formatDate(new Date(selectedTable.metadata.occupied_since), 'HH:mm')}</span>
+                          <span>
+                            {formatDate(new Date(selectedTable.metadata.occupied_since), 'HH:mm')}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -763,11 +796,18 @@ export function TableManagement({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => updateTableStatus(selectedTable.id, 
-                          (selectedTable.metadata as any)?.status === 'occupied' ? 'cleaning' : 'occupied'
-                        )}
+                        onClick={() =>
+                          updateTableStatus(
+                            selectedTable.id,
+                            (selectedTable.metadata as any)?.status === 'occupied'
+                              ? 'cleaning'
+                              : 'occupied'
+                          )
+                        }
                       >
-                        {(selectedTable.metadata as any)?.status === 'occupied' ? 'Clear' : 'Assign'}
+                        {(selectedTable.metadata as any)?.status === 'occupied'
+                          ? 'Clear'
+                          : 'Assign'}
                       </Button>
                       <Button
                         size="sm"
@@ -809,7 +849,7 @@ export function TableManagement({
                 <Input
                   placeholder="Search tables..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="max-w-xs"
                 />
               </div>
@@ -828,31 +868,38 @@ export function TableManagement({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredTables.map((table) => (
+                  {filteredTables.map(table => (
                     <TableRow key={table.id}>
                       <TableCell className="font-medium">{table.entity_name}</TableCell>
                       <TableCell>{(table.metadata as any)?.section}</TableCell>
                       <TableCell>{(table.metadata as any)?.capacity} seats</TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className={STATUS_COLORS[(table.metadata as any)?.status || 'available']}>
+                        <Badge
+                          variant="secondary"
+                          className={STATUS_COLORS[(table.metadata as any)?.status || 'available']}
+                        >
                           {(table.metadata as any)?.status || 'available'}
                         </Badge>
                       </TableCell>
                       <TableCell>{(table.metadata as any)?.server_name || '-'}</TableCell>
                       <TableCell>
-                        {(table.metadata as any)?.occupied_since 
+                        {(table.metadata as any)?.occupied_since
                           ? formatDate(new Date(table.metadata.occupied_since), 'HH:mm')
-                          : '-'
-                        }
+                          : '-'}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => updateTableStatus(table.id, 
-                              (table.metadata as any)?.status === 'occupied' ? 'available' : 'occupied'
-                            )}
+                            onClick={() =>
+                              updateTableStatus(
+                                table.id,
+                                (table.metadata as any)?.status === 'occupied'
+                                  ? 'available'
+                                  : 'occupied'
+                              )
+                            }
                           >
                             {(table.metadata as any)?.status === 'occupied' ? 'Clear' : 'Assign'}
                           </Button>
@@ -896,7 +943,12 @@ export function TableManagement({
                           <Input
                             id="customer_name"
                             value={reservationForm.customer_name}
-                            onChange={(e) => setReservationForm({ ...reservationForm, customer_name: e.target.value })}
+                            onChange={e =>
+                              setReservationForm({
+                                ...reservationForm,
+                                customer_name: e.target.value
+                              })
+                            }
                             placeholder="John Smith"
                           />
                         </div>
@@ -905,7 +957,9 @@ export function TableManagement({
                           <Input
                             id="phone"
                             value={reservationForm.phone}
-                            onChange={(e) => setReservationForm({ ...reservationForm, phone: e.target.value })}
+                            onChange={e =>
+                              setReservationForm({ ...reservationForm, phone: e.target.value })
+                            }
                             placeholder="+1-555-0123"
                           />
                         </div>
@@ -917,7 +971,9 @@ export function TableManagement({
                             id="party_size"
                             type="number"
                             value={reservationForm.party_size}
-                            onChange={(e) => setReservationForm({ ...reservationForm, party_size: e.target.value })}
+                            onChange={e =>
+                              setReservationForm({ ...reservationForm, party_size: e.target.value })
+                            }
                             placeholder="4"
                           />
                         </div>
@@ -925,17 +981,22 @@ export function TableManagement({
                           <Label htmlFor="table_id">Table</Label>
                           <Select
                             value={reservationForm.table_id}
-                            onValueChange={(value) => setReservationForm({ ...reservationForm, table_id: value })}
+                            onValueChange={value =>
+                              setReservationForm({ ...reservationForm, table_id: value })
+                            }
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Select table" />
                             </SelectTrigger>
                             <SelectContent>
-                              {tables.filter(t => (t.metadata as any)?.status !== 'maintenance').map(table => (
-                                <SelectItem key={table.id} value={table.id}>
-                                  {table.entity_name} ({(table.metadata as any)?.section}, {(table.metadata as any)?.capacity} seats)
-                                </SelectItem>
-                              ))}
+                              {tables
+                                .filter(t => (t.metadata as any)?.status !== 'maintenance')
+                                .map(table => (
+                                  <SelectItem key={table.id} value={table.id}>
+                                    {table.entity_name} ({(table.metadata as any)?.section},{' '}
+                                    {(table.metadata as any)?.capacity} seats)
+                                  </SelectItem>
+                                ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -947,7 +1008,12 @@ export function TableManagement({
                             id="reservation_date"
                             type="date"
                             value={reservationForm.reservation_date}
-                            onChange={(e) => setReservationForm({ ...reservationForm, reservation_date: e.target.value })}
+                            onChange={e =>
+                              setReservationForm({
+                                ...reservationForm,
+                                reservation_date: e.target.value
+                              })
+                            }
                           />
                         </div>
                         <div>
@@ -956,7 +1022,12 @@ export function TableManagement({
                             id="reservation_time"
                             type="time"
                             value={reservationForm.reservation_time}
-                            onChange={(e) => setReservationForm({ ...reservationForm, reservation_time: e.target.value })}
+                            onChange={e =>
+                              setReservationForm({
+                                ...reservationForm,
+                                reservation_time: e.target.value
+                              })
+                            }
                           />
                         </div>
                       </div>
@@ -965,7 +1036,12 @@ export function TableManagement({
                         <Input
                           id="special_requests"
                           value={reservationForm.special_requests}
-                          onChange={(e) => setReservationForm({ ...reservationForm, special_requests: e.target.value })}
+                          onChange={e =>
+                            setReservationForm({
+                              ...reservationForm,
+                              special_requests: e.target.value
+                            })
+                          }
                           placeholder="Window seat, birthday celebration, etc."
                         />
                       </div>
@@ -996,35 +1072,32 @@ export function TableManagement({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {reservations.map((reservation) => (
+                  {reservations.map(reservation => (
                     <TableRow key={reservation.id}>
                       <TableCell className="font-medium">
                         {(reservation.metadata as any)?.customer_name}
                       </TableCell>
+                      <TableCell>Table {(reservation.metadata as any)?.table_number}</TableCell>
                       <TableCell>
-                        Table {(reservation.metadata as any)?.table_number}
-                      </TableCell>
-                      <TableCell>
-                        {(reservation.metadata as any)?.reservation_date 
+                        {(reservation.metadata as any)?.reservation_date
                           ? formatDate(new Date(reservation.metadata.reservation_date), 'MMM dd')
-                          : '-'
-                        }
+                          : '-'}
                       </TableCell>
                       <TableCell>
                         {(reservation.metadata as any)?.reservation_time || '-'}
                       </TableCell>
+                      <TableCell>{(reservation.metadata as any)?.party_size} guests</TableCell>
+                      <TableCell>{(reservation.metadata as any)?.phone || '-'}</TableCell>
                       <TableCell>
-                        {(reservation.metadata as any)?.party_size} guests
-                      </TableCell>
-                      <TableCell>
-                        {(reservation.metadata as any)?.phone || '-'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={
-                          (reservation.metadata as any)?.status === 'confirmed' ? 'default' :
-                          (reservation.metadata as any)?.status === 'cancelled' ? 'destructive' :
-                          'secondary'
-                        }>
+                        <Badge
+                          variant={
+                            (reservation.metadata as any)?.status === 'confirmed'
+                              ? 'default'
+                              : (reservation.metadata as any)?.status === 'cancelled'
+                                ? 'destructive'
+                                : 'secondary'
+                          }
+                        >
                           {(reservation.metadata as any)?.status || 'pending'}
                         </Badge>
                       </TableCell>

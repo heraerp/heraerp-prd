@@ -5,11 +5,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  DollarSign, TrendingUp, TrendingDown, Target, AlertTriangle, 
-  CheckCircle, Clock, Plus, Download, RefreshCw, BarChart3,
-  PieChart, Calculator, FileText, Users, Calendar,
-  ArrowUpRight, ArrowDownRight, Minus, Equal
+import {
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  Target,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Plus,
+  Download,
+  RefreshCw,
+  BarChart3,
+  PieChart,
+  Calculator,
+  FileText,
+  Users,
+  Calendar,
+  ArrowUpRight,
+  ArrowDownRight,
+  Minus,
+  Equal
 } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
 
@@ -54,9 +70,9 @@ interface UniversalBudgetDashboardProps {
   isAnonymous?: boolean
 }
 
-export default function UniversalBudgetDashboard({ 
-  organizationId, 
-  isAnonymous = false 
+export default function UniversalBudgetDashboard({
+  organizationId,
+  isAnonymous = false
 }: UniversalBudgetDashboardProps) {
   const [budgets, setBudgets] = useState<BudgetSummary[]>([])
   const [selectedBudget, setSelectedBudget] = useState<string | null>(null)
@@ -77,10 +93,10 @@ export default function UniversalBudgetDashboard({
   const loadBudgetData = async () => {
     try {
       setIsLoading(true)
-      
+
       // Get all budget entities
       const budgetEntitiesResponse = await universalApi.getEntities('budget', organizationId)
-      
+
       if (budgetEntitiesResponse.success && budgetEntitiesResponse.data) {
         const budgetSummaries = budgetEntitiesResponse.data.map((budget: any) => ({
           budget_id: budget.id,
@@ -94,9 +110,9 @@ export default function UniversalBudgetDashboard({
           variance_percent: -25.4,
           approval_status: (budget.metadata as any)?.approval_status || 'draft'
         }))
-        
+
         setBudgets(budgetSummaries)
-        
+
         // Select first budget by default
         if (budgetSummaries.length > 0 && !selectedBudget) {
           setSelectedBudget(budgetSummaries[0].budget_id)
@@ -156,10 +172,14 @@ export default function UniversalBudgetDashboard({
 
   const getVarianceColor = (status: string) => {
     switch (status) {
-      case 'critical': return 'text-red-600 bg-red-50'
-      case 'warning': return 'text-yellow-600 bg-yellow-50'
-      case 'acceptable': return 'text-green-600 bg-green-50'
-      default: return 'text-gray-600 bg-gray-50'
+      case 'critical':
+        return 'text-red-600 bg-red-50'
+      case 'warning':
+        return 'text-yellow-600 bg-yellow-50'
+      case 'acceptable':
+        return 'text-green-600 bg-green-50'
+      default:
+        return 'text-gray-600 bg-gray-50'
     }
   }
 
@@ -285,23 +305,23 @@ export default function UniversalBudgetDashboard({
         <div className="flex items-center gap-4">
           <div>
             <label className="text-sm font-medium text-gray-700">Budget:</label>
-            <select 
-              value={selectedBudget || ''} 
-              onChange={(e) => setSelectedBudget(e.target.value)}
+            <select
+              value={selectedBudget || ''}
+              onChange={e => setSelectedBudget(e.target.value)}
               className="ml-2 px-3 py-1 border border-gray-300 rounded-md text-sm"
             >
-              {budgets.map((budget) => (
+              {budgets.map(budget => (
                 <option key={budget.budget_id} value={budget.budget_id}>
                   {budget.budget_name} ({budget.fiscal_year})
                 </option>
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="text-sm font-medium text-gray-700">Period:</label>
             <div className="ml-2 inline-flex">
-              {(['MTD', 'QTD', 'YTD'] as const).map((period) => (
+              {(['MTD', 'QTD', 'YTD'] as const).map(period => (
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(period)}
@@ -347,18 +367,26 @@ export default function UniversalBudgetDashboard({
             <CardContent>
               <div className="space-y-4">
                 {/* Overall Status */}
-                <div className={`p-4 rounded-lg ${getVarianceColor(varianceAnalysis.summary.status)}`}>
+                <div
+                  className={`p-4 rounded-lg ${getVarianceColor(varianceAnalysis.summary.status)}`}
+                >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-semibold">Overall Status: {varianceAnalysis.summary.status.toUpperCase()}</h4>
+                      <h4 className="font-semibold">
+                        Overall Status: {varianceAnalysis.summary.status.toUpperCase()}
+                      </h4>
                       <p className="text-sm">
-                        {formatCurrency(varianceAnalysis.summary.total_variance)} variance 
-                        ({varianceAnalysis.summary.variance_percent.toFixed(1)}%)
+                        {formatCurrency(varianceAnalysis.summary.total_variance)} variance (
+                        {varianceAnalysis.summary.variance_percent.toFixed(1)}%)
                       </p>
                     </div>
-                    {varianceAnalysis.summary.status === 'critical' && <AlertTriangle className="w-6 h-6" />}
+                    {varianceAnalysis.summary.status === 'critical' && (
+                      <AlertTriangle className="w-6 h-6" />
+                    )}
                     {varianceAnalysis.summary.status === 'warning' && <Clock className="w-6 h-6" />}
-                    {varianceAnalysis.summary.status === 'on_track' && <CheckCircle className="w-6 h-6" />}
+                    {varianceAnalysis.summary.status === 'on_track' && (
+                      <CheckCircle className="w-6 h-6" />
+                    )}
                   </div>
                 </div>
 
@@ -367,7 +395,10 @@ export default function UniversalBudgetDashboard({
                   <h4 className="font-semibold mb-3">Top Variances by Account</h4>
                   <div className="space-y-2">
                     {varianceAnalysis.line_variances.slice(0, 5).map((variance, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      >
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{variance.account_code}</span>
@@ -403,9 +434,7 @@ export default function UniversalBudgetDashboard({
                 <Target className="w-5 h-5" />
                 AI Recommendations
               </CardTitle>
-              <CardDescription>
-                Smart insights and actions
-              </CardDescription>
+              <CardDescription>Smart insights and actions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -414,7 +443,7 @@ export default function UniversalBudgetDashboard({
                     <p className="text-sm text-blue-800">{recommendation}</p>
                   </div>
                 ))}
-                
+
                 {varianceAnalysis.critical_variances.length > 0 && (
                   <div className="p-3 bg-red-50 rounded-lg border-l-4 border-red-400">
                     <h5 className="font-semibold text-red-800 mb-1">Critical Attention Required</h5>
@@ -472,8 +501,8 @@ export default function UniversalBudgetDashboard({
                 Complete budgeting system with variance analysis, forecasting, and AI insights.
                 Create an account to save your budgets and access advanced features.
               </p>
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-blue-50"
               >

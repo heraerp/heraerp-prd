@@ -3,7 +3,7 @@
 /**
  * HERA Employee Manager View
  * Smart Code: HERA.HR.EMPLOYEE.MANAGER.VIEW.v1
- * 
+ *
  * Dedicated interface for employee leave management with role-based access:
  * - Employee View: Request own leave, view own schedule
  * - Manager View: Approve/deny requests, view team schedules
@@ -17,14 +17,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Users, 
-  Calendar, 
-  Clock, 
-  CheckSquare, 
-  X, 
-  UserX, 
-  Bell, 
+import {
+  Users,
+  Calendar,
+  Clock,
+  CheckSquare,
+  X,
+  UserX,
+  Bell,
   Eye,
   UserCheck,
   AlertCircle,
@@ -164,36 +164,42 @@ export function EmployeeManagerView({
     return filtered
   }
 
-  const pendingCount = leaveRequests.filter(req => 
-    req.status === 'pending' && (userRole !== 'employee' || req.employeeId === currentUserId)
+  const pendingCount = leaveRequests.filter(
+    req => req.status === 'pending' && (userRole !== 'employee' || req.employeeId === currentUserId)
   ).length
 
   const handleApproval = (requestId: string, approved: boolean) => {
-    setLeaveRequests(prev => prev.map(req => 
-      req.id === requestId 
-        ? { 
-            ...req, 
-            status: approved ? 'approved' : 'denied',
-            reviewedAt: new Date(),
-            reviewedBy: 'Current User'
-          }
-        : req
-    ))
+    setLeaveRequests(prev =>
+      prev.map(req =>
+        req.id === requestId
+          ? {
+              ...req,
+              status: approved ? 'approved' : 'denied',
+              reviewedAt: new Date(),
+              reviewedBy: 'Current User'
+            }
+          : req
+      )
+    )
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200'
-      case 'approved': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
-      case 'denied': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200'
+      case 'approved':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
+      case 'denied':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
     }
   }
 
   const formatDuration = (startDate: Date, endDate: Date) => {
     const diffTime = Math.abs(endDate.getTime() - startDate.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
+
     if (diffDays === 1) {
       return '1 Day'
     } else if (diffDays > 1) {
@@ -204,7 +210,7 @@ export function EmployeeManagerView({
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -216,10 +222,9 @@ export function EmployeeManagerView({
               {userRole === 'employee' ? 'My Schedule & Leave' : 'Team Management'}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {userRole === 'employee' 
+              {userRole === 'employee'
                 ? 'Request leave and view your schedule'
-                : 'Manage team schedules and approve leave requests'
-              }
+                : 'Manage team schedules and approve leave requests'}
             </p>
           </div>
         </div>
@@ -236,18 +241,21 @@ export function EmployeeManagerView({
       </div>
 
       {/* Navigation Tabs */}
-      <Tabs value={selectedTab} onValueChange={(v) => setSelectedTab(v as any)}>
+      <Tabs value={selectedTab} onValueChange={v => setSelectedTab(v as any)}>
         <TabsList className="bg-gray-100 dark:bg-gray-800">
           <TabsTrigger value="calendar" className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
             Calendar
           </TabsTrigger>
-          
+
           <TabsTrigger value="requests" className="flex items-center gap-2">
             <UserX className="w-4 h-4" />
             Leave Requests
             {pendingCount > 0 && (
-              <Badge variant="secondary" className="ml-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30">
+              <Badge
+                variant="secondary"
+                className="ml-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30"
+              >
                 {pendingCount}
               </Badge>
             )}
@@ -290,11 +298,11 @@ export function EmployeeManagerView({
                   <UserX className="w-5 h-5 text-orange-600" />
                   {userRole === 'employee' ? 'My Leave Requests' : 'Leave Requests'}
                 </CardTitle>
-                
+
                 <div className="flex items-center gap-2">
                   {/* Status Filter */}
                   <div className="flex items-center gap-1">
-                    {['all', 'pending', 'approved', 'denied'].map((status) => (
+                    {['all', 'pending', 'approved', 'denied'].map(status => (
                       <Button
                         key={status}
                         variant={filter === status ? 'default' : 'outline'}
@@ -317,15 +325,17 @@ export function EmployeeManagerView({
                       <UserCheck className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p className="text-lg font-medium">No leave requests found</p>
                       <p className="text-sm">
-                        {userRole === 'employee' 
+                        {userRole === 'employee'
                           ? "You haven't submitted any leave requests yet"
-                          : "No leave requests to review"
-                        }
+                          : 'No leave requests to review'}
                       </p>
                     </div>
                   ) : (
-                    getFilteredRequests().map((request) => (
-                      <div key={request.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
+                    getFilteredRequests().map(request => (
+                      <div
+                        key={request.id}
+                        className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4"
+                      >
                         {/* Request Header */}
                         <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
@@ -343,7 +353,7 @@ export function EmployeeManagerView({
                               </p>
                             </div>
                           </div>
-                          <Badge className={cn("text-xs", getStatusColor(request.status))}>
+                          <Badge className={cn('text-xs', getStatusColor(request.status))}>
                             {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                           </Badge>
                         </div>
@@ -351,7 +361,7 @@ export function EmployeeManagerView({
                         {/* Leave Details */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="flex items-center gap-2">
-                            <div 
+                            <div
                               className="w-8 h-8 rounded-full flex items-center justify-center"
                               style={{ backgroundColor: request.leaveTypeColor }}
                             >
@@ -371,13 +381,13 @@ export function EmployeeManagerView({
                             <Calendar className="w-5 h-5 text-gray-400" />
                             <div>
                               <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                {request.startDate.toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric' 
+                                {request.startDate.toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric'
                                 })}
-                                {request.startDate.toDateString() !== request.endDate.toDateString() && 
-                                  ` - ${request.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-                                }
+                                {request.startDate.toDateString() !==
+                                  request.endDate.toDateString() &&
+                                  ` - ${request.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`}
                               </p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
                                 {request.duration}
@@ -392,9 +402,9 @@ export function EmployeeManagerView({
                                 Submitted
                               </p>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
-                                {request.submittedAt.toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric' 
+                                {request.submittedAt.toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric'
                                 })}
                               </p>
                             </div>
@@ -412,34 +422,36 @@ export function EmployeeManagerView({
                         )}
 
                         {/* Action Buttons for Managers */}
-                        {(userRole === 'manager' || userRole === 'admin') && request.status === 'pending' && (
-                          <div className="flex gap-2 pt-2">
-                            <Button
-                              size="sm"
-                              onClick={() => handleApproval(request.id, true)}
-                              className="bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              <CheckSquare className="w-4 h-4 mr-2" />
-                              Approve
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleApproval(request.id, false)}
-                              className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300"
-                            >
-                              <X className="w-4 h-4 mr-2" />
-                              Deny
-                            </Button>
-                          </div>
-                        )}
+                        {(userRole === 'manager' || userRole === 'admin') &&
+                          request.status === 'pending' && (
+                            <div className="flex gap-2 pt-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleApproval(request.id, true)}
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                <CheckSquare className="w-4 h-4 mr-2" />
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleApproval(request.id, false)}
+                                className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300"
+                              >
+                                <X className="w-4 h-4 mr-2" />
+                                Deny
+                              </Button>
+                            </div>
+                          )}
 
                         {/* Review Status */}
                         {request.status !== 'pending' && request.reviewedAt && (
                           <div className="text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-2">
-                            {request.status === 'approved' ? 'Approved' : 'Denied'} by {request.reviewedBy} on{' '}
-                            {request.reviewedAt.toLocaleDateString('en-US', { 
-                              month: 'short', 
+                            {request.status === 'approved' ? 'Approved' : 'Denied'} by{' '}
+                            {request.reviewedBy} on{' '}
+                            {request.reviewedAt.toLocaleDateString('en-US', {
+                              month: 'short',
                               day: 'numeric',
                               hour: 'numeric',
                               minute: '2-digit'
@@ -472,7 +484,11 @@ export function EmployeeManagerView({
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white">{member}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {idx === 0 ? 'Celebrity Hair Artist' : idx === 1 ? 'Color Specialist' : 'Bridal Specialist'}
+                          {idx === 0
+                            ? 'Celebrity Hair Artist'
+                            : idx === 1
+                              ? 'Color Specialist'
+                              : 'Bridal Specialist'}
                         </p>
                       </div>
                     </div>
@@ -484,9 +500,11 @@ export function EmployeeManagerView({
                           {Math.floor(Math.random() * 3)} days off
                         </Badge>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Pending Requests</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          Pending Requests
+                        </span>
                         <Badge variant={idx === 0 ? 'default' : 'secondary'} className="text-xs">
                           {idx === 0 ? '1' : '0'}
                         </Badge>

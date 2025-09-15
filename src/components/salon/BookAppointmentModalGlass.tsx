@@ -7,14 +7,20 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
+import {
   Calendar,
   Clock,
   User,
@@ -118,7 +124,9 @@ export function BookAppointmentModalGlass({
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
 
   // Form state - Default to assistant tab when pre-selected time is provided
-  const [activeTab, setActiveTab] = useState<'quick' | 'detailed' | 'assistant'>(preSelectedTime ? 'assistant' : 'quick')
+  const [activeTab, setActiveTab] = useState<'quick' | 'detailed' | 'assistant'>(
+    preSelectedTime ? 'assistant' : 'quick'
+  )
   const [title, setTitle] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null)
@@ -165,17 +173,17 @@ export function BookAppointmentModalGlass({
   useEffect(() => {
     const fetchSalonData = async () => {
       if (!organizationId) return
-      
+
       setLoadingData(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       try {
         // Fetch stylists (staff entities)
         const stylistsResponse = await universalApi.read({
           table: 'core_entities',
           organizationId
         })
-        
+
         if (stylistsResponse?.data) {
           const staffEntities = stylistsResponse.data.filter((e: any) => e.entity_type === 'staff')
           const formattedStylists = staffEntities.map((staff: any) => ({
@@ -192,7 +200,8 @@ export function BookAppointmentModalGlass({
         }
 
         // Fetch services
-        const servicesData = stylistsResponse?.data?.filter((e: any) => e.entity_type === 'service') || []
+        const servicesData =
+          stylistsResponse?.data?.filter((e: any) => e.entity_type === 'service') || []
         const formattedServices = servicesData.map((service: any) => ({
           id: service.id,
           entity_name: service.entity_name,
@@ -208,7 +217,8 @@ export function BookAppointmentModalGlass({
         setServices(formattedServices)
 
         // Fetch recent customers
-        const customerData = stylistsResponse?.data?.filter((e: any) => e.entity_type === 'customer') || []
+        const customerData =
+          stylistsResponse?.data?.filter((e: any) => e.entity_type === 'customer') || []
         const formattedCustomers = customerData.map((customer: any) => ({
           id: customer.id,
           entity_name: customer.entity_name,
@@ -222,7 +232,6 @@ export function BookAppointmentModalGlass({
           visit_count: (customer.metadata as any)?.visit_count || 0
         }))
         setCustomers(formattedCustomers)
-
       } catch (error) {
         console.error('Error fetching salon data:', error)
         toast({
@@ -258,7 +267,7 @@ export function BookAppointmentModalGlass({
         onBookingComplete?.(appointment)
         toast({
           title: 'Booking Successful',
-          description: `Appointment booked for ${selectedCustomer.entity_name}`,
+          description: `Appointment booked for ${selectedCustomer.entity_name}`
         })
         onClose()
       }
@@ -329,7 +338,7 @@ export function BookAppointmentModalGlass({
 
     // Create the transaction in Supabase
     const result = await universalApi.createTransaction(appointmentData)
-    
+
     if (!result || !result.data) {
       throw new Error('Failed to save appointment to database')
     }
@@ -352,12 +361,14 @@ export function BookAppointmentModalGlass({
       }))
 
       // Create line items in parallel
-      await Promise.all(lineItems.map(item => 
-        universalApi.create({
-          table: 'universal_transaction_lines',
-          data: item
-        })
-      ))
+      await Promise.all(
+        lineItems.map(item =>
+          universalApi.create({
+            table: 'universal_transaction_lines',
+            data: item
+          })
+        )
+      )
     }
 
     console.log('Appointment saved successfully:', result.data)
@@ -366,7 +377,7 @@ export function BookAppointmentModalGlass({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
+      <DialogContent
         ref={modalRef}
         className="salon-modal-glass max-w-5xl h-[85vh] p-0 overflow-hidden border-0 [&_input]:!bg-gray-800/70 [&_input]:!border-gray-700 [&_textarea]:!bg-gray-800/70 [&_textarea]:!border-gray-700 [&_button[role='combobox']]:!bg-gray-800/70 [&_button[role='combobox']]:!border-gray-700 [&_input:focus]:!bg-gray-800/90 [&_input:focus]:!border-purple-500/50 [&_textarea:focus]:!bg-gray-800/90 [&_textarea:focus]:!border-purple-500/50 [&_input[type='date']]:!bg-gray-800/70 [&_input[type='time']]:!bg-gray-800/70 [&_input::placeholder]:!text-gray-400 [&_[data-radix-ui-select-content]]:!bg-gray-900 [&_[data-radix-ui-select-content]]:!border-gray-700 [&_[data-radix-ui-select-item]]:!text-white [&_[data-radix-ui-select-item]:hover]:!bg-gray-800/50"
         style={{
@@ -391,7 +402,7 @@ export function BookAppointmentModalGlass({
         {/* WSAG Animated Background Orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {/* Primary Light Orb */}
-          <div 
+          <div
             className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
             style={{
               background: `radial-gradient(circle, 
@@ -406,9 +417,9 @@ export function BookAppointmentModalGlass({
               transform: `translate(-50%, -50%) scale(${1 + mousePosition.x * 0.002})`
             }}
           />
-          
+
           {/* Secondary Light Orb */}
-          <div 
+          <div
             className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
             style={{
               background: `radial-gradient(circle, 
@@ -428,7 +439,8 @@ export function BookAppointmentModalGlass({
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
           {/* Header */}
-          <div className="px-8 py-6 border-b"
+          <div
+            className="px-8 py-6 border-b"
             style={{
               background: `
                 linear-gradient(135deg, 
@@ -443,7 +455,7 @@ export function BookAppointmentModalGlass({
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div 
+                <div
                   className="w-14 h-14 rounded-xl flex items-center justify-center shadow-2xl"
                   style={{
                     background: `
@@ -476,9 +488,9 @@ export function BookAppointmentModalGlass({
                   </p>
                 </div>
               </div>
-              <Button 
-                onClick={onClose} 
-                variant="ghost" 
+              <Button
+                onClick={onClose}
+                variant="ghost"
                 size="icon"
                 className="text-gray-400 hover:text-white hover:bg-white/10"
               >
@@ -488,8 +500,13 @@ export function BookAppointmentModalGlass({
           </div>
 
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="flex-1 flex flex-col">
-            <div className="px-8 py-4 border-b"
+          <Tabs
+            value={activeTab}
+            onValueChange={(v: any) => setActiveTab(v)}
+            className="flex-1 flex flex-col"
+          >
+            <div
+              className="px-8 py-4 border-b"
               style={{
                 background: 'rgba(17, 24, 39, 0.7)',
                 backdropFilter: 'blur(10px)',
@@ -498,15 +515,24 @@ export function BookAppointmentModalGlass({
               }}
             >
               <TabsList className="grid w-full max-w-md grid-cols-3 bg-gray-800/50 backdrop-blur-xl border border-gray-700">
-                <TabsTrigger value="quick" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white">
+                <TabsTrigger
+                  value="quick"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                >
                   <Zap className="w-4 h-4 mr-2" />
                   Quick Book
                 </TabsTrigger>
-                <TabsTrigger value="detailed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white">
+                <TabsTrigger
+                  value="detailed"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                >
                   <FileText className="w-4 h-4 mr-2" />
                   Detailed
                 </TabsTrigger>
-                <TabsTrigger value="assistant" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white">
+                <TabsTrigger
+                  value="assistant"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                >
                   <Sparkles className="w-4 h-4 mr-2" />
                   AI Assistant
                 </TabsTrigger>
@@ -518,7 +544,8 @@ export function BookAppointmentModalGlass({
               <TabsContent value="quick" className="px-8 pb-8">
                 <div className="space-y-6">
                   {/* Quick Actions */}
-                  <Card className="overflow-hidden"
+                  <Card
+                    className="overflow-hidden"
                     style={{
                       background: `
                         linear-gradient(135deg, 
@@ -548,7 +575,7 @@ export function BookAppointmentModalGlass({
                           <span className="font-semibold text-white">Walk-In</span>
                           <span className="text-xs text-gray-400">Quick 30-min service</span>
                         </Button>
-                        
+
                         <Button
                           variant="outline"
                           className="h-auto py-6 flex-col gap-3 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30 hover:border-purple-500/50 hover:from-purple-500/20 hover:to-pink-500/20 group"
@@ -558,7 +585,7 @@ export function BookAppointmentModalGlass({
                           <span className="font-semibold text-white">Regular Booking</span>
                           <span className="text-xs text-gray-400">Standard appointment</span>
                         </Button>
-                        
+
                         <Button
                           variant="outline"
                           className="h-auto py-6 flex-col gap-3 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30 hover:border-yellow-500/50 hover:from-yellow-500/20 hover:to-orange-500/20 group"
@@ -573,7 +600,8 @@ export function BookAppointmentModalGlass({
                   </Card>
 
                   {/* Customer Selection with VIP Badges */}
-                  <Card className="overflow-hidden"
+                  <Card
+                    className="overflow-hidden"
                     style={{
                       background: `
                         linear-gradient(135deg, 
@@ -600,7 +628,7 @@ export function BookAppointmentModalGlass({
                           <Input
                             placeholder="Search customer by name or phone..."
                             value={customerSearch}
-                            onChange={(e) => setCustomerSearch(e.target.value)}
+                            onChange={e => setCustomerSearch(e.target.value)}
                             className="pl-10 bg-gray-800/70 border-gray-700 text-white placeholder:text-gray-400 focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
                           />
                         </div>
@@ -612,46 +640,53 @@ export function BookAppointmentModalGlass({
                             VIP Customers
                           </p>
                           <div className="grid grid-cols-2 gap-3">
-                            {customers.filter(c => c.vip_level).slice(0, 4).map(customer => (
-                              <Button
-                                key={customer.id}
-                                variant="outline"
-                                className={cn(
-                                  "justify-start gap-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all",
-                                  selectedCustomer?.id === customer.id && "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50"
-                                )}
-                                onClick={() => setSelectedCustomer(customer)}
-                              >
-                                <Avatar className="w-8 h-8">
-                                  <AvatarFallback className={cn(
-                                    "text-xs font-bold",
-                                    customer.vip_level === 'platinum' 
-                                      ? "bg-gradient-to-br from-gray-300 to-gray-400 text-gray-900"
-                                      : "bg-gradient-to-br from-yellow-400 to-amber-500 text-yellow-900"
-                                  )}>
-                                    {customer.entity_name.charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 text-left">
-                                  <p className="text-sm font-medium text-white flex items-center gap-2">
-                                    {customer.entity_name}
-                                    {customer.vip_level === 'platinum' && (
-                                      <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900 border-0">
-                                        Platinum
-                                      </Badge>
-                                    )}
-                                    {customer.vip_level === 'gold' && (
-                                      <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900 border-0">
-                                        Gold
-                                      </Badge>
-                                    )}
-                                  </p>
-                                  <p className="text-xs text-gray-400">
-                                    {customer.visit_count || 0} visits • AED {customer.total_spent || 0}
-                                  </p>
-                                </div>
-                              </Button>
-                            ))}
+                            {customers
+                              .filter(c => c.vip_level)
+                              .slice(0, 4)
+                              .map(customer => (
+                                <Button
+                                  key={customer.id}
+                                  variant="outline"
+                                  className={cn(
+                                    'justify-start gap-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                                    selectedCustomer?.id === customer.id &&
+                                      'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
+                                  )}
+                                  onClick={() => setSelectedCustomer(customer)}
+                                >
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarFallback
+                                      className={cn(
+                                        'text-xs font-bold',
+                                        customer.vip_level === 'platinum'
+                                          ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-900'
+                                          : 'bg-gradient-to-br from-yellow-400 to-amber-500 text-yellow-900'
+                                      )}
+                                    >
+                                      {customer.entity_name.charAt(0)}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="flex-1 text-left">
+                                    <p className="text-sm font-medium text-white flex items-center gap-2">
+                                      {customer.entity_name}
+                                      {customer.vip_level === 'platinum' && (
+                                        <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900 border-0">
+                                          Platinum
+                                        </Badge>
+                                      )}
+                                      {customer.vip_level === 'gold' && (
+                                        <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900 border-0">
+                                          Gold
+                                        </Badge>
+                                      )}
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                      {customer.visit_count || 0} visits • AED{' '}
+                                      {customer.total_spent || 0}
+                                    </p>
+                                  </div>
+                                </Button>
+                              ))}
                           </div>
                         </div>
 
@@ -659,27 +694,42 @@ export function BookAppointmentModalGlass({
                         <div className="space-y-2">
                           <p className="text-sm font-medium text-gray-400">Recent Customers</p>
                           <div className="grid grid-cols-2 gap-3">
-                            {customers.filter(c => !c.vip_level && (!customerSearch || c.entity_name.toLowerCase().includes(customerSearch.toLowerCase()))).slice(0, 4).map(customer => (
-                              <Button
-                                key={customer.id}
-                                variant="outline"
-                                className={cn(
-                                  "justify-start gap-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all",
-                                  selectedCustomer?.id === customer.id && "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50"
-                                )}
-                                onClick={() => setSelectedCustomer(customer)}
-                              >
-                                <Avatar className="w-8 h-8">
-                                  <AvatarFallback className="bg-gray-700 text-white text-xs">
-                                    {customer.entity_name.charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 text-left">
-                                  <p className="text-sm font-medium text-white">{customer.entity_name}</p>
-                                  <p className="text-xs text-gray-400">{customer.phone || 'No phone'}</p>
-                                </div>
-                              </Button>
-                            ))}
+                            {customers
+                              .filter(
+                                c =>
+                                  !c.vip_level &&
+                                  (!customerSearch ||
+                                    c.entity_name
+                                      .toLowerCase()
+                                      .includes(customerSearch.toLowerCase()))
+                              )
+                              .slice(0, 4)
+                              .map(customer => (
+                                <Button
+                                  key={customer.id}
+                                  variant="outline"
+                                  className={cn(
+                                    'justify-start gap-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                                    selectedCustomer?.id === customer.id &&
+                                      'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
+                                  )}
+                                  onClick={() => setSelectedCustomer(customer)}
+                                >
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarFallback className="bg-gray-700 text-white text-xs">
+                                      {customer.entity_name.charAt(0)}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="flex-1 text-left">
+                                    <p className="text-sm font-medium text-white">
+                                      {customer.entity_name}
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                      {customer.phone || 'No phone'}
+                                    </p>
+                                  </div>
+                                </Button>
+                              ))}
                           </div>
                         </div>
                       </div>
@@ -687,7 +737,8 @@ export function BookAppointmentModalGlass({
                   </Card>
 
                   {/* Service Selection */}
-                  <Card className="overflow-hidden"
+                  <Card
+                    className="overflow-hidden"
                     style={{
                       background: `
                         linear-gradient(135deg, 
@@ -713,12 +764,15 @@ export function BookAppointmentModalGlass({
                             key={service.id}
                             variant="outline"
                             className={cn(
-                              "justify-between h-auto py-3 px-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all",
-                              selectedServices.find(s => s.id === service.id) && "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50"
+                              'justify-between h-auto py-3 px-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                              selectedServices.find(s => s.id === service.id) &&
+                                'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
                             )}
                             onClick={() => {
                               if (selectedServices.find(s => s.id === service.id)) {
-                                setSelectedServices(selectedServices.filter(s => s.id !== service.id))
+                                setSelectedServices(
+                                  selectedServices.filter(s => s.id !== service.id)
+                                )
                               } else {
                                 setSelectedServices([...selectedServices, service])
                               }
@@ -736,7 +790,8 @@ export function BookAppointmentModalGlass({
                   </Card>
 
                   {/* Stylist Selection */}
-                  <Card className="overflow-hidden"
+                  <Card
+                    className="overflow-hidden"
                     style={{
                       background: `
                         linear-gradient(135deg, 
@@ -762,20 +817,23 @@ export function BookAppointmentModalGlass({
                             key={stylist.id}
                             variant="outline"
                             className={cn(
-                              "justify-start gap-3 h-auto py-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all",
-                              selectedStylist?.id === stylist.id && "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50"
+                              'justify-start gap-3 h-auto py-3 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-all',
+                              selectedStylist?.id === stylist.id &&
+                                'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50'
                             )}
                             onClick={() => setSelectedStylist(stylist)}
                           >
                             <Avatar className="w-10 h-10">
-                              <AvatarFallback className={cn(
-                                "font-bold",
-                                stylist.level === 'celebrity' 
-                                  ? "bg-gradient-to-br from-purple-500 to-pink-500 text-white"
-                                  : stylist.level === 'senior'
-                                  ? "bg-gradient-to-br from-blue-500 to-indigo-500 text-white"
-                                  : "bg-gray-700 text-white"
-                              )}>
+                              <AvatarFallback
+                                className={cn(
+                                  'font-bold',
+                                  stylist.level === 'celebrity'
+                                    ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white'
+                                    : stylist.level === 'senior'
+                                      ? 'bg-gradient-to-br from-blue-500 to-indigo-500 text-white'
+                                      : 'bg-gray-700 text-white'
+                                )}
+                              >
                                 {stylist.entity_name.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
@@ -803,27 +861,33 @@ export function BookAppointmentModalGlass({
                     <Alert className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/30">
                       <TrendingUp className="h-4 w-4 text-purple-400" />
                       <AlertDescription className="text-white">
-                        <strong>Smart Recommendation:</strong> {selectedCustomer.entity_name} usually books {
-                          selectedCustomer.preferences?.favorite_service || 'Hair Color'
-                        } with {selectedCustomer.preferences?.favorite_stylist || 'Sara'}. 
-                        Last visit was {selectedCustomer.preferences?.last_visit || '2 weeks ago'}.
+                        <strong>Smart Recommendation:</strong> {selectedCustomer.entity_name}{' '}
+                        usually books{' '}
+                        {selectedCustomer.preferences?.favorite_service || 'Hair Color'} with{' '}
+                        {selectedCustomer.preferences?.favorite_stylist || 'Sara'}. Last visit was{' '}
+                        {selectedCustomer.preferences?.last_visit || '2 weeks ago'}.
                       </AlertDescription>
                     </Alert>
                   )}
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 justify-end pt-4">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={onClose}
                       className="bg-gray-800/50 border-gray-700 text-white hover:bg-gray-800/70 transition-all"
                     >
                       Cancel
                     </Button>
-                    <Button 
+                    <Button
                       className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                       onClick={() => handleQuickBook('regular')}
-                      disabled={loading || !selectedCustomer || !selectedStylist || selectedServices.length === 0}
+                      disabled={
+                        loading ||
+                        !selectedCustomer ||
+                        !selectedStylist ||
+                        selectedServices.length === 0
+                      }
                     >
                       {loading ? (
                         <>
@@ -849,7 +913,7 @@ export function BookAppointmentModalGlass({
                     <Label className="text-white">Customer *</Label>
                     <Select
                       value={selectedCustomer?.id || ''}
-                      onValueChange={(value) => {
+                      onValueChange={value => {
                         const customer = customers.find(c => c.id === value)
                         setSelectedCustomer(customer || null)
                       }}
@@ -859,16 +923,22 @@ export function BookAppointmentModalGlass({
                       </SelectTrigger>
                       <SelectContent className="bg-gray-900 border-gray-700 backdrop-blur-xl">
                         {customers.map(customer => (
-                          <SelectItem key={customer.id} value={customer.id} className="text-white hover:bg-gray-800/50 focus:bg-gray-800/50">
+                          <SelectItem
+                            key={customer.id}
+                            value={customer.id}
+                            className="text-white hover:bg-gray-800/50 focus:bg-gray-800/50"
+                          >
                             <div className="flex items-center gap-2">
                               <span>{customer.entity_name}</span>
                               {customer.vip_level && (
-                                <Badge className={cn(
-                                  "text-[10px] px-1.5 py-0 border-0",
-                                  customer.vip_level === 'platinum' 
-                                    ? "bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900"
-                                    : "bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900"
-                                )}>
+                                <Badge
+                                  className={cn(
+                                    'text-[10px] px-1.5 py-0 border-0',
+                                    customer.vip_level === 'platinum'
+                                      ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-900'
+                                      : 'bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900'
+                                  )}
+                                >
                                   {customer.vip_level}
                                 </Badge>
                               )}
@@ -884,7 +954,7 @@ export function BookAppointmentModalGlass({
                     <Label className="text-white">Appointment Title</Label>
                     <Input
                       value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                      onChange={e => setTitle(e.target.value)}
                       placeholder="e.g., Hair Color and Cut"
                       className="bg-gray-800/70 border-gray-700 text-white placeholder:text-gray-400 focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
                     />
@@ -897,7 +967,7 @@ export function BookAppointmentModalGlass({
                       <Input
                         type="date"
                         value={format(selectedDate, 'yyyy-MM-dd')}
-                        onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                        onChange={e => setSelectedDate(new Date(e.target.value))}
                         className="bg-gray-800/70 border-gray-700 text-white focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
                       />
                     </div>
@@ -906,7 +976,7 @@ export function BookAppointmentModalGlass({
                       <Input
                         type="time"
                         value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
+                        onChange={e => setStartTime(e.target.value)}
                         className="bg-gray-800/70 border-gray-700 text-white focus:bg-gray-800/90 focus:border-purple-500/50 transition-all"
                       />
                     </div>
@@ -920,26 +990,30 @@ export function BookAppointmentModalGlass({
                         <label
                           key={service.id}
                           className={cn(
-                            "flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-all",
+                            'flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-all',
                             selectedServices.find(s => s.id === service.id)
-                              ? "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/50"
-                              : "bg-gray-800/50 border border-gray-700 hover:bg-gray-800/70 transition-all"
+                              ? 'bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/50'
+                              : 'bg-gray-800/50 border border-gray-700 hover:bg-gray-800/70 transition-all'
                           )}
                         >
                           <Checkbox
                             checked={!!selectedServices.find(s => s.id === service.id)}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={checked => {
                               if (checked) {
                                 setSelectedServices([...selectedServices, service])
                               } else {
-                                setSelectedServices(selectedServices.filter(s => s.id !== service.id))
+                                setSelectedServices(
+                                  selectedServices.filter(s => s.id !== service.id)
+                                )
                               }
                             }}
                             className="border-gray-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                           />
                           <div className="flex-1">
                             <p className="text-sm font-medium text-white">{service.entity_name}</p>
-                            <p className="text-xs text-gray-400">{service.duration} min • AED {service.price}</p>
+                            <p className="text-xs text-gray-400">
+                              {service.duration} min • AED {service.price}
+                            </p>
                           </div>
                         </label>
                       ))}
@@ -951,7 +1025,7 @@ export function BookAppointmentModalGlass({
                     <Label className="text-white">Stylist *</Label>
                     <Select
                       value={selectedStylist?.id || ''}
-                      onValueChange={(value) => {
+                      onValueChange={value => {
                         const stylist = stylists.find(s => s.id === value)
                         setSelectedStylist(stylist || null)
                       }}
@@ -961,7 +1035,11 @@ export function BookAppointmentModalGlass({
                       </SelectTrigger>
                       <SelectContent className="bg-gray-900 border-gray-700 backdrop-blur-xl">
                         {stylists.map(stylist => (
-                          <SelectItem key={stylist.id} value={stylist.id} className="text-white hover:bg-gray-800/50 focus:bg-gray-800/50">
+                          <SelectItem
+                            key={stylist.id}
+                            value={stylist.id}
+                            className="text-white hover:bg-gray-800/50 focus:bg-gray-800/50"
+                          >
                             <div className="flex items-center gap-2">
                               <span>{stylist.entity_name}</span>
                               {stylist.level === 'celebrity' && (
@@ -981,7 +1059,7 @@ export function BookAppointmentModalGlass({
                     <Label className="text-white">Notes</Label>
                     <Textarea
                       value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
+                      onChange={e => setNotes(e.target.value)}
                       placeholder="Any special requests or notes..."
                       className="bg-gray-800/70 border-gray-700 text-white placeholder:text-gray-400 focus:bg-gray-800/90 focus:border-purple-500/50 transition-all min-h-[80px]"
                     />
@@ -992,7 +1070,7 @@ export function BookAppointmentModalGlass({
                     <label className="flex items-center gap-2 cursor-pointer">
                       <Checkbox
                         checked={isHold}
-                        onCheckedChange={(checked) => setIsHold(checked as boolean)}
+                        onCheckedChange={checked => setIsHold(checked as boolean)}
                         className="border-gray-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
                       <span className="text-sm text-white">Mark as Hold</span>
@@ -1000,7 +1078,7 @@ export function BookAppointmentModalGlass({
                     <label className="flex items-center gap-2 cursor-pointer">
                       <Checkbox
                         checked={isPrivate}
-                        onCheckedChange={(checked) => setIsPrivate(checked as boolean)}
+                        onCheckedChange={checked => setIsPrivate(checked as boolean)}
                         className="border-gray-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
                       <span className="text-sm text-white">Private Appointment</span>
@@ -1009,7 +1087,8 @@ export function BookAppointmentModalGlass({
 
                   {/* Total Summary */}
                   {selectedServices.length > 0 && (
-                    <Card className="overflow-hidden"
+                    <Card
+                      className="overflow-hidden"
                       style={{
                         background: `
                           linear-gradient(135deg, 
@@ -1027,13 +1106,15 @@ export function BookAppointmentModalGlass({
                           <div>
                             <p className="text-sm text-gray-400">Total Duration</p>
                             <p className="text-lg font-semibold text-white">
-                              {selectedServices.reduce((sum, service) => sum + service.duration, 0)} minutes
+                              {selectedServices.reduce((sum, service) => sum + service.duration, 0)}{' '}
+                              minutes
                             </p>
                           </div>
                           <div className="text-right">
                             <p className="text-sm text-gray-400">Total Amount</p>
                             <p className="text-2xl font-bold text-green-400">
-                              AED {selectedServices.reduce((sum, service) => sum + service.price, 0)}
+                              AED{' '}
+                              {selectedServices.reduce((sum, service) => sum + service.price, 0)}
                             </p>
                           </div>
                         </div>
@@ -1043,14 +1124,14 @@ export function BookAppointmentModalGlass({
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 justify-end pt-4">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={onClose}
                       className="bg-gray-800/50 border-gray-700 text-white hover:bg-gray-800/70 transition-all"
                     >
                       Cancel
                     </Button>
-                    <Button 
+                    <Button
                       className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                       onClick={async () => {
                         setLoading(true)
@@ -1060,7 +1141,7 @@ export function BookAppointmentModalGlass({
                             onBookingComplete?.(appointment)
                             toast({
                               title: 'Appointment Booked Successfully',
-                              description: `Appointment created for ${selectedCustomer?.entity_name}`,
+                              description: `Appointment created for ${selectedCustomer?.entity_name}`
                             })
                             onClose()
                           }
@@ -1068,14 +1149,20 @@ export function BookAppointmentModalGlass({
                           console.error('Booking error:', error)
                           toast({
                             title: 'Booking Failed',
-                            description: error instanceof Error ? error.message : 'Please try again',
+                            description:
+                              error instanceof Error ? error.message : 'Please try again',
                             variant: 'destructive'
                           })
                         } finally {
                           setLoading(false)
                         }
                       }}
-                      disabled={loading || !selectedCustomer || !selectedStylist || selectedServices.length === 0}
+                      disabled={
+                        loading ||
+                        !selectedCustomer ||
+                        !selectedStylist ||
+                        selectedServices.length === 0
+                      }
                     >
                       {loading ? (
                         <>
@@ -1099,14 +1186,14 @@ export function BookAppointmentModalGlass({
                   organizationId={organizationId}
                   stylists={stylists}
                   services={services}
-                  onSchedule={async (data) => {
+                  onSchedule={async data => {
                     // Convert assistant data to our format
                     setSelectedCustomer(customers.find(c => c.id === data.customerId) || null)
                     setSelectedStylist(stylists.find(s => s.id === data.stylistId) || null)
                     setSelectedServices(services.filter(s => data.serviceIds.includes(s.id)))
                     setSelectedDate(new Date(data.date))
                     setStartTime(data.startTime)
-                    
+
                     // Save appointment
                     setLoading(true)
                     try {
@@ -1115,7 +1202,7 @@ export function BookAppointmentModalGlass({
                         onBookingComplete?.(appointment)
                         toast({
                           title: 'AI Booking Successful',
-                          description: `Appointment created via AI assistant`,
+                          description: `Appointment created via AI assistant`
                         })
                         onClose()
                       }

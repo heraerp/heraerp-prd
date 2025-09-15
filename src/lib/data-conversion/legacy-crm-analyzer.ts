@@ -1,16 +1,16 @@
 /**
  * 🎯 HERA Universal Legacy Data Conversion Analyzer
  * Chief Data Architect Analysis & Mapping Strategy
- * 
+ *
  * 🧠 AI-POWERED INTELLIGENT FEATURES:
  * - Deep JSON structure analysis and smart column mapping
  * - Automatic relationship detection between entities
  * - Business context understanding and industry detection
  * - Confidence scoring for all mapping decisions
- * 
+ *
  * Converts legacy CRM data to HERA's 6 Universal Tables:
  * 1. core_organizations
- * 2. core_entities 
+ * 2. core_entities
  * 3. core_dynamic_data
  * 4. core_relationships
  * 5. universal_transactions
@@ -57,37 +57,37 @@ export interface HERAUniversalMapping {
 /**
  * 🏗️ HERA CHIEF DATA ARCHITECT ANALYSIS
  * =======================================
- * 
+ *
  * ENTITY STRUCTURE IDENTIFICATION:
- * 
+ *
  * 1. ORGANIZATIONS (core_organizations):
  *    - Primary: Customer companies (company_name)
  *    - Secondary: Agency organizations (CRISIL, etc.)
  *    - Geographic: Country/State/City hierarchy
- * 
+ *
  * 2. ENTITIES (core_entities):
  *    - Companies: Each company_name → entity_type='customer'
  *    - Promoters: Each promoter → entity_type='contact'
  *    - Projects: Each project_id → entity_type='project'
  *    - Services: Each service → entity_type='service_offering'
- * 
+ *
  * 3. DYNAMIC DATA (core_dynamic_data):
  *    - Company details: sector, agency, location data
  *    - Contact details: designations, phone numbers
  *    - Project details: amount, status, custom_fields JSON
  *    - Service details: feedback, next_call_date
- * 
+ *
  * 4. RELATIONSHIPS (core_relationships):
  *    - Company ←→ Promoters
- *    - Company ←→ Projects  
+ *    - Company ←→ Projects
  *    - Project ←→ Services
  *    - Promoters ←→ Projects (ownership)
- * 
+ *
  * 5. TRANSACTIONS (universal_transactions):
  *    - Project initiation transactions
  *    - Service delivery transactions
  *    - Follow-up activity transactions
- * 
+ *
  * 6. TRANSACTION LINES (universal_transaction_lines):
  *    - Project amount breakdown
  *    - Service fee details
@@ -117,7 +117,9 @@ export class HERALegacyCRMConverter {
     // 🧠 AI-POWERED INTELLIGENT ANALYSIS FIRST
     this.log('🧠 Running AI-powered smart mapping analysis...')
     this.intelligentMapping = await this.smartMappingEngine.analyzeDataIntelligently(legacyRecords)
-    this.log(`🎯 AI Analysis Complete - Overall Confidence: ${this.intelligentMapping.confidence_scores.overall_confidence}`)
+    this.log(
+      `🎯 AI Analysis Complete - Overall Confidence: ${this.intelligentMapping.confidence_scores.overall_confidence}`
+    )
 
     const mapping: HERAUniversalMapping = {
       core_organizations: [],
@@ -136,7 +138,7 @@ export class HERALegacyCRMConverter {
     this.log('✅ HERA Universal Conversion Complete')
     this.generateConversionSummary(mapping)
     this.generateIntelligentMappingSummary()
-    
+
     return mapping
   }
 
@@ -237,7 +239,7 @@ export class HERALegacyCRMConverter {
         created_at: new Date(record.created_at || new Date()),
         updated_at: new Date(record.updated_at || new Date()),
         smart_code: 'HERA.CRM.PROJECT.RATING.v1',
-        confidence_score: 0.90,
+        confidence_score: 0.9,
         classification: 'customer_project'
       })
     }
@@ -287,7 +289,7 @@ export class HERALegacyCRMConverter {
         status: 'active',
         created_at: new Date(record.created_at || new Date()),
         smart_code: 'HERA.CRM.SERVICE.OFFERING.v1',
-        confidence_score: 0.80,
+        confidence_score: 0.8,
         classification: 'service_offering'
       })
     }
@@ -299,31 +301,74 @@ export class HERALegacyCRMConverter {
   private async createDynamicData(record: LegacyCRMRecord, mapping: HERAUniversalMapping) {
     const dynamicData = [
       // Company dynamic data
-      { entity_id: record.id, field_name: 'sector', field_value: record.sector, field_type: 'text' },
-      { entity_id: record.id, field_name: 'agency', field_value: record.agency, field_type: 'text' },
-      { entity_id: record.id, field_name: 'country', field_value: record.country, field_type: 'text' },
+      {
+        entity_id: record.id,
+        field_name: 'sector',
+        field_value: record.sector,
+        field_type: 'text'
+      },
+      {
+        entity_id: record.id,
+        field_name: 'agency',
+        field_value: record.agency,
+        field_type: 'text'
+      },
+      {
+        entity_id: record.id,
+        field_name: 'country',
+        field_value: record.country,
+        field_type: 'text'
+      },
       { entity_id: record.id, field_name: 'state', field_value: record.state, field_type: 'text' },
       { entity_id: record.id, field_name: 'city', field_value: record.city, field_type: 'text' },
-      { entity_id: record.id, field_name: 'remarks', field_value: record.remarks, field_type: 'text' },
-      { entity_id: record.id, field_name: 'feedback', field_value: record.feedback, field_type: 'text' },
-      { entity_id: record.id, field_name: 'next_call_date', field_value: record.next_call_date, field_type: 'datetime' },
-      { entity_id: record.id, field_name: 'reminder_email', field_value: record.reminder_email, field_type: 'text' },
-      { entity_id: record.id, field_name: 'resource', field_value: record.resource, field_type: 'text' },
+      {
+        entity_id: record.id,
+        field_name: 'remarks',
+        field_value: record.remarks,
+        field_type: 'text'
+      },
+      {
+        entity_id: record.id,
+        field_name: 'feedback',
+        field_value: record.feedback,
+        field_type: 'text'
+      },
+      {
+        entity_id: record.id,
+        field_name: 'next_call_date',
+        field_value: record.next_call_date,
+        field_type: 'datetime'
+      },
+      {
+        entity_id: record.id,
+        field_name: 'reminder_email',
+        field_value: record.reminder_email,
+        field_type: 'text'
+      },
+      {
+        entity_id: record.id,
+        field_name: 'resource',
+        field_value: record.resource,
+        field_type: 'text'
+      }
     ]
 
     // 🧠 AI-ENHANCED JSON FIELD PROCESSING
     if (record.custom_fields && typeof record.custom_fields === 'object') {
       // Check if we have intelligent mapping for custom fields
-      const jsonDestinations = this.intelligentMapping?.intelligent_column_mapping.json_field_destinations || []
-      const customFieldDestinations = jsonDestinations.filter(dest => dest.parent_field === 'custom_fields')
+      const jsonDestinations =
+        this.intelligentMapping?.intelligent_column_mapping.json_field_destinations || []
+      const customFieldDestinations = jsonDestinations.filter(
+        dest => dest.parent_field === 'custom_fields'
+      )
 
       if (customFieldDestinations.length > 0) {
         this.log('🧠 Using AI-guided JSON field mapping for custom_fields')
-        
+
         // Process each nested field according to AI recommendations
         Object.entries(record.custom_fields).forEach(([key, value]) => {
           const aiDestination = customFieldDestinations.find(dest => dest.json_path === key)
-          
+
           if (aiDestination) {
             // AI recommends specific handling
             if (aiDestination.recommended_destination.includes('separate record')) {
@@ -361,7 +406,10 @@ export class HERALegacyCRMConverter {
         })
 
         // Store intelligently structured JSON (keep complex nested data together)
-        const structuredJson = this.createIntelligentJsonStructure(record.custom_fields, customFieldDestinations)
+        const structuredJson = this.createIntelligentJsonStructure(
+          record.custom_fields,
+          customFieldDestinations
+        )
         if (Object.keys(structuredJson).length > 0) {
           dynamicData.push({
             entity_id: record.id,
@@ -381,13 +429,13 @@ export class HERALegacyCRMConverter {
             field_type: typeof value === 'number' ? 'number' : 'text'
           })
         })
-        
+
         // Also store raw JSON for reference
-        dynamicData.push({ 
-          entity_id: record.id, 
-          field_name: 'custom_fields_raw', 
-          field_value: JSON.stringify(record.custom_fields), 
-          field_type: 'json' 
+        dynamicData.push({
+          entity_id: record.id,
+          field_name: 'custom_fields_raw',
+          field_value: JSON.stringify(record.custom_fields),
+          field_type: 'json'
         })
       }
     }
@@ -396,18 +444,48 @@ export class HERALegacyCRMConverter {
     if (record.promoter_name_1) {
       const promoter1Id = `${record.id}_promoter_1`
       dynamicData.push(
-        { entity_id: promoter1Id, field_name: 'designation', field_value: record.designation_promoter_1, field_type: 'text' },
-        { entity_id: promoter1Id, field_name: 'contact_number', field_value: record.contact_no_promoter_1, field_type: 'phone' },
-        { entity_id: promoter1Id, field_name: 'promoter_type', field_value: 'primary', field_type: 'text' }
+        {
+          entity_id: promoter1Id,
+          field_name: 'designation',
+          field_value: record.designation_promoter_1,
+          field_type: 'text'
+        },
+        {
+          entity_id: promoter1Id,
+          field_name: 'contact_number',
+          field_value: record.contact_no_promoter_1,
+          field_type: 'phone'
+        },
+        {
+          entity_id: promoter1Id,
+          field_name: 'promoter_type',
+          field_value: 'primary',
+          field_type: 'text'
+        }
       )
     }
 
     if (record.promoter_name_2) {
       const promoter2Id = `${record.id}_promoter_2`
       dynamicData.push(
-        { entity_id: promoter2Id, field_name: 'designation', field_value: record.designation_promoter_2, field_type: 'text' },
-        { entity_id: promoter2Id, field_name: 'contact_number', field_value: record.contact_no_promoter_2, field_type: 'phone' },
-        { entity_id: promoter2Id, field_name: 'promoter_type', field_value: 'secondary', field_type: 'text' }
+        {
+          entity_id: promoter2Id,
+          field_name: 'designation',
+          field_value: record.designation_promoter_2,
+          field_type: 'text'
+        },
+        {
+          entity_id: promoter2Id,
+          field_name: 'contact_number',
+          field_value: record.contact_no_promoter_2,
+          field_type: 'phone'
+        },
+        {
+          entity_id: promoter2Id,
+          field_name: 'promoter_type',
+          field_value: 'secondary',
+          field_type: 'text'
+        }
       )
     }
 
@@ -490,12 +568,15 @@ export class HERALegacyCRMConverter {
 
     // 🧠 AI-DETECTED RELATIONSHIPS
     if (this.intelligentMapping?.relationship_detection) {
-      const detectedRelationships = this.intelligentMapping.relationship_detection.detected_relationships || []
-      
+      const detectedRelationships =
+        this.intelligentMapping.relationship_detection.detected_relationships || []
+
       for (const aiRel of detectedRelationships) {
         if (aiRel.confidence >= this.smartMappingEngine['confidenceThreshold']) {
-          this.log(`🧠 Creating AI-detected relationship: ${aiRel.parent_entity} → ${aiRel.child_entity} (${aiRel.relationship_type})`)
-          
+          this.log(
+            `🧠 Creating AI-detected relationship: ${aiRel.parent_entity} → ${aiRel.child_entity} (${aiRel.relationship_type})`
+          )
+
           mapping.core_relationships.push({
             relationship_id: `ai_${record.id}_${aiRel.relationship_field}_rel`,
             organization_id: this.organizationId,
@@ -512,11 +593,14 @@ export class HERALegacyCRMConverter {
       }
 
       // AI-detected foreign key patterns
-      const foreignKeyPatterns = this.intelligentMapping.relationship_detection.foreign_key_patterns || []
+      const foreignKeyPatterns =
+        this.intelligentMapping.relationship_detection.foreign_key_patterns || []
       for (const fkPattern of foreignKeyPatterns) {
         if (fkPattern.confidence >= 0.7) {
-          this.log(`🧠 Detected potential foreign key pattern: ${fkPattern.field_name} (${fkPattern.pattern})`)
-          
+          this.log(
+            `🧠 Detected potential foreign key pattern: ${fkPattern.field_name} (${fkPattern.pattern})`
+          )
+
           // Create relationship based on foreign key pattern
           const fieldValue = (record as any)[fkPattern.field_name]
           if (fieldValue) {
@@ -594,7 +678,7 @@ export class HERALegacyCRMConverter {
     // Project valuation line items
     if (record.amount && record.amount > 0) {
       const projectTxnId = `${record.id}_project_txn`
-      
+
       mapping.universal_transaction_lines.push({
         line_id: `${projectTxnId}_valuation`,
         transaction_id: projectTxnId,
@@ -636,7 +720,10 @@ export class HERALegacyCRMConverter {
   private generateEntityCode(prefix: string, name: string): string {
     // Handle undefined/null names
     const safeName = name || 'UNNAMED'
-    const cleanName = safeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8).toUpperCase()
+    const cleanName = safeName
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .substring(0, 8)
+      .toUpperCase()
     const timestamp = Date.now().toString().slice(-4)
     return `${prefix}_${cleanName}_${timestamp}`
   }
@@ -672,7 +759,7 @@ export class HERALegacyCRMConverter {
   /**
    * 🧠 AI helper methods for enhanced processing
    */
-  
+
   /**
    * 🎯 Infer field type from value using AI patterns
    */
@@ -680,9 +767,9 @@ export class HERALegacyCRMConverter {
     if (typeof value === 'number') return 'number'
     if (typeof value === 'boolean') return 'boolean'
     if (value instanceof Date) return 'datetime'
-    
+
     const str = String(value).toLowerCase()
-    
+
     // AI-powered type inference patterns
     if (/^\d{4}-\d{2}-\d{2}/.test(str)) return 'date'
     if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(str)) return 'datetime'
@@ -691,7 +778,7 @@ export class HERALegacyCRMConverter {
     if (/^https?:\/\//.test(str)) return 'url'
     if (str.length > 500) return 'text_long'
     if (/^\d+\.?\d*$/.test(str)) return 'numeric_string'
-    
+
     return 'text'
   }
 
@@ -700,24 +787,24 @@ export class HERALegacyCRMConverter {
    */
   private createIntelligentJsonStructure(customFields: any, destinations: any[]): any {
     const structuredJson: any = {}
-    
+
     // Group fields that should remain as JSON according to AI
     Object.entries(customFields).forEach(([key, value]) => {
       const destination = destinations.find(dest => dest.json_path === key)
-      
+
       if (destination && destination.recommended_destination.includes('keep in JSON')) {
         // Organize by business context for better structure
         const context = destination.business_context || 'general'
         const contextKey = context.replace(/[^\w]/g, '_').toLowerCase()
-        
+
         if (!structuredJson[contextKey]) {
           structuredJson[contextKey] = {}
         }
-        
+
         structuredJson[contextKey][key] = value
       }
     })
-    
+
     return structuredJson
   }
 
@@ -726,13 +813,21 @@ export class HERALegacyCRMConverter {
    */
   private generateIntelligentMappingSummary() {
     if (!this.intelligentMapping) return
-    
+
     this.log('🧠 AI INTELLIGENT MAPPING SUMMARY:')
-    this.log(`   Overall Confidence: ${this.intelligentMapping.confidence_scores.overall_confidence}`)
-    this.log(`   JSON Analysis Confidence: ${this.intelligentMapping.confidence_scores.json_analysis_confidence}`)
-    this.log(`   Relationship Confidence: ${this.intelligentMapping.confidence_scores.relationship_confidence}`)
-    this.log(`   Mapping Confidence: ${this.intelligentMapping.confidence_scores.mapping_confidence}`)
-    
+    this.log(
+      `   Overall Confidence: ${this.intelligentMapping.confidence_scores.overall_confidence}`
+    )
+    this.log(
+      `   JSON Analysis Confidence: ${this.intelligentMapping.confidence_scores.json_analysis_confidence}`
+    )
+    this.log(
+      `   Relationship Confidence: ${this.intelligentMapping.confidence_scores.relationship_confidence}`
+    )
+    this.log(
+      `   Mapping Confidence: ${this.intelligentMapping.confidence_scores.mapping_confidence}`
+    )
+
     // JSON Structure insights
     const jsonAnalysis = this.intelligentMapping.json_structure_analysis
     if (jsonAnalysis.nested_objects.length > 0) {
@@ -741,16 +836,18 @@ export class HERALegacyCRMConverter {
         this.log(`     - ${obj.path}: ${obj.recommended_action} (confidence: ${obj.confidence})`)
       })
     }
-    
+
     // Relationship insights
     const relationships = this.intelligentMapping.relationship_detection.detected_relationships
     if (relationships.length > 0) {
       this.log(`   AI-Detected Relationships: ${relationships.length}`)
       relationships.forEach(rel => {
-        this.log(`     - ${rel.parent_entity} → ${rel.child_entity} (${rel.relationship_type}, confidence: ${rel.confidence})`)
+        this.log(
+          `     - ${rel.parent_entity} → ${rel.child_entity} (${rel.relationship_type}, confidence: ${rel.confidence})`
+        )
       })
     }
-    
+
     // Business context insights
     const businessContext = this.intelligentMapping.business_context_analysis
     this.log(`   Industry Detection: ${businessContext.industry_detection}`)

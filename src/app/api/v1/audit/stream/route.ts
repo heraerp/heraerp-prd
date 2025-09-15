@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   const headers = new Headers({
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
+    Connection: 'keep-alive',
     'Access-Control-Allow-Origin': '*'
   })
 
@@ -38,13 +38,15 @@ export async function GET(request: NextRequest) {
       try {
         const { data: events } = await supabase
           .from('universal_transactions')
-          .select(`
+          .select(
+            `
             id,
             transaction_date,
             transaction_type,
             smart_code,
             metadata
-          `)
+          `
+          )
           .eq('organization_id', organizationId)
           .in('transaction_type', ['audit', 'security_event', 'policy_check', 'data_access'])
           .gt('transaction_date', lastEventTime)

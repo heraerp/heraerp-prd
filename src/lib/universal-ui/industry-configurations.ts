@@ -1,10 +1,10 @@
 /**
  * Universal UI Industry Configurations
- * 
+ *
  * These configurations demonstrate how the SAME Universal UI components
  * can be reused for ANY industry without code changes. Only the ViewMeta
  * configuration changes - the widgets and renderer remain exactly the same.
- * 
+ *
  * This is the revolutionary power of HERA's Universal UI system.
  */
 
@@ -46,7 +46,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             ]
           }
         },
-        
+
         // Form Widget - Same component, different fields
         {
           id: 'patient-info',
@@ -55,18 +55,48 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           smart_code: 'HERA.HLTH.PAT.FORM.INFO.v1',
           config: {
             fields: [
-              { name: 'entity_name', label: 'Patient Name', type: 'text', required: true, layout: { col_span: 6 } },
-              { name: 'patient_id', label: 'Medical Record #', type: 'text', required: true, layout: { col_span: 3 } },
-              { name: 'date_of_birth', label: 'Date of Birth', type: 'date', required: true, layout: { col_span: 3 } },
-              { name: 'blood_type', label: 'Blood Type', type: 'select', layout: { col_span: 3 },
+              {
+                name: 'entity_name',
+                label: 'Patient Name',
+                type: 'text',
+                required: true,
+                layout: { col_span: 6 }
+              },
+              {
+                name: 'patient_id',
+                label: 'Medical Record #',
+                type: 'text',
+                required: true,
+                layout: { col_span: 3 }
+              },
+              {
+                name: 'date_of_birth',
+                label: 'Date of Birth',
+                type: 'date',
+                required: true,
+                layout: { col_span: 3 }
+              },
+              {
+                name: 'blood_type',
+                label: 'Blood Type',
+                type: 'select',
+                layout: { col_span: 3 },
                 options: [
-                  { value: 'A+', label: 'A+' }, { value: 'A-', label: 'A-' },
-                  { value: 'B+', label: 'B+' }, { value: 'B-', label: 'B-' },
-                  { value: 'O+', label: 'O+' }, { value: 'O-', label: 'O-' },
-                  { value: 'AB+', label: 'AB+' }, { value: 'AB-', label: 'AB-' }
+                  { value: 'A+', label: 'A+' },
+                  { value: 'A-', label: 'A-' },
+                  { value: 'B+', label: 'B+' },
+                  { value: 'B-', label: 'B-' },
+                  { value: 'O+', label: 'O+' },
+                  { value: 'O-', label: 'O-' },
+                  { value: 'AB+', label: 'AB+' },
+                  { value: 'AB-', label: 'AB-' }
                 ]
               },
-              { name: 'allergies', label: 'Known Allergies', type: 'multiselect', layout: { col_span: 6 },
+              {
+                name: 'allergies',
+                label: 'Known Allergies',
+                type: 'multiselect',
+                layout: { col_span: 6 },
                 options: [
                   { value: 'penicillin', label: 'Penicillin' },
                   { value: 'sulfa', label: 'Sulfa drugs' },
@@ -75,16 +105,31 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                   { value: 'peanuts', label: 'Peanuts' }
                 ]
               },
-              { name: 'insurance_provider', label: 'Insurance Provider', type: 'entity_selector',
-                entity_type: 'insurance_company', layout: { col_span: 3 } },
-              { name: 'primary_physician', label: 'Primary Care Physician', type: 'entity_selector',
-                entity_type: 'physician', layout: { col_span: 6 } },
-              { name: 'emergency_contact', label: 'Emergency Contact', type: 'text', layout: { col_span: 6 } }
+              {
+                name: 'insurance_provider',
+                label: 'Insurance Provider',
+                type: 'entity_selector',
+                entity_type: 'insurance_company',
+                layout: { col_span: 3 }
+              },
+              {
+                name: 'primary_physician',
+                label: 'Primary Care Physician',
+                type: 'entity_selector',
+                entity_type: 'physician',
+                layout: { col_span: 6 }
+              },
+              {
+                name: 'emergency_contact',
+                label: 'Emergency Contact',
+                type: 'text',
+                layout: { col_span: 6 }
+              }
             ]
           },
           layout: { position: { row: 1, col: 0 }, size: { width: 12, height: 2 } }
         },
-        
+
         // Grid Widget - Same as other industries, medical context
         {
           id: 'appointment-history',
@@ -95,19 +140,30 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             columns: [
               { field: 'appointment_date', header: 'Date', type: 'date', sortable: true },
               { field: 'provider_name', header: 'Provider', type: 'entity_link' },
-              { field: 'appointment_type', header: 'Type', type: 'text',
-                renderer: 'status_badge' },
+              { field: 'appointment_type', header: 'Type', type: 'text', renderer: 'status_badge' },
               { field: 'diagnosis', header: 'Diagnosis', type: 'text' },
               { field: 'prescribed_medications', header: 'Prescriptions', type: 'text' },
               { field: 'follow_up_required', header: 'Follow-up', type: 'boolean' },
-              { field: 'billing_status', header: 'Billing', type: 'status',
-                renderer: 'status_badge' }
+              {
+                field: 'billing_status',
+                header: 'Billing',
+                type: 'status',
+                renderer: 'status_badge'
+              }
             ],
             row_actions: [
-              { id: 'view-details', label: 'View Details', type: 'navigate',
-                smart_code: 'HERA.HLTH.APPT.ACTION.VIEW.v1' },
-              { id: 'print-summary', label: 'Print Summary', type: 'custom',
-                smart_code: 'HERA.HLTH.APPT.ACTION.PRINT.v1' }
+              {
+                id: 'view-details',
+                label: 'View Details',
+                type: 'navigate',
+                smart_code: 'HERA.HLTH.APPT.ACTION.VIEW.v1'
+              },
+              {
+                id: 'print-summary',
+                label: 'Print Summary',
+                type: 'custom',
+                smart_code: 'HERA.HLTH.APPT.ACTION.PRINT.v1'
+              }
             ]
           },
           layout: { position: { row: 3, col: 0 }, size: { width: 8, height: 3 } },
@@ -119,7 +175,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             ]
           }
         },
-        
+
         // Timeline Widget - Medical history timeline
         {
           id: 'medical-timeline',
@@ -134,12 +190,27 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
         }
       ],
       actions: [
-        { id: 'schedule-appointment', label: 'Schedule Appointment', type: 'create',
-          smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.v1', icon: 'calendar' },
-        { id: 'prescribe-medication', label: 'Prescribe', type: 'custom',
-          smart_code: 'HERA.HLTH.PAT.ACTION.PRESCRIBE.v1', icon: 'pill' },
-        { id: 'order-lab', label: 'Order Lab Tests', type: 'custom',
-          smart_code: 'HERA.HLTH.PAT.ACTION.LAB.v1', icon: 'test-tube' }
+        {
+          id: 'schedule-appointment',
+          label: 'Schedule Appointment',
+          type: 'create',
+          smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.v1',
+          icon: 'calendar'
+        },
+        {
+          id: 'prescribe-medication',
+          label: 'Prescribe',
+          type: 'custom',
+          smart_code: 'HERA.HLTH.PAT.ACTION.PRESCRIBE.v1',
+          icon: 'pill'
+        },
+        {
+          id: 'order-lab',
+          label: 'Order Lab Tests',
+          type: 'custom',
+          smart_code: 'HERA.HLTH.PAT.ACTION.LAB.v1',
+          icon: 'test-tube'
+        }
       ]
     },
 
@@ -158,21 +229,38 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           smart_code: 'HERA.HLTH.PAT.GRID.ALL.v1',
           config: {
             columns: [
-              { field: 'entity_name', header: 'Patient Name', type: 'entity_link',
-                sortable: true, filterable: true },
+              {
+                field: 'entity_name',
+                header: 'Patient Name',
+                type: 'entity_link',
+                sortable: true,
+                filterable: true
+              },
               { field: 'patient_id', header: 'MRN', type: 'text', sortable: true },
               { field: 'date_of_birth', header: 'DOB', type: 'date' },
               { field: 'last_visit', header: 'Last Visit', type: 'date', sortable: true },
               { field: 'primary_physician', header: 'Primary Care', type: 'entity_link' },
-              { field: 'risk_level', header: 'Risk Level', type: 'status',
-                renderer: 'status_badge' },
+              {
+                field: 'risk_level',
+                header: 'Risk Level',
+                type: 'status',
+                renderer: 'status_badge'
+              },
               { field: 'insurance_status', header: 'Insurance', type: 'text' }
             ],
             row_actions: [
-              { id: 'view-record', label: 'View Record', type: 'navigate',
-                smart_code: 'HERA.HLTH.PAT.ACTION.VIEW.v1' },
-              { id: 'schedule', label: 'Schedule', type: 'custom',
-                smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.v1' }
+              {
+                id: 'view-record',
+                label: 'View Record',
+                type: 'navigate',
+                smart_code: 'HERA.HLTH.PAT.ACTION.VIEW.v1'
+              },
+              {
+                id: 'schedule',
+                label: 'Schedule',
+                type: 'custom',
+                smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.v1'
+              }
             ],
             pagination: { page_size: 25, page_size_options: [10, 25, 50, 100] }
           }
@@ -212,7 +300,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             ]
           }
         },
-        
+
         // Form Widget - Customer and table info
         {
           id: 'order-header',
@@ -221,17 +309,37 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           smart_code: 'HERA.REST.POS.FORM.ORDER.v1',
           config: {
             fields: [
-              { name: 'table_number', label: 'Table #', type: 'select', required: true,
+              {
+                name: 'table_number',
+                label: 'Table #',
+                type: 'select',
+                required: true,
                 layout: { col_span: 3 },
-                options: Array.from({length: 20}, (_, i) => ({
-                  value: `T${i+1}`, label: `Table ${i+1}`
+                options: Array.from({ length: 20 }, (_, i) => ({
+                  value: `T${i + 1}`,
+                  label: `Table ${i + 1}`
                 }))
               },
-              { name: 'server_id', label: 'Server', type: 'entity_selector',
-                entity_type: 'employee', required: true, layout: { col_span: 3 } },
-              { name: 'guest_count', label: 'Guests', type: 'number', default_value: 2,
-                layout: { col_span: 2 } },
-              { name: 'order_type', label: 'Type', type: 'select', default_value: 'dine_in',
+              {
+                name: 'server_id',
+                label: 'Server',
+                type: 'entity_selector',
+                entity_type: 'employee',
+                required: true,
+                layout: { col_span: 3 }
+              },
+              {
+                name: 'guest_count',
+                label: 'Guests',
+                type: 'number',
+                default_value: 2,
+                layout: { col_span: 2 }
+              },
+              {
+                name: 'order_type',
+                label: 'Type',
+                type: 'select',
+                default_value: 'dine_in',
                 layout: { col_span: 4 },
                 options: [
                   { value: 'dine_in', label: 'Dine In' },
@@ -240,7 +348,10 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                   { value: 'catering', label: 'Catering' }
                 ]
               },
-              { name: 'customer_name', label: 'Customer Name', type: 'text',
+              {
+                name: 'customer_name',
+                label: 'Customer Name',
+                type: 'text',
                 layout: { col_span: 6 },
                 conditional_display: {
                   field: 'order_type',
@@ -248,13 +359,17 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                   value: ['takeout', 'delivery', 'catering']
                 }
               },
-              { name: 'special_instructions', label: 'Special Instructions', type: 'textarea',
-                layout: { col_span: 12 } }
+              {
+                name: 'special_instructions',
+                label: 'Special Instructions',
+                type: 'textarea',
+                layout: { col_span: 12 }
+              }
             ]
           },
           layout: { position: { row: 1, col: 0 }, size: { width: 12, height: 1 } }
         },
-        
+
         // Grid Widget - Menu item selection
         {
           id: 'menu-items',
@@ -271,20 +386,23 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
               { field: 'availability', header: 'Available', type: 'boolean' }
             ],
             row_actions: [
-              { id: 'add-to-order', label: 'Add', type: 'custom',
-                smart_code: 'HERA.REST.POS.ACTION.ADD_ITEM.v1', icon: 'plus' }
+              {
+                id: 'add-to-order',
+                label: 'Add',
+                type: 'custom',
+                smart_code: 'HERA.REST.POS.ACTION.ADD_ITEM.v1',
+                icon: 'plus'
+              }
             ]
           },
           layout: { position: { row: 2, col: 0 }, size: { width: 7, height: 4 } },
           data_source: {
             type: 'entities',
             entity_type: 'menu_item',
-            filters: [
-              { field: 'active', operator: 'equals', value: true }
-            ]
+            filters: [{ field: 'active', operator: 'equals', value: true }]
           }
         },
-        
+
         // Grid Widget - Current order items
         {
           id: 'order-items',
@@ -300,22 +418,45 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
               { field: 'line_amount', header: 'Total', type: 'money', aggregation: 'sum' }
             ],
             row_actions: [
-              { id: 'modify-item', label: 'Modify', type: 'edit',
-                smart_code: 'HERA.REST.POS.ACTION.MODIFY.v1' },
-              { id: 'remove-item', label: 'Remove', type: 'delete',
-                smart_code: 'HERA.REST.POS.ACTION.REMOVE.v1' }
+              {
+                id: 'modify-item',
+                label: 'Modify',
+                type: 'edit',
+                smart_code: 'HERA.REST.POS.ACTION.MODIFY.v1'
+              },
+              {
+                id: 'remove-item',
+                label: 'Remove',
+                type: 'delete',
+                smart_code: 'HERA.REST.POS.ACTION.REMOVE.v1'
+              }
             ]
           },
           layout: { position: { row: 2, col: 7 }, size: { width: 5, height: 4 } }
         }
       ],
       actions: [
-        { id: 'send-to-kitchen', label: 'Send to Kitchen', type: 'workflow',
-          smart_code: 'HERA.REST.POS.ACTION.SEND_KITCHEN.v1', icon: 'send' },
-        { id: 'print-bill', label: 'Print Bill', type: 'custom',
-          smart_code: 'HERA.REST.POS.ACTION.PRINT_BILL.v1', icon: 'printer' },
-        { id: 'process-payment', label: 'Payment', type: 'workflow',
-          smart_code: 'HERA.REST.POS.ACTION.PAYMENT.v1', icon: 'credit-card' }
+        {
+          id: 'send-to-kitchen',
+          label: 'Send to Kitchen',
+          type: 'workflow',
+          smart_code: 'HERA.REST.POS.ACTION.SEND_KITCHEN.v1',
+          icon: 'send'
+        },
+        {
+          id: 'print-bill',
+          label: 'Print Bill',
+          type: 'custom',
+          smart_code: 'HERA.REST.POS.ACTION.PRINT_BILL.v1',
+          icon: 'printer'
+        },
+        {
+          id: 'process-payment',
+          label: 'Payment',
+          type: 'workflow',
+          smart_code: 'HERA.REST.POS.ACTION.PAYMENT.v1',
+          icon: 'credit-card'
+        }
       ]
     },
 
@@ -374,20 +515,41 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           smart_code: 'HERA.PROF.TIME.FORM.ENTRY.v1',
           config: {
             fields: [
-              { name: 'entry_date', label: 'Date', type: 'date', required: true,
-                default_value: 'today', layout: { col_span: 3 } },
-              { name: 'client_id', label: 'Client', type: 'entity_selector',
-                entity_type: 'customer', required: true, layout: { col_span: 6 } },
-              { name: 'project_id', label: 'Project', type: 'entity_selector',
-                entity_type: 'project', required: true, layout: { col_span: 3 },
+              {
+                name: 'entry_date',
+                label: 'Date',
+                type: 'date',
+                required: true,
+                default_value: 'today',
+                layout: { col_span: 3 }
+              },
+              {
+                name: 'client_id',
+                label: 'Client',
+                type: 'entity_selector',
+                entity_type: 'customer',
+                required: true,
+                layout: { col_span: 6 }
+              },
+              {
+                name: 'project_id',
+                label: 'Project',
+                type: 'entity_selector',
+                entity_type: 'project',
+                required: true,
+                layout: { col_span: 3 },
                 conditional_display: {
                   field: 'client_id',
                   operator: 'not_equals',
                   value: null
                 }
               },
-              { name: 'task_category', label: 'Task Category', type: 'select',
-                required: true, layout: { col_span: 4 },
+              {
+                name: 'task_category',
+                label: 'Task Category',
+                type: 'select',
+                required: true,
+                layout: { col_span: 4 },
                 options: [
                   { value: 'consulting', label: 'Consulting' },
                   { value: 'development', label: 'Development' },
@@ -399,14 +561,23 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                   { value: 'admin', label: 'Administration' }
                 ]
               },
-              { name: 'hours', label: 'Hours', type: 'number', required: true,
-                layout: { col_span: 2 }, validation: [
+              {
+                name: 'hours',
+                label: 'Hours',
+                type: 'number',
+                required: true,
+                layout: { col_span: 2 },
+                validation: [
                   { type: 'min', value: 0.25, message: 'Minimum 0.25 hours' },
                   { type: 'max', value: 24, message: 'Maximum 24 hours' }
                 ]
               },
-              { name: 'rate_type', label: 'Rate Type', type: 'select',
-                default_value: 'standard', layout: { col_span: 3 },
+              {
+                name: 'rate_type',
+                label: 'Rate Type',
+                type: 'select',
+                default_value: 'standard',
+                layout: { col_span: 3 },
                 options: [
                   { value: 'standard', label: 'Standard Rate' },
                   { value: 'overtime', label: 'Overtime (1.5x)' },
@@ -415,7 +586,10 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                   { value: 'non_billable', label: 'Non-Billable' }
                 ]
               },
-              { name: 'hourly_rate', label: 'Rate/Hour', type: 'money',
+              {
+                name: 'hourly_rate',
+                label: 'Rate/Hour',
+                type: 'money',
                 layout: { col_span: 3 },
                 conditional_display: {
                   field: 'rate_type',
@@ -423,17 +597,26 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                   value: 'non_billable'
                 }
               },
-              { name: 'description', label: 'Work Description', type: 'textarea',
-                required: true, layout: { col_span: 12 },
-                placeholder: 'Describe the work performed...' },
-              { name: 'internal_notes', label: 'Internal Notes', type: 'textarea',
+              {
+                name: 'description',
+                label: 'Work Description',
+                type: 'textarea',
+                required: true,
                 layout: { col_span: 12 },
-                help_text: 'These notes are not visible to clients' }
+                placeholder: 'Describe the work performed...'
+              },
+              {
+                name: 'internal_notes',
+                label: 'Internal Notes',
+                type: 'textarea',
+                layout: { col_span: 12 },
+                help_text: 'These notes are not visible to clients'
+              }
             ]
           },
           layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 3 } }
         },
-        
+
         // Stats Widget - Weekly summary
         {
           id: 'week-summary',
@@ -447,12 +630,15 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             calculations: [
               { alias: 'total_hours', formula: 'sum(hours) where week = current_week' },
               { alias: 'billable_hours', formula: 'sum(hours) where billable = true' },
-              { alias: 'billable_amount', formula: 'sum(hours * hourly_rate) where billable = true' },
+              {
+                alias: 'billable_amount',
+                formula: 'sum(hours * hourly_rate) where billable = true'
+              },
               { alias: 'utilization', formula: '(billable_hours / 40) * 100' }
             ]
           }
         },
-        
+
         // Grid Widget - Recent time entries
         {
           id: 'recent-entries',
@@ -468,17 +654,30 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
               { field: 'hours', header: 'Hours', type: 'number', align: 'right' },
               { field: 'hourly_rate', header: 'Rate', type: 'money' },
               { field: 'total_amount', header: 'Amount', type: 'money', aggregation: 'sum' },
-              { field: 'invoice_status', header: 'Status', type: 'status', renderer: 'status_badge' }
+              {
+                field: 'invoice_status',
+                header: 'Status',
+                type: 'status',
+                renderer: 'status_badge'
+              }
             ]
           },
           layout: { position: { row: 4, col: 0 }, size: { width: 12, height: 3 } }
         }
       ],
       actions: [
-        { id: 'save-entry', label: 'Save Time Entry', type: 'create',
-          smart_code: 'HERA.PROF.TIME.ACTION.SAVE.v1' },
-        { id: 'start-timer', label: 'Start Timer', type: 'custom',
-          smart_code: 'HERA.PROF.TIME.ACTION.TIMER.v1' }
+        {
+          id: 'save-entry',
+          label: 'Save Time Entry',
+          type: 'create',
+          smart_code: 'HERA.PROF.TIME.ACTION.SAVE.v1'
+        },
+        {
+          id: 'start-timer',
+          label: 'Start Timer',
+          type: 'custom',
+          smart_code: 'HERA.PROF.TIME.ACTION.TIMER.v1'
+        }
       ]
     },
 
@@ -507,7 +706,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             ]
           }
         },
-        
+
         // Chart Widget - Burn down
         {
           id: 'burndown-chart',
@@ -525,7 +724,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           },
           layout: { position: { row: 1, col: 0 }, size: { width: 8, height: 3 } }
         },
-        
+
         // Tree Widget - Work breakdown structure
         {
           id: 'wbs-tree',
@@ -573,7 +772,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             ]
           }
         },
-        
+
         // Grid Widget - Stock levels with intelligent columns
         {
           id: 'stock-levels',
@@ -585,8 +784,13 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
               { field: 'sku', header: 'SKU', type: 'text', sortable: true, filterable: true },
               { field: 'product_name', header: 'Product', type: 'entity_link', filterable: true },
               { field: 'category', header: 'Category', type: 'text', filterable: true },
-              { field: 'quantity_on_hand', header: 'On Hand', type: 'number', sortable: true,
-                renderer: 'progress_bar' },
+              {
+                field: 'quantity_on_hand',
+                header: 'On Hand',
+                type: 'number',
+                sortable: true,
+                renderer: 'progress_bar'
+              },
               { field: 'quantity_available', header: 'Available', type: 'number' },
               { field: 'quantity_reserved', header: 'Reserved', type: 'number' },
               { field: 'reorder_point', header: 'Reorder At', type: 'number' },
@@ -596,23 +800,43 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
               { field: 'stock_status', header: 'Status', type: 'status', renderer: 'status_badge' }
             ],
             row_actions: [
-              { id: 'adjust-stock', label: 'Adjust', type: 'custom',
-                smart_code: 'HERA.RET.INV.ACTION.ADJUST.v1' },
-              { id: 'transfer-stock', label: 'Transfer', type: 'workflow',
-                smart_code: 'HERA.RET.INV.ACTION.TRANSFER.v1' },
-              { id: 'create-po', label: 'Reorder', type: 'create',
-                smart_code: 'HERA.RET.PUR.ACTION.CREATE_PO.v1' }
+              {
+                id: 'adjust-stock',
+                label: 'Adjust',
+                type: 'custom',
+                smart_code: 'HERA.RET.INV.ACTION.ADJUST.v1'
+              },
+              {
+                id: 'transfer-stock',
+                label: 'Transfer',
+                type: 'workflow',
+                smart_code: 'HERA.RET.INV.ACTION.TRANSFER.v1'
+              },
+              {
+                id: 'create-po',
+                label: 'Reorder',
+                type: 'create',
+                smart_code: 'HERA.RET.PUR.ACTION.CREATE_PO.v1'
+              }
             ],
             bulk_actions: [
-              { id: 'count-inventory', label: 'Physical Count', type: 'workflow',
-                smart_code: 'HERA.RET.INV.ACTION.COUNT.v1' },
-              { id: 'generate-po', label: 'Generate Purchase Orders', type: 'custom',
-                smart_code: 'HERA.RET.INV.ACTION.GENERATE_PO.v1' }
+              {
+                id: 'count-inventory',
+                label: 'Physical Count',
+                type: 'workflow',
+                smart_code: 'HERA.RET.INV.ACTION.COUNT.v1'
+              },
+              {
+                id: 'generate-po',
+                label: 'Generate Purchase Orders',
+                type: 'custom',
+                smart_code: 'HERA.RET.INV.ACTION.GENERATE_PO.v1'
+              }
             ]
           },
           layout: { position: { row: 1, col: 0 }, size: { width: 12, height: 4 } }
         },
-        
+
         // Chart Widget - Stock movement trends
         {
           id: 'movement-chart',
@@ -630,7 +854,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           },
           layout: { position: { row: 5, col: 0 }, size: { width: 8, height: 3 } }
         },
-        
+
         // Related Widget - Recent transactions
         {
           id: 'recent-movements',
@@ -646,7 +870,10 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
         }
       ],
       filters: [
-        { field: 'category', label: 'Category', type: 'select',
+        {
+          field: 'category',
+          label: 'Category',
+          type: 'select',
           options: [
             { value: 'electronics', label: 'Electronics' },
             { value: 'clothing', label: 'Clothing' },
@@ -654,7 +881,10 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             { value: 'home', label: 'Home & Garden' }
           ]
         },
-        { field: 'stock_status', label: 'Stock Status', type: 'select',
+        {
+          field: 'stock_status',
+          label: 'Stock Status',
+          type: 'select',
           options: [
             { value: 'in_stock', label: 'In Stock' },
             { value: 'low_stock', label: 'Low Stock' },
@@ -691,7 +921,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             ]
           }
         },
-        
+
         // Chart Widget - Sales by hour
         {
           id: 'hourly-sales',
@@ -702,13 +932,11 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
             chart_type: 'bar',
             x_axis: 'hour',
             y_axis: 'sales_amount',
-            series: [
-              { name: 'Sales', data_field: 'total_sales', color: '#10b981' }
-            ]
+            series: [{ name: 'Sales', data_field: 'total_sales', color: '#10b981' }]
           },
           layout: { position: { row: 1, col: 0 }, size: { width: 6, height: 3 } }
         },
-        
+
         // Chart Widget - Top selling products
         {
           id: 'top-products-chart',
@@ -717,9 +945,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           smart_code: 'HERA.RET.SALES.CHART.TOP_PRODUCTS.v1',
           config: {
             chart_type: 'pie',
-            series: [
-              { name: 'Revenue', data_field: 'product_revenue' }
-            ]
+            series: [{ name: 'Revenue', data_field: 'product_revenue' }]
           },
           layout: { position: { row: 1, col: 6 }, size: { width: 6, height: 3 } }
         }
@@ -738,7 +964,7 @@ export function getIndustryViewMeta(
 ): ViewMetadata | null {
   const industryConfig = industryConfigurations[industry]
   if (!industryConfig) return null
-  
+
   return industryConfig[viewName] || null
 }
 
@@ -748,7 +974,7 @@ export function getIndustryViewMeta(
 export function getIndustryViews(industry: keyof typeof industryConfigurations): string[] {
   const industryConfig = industryConfigurations[industry]
   if (!industryConfig) return []
-  
+
   return Object.keys(industryConfig)
 }
 
@@ -766,7 +992,7 @@ export const universalWidgetPatterns = {
     notes: { name: 'notes', label: 'Notes', type: 'textarea' },
     status: { name: 'status', label: 'Status', type: 'select' }
   },
-  
+
   // Universal grid columns that work everywhere
   universalGridColumns: {
     name: { field: 'entity_name', header: 'Name', type: 'entity_link' },
@@ -775,7 +1001,7 @@ export const universalWidgetPatterns = {
     amount: { field: 'total_amount', header: 'Amount', type: 'money', sortable: true },
     status: { field: 'status', header: 'Status', type: 'status', renderer: 'status_badge' }
   },
-  
+
   // Universal actions that apply to any entity
   universalActions: {
     create: { type: 'create', label: 'Create New', icon: 'plus' },

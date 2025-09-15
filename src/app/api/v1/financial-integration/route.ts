@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -40,19 +40,13 @@ export async function POST(request: NextRequest) {
         break
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json(result)
   } catch (error: any) {
     console.error('Financial integration API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -71,19 +65,21 @@ async function checkDuplicateInvoice(params: any) {
   }
 
   if (duplicateCheck.is_duplicate) {
-    duplicateCheck.matches = [{
-      transaction_id: 'demo-123',
-      invoice_number: params.invoice_number,
-      amount: params.invoice_amount,
-      date: params.invoice_date,
-      vendor_name: 'Demo Vendor',
-      confidence_factors: {
-        amount_match: true,
-        date_proximity: true,
-        invoice_number_match: true,
-        vendor_match: true
+    duplicateCheck.matches = [
+      {
+        transaction_id: 'demo-123',
+        invoice_number: params.invoice_number,
+        amount: params.invoice_amount,
+        date: params.invoice_date,
+        vendor_name: 'Demo Vendor',
+        confidence_factors: {
+          amount_match: true,
+          date_proximity: true,
+          invoice_number_match: true,
+          vendor_match: true
+        }
       }
-    }]
+    ]
     duplicateCheck.recommendation = 'DO NOT POST - Potential duplicate detected'
     duplicateCheck.ai_analysis.risk_level = duplicateCheck.confidence > 0.8 ? 'high' : 'medium'
   } else {

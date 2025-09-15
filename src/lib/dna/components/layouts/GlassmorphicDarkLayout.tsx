@@ -21,41 +21,49 @@ interface GlassmorphicDarkLayoutProps {
   showBlobs?: boolean
 }
 
-export function GlassmorphicDarkLayout({ 
-  children, 
+export function GlassmorphicDarkLayout({
+  children,
   theme,
-  showBlobs = true 
+  showBlobs = true
 }: GlassmorphicDarkLayoutProps) {
   return (
-    <div 
+    <div
       className="min-h-screen bg-gradient-to-br from-[var(--primary)] via-slate-950 to-[var(--dark-base)]"
-      style={{
-        '--primary': theme.colors.primary,
-        '--secondary': theme.colors.secondary,
-        '--accent': theme.colors.accent,
-        '--danger': theme.colors.danger,
-        '--danger-dark': theme.colors.dangerDark,
-        '--dark-base': theme.colors.darkBase,
-      } as React.CSSProperties}
+      style={
+        {
+          '--primary': theme.colors.primary,
+          '--secondary': theme.colors.secondary,
+          '--accent': theme.colors.accent,
+          '--danger': theme.colors.danger,
+          '--danger-dark': theme.colors.dangerDark,
+          '--dark-base': theme.colors.darkBase
+        } as React.CSSProperties
+      }
     >
       {/* Animated Background Blobs */}
       {showBlobs && (
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div 
+          <div
             className="absolute -top-40 -right-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"
-            style={{ background: `linear-gradient(to bottom right, ${theme.colors.danger}, ${theme.colors.dangerDark})` }}
+            style={{
+              background: `linear-gradient(to bottom right, ${theme.colors.danger}, ${theme.colors.dangerDark})`
+            }}
           />
-          <div 
+          <div
             className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"
-            style={{ background: `linear-gradient(to bottom right, ${theme.colors.secondary}, ${theme.colors.primary})` }}
+            style={{
+              background: `linear-gradient(to bottom right, ${theme.colors.secondary}, ${theme.colors.primary})`
+            }}
           />
-          <div 
+          <div
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"
-            style={{ background: `linear-gradient(to bottom right, ${theme.colors.accent}, ${theme.colors.secondary})` }}
+            style={{
+              background: `linear-gradient(to bottom right, ${theme.colors.accent}, ${theme.colors.secondary})`
+            }}
           />
         </div>
       )}
-      
+
       {/* Content */}
       {children}
     </div>
@@ -69,8 +77,8 @@ interface GlassmorphicCardProps {
   glowOnHover?: boolean
 }
 
-export function GlassmorphicCard({ 
-  children, 
+export function GlassmorphicCard({
+  children,
   theme,
   className = '',
   glowOnHover = true
@@ -78,9 +86,11 @@ export function GlassmorphicCard({
   return (
     <div className={`relative group ${className}`}>
       {glowOnHover && (
-        <div 
+        <div
           className="absolute -inset-0.5 rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300"
-          style={{ background: `linear-gradient(to right, ${theme.colors.secondary}, ${theme.colors.primary})` }}
+          style={{
+            background: `linear-gradient(to right, ${theme.colors.secondary}, ${theme.colors.primary})`
+          }}
         />
       )}
       <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -99,8 +109,8 @@ interface GlassmorphicButtonProps {
   disabled?: boolean
 }
 
-export function GlassmorphicButton({ 
-  children, 
+export function GlassmorphicButton({
+  children,
   theme,
   variant = 'primary',
   onClick,
@@ -112,35 +122,35 @@ export function GlassmorphicButton({
     secondary: `linear-gradient(to right, ${theme.colors.accent}, ${theme.colors.secondary})`,
     danger: `linear-gradient(to right, ${theme.colors.danger}, ${theme.colors.dangerDark})`
   }
-  
+
   const shadowColors = {
     primary: theme.colors.secondary,
     secondary: theme.colors.accent,
     danger: theme.colors.danger
   }
-  
+
   return (
-    <button 
+    <button
       onClick={onClick}
       disabled={disabled}
       className={`relative group ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <div 
+      <div
         className="absolute -inset-0.5 rounded-xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300"
         style={{ background: gradients[variant] }}
       />
-      <div 
+      <div
         className="relative flex items-center justify-center space-x-2 px-4 py-2 text-white rounded-lg font-medium transition-all duration-300"
-        style={{ 
+        style={{
           background: gradients[variant],
           boxShadow: `0 0 0 0 ${shadowColors[variant]}40`
         }}
-        onMouseEnter={(e) => {
+        onMouseEnter={e => {
           if (!disabled) {
             e.currentTarget.style.boxShadow = `0 10px 25px -3px ${shadowColors[variant]}40`
           }
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={e => {
           e.currentTarget.style.boxShadow = `0 0 0 0 ${shadowColors[variant]}40`
         }}
       >
@@ -162,7 +172,7 @@ interface GlassmorphicStatCardProps {
   className?: string
 }
 
-export function GlassmorphicStatCard({ 
+export function GlassmorphicStatCard({
   label,
   value,
   icon: Icon,
@@ -172,9 +182,11 @@ export function GlassmorphicStatCard({
 }: GlassmorphicStatCardProps) {
   return (
     <div className={`relative group ${className}`}>
-      <div 
+      <div
         className="absolute -inset-0.5 rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300"
-        style={{ background: `linear-gradient(to right, ${theme.colors.secondary}, ${theme.colors.primary})` }}
+        style={{
+          background: `linear-gradient(to right, ${theme.colors.secondary}, ${theme.colors.primary})`
+        }}
       />
       <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
         <div className="flex items-center justify-between">
@@ -182,14 +194,19 @@ export function GlassmorphicStatCard({
             <p className="text-white/60 text-sm">{label}</p>
             <p className="text-2xl font-bold text-white mt-1">{value}</p>
             {trend && (
-              <p className={`text-xs mt-1 ${trend.isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-                {trend.isPositive ? '+' : ''}{trend.value}%
+              <p
+                className={`text-xs mt-1 ${trend.isPositive ? 'text-emerald-400' : 'text-red-400'}`}
+              >
+                {trend.isPositive ? '+' : ''}
+                {trend.value}%
               </p>
             )}
           </div>
-          <div 
+          <div
             className="p-2 rounded-lg"
-            style={{ background: `linear-gradient(to bottom right, ${theme.colors.secondary}, ${theme.colors.primary})` }}
+            style={{
+              background: `linear-gradient(to bottom right, ${theme.colors.secondary}, ${theme.colors.primary})`
+            }}
           >
             <Icon className="h-6 w-6 text-white" />
           </div>
@@ -209,7 +226,7 @@ interface GlassmorphicInputProps {
   className?: string
 }
 
-export function GlassmorphicInput({ 
+export function GlassmorphicInput({
   value,
   onChange,
   placeholder,
@@ -229,14 +246,16 @@ export function GlassmorphicInput({
         onChange={onChange}
         placeholder={placeholder}
         className={`w-full ${Icon ? 'pl-10' : 'pl-4'} pr-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:bg-white/10 transition-all duration-200`}
-        style={{
-          '--tw-ring-color': `${theme.colors.secondary}50`,
-          borderColor: 'rgba(255, 255, 255, 0.1)'
-        } as React.CSSProperties}
-        onFocus={(e) => {
+        style={
+          {
+            '--tw-ring-color': `${theme.colors.secondary}50`,
+            borderColor: 'rgba(255, 255, 255, 0.1)'
+          } as React.CSSProperties
+        }
+        onFocus={e => {
           e.currentTarget.style.borderColor = `${theme.colors.secondary}80`
         }}
-        onBlur={(e) => {
+        onBlur={e => {
           e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
         }}
       />

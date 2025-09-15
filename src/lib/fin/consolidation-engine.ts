@@ -112,13 +112,15 @@ export class ConsolidationEngine {
       // Get trial balance for each company
       const { data: accounts } = await this.supabase
         .from('core_entities')
-        .select(`
+        .select(
+          `
           *,
           balance:core_dynamic_data!inner(
             field_value_number,
             metadata
           )
-        `)
+        `
+        )
         .eq('organization_id', company.companyId)
         .eq('entity_type', 'gl_account')
         .eq('metadata->status', 'active')
@@ -187,10 +189,7 @@ export class ConsolidationEngine {
         ...companyData,
         accounts: translatedAccounts,
         transactions: translatedTransactions,
-        translation_adjustment: this.calculateTranslationAdjustment(
-          companyData,
-          exchangeRate
-        )
+        translation_adjustment: this.calculateTranslationAdjustment(companyData, exchangeRate)
       })
     }
 
@@ -214,8 +213,10 @@ export class ConsolidationEngine {
         .or(`from_entity_id.in.(${companyIds.join(',')})`)
 
       for (const txn of intercompanyTxns || []) {
-        if (txn.from_entity_id !== companyData.company.companyId &&
-            companyIds.includes(txn.from_entity_id)) {
+        if (
+          txn.from_entity_id !== companyData.company.companyId &&
+          companyIds.includes(txn.from_entity_id)
+        ) {
           // This is an intercompany transaction
           eliminations.push({
             description: `Eliminate intercompany: ${txn.transaction_code}`,
@@ -233,14 +234,13 @@ export class ConsolidationEngine {
     for (const companyData of companiesData) {
       if (companyData.company.ownershipPercent < 100) {
         // Look for investment accounts in parent company
-        const parentData = companiesData.find(cd => 
-          cd.company.consolidationMethod === 'full' &&
-          cd.company.ownershipPercent === 100
+        const parentData = companiesData.find(
+          cd => cd.company.consolidationMethod === 'full' && cd.company.ownershipPercent === 100
         )
 
         if (parentData) {
-          const investmentAccount = parentData.accounts.find((acc: any) =>
-            acc.metadata.investment_in === companyData.company.companyId
+          const investmentAccount = parentData.accounts.find(
+            (acc: any) => acc.metadata.investment_in === companyData.company.companyId
           )
 
           if (investmentAccount) {
@@ -252,7 +252,10 @@ export class ConsolidationEngine {
               fromCompany: parentData.company.companyId,
               toCompany: companyData.company.companyId,
               account: 'investment_equity',
-              amount: Math.min(investmentBalance, subsidiaryEquity * companyData.company.ownershipPercent / 100),
+              amount: Math.min(
+                investmentBalance,
+                (subsidiaryEquity * companyData.company.ownershipPercent) / 100
+              ),
               eliminationType: 'investment_equity'
             })
           }
@@ -271,7 +274,7 @@ export class ConsolidationEngine {
 
     for (const companyData of companiesData) {
       const company = companies.find(c => c.companyId === companyData.company.companyId)!
-      
+
       switch (company.consolidationMethod) {
         case 'full':
           // Include 100% of all accounts
@@ -281,8 +284,8 @@ export class ConsolidationEngine {
         case 'proportional':
           // Include ownership % of all accounts
           this.mergeAccounts(
-            consolidatedAccounts, 
-            companyData.accounts, 
+            consolidatedAccounts,
+            companyData.accounts,
             company.ownershipPercent / 100
           )
           break
@@ -343,7 +346,10 @@ export class ConsolidationEngine {
   /**
    * Calculate minority interest
    */
-  private async calculateMinorityInterest(consolidatedData: any, companies: ConsolidationCompany[]) {
+  private async calculateMinorityInterest(
+    consolidatedData: any,
+    companies: ConsolidationCompany[]
+  ) {
     const minorityInterests = []
 
     for (const company of companies) {
@@ -369,8 +375,14 @@ export class ConsolidationEngine {
     }
 
     return {
-      total_minority_interest: minorityInterests.reduce((sum, mi) => sum + mi.minority_interest_balance, 0),
-      total_minority_income: minorityInterests.reduce((sum, mi) => sum + mi.minority_interest_income, 0),
+      total_minority_interest: minorityInterests.reduce(
+        (sum, mi) => sum + mi.minority_interest_balance,
+        0
+      ),
+      total_minority_income: minorityInterests.reduce(
+        (sum, mi) => sum + mi.minority_interest_income,
+        0
+      ),
       details: minorityInterests
     }
   }
@@ -480,23 +492,24 @@ export class ConsolidationEngine {
     const historicalRate = exchangeRate * 0.95 // Assume 5% change
     const assets = this.sumByType(companyData.accounts, 'asset')
     const liabilities = this.sumByType(companyData.accounts, 'liability')
-    
+
     return (assets - liabilities) * (exchangeRate - historicalRate)
   }
 
   private mapToEliminationAccount(transactionType: string): string {
     const mapping: Record<string, string> = {
-      'customer_invoice': 'intercompany_receivable',
-      'vendor_invoice': 'intercompany_payable',
-      'intercompany_sale': 'intercompany_revenue',
-      'intercompany_purchase': 'intercompany_expense'
+      customer_invoice: 'intercompany_receivable',
+      vendor_invoice: 'intercompany_payable',
+      intercompany_sale: 'intercompany_revenue',
+      intercompany_purchase: 'intercompany_expense'
     }
     return mapping[transactionType] || 'intercompany_other'
   }
 
   private determineEliminationType(transactionType: string): EliminationEntry['eliminationType'] {
     if (transactionType.includes('invoice')) return 'receivable_payable'
-    if (transactionType.includes('sale') || transactionType.includes('purchase')) return 'revenue_expense'
+    if (transactionType.includes('sale') || transactionType.includes('purchase'))
+      return 'revenue_expense'
     if (transactionType.includes('dividend')) return 'dividend'
     return 'revenue_expense'
   }
@@ -540,11 +553,13 @@ export class ConsolidationEngine {
         consolidatedMap.set(code, {
           ...account,
           balance: balance,
-          companies: [{
-            company_id: account.organization_id,
-            percentage: percentage,
-            amount: balance
-          }]
+          companies: [
+            {
+              company_id: account.organization_id,
+              percentage: percentage,
+              amount: balance
+            }
+          ]
         })
       }
     }
@@ -568,11 +583,13 @@ export class ConsolidationEngine {
         ownership_percent: company.ownershipPercent
       },
       balance: shareOfIncome,
-      companies: [{
-        company_id: company.companyId,
-        percentage: company.ownershipPercent,
-        amount: shareOfIncome
-      }]
+      companies: [
+        {
+          company_id: company.companyId,
+          percentage: company.ownershipPercent,
+          amount: shareOfIncome
+        }
+      ]
     })
   }
 
@@ -592,12 +609,14 @@ export class ConsolidationEngine {
   private eliminateIntercompanyPL(consolidatedData: any, elimination: EliminationEntry) {
     // Remove intercompany revenues and expenses
     const revenueAccount = consolidatedData.accounts.find(
-      (acc: any) => acc.metadata.account_type === 'revenue' && 
-                    acc.metadata.intercompany_with === elimination.toCompany
+      (acc: any) =>
+        acc.metadata.account_type === 'revenue' &&
+        acc.metadata.intercompany_with === elimination.toCompany
     )
     const expenseAccount = consolidatedData.accounts.find(
-      (acc: any) => acc.metadata.account_type === 'expense' && 
-                    acc.metadata.intercompany_with === elimination.fromCompany
+      (acc: any) =>
+        acc.metadata.account_type === 'expense' &&
+        acc.metadata.intercompany_with === elimination.fromCompany
     )
 
     if (revenueAccount) revenueAccount.balance -= elimination.amount
@@ -610,8 +629,8 @@ export class ConsolidationEngine {
       (acc: any) => acc.metadata.investment_in === elimination.toCompany
     )
     const equityAccounts = consolidatedData.accounts.filter(
-      (acc: any) => acc.metadata.account_type === 'equity' &&
-                    acc.organization_id === elimination.toCompany
+      (acc: any) =>
+        acc.metadata.account_type === 'equity' && acc.organization_id === elimination.toCompany
     )
 
     if (investmentAccount) {
@@ -621,7 +640,7 @@ export class ConsolidationEngine {
     // Reduce equity by ownership percentage
     const ownershipPercent = elimination.amount / this.sumByType(equityAccounts, 'equity')
     equityAccounts.forEach((acc: any) => {
-      acc.balance *= (1 - ownershipPercent)
+      acc.balance *= 1 - ownershipPercent
     })
   }
 
@@ -648,9 +667,10 @@ export class ConsolidationEngine {
     }
 
     for (const account of accounts) {
-      const normalBalance = account.metadata.normal_balance || 
+      const normalBalance =
+        account.metadata.normal_balance ||
         (['asset', 'expense'].includes(account.metadata.account_type) ? 'debit' : 'credit')
-      
+
       const entry = {
         account_code: account.entity_code,
         account_name: account.entity_name,
@@ -674,7 +694,10 @@ export class ConsolidationEngine {
     const equity = trialBalance.accounts.filter((acc: any) => acc.account_type === 'equity')
 
     const totalAssets = assets.reduce((sum: number, acc: any) => sum + (acc.debit || 0), 0)
-    const totalLiabilities = liabilities.reduce((sum: number, acc: any) => sum + (acc.credit || 0), 0)
+    const totalLiabilities = liabilities.reduce(
+      (sum: number, acc: any) => sum + (acc.credit || 0),
+      0
+    )
     const totalEquity = equity.reduce((sum: number, acc: any) => sum + (acc.credit || 0), 0)
 
     return {
@@ -694,7 +717,11 @@ export class ConsolidationEngine {
         minority_interest: minorityInterest?.total_minority_interest || 0,
         total: totalEquity + (minorityInterest?.total_minority_interest || 0)
       },
-      checksum: totalAssets - totalLiabilities - totalEquity - (minorityInterest?.total_minority_interest || 0)
+      checksum:
+        totalAssets -
+        totalLiabilities -
+        totalEquity -
+        (minorityInterest?.total_minority_interest || 0)
     }
   }
 
@@ -719,8 +746,11 @@ export class ConsolidationEngine {
         total: totalExpenses
       },
       calculations: {
-        gross_profit: totalRevenue - expenses.filter((acc: any) => acc.account_code.startsWith('5'))
-          .reduce((sum: number, acc: any) => sum + (acc.debit || 0), 0),
+        gross_profit:
+          totalRevenue -
+          expenses
+            .filter((acc: any) => acc.account_code.startsWith('5'))
+            .reduce((sum: number, acc: any) => sum + (acc.debit || 0), 0),
         operating_income: 0, // Would calculate based on specific accounts
         income_before_minority: netIncome,
         minority_interest_share: minorityInterest?.total_minority_income || 0,
@@ -760,7 +790,12 @@ export class ConsolidationEngine {
   ) {
     // Create detailed worksheet showing company columns, eliminations, and consolidated
     const worksheet = {
-      headers: ['Account', ...consolidatedData.companies.map((c: any) => c.company.companyName), 'Eliminations', 'Consolidated'],
+      headers: [
+        'Account',
+        ...consolidatedData.companies.map((c: any) => c.company.companyName),
+        'Eliminations',
+        'Consolidated'
+      ],
       rows: []
     }
 
@@ -776,8 +811,8 @@ export class ConsolidationEngine {
       // Add company amounts
       if (account.consolidated_from) {
         account.consolidated_from.forEach((cf: any) => {
-          const company = consolidatedData.companies.find((c: any) => 
-            c.company.companyId === cf.company_id
+          const company = consolidatedData.companies.find(
+            (c: any) => c.company.companyId === cf.company_id
           )
           if (company) {
             row.companies[company.company.companyName] = cf.amount
@@ -786,9 +821,8 @@ export class ConsolidationEngine {
       }
 
       // Add elimination amounts
-      const accountEliminations = eliminations.filter(e => 
-        e.account === account.account_code || 
-        e.account === account.account_name
+      const accountEliminations = eliminations.filter(
+        e => e.account === account.account_code || e.account === account.account_name
       )
       row.eliminations = accountEliminations.reduce((sum, e) => sum + e.amount, 0)
 

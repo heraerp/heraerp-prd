@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  ChefHat, 
-  TrendingUp, 
+import {
+  ChefHat,
+  TrendingUp,
   Calculator,
   ArrowRight,
   Sparkles,
@@ -44,7 +44,7 @@ const demoOptions: DemoOption[] = [
     textColor: 'text-amber-900',
     features: [
       'Kitchen Display System',
-      'Order Management', 
+      'Order Management',
       'Table Reservations',
       'Menu Engineering',
       'Customer Analytics'
@@ -121,7 +121,7 @@ export default function JobsDemoSelector() {
     try {
       // Auto-login with demo credentials
       const result = await login(demo.credentials.email, demo.credentials.password)
-      
+
       if (result.success) {
         // Small delay for smooth transition
         setTimeout(() => {
@@ -145,34 +145,35 @@ export default function JobsDemoSelector() {
       <div className="text-center mb-12 max-w-3xl">
         <div className="flex items-center justify-center mb-8">
           <div className="relative">
-            <HeraTypographicLogo 
-              size="xl" 
+            <HeraTypographicLogo
+              size="xl"
               variant="default"
               concept="weight-progression"
-              animated={true} 
-              className="mb-2" 
+              animated={true}
+              className="mb-2"
             />
             <div className="absolute -inset-6 bg-gradient-to-br from-slate-500/5 via-blue-500/10 to-emerald-500/5 rounded-3xl blur-2xl -z-10" />
           </div>
         </div>
-        
+
         <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
           Experience HERA
         </h1>
         <p className="text-xl text-slate-600 leading-relaxed">
-          Choose your industry and explore how HERA transforms business operations with our interactive demos
+          Choose your industry and explore how HERA transforms business operations with our
+          interactive demos
         </p>
       </div>
 
       {/* Demo Options */}
       <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full">
-        {demoOptions.map((demo) => {
+        {demoOptions.map(demo => {
           const Icon = demo.icon
           const isSelected = selectedDemo === demo.id
           const isCurrentlyLoading = isLoading && isSelected
 
           return (
-            <Card 
+            <Card
               key={demo.id}
               className={`group cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl border-0 overflow-hidden ${
                 isSelected ? 'ring-4 ring-blue-500/50 scale-105' : ''
@@ -180,12 +181,16 @@ export default function JobsDemoSelector() {
               onClick={() => !isLoading && handleDemoSelect(demo)}
             >
               {/* Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${demo.gradient} opacity-0 group-hover:opacity-10 transition-all duration-500`} />
-              
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${demo.gradient} opacity-0 group-hover:opacity-10 transition-all duration-500`}
+              />
+
               <CardContent className="relative p-8">
                 {/* Icon & Badge */}
                 <div className="flex items-center justify-between mb-6">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${demo.gradient} flex items-center justify-center shadow-lg`}>
+                  <div
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${demo.gradient} flex items-center justify-center shadow-lg`}
+                  >
                     <Icon className="w-7 h-7 text-white" />
                   </div>
                   <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium">
@@ -201,9 +206,7 @@ export default function JobsDemoSelector() {
                   <p className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">
                     {demo.subtitle}
                   </p>
-                  <p className="text-slate-600 leading-relaxed">
-                    {demo.description}
-                  </p>
+                  <p className="text-slate-600 leading-relaxed">{demo.description}</p>
                 </div>
 
                 {/* Features */}
@@ -219,7 +222,7 @@ export default function JobsDemoSelector() {
                 </div>
 
                 {/* Action Button */}
-                <Button 
+                <Button
                   className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-white border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${
                     isCurrentlyLoading ? 'cursor-wait' : ''
                   }`}

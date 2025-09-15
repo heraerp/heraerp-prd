@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   User,
   Mail,
   Phone,
@@ -81,19 +81,19 @@ export default function ApplyPage() {
     phone: '',
     city: '',
     state: '',
-    
+
     // Business Experience
     currentRole: '',
     industry: '',
     salesExperience: '',
     businessOwnership: '',
-    
+
     // Investment & Goals
     investmentLevel: '',
     timeCommitment: '',
     targetIncome: '',
     startTimeline: '',
-    
+
     // Additional
     hearAbout: '',
     questions: ''
@@ -124,10 +124,10 @@ export default function ApplyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     setIsSubmitting(false)
     setSubmitted(true)
   }
@@ -145,40 +145,56 @@ export default function ApplyPage() {
                 Application Received!
               </h1>
               <p className="text-xl text-slate-600 dark:text-slate-400 mb-8">
-                Thank you for your interest in the HERA franchise opportunity. 
-                Our team will review your application and contact you within 24-48 hours.
+                Thank you for your interest in the HERA franchise opportunity. Our team will review
+                your application and contact you within 24-48 hours.
               </p>
-              
+
               <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 mb-8">
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-4">What Happens Next?</h3>
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
+                  What Happens Next?
+                </h3>
                 <div className="space-y-3 text-left">
                   <div className="flex items-center">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">1</div>
-                    <span className="text-slate-700 dark:text-slate-300">Application review (24-48 hours)</span>
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">
+                      1
+                    </div>
+                    <span className="text-slate-700 dark:text-slate-300">
+                      Application review (24-48 hours)
+                    </span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">2</div>
-                    <span className="text-slate-700 dark:text-slate-300">Phone interview with franchise team</span>
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">
+                      2
+                    </div>
+                    <span className="text-slate-700 dark:text-slate-300">
+                      Phone interview with franchise team
+                    </span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">3</div>
-                    <span className="text-slate-700 dark:text-slate-300">Territory analysis and selection</span>
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">
+                      3
+                    </div>
+                    <span className="text-slate-700 dark:text-slate-300">
+                      Territory analysis and selection
+                    </span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">4</div>
-                    <span className="text-slate-700 dark:text-slate-300">Approval and welcome package</span>
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-3">
+                      4
+                    </div>
+                    <span className="text-slate-700 dark:text-slate-300">
+                      Approval and welcome package
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4"
               >
-                <Link href="/franchise">
-                  Return to Home
-                </Link>
+                <Link href="/franchise">Return to Home</Link>
               </Button>
             </div>
           </div>
@@ -205,17 +221,30 @@ export default function ApplyPage() {
               {/* Progress Sidebar */}
               <div className="lg:col-span-1">
                 <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 sticky top-8">
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-6">Application Progress</h3>
-                  
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-6">
+                    Application Progress
+                  </h3>
+
                   <div className="space-y-4">
-                    {applicationSteps.map((step) => (
-                      <div key={step.step} className={`flex items-start ${currentStep >= step.step ? 'text-blue-600' : 'text-slate-400'}`}>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold mr-3 ${
-                          currentStep > step.step ? 'bg-green-500 text-white' :
-                          currentStep === step.step ? 'bg-blue-500 text-white' :
-                          'bg-slate-200 dark:bg-slate-700 text-slate-500'
-                        }`}>
-                          {currentStep > step.step ? <CheckCircle className="h-4 w-4" /> : step.step}
+                    {applicationSteps.map(step => (
+                      <div
+                        key={step.step}
+                        className={`flex items-start ${currentStep >= step.step ? 'text-blue-600' : 'text-slate-400'}`}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold mr-3 ${
+                            currentStep > step.step
+                              ? 'bg-green-500 text-white'
+                              : currentStep === step.step
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                          }`}
+                        >
+                          {currentStep > step.step ? (
+                            <CheckCircle className="h-4 w-4" />
+                          ) : (
+                            step.step
+                          )}
                         </div>
                         <div className="flex-1">
                           <p className="font-medium">{step.title}</p>
@@ -236,7 +265,9 @@ export default function ApplyPage() {
                     <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-8 border border-slate-200 dark:border-slate-700">
                       <div className="flex items-center mb-6">
                         <User className="h-6 w-6 text-blue-600 mr-3" />
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Personal Information</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                          Personal Information
+                        </h2>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-6">
@@ -248,11 +279,11 @@ export default function ApplyPage() {
                             type="text"
                             required
                             value={formData.firstName}
-                            onChange={(e) => handleInputChange('firstName', e.target.value)}
+                            onChange={e => handleInputChange('firstName', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
-                        
+
                         <div>
                           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Last Name *
@@ -261,7 +292,7 @@ export default function ApplyPage() {
                             type="text"
                             required
                             value={formData.lastName}
-                            onChange={(e) => handleInputChange('lastName', e.target.value)}
+                            onChange={e => handleInputChange('lastName', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
@@ -274,7 +305,7 @@ export default function ApplyPage() {
                             type="email"
                             required
                             value={formData.email}
-                            onChange={(e) => handleInputChange('email', e.target.value)}
+                            onChange={e => handleInputChange('email', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
@@ -287,7 +318,7 @@ export default function ApplyPage() {
                             type="tel"
                             required
                             value={formData.phone}
-                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            onChange={e => handleInputChange('phone', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
@@ -300,7 +331,7 @@ export default function ApplyPage() {
                             type="text"
                             required
                             value={formData.city}
-                            onChange={(e) => handleInputChange('city', e.target.value)}
+                            onChange={e => handleInputChange('city', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
@@ -313,7 +344,7 @@ export default function ApplyPage() {
                             type="text"
                             required
                             value={formData.state}
-                            onChange={(e) => handleInputChange('state', e.target.value)}
+                            onChange={e => handleInputChange('state', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
@@ -326,7 +357,9 @@ export default function ApplyPage() {
                     <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-8 border border-slate-200 dark:border-slate-700">
                       <div className="flex items-center mb-6">
                         <Briefcase className="h-6 w-6 text-blue-600 mr-3" />
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Business Experience</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                          Business Experience
+                        </h2>
                       </div>
 
                       <div className="space-y-6">
@@ -338,7 +371,7 @@ export default function ApplyPage() {
                             type="text"
                             required
                             value={formData.currentRole}
-                            onChange={(e) => handleInputChange('currentRole', e.target.value)}
+                            onChange={e => handleInputChange('currentRole', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
                         </div>
@@ -350,7 +383,7 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.industry}
-                            onChange={(e) => handleInputChange('industry', e.target.value)}
+                            onChange={e => handleInputChange('industry', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Industry</option>
@@ -372,7 +405,7 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.salesExperience}
-                            onChange={(e) => handleInputChange('salesExperience', e.target.value)}
+                            onChange={e => handleInputChange('salesExperience', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Experience Level</option>
@@ -391,7 +424,7 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.businessOwnership}
-                            onChange={(e) => handleInputChange('businessOwnership', e.target.value)}
+                            onChange={e => handleInputChange('businessOwnership', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Experience</option>
@@ -411,7 +444,9 @@ export default function ApplyPage() {
                     <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-8 border border-slate-200 dark:border-slate-700">
                       <div className="flex items-center mb-6">
                         <Target className="h-6 w-6 text-blue-600 mr-3" />
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Investment & Goals</h2>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                          Investment & Goals
+                        </h2>
                       </div>
 
                       <div className="space-y-6">
@@ -422,7 +457,7 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.investmentLevel}
-                            onChange={(e) => handleInputChange('investmentLevel', e.target.value)}
+                            onChange={e => handleInputChange('investmentLevel', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Investment Range</option>
@@ -440,13 +475,15 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.timeCommitment}
-                            onChange={(e) => handleInputChange('timeCommitment', e.target.value)}
+                            onChange={e => handleInputChange('timeCommitment', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Time Commitment</option>
                             <option value="part-time">Part-time (20-30 hours/week)</option>
                             <option value="full-time">Full-time (40+ hours/week)</option>
-                            <option value="gradual">Start part-time, transition to full-time</option>
+                            <option value="gradual">
+                              Start part-time, transition to full-time
+                            </option>
                             <option value="team">Build a team approach</option>
                           </select>
                         </div>
@@ -458,7 +495,7 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.targetIncome}
-                            onChange={(e) => handleInputChange('targetIncome', e.target.value)}
+                            onChange={e => handleInputChange('targetIncome', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Income Goal</option>
@@ -476,7 +513,7 @@ export default function ApplyPage() {
                           <select
                             required
                             value={formData.startTimeline}
-                            onChange={(e) => handleInputChange('startTimeline', e.target.value)}
+                            onChange={e => handleInputChange('startTimeline', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Timeline</option>
@@ -494,7 +531,7 @@ export default function ApplyPage() {
                           </label>
                           <select
                             value={formData.hearAbout}
-                            onChange={(e) => handleInputChange('hearAbout', e.target.value)}
+                            onChange={e => handleInputChange('hearAbout', e.target.value)}
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <option value="">Select Source</option>
@@ -514,7 +551,7 @@ export default function ApplyPage() {
                           <textarea
                             rows={4}
                             value={formData.questions}
-                            onChange={(e) => handleInputChange('questions', e.target.value)}
+                            onChange={e => handleInputChange('questions', e.target.value)}
                             placeholder="Any specific questions about the opportunity, territory availability, or other concerns..."
                             className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-700 dark:text-white"
                           />
@@ -585,16 +622,17 @@ export default function ApplyPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm text-center"
+              >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <benefit.icon className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
                   {benefit.title}
                 </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {benefit.description}
-                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{benefit.description}</p>
               </div>
             ))}
           </div>

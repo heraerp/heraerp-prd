@@ -27,24 +27,30 @@ const JournalEntrySchema = z.object({
   description: z.string().min(1),
   date: z.string().datetime().optional(),
   reference: z.string().optional(),
-  lines: z.array(z.object({
-    accountCode: z.string(),
-    debit: z.number().default(0),
-    credit: z.number().default(0),
-    costCenter: z.string().optional(),
-    profitCenter: z.string().optional(),
-    project: z.string().optional(),
-    description: z.string().optional()
-  })).min(2)
+  lines: z
+    .array(
+      z.object({
+        accountCode: z.string(),
+        debit: z.number().default(0),
+        credit: z.number().default(0),
+        costCenter: z.string().optional(),
+        profitCenter: z.string().optional(),
+        project: z.string().optional(),
+        description: z.string().optional()
+      })
+    )
+    .min(2)
 })
 
 const ConsolidationSchema = z.object({
   consolidationDate: z.string().datetime(),
-  companies: z.array(z.object({
-    companyId: z.string().uuid(),
-    ownershipPercent: z.number().min(0).max(100),
-    consolidationMethod: z.enum(['full', 'equity', 'proportional'])
-  })),
+  companies: z.array(
+    z.object({
+      companyId: z.string().uuid(),
+      ownershipPercent: z.number().min(0).max(100),
+      consolidationMethod: z.enum(['full', 'equity', 'proportional'])
+    })
+  ),
   eliminateIntercompany: z.boolean().default(true),
   includeCurrencyTranslation: z.boolean().default(true),
   reportingCurrency: z.string().default('USD')
@@ -71,12 +77,15 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action')
 
     // Get auth context
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const organizationId = searchParams.get('organizationId') || session.user.user_metadata?.organization_id
+    const organizationId =
+      searchParams.get('organizationId') || session.user.user_metadata?.organization_id
 
     switch (action) {
       case 'list_accounts':
@@ -103,7 +112,6 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     console.error('FIN API Error:', error)
     return NextResponse.json(
@@ -121,7 +129,9 @@ export async function POST(request: NextRequest) {
     const { action, data, organizationId: orgId } = body
 
     // Get auth context
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -162,7 +172,6 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     console.error('FIN API Error:', error)
     return NextResponse.json(
@@ -202,7 +211,7 @@ async function listGLAccounts(supabase: any, organizationId: string, params: URL
   // Get balances if requested
   if (includeBalances && accounts.length > 0) {
     const accountIds = accounts.map((a: any) => a.id)
-    
+
     const { data: balances } = await supabase
       .from('core_dynamic_data')
       .select('entity_id, field_name, field_value_number')
@@ -249,10 +258,7 @@ async function createGLAccount(supabase: any, organizationId: string, data: any)
     .single()
 
   if (existing) {
-    return NextResponse.json(
-      { error: 'Account code already exists' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Account code already exists' }, { status: 400 })
   }
 
   // Create GL account
@@ -289,17 +295,15 @@ async function createGLAccount(supabase: any, organizationId: string, data: any)
       .single()
 
     if (parent) {
-      await supabase
-        .from('core_relationships')
-        .insert({
-          from_entity_id: parent.id,
-          to_entity_id: account.id,
-          relationship_type: 'parent_of',
-          smart_code: 'HERA.FIN.GL.ACCOUNT.HIERARCHY.v1',
-          metadata: {
-            hierarchy_type: 'gl_account'
-          }
-        })
+      await supabase.from('core_relationships').insert({
+        from_entity_id: parent.id,
+        to_entity_id: account.id,
+        relationship_type: 'parent_of',
+        smart_code: 'HERA.FIN.GL.ACCOUNT.HIERARCHY.v1',
+        metadata: {
+          hierarchy_type: 'gl_account'
+        }
+      })
     }
   }
 
@@ -314,10 +318,7 @@ async function getAccountBalance(supabase: any, organizationId: string, params: 
   const asOfDate = params.get('asOfDate') || new Date().toISOString()
 
   if (!accountCode) {
-    return NextResponse.json(
-      { error: 'Account code is required' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Account code is required' }, { status: 400 })
   }
 
   // Get account
@@ -330,10 +331,7 @@ async function getAccountBalance(supabase: any, organizationId: string, params: 
     .single()
 
   if (!account) {
-    return NextResponse.json(
-      { error: 'Account not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: 'Account not found' }, { status: 404 })
   }
 
   // Get current period balance
@@ -349,14 +347,16 @@ async function getAccountBalance(supabase: any, organizationId: string, params: 
   // Get transaction history
   const { data: transactions } = await supabase
     .from('universal_transaction_lines')
-    .select(`
+    .select(
+      `
       *,
       transaction:universal_transactions(
         transaction_code,
         transaction_date,
         metadata
       )
-    `)
+    `
+    )
     .eq('line_entity_id', account.id)
     .lte('transaction.transaction_date', asOfDate)
     .order('transaction.transaction_date', { ascending: false })
@@ -385,7 +385,12 @@ async function getAccountBalance(supabase: any, organizationId: string, params: 
 // JOURNAL ENTRY FUNCTIONS
 // =============================================
 
-async function createJournalEntry(supabase: any, organizationId: string, userId: string, data: any) {
+async function createJournalEntry(
+  supabase: any,
+  organizationId: string,
+  userId: string,
+  data: any
+) {
   const validated = JournalEntrySchema.parse(data)
 
   // Validate lines balance
@@ -440,23 +445,21 @@ async function createJournalEntry(supabase: any, organizationId: string, userId:
       throw new Error(`GL account ${line.accountCode} not found`)
     }
 
-    return supabase
-      .from('universal_transaction_lines')
-      .insert({
-        transaction_id: journal.id,
-        line_number: index + 1,
-        line_entity_id: account.id,
-        line_amount: line.debit || line.credit,
-        metadata: {
-          entry_type: line.debit > 0 ? 'debit' : 'credit',
-          gl_account_code: line.accountCode,
-          gl_account_name: account.entity_name,
-          cost_center: line.costCenter,
-          profit_center: line.profitCenter,
-          project: line.project,
-          description: line.description
-        }
-      })
+    return supabase.from('universal_transaction_lines').insert({
+      transaction_id: journal.id,
+      line_number: index + 1,
+      line_entity_id: account.id,
+      line_amount: line.debit || line.credit,
+      metadata: {
+        entry_type: line.debit > 0 ? 'debit' : 'credit',
+        gl_account_code: line.accountCode,
+        gl_account_name: account.entity_name,
+        cost_center: line.costCenter,
+        profit_center: line.profitCenter,
+        project: line.project,
+        description: line.description
+      }
+    })
   })
 
   await Promise.all(linePromises)
@@ -478,42 +481,35 @@ async function postJournalEntry(supabase: any, organizationId: string, data: any
   // Get journal with lines
   const { data: journal, error: journalError } = await supabase
     .from('universal_transactions')
-    .select(`
+    .select(
+      `
       *,
       lines:universal_transaction_lines(*)
-    `)
+    `
+    )
     .eq('id', journalId)
     .eq('organization_id', organizationId)
     .single()
 
   if (journalError || !journal) {
-    return NextResponse.json(
-      { error: 'Journal entry not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: 'Journal entry not found' }, { status: 404 })
   }
 
   if (journal.metadata.posting_status === 'posted') {
-    return NextResponse.json(
-      { error: 'Journal entry already posted' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Journal entry already posted' }, { status: 400 })
   }
 
   // Validate balance
   const totalDebits = journal.lines
     .filter((l: any) => l.metadata.entry_type === 'debit')
     .reduce((sum: number, l: any) => sum + l.line_amount, 0)
-  
+
   const totalCredits = journal.lines
     .filter((l: any) => l.metadata.entry_type === 'credit')
     .reduce((sum: number, l: any) => sum + l.line_amount, 0)
 
   if (Math.abs(totalDebits - totalCredits) > 0.01) {
-    return NextResponse.json(
-      { error: 'Journal entry does not balance' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Journal entry does not balance' }, { status: 400 })
   }
 
   // Update posting status
@@ -542,32 +538,33 @@ async function postJournalEntry(supabase: any, organizationId: string, data: any
   })
 }
 
-async function reverseJournalEntry(supabase: any, organizationId: string, userId: string, data: any) {
+async function reverseJournalEntry(
+  supabase: any,
+  organizationId: string,
+  userId: string,
+  data: any
+) {
   const { originalJournalId, reason, reversalDate } = data
 
   // Get original journal
   const { data: original, error: originalError } = await supabase
     .from('universal_transactions')
-    .select(`
+    .select(
+      `
       *,
       lines:universal_transaction_lines(*)
-    `)
+    `
+    )
     .eq('id', originalJournalId)
     .eq('organization_id', organizationId)
     .single()
 
   if (originalError || !original) {
-    return NextResponse.json(
-      { error: 'Original journal entry not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: 'Original journal entry not found' }, { status: 404 })
   }
 
   if (original.metadata.posting_status !== 'posted') {
-    return NextResponse.json(
-      { error: 'Can only reverse posted entries' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Can only reverse posted entries' }, { status: 400 })
   }
 
   // Create reversal
@@ -608,9 +605,7 @@ async function reverseJournalEntry(supabase: any, organizationId: string, userId
     }
   }))
 
-  await supabase
-    .from('universal_transaction_lines')
-    .insert(reversalLines)
+  await supabase.from('universal_transaction_lines').insert(reversalLines)
 
   return NextResponse.json({
     success: true,
@@ -627,25 +622,32 @@ async function reverseJournalEntry(supabase: any, organizationId: string, userId
 // FINANCIAL REPORTING FUNCTIONS
 // =============================================
 
-async function generateTrialBalance(supabase: any, organizationId: string, params: URLSearchParams) {
+async function generateTrialBalance(
+  supabase: any,
+  organizationId: string,
+  params: URLSearchParams
+) {
   const asOfDate = params.get('asOfDate') || new Date().toISOString()
 
   // Call the database function via edge function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-    },
-    body: JSON.stringify({
-      action: 'generate_trial_balance',
-      organizationId,
-      data: { asOfDate }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+      },
+      body: JSON.stringify({
+        action: 'generate_trial_balance',
+        organizationId,
+        data: { asOfDate }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
@@ -667,26 +669,29 @@ async function generateFinancialReport(supabase: any, organizationId: string, da
     trial_balance: 'generate_trial_balance'
   }
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-    },
-    body: JSON.stringify({
-      action: actionMap[validated.reportType],
-      organizationId,
-      data: {
-        startDate: validated.startDate,
-        endDate: validated.endDate,
-        asOfDate: validated.asOfDate,
-        format: validated.format
-      }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+      },
+      body: JSON.stringify({
+        action: actionMap[validated.reportType],
+        organizationId,
+        data: {
+          startDate: validated.startDate,
+          endDate: validated.endDate,
+          asOfDate: validated.asOfDate,
+          format: validated.format
+        }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
@@ -701,11 +706,16 @@ async function generateFinancialReport(supabase: any, organizationId: string, da
 // CONSOLIDATION FUNCTIONS
 // =============================================
 
-async function getConsolidationStructure(supabase: any, organizationId: string, params: URLSearchParams) {
+async function getConsolidationStructure(
+  supabase: any,
+  organizationId: string,
+  params: URLSearchParams
+) {
   // Get all subsidiary relationships
   const { data: subsidiaries, error } = await supabase
     .from('core_relationships')
-    .select(`
+    .select(
+      `
       *,
       parent:from_entity_id(
         id,
@@ -718,7 +728,8 @@ async function getConsolidationStructure(supabase: any, organizationId: string, 
         entity_code,
         metadata
       )
-    `)
+    `
+    )
     .eq('relationship_type', 'owns')
     .eq('from_entity_id', organizationId)
 
@@ -731,14 +742,15 @@ async function getConsolidationStructure(supabase: any, organizationId: string, 
       name: 'Parent Company',
       consolidation_method: 'full'
     },
-    subsidiaries: subsidiaries?.map((sub: any) => ({
-      id: sub.to_entity_id,
-      name: sub.subsidiary.entity_name,
-      code: sub.subsidiary.entity_code,
-      ownership_percent: (sub.metadata as any)?.ownership_percent || 100,
-      consolidation_method: (sub.metadata as any)?.consolidation_method || 'full',
-      currency: (sub.subsidiary.metadata as any)?.currency || 'USD'
-    })) || []
+    subsidiaries:
+      subsidiaries?.map((sub: any) => ({
+        id: sub.to_entity_id,
+        name: sub.subsidiary.entity_name,
+        code: sub.subsidiary.entity_code,
+        ownership_percent: (sub.metadata as any)?.ownership_percent || 100,
+        consolidation_method: (sub.metadata as any)?.consolidation_method || 'full',
+        currency: (sub.subsidiary.metadata as any)?.currency || 'USD'
+      })) || []
   }
 
   return NextResponse.json({
@@ -751,21 +763,24 @@ async function consolidateCompanies(supabase: any, organizationId: string, data:
   const validated = ConsolidationSchema.parse(data)
 
   // Call consolidation edge function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-    },
-    body: JSON.stringify({
-      action: 'consolidate_companies',
-      organizationId,
-      data: validated
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+      },
+      body: JSON.stringify({
+        action: 'consolidate_companies',
+        organizationId,
+        data: validated
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
@@ -818,36 +833,33 @@ async function closePeriod(supabase: any, organizationId: string, userId: string
     .single()
 
   if (periodError || !period) {
-    return NextResponse.json(
-      { error: 'Period not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: 'Period not found' }, { status: 404 })
   }
 
   if (period.metadata.status !== 'open') {
-    return NextResponse.json(
-      { error: 'Period is not open' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Period is not open' }, { status: 400 })
   }
 
   // Call period close function
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-    },
-    body: JSON.stringify({
-      action: 'close_period',
-      organizationId,
-      userId,
-      data: { periodId }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+      },
+      body: JSON.stringify({
+        action: 'close_period',
+        organizationId,
+        userId,
+        data: { periodId }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
@@ -900,24 +912,31 @@ async function getPeriodStatus(supabase: any, organizationId: string, params: UR
 // FINANCIAL ANALYTICS
 // =============================================
 
-async function calculateFinancialRatios(supabase: any, organizationId: string, params: URLSearchParams) {
+async function calculateFinancialRatios(
+  supabase: any,
+  organizationId: string,
+  params: URLSearchParams
+) {
   const asOfDate = params.get('asOfDate') || new Date().toISOString()
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-    },
-    body: JSON.stringify({
-      action: 'financial_ratios',
-      organizationId,
-      data: { asOfDate }
-    })
-  })
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+      },
+      body: JSON.stringify({
+        action: 'financial_ratios',
+        organizationId,
+        data: { asOfDate }
+      })
+    }
+  )
 
   const result = await response.json()
-  
+
   if (!result.success) {
     return NextResponse.json({ error: result.error }, { status: 500 })
   }
@@ -934,34 +953,42 @@ async function getCashPosition(supabase: any, organizationId: string, params: UR
   // Get current cash balance
   const { data: cashAccounts } = await supabase
     .from('core_entities')
-    .select(`
+    .select(
+      `
       *,
       balance:core_dynamic_data!inner(
         field_value_number
       )
-    `)
+    `
+    )
     .eq('organization_id', organizationId)
     .eq('entity_type', 'gl_account')
     .eq('metadata->account_type', 'asset')
     .like('entity_code', '110%') // Cash accounts typically start with 110
 
-  const currentCash = cashAccounts?.reduce((sum: number, acc: any) => 
-    sum + (acc.balance?.[0]?.field_value_number || 0), 0) || 0
+  const currentCash =
+    cashAccounts?.reduce(
+      (sum: number, acc: any) => sum + (acc.balance?.[0]?.field_value_number || 0),
+      0
+    ) || 0
 
   let forecast = null
   if (forecastDays > 0) {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-      },
-      body: JSON.stringify({
-        action: 'forecast_cash_flow',
-        organizationId,
-        data: { forecastDays }
-      })
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/fin-dispatch`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+        },
+        body: JSON.stringify({
+          action: 'forecast_cash_flow',
+          organizationId,
+          data: { forecastDays }
+        })
+      }
+    )
 
     const result = await response.json()
     if (result.success) {
@@ -974,11 +1001,12 @@ async function getCashPosition(supabase: any, organizationId: string, params: UR
     data: {
       current_cash: currentCash,
       as_of: new Date().toISOString(),
-      cash_accounts: cashAccounts?.map((acc: any) => ({
-        code: acc.entity_code,
-        name: acc.entity_name,
-        balance: acc.balance?.[0]?.field_value_number || 0
-      })) || [],
+      cash_accounts:
+        cashAccounts?.map((acc: any) => ({
+          code: acc.entity_code,
+          name: acc.entity_name,
+          balance: acc.balance?.[0]?.field_value_number || 0
+        })) || [],
       forecast: forecast
     }
   })
@@ -1029,9 +1057,7 @@ async function createBudget(supabase: any, organizationId: string, data: any) {
       }
     }))
 
-    await supabase
-      .from('universal_transactions')
-      .insert(lines)
+    await supabase.from('universal_transactions').insert(lines)
   }
 
   return NextResponse.json({
@@ -1062,10 +1088,7 @@ async function allocateCosts(supabase: any, organizationId: string, data: any) {
     .single()
 
   if (ruleError || !rule) {
-    return NextResponse.json(
-      { error: 'Allocation rule not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: 'Allocation rule not found' }, { status: 404 })
   }
 
   // Calculate allocations
@@ -1084,7 +1107,7 @@ async function allocateCosts(supabase: any, organizationId: string, data: any) {
 
   // Create allocation journal entries
   const journalNumber = `ALLOC-${Date.now()}`
-  
+
   const { data: journal, error: journalError } = await supabase
     .from('universal_transactions')
     .insert({
@@ -1119,7 +1142,7 @@ async function allocateCosts(supabase: any, organizationId: string, data: any) {
         allocation: true
       }
     })
-    
+
     // Debit target
     lines.push({
       transaction_id: journal.id,
@@ -1134,9 +1157,7 @@ async function allocateCosts(supabase: any, organizationId: string, data: any) {
     })
   })
 
-  await supabase
-    .from('universal_transaction_lines')
-    .insert(lines)
+  await supabase.from('universal_transaction_lines').insert(lines)
 
   return NextResponse.json({
     success: true,
@@ -1171,13 +1192,8 @@ async function importJournalEntries(supabase: any, organizationId: string, data:
 
       if (validation.valid && !validateOnly) {
         // Import entry
-        const result = await createJournalEntry(
-          supabase,
-          organizationId,
-          'import-user',
-          entry
-        )
-        
+        const result = await createJournalEntry(supabase, organizationId, 'import-user', entry)
+
         importResults.push({
           row: entry.row || importResults.length + 1,
           success: true,
@@ -1239,7 +1255,7 @@ async function validateJournalEntry(entry: any) {
   // Check balance
   const totalDebits = entry.lines?.reduce((sum: number, l: any) => sum + (l.debit || 0), 0) || 0
   const totalCredits = entry.lines?.reduce((sum: number, l: any) => sum + (l.credit || 0), 0) || 0
-  
+
   if (Math.abs(totalDebits - totalCredits) > 0.01) {
     errors.push(`Entry does not balance. Debits: ${totalDebits}, Credits: ${totalCredits}`)
   }
@@ -1260,10 +1276,15 @@ async function validateJournalEntry(entry: any) {
   }
 }
 
-async function calculateAllocations(supabase: any, organizationId: string, rule: any, period: string) {
+async function calculateAllocations(
+  supabase: any,
+  organizationId: string,
+  rule: any,
+  period: string
+) {
   // This is a simplified allocation calculation
   // In production, this would implement various allocation methods
-  
+
   const allocations = []
   const { source_accounts, target_accounts, allocation_basis } = rule.metadata
 

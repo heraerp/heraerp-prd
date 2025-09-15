@@ -4,17 +4,17 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 interface SmartCodeSearchRequest {
   organization_id: string
   search_criteria: {
-    pattern?: string           // Smart code pattern to match
-    module?: string           // Specific module (REST, HLTH, MFG, etc.)
-    sub_module?: string       // Specific sub-module (CRM, INV, FIN, etc.)
-    function_type?: string    // Specific function (ENT, TXN, CALC, etc.)
-    entity_type?: string      // Specific entity type
-    version?: string          // Specific version
-    status?: string           // Smart code status (DRAFT, PROD, DEPRECATED)
+    pattern?: string // Smart code pattern to match
+    module?: string // Specific module (REST, HLTH, MFG, etc.)
+    sub_module?: string // Specific sub-module (CRM, INV, FIN, etc.)
+    function_type?: string // Specific function (ENT, TXN, CALC, etc.)
+    entity_type?: string // Specific entity type
+    version?: string // Specific version
+    status?: string // Smart code status (DRAFT, PROD, DEPRECATED)
   }
   filters?: {
-    include_system_org?: boolean  // Include system organization templates
-    entity_types?: string[]       // Filter by entity types
+    include_system_org?: boolean // Include system organization templates
+    entity_types?: string[] // Filter by entity types
     date_range?: {
       from: string
       to: string
@@ -69,22 +69,25 @@ interface SmartCodeSearchResponse {
 
 function buildSmartCodePattern(criteria: SmartCodeSearchRequest['search_criteria']): string {
   const { pattern, module, sub_module, function_type, entity_type, version } = criteria
-  
+
   if (pattern) {
     return pattern
   }
-  
+
   let smartCodePattern = 'HERA'
   smartCodePattern += module ? `.${module}` : '.%'
-  smartCodePattern += sub_module ? `.${sub_module}` : '.%'  
+  smartCodePattern += sub_module ? `.${sub_module}` : '.%'
   smartCodePattern += function_type ? `.${function_type}` : '.%'
   smartCodePattern += entity_type ? `.${entity_type}` : '.%'
   smartCodePattern += version ? `.${version}` : '.%'
-  
+
   return smartCodePattern
 }
 
-function buildWhereClause(criteria: SmartCodeSearchRequest['search_criteria'], filters: SmartCodeSearchRequest['filters']) {
+function buildWhereClause(
+  criteria: SmartCodeSearchRequest['search_criteria'],
+  filters: SmartCodeSearchRequest['filters']
+) {
   const conditions: string[] = []
   const params: any[] = []
   let paramIndex = 1
@@ -123,7 +126,7 @@ function buildWhereClause(criteria: SmartCodeSearchRequest['search_criteria'], f
 
 async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartCodeSearchResponse> {
   const { organization_id, search_criteria, filters, pagination, sort } = request
-  
+
   // Pagination defaults
   const page = pagination?.page || 1
   const limit = Math.min(pagination?.limit || 20, 100) // Max 100 results per page
@@ -143,7 +146,8 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
     // Build the base query
     let query = supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         smart_code,
         entity_name,
@@ -156,7 +160,8 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
         updated_at,
         metadata,
         core_organizations!core_entities_organization_id_fkey(organization_name)
-      `)
+      `
+      )
       .in('organization_id', orgFilters)
       .not('smart_code', 'is', null)
 
@@ -198,11 +203,13 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
     // Get dynamic data for the found entities
     const entityIds = entities?.map(e => e.id) || []
     let dynamicData: any[] = []
-    
+
     if (entityIds.length > 0) {
       const { data: dynData } = await supabase
         .from('core_dynamic_data')
-        .select('entity_id, field_name, field_type, field_value_text, field_value_number, field_value_boolean, field_value_json')
+        .select(
+          'entity_id, field_name, field_type, field_value_text, field_value_number, field_value_boolean, field_value_json'
+        )
         .in('entity_id', entityIds)
         .in('organization_id', orgFilters)
 
@@ -210,30 +217,35 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
     }
 
     // Process results
-    const results = entities?.map(entity => ({
-      smart_code: entity.smart_code,
-      entity_id: entity.id,
-      entity_name: entity.entity_name,
-      entity_type: entity.entity_type,
-      entity_code: entity.entity_code,
-      smart_code_status: entity.smart_code_status || 'DRAFT',
-      smart_code_version: entity.smart_code_version || 'v1',
-      organization_id: entity.organization_id,
-      organization_name: entity.core_organizations?.organization_name,
-      created_at: entity.created_at,
-      updated_at: entity.updated_at,
-      metadata: entity.metadata,
-      dynamic_fields: dynamicData
-        .filter(d => d.entity_id === entity.id)
-        .map(d => ({
-          field_name: d.field_name,
-          field_type: d.field_type,
-          field_value: d.field_type === 'text' ? d.field_value_text :
-                      d.field_type === 'number' ? d.field_value_number :
-                      d.field_type === 'boolean' ? d.field_value_boolean :
-                      d.field_value_json
-        }))
-    })) || []
+    const results =
+      entities?.map(entity => ({
+        smart_code: entity.smart_code,
+        entity_id: entity.id,
+        entity_name: entity.entity_name,
+        entity_type: entity.entity_type,
+        entity_code: entity.entity_code,
+        smart_code_status: entity.smart_code_status || 'DRAFT',
+        smart_code_version: entity.smart_code_version || 'v1',
+        organization_id: entity.organization_id,
+        organization_name: entity.core_organizations?.organization_name,
+        created_at: entity.created_at,
+        updated_at: entity.updated_at,
+        metadata: entity.metadata,
+        dynamic_fields: dynamicData
+          .filter(d => d.entity_id === entity.id)
+          .map(d => ({
+            field_name: d.field_name,
+            field_type: d.field_type,
+            field_value:
+              d.field_type === 'text'
+                ? d.field_value_text
+                : d.field_type === 'number'
+                  ? d.field_value_number
+                  : d.field_type === 'boolean'
+                    ? d.field_value_boolean
+                    : d.field_value_json
+          }))
+      })) || []
 
     // Calculate aggregations
     const aggregations = {
@@ -253,7 +265,8 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
 
         aggregations.by_module[module] = (aggregations.by_module[module] || 0) + 1
         aggregations.by_sub_module[subModule] = (aggregations.by_sub_module[subModule] || 0) + 1
-        aggregations.by_function_type[functionType] = (aggregations.by_function_type[functionType] || 0) + 1
+        aggregations.by_function_type[functionType] =
+          (aggregations.by_function_type[functionType] || 0) + 1
         aggregations.by_status[status] = (aggregations.by_status[status] || 0) + 1
       }
     })
@@ -267,7 +280,9 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
     } else {
       suggestions.push(`Found ${results.length} smart codes`)
       if (Object.keys(aggregations.by_module).length > 1) {
-        suggestions.push(`Multiple modules found: ${Object.keys(aggregations.by_module).join(', ')}`)
+        suggestions.push(
+          `Multiple modules found: ${Object.keys(aggregations.by_module).join(', ')}`
+        )
       }
     }
 
@@ -286,7 +301,6 @@ async function searchSmartCodes(request: SmartCodeSearchRequest): Promise<SmartC
       aggregations,
       suggestions
     }
-
   } catch (error) {
     console.error('Smart code search error:', error)
     throw error
@@ -301,19 +315,15 @@ export async function POST(request: NextRequest) {
     const { organization_id } = body
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const results = await searchSmartCodes(body)
     return NextResponse.json(results)
-
   } catch (error) {
     console.error('Smart code search error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error during search',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -383,12 +393,8 @@ export async function GET(request: NextRequest) {
 
     const results = await searchSmartCodes(quickSearchRequest)
     return NextResponse.json(results)
-
   } catch (error) {
     console.error('Quick search error:', error)
-    return NextResponse.json(
-      { error: 'Error performing quick search' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Error performing quick search' }, { status: 500 })
   }
 }

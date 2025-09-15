@@ -1,7 +1,7 @@
 'use client'
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
 export default function OfflinePage() {
   return (
@@ -23,11 +23,11 @@ export default function OfflinePage() {
               />
             </svg>
           </div>
-          
+
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             You&apos;re Offline
           </h1>
-          
+
           <p className="text-gray-400 text-lg">
             HERA is currently unavailable without an internet connection.
           </p>
@@ -35,9 +35,7 @@ export default function OfflinePage() {
 
         <div className="space-y-4">
           <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-            <h2 className="text-xl font-semibold text-white mb-2">
-              What you can do:
-            </h2>
+            <h2 className="text-xl font-semibold text-white mb-2">What you can do:</h2>
             <ul className="text-left text-gray-400 space-y-2">
               <li className="flex items-start">
                 <span className="text-cyan-500 mr-2">•</span>
@@ -62,10 +60,8 @@ export default function OfflinePage() {
           </button>
         </div>
 
-        <p className="text-sm text-gray-500">
-          HERA Universal ERP • Offline Mode
-        </p>
+        <p className="text-sm text-gray-500">HERA Universal ERP • Offline Mode</p>
       </div>
     </div>
-  );
+  )
 }

@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { cn } from '@/lib/utils'
 
 // Universal Layout Container
 export interface HeraLayoutProps {
-  children: React.ReactNode;
-  variant?: 'default' | 'centered' | 'sidebar' | 'full-width';
-  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
+  children: React.ReactNode
+  variant?: 'default' | 'centered' | 'sidebar' | 'full-width'
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+  gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+  className?: string
 }
 
 export function HeraLayout({
@@ -24,7 +24,7 @@ export function HeraLayout({
     centered: 'container mx-auto flex items-center justify-center min-h-screen',
     sidebar: 'flex min-h-screen',
     'full-width': 'w-full'
-  };
+  }
 
   const paddingClasses = {
     none: '',
@@ -32,7 +32,7 @@ export function HeraLayout({
     md: 'p-4 md:p-6',
     lg: 'p-6 md:p-8',
     xl: 'p-8 md:p-12'
-  };
+  }
 
   const gapClasses = {
     none: '',
@@ -40,27 +40,29 @@ export function HeraLayout({
     md: 'space-y-4 md:space-y-6',
     lg: 'space-y-6 md:space-y-8',
     xl: 'space-y-8 md:space-y-12'
-  };
+  }
 
   return (
-    <div className={cn(
-      variantClasses[variant],
-      paddingClasses[padding],
-      variant !== 'sidebar' ? gapClasses[gap] : '',
-      className
-    )}>
+    <div
+      className={cn(
+        variantClasses[variant],
+        paddingClasses[padding],
+        variant !== 'sidebar' ? gapClasses[gap] : '',
+        className
+      )}
+    >
       {children}
     </div>
-  );
+  )
 }
 
 // Grid System Components
 export interface HeraGridProps {
-  children: React.ReactNode;
-  cols?: 1 | 2 | 3 | 4 | 6 | 12;
-  gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  responsive?: boolean;
-  className?: string;
+  children: React.ReactNode
+  cols?: 1 | 2 | 3 | 4 | 6 | 12
+  gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+  responsive?: boolean
+  className?: string
 }
 
 export function HeraGrid({
@@ -77,7 +79,7 @@ export function HeraGrid({
     4: responsive ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-4',
     6: responsive ? 'grid-cols-1 md:grid-cols-3 lg:grid-cols-6' : 'grid-cols-6',
     12: responsive ? 'grid-cols-1 md:grid-cols-6 lg:grid-cols-12' : 'grid-cols-12'
-  };
+  }
 
   const gapClasses = {
     none: 'gap-0',
@@ -85,29 +87,20 @@ export function HeraGrid({
     md: 'gap-4 md:gap-6',
     lg: 'gap-6 md:gap-8',
     xl: 'gap-8 md:gap-12'
-  };
+  }
 
-  return (
-    <div className={cn(
-      'grid',
-      colClasses[cols],
-      gapClasses[gap],
-      className
-    )}>
-      {children}
-    </div>
-  );
+  return <div className={cn('grid', colClasses[cols], gapClasses[gap], className)}>{children}</div>
 }
 
 // Stack Components
 export interface HeraStackProps {
-  children: React.ReactNode;
-  direction?: 'vertical' | 'horizontal';
-  align?: 'start' | 'center' | 'end' | 'stretch';
-  justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
-  gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  wrap?: boolean;
-  className?: string;
+  children: React.ReactNode
+  direction?: 'vertical' | 'horizontal'
+  align?: 'start' | 'center' | 'end' | 'stretch'
+  justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'
+  gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+  wrap?: boolean
+  className?: string
 }
 
 export function HeraStack({
@@ -122,14 +115,14 @@ export function HeraStack({
   const directionClasses = {
     vertical: 'flex-col',
     horizontal: 'flex-row'
-  };
+  }
 
   const alignClasses = {
     start: 'items-start',
     center: 'items-center',
     end: 'items-end',
     stretch: 'items-stretch'
-  };
+  }
 
   const justifyClasses = {
     start: 'justify-start',
@@ -138,7 +131,7 @@ export function HeraStack({
     between: 'justify-between',
     around: 'justify-around',
     evenly: 'justify-evenly'
-  };
+  }
 
   const gapClasses = {
     none: 'gap-0',
@@ -146,29 +139,31 @@ export function HeraStack({
     md: 'gap-4',
     lg: 'gap-6',
     xl: 'gap-8'
-  };
+  }
 
   return (
-    <div className={cn(
-      'flex',
-      directionClasses[direction],
-      alignClasses[align],
-      justifyClasses[justify],
-      gapClasses[gap],
-      wrap ? 'flex-wrap' : '',
-      className
-    )}>
+    <div
+      className={cn(
+        'flex',
+        directionClasses[direction],
+        alignClasses[align],
+        justifyClasses[justify],
+        gapClasses[gap],
+        wrap ? 'flex-wrap' : '',
+        className
+      )}
+    >
       {children}
     </div>
-  );
+  )
 }
 
 // Responsive Break Points
 export interface HeraResponsiveProps {
-  children: React.ReactNode;
-  hideOn?: ('mobile' | 'tablet' | 'desktop')[];
-  showOn?: ('mobile' | 'tablet' | 'desktop')[];
-  className?: string;
+  children: React.ReactNode
+  hideOn?: ('mobile' | 'tablet' | 'desktop')[]
+  showOn?: ('mobile' | 'tablet' | 'desktop')[]
+  className?: string
 }
 
 export function HeraResponsive({
@@ -182,26 +177,32 @@ export function HeraResponsive({
     hideOn.includes('tablet') ? 'sm:hidden lg:block' : '',
     hideOn.includes('desktop') ? 'lg:hidden' : '',
     showOn.includes('mobile') && !showOn.includes('tablet') ? 'sm:hidden' : '',
-    showOn.includes('tablet') && !showOn.includes('mobile') && !showOn.includes('desktop') ? 'hidden sm:block lg:hidden' : '',
-    showOn.includes('desktop') && !showOn.includes('mobile') && !showOn.includes('tablet') ? 'hidden lg:block' : ''
-  ].filter(Boolean).join(' ');
+    showOn.includes('tablet') && !showOn.includes('mobile') && !showOn.includes('desktop')
+      ? 'hidden sm:block lg:hidden'
+      : '',
+    showOn.includes('desktop') && !showOn.includes('mobile') && !showOn.includes('tablet')
+      ? 'hidden lg:block'
+      : ''
+  ]
+    .filter(Boolean)
+    .join(' ')
 
-  return (
-    <div className={cn(responsiveClasses, className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn(responsiveClasses, className)}>{children}</div>
 }
 
 // Specialized Layout Components
-export function HeraDashboardLayout({ children, className }: { children: React.ReactNode; className?: string }) {
+export function HeraDashboardLayout({
+  children,
+  className
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
   return (
     <HeraLayout variant="full-width" padding="lg" className={cn('min-h-screen', className)}>
-      <div className="dashboard-grid">
-        {children}
-      </div>
+      <div className="dashboard-grid">{children}</div>
     </HeraLayout>
-  );
+  )
 }
 
 export function HeraPageHeader({
@@ -210,10 +211,10 @@ export function HeraPageHeader({
   actions,
   className
 }: {
-  title: string;
-  subtitle?: string;
-  actions?: React.ReactNode;
-  className?: string;
+  title: string
+  subtitle?: string
+  actions?: React.ReactNode
+  className?: string
 }) {
   return (
     <div className={cn('space-y-4 pb-8 border-b border-border', className)}>
@@ -222,20 +223,12 @@ export function HeraPageHeader({
           <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-hera-500 to-hera-cyan-500 bg-clip-text text-transparent">
             {title}
           </h1>
-          {subtitle && (
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              {subtitle}
-            </p>
-          )}
+          {subtitle && <p className="text-lg text-muted-foreground max-w-2xl">{subtitle}</p>}
         </div>
-        {actions && (
-          <div className="flex-shrink-0">
-            {actions}
-          </div>
-        )}
+        {actions && <div className="flex-shrink-0">{actions}</div>}
       </HeraStack>
     </div>
-  );
+  )
 }
 
 export function HeraSection({
@@ -244,28 +237,20 @@ export function HeraSection({
   children,
   className
 }: {
-  title?: string;
-  subtitle?: string;
-  children: React.ReactNode;
-  className?: string;
+  title?: string
+  subtitle?: string
+  children: React.ReactNode
+  className?: string
 }) {
   return (
     <section className={cn('space-y-6', className)}>
       {(title || subtitle) && (
         <div className="space-y-2">
-          {title && (
-            <h2 className="text-2xl font-semibold tracking-tight">
-              {title}
-            </h2>
-          )}
-          {subtitle && (
-            <p className="text-muted-foreground">
-              {subtitle}
-            </p>
-          )}
+          {title && <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>}
+          {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
         </div>
       )}
       {children}
     </section>
-  );
+  )
 }

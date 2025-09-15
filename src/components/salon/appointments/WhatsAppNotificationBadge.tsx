@@ -21,16 +21,18 @@ interface WhatsAppNotificationBadgeProps {
   onViewHistory?: () => void
 }
 
-export function WhatsAppNotificationBadge({ 
-  notifications, 
+export function WhatsAppNotificationBadge({
+  notifications,
   onResendNotification,
-  onViewHistory 
+  onViewHistory
 }: WhatsAppNotificationBadgeProps) {
   if (!notifications.length) return null
 
   const lastNotification = notifications[notifications.length - 1]
   const hasFailedNotifications = notifications.some(n => n.status === 'failed')
-  const hasSuccessfulNotifications = notifications.some(n => n.status === 'sent' || n.status === 'delivered')
+  const hasSuccessfulNotifications = notifications.some(
+    n => n.status === 'sent' || n.status === 'delivered'
+  )
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -65,10 +67,7 @@ export function WhatsAppNotificationBadge({
       {/* WhatsApp notification badge */}
       <div className="flex items-center gap-1">
         <MessageCircle className="h-4 w-4 text-green-500" />
-        <Badge 
-          variant="outline" 
-          className={cn("text-xs", getStatusColor(lastNotification.status))}
-        >
+        <Badge variant="outline" className={cn('text-xs', getStatusColor(lastNotification.status))}>
           <span className="flex items-center gap-1">
             {getStatusIcon(lastNotification.status)}
             WhatsApp {lastNotification.type}
@@ -110,14 +109,9 @@ export function WhatsAppNotificationBadge({
             Retry
           </Button>
         )}
-        
+
         {onViewHistory && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-6 px-2 text-xs"
-            onClick={onViewHistory}
-          >
+          <Button size="sm" variant="outline" className="h-6 px-2 text-xs" onClick={onViewHistory}>
             History
           </Button>
         )}
@@ -134,24 +128,21 @@ interface WhatsAppNotificationHistoryProps {
   appointmentId: string
 }
 
-export function WhatsAppNotificationHistory({ 
-  isOpen, 
-  onClose, 
-  notifications, 
-  appointmentId 
+export function WhatsAppNotificationHistory({
+  isOpen,
+  onClose,
+  notifications,
+  appointmentId
 }: WhatsAppNotificationHistoryProps) {
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+
       {/* Modal */}
-      <div 
+      <div
         className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-xl shadow-2xl"
         style={{
           background: `
@@ -192,17 +183,19 @@ export function WhatsAppNotificationHistory({
             Appointment ID: {appointmentId}
           </p>
         </div>
-        
+
         {/* Notifications list */}
         <div className="p-6">
           {notifications.length === 0 ? (
             <div className="text-center py-8">
               <MessageCircle className="h-12 w-12 text-gray-600 mx-auto mb-3" />
-              <p className="!text-gray-600 dark:!text-gray-400">No WhatsApp notifications sent yet</p>
+              <p className="!text-gray-600 dark:!text-gray-400">
+                No WhatsApp notifications sent yet
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
-              {notifications.map((notification) => (
+              {notifications.map(notification => (
                 <div
                   key={notification.id}
                   className="p-4 rounded-lg bg-gray-800/30 border border-gray-700/50"
@@ -218,20 +211,18 @@ export function WhatsAppNotificationHistory({
                         <span className="font-medium !text-gray-900 dark:!text-white capitalize">
                           {notification.type} Notification
                         </span>
-                        <Badge 
-                          variant="outline" 
-                          className={cn("text-xs", getStatusColor(notification.status))}
+                        <Badge
+                          variant="outline"
+                          className={cn('text-xs', getStatusColor(notification.status))}
                         >
                           {notification.status}
                         </Badge>
                       </div>
-                      
+
                       <div className="text-sm !text-gray-600 dark:!text-gray-400 space-y-1">
                         <p>📱 To: {notification.phoneNumber}</p>
                         <p>📅 Sent: {format(notification.sentAt, 'MMM d, yyyy HH:mm')}</p>
-                        {notification.messageId && (
-                          <p>🆔 Message ID: {notification.messageId}</p>
-                        )}
+                        {notification.messageId && <p>🆔 Message ID: {notification.messageId}</p>}
                       </div>
                     </div>
                   </div>

@@ -1,0 +1,25 @@
+{
+  "header": {
+    "transaction_type": "pos_order",
+    "transaction_code": "POS-DXB-CANCEL-FEE-0001",
+    "transaction_date": "2025-09-15T16:00:00Z",
+    "smart_code": "HERA.SALON.APPOINTMENT.CANCELLED.v1",
+    "status": "posted",
+    "organization_id": "00000000-0000-0000-0000-000000000001",
+    "currency_code": "AED",
+    "total_amount": 25.00,
+    "metadata": { "cancelled": true, "within_window_hours": 6 }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "fee",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 25.00,
+      "line_amount": 25.00,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.CANCEL.FEE.LINE.v1"
+    }
+  ]
+}

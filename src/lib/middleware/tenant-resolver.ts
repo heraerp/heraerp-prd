@@ -1,6 +1,6 @@
 /**
  * 🏢 HERA Tenant Resolver Middleware
- * 
+ *
  * Resolves organization from subdomain and validates access
  * - Subdomain to organization mapping
  * - Module entitlements checking
@@ -77,7 +77,8 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
     // 3. Get module entitlements via relationships (HAS_MODULE relationships)
     const { data: moduleRelationships, error: moduleError } = await supabase
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         *,
         module:to_entity_id (
           id,
@@ -86,7 +87,8 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
           smart_code,
           metadata
         )
-      `)
+      `
+      )
       .eq('organization_id', orgData.id)
       .eq('from_entity_id', orgData.id)
       .eq('relationship_type', 'HAS_MODULE')
@@ -99,7 +101,7 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
     // 4. Get module configurations from dynamic data
     const moduleIds = moduleRelationships?.map(r => r.to_entity_id) || []
     let moduleConfigs: any[] = []
-    
+
     if (moduleIds.length > 0) {
       const { data: configData, error: configError } = await supabase
         .from('core_dynamic_data')
@@ -117,7 +119,7 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
     const modules: ModuleEntitlement[] = (moduleRelationships || []).map(rel => {
       const module = rel.module as any
       const config = moduleConfigs.find(c => c.entity_id === rel.to_entity_id)
-      
+
       // Parse version from smart code (e.g., HERA.SALON.POS.MODULE.v1 -> v1)
       const smartCode = module?.smart_code || ''
       const version = smartCode.split('.').pop() || 'v1'
@@ -158,7 +160,6 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
     })
 
     return tenantContext
-
   } catch (error) {
     console.error('[Tenant Resolver] Error resolving tenant:', error)
     return null
@@ -168,18 +169,14 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
 /**
  * Check if tenant has access to a specific module
  */
-export function hasModuleAccess(
-  tenant: TenantContext,
-  moduleSmartCode: string
-): boolean {
-  const module = tenant.modules.find(m => 
-    m.smartCode === moduleSmartCode || 
-    m.smartCode.startsWith(moduleSmartCode.split('.v')[0]) // Version-agnostic check
+export function hasModuleAccess(tenant: TenantContext, moduleSmartCode: string): boolean {
+  const module = tenant.modules.find(
+    m => m.smartCode === moduleSmartCode || m.smartCode.startsWith(moduleSmartCode.split('.v')[0]) // Version-agnostic check
   )
 
   if (!module) return false
   if (!module.enabled) return false
-  
+
   // Check expiration
   if (module.expiresAt) {
     const expiryDate = new Date(module.expiresAt)
@@ -196,9 +193,8 @@ export function getModuleConfig(
   tenant: TenantContext,
   moduleSmartCode: string
 ): Record<string, any> | null {
-  const module = tenant.modules.find(m => 
-    m.smartCode === moduleSmartCode || 
-    m.smartCode.startsWith(moduleSmartCode.split('.v')[0])
+  const module = tenant.modules.find(
+    m => m.smartCode === moduleSmartCode || m.smartCode.startsWith(moduleSmartCode.split('.v')[0])
   )
 
   return module?.configuration || null
@@ -210,7 +206,7 @@ export function getModuleConfig(
 export async function tenantResolverMiddleware(request: NextRequest): Promise<NextResponse | null> {
   // Get subdomain from header (set by main middleware)
   const subdomain = request.headers.get('x-hera-subdomain')
-  
+
   if (!subdomain) {
     // No subdomain, continue without tenant context
     return null
@@ -223,11 +219,11 @@ export async function tenantResolverMiddleware(request: NextRequest): Promise<Ne
 
   // Resolve tenant
   const tenant = await resolveTenant(subdomain)
-  
+
   if (!tenant) {
     // Unknown tenant
     return NextResponse.json(
-      { 
+      {
         error: 'Unknown tenant',
         message: `No organization found for subdomain: ${subdomain}`,
         code: 'TENANT_NOT_FOUND'

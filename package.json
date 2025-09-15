@@ -61,6 +61,8 @@
     "schema:check": "node mcp-server/check-schema.js",
     "tx:create": "node mcp-server/src/cli/tx-create.js",
     "schema:compat:write": "node mcp-server/contract-lint.js --bundle --compat --compat-write",
+    "tx:validate:salon": "node scripts/tx-validate-payloads.js tests/payloads/salon_*.json",
+    "seeds:apply:salon": "psql \"$DATABASE_URL\" -f hera/seeds/salon/orgs.sql",
     "schema:precommit": "node mcp-server/contract-lint.js --bundle . --compat --strict-compat",
     "prepare": "husky install",
     "prebuild": "echo 'Pre-build hook - schema validation included in quality checks'",
@@ -261,6 +263,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
     "glob": "^11.0.3",
+    "husky": "^9.1.3",
     "identity-obj-proxy": "^3.0.0",
     "inquirer": "^8.2.6",
     "jest": "^30.1.3",
@@ -270,11 +273,11 @@
     "ora": "^5.4.1",
     "pg": "^8.11.5",
     "postcss": "^8.4.31",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.4.0",
     "ts-jest": "^29.4.1",
     "tsx": "^4.19.0",
     "typescript": "^5.3.0",
-    "vitest": "^1.0.4",
-    "husky": "^9.1.3"
+    "vitest": "^1.0.4"
   }
 }

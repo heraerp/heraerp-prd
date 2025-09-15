@@ -3,41 +3,41 @@
  * Interfaces with Universal API respecting Six Sacred Tables
  */
 
-import type { 
-  UniversalTransaction, 
-  UniversalTransactionLine, 
-  ModuleEntity, 
+import type {
+  UniversalTransaction,
+  UniversalTransactionLine,
+  ModuleEntity,
   RelationshipRow,
   FiscalPeriod,
-  OrgId 
-} from '../types/factory';
+  OrgId
+} from '../types/factory'
 
 export interface ApiConfig {
-  baseUrl: string;
-  token?: string;
+  baseUrl: string
+  token?: string
 }
 
 export interface WaiverPayload {
-  transaction_id: string;
-  policy: string;
-  reason: string;
-  approved_by?: string;
+  transaction_id: string
+  policy: string
+  reason: string
+  approved_by?: string
 }
 
 export interface DashboardFilters {
-  organization_id: OrgId;
-  from_date?: string;
-  to_date?: string;
-  module_smart_code?: string;
-  channel?: string;
-  transaction_status?: string;
+  organization_id: OrgId
+  from_date?: string
+  to_date?: string
+  module_smart_code?: string
+  channel?: string
+  transaction_status?: string
 }
 
 export class FactoryDashboardClient {
-  private config: ApiConfig;
+  private config: ApiConfig
 
   constructor(config: ApiConfig) {
-    this.config = config;
+    this.config = config
   }
 
   private async fetch<T>(path: string, options?: RequestInit): Promise<T> {
@@ -45,16 +45,16 @@ export class FactoryDashboardClient {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': this.config.token ? `Bearer ${this.config.token}` : '',
-        ...options?.headers,
-      },
-    });
+        Authorization: this.config.token ? `Bearer ${this.config.token}` : '',
+        ...options?.headers
+      }
+    })
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      throw new Error(`API Error: ${response.status} ${response.statusText}`)
     }
 
-    return response.json();
+    return response.json()
   }
 
   async getTransactions(
@@ -68,73 +68,71 @@ export class FactoryDashboardClient {
       from_date: from,
       to_date: to,
       transaction_type_prefix: 'FACTORY.',
-      ...filters,
-    });
+      ...filters
+    })
 
     const response = await this.fetch<{ data: UniversalTransaction[] }>(
       `/api/v1/universal?action=read&table=universal_transactions&${params}`
-    );
+    )
 
-    return response.data;
+    return response.data
   }
 
-  async getTransactionLines(
-    orgId: OrgId,
-    txnId: string
-  ): Promise<UniversalTransactionLine[]> {
+  async getTransactionLines(orgId: OrgId, txnId: string): Promise<UniversalTransactionLine[]> {
     const params = new URLSearchParams({
       organization_id: orgId,
-      transaction_id: txnId,
-    });
+      transaction_id: txnId
+    })
 
     const response = await this.fetch<{ data: UniversalTransactionLine[] }>(
       `/api/v1/universal?action=read&table=universal_transaction_lines&${params}`
-    );
+    )
 
-    return response.data;
+    return response.data
   }
 
   async getModules(orgId: OrgId): Promise<ModuleEntity[]> {
     const params = new URLSearchParams({
       organization_id: orgId,
-      entity_type: 'module',
-    });
+      entity_type: 'module'
+    })
 
     const response = await this.fetch<{ data: ModuleEntity[] }>(
       `/api/v1/universal?action=read&table=core_entities&${params}`
-    );
+    )
 
-    return response.data;
+    return response.data
   }
 
   async getRelationships(orgId: OrgId): Promise<RelationshipRow[]> {
     const params = new URLSearchParams({
       organization_id: orgId,
-      relationship_type: 'DEPENDS_ON',
-    });
+      relationship_type: 'DEPENDS_ON'
+    })
 
     const response = await this.fetch<{ data: RelationshipRow[] }>(
       `/api/v1/universal?action=read&table=core_relationships&${params}`
-    );
+    )
 
-    return response.data;
+    return response.data
   }
 
   async getFiscalPeriods(orgId: OrgId): Promise<FiscalPeriod[]> {
     const params = new URLSearchParams({
       organization_id: orgId,
-      entity_type: 'fiscal_period',
-    });
+      entity_type: 'fiscal_period'
+    })
 
     const response = await this.fetch<{ data: FiscalPeriod[] }>(
       `/api/v1/universal?action=read&table=core_entities&${params}`
-    );
+    )
 
-    return response.data.filter(e => 
-      (e.metadata as any)?.status === 'open' || 
-      (e.metadata as any)?.status === 'current' || 
-      (e.metadata as any)?.status === 'closed'
-    );
+    return response.data.filter(
+      e =>
+        (e.metadata as any)?.status === 'open' ||
+        (e.metadata as any)?.status === 'current' ||
+        (e.metadata as any)?.status === 'closed'
+    )
   }
 
   async postWaiver(orgId: OrgId, payload: WaiverPayload): Promise<{ ok: boolean }> {
@@ -147,54 +145,51 @@ export class FactoryDashboardClient {
         policy: payload.policy,
         reason: payload.reason,
         approved_by: payload.approved_by || 'system',
-        waived_at: new Date().toISOString(),
-      },
-    };
-
-    const response = await this.fetch<{ success: boolean }>(
-      '/api/v1/universal',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'create',
-          table: 'universal_transaction_lines',
-          data: waiverLine,
-        }),
+        waived_at: new Date().toISOString()
       }
-    );
+    }
 
-    return { ok: response.success };
+    const response = await this.fetch<{ success: boolean }>('/api/v1/universal', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'create',
+        table: 'universal_transaction_lines',
+        data: waiverLine
+      })
+    })
+
+    return { ok: response.success }
   }
 
   async getAllTransactionLines(
     orgId: OrgId,
     txnIds: string[]
   ): Promise<UniversalTransactionLine[]> {
-    if (!txnIds.length) return [];
+    if (!txnIds.length) return []
 
-    const allLines: UniversalTransactionLine[] = [];
-    
+    const allLines: UniversalTransactionLine[] = []
+
     // Batch fetch in chunks of 10 to avoid URL length limits
-    const chunks = [];
+    const chunks = []
     for (let i = 0; i < txnIds.length; i += 10) {
-      chunks.push(txnIds.slice(i, i + 10));
+      chunks.push(txnIds.slice(i, i + 10))
     }
 
     for (const chunk of chunks) {
       const params = new URLSearchParams({
         organization_id: orgId,
-        transaction_ids: chunk.join(','),
-      });
+        transaction_ids: chunk.join(',')
+      })
 
       const response = await this.fetch<{ data: UniversalTransactionLine[] }>(
         `/api/v1/universal?action=read&table=universal_transaction_lines&${params}`
-      );
+      )
 
-      allLines.push(...response.data);
+      allLines.push(...response.data)
     }
 
-    return allLines;
+    return allLines
   }
 }
 
-export const createClient = (config: ApiConfig) => new FactoryDashboardClient(config);
+export const createClient = (config: ApiConfig) => new FactoryDashboardClient(config)

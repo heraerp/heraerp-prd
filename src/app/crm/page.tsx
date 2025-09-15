@@ -6,7 +6,18 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/ui/loading-states'
 import { Button } from '@/components/ui/button'
-import { Plus, Users, Briefcase, Target, Activity, TrendingUp, Phone, Mail, Calendar, DollarSign } from 'lucide-react'
+import {
+  Plus,
+  Users,
+  Briefcase,
+  Target,
+  Activity,
+  TrendingUp,
+  Phone,
+  Mail,
+  Calendar,
+  DollarSign
+} from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
 import { StatCardDNA } from '@/lib/dna/components/ui/stat-card-dna'
 
@@ -26,36 +37,40 @@ export default function CRMDashboard() {
 
   const loadCRMData = async () => {
     if (!currentOrganization?.id) return
-    
+
     setIsLoading(true)
     setError(null)
-    
+
     try {
       universalApi.setOrganizationId(currentOrganization.id)
-      
+
       // Load all CRM entities
       const entitiesResponse = await universalApi.read('core_entities')
-      const entities = Array.isArray(entitiesResponse) ? entitiesResponse : entitiesResponse?.data || []
-      
+      const entities = Array.isArray(entitiesResponse)
+        ? entitiesResponse
+        : entitiesResponse?.data || []
+
       // Filter CRM entities
       const leads = entities.filter((e: any) => e.entity_type === 'lead')
       const opportunities = entities.filter((e: any) => e.entity_type === 'opportunity')
       const accounts = entities.filter((e: any) => e.entity_type === 'account')
       const contacts = entities.filter((e: any) => e.entity_type === 'contact')
       const activities = entities.filter((e: any) => e.entity_type === 'activity')
-      
+
       // Load transactions for pipeline value
       const transactionsResponse = await universalApi.read('universal_transactions')
-      const transactions = Array.isArray(transactionsResponse) ? transactionsResponse : transactionsResponse?.data || []
-      const crmTransactions = transactions.filter((t: any) => 
-        t.smart_code?.includes('.CRM.') && t.status === 'active'
+      const transactions = Array.isArray(transactionsResponse)
+        ? transactionsResponse
+        : transactionsResponse?.data || []
+      const crmTransactions = transactions.filter(
+        (t: any) => t.smart_code?.includes('.CRM.') && t.status === 'active'
       )
-      
+
       // Calculate stats
       const totalPipelineValue = crmTransactions
         .filter((t: any) => t.transaction_type === 'opportunity')
         .reduce((sum: number, t: any) => sum + (Number(t.total_amount) || 0), 0)
-      
+
       setStats({
         totalLeads: leads.length,
         totalOpportunities: opportunities.length,
@@ -63,12 +78,22 @@ export default function CRMDashboard() {
         totalContacts: contacts.length,
         totalActivities: activities.length,
         pipelineValue: totalPipelineValue,
-        conversionRate: opportunities.length > 0 ? ((opportunities.filter((o: any) => (o.metadata as any)?.stage === 'closed_won').length / opportunities.length) * 100).toFixed(1) : '0'
+        conversionRate:
+          opportunities.length > 0
+            ? (
+                (opportunities.filter((o: any) => (o.metadata as any)?.stage === 'closed_won')
+                  .length /
+                  opportunities.length) *
+                100
+              ).toFixed(1)
+            : '0'
       })
-      
+
       // Get recent activities (last 5)
       const recentActivitiesData = activities
-        .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .sort(
+          (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
         .slice(0, 5)
         .map((activity: any) => ({
           id: activity.id,
@@ -77,13 +102,16 @@ export default function CRMDashboard() {
           date: new Date(activity.created_at).toLocaleDateString(),
           assignedTo: (activity.metadata as any)?.assigned_to || 'Unassigned'
         }))
-      
+
       setRecentActivities(recentActivitiesData)
-      
+
       // Get top opportunities
       const topOpps = opportunities
         .filter((o: any) => (o.metadata as any)?.amount > 0)
-        .sort((a: any, b: any) => ((b.metadata as any)?.amount || 0) - ((a.metadata as any)?.amount || 0))
+        .sort(
+          (a: any, b: any) =>
+            ((b.metadata as any)?.amount || 0) - ((a.metadata as any)?.amount || 0)
+        )
         .slice(0, 5)
         .map((opp: any) => ({
           id: opp.id,
@@ -91,11 +119,12 @@ export default function CRMDashboard() {
           amount: (opp.metadata as any)?.amount || 0,
           stage: (opp.metadata as any)?.stage || 'qualification',
           probability: (opp.metadata as any)?.probability || 0,
-          closeDate: (opp.metadata as any)?.close_date ? new Date(opp.metadata.close_date).toLocaleDateString() : 'TBD'
+          closeDate: (opp.metadata as any)?.close_date
+            ? new Date(opp.metadata.close_date).toLocaleDateString()
+            : 'TBD'
         }))
-      
+
       setTopOpportunities(topOpps)
-      
     } catch (error: any) {
       console.error('Error loading CRM data:', error)
       setError(error.message || 'Failed to load CRM data')
@@ -122,7 +151,9 @@ export default function CRMDashboard() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">CRM Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-400">Manage your customer relationships and sales pipeline</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          Manage your customer relationships and sales pipeline
+        </p>
       </div>
 
       {/* Quick Actions */}
@@ -193,13 +224,18 @@ export default function CRMDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Recent Activities */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-900 dark:!text-gray-100">Recent Activities</h2>
+              <h2 className="text-xl font-semibold mb-4 !text-gray-900 dark:!text-gray-100">
+                Recent Activities
+              </h2>
               <div className="space-y-4">
                 {recentActivities.length === 0 ? (
                   <p className="text-gray-500">No recent activities</p>
                 ) : (
-                  recentActivities.map((activity) => (
-                    <div key={activity.id} className="flex items-start space-x-3 pb-3 border-b last:border-0">
+                  recentActivities.map(activity => (
+                    <div
+                      key={activity.id}
+                      className="flex items-start space-x-3 pb-3 border-b last:border-0"
+                    >
                       {activity.type === 'call' ? (
                         <Phone className="w-5 h-5 text-blue-600 mt-0.5" />
                       ) : activity.type === 'email' ? (
@@ -208,7 +244,9 @@ export default function CRMDashboard() {
                         <Calendar className="w-5 h-5 text-purple-600 mt-0.5" />
                       )}
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-gray-100">{activity.subject}</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">
+                          {activity.subject}
+                        </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           {activity.date} • {activity.assignedTo}
                         </p>
@@ -221,12 +259,14 @@ export default function CRMDashboard() {
 
             {/* Top Opportunities */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 !text-gray-900 dark:!text-gray-100">Top Opportunities</h2>
+              <h2 className="text-xl font-semibold mb-4 !text-gray-900 dark:!text-gray-100">
+                Top Opportunities
+              </h2>
               <div className="space-y-4">
                 {topOpportunities.length === 0 ? (
                   <p className="text-gray-500">No opportunities yet</p>
                 ) : (
-                  topOpportunities.map((opp) => (
+                  topOpportunities.map(opp => (
                     <div key={opp.id} className="pb-3 border-b last:border-0">
                       <div className="flex justify-between items-start">
                         <div>

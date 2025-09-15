@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Upload, 
-  FileText, 
-  Image, 
-  File, 
-  X, 
-  Check, 
+import {
+  Upload,
+  FileText,
+  Image,
+  File,
+  X,
+  Check,
   AlertCircle,
   Download,
   Eye,
@@ -71,8 +71,10 @@ export function DocumentUpload({
   const getFileIcon = (type: string) => {
     if (type.startsWith('image/')) return <Image className="w-4 h-4" />
     if (type.includes('pdf')) return <FileText className="w-4 h-4 text-red-600" />
-    if (type.includes('excel') || type.includes('spreadsheet')) return <FileText className="w-4 h-4 text-green-600" />
-    if (type.includes('word') || type.includes('document')) return <FileText className="w-4 h-4 text-blue-600" />
+    if (type.includes('excel') || type.includes('spreadsheet'))
+      return <FileText className="w-4 h-4 text-green-600" />
+    if (type.includes('word') || type.includes('document'))
+      return <FileText className="w-4 h-4 text-blue-600" />
     return <File className="w-4 h-4" />
   }
 
@@ -130,10 +132,10 @@ export function DocumentUpload({
     try {
       const newFiles: DocumentFile[] = []
       const totalFiles = files.length
-      
+
       for (let i = 0; i < totalFiles; i++) {
         const file = files[i]
-        
+
         // Validate file
         const validationError = validateFile(file)
         if (validationError) {
@@ -150,7 +152,9 @@ export function DocumentUpload({
           setUploadProgress(((i + 1) / totalFiles) * 100)
         } catch (error) {
           console.error(`Failed to upload ${file.name}:`, error)
-          setError(`Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+          setError(
+            `Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
+          )
         }
       }
 
@@ -158,7 +162,7 @@ export function DocumentUpload({
         const updatedFiles = [...currentFiles, ...newFiles]
         onFilesUpdate(updatedFiles)
         setSuccess(`Successfully uploaded ${newFiles.length} file(s)`)
-        
+
         // Auto-update document status to 'received' if this is the first file
         if (currentFiles.length === 0 && onStatusChange) {
           onStatusChange('received')
@@ -173,7 +177,7 @@ export function DocumentUpload({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
-    
+
     if (e.dataTransfer.files.length > 0) {
       handleFileSelect(e.dataTransfer.files)
     }
@@ -192,7 +196,7 @@ export function DocumentUpload({
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         const updatedFiles = currentFiles.filter(f => f.id !== fileId)
         onFilesUpdate(updatedFiles)
@@ -235,11 +239,11 @@ export function DocumentUpload({
             dragOver
               ? 'border-blue-500 bg-blue-50'
               : uploading
-              ? 'border-gray-300 bg-gray-50'
-              : 'border-gray-300 hover:border-gray-400'
+                ? 'border-gray-300 bg-gray-50'
+                : 'border-gray-300 hover:border-gray-400'
           }`}
           onDrop={handleDrop}
-          onDragOver={(e) => {
+          onDragOver={e => {
             e.preventDefault()
             setDragOver(true)
           }}
@@ -307,7 +311,7 @@ export function DocumentUpload({
               Uploaded Files ({currentFiles.length}/{maxFiles})
             </h4>
             <div className="space-y-3">
-              {currentFiles.map((file) => (
+              {currentFiles.map(file => (
                 <div
                   key={file.id}
                   className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
@@ -317,11 +321,12 @@ export function DocumentUpload({
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-gray-900 truncate">{file.name}</p>
                       <p className="text-sm text-gray-500">
-                        {formatFileSize(file.size)} • Uploaded {new Date(file.uploaded_at).toLocaleDateString()}
+                        {formatFileSize(file.size)} • Uploaded{' '}
+                        {new Date(file.uploaded_at).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 ml-4">
                     <Button
                       type="button"

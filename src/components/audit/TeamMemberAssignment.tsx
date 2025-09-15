@@ -4,14 +4,26 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
-import { 
-  UserPlus, 
+import {
+  UserPlus,
   UserMinus,
   Crown,
   Briefcase,
@@ -81,10 +93,23 @@ export function TeamMemberAssignment({
   })
 
   const specializations = [
-    'Public Companies', 'Financial Services', 'SOX Compliance', 
-    'Internal Controls', 'EQCR', 'Quality Control', 'Risk Assessment',
-    'Banking', 'Insurance', 'Healthcare', 'Manufacturing', 'Technology',
-    'Revenue Recognition', 'Leases', 'Derivatives', 'Inventory', 'Procurement'
+    'Public Companies',
+    'Financial Services',
+    'SOX Compliance',
+    'Internal Controls',
+    'EQCR',
+    'Quality Control',
+    'Risk Assessment',
+    'Banking',
+    'Insurance',
+    'Healthcare',
+    'Manufacturing',
+    'Technology',
+    'Revenue Recognition',
+    'Leases',
+    'Derivatives',
+    'Inventory',
+    'Procurement'
   ]
 
   useEffect(() => {
@@ -100,12 +125,12 @@ export function TeamMemberAssignment({
     try {
       const response = await fetch('/api/v1/audit/teams?action=available_members')
       const data = await response.json()
-      
+
       if (data.success) {
         // Filter out members already assigned to this team
         const currentMemberIds = currentMembers.map(m => m.member_id)
-        const availableList = data.data.filter((member: AvailableMember) => 
-          !currentMemberIds.includes(member.id)
+        const availableList = data.data.filter(
+          (member: AvailableMember) => !currentMemberIds.includes(member.id)
         )
         setAvailableMembers(availableList)
       }
@@ -122,11 +147,10 @@ export function TeamMemberAssignment({
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(member =>
-        member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.specializations.some(spec => 
-          spec.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+      filtered = filtered.filter(
+        member =>
+          member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          member.specializations.some(spec => spec.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     }
 
@@ -143,9 +167,7 @@ export function TeamMemberAssignment({
     // Specialization filter
     if (selectedSpecializations.length > 0) {
       filtered = filtered.filter(member =>
-        selectedSpecializations.some(spec =>
-          member.specializations.includes(spec)
-        )
+        selectedSpecializations.some(spec => member.specializations.includes(spec))
       )
     }
 
@@ -173,7 +195,7 @@ export function TeamMemberAssignment({
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         toast.success(`${selectedMember.name} assigned to ${teamName}`)
         setShowAssignDialog(false)
@@ -207,7 +229,7 @@ export function TeamMemberAssignment({
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         toast.success(`${memberName} removed from ${teamName}`)
         loadAvailableMembers()
@@ -231,12 +253,18 @@ export function TeamMemberAssignment({
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'partner': return <Crown className="w-4 h-4 text-yellow-600" />
-      case 'manager': return <Briefcase className="w-4 h-4 text-blue-600" />
-      case 'senior': return <GraduationCap className="w-4 h-4 text-green-600" />
-      case 'staff': return <Users className="w-4 h-4 text-gray-600" />
-      case 'intern': return <Star className="w-4 h-4 text-purple-600" />
-      default: return <Users className="w-4 h-4" />
+      case 'partner':
+        return <Crown className="w-4 h-4 text-yellow-600" />
+      case 'manager':
+        return <Briefcase className="w-4 h-4 text-blue-600" />
+      case 'senior':
+        return <GraduationCap className="w-4 h-4 text-green-600" />
+      case 'staff':
+        return <Users className="w-4 h-4 text-gray-600" />
+      case 'intern':
+        return <Star className="w-4 h-4 text-purple-600" />
+      default:
+        return <Users className="w-4 h-4" />
     }
   }
 
@@ -264,8 +292,11 @@ export function TeamMemberAssignment({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentMembers.map((member) => (
-                <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
+              {currentMembers.map(member => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
@@ -277,11 +308,13 @@ export function TeamMemberAssignment({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-medium ${getAvailabilityColor(member.availability_percentage)}`}>
+                    <span
+                      className={`text-sm font-medium ${getAvailabilityColor(member.availability_percentage)}`}
+                    >
                       {member.availability_percentage}%
                     </span>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline"
                       onClick={() => handleRemoveMember(member.member_id, member.member_name)}
                       className="text-red-600 hover:text-red-700"
@@ -306,12 +339,12 @@ export function TeamMemberAssignment({
             </CardTitle>
             <Dialog open={showAssignDialog} onOpenChange={setShowAssignDialog}>
               {showAssignDialog && (
-                <div 
+                <div
                   className="fixed inset-0 bg-black/60 z-[90]"
                   onClick={() => setShowAssignDialog(false)}
                 />
               )}
-              <DialogContent 
+              <DialogContent
                 className="max-w-lg bg-white border border-gray-200 shadow-2xl z-[100]
                            fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
                            rounded-lg p-6"
@@ -327,7 +360,7 @@ export function TeamMemberAssignment({
                   </DialogTitle>
                 </DialogHeader>
                 <div className="max-h-[70vh] overflow-y-auto pt-4">
-                  <AssignmentForm 
+                  <AssignmentForm
                     member={selectedMember}
                     assignmentData={assignmentData}
                     setAssignmentData={setAssignmentData}
@@ -355,7 +388,7 @@ export function TeamMemberAssignment({
                   id="search"
                   placeholder="Search members..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -378,7 +411,10 @@ export function TeamMemberAssignment({
             </div>
             <div>
               <Label htmlFor="availability-filter">Min Availability</Label>
-              <Select value={availabilityFilter.toString()} onValueChange={(value) => setAvailabilityFilter(parseInt(value))}>
+              <Select
+                value={availabilityFilter.toString()}
+                onValueChange={value => setAvailabilityFilter(parseInt(value))}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -394,16 +430,14 @@ export function TeamMemberAssignment({
             <div>
               <Label>Specializations</Label>
               <div className="flex flex-wrap gap-1 mt-1 max-h-20 overflow-y-auto">
-                {specializations.slice(0, 6).map((spec) => (
+                {specializations.slice(0, 6).map(spec => (
                   <Badge
                     key={spec}
-                    variant={selectedSpecializations.includes(spec) ? "default" : "outline"}
+                    variant={selectedSpecializations.includes(spec) ? 'default' : 'outline'}
                     className="cursor-pointer text-xs"
                     onClick={() => {
                       setSelectedSpecializations(prev =>
-                        prev.includes(spec)
-                          ? prev.filter(s => s !== spec)
-                          : [...prev, spec]
+                        prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec]
                       )
                     }}
                   >
@@ -426,28 +460,37 @@ export function TeamMemberAssignment({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredMembers.map((member) => (
-                <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-100 transition-colors">
+              {filteredMembers.map(member => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
                       <p className="font-medium text-gray-900">{member.name}</p>
                       <p className="text-sm text-gray-600 capitalize">{member.role}</p>
                       {member.specializations.length > 0 && (
-                        <p className="text-xs text-gray-600">{member.specializations.slice(0, 2).join(', ')}</p>
+                        <p className="text-xs text-gray-600">
+                          {member.specializations.slice(0, 2).join(', ')}
+                        </p>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <p className={`text-sm font-medium ${getAvailabilityColor(member.availability)}`}>
+                      <p
+                        className={`text-sm font-medium ${getAvailabilityColor(member.availability)}`}
+                      >
                         {member.availability}% available
                       </p>
                       {member.current_assignments && (
-                        <p className="text-xs text-gray-600">{member.current_assignments} assignments</p>
+                        <p className="text-xs text-gray-600">
+                          {member.current_assignments} assignments
+                        </p>
                       )}
                     </div>
-                    <Button 
+                    <Button
                       size="sm"
                       onClick={() => {
                         setSelectedMember(member)
@@ -473,13 +516,13 @@ export function TeamMemberAssignment({
   )
 }
 
-function AssignmentForm({ 
-  member, 
-  assignmentData, 
-  setAssignmentData, 
+function AssignmentForm({
+  member,
+  assignmentData,
+  setAssignmentData,
   specializations,
-  onAssign, 
-  onCancel 
+  onAssign,
+  onCancel
 }: {
   member: AvailableMember | null
   assignmentData: any
@@ -496,14 +539,19 @@ function AssignmentForm({
         {getRoleIcon(member.role)}
         <div>
           <p className="font-medium text-gray-900">{member.name}</p>
-          <p className="text-sm text-gray-600 capitalize">{member.role} • {member.availability}% available</p>
+          <p className="text-sm text-gray-600 capitalize">
+            {member.role} • {member.availability}% available
+          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="assign-role">Role in Team</Label>
-          <Select value={assignmentData.role} onValueChange={(value) => setAssignmentData({ ...assignmentData, role: value })}>
+          <Select
+            value={assignmentData.role}
+            onValueChange={value => setAssignmentData({ ...assignmentData, role: value })}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -524,10 +572,12 @@ function AssignmentForm({
             min="1"
             max="100"
             value={assignmentData.availability_percentage}
-            onChange={(e) => setAssignmentData({ 
-              ...assignmentData, 
-              availability_percentage: parseInt(e.target.value) || 100 
-            })}
+            onChange={e =>
+              setAssignmentData({
+                ...assignmentData,
+                availability_percentage: parseInt(e.target.value) || 100
+              })
+            }
           />
         </div>
       </div>
@@ -535,12 +585,12 @@ function AssignmentForm({
       <div>
         <Label>Specializations for this Team</Label>
         <div className="grid grid-cols-2 gap-2 mt-2 max-h-32 overflow-y-auto">
-          {specializations.map((spec) => (
+          {specializations.map(spec => (
             <div key={spec} className="flex items-center space-x-2">
               <Checkbox
                 id={spec}
                 checked={assignmentData.specialization.includes(spec)}
-                onCheckedChange={(checked) => {
+                onCheckedChange={checked => {
                   if (checked) {
                     setAssignmentData({
                       ...assignmentData,
@@ -549,12 +599,16 @@ function AssignmentForm({
                   } else {
                     setAssignmentData({
                       ...assignmentData,
-                      specialization: assignmentData.specialization.filter((s: string) => s !== spec)
+                      specialization: assignmentData.specialization.filter(
+                        (s: string) => s !== spec
+                      )
                     })
                   }
                 }}
               />
-              <Label htmlFor={spec} className="text-sm">{spec}</Label>
+              <Label htmlFor={spec} className="text-sm">
+                {spec}
+              </Label>
             </div>
           ))}
         </div>
@@ -564,9 +618,7 @@ function AssignmentForm({
         <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={onAssign}>
-          Assign to Team
-        </Button>
+        <Button onClick={onAssign}>Assign to Team</Button>
       </div>
     </div>
   )
@@ -574,11 +626,17 @@ function AssignmentForm({
 
 function getRoleIcon(role: string) {
   switch (role) {
-    case 'partner': return <Crown className="w-4 h-4 text-yellow-600" />
-    case 'manager': return <Briefcase className="w-4 h-4 text-blue-600" />
-    case 'senior': return <GraduationCap className="w-4 h-4 text-green-600" />
-    case 'staff': return <Users className="w-4 h-4 text-gray-600" />
-    case 'intern': return <Star className="w-4 h-4 text-purple-600" />
-    default: return <Users className="w-4 h-4" />
+    case 'partner':
+      return <Crown className="w-4 h-4 text-yellow-600" />
+    case 'manager':
+      return <Briefcase className="w-4 h-4 text-blue-600" />
+    case 'senior':
+      return <GraduationCap className="w-4 h-4 text-green-600" />
+    case 'staff':
+      return <Users className="w-4 h-4 text-gray-600" />
+    case 'intern':
+      return <Star className="w-4 h-4 text-purple-600" />
+    default:
+      return <Users className="w-4 h-4" />
   }
 }

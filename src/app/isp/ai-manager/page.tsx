@@ -20,7 +20,7 @@ import {
   HelpCircle,
   Sparkles,
   BarChart3,
-  Gauge,
+  Gauge
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -68,20 +68,104 @@ interface BusinessMetric {
 }
 
 const BUSINESS_METRICS: BusinessMetric[] = [
-  { id: 'subs', label: 'Active Subscribers', value: 46210, change: 1.9, trend: 'up', icon: Users, color: 'text-cyan-500', category: 'subscribers' },
-  { id: 'arpu', label: 'ARPU', value: '₹916', change: 1.4, trend: 'up', icon: DollarSign, color: 'text-emerald-500', category: 'revenue' },
-  { id: 'uptime', label: 'Network Uptime', value: '99.8%', change: 0.0, trend: 'stable', icon: Wifi, color: 'text-blue-500', category: 'network' },
-  { id: 'churn', label: 'Churn Rate', value: '2.3%', change: -0.2, trend: 'down', icon: Activity, color: 'text-pink-500', category: 'subscribers' },
-  { id: 'revenue', label: 'Monthly Revenue', value: '₹4.6 Cr', change: 2.4, trend: 'up', icon: BarChart3, color: 'text-indigo-500', category: 'revenue' },
-  { id: 'outages', label: 'Open Outages', value: 0, change: -50, trend: 'down', icon: Radio, color: 'text-amber-500', category: 'network' },
+  {
+    id: 'subs',
+    label: 'Active Subscribers',
+    value: 46210,
+    change: 1.9,
+    trend: 'up',
+    icon: Users,
+    color: 'text-cyan-500',
+    category: 'subscribers'
+  },
+  {
+    id: 'arpu',
+    label: 'ARPU',
+    value: '₹916',
+    change: 1.4,
+    trend: 'up',
+    icon: DollarSign,
+    color: 'text-emerald-500',
+    category: 'revenue'
+  },
+  {
+    id: 'uptime',
+    label: 'Network Uptime',
+    value: '99.8%',
+    change: 0.0,
+    trend: 'stable',
+    icon: Wifi,
+    color: 'text-blue-500',
+    category: 'network'
+  },
+  {
+    id: 'churn',
+    label: 'Churn Rate',
+    value: '2.3%',
+    change: -0.2,
+    trend: 'down',
+    icon: Activity,
+    color: 'text-pink-500',
+    category: 'subscribers'
+  },
+  {
+    id: 'revenue',
+    label: 'Monthly Revenue',
+    value: '₹4.6 Cr',
+    change: 2.4,
+    trend: 'up',
+    icon: BarChart3,
+    color: 'text-indigo-500',
+    category: 'revenue'
+  },
+  {
+    id: 'outages',
+    label: 'Open Outages',
+    value: 0,
+    change: -50,
+    trend: 'down',
+    icon: Radio,
+    color: 'text-amber-500',
+    category: 'network'
+  }
 ]
 
 const QUICK_INSIGHTS = [
-  { icon: BarChart3, label: 'Revenue Trend', query: 'Show revenue trend and ARPU changes', color: 'text-indigo-300', category: 'revenue' },
-  { icon: Activity, label: 'Churn Watch', query: 'Analyze churn and at-risk cohorts', color: 'text-pink-300', category: 'subscribers' },
-  { icon: Wifi, label: 'Uptime & Outages', query: 'Summarize uptime and recent outages', color: 'text-blue-300', category: 'network' },
-  { icon: Users, label: 'Agent Performance', query: 'Which agents drove most connections?', color: 'text-cyan-300', category: 'subscribers' },
-  { icon: DollarSign, label: 'Plans Upsell', query: 'Recommend plan upgrades by cohort', color: 'text-emerald-300', category: 'revenue' },
+  {
+    icon: BarChart3,
+    label: 'Revenue Trend',
+    query: 'Show revenue trend and ARPU changes',
+    color: 'text-indigo-300',
+    category: 'revenue'
+  },
+  {
+    icon: Activity,
+    label: 'Churn Watch',
+    query: 'Analyze churn and at-risk cohorts',
+    color: 'text-pink-300',
+    category: 'subscribers'
+  },
+  {
+    icon: Wifi,
+    label: 'Uptime & Outages',
+    query: 'Summarize uptime and recent outages',
+    color: 'text-blue-300',
+    category: 'network'
+  },
+  {
+    icon: Users,
+    label: 'Agent Performance',
+    query: 'Which agents drove most connections?',
+    color: 'text-cyan-300',
+    category: 'subscribers'
+  },
+  {
+    icon: DollarSign,
+    label: 'Plans Upsell',
+    query: 'Recommend plan upgrades by cohort',
+    color: 'text-emerald-300',
+    category: 'revenue'
+  }
 ]
 
 const MANAGEMENT_CATEGORIES = [
@@ -89,7 +173,7 @@ const MANAGEMENT_CATEGORIES = [
   { id: 'network', label: 'Network', icon: Wifi },
   { id: 'subscribers', label: 'Subscribers', icon: Users },
   { id: 'revenue', label: 'Revenue', icon: DollarSign },
-  { id: 'support', label: 'Support', icon: Activity },
+  { id: 'support', label: 'Support', icon: Activity }
 ]
 
 export default function ISPAIManagerPage() {
@@ -102,8 +186,8 @@ export default function ISPAIManagerPage() {
         'Welcome to the ISP AI Manager. Ask about uptime, outages, ARPU, churn, subscriber growth, or revenue. I’ll provide insights and actions.',
       timestamp: new Date(),
       category: 'overview',
-      actionable: true,
-    },
+      actionable: true
+    }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -115,7 +199,9 @@ export default function ISPAIManagerPage() {
   useEffect(() => {
     const scrollToBottom = () => {
       if (scrollAreaRef.current) {
-        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null
+        const viewport = scrollAreaRef.current.querySelector(
+          '[data-radix-scroll-area-viewport]'
+        ) as HTMLElement | null
         viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
       }
     }
@@ -134,14 +220,22 @@ export default function ISPAIManagerPage() {
 
   const processAIQuery = async (text: string) => {
     setLoading(true)
-    const userMessage: AIMessage = { id: Date.now().toString(), type: 'user', content: text, timestamp: new Date() }
+    const userMessage: AIMessage = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: text,
+      timestamp: new Date()
+    }
     setMessages(prev => [...prev, userMessage])
 
     try {
       const res = await fetch('/api/v1/isp/ai-manager', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: text, context: { category: activeCategory, metrics: BUSINESS_METRICS } }),
+        body: JSON.stringify({
+          query: text,
+          context: { category: activeCategory, metrics: BUSINESS_METRICS }
+        })
       })
       if (!res.ok) throw new Error('Failed to process query')
       const data = await res.json()
@@ -155,30 +249,38 @@ export default function ISPAIManagerPage() {
         actionable: data.actionable,
         metrics: data.metrics,
         recommendations: data.recommendations,
-        visualData: data.visualData,
+        visualData: data.visualData
       }
       setMessages(prev => [...prev, aiMsg])
       if (Array.isArray(data.insights)) {
         data.insights.forEach((ins: any, i: number) => {
-          setTimeout(() => {
-            setMessages(prev => [
-              ...prev,
-              {
-                id: `insight-${Date.now()}-${i}`,
-                type: 'insight',
-                content: ins.content,
-                timestamp: new Date(),
-                priority: ins.priority || 'medium',
-                category: activeCategory as any,
-              },
-            ])
-          }, 250 * (i + 1))
+          setTimeout(
+            () => {
+              setMessages(prev => [
+                ...prev,
+                {
+                  id: `insight-${Date.now()}-${i}`,
+                  type: 'insight',
+                  content: ins.content,
+                  timestamp: new Date(),
+                  priority: ins.priority || 'medium',
+                  category: activeCategory as any
+                }
+              ])
+            },
+            250 * (i + 1)
+          )
         })
       }
     } catch (e: any) {
       setMessages(prev => [
         ...prev,
-        { id: Date.now().toString(), type: 'system', content: `Error: ${e?.message || 'Unknown error'}`, timestamp: new Date() },
+        {
+          id: Date.now().toString(),
+          type: 'system',
+          content: `Error: ${e?.message || 'Unknown error'}`,
+          timestamp: new Date()
+        }
       ])
     } finally {
       setLoading(false)
@@ -187,7 +289,10 @@ export default function ISPAIManagerPage() {
   }
 
   const renderMetricCard = (metric: BusinessMetric) => (
-    <Card key={metric.id} className="bg-slate-900/70 border-white/15 hover:border-white/30 transition-all">
+    <Card
+      key={metric.id}
+      className="bg-slate-900/70 border-white/15 hover:border-white/30 transition-all"
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
@@ -196,7 +301,11 @@ export default function ISPAIManagerPage() {
             <div
               className={cn(
                 'flex items-center gap-1 text-xs',
-                metric.trend === 'up' ? 'text-emerald-300' : metric.trend === 'down' ? 'text-red-300' : 'text-white/70'
+                metric.trend === 'up'
+                  ? 'text-emerald-300'
+                  : metric.trend === 'down'
+                    ? 'text-red-300'
+                    : 'text-white/70'
               )}
             >
               {metric.trend === 'up' ? (
@@ -209,7 +318,12 @@ export default function ISPAIManagerPage() {
               <span>{Math.abs(metric.change)}%</span>
             </div>
           </div>
-          <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', metric.color.replace('text', 'bg') + '/30')}>
+          <div
+            className={cn(
+              'w-10 h-10 rounded-lg flex items-center justify-center',
+              metric.color.replace('text', 'bg') + '/30'
+            )}
+          >
             <metric.icon className={cn('h-5 w-5', metric.color)} />
           </div>
         </div>
@@ -224,14 +338,25 @@ export default function ISPAIManagerPage() {
     return (
       <div key={m.id} className={cn('flex gap-3', isUser ? 'justify-end' : 'justify-start')}>
         {!isUser && (
-          <div className={cn('w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0', isInsight ? 'bg-amber-500/20' : 'bg-cyan-500/20')}>
+          <div
+            className={cn(
+              'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+              isInsight ? 'bg-amber-500/20' : 'bg-cyan-500/20'
+            )}
+          >
             <Brain className={cn('h-4 w-4', isInsight ? 'text-amber-400' : 'text-cyan-400')} />
           </div>
         )}
         <div
           className={cn(
             'max-w-[80%] rounded-lg p-4',
-            isUser ? 'bg-[#0099CC] text-white' : isInsight ? 'bg-amber-500/10 border border-amber-500/40' : isSystem ? 'bg-pink-500/10 border border-pink-500/40' : 'bg-slate-900/70 border border-white/20'
+            isUser
+              ? 'bg-[#0099CC] text-white'
+              : isInsight
+                ? 'bg-amber-500/10 border border-amber-500/40'
+                : isSystem
+                  ? 'bg-pink-500/10 border border-pink-500/40'
+                  : 'bg-slate-900/70 border border-white/20'
           )}
         >
           {m.priority && !isUser && (
@@ -239,13 +364,19 @@ export default function ISPAIManagerPage() {
               variant="outline"
               className={cn(
                 'mb-2',
-                m.priority === 'high' ? 'border-red-400 text-red-400' : m.priority === 'medium' ? 'border-amber-400 text-amber-400' : 'border-emerald-400 text-emerald-400'
+                m.priority === 'high'
+                  ? 'border-red-400 text-red-400'
+                  : m.priority === 'medium'
+                    ? 'border-amber-400 text-amber-400'
+                    : 'border-emerald-400 text-emerald-400'
               )}
             >
               {m.priority.toUpperCase()} PRIORITY
             </Badge>
           )}
-          <p className={cn('whitespace-pre-wrap text-white/95', isInsight && 'font-semibold')}>{m.content}</p>
+          <p className={cn('whitespace-pre-wrap text-white/95', isInsight && 'font-semibold')}>
+            {m.content}
+          </p>
           {m.metrics && m.metrics.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-3">
               {m.metrics.map((met, i) => (
@@ -287,7 +418,9 @@ export default function ISPAIManagerPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent">
             ISP AI Manager
           </h1>
-          <p className="text-white/90 mt-1">Real-time insights and recommendations for broadband operations</p>
+          <p className="text-white/90 mt-1">
+            Real-time insights and recommendations for broadband operations
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -322,7 +455,10 @@ export default function ISPAIManagerPage() {
                     variant={activeCategory === cat.id ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setActiveCategory(cat.id)}
-                    className={cn('gap-2 whitespace-nowrap', activeCategory === cat.id ? 'text-white' : 'text-white')}
+                    className={cn(
+                      'gap-2 whitespace-nowrap',
+                      activeCategory === cat.id ? 'text-white' : 'text-white'
+                    )}
                   >
                     <cat.icon className="h-4 w-4" /> {cat.label}
                   </Button>
@@ -336,9 +472,9 @@ export default function ISPAIManagerPage() {
                 {messages.map(m => renderMessage(m))}
                 {loading && (
                   <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-cyan-500/30 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-cyan-500/30 flex items-center justify-center">
                       <Brain className="h-4 w-4 text-cyan-300" />
-                  </div>
+                    </div>
                     <div className="rounded-lg p-4 bg-slate-900/70 border border-white/20">
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -361,7 +497,11 @@ export default function ISPAIManagerPage() {
                   className="bg-slate-900/70 border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-ring"
                 />
                 <Button type="submit" disabled={loading || !input.trim()}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </form>

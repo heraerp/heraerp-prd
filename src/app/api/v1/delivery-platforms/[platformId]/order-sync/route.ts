@@ -11,7 +11,7 @@ interface OrderStatusUpdate {
   tracking_info?: {
     driver_name?: string
     driver_phone?: string
-    location?: { lat: number, lng: number }
+    location?: { lat: number; lng: number }
     estimated_delivery_time?: string
   }
   reason?: string // For cancellations or delays
@@ -27,7 +27,7 @@ const statusMappers = {
     completed: 'delivered',
     cancelled: 'cancelled'
   },
-  
+
   swiggy: {
     // HERA status -> Swiggy status
     pending: 'ACCEPTED',
@@ -36,7 +36,7 @@ const statusMappers = {
     completed: 'DELIVERED',
     cancelled: 'CANCELLED'
   },
-  
+
   ubereats: {
     // HERA status -> Uber Eats status
     pending: 'accepted',
@@ -60,8 +60,10 @@ const statusMappers = {
 const platformAPIs = {
   deliveroo: async (orderUpdate: OrderStatusUpdate, platformConfig: any) => {
     // Simulate Deliveroo API call
-    console.log(`📞 Deliveroo API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`)
-    
+    console.log(
+      `📞 Deliveroo API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`
+    )
+
     const apiPayload = {
       status: statusMappers.deliveroo[orderUpdate.status as keyof typeof statusMappers.deliveroo],
       estimated_ready_time: orderUpdate.estimated_time,
@@ -70,7 +72,7 @@ const platformAPIs = {
 
     // Simulate API response
     await new Promise(resolve => setTimeout(resolve, 200))
-    
+
     return {
       success: Math.random() > 0.1, // 90% success rate
       platform_response: {
@@ -82,8 +84,10 @@ const platformAPIs = {
   },
 
   swiggy: async (orderUpdate: OrderStatusUpdate, platformConfig: any) => {
-    console.log(`📞 Swiggy API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`)
-    
+    console.log(
+      `📞 Swiggy API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`
+    )
+
     const apiPayload = {
       orderId: orderUpdate.platform_order_id,
       orderStatus: statusMappers.swiggy[orderUpdate.status as keyof typeof statusMappers.swiggy],
@@ -92,7 +96,7 @@ const platformAPIs = {
     }
 
     await new Promise(resolve => setTimeout(resolve, 300))
-    
+
     return {
       success: Math.random() > 0.15, // 85% success rate
       platform_response: {
@@ -104,16 +108,19 @@ const platformAPIs = {
   },
 
   ubereats: async (orderUpdate: OrderStatusUpdate, platformConfig: any) => {
-    console.log(`📞 Uber Eats API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`)
-    
+    console.log(
+      `📞 Uber Eats API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`
+    )
+
     const apiPayload = {
-      current_state: statusMappers.ubereats[orderUpdate.status as keyof typeof statusMappers.ubereats],
+      current_state:
+        statusMappers.ubereats[orderUpdate.status as keyof typeof statusMappers.ubereats],
       estimated_ready_for_pickup_at: orderUpdate.estimated_time,
       cancellation_reason: orderUpdate.reason
     }
 
     await new Promise(resolve => setTimeout(resolve, 250))
-    
+
     return {
       success: Math.random() > 0.05, // 95% success rate
       platform_response: {
@@ -125,10 +132,12 @@ const platformAPIs = {
   },
 
   generic: async (orderUpdate: OrderStatusUpdate, platformConfig: any) => {
-    console.log(`📞 Generic API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`)
-    
+    console.log(
+      `📞 Generic API: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status}`
+    )
+
     await new Promise(resolve => setTimeout(resolve, 150))
-    
+
     return {
       success: Math.random() > 0.2, // 80% success rate
       platform_response: {
@@ -152,13 +161,16 @@ export async function POST(
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
     const platformId = params.platformId
     const orderUpdate: OrderStatusUpdate = await request.json()
-    
-    console.log(`🔄 Order Sync: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status} on platform ${platformId}`)
+
+    console.log(
+      `🔄 Order Sync: Updating order ${orderUpdate.platform_order_id} to ${orderUpdate.status} on platform ${platformId}`
+    )
 
     // Get platform configuration
     const { data: platform, error: platformError } = await supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
@@ -166,7 +178,8 @@ export async function POST(
           field_value_boolean,
           field_type
         )
-      `)
+      `
+      )
       .eq('id', platformId)
       .eq('organization_id', organizationId)
       .eq('entity_type', 'delivery_platform')
@@ -174,28 +187,29 @@ export async function POST(
 
     if (platformError || !platform) {
       console.error('❌ Platform not found:', platformError)
-      return NextResponse.json(
-        { success: false, message: 'Platform not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, message: 'Platform not found' }, { status: 404 })
     }
 
     // Extract platform properties
-    const platformProps = platform.dynamic_data?.reduce((acc: any, prop: any) => {
-      let value = prop.field_value
-      if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
-        value = prop.field_value_boolean
-      }
-      acc[prop.field_name] = value
-      return acc
-    }, {}) || {}
+    const platformProps =
+      platform.dynamic_data?.reduce((acc: any, prop: any) => {
+        let value = prop.field_value
+        if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
+          value = prop.field_value_boolean
+        }
+        acc[prop.field_name] = value
+        return acc
+      }, {}) || {}
 
     // Check if platform is active
     if (!platformProps.is_active) {
-      return NextResponse.json({
-        success: false,
-        message: 'Platform is not active'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Platform is not active'
+        },
+        { status: 400 }
+      )
     }
 
     // Find the order in HERA system
@@ -227,24 +241,32 @@ export async function POST(
     const currentStatus = heraOrder.status
     const newStatus = orderUpdate.status
 
-    if (!validTransitions[currentStatus as keyof typeof validTransitions]?.includes(newStatus as never) && currentStatus !== newStatus) {
-      return NextResponse.json({
-        success: false,
-        message: `Invalid status transition from ${currentStatus} to ${newStatus}`
-      }, { status: 400 })
+    if (
+      !validTransitions[currentStatus as keyof typeof validTransitions]?.includes(
+        newStatus as never
+      ) &&
+      currentStatus !== newStatus
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Invalid status transition from ${currentStatus} to ${newStatus}`
+        },
+        { status: 400 }
+      )
     }
 
     // Call platform API to update status
-    const platformAPI = platformAPIs[platformProps.platform_type as keyof typeof platformAPIs] || platformAPIs.generic
+    const platformAPI =
+      platformAPIs[platformProps.platform_type as keyof typeof platformAPIs] || platformAPIs.generic
     const apiResult = await platformAPI(orderUpdate, platformProps)
 
     if (!apiResult.success) {
       console.error(`❌ Platform API call failed for order ${orderUpdate.platform_order_id}`)
-      
+
       // Log the failure but don't fail the request completely
-      await supabaseAdmin
-        .from('core_dynamic_data')
-        .upsert({
+      await supabaseAdmin.from('core_dynamic_data').upsert(
+        {
           organization_id: organizationId,
           entity_id: platformId,
           field_name: 'last_sync_error',
@@ -254,15 +276,20 @@ export async function POST(
             error: 'Platform API call failed'
           }),
           field_type: 'text'
-        }, {
+        },
+        {
           onConflict: 'organization_id,entity_id,field_name'
-        })
+        }
+      )
 
-      return NextResponse.json({
-        success: false,
-        message: 'Failed to update order status on platform',
-        details: 'Platform API returned an error'
-      }, { status: 502 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Failed to update order status on platform',
+          details: 'Platform API returned an error'
+        },
+        { status: 502 }
+      )
     }
 
     // Update order status in HERA system
@@ -292,17 +319,18 @@ export async function POST(
     }
 
     // Update platform sync statistics
-    await supabaseAdmin
-      .from('core_dynamic_data')
-      .upsert({
+    await supabaseAdmin.from('core_dynamic_data').upsert(
+      {
         organization_id: organizationId,
         entity_id: platformId,
         field_name: 'last_order_sync',
         field_value: new Date().toISOString(),
         field_type: 'text'
-      }, {
+      },
+      {
         onConflict: 'organization_id,entity_id,field_name'
-      })
+      }
+    )
 
     const response = {
       success: true,
@@ -319,13 +347,9 @@ export async function POST(
 
     console.log(`✅ Order sync completed: ${orderUpdate.platform_order_id} updated to ${newStatus}`)
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('❌ Order sync error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -341,13 +365,16 @@ export async function PUT(
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
     const platformId = params.platformId
     const { order_updates }: { order_updates: OrderStatusUpdate[] } = await request.json()
-    
-    console.log(`🔄 Bulk Order Sync: Processing ${order_updates.length} order updates for platform ${platformId}`)
+
+    console.log(
+      `🔄 Bulk Order Sync: Processing ${order_updates.length} order updates for platform ${platformId}`
+    )
 
     // Get platform configuration
     const { data: platform, error: platformError } = await supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
@@ -355,7 +382,8 @@ export async function PUT(
           field_value_boolean,
           field_type
         )
-      `)
+      `
+      )
       .eq('id', platformId)
       .eq('organization_id', organizationId)
       .eq('entity_type', 'delivery_platform')
@@ -363,10 +391,7 @@ export async function PUT(
 
     if (platformError || !platform) {
       console.error('❌ Platform not found:', platformError)
-      return NextResponse.json(
-        { success: false, message: 'Platform not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, message: 'Platform not found' }, { status: 404 })
     }
 
     const syncResults = {
@@ -388,7 +413,9 @@ export async function PUT(
           body: JSON.stringify(orderUpdate)
         })
 
-        const singleResult = await POST(singleUpdateRequest as NextRequest, { params: Promise.resolve(params) })
+        const singleResult = await POST(singleUpdateRequest as NextRequest, {
+          params: Promise.resolve(params)
+        })
         const resultData = await singleResult.json()
 
         if (resultData.success) {
@@ -419,9 +446,8 @@ export async function PUT(
     }
 
     // Update bulk sync statistics
-    await supabaseAdmin
-      .from('core_dynamic_data')
-      .upsert({
+    await supabaseAdmin.from('core_dynamic_data').upsert(
+      {
         organization_id: organizationId,
         entity_id: platformId,
         field_name: 'last_bulk_sync',
@@ -430,9 +456,11 @@ export async function PUT(
           results: syncResults
         }),
         field_type: 'text'
-      }, {
+      },
+      {
         onConflict: 'organization_id,entity_id,field_name'
-      })
+      }
+    )
 
     const response = {
       success: syncResults.failed_syncs === 0,
@@ -441,26 +469,24 @@ export async function PUT(
         platform_id: platformId,
         platform_name: platform.entity_name,
         sync_summary: syncResults,
-        recommendations: syncResults.failed_syncs > 0 ? [
-          'Review individual order errors',
-          'Check platform API connectivity',
-          'Retry failed orders individually'
-        ] : [
-          'All orders synchronized successfully',
-          'Monitor for new order updates'
-        ]
+        recommendations:
+          syncResults.failed_syncs > 0
+            ? [
+                'Review individual order errors',
+                'Check platform API connectivity',
+                'Retry failed orders individually'
+              ]
+            : ['All orders synchronized successfully', 'Monitor for new order updates']
       }
     }
 
-    console.log(`✅ Bulk order sync completed: ${syncResults.successful_syncs}/${syncResults.total_orders} orders synced`)
+    console.log(
+      `✅ Bulk order sync completed: ${syncResults.successful_syncs}/${syncResults.total_orders} orders synced`
+    )
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('❌ Bulk order sync error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -477,30 +503,29 @@ export async function GET(
     const platformId = params.platformId
     const { searchParams } = new URL(request.url)
     const includeOrders = searchParams.get('include_orders') === 'true'
-    
+
     console.log(`📊 Order Sync Status: Getting sync status for platform ${platformId}`)
 
     // Get platform with sync data
     const { data: platform, error: platformError } = await supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
           field_value,
           field_type
         )
-      `)
+      `
+      )
       .eq('id', platformId)
       .eq('organization_id', organizationId)
       .eq('entity_type', 'delivery_platform')
       .single()
 
     if (platformError || !platform) {
-      return NextResponse.json(
-        { success: false, message: 'Platform not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, message: 'Platform not found' }, { status: 404 })
     }
 
     // Get orders from this platform that might need sync
@@ -541,12 +566,14 @@ export async function GET(
     if (platformOrders) {
       for (const order of platformOrders) {
         // Count orders by status
-        orderAnalysis.orders_by_status[order.status as keyof typeof orderAnalysis.orders_by_status]++
+        orderAnalysis.orders_by_status[
+          order.status as keyof typeof orderAnalysis.orders_by_status
+        ]++
 
         // Check sync status
         const syncStatus = (order.metadata as any)?.platform_sync_status
         const lastSync = (order.metadata as any)?.last_platform_sync
-        
+
         if (!syncStatus || syncStatus === 'pending') {
           orderAnalysis.pending_sync++
           ordersNeedingSync.push({
@@ -567,7 +594,7 @@ export async function GET(
           })
         } else if (syncStatus === 'synced') {
           orderAnalysis.synced_orders++
-          
+
           // Check if order was updated after last sync
           if (lastSync && new Date(order.updated_at) > new Date(lastSync)) {
             orderAnalysis.pending_sync++
@@ -603,20 +630,20 @@ export async function GET(
           }))
         }),
         recommendations: [
-          ...(orderAnalysis.pending_sync > 0 ? [`${orderAnalysis.pending_sync} orders need sync`] : []),
-          ...(orderAnalysis.failed_sync > 0 ? [`${orderAnalysis.failed_sync} orders have sync failures`] : []),
+          ...(orderAnalysis.pending_sync > 0
+            ? [`${orderAnalysis.pending_sync} orders need sync`]
+            : []),
+          ...(orderAnalysis.failed_sync > 0
+            ? [`${orderAnalysis.failed_sync} orders have sync failures`]
+            : []),
           ...(ordersNeedingSync.length === 0 ? ['All orders are synchronized'] : [])
         ]
       }
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('❌ Order sync status error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

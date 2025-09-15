@@ -1,61 +1,61 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Globe2, MapPin, TrendingUp, TrendingDown } from 'lucide-react';
+import React, { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Globe2, MapPin, TrendingUp, TrendingDown } from 'lucide-react'
 
 interface GeographicMapProps {
-  organizationId: string;
+  organizationId: string
 }
 
 interface RegionData {
-  name: string;
-  value: number;
-  percentage: number;
-  change: number;
-  coordinates: { x: number; y: number };
-  color: string;
+  name: string
+  value: number
+  percentage: number
+  change: number
+  coordinates: { x: number; y: number }
+  color: string
 }
 
 export function GeographicMap({ organizationId }: GeographicMapProps) {
-  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null)
 
   // Mock geographic data with coordinates for map positioning
   const regions: RegionData[] = [
-    { 
-      name: 'North America', 
-      value: 45000000, 
-      percentage: 45, 
+    {
+      name: 'North America',
+      value: 45000000,
+      percentage: 45,
       change: 2.3,
       coordinates: { x: 20, y: 25 },
       color: '#3b82f6'
     },
-    { 
-      name: 'Europe', 
-      value: 25000000, 
-      percentage: 25, 
+    {
+      name: 'Europe',
+      value: 25000000,
+      percentage: 25,
       change: -1.2,
       coordinates: { x: 50, y: 20 },
       color: '#10b981'
     },
-    { 
-      name: 'Asia Pacific', 
-      value: 20000000, 
-      percentage: 20, 
+    {
+      name: 'Asia Pacific',
+      value: 20000000,
+      percentage: 20,
       change: 5.8,
       coordinates: { x: 75, y: 30 },
       color: '#f59e0b'
     },
-    { 
-      name: 'Emerging Markets', 
-      value: 10000000, 
-      percentage: 10, 
+    {
+      name: 'Emerging Markets',
+      value: 10000000,
+      percentage: 10,
       change: 8.2,
       coordinates: { x: 15, y: 60 },
       color: '#8b5cf6'
-    },
-  ];
+    }
+  ]
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -65,8 +65,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
       maximumFractionDigits: 0,
       notation: 'compact',
       compactDisplay: 'short'
-    }).format(value);
-  };
+    }).format(value)
+  }
 
   return (
     <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
@@ -82,8 +82,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
 
       {/* Interactive World Map */}
       <div className="relative h-64 md:h-80 mb-6 bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
-        <svg 
-          viewBox="0 0 100 60" 
+        <svg
+          viewBox="0 0 100 60"
           className="w-full h-full"
           style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
         >
@@ -98,10 +98,10 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
               <stop offset="100%" stopColor="#1f2937" />
             </linearGradient>
           </defs>
-          
+
           {/* Ocean background */}
           <rect width="100" height="60" fill="url(#oceanGradient)" />
-          
+
           {/* Continents (simplified shapes) */}
           {/* North America */}
           <path
@@ -111,7 +111,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
-          
+
           {/* South America */}
           <path
             d="M20,32 Q25,30 27,35 Q25,45 20,50 Q15,48 18,40 Q15,35 20,32 Z"
@@ -120,7 +120,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
-          
+
           {/* Europe */}
           <path
             d="M45,12 Q52,10 55,15 Q53,20 48,18 Q45,15 45,12 Z"
@@ -129,7 +129,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
-          
+
           {/* Africa */}
           <path
             d="M48,22 Q55,20 58,30 Q55,45 50,48 Q45,45 47,35 Q45,28 48,22 Z"
@@ -138,7 +138,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
-          
+
           {/* Asia */}
           <path
             d="M60,8 Q75,5 85,15 Q80,25 75,30 Q70,28 65,25 Q60,20 60,8 Z"
@@ -147,7 +147,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
-          
+
           {/* Australia */}
           <path
             d="M75,40 Q82,38 85,42 Q83,45 78,44 Q75,42 75,40 Z"
@@ -156,7 +156,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
-          
+
           {/* Investment markers */}
           {regions.map((region, index) => (
             <g key={region.name}>
@@ -169,7 +169,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
                 opacity="0.3"
                 className="animate-ping"
               />
-              
+
               {/* Main investment marker */}
               <circle
                 cx={region.coordinates.x}
@@ -182,7 +182,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
                 onMouseEnter={() => setHoveredRegion(region.name)}
                 onMouseLeave={() => setHoveredRegion(null)}
               />
-              
+
               {/* Tooltip */}
               {hoveredRegion === region.name && (
                 <g>
@@ -218,7 +218,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
               )}
             </g>
           ))}
-          
+
           {/* Connection lines between regions */}
           <defs>
             <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -227,7 +227,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
               <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1" />
             </linearGradient>
           </defs>
-          
+
           {/* Animated connection lines */}
           <path
             d={`M${regions[0].coordinates.x},${regions[0].coordinates.y} Q40,15 ${regions[1].coordinates.x},${regions[1].coordinates.y}`}
@@ -250,21 +250,26 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
 
       {/* Region Breakdown */}
       <div className="space-y-3">
-        {regions.map((region) => (
-          <div key={region.name} className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+        {regions.map(region => (
+          <div
+            key={region.name}
+            className="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50"
+          >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-slate-400" />
                 <h4 className="font-medium text-white">{region.name}</h4>
               </div>
-              <Badge 
+              <Badge
                 variant="outline"
-                className={region.change >= 0 
-                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30" 
-                  : "bg-red-500/20 text-red-300 border-red-500/30"
+                className={
+                  region.change >= 0
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                    : 'bg-red-500/20 text-red-300 border-red-500/30'
                 }
               >
-                {region.change >= 0 ? '+' : ''}{region.change}%
+                {region.change >= 0 ? '+' : ''}
+                {region.change}%
               </Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
@@ -272,7 +277,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
                 {region.percentage}% • {formatCurrency(region.value)}
               </span>
               <div className="w-32 h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-blue-500 to-blue-400"
                   style={{ width: `${region.percentage}%` }}
                 />
@@ -282,5 +287,5 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
         ))}
       </div>
     </Card>
-  );
+  )
 }

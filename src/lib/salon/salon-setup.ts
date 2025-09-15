@@ -10,15 +10,15 @@ export interface SalonSetupOptions {
 
 export async function setupSalonBusiness(options: SalonSetupOptions) {
   const { organizationId, organizationName, subdomain, ownerEmail, baseUrl } = options
-  
+
   try {
     // Create a new instance of universalApi with proper configuration for server-side
     const { universalApi } = await import('@/lib/universal-api')
-    const api = new universalApi({ 
+    const api = new universalApi({
       baseUrl,
-      organizationId 
+      organizationId
     })
-    
+
     // 1. Create default salon services
     const services = salonServices || []
     for (const service of services) {
@@ -96,7 +96,8 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
 
     // 3. Create default salon products/inventory
     const products = salonProducts || []
-    for (const product of products.slice(0, 10)) { // Start with 10 products
+    for (const product of products.slice(0, 10)) {
+      // Start with 10 products
       const productEntity = await api.createEntity({
         entity_type: 'product',
         entity_name: product.entity_name,
@@ -106,18 +107,8 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
       })
 
       // Set initial inventory
-      await api.setDynamicField(
-        productEntity.id,
-        'quantity_on_hand',
-        20,
-        'HERA.INV.PRODUCT.QTY.v1'
-      )
-      await api.setDynamicField(
-        productEntity.id,
-        'reorder_point',
-        5,
-        'HERA.INV.PRODUCT.REORDER.v1'
-      )
+      await api.setDynamicField(productEntity.id, 'quantity_on_hand', 20, 'HERA.INV.PRODUCT.QTY.v1')
+      await api.setDynamicField(productEntity.id, 'reorder_point', 5, 'HERA.INV.PRODUCT.REORDER.v1')
     }
 
     // 4. Create default payment methods

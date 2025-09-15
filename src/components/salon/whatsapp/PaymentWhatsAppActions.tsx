@@ -5,8 +5,23 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Receipt, CreditCard, MessageCircle, Send, AlertCircle, CheckCircle2, Clock, DollarSign } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import {
+  Receipt,
+  CreditCard,
+  MessageCircle,
+  Send,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  DollarSign
+} from 'lucide-react'
 import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
 import { formatDate } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
@@ -28,11 +43,11 @@ interface PaymentWhatsAppActionsProps {
   onSendReminder?: () => void
 }
 
-export function PaymentWhatsAppActions({ 
-  payment, 
-  organizationId, 
+export function PaymentWhatsAppActions({
+  payment,
+  organizationId,
   onSendConfirmation,
-  onSendReminder 
+  onSendReminder
 }: PaymentWhatsAppActionsProps) {
   const [sending, setSending] = useState(false)
   const [showPreview, setShowPreview] = useState<'confirmation' | 'reminder' | null>(null)
@@ -67,7 +82,7 @@ export function PaymentWhatsAppActions({
 
       // In production, this would send via WhatsApp API
       console.log('📱 Sending payment confirmation:', messageData)
-      
+
       setResult({
         type: 'success',
         message: 'Payment confirmation sent successfully!'
@@ -112,7 +127,7 @@ export function PaymentWhatsAppActions({
 
       // In production, this would send via WhatsApp API
       console.log('📱 Sending payment reminder:', messageData)
-      
+
       setResult({
         type: 'success',
         message: 'Payment reminder sent successfully!'
@@ -157,10 +172,9 @@ export function PaymentWhatsAppActions({
   return (
     <div className="space-y-3">
       {result && (
-        <Alert className={cn(
-          "mb-3",
-          result.type === 'success' ? "border-green-500" : "border-red-500"
-        )}>
+        <Alert
+          className={cn('mb-3', result.type === 'success' ? 'border-green-500' : 'border-red-500')}
+        >
           <AlertDescription className="flex items-center gap-2">
             {result.type === 'success' ? (
               <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -187,7 +201,10 @@ export function PaymentWhatsAppActions({
                 </p>
               </div>
             </div>
-            <Dialog open={showPreview === 'confirmation'} onOpenChange={(open) => !open && setShowPreview(null)}>
+            <Dialog
+              open={showPreview === 'confirmation'}
+              onOpenChange={open => !open && setShowPreview(null)}
+            >
               <Button
                 size="sm"
                 variant="outline"
@@ -201,18 +218,16 @@ export function PaymentWhatsAppActions({
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Send Payment Confirmation</DialogTitle>
-                  <DialogDescription>
-                    Preview the payment confirmation message
-                  </DialogDescription>
+                  <DialogDescription>Preview the payment confirmation message</DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="mt-4">
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getConfirmationPreview()}
                     </pre>
                   </div>
-                  
+
                   <div className="flex justify-end gap-2 mt-4">
                     <Button variant="outline" onClick={() => setShowPreview(null)}>
                       Cancel
@@ -252,7 +267,10 @@ export function PaymentWhatsAppActions({
                 )}
               </div>
             </div>
-            <Dialog open={showPreview === 'reminder'} onOpenChange={(open) => !open && setShowPreview(null)}>
+            <Dialog
+              open={showPreview === 'reminder'}
+              onOpenChange={open => !open && setShowPreview(null)}
+            >
               <Button
                 size="sm"
                 variant="outline"
@@ -266,18 +284,16 @@ export function PaymentWhatsAppActions({
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Send Payment Reminder</DialogTitle>
-                  <DialogDescription>
-                    Preview the payment reminder message
-                  </DialogDescription>
+                  <DialogDescription>Preview the payment reminder message</DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="mt-4">
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getReminderPreview()}
                     </pre>
                   </div>
-                  
+
                   <div className="flex justify-end gap-2 mt-4">
                     <Button variant="outline" onClick={() => setShowPreview(null)}>
                       Cancel

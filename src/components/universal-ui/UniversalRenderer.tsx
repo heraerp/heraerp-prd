@@ -46,10 +46,10 @@ export function UniversalRenderer({
     try {
       setLoading(true)
       setError(null)
-      
+
       const metaService = new ViewMetaService(organizationId)
       const meta = await metaService.getViewMeta(smartCode, viewType)
-      
+
       if (!meta) {
         setError('No metadata found for this view')
       } else {
@@ -187,7 +187,7 @@ export function UniversalRenderer({
         {metadata.widgets.map(widget => {
           const colSpan = widget.layout?.size?.width || 12
           const rowSpan = widget.layout?.size?.height || 1
-          
+
           return (
             <div
               key={widget.id}

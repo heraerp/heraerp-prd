@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import {
   Table,
@@ -20,7 +20,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import {
   BarChart,
@@ -38,7 +38,7 @@ import {
   ResponsiveContainer
 } from 'recharts'
 import { toast } from 'sonner'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -99,7 +99,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
     try {
       const response = await fetch(
         `/api/v1/financial-integration/gl-balances?` +
-        `organization_id=${organizationId}&period=${period}&year=${fiscalYear}`
+          `organization_id=${organizationId}&period=${period}&year=${fiscalYear}`
       )
       if (response.ok) {
         const data = await response.json()
@@ -117,7 +117,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
     try {
       const response = await fetch(
         `/api/v1/financial-integration/gl-transactions?` +
-        `organization_id=${organizationId}&account=${accountCode}&period=${period}&year=${fiscalYear}`
+          `organization_id=${organizationId}&account=${accountCode}&period=${period}&year=${fiscalYear}`
       )
       if (response.ok) {
         const data = await response.json()
@@ -138,10 +138,10 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
     try {
       const response = await fetch(
         `/api/v1/financial-integration/export-gl?` +
-        `organization_id=${organizationId}&period=${period}&year=${fiscalYear}`,
+          `organization_id=${organizationId}&period=${period}&year=${fiscalYear}`,
         { method: 'POST' }
       )
-      
+
       if (response.ok) {
         const blob = await response.blob()
         const url = window.URL.createObjectURL(blob)
@@ -178,24 +178,28 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
     return colors[type] || 'bg-gray-100 text-gray-800'
   }
 
-  const filteredAccounts = accounts.filter(account =>
-    account.account_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    account.account_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAccounts = accounts.filter(
+    account =>
+      account.account_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      account.account_name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const accountTypeSummary = accounts.reduce((summary, account) => {
-    if (!summary[account.account_type]) {
-      summary[account.account_type] = {
-        count: 0,
-        balance: 0,
-        budget: 0
+  const accountTypeSummary = accounts.reduce(
+    (summary, account) => {
+      if (!summary[account.account_type]) {
+        summary[account.account_type] = {
+          count: 0,
+          balance: 0,
+          budget: 0
+        }
       }
-    }
-    summary[account.account_type].count++
-    summary[account.account_type].balance += account.current_balance
-    summary[account.account_type].budget += account.budget_amount || 0
-    return summary
-  }, {} as Record<string, { count: number; balance: number; budget: number }>)
+      summary[account.account_type].count++
+      summary[account.account_type].balance += account.current_balance
+      summary[account.account_type].budget += account.budget_amount || 0
+      return summary
+    },
+    {} as Record<string, { count: number; balance: number; budget: number }>
+  )
 
   const chartData = Object.entries(accountTypeSummary).map(([type, data]) => ({
     name: type.charAt(0).toUpperCase() + type.slice(1),
@@ -221,20 +225,11 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={loadGLBalances}
-                disabled={isLoading}
-              >
+              <Button variant="outline" size="sm" onClick={loadGLBalances} disabled={isLoading}>
                 <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-              >
+              <Button variant="outline" size="sm" onClick={handleExport}>
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
@@ -251,7 +246,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                   id="search"
                   placeholder="Account code or name..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-8"
                 />
               </div>
@@ -280,7 +275,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={(new Date().getFullYear()).toString()}>
+                  <SelectItem value={new Date().getFullYear().toString()}>
                     {new Date().getFullYear()}
                   </SelectItem>
                   <SelectItem value={(new Date().getFullYear() - 1).toString()}>
@@ -334,15 +329,9 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
               <Card key={type}>
                 <CardContent className="p-6">
                   <div className="space-y-2">
-                    <Badge className={getAccountTypeColor(type)}>
-                      {type.toUpperCase()}
-                    </Badge>
-                    <p className="text-2xl font-bold">
-                      {formatAmount(data.balance)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {data.count} accounts
-                    </p>
+                    <Badge className={getAccountTypeColor(type)}>{type.toUpperCase()}</Badge>
+                    <p className="text-2xl font-bold">{formatAmount(data.balance)}</p>
+                    <p className="text-sm text-muted-foreground">{data.count} accounts</p>
                     {data.budget > 0 && (
                       <div className="text-sm">
                         <span className="text-muted-foreground">Budget: </span>
@@ -372,8 +361,8 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredAccounts.map((account) => (
-                      <TableRow 
+                    {filteredAccounts.map(account => (
+                      <TableRow
                         key={account.account_code}
                         className="cursor-pointer hover:bg-muted/50"
                         onClick={() => {
@@ -381,12 +370,13 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                           onAccountSelect?.(account.account_code)
                         }}
                       >
-                        <TableCell className="font-medium">
-                          {account.account_code}
-                        </TableCell>
+                        <TableCell className="font-medium">{account.account_code}</TableCell>
                         <TableCell>{account.account_name}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className={getAccountTypeColor(account.account_type)}>
+                          <Badge
+                            variant="outline"
+                            className={getAccountTypeColor(account.account_type)}
+                          >
                             {account.account_type}
                           </Badge>
                         </TableCell>
@@ -407,7 +397,9 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                               ) : (
                                 <TrendingDown className="h-4 w-4 text-red-600" />
                               )}
-                              <span className={account.variance > 0 ? 'text-green-600' : 'text-red-600'}>
+                              <span
+                                className={account.variance > 0 ? 'text-green-600' : 'text-red-600'}
+                              >
                                 {account.variance_percent?.toFixed(1)}%
                               </span>
                             </div>
@@ -430,9 +422,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                   <CardTitle>
                     {selectedAccount.account_code} - {selectedAccount.account_name}
                   </CardTitle>
-                  <CardDescription>
-                    Transaction details for the selected period
-                  </CardDescription>
+                  <CardDescription>Transaction details for the selected period</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-4 gap-4 mb-6">
@@ -454,7 +444,9 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Closing Balance</p>
-                      <p className="text-xl font-bold">{formatAmount(selectedAccount.current_balance)}</p>
+                      <p className="text-xl font-bold">
+                        {formatAmount(selectedAccount.current_balance)}
+                      </p>
                     </div>
                   </div>
 
@@ -473,24 +465,20 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                       <TableBody>
                         {transactions.map((transaction, index) => (
                           <TableRow key={index}>
-                            <TableCell>
-                              {new Date(transaction.date).toLocaleDateString()}
-                            </TableCell>
+                            <TableCell>{new Date(transaction.date).toLocaleDateString()}</TableCell>
                             <TableCell className="font-medium">
                               {transaction.document_number}
                             </TableCell>
                             <TableCell>{transaction.description}</TableCell>
                             <TableCell className="text-right">
-                              {transaction.debit_amount > 0 
+                              {transaction.debit_amount > 0
                                 ? formatAmount(transaction.debit_amount)
-                                : '-'
-                              }
+                                : '-'}
                             </TableCell>
                             <TableCell className="text-right">
-                              {transaction.credit_amount > 0 
+                              {transaction.credit_amount > 0
                                 ? formatAmount(transaction.credit_amount)
-                                : '-'
-                              }
+                                : '-'}
                             </TableCell>
                             <TableCell className="text-right font-medium">
                               {formatAmount(transaction.running_balance)}
@@ -533,7 +521,15 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={Array.isArray(chartData) ? chartData : (chartData && typeof chartData === 'object' ? Object.values(chartData as any) : [])}>
+                  <BarChart
+                    data={
+                      Array.isArray(chartData)
+                        ? chartData
+                        : chartData && typeof chartData === 'object'
+                          ? Object.values(chartData as any)
+                          : []
+                    }
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
@@ -554,7 +550,13 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={Array.isArray(pieData) ? pieData : (pieData && typeof pieData === 'object' ? Object.values(pieData as any) : [])}
+                      data={
+                        Array.isArray(pieData)
+                          ? pieData
+                          : pieData && typeof pieData === 'object'
+                            ? Object.values(pieData as any)
+                            : []
+                      }
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -583,7 +585,7 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                 {accounts
                   .sort((a, b) => Math.abs(b.current_balance) - Math.abs(a.current_balance))
                   .slice(0, 10)
-                  .map((account) => (
+                  .map(account => (
                     <div key={account.account_code} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div>
@@ -596,8 +598,11 @@ export function GLBalanceViewer({ organizationId, onAccountSelect }: GLBalanceVi
                         <div
                           className="bg-primary h-2 rounded-full"
                           style={{
-                            width: `${(Math.abs(account.current_balance) / 
-                              Math.abs(accounts[0].current_balance)) * 100}%`
+                            width: `${
+                              (Math.abs(account.current_balance) /
+                                Math.abs(accounts[0].current_balance)) *
+                              100
+                            }%`
                           }}
                         />
                       </div>

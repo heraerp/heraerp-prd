@@ -1,6 +1,6 @@
 /**
  * HERA Universal Onboarding - Guards
- * 
+ *
  * DOM readiness checks, route validation, and retry logic
  * Ensures tour steps only show when elements are available
  */
@@ -14,30 +14,30 @@ export async function awaitSelector(
   timeoutMs: number = 5000,
   pollInterval: number = 100
 ): Promise<Element | null> {
-  const startTime = Date.now();
-  
-  return new Promise((resolve) => {
+  const startTime = Date.now()
+
+  return new Promise(resolve => {
     // Check immediately
-    const element = document.querySelector(selector);
+    const element = document.querySelector(selector)
     if (element && isElementVisible(element)) {
-      resolve(element);
-      return;
+      resolve(element)
+      return
     }
-    
+
     // Poll for element
     const intervalId = setInterval(() => {
-      const element = document.querySelector(selector);
-      const elapsed = Date.now() - startTime;
-      
+      const element = document.querySelector(selector)
+      const elapsed = Date.now() - startTime
+
       if (element && isElementVisible(element)) {
-        clearInterval(intervalId);
-        resolve(element);
+        clearInterval(intervalId)
+        resolve(element)
       } else if (elapsed >= timeoutMs) {
-        clearInterval(intervalId);
-        resolve(null);
+        clearInterval(intervalId)
+        resolve(null)
       }
-    }, pollInterval);
-  });
+    }, pollInterval)
+  })
 }
 
 /**
@@ -49,42 +49,42 @@ export async function awaitCondition(
   timeoutMs: number = 5000,
   pollInterval: number = 100
 ): Promise<boolean> {
-  const startTime = Date.now();
-  
-  return new Promise(async (resolve) => {
+  const startTime = Date.now()
+
+  return new Promise(async resolve => {
     // Check immediately
     try {
-      const result = await condition();
+      const result = await condition()
       if (result) {
-        resolve(true);
-        return;
+        resolve(true)
+        return
       }
     } catch (error) {
-      console.warn('Condition check failed:', error);
+      console.warn('Condition check failed:', error)
     }
-    
+
     // Poll for condition
     const intervalId = setInterval(async () => {
-      const elapsed = Date.now() - startTime;
-      
+      const elapsed = Date.now() - startTime
+
       try {
-        const result = await condition();
+        const result = await condition()
         if (result) {
-          clearInterval(intervalId);
-          resolve(true);
+          clearInterval(intervalId)
+          resolve(true)
         } else if (elapsed >= timeoutMs) {
-          clearInterval(intervalId);
-          resolve(false);
+          clearInterval(intervalId)
+          resolve(false)
         }
       } catch (error) {
-        console.warn('Condition check failed:', error);
+        console.warn('Condition check failed:', error)
         if (elapsed >= timeoutMs) {
-          clearInterval(intervalId);
-          resolve(false);
+          clearInterval(intervalId)
+          resolve(false)
         }
       }
-    }, pollInterval);
-  });
+    }, pollInterval)
+  })
 }
 
 /**
@@ -92,16 +92,16 @@ export async function awaitCondition(
  * More reliable than just existence
  */
 export function isElementVisible(element: Element): boolean {
-  const rect = element.getBoundingClientRect();
-  const style = window.getComputedStyle(element);
-  
+  const rect = element.getBoundingClientRect()
+  const style = window.getComputedStyle(element)
+
   return (
     rect.width > 0 &&
     rect.height > 0 &&
     style.display !== 'none' &&
     style.visibility !== 'hidden' &&
     style.opacity !== '0'
-  );
+  )
 }
 
 /**
@@ -116,28 +116,28 @@ export async function ensureRoute(
   try {
     // If route is a function, execute it
     if (typeof route === 'function') {
-      await route(router);
-      return true;
+      await route(router)
+      return true
     }
-    
+
     // Get current path (Next.js or React Router compatible)
-    const current = currentPath || getCurrentPath(router);
-    
+    const current = currentPath || getCurrentPath(router)
+
     // Already on correct route
     if (current === route) {
-      return true;
+      return true
     }
-    
+
     // Navigate to route
-    await navigateToRoute(router, route);
-    
+    await navigateToRoute(router, route)
+
     // Wait for navigation to complete
-    await waitForRouteChange(router, route);
-    
-    return true;
+    await waitForRouteChange(router, route)
+
+    return true
   } catch (error) {
-    console.error('Route navigation failed:', error);
-    return false;
+    console.error('Route navigation failed:', error)
+    return false
   }
 }
 
@@ -148,20 +148,20 @@ export async function ensureRoute(
 function getCurrentPath(router: any): string {
   // Next.js App Router
   if (router?.pathname) {
-    return router.pathname;
+    return router.pathname
   }
-  
+
   // React Router
   if (router?.location?.pathname) {
-    return router.location.pathname;
+    return router.location.pathname
   }
-  
+
   // Fallback to window location
   if (typeof window !== 'undefined') {
-    return window.location.pathname;
+    return window.location.pathname
   }
-  
-  return '/';
+
+  return '/'
 }
 
 /**
@@ -171,19 +171,19 @@ function getCurrentPath(router: any): string {
 async function navigateToRoute(router: any, route: string): Promise<void> {
   // Next.js App Router
   if (router?.push) {
-    await router.push(route);
-    return;
+    await router.push(route)
+    return
   }
-  
+
   // React Router
   if (router?.navigate) {
-    await router.navigate(route);
-    return;
+    await router.navigate(route)
+    return
   }
-  
+
   // Fallback to window navigation
   if (typeof window !== 'undefined') {
-    window.location.pathname = route;
+    window.location.pathname = route
   }
 }
 
@@ -195,19 +195,19 @@ async function waitForRouteChange(
   targetRoute: string,
   timeoutMs: number = 3000
 ): Promise<void> {
-  const startTime = Date.now();
-  
-  return new Promise((resolve) => {
+  const startTime = Date.now()
+
+  return new Promise(resolve => {
     const checkInterval = setInterval(() => {
-      const current = getCurrentPath(router);
-      const elapsed = Date.now() - startTime;
-      
+      const current = getCurrentPath(router)
+      const elapsed = Date.now() - startTime
+
       if (current === targetRoute || elapsed >= timeoutMs) {
-        clearInterval(checkInterval);
-        resolve();
+        clearInterval(checkInterval)
+        resolve()
       }
-    }, 100);
-  });
+    }, 100)
+  })
 }
 
 /**
@@ -217,40 +217,40 @@ async function waitForRouteChange(
 export async function isStepReady(
   selector: string,
   options: {
-    route?: string | ((router: any) => Promise<void>);
-    waitFor?: string | (() => boolean | Promise<boolean>);
-    timeoutMs?: number;
-    router?: any;
+    route?: string | ((router: any) => Promise<void>)
+    waitFor?: string | (() => boolean | Promise<boolean>)
+    timeoutMs?: number
+    router?: any
   } = {}
 ): Promise<boolean> {
-  const { route, waitFor, timeoutMs = 5000, router } = options;
-  
+  const { route, waitFor, timeoutMs = 5000, router } = options
+
   // Check route first
   if (route && router) {
-    const routeReady = await ensureRoute(router, route);
+    const routeReady = await ensureRoute(router, route)
     if (!routeReady) {
-      return false;
+      return false
     }
   }
-  
+
   // Check custom wait condition
   if (waitFor) {
     if (typeof waitFor === 'string') {
-      const element = await awaitSelector(waitFor, timeoutMs);
+      const element = await awaitSelector(waitFor, timeoutMs)
       if (!element) {
-        return false;
+        return false
       }
     } else {
-      const conditionMet = await awaitCondition(waitFor, timeoutMs);
+      const conditionMet = await awaitCondition(waitFor, timeoutMs)
       if (!conditionMet) {
-        return false;
+        return false
       }
     }
   }
-  
+
   // Check target selector
-  const targetElement = await awaitSelector(selector, timeoutMs);
-  return !!targetElement;
+  const targetElement = await awaitSelector(selector, timeoutMs)
+  return !!targetElement
 }
 
 /**
@@ -260,19 +260,19 @@ export async function isStepReady(
 export async function awaitMultipleSelectors(
   selectors: string[],
   options: {
-    timeoutMs?: number;
-    requireAll?: boolean;
+    timeoutMs?: number
+    requireAll?: boolean
   } = {}
 ): Promise<boolean> {
-  const { timeoutMs = 5000, requireAll = true } = options;
-  
-  const promises = selectors.map(selector => awaitSelector(selector, timeoutMs));
-  const results = await Promise.all(promises);
-  
+  const { timeoutMs = 5000, requireAll = true } = options
+
+  const promises = selectors.map(selector => awaitSelector(selector, timeoutMs))
+  const results = await Promise.all(promises)
+
   if (requireAll) {
-    return results.every(element => element !== null);
+    return results.every(element => element !== null)
   } else {
-    return results.some(element => element !== null);
+    return results.some(element => element !== null)
   }
 }
 
@@ -280,7 +280,7 @@ export async function awaitMultipleSelectors(
  * Check if running in SSR environment
  */
 export function isSSR(): boolean {
-  return typeof window === 'undefined';
+  return typeof window === 'undefined'
 }
 
 /**
@@ -288,11 +288,11 @@ export function isSSR(): boolean {
  */
 export function prefersReducedMotion(): boolean {
   if (isSSR()) {
-    return false;
+    return false
   }
-  
-  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  return mediaQuery.matches;
+
+  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  return mediaQuery.matches
 }
 
 /**
@@ -304,19 +304,19 @@ export function createResizeObserver(
   debounceMs: number = 100
 ): ResizeObserver | null {
   if (isSSR() || !window.ResizeObserver) {
-    return null;
+    return null
   }
-  
-  let timeoutId: NodeJS.Timeout;
-  
-  const observer = new ResizeObserver((entries) => {
-    clearTimeout(timeoutId);
+
+  let timeoutId: NodeJS.Timeout
+
+  const observer = new ResizeObserver(entries => {
+    clearTimeout(timeoutId)
     timeoutId = setTimeout(() => {
-      entries.forEach(callback);
-    }, debounceMs);
-  });
-  
-  observer.observe(element);
-  
-  return observer;
+      entries.forEach(callback)
+    }, debounceMs)
+  })
+
+  observer.observe(element)
+
+  return observer
 }

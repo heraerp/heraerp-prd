@@ -11,10 +11,10 @@ export async function GET(request: NextRequest) {
     const phone = searchParams.get('phone') || '+447515668004'
     const message = searchParams.get('message') || 'Hello, I need a haircut appointment'
     const direction = searchParams.get('direction') || 'inbound'
-    
+
     const organizationId = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Hair Talkz
     const waId = phone.replace(/[^\d]/g, '') // Remove non-digits
-    
+
     console.log('📱 Creating live WhatsApp message:', {
       phone,
       message,
@@ -29,9 +29,10 @@ export async function GET(request: NextRequest) {
         organization_id: organizationId,
         transaction_type: 'whatsapp_message',
         transaction_code: `WA-MSG-${Date.now()}`,
-        smart_code: direction === 'inbound' 
-          ? 'HERA.CRM.MSG.WHATSAPP.INBOUND.v1' 
-          : 'HERA.CRM.MSG.WHATSAPP.OUTBOUND.v1',
+        smart_code:
+          direction === 'inbound'
+            ? 'HERA.CRM.MSG.WHATSAPP.INBOUND.v1'
+            : 'HERA.CRM.MSG.WHATSAPP.OUTBOUND.v1',
         transaction_date: new Date().toISOString(),
         total_amount: 0,
         metadata: {
@@ -76,9 +77,11 @@ export async function GET(request: NextRequest) {
         .insert({
           organization_id: organizationId,
           entity_type: 'customer',
-          entity_name: phone.includes('447515668004') ? 'UK User' : 
-                       phone.includes('918883333144') ? 'India User' : 
-                       `WhatsApp User ${waId}`,
+          entity_name: phone.includes('447515668004')
+            ? 'UK User'
+            : phone.includes('918883333144')
+              ? 'India User'
+              : `WhatsApp User ${waId}`,
           entity_code: `CUST-WA-${waId}`,
           metadata: {
             wa_id: waId,
@@ -150,12 +153,14 @@ export async function GET(request: NextRequest) {
         'You can create more messages by changing the phone/message parameters'
       ]
     })
-
   } catch (error) {
     console.error('Failed to create live message:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

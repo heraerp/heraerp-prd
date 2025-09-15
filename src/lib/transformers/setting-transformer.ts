@@ -19,13 +19,13 @@ export function transformToUISetting(data: {
   relationships: any[]
 }): UISetting {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -42,14 +42,15 @@ export function transformToUISetting(data: {
 
 export function filterSetting(items: UISetting[], searchTerm: string): UISetting[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.setting_key?.toLowerCase().includes(term) ||
-    item.setting_value?.toLowerCase().includes(term) ||
-    item.setting_type?.toLowerCase().includes(term) ||
-    item.description?.toLowerCase().includes(term) ||
-    item.updated_by?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.setting_key?.toLowerCase().includes(term) ||
+      item.setting_value?.toLowerCase().includes(term) ||
+      item.setting_type?.toLowerCase().includes(term) ||
+      item.description?.toLowerCase().includes(term) ||
+      item.updated_by?.toLowerCase().includes(term)
   )
 }

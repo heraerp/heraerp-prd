@@ -26,16 +26,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Extract organization ID from metadata or use default
-    const organizationId = (body.metadata as any)?.organization_id || process.env.DEFAULT_ORGANIZATION_ID!
-    
+    const organizationId =
+      (body.metadata as any)?.organization_id || process.env.DEFAULT_ORGANIZATION_ID!
+
     // Initialize booking service
     const bookingService = new WhatsAppBookingService(organizationId)
-    
+
     // Process WhatsApp webhook payload
     const { entry } = body
-    
+
     if (!entry || !entry[0]?.changes) {
       return NextResponse.json({ status: 'no_changes' }, { status: 200 })
     }
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     for (const change of entry[0].changes) {
       if (change.field === 'messages') {
         const { messages, contacts } = change.value
-        
+
         if (messages && messages.length > 0) {
           for (const message of messages) {
             await processMessage(message, contacts, bookingService)
@@ -55,10 +56,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'success' }, { status: 200 })
   } catch (error) {
     console.error('WhatsApp webhook error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -79,15 +77,15 @@ async function processMessage(
     case 'text':
       await handleTextMessage(message, customerName, customerPhone, bookingService)
       break
-      
+
     case 'interactive':
       await handleInteractiveMessage(message, customerName, customerPhone, bookingService)
       break
-      
+
     case 'button':
       await handleButtonResponse(message, customerName, customerPhone, bookingService)
       break
-      
+
     default:
       console.log(`Unsupported message type: ${message.type}`)
   }
@@ -107,7 +105,7 @@ async function handleTextMessage(
     from: customerPhone,
     name: customerName
   })
-  
+
   // Send response via WhatsApp API
   await sendWhatsAppMessage(customerPhone, response)
 }
@@ -122,7 +120,7 @@ async function handleInteractiveMessage(
   bookingService: WhatsAppBookingService
 ) {
   const { type } = message.interactive
-  
+
   if (type === 'list_reply') {
     const selectedId = message.interactive.list_reply.id
     // Process list selection (e.g., service selection)
@@ -157,12 +155,12 @@ async function processListSelection(
 ) {
   // Map selection IDs to actions
   const serviceMap: Record<string, string> = {
-    'hair_services': 'Hair Services',
-    'nail_services': 'Nail Services',
-    'spa_treatments': 'Spa Treatments',
-    'packages': 'Packages & Offers'
+    hair_services: 'Hair Services',
+    nail_services: 'Nail Services',
+    spa_treatments: 'Spa Treatments',
+    packages: 'Packages & Offers'
   }
-  
+
   const selectedService = serviceMap[selectionId]
   if (selectedService) {
     // Send next step in booking flow
@@ -184,15 +182,18 @@ async function processButtonSelection(
     case 'book_now':
       await sendServiceCategoriesMessage(customerPhone)
       break
-      
+
     case 'confirm_booking':
       // Process booking confirmation
       break
-      
+
     case 'cancel':
-      await sendWhatsAppMessage(customerPhone, 'No problem! Feel free to reach out when you\'re ready to book.')
+      await sendWhatsAppMessage(
+        customerPhone,
+        "No problem! Feel free to reach out when you're ready to book."
+      )
       break
-      
+
     default:
       console.log(`Unknown button ID: ${buttonId}`)
   }
@@ -216,7 +217,7 @@ function getServiceOptionsMessage(category: string): string {
       '💎 Nail Art Design - AED 50+'
     ]
   }
-  
+
   const serviceList = services[category] || []
   return `${category}:\n\n${serviceList.join('\n')}\n\nWhich service would you like to book?`
 }
@@ -268,7 +269,7 @@ async function sendServiceCategoriesMessage(customerPhone: string) {
       }
     }
   }
-  
+
   await sendWhatsAppInteractiveMessage(customerPhone, message)
 }
 
@@ -282,7 +283,7 @@ async function sendWhatsAppMessage(to: string, text: string) {
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -293,7 +294,7 @@ async function sendWhatsAppMessage(to: string, text: string) {
         })
       }
     )
-    
+
     if (!response.ok) {
       throw new Error(`WhatsApp API error: ${response.status}`)
     }
@@ -312,7 +313,7 @@ async function sendWhatsAppInteractiveMessage(to: string, interactiveMessage: an
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -322,7 +323,7 @@ async function sendWhatsAppInteractiveMessage(to: string, interactiveMessage: an
         })
       }
     )
-    
+
     if (!response.ok) {
       throw new Error(`WhatsApp API error: ${response.status}`)
     }

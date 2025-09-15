@@ -1,7 +1,7 @@
 /**
  * HERA DNA Universal Calendar API Types
  * Smart Code: HERA.API.CALENDAR.CONTRACTS.v1
- * 
+ *
  * Complete API contracts for calendar operations using Sacred Six Tables
  */
 
@@ -183,7 +183,13 @@ export interface CalendarQueryParams {
 
 // Webhook Types for Real-time Updates
 export interface CalendarWebhookPayload {
-  event_type: 'event.created' | 'event.updated' | 'event.deleted' | 'resource.created' | 'resource.updated' | 'resource.deleted'
+  event_type:
+    | 'event.created'
+    | 'event.updated'
+    | 'event.deleted'
+    | 'resource.created'
+    | 'resource.updated'
+    | 'resource.deleted'
   organization_id: string
   smart_code: string
   data: CalendarEvent | CalendarResource
@@ -212,7 +218,7 @@ export interface CalendarEntityMapping {
     smart_code_pattern: 'HERA.*.CALENDAR.EVENT.*'
     required_fields: ['transaction_type', 'transaction_date', 'organization_id']
   }
-  
+
   // Resources stored in core_entities
   resource: {
     table: 'core_entities'
@@ -220,14 +226,14 @@ export interface CalendarEntityMapping {
     smart_code_pattern: 'HERA.*.CALENDAR.RESOURCE.*'
     required_fields: ['entity_type', 'entity_name', 'organization_id']
   }
-  
+
   // Availability stored in core_dynamic_data
   availability: {
     table: 'core_dynamic_data'
     field_name: 'calendar_availability'
     smart_code_pattern: 'HERA.*.CALENDAR.AVAILABILITY.*'
   }
-  
+
   // Event-Resource relationships stored in core_relationships
   assignment: {
     table: 'core_relationships'

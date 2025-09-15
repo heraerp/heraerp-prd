@@ -10,14 +10,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
-import { 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
-  Zap, 
-  Database, 
-  Rocket, 
-  Palette, 
+import {
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Zap,
+  Database,
+  Rocket,
+  Palette,
   Brain,
   Settings,
   Factory,
@@ -87,7 +87,8 @@ const DevelopmentMatrix = () => {
       icon: Database,
       status: 'complete',
       progress: 100,
-      description: '6-table architecture handles infinite business complexity without schema changes'
+      description:
+        '6-table architecture handles infinite business complexity without schema changes'
     },
     {
       title: 'Universal API',
@@ -131,7 +132,8 @@ const DevelopmentMatrix = () => {
       name: 'HERA as Customer',
       type: 'Internal Development (Dogfooding)',
       icon: Building,
-      description: 'HERA builds HERA - Use our own system for development tracking, project management, and internal operations.',
+      description:
+        'HERA builds HERA - Use our own system for development tracking, project management, and internal operations.',
       smartCodes: [
         'Development tasks as universal transactions',
         'Git integration with HERA task tracking',
@@ -143,7 +145,8 @@ const DevelopmentMatrix = () => {
       name: "Mario's Restaurant",
       type: 'Industry Demonstration',
       icon: Utensils,
-      description: 'Restaurant POS & Management - Complete restaurant operations from menu management to customer orders to inventory.',
+      description:
+        'Restaurant POS & Management - Complete restaurant operations from menu management to customer orders to inventory.',
       smartCodes: [
         'HERA.REST.CRM.ENT.MENU.v1 - Menu items',
         'HERA.REST.CRM.TXN.ORDER.v1 - Customer orders',
@@ -155,7 +158,8 @@ const DevelopmentMatrix = () => {
       name: "Dr. Smith's Clinic",
       type: 'Healthcare Demonstration',
       icon: Stethoscope,
-      description: 'Medical Practice Management - Patient records, appointments, treatments, billing, and insurance claims.',
+      description:
+        'Medical Practice Management - Patient records, appointments, treatments, billing, and insurance claims.',
       smartCodes: [
         'HERA.HLTH.CRM.ENT.PAT.v1 - Patient records',
         'HERA.HLTH.CRM.TXN.VISIT.v1 - Patient visits',
@@ -167,7 +171,8 @@ const DevelopmentMatrix = () => {
       name: 'Standard ERP Customers',
       type: 'Universal Implementation',
       icon: Users,
-      description: 'Any Business Type - Standard ERP functions that work for manufacturing, professional services, retail, etc.',
+      description:
+        'Any Business Type - Standard ERP functions that work for manufacturing, professional services, retail, etc.',
       smartCodes: [
         'HERA.FIN.GL.TXN.JE.v1 - Journal entries',
         'HERA.INV.RCV.TXN.IN.v1 - Inventory receiving',
@@ -265,7 +270,8 @@ const DevelopmentMatrix = () => {
     {
       number: 1,
       title: 'Complete Smart Coding System',
-      description: 'Finalize universal smart codes for all modules with version control integration.',
+      description:
+        'Finalize universal smart codes for all modules with version control integration.',
       timeline: '3-5 days',
       priority: 'Critical'
     },
@@ -293,7 +299,7 @@ const DevelopmentMatrix = () => {
   ]
 
   const getStatusBadge = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'DONE':
         return <Badge className="bg-green-500/20 text-green-400 border-green-500">✅ DONE</Badge>
       case 'WIP':
@@ -306,7 +312,7 @@ const DevelopmentMatrix = () => {
   }
 
   const getFoundationCardClass = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'complete':
         return 'border-green-500 bg-gradient-to-br from-green-500/10 to-green-500/5'
       case 'progress':
@@ -318,7 +324,9 @@ const DevelopmentMatrix = () => {
     }
   }
 
-  const overallProgress = Math.round(buildComponents.reduce((sum, comp) => sum + comp.progress, 0) / buildComponents.length)
+  const overallProgress = Math.round(
+    buildComponents.reduce((sum, comp) => sum + comp.progress, 0) / buildComponents.length
+  )
 
   if (!isAuthenticated) {
     return (
@@ -338,15 +346,13 @@ const DevelopmentMatrix = () => {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                onChange={e => setPassword(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleLogin()}
                 placeholder="Enter developer password"
                 className="bg-card"
               />
             </div>
-            {error && (
-              <p className="text-sm text-red-400">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-400">{error}</p>}
             <Button onClick={handleLogin} className="w-full">
               <Shield className="w-4 h-4 mr-2" />
               Access Development Matrix
@@ -386,7 +392,10 @@ const DevelopmentMatrix = () => {
               {foundationStatus.map((item, index) => {
                 const IconComponent = item.icon
                 return (
-                  <Card key={index} className={`relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg ${getFoundationCardClass(item.status)}`}>
+                  <Card
+                    key={index}
+                    className={`relative overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg ${getFoundationCardClass(item.status)}`}
+                  >
                     <CardContent className="p-6 text-center">
                       <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center text-lg">
                         {item.status === 'complete' && '✅'}
@@ -397,31 +406,36 @@ const DevelopmentMatrix = () => {
                         <IconComponent className="w-8 h-8" />
                       </div>
                       <h3 className="text-lg font-bold mb-2">{item.title}</h3>
-                      <Badge className={`mb-4 ${
-                        item.status === 'complete' ? 'bg-green-500/20 text-green-400' :
-                        item.status === 'progress' ? 'bg-orange-500/20 text-orange-400' :
-                        'bg-blue-500/20 text-blue-400'
-                      }`}>
+                      <Badge
+                        className={`mb-4 ${
+                          item.status === 'complete'
+                            ? 'bg-green-500/20 text-green-400'
+                            : item.status === 'progress'
+                              ? 'bg-orange-500/20 text-orange-400'
+                              : 'bg-blue-500/20 text-blue-400'
+                        }`}
+                      >
                         {item.status === 'complete' && '✅ 100% COMPLETE'}
                         {item.status === 'progress' && `🔄 ${item.progress}% COMPLETE`}
                         {item.status === 'pending' && `📋 ${item.progress}% COMPLETE`}
                       </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        {item.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{item.description}</p>
                     </CardContent>
                   </Card>
                 )
               })}
             </div>
-            
+
             <Card className="bg-card/50 border-emerald-500/30">
               <CardContent className="p-6">
-                <h4 className="text-xl font-bold text-emerald-400 mb-4">🎯 The Revolutionary Achievement:</h4>
+                <h4 className="text-xl font-bold text-emerald-400 mb-4">
+                  🎯 The Revolutionary Achievement:
+                </h4>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  <span className="text-green-400 font-bold">The hardest work is DONE!</span> We've solved the impossible challenge - 
-                  creating a universal ERP architecture that works for ANY business without schema changes. 
-                  What remains is implementing business modules using our proven patterns.
+                  <span className="text-green-400 font-bold">The hardest work is DONE!</span> We've
+                  solved the impossible challenge - creating a universal ERP architecture that works
+                  for ANY business without schema changes. What remains is implementing business
+                  modules using our proven patterns.
                 </p>
               </CardContent>
             </Card>
@@ -481,7 +495,10 @@ const DevelopmentMatrix = () => {
               {customers.map((customer, index) => {
                 const IconComponent = customer.icon
                 return (
-                  <Card key={index} className="border-border/50 hover:-translate-y-1 transition-all">
+                  <Card
+                    key={index}
+                    className="border-border/50 hover:-translate-y-1 transition-all"
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-4 mb-6">
                         <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center text-white">
@@ -492,9 +509,7 @@ const DevelopmentMatrix = () => {
                           <p className="text-muted-foreground">{customer.type}</p>
                         </div>
                       </div>
-                      <p className="text-muted-foreground mb-6">
-                        {customer.description}
-                      </p>
+                      <p className="text-muted-foreground mb-6">{customer.description}</p>
                       <Card className="bg-card/50">
                         <CardContent className="p-4">
                           <h4 className="text-amber-400 font-semibold mb-3">
@@ -502,7 +517,9 @@ const DevelopmentMatrix = () => {
                           </h4>
                           <ul className="space-y-2 text-sm text-muted-foreground">
                             {customer.smartCodes.map((code, codeIndex) => (
-                              <li key={codeIndex} className="leading-relaxed">• {code}</li>
+                              <li key={codeIndex} className="leading-relaxed">
+                                • {code}
+                              </li>
                             ))}
                           </ul>
                         </CardContent>
@@ -534,8 +551,12 @@ const DevelopmentMatrix = () => {
                     <p className="text-muted-foreground mb-4">{action.description}</p>
                     <Card className="bg-card/50">
                       <CardContent className="p-3 text-sm">
-                        <div><strong>Timeline:</strong> {action.timeline}</div>
-                        <div><strong>Priority:</strong> {action.priority}</div>
+                        <div>
+                          <strong>Timeline:</strong> {action.timeline}
+                        </div>
+                        <div>
+                          <strong>Priority:</strong> {action.priority}
+                        </div>
                       </CardContent>
                     </Card>
                   </CardContent>
@@ -564,7 +585,7 @@ const DevelopmentMatrix = () => {
                   <span className="text-xs opacity-75">Execute & Validate</span>
                 </Button>
               </Link>
-              
+
               <Link href="/development/api-monitor">
                 <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 hover:from-emerald-500/30 hover:to-blue-500/30 border border-emerald-500/30 text-white transition-all transform hover:scale-105">
                   <Activity className="w-6 h-6" />
@@ -572,7 +593,7 @@ const DevelopmentMatrix = () => {
                   <span className="text-xs opacity-75">Real-time Metrics</span>
                 </Button>
               </Link>
-              
+
               <Link href="/development/api-docs">
                 <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 border border-indigo-500/30 text-white transition-all transform hover:scale-105">
                   <Book className="w-6 h-6" />
@@ -580,7 +601,7 @@ const DevelopmentMatrix = () => {
                   <span className="text-xs opacity-75">Complete Reference</span>
                 </Button>
               </Link>
-              
+
               <Link href="/development/build">
                 <Button className="w-full h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 text-white transition-all transform hover:scale-105">
                   <Building className="w-6 h-6" />
@@ -589,10 +610,14 @@ const DevelopmentMatrix = () => {
                 </Button>
               </Link>
             </div>
-            
+
             <div className="mt-6 p-4 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-lg border border-indigo-500/20">
               <p className="text-center text-sm text-gray-300">
-                <span className="font-semibold text-indigo-400">All tools require developer access:</span> password <code className="bg-black/30 px-2 py-1 rounded text-xs">developer@123</code>
+                <span className="font-semibold text-indigo-400">
+                  All tools require developer access:
+                </span>{' '}
+                password{' '}
+                <code className="bg-black/30 px-2 py-1 rounded text-xs">developer@123</code>
               </p>
             </div>
           </CardContent>
@@ -605,7 +630,7 @@ const DevelopmentMatrix = () => {
             <p className="text-xl mb-8 opacity-95">
               <strong>Foundation Complete. Architecture Proven. Time to Implement!</strong>
             </p>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <Card className="bg-white/10 border-white/20">
                 <CardContent className="p-4">
@@ -637,8 +662,8 @@ const DevelopmentMatrix = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4">🎯 The Build Strategy:</h3>
                 <p className="text-lg leading-relaxed opacity-95">
-                  Use HERA to build HERA (dogfooding) → Create Mario's Restaurant demo → 
-                  Add healthcare demo → Launch universal platform for any business type!
+                  Use HERA to build HERA (dogfooding) → Create Mario's Restaurant demo → Add
+                  healthcare demo → Launch universal platform for any business type!
                 </p>
               </CardContent>
             </Card>

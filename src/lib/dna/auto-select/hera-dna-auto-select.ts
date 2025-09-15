@@ -41,13 +41,24 @@ export interface AutoSelectResult {
 const COMPONENT_SELECTION_MATRIX = {
   // Stats, Metrics, Numbers, KPIs
   stats: {
-    patterns: ['stat', 'metric', 'kpi', 'number', 'count', 'revenue', 'sales', 'total', 'performance', 'analytics'],
+    patterns: [
+      'stat',
+      'metric',
+      'kpi',
+      'number',
+      'count',
+      'revenue',
+      'sales',
+      'total',
+      'performance',
+      'analytics'
+    ],
     primary: 'EnterpriseStatsCard',
     secondary: ['StatsGrid', 'MetricTile'],
     confidence: 0.95,
     mandatory: true
   },
-  
+
   // Cards, Panels, Containers, Sections
   cards: {
     patterns: ['card', 'panel', 'container', 'section', 'box', 'content', 'display', 'show'],
@@ -56,16 +67,25 @@ const COMPONENT_SELECTION_MATRIX = {
     confidence: 0.9,
     mandatory: true
   },
-  
+
   // Dashboards, Overviews, Admin Panels
   dashboard: {
-    patterns: ['dashboard', 'overview', 'admin', 'main', 'home', 'summary', 'analytics', 'reporting'],
+    patterns: [
+      'dashboard',
+      'overview',
+      'admin',
+      'main',
+      'home',
+      'summary',
+      'analytics',
+      'reporting'
+    ],
     primary: 'EnterpriseDashboard',
     secondary: ['DashboardSection', 'KPICard', 'ActivityItem', 'ProgressIndicator'],
     confidence: 0.98,
     mandatory: true
   },
-  
+
   // Forms, Inputs, Data Entry
   forms: {
     patterns: ['form', 'input', 'field', 'entry', 'submit', 'validation', 'data'],
@@ -74,7 +94,7 @@ const COMPONENT_SELECTION_MATRIX = {
     confidence: 0.85,
     mandatory: true
   },
-  
+
   // Tables, Lists, Data Display
   tables: {
     patterns: ['table', 'list', 'grid', 'data', 'rows', 'columns', 'records'],
@@ -83,7 +103,7 @@ const COMPONENT_SELECTION_MATRIX = {
     confidence: 0.85,
     mandatory: true
   },
-  
+
   // Modals, Dialogs, Popups
   modals: {
     patterns: ['modal', 'dialog', 'popup', 'overlay', 'confirm', 'alert'],
@@ -92,10 +112,20 @@ const COMPONENT_SELECTION_MATRIX = {
     confidence: 0.9,
     mandatory: true
   },
-  
+
   // Emergency/Firefight situations
   emergency: {
-    patterns: ['urgent', 'emergency', 'broken', 'fix', 'bug', 'critical', 'down', 'failing', 'firefight'],
+    patterns: [
+      'urgent',
+      'emergency',
+      'broken',
+      'fix',
+      'bug',
+      'critical',
+      'down',
+      'failing',
+      'firefight'
+    ],
     primary: 'EnterpriseCard',
     secondary: ['EnterpriseStatsCard', 'EnterpriseDashboard'],
     confidence: 1.0,
@@ -182,7 +212,6 @@ import {
  * The main intelligence engine for automatic component selection
  */
 export class HeraDNAAutoSelector {
-  
   /**
    * MAIN AUTO-SELECT METHOD
    * This method GUARANTEES HERA DNA components are used
@@ -237,14 +266,18 @@ export class HeraDNAAutoSelector {
     return 'implementation'
   }
 
-  private detectPromptLocation(request: string, context: Partial<AutoSelectContext>): AutoSelectContext['promptLocation'] {
+  private detectPromptLocation(
+    request: string,
+    context: Partial<AutoSelectContext>
+  ): AutoSelectContext['promptLocation'] {
     if (/\b(firefight|emergency|urgent|critical)\b/i.test(request)) return 'firefight'
     if (context.promptLocation) return context.promptLocation
     return 'beginning'
   }
 
   private detectUrgency(request: string): AutoSelectContext['urgencyLevel'] {
-    if (/\b(firefight|emergency|critical|urgent|asap|immediately)\b/i.test(request)) return 'firefight'
+    if (/\b(firefight|emergency|critical|urgent|asap|immediately)\b/i.test(request))
+      return 'firefight'
     if (/\b(important|priority|soon|quickly)\b/i.test(request)) return 'high'
     if (/\b(medium|normal|standard)\b/i.test(request)) return 'medium'
     if (/\b(low|later|future)\b/i.test(request)) return 'low'
@@ -260,15 +293,15 @@ export class HeraDNAAutoSelector {
 
   private selectComponents(request: string, context: AutoSelectContext): ComponentSelection {
     const lowerRequest = request.toLowerCase()
-    
+
     // Find best match from selection matrix
     let bestMatch = { confidence: 0, key: '', config: COMPONENT_SELECTION_MATRIX.cards }
-    
+
     for (const [key, config] of Object.entries(COMPONENT_SELECTION_MATRIX)) {
       const matchScore = config.patterns.reduce((score, pattern) => {
         return lowerRequest.includes(pattern) ? score + 1 : score
       }, 0)
-      
+
       if (matchScore > bestMatch.confidence) {
         bestMatch = { confidence: matchScore, key, config }
       }
@@ -280,33 +313,39 @@ export class HeraDNAAutoSelector {
     }
 
     const config = bestMatch.config
-    
+
     return {
       primary: config.primary,
       secondary: config.secondary,
       imports: this.generateImports(config),
       usage: this.generateUsage(config, context),
       reasoning: `Selected ${config.primary} based on ${bestMatch.key} pattern match with ${bestMatch.confidence} confidence`,
-      confidence: Math.min(config.confidence + (bestMatch.confidence * 0.1), 1.0),
+      confidence: Math.min(config.confidence + bestMatch.confidence * 0.1, 1.0),
       mandatory: config.mandatory
     }
   }
 
   private generateImports(config: any): string[] {
     const imports = []
-    
+
     if (config.primary === 'EnterpriseStatsCard') {
-      imports.push("import { EnterpriseStatsCard, StatsGrid } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'")
+      imports.push(
+        "import { EnterpriseStatsCard, StatsGrid } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'"
+      )
     }
-    
+
     if (config.primary === 'EnterpriseCard') {
-      imports.push("import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'")
+      imports.push(
+        "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'"
+      )
     }
-    
+
     if (config.primary === 'EnterpriseDashboard') {
-      imports.push("import { DashboardSection, KPICard, ActivityItem, MetricTile, ProgressIndicator } from '@/lib/dna/components/enterprise/EnterpriseDashboard'")
+      imports.push(
+        "import { DashboardSection, KPICard, ActivityItem, MetricTile, ProgressIndicator } from '@/lib/dna/components/enterprise/EnterpriseDashboard'"
+      )
     }
-    
+
     return imports
   }
 
@@ -350,7 +389,7 @@ export class HeraDNAAutoSelector {
       `🎯 PRIMARY COMPONENT: ${selection.primary}`,
       `📦 REQUIRED IMPORTS: ${selection.imports.join('; ')}`,
       `⚡ ENFORCEMENT LEVEL: ${enforcement.enforcementLevel.toUpperCase()}`,
-      `🧠 REASONING: ${selection.reasoning}`,
+      `🧠 REASONING: ${selection.reasoning}`
     ]
 
     // Context-specific instructions
@@ -377,7 +416,10 @@ export const heraDNAAutoSelector = new HeraDNAAutoSelector()
 /**
  * CONVENIENCE FUNCTIONS
  */
-export function autoSelectComponents(userRequest: string, context?: Partial<AutoSelectContext>): AutoSelectResult {
+export function autoSelectComponents(
+  userRequest: string,
+  context?: Partial<AutoSelectContext>
+): AutoSelectResult {
   return heraDNAAutoSelector.autoSelect(userRequest, context)
 }
 
@@ -393,13 +435,13 @@ export function generateEnterpriseCode(userRequest: string): string {
  * INTEGRATION WITH EXISTING ENFORCER
  */
 export function createFullEnforcementResult(userRequest: string): {
-  enforcement: DNAEnforcementResult,
-  autoSelect: AutoSelectResult,
+  enforcement: DNAEnforcementResult
+  autoSelect: AutoSelectResult
   finalInstructions: string[]
 } {
   const enforcement = DNAEnforcer.preFlightCheck(userRequest)
   const autoSelect = heraDNAAutoSelector.autoSelect(userRequest)
-  
+
   const finalInstructions = [
     ...DNAEnforcer.getInstructions(enforcement).split('\n'),
     '',
@@ -422,21 +464,21 @@ export function createFullEnforcementResult(userRequest: string): {
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * // 1. Any development request
  * const result = autoSelectComponents("Create a sales dashboard")
  * console.log(result.generatedCode) // Complete EnterpriseDashboard
- * 
+ *
  * // 2. Emergency scenario
- * const emergency = autoSelectComponents("URGENT: Fix broken metrics", { 
+ * const emergency = autoSelectComponents("URGENT: Fix broken metrics", {
  *   promptLocation: 'firefight',
- *   urgencyLevel: 'firefight' 
+ *   urgencyLevel: 'firefight'
  * })
- * 
+ *
  * // 3. Get just the components
  * const components = getEnterpriseComponents("Show user stats")
  * console.log(components.primary) // "EnterpriseStatsCard"
- * 
+ *
  * // 4. Full enforcement + auto-selection
  * const full = createFullEnforcementResult("Build admin panel")
  * console.log(full.finalInstructions) // Complete implementation guide

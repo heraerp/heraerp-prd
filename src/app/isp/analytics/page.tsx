@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   Users,
@@ -25,18 +25,18 @@ import {
   Download,
   RefreshCw
 } from 'lucide-react'
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  BarChart, 
-  Bar, 
-  PieChart, 
-  Pie, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
   Cell,
   LineChart,
   Line,
@@ -62,28 +62,42 @@ interface MetricCardProps {
   forecast?: string
 }
 
-function MetricCard({ title, value, change, changeLabel, icon: Icon, gradient, forecast }: MetricCardProps) {
+function MetricCard({
+  title,
+  value,
+  change,
+  changeLabel,
+  icon: Icon,
+  gradient,
+  forecast
+}: MetricCardProps) {
   const isPositive = change >= 0
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
+      <div
+        className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
+      />
       <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
           </div>
-          <div className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-            {isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+          <div
+            className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}
+          >
+            {isPositive ? (
+              <ArrowUpRight className="h-4 w-4" />
+            ) : (
+              <ArrowDownRight className="h-4 w-4" />
+            )}
             <span>{Math.abs(change)}%</span>
           </div>
         </div>
         <h3 className="text-white/60 text-sm font-medium mb-1">{title}</h3>
         <p className="text-2xl font-bold text-white mb-1">{value}</p>
         <p className="text-xs text-white/40">{changeLabel}</p>
-        {forecast && (
-          <p className="text-xs text-[#FFD700] mt-2">Forecast: {forecast}</p>
-        )}
+        {forecast && <p className="text-xs text-[#FFD700] mt-2">Forecast: {forecast}</p>}
       </div>
     </div>
   )
@@ -143,9 +157,10 @@ export default function AnalyticsPage() {
   ])
 
   const [predictiveInsights, setPredictiveInsights] = useState([
-    { 
+    {
       title: 'Revenue Growth Opportunity',
-      description: 'Based on current trends, targeting SMB segment could increase revenue by ₹2.5 Cr in Q3',
+      description:
+        'Based on current trends, targeting SMB segment could increase revenue by ₹2.5 Cr in Q3',
       impact: 'high',
       confidence: 85
     },
@@ -157,7 +172,8 @@ export default function AnalyticsPage() {
     },
     {
       title: 'Network Capacity',
-      description: 'TVM region will need 20% capacity upgrade by October based on growth projections',
+      description:
+        'TVM region will need 20% capacity upgrade by October based on growth projections',
       impact: 'high',
       confidence: 92
     },
@@ -179,59 +195,61 @@ export default function AnalyticsPage() {
   async function fetchAnalyticsData() {
     try {
       // Fetch real data from Supabase - run queries in parallel for performance
-      const [metricsResult, transactionsResult, customersResult, networkResult] = await Promise.all([
-        supabase
-          .from('core_entities')
-          .select('metadata')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'analytics_metrics')
-          .single(),
-        
-        supabase
-          .from('universal_transactions')
-          .select('*')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('transaction_type', 'revenue')
-          .order('transaction_date', { ascending: true })
-          .limit(50),
+      const [metricsResult, transactionsResult, customersResult, networkResult] = await Promise.all(
+        [
+          supabase
+            .from('core_entities')
+            .select('metadata')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('entity_type', 'analytics_metrics')
+            .single(),
 
-        supabase
-          .from('core_entities')
-          .select('metadata, entity_type')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'isp_subscriber'),
+          supabase
+            .from('universal_transactions')
+            .select('*')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('transaction_type', 'revenue')
+            .order('transaction_date', { ascending: true })
+            .limit(50),
 
-        supabase
-          .from('core_entities')
-          .select('metadata')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'network_region')
-      ])
+          supabase
+            .from('core_entities')
+            .select('metadata, entity_type')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('entity_type', 'isp_subscriber'),
+
+          supabase
+            .from('core_entities')
+            .select('metadata')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('entity_type', 'network_region')
+        ]
+      )
 
       // Process metrics data
       if (metricsResult.data?.metadata) {
         const metrics = metricsResult.data.metadata
-        
+
         if (metrics.revenue_trend) {
           setRevenueData(metrics.revenue_trend)
         }
-        
+
         if (metrics.customer_segments) {
           setCustomerSegments(metrics.customer_segments)
         }
-        
+
         if (metrics.service_metrics) {
           setServiceMetrics(metrics.service_metrics)
         }
-        
+
         if (metrics.kpi_data) {
           setKpiData(metrics.kpi_data)
         }
-        
+
         if (metrics.churn_analysis) {
           setChurnAnalysis(metrics.churn_analysis)
         }
-        
+
         if (metrics.predictive_insights) {
           setPredictiveInsights(metrics.predictive_insights)
         }
@@ -240,14 +258,16 @@ export default function AnalyticsPage() {
       // Process transaction data for revenue charts
       if (transactionsResult.data && transactionsResult.data.length > 0) {
         const monthlyData = transactionsResult.data.reduce((acc: any, txn: any) => {
-          const month = new Date(txn.transaction_date).toLocaleDateString('en-US', { month: 'short' })
+          const month = new Date(txn.transaction_date).toLocaleDateString('en-US', {
+            month: 'short'
+          })
           if (!acc[month]) {
             acc[month] = { month, actual: 0, target: 0, lastYear: 0 }
           }
           acc[month].actual += txn.total_amount || 0
           return acc
         }, {})
-        
+
         if (Object.keys(monthlyData).length > 0) {
           setRevenueData(Object.values(monthlyData))
         }
@@ -263,13 +283,13 @@ export default function AnalyticsPage() {
           acc[type].value += 1
           return acc
         }, {})
-        
+
         const segmentArray = Object.values(segments).map((seg: any, index) => ({
           ...seg,
           color: ['#0099CC', '#FFD700', '#E91E63'][index] || '#0099CC',
           growth: Math.random() * 20 + 5 // Mock growth data
         }))
-        
+
         if (segmentArray.length > 0) {
           setCustomerSegments(segmentArray)
         }
@@ -284,10 +304,9 @@ export default function AnalyticsPage() {
           growth: region.metadata?.growth_rate || 0,
           satisfaction: region.metadata?.satisfaction_score || 90
         }))
-        
+
         setRegionPerformance(regions)
       }
-
     } catch (error) {
       console.error('Error fetching analytics data:', error)
       // Keep fallback data on error
@@ -295,7 +314,8 @@ export default function AnalyticsPage() {
   }
 
   // Defensive normalization for chart inputs (guards against unexpected object payloads)
-  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const toArray = (v: any): any[] =>
+    Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : []
   const safeRevenueData = toArray(revenueData)
   const safeCustomerSegments = toArray(customerSegments)
   const safeKpiData = toArray(kpiData)
@@ -310,7 +330,10 @@ export default function AnalyticsPage() {
   // Calculate totals
   const totalRevenue = revenueData.slice(0, 6).reduce((sum, d) => sum + (d.actual || 0), 0)
   const avgMonthlyRevenue = totalRevenue / 6
-  const projectedAnnualRevenue = revenueData.reduce((sum, d) => sum + (d.actual || d.forecast || 0), 0)
+  const projectedAnnualRevenue = revenueData.reduce(
+    (sum, d) => sum + (d.actual || d.forecast || 0),
+    0
+  )
   const totalCustomers = customerSegments.reduce((sum, s) => sum + s.value, 0)
 
   return (
@@ -321,10 +344,12 @@ export default function AnalyticsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Business Analytics & Insights
           </h1>
-          <p className="text-white/60 mt-1">AI-powered analytics and predictive insights for Kerala Vision</p>
+          <p className="text-white/60 mt-1">
+            AI-powered analytics and predictive insights for Kerala Vision
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -382,7 +407,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 relative group min-w-0">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">Revenue Trend & Forecast</h2>
               <div className="flex items-center space-x-4 text-xs">
@@ -403,46 +428,49 @@ export default function AnalyticsPage() {
             <div className="w-full h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={safeRevenueData}>
-                <defs>
-                  <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${(value/1000000).toFixed(0)}M`} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '8px'
-                  }}
-                  formatter={(value: any) => `₹${(value/1000000).toFixed(1)}M`}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="actual" 
-                  stroke="#0099CC" 
-                  fillOpacity={1} 
-                  fill="url(#actualGradient)" 
-                  strokeWidth={2}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="target" 
-                  stroke="#FFD700" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="forecast" 
-                  stroke="#E91E63" 
-                  strokeWidth={2}
-                  strokeDasharray="3 3"
-                />
-              </ComposedChart>
+                  <defs>
+                    <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#0099CC" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
+                  <YAxis
+                    stroke="rgba(255,255,255,0.5)"
+                    tickFormatter={value => `₹${(value / 1000000).toFixed(0)}M`}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '8px'
+                    }}
+                    formatter={(value: any) => `₹${(value / 1000000).toFixed(1)}M`}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="actual"
+                    stroke="#0099CC"
+                    fillOpacity={1}
+                    fill="url(#actualGradient)"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="target"
+                    stroke="#FFD700"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="forecast"
+                    stroke="#E91E63"
+                    strokeWidth={2}
+                    strokeDasharray="3 3"
+                  />
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -450,43 +478,48 @@ export default function AnalyticsPage() {
 
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Customer Segments</h2>
             <div className="w-full h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                <Pie
-                  data={safeCustomerSegments}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {safeCustomerSegments.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '8px'
-                  }}
-                />
-              </PieChart>
+                  <Pie
+                    data={safeCustomerSegments}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {safeCustomerSegments.map((entry: any, index: number) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </PieChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-4 space-y-3">
               {safeCustomerSegments.map((segment: any) => (
                 <div key={segment.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: segment.color }} />
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: segment.color }}
+                    />
                     <span className="text-sm text-white/80">{segment.name}</span>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-white">{segment.value.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-white">
+                      {segment.value.toLocaleString()}
+                    </p>
                     <p className="text-xs text-emerald-400">+{segment.growth}%</p>
                   </div>
                 </div>
@@ -499,7 +532,7 @@ export default function AnalyticsPage() {
       {/* Service Performance */}
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+        <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
           <h2 className="text-xl font-semibold text-white mb-6">Service Performance Analysis</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -508,21 +541,34 @@ export default function AnalyticsPage() {
                   <th className="pb-3 text-sm font-medium text-white/60">Service</th>
                   <th className="pb-3 text-sm font-medium text-white/60 text-right">Customers</th>
                   <th className="pb-3 text-sm font-medium text-white/60 text-right">Revenue</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">Satisfaction</th>
-                  <th className="pb-3 text-sm font-medium text-white/60 text-right">Revenue/Customer</th>
+                  <th className="pb-3 text-sm font-medium text-white/60 text-right">
+                    Satisfaction
+                  </th>
+                  <th className="pb-3 text-sm font-medium text-white/60 text-right">
+                    Revenue/Customer
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
-                {serviceMetrics.map((service) => (
+                {serviceMetrics.map(service => (
                   <tr key={service.service} className="hover:bg-accent/20 transition-colors">
                     <td className="py-4 text-white font-medium">{service.service}</td>
-                    <td className="py-4 text-white text-right">{service.customers.toLocaleString()}</td>
-                    <td className="py-4 text-white text-right">₹{(service.revenue / 100000).toFixed(1)}L</td>
+                    <td className="py-4 text-white text-right">
+                      {service.customers.toLocaleString()}
+                    </td>
+                    <td className="py-4 text-white text-right">
+                      ₹{(service.revenue / 100000).toFixed(1)}L
+                    </td>
                     <td className="py-4 text-right">
-                      <span className={`font-medium ${
-                        service.satisfaction >= 90 ? 'text-emerald-400' : 
-                        service.satisfaction >= 85 ? 'text-yellow-400' : 'text-red-400'
-                      }`}>
+                      <span
+                        className={`font-medium ${
+                          service.satisfaction >= 90
+                            ? 'text-emerald-400'
+                            : service.satisfaction >= 85
+                              ? 'text-yellow-400'
+                              : 'text-red-400'
+                        }`}
+                      >
                         {service.satisfaction}%
                       </span>
                     </td>
@@ -542,38 +588,38 @@ export default function AnalyticsPage() {
         {/* KPI Radar Chart */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">KPI Performance</h2>
             <div className="w-full h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={safeKpiData}>
-                <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
-                <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
-                <Radar 
-                  name="Actual" 
-                  dataKey="value" 
-                  stroke="#0099CC" 
-                  fill="#0099CC" 
-                  fillOpacity={0.3}
-                  strokeWidth={2}
-                />
-                <Radar 
-                  name="Target" 
-                  dataKey="target" 
-                  stroke="#FFD700" 
-                  fill="#FFD700" 
-                  fillOpacity={0.1}
-                  strokeWidth={2}
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '8px'
-                  }}
-                />
-              </RadarChart>
+                  <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                  <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
+                  <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
+                  <Radar
+                    name="Actual"
+                    dataKey="value"
+                    stroke="#0099CC"
+                    fill="#0099CC"
+                    fillOpacity={0.3}
+                    strokeWidth={2}
+                  />
+                  <Radar
+                    name="Target"
+                    dataKey="target"
+                    stroke="#FFD700"
+                    fill="#FFD700"
+                    fillOpacity={0.1}
+                    strokeWidth={2}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </RadarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -582,20 +628,23 @@ export default function AnalyticsPage() {
         {/* Predictive Insights */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">AI-Powered Insights</h2>
             <div className="space-y-4">
               {predictiveInsights.map((insight, index) => (
-                <div 
+                <div
                   key={index}
                   className="p-4 rounded-lg bg-slate-900/50 border border-border/50 hover:bg-accent/20 transition-all duration-300"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-medium text-white">{insight.title}</h3>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      insight.impact === 'high' ? 'bg-red-500/20 text-red-400' :
-                      'bg-yellow-500/20 text-yellow-400'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium ${
+                        insight.impact === 'high'
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'bg-yellow-500/20 text-yellow-400'
+                      }`}
+                    >
                       {insight.impact} impact
                     </span>
                   </div>
@@ -603,12 +652,14 @@ export default function AnalyticsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <div className="h-1.5 w-20 rounded-full bg-muted overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
                           style={{ width: `${insight.confidence}%` }}
                         />
                       </div>
-                      <span className="text-xs text-white/40">{insight.confidence}% confidence</span>
+                      <span className="text-xs text-white/40">
+                        {insight.confidence}% confidence
+                      </span>
                     </div>
                     <ChevronRight className="h-4 w-4 text-white/40" />
                   </div>
@@ -624,25 +675,35 @@ export default function AnalyticsPage() {
         {/* Regional Performance */}
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
+          <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Regional Performance</h2>
             <div className="w-full h-[250px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={safeRegionPerformance}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="region" stroke="rgba(255,255,255,0.5)" />
-                <YAxis yAxisId="left" stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${(value/1000000).toFixed(0)}M`} />
-                <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.5)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Bar yAxisId="left" dataKey="revenue" fill="#0099CC" radius={[8, 8, 0, 0]} />
-                <Line yAxisId="right" type="monotone" dataKey="satisfaction" stroke="#fff685" strokeWidth={2} />
-              </BarChart>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <XAxis dataKey="region" stroke="rgba(255,255,255,0.5)" />
+                  <YAxis
+                    yAxisId="left"
+                    stroke="rgba(255,255,255,0.5)"
+                    tickFormatter={value => `₹${(value / 1000000).toFixed(0)}M`}
+                  />
+                  <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.5)" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar yAxisId="left" dataKey="revenue" fill="#0099CC" radius={[8, 8, 0, 0]} />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="satisfaction"
+                    stroke="#fff685"
+                    strokeWidth={2}
+                  />
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -654,14 +715,16 @@ export default function AnalyticsPage() {
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Churn Analysis</h2>
             <div className="space-y-4">
-              {churnAnalysis.map((reason) => (
+              {churnAnalysis.map(reason => (
                 <div key={reason.reason}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-white/80">{reason.reason}</span>
-                    <span className="text-sm font-medium text-white">{reason.percentage}% ({reason.count})</span>
+                    <span className="text-sm font-medium text-white">
+                      {reason.percentage}% ({reason.count})
+                    </span>
                   </div>
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-full transition-all duration-500"
                       style={{ width: `${reason.percentage}%` }}
                     />
@@ -675,7 +738,8 @@ export default function AnalyticsPage() {
                 <span className="text-sm font-medium text-yellow-400">Action Required</span>
               </div>
               <p className="text-xs text-white/60">
-                Price sensitivity is the leading churn factor. Consider introducing retention offers for price-sensitive segments.
+                Price sensitivity is the leading churn factor. Consider introducing retention offers
+                for price-sensitive segments.
               </p>
             </div>
           </div>

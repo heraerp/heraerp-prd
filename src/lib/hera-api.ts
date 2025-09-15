@@ -52,7 +52,15 @@ interface SmartCodeValidationRequest {
 interface SmartCodeGenerationRequest {
   organization_id: string
   business_context: {
-    industry: 'restaurant' | 'healthcare' | 'manufacturing' | 'professional' | 'retail' | 'legal' | 'education' | 'system'
+    industry:
+      | 'restaurant'
+      | 'healthcare'
+      | 'manufacturing'
+      | 'professional'
+      | 'retail'
+      | 'legal'
+      | 'education'
+      | 'system'
     module: string
     sub_module: string
     function_type: string
@@ -123,10 +131,10 @@ class HeraApiClient {
 
   private async request(endpoint: string, options: RequestInit = {}): Promise<any> {
     const token = await this.getAuthToken()
-    
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options.headers as Record<string, string>),
+      ...(options.headers as Record<string, string>)
     }
 
     if (token) {
@@ -135,16 +143,16 @@ class HeraApiClient {
         console.log('Development mode: forcing mock mode for HERA context')
         headers['X-Mock-Request'] = 'true'
         headers['Authorization'] = 'Bearer mock-token'
-      } 
+      }
       // Check token size to prevent 431 errors
       else if (token.length > 4096) {
         console.warn('JWT token too large, attempting optimized JWT service')
-        
+
         try {
           // Try to import and use optimized JWT service
           const { optimizedJWT } = await import('@/lib/auth/optimized-jwt-service')
           const optimizedSession = await optimizedJWT.validateAndRefreshSession()
-          
+
           if (optimizedSession) {
             const optimizedHeaders = optimizedJWT.getOptimizedAuthHeaders(optimizedSession)
             Object.assign(headers, optimizedHeaders)
@@ -171,11 +179,11 @@ class HeraApiClient {
     }
 
     const url = `${this.baseUrl}${endpoint}`
-    
+
     try {
       const response = await fetch(url, {
         ...options,
-        headers,
+        headers
       })
 
       // Handle 431 Request Header Fields Too Large
@@ -186,7 +194,7 @@ class HeraApiClient {
       // Handle empty responses (common for server errors)
       const contentType = response.headers.get('content-type')
       let data
-      
+
       if (contentType && contentType.includes('application/json')) {
         try {
           data = await response.json()
@@ -200,7 +208,9 @@ class HeraApiClient {
       }
 
       if (!response.ok) {
-        const error = new Error(data.message || data.error || `Request failed: ${response.status}`) as any
+        const error = new Error(
+          data.message || data.error || `Request failed: ${response.status}`
+        ) as any
         error.status = response.status
         error.response = data
         throw error
@@ -217,14 +227,14 @@ class HeraApiClient {
   async createBusiness(data: CreateBusinessData): Promise<HeraContext> {
     return this.request('/auth/create-business', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
   }
 
   // Get HERA context for authenticated user
   async getHeraContext(): Promise<HeraContext> {
     return this.request('/auth/hera-context', {
-      method: 'GET',
+      method: 'GET'
     })
   }
 
@@ -232,7 +242,7 @@ class HeraApiClient {
   async syncUserProfile(updates: Partial<HeraUserEntity>): Promise<HeraUserEntity> {
     return this.request('/auth/sync-user', {
       method: 'PUT',
-      body: JSON.stringify(updates),
+      body: JSON.stringify(updates)
     })
   }
 
@@ -243,7 +253,7 @@ class HeraApiClient {
     total_value: number
   }> {
     return this.request('/dashboard/stats', {
-      method: 'GET',
+      method: 'GET'
     })
   }
 
@@ -251,43 +261,43 @@ class HeraApiClient {
   async getEntities(entityType?: string): Promise<any[]> {
     const params = entityType ? `?entity_type=${entityType}` : ''
     return this.request(`/entities${params}`, {
-      method: 'GET',
+      method: 'GET'
     })
   }
 
   async createEntity(entityData: any): Promise<any> {
     return this.request('/entities', {
       method: 'POST',
-      body: JSON.stringify(entityData),
+      body: JSON.stringify(entityData)
     })
   }
 
   async updateEntity(entityId: string, entityData: any): Promise<any> {
     return this.request(`/entities/${entityId}`, {
       method: 'PUT',
-      body: JSON.stringify(entityData),
+      body: JSON.stringify(entityData)
     })
   }
 
   // Transaction operations
   async getTransactions(limit = 10): Promise<any[]> {
     return this.request(`/transactions?limit=${limit}`, {
-      method: 'GET',
+      method: 'GET'
     })
   }
 
   async createTransaction(transactionData: any): Promise<any> {
     return this.request('/transactions', {
       method: 'POST',
-      body: JSON.stringify(transactionData),
+      body: JSON.stringify(transactionData)
     })
   }
 
-  // Dynamic data operations  
+  // Dynamic data operations
   async updateDynamicData(entityId: string, fieldName: string, fieldValue: any): Promise<any> {
     return this.request(`/entities/${entityId}/dynamic-data`, {
       method: 'PUT',
-      body: JSON.stringify({ field_name: fieldName, field_value: fieldValue }),
+      body: JSON.stringify({ field_name: fieldName, field_value: fieldValue })
     })
   }
 
@@ -295,14 +305,14 @@ class HeraApiClient {
   async getDynamicData(entityId: string, fields?: string[]): Promise<any> {
     return this.request(`/entities/${entityId}/dynamic-data`, {
       method: 'GET',
-      body: fields ? JSON.stringify({ fields }) : undefined,
+      body: fields ? JSON.stringify({ fields }) : undefined
     })
   }
 
   async setDynamicData(entityId: string, data: any): Promise<any> {
     return this.request(`/entities/${entityId}/dynamic-data`, {
       method: 'PUT',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
   }
 
@@ -310,14 +320,14 @@ class HeraApiClient {
   async getRelationships(entityId: string, relationshipTypes?: string[]): Promise<any[]> {
     return this.request(`/entities/${entityId}/relationships`, {
       method: 'GET',
-      body: JSON.stringify({ relationship_types: relationshipTypes }),
+      body: JSON.stringify({ relationship_types: relationshipTypes })
     })
   }
 
   async createRelationship(relationshipData: any): Promise<any> {
     return this.request('/relationships', {
       method: 'POST',
-      body: JSON.stringify(relationshipData),
+      body: JSON.stringify(relationshipData)
     })
   }
 
@@ -325,29 +335,29 @@ class HeraApiClient {
   async getEntity(entityId: string, entityType?: string): Promise<any> {
     return this.request(`/entities/${entityId}`, {
       method: 'GET',
-      body: entityType ? JSON.stringify({ entity_type: entityType }) : undefined,
+      body: entityType ? JSON.stringify({ entity_type: entityType }) : undefined
     })
   }
 
-  // Enhanced transaction operations  
+  // Enhanced transaction operations
   async getFilteredTransactions(filters: any): Promise<any[]> {
     return this.request('/transactions', {
       method: 'GET',
-      body: JSON.stringify(filters),
+      body: JSON.stringify(filters)
     })
   }
-  
+
   // Dashboard operations
   async getDashboardData(): Promise<any> {
     return this.request('/dashboard/kpis', {
-      method: 'GET',
+      method: 'GET'
     })
   }
-  
+
   async getFinancialReport(reportType: string, params?: any): Promise<any> {
     return this.request(`/reports/${reportType}`, {
       method: 'GET',
-      body: JSON.stringify(params),
+      body: JSON.stringify(params)
     })
   }
 
@@ -355,38 +365,41 @@ class HeraApiClient {
   async validateSmartCode(request: SmartCodeValidationRequest): Promise<any> {
     return this.request('/smart-code/validate', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
   async generateSmartCode(request: SmartCodeGenerationRequest): Promise<any> {
     return this.request('/smart-code/generate', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
   async searchSmartCodes(request: SmartCodeSearchRequest): Promise<any> {
     return this.request('/smart-code/search', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
-  async quickSearchSmartCodes(organizationId: string, options?: { 
-    include_system?: boolean 
-    page?: number 
-    limit?: number 
-  }): Promise<any> {
+  async quickSearchSmartCodes(
+    organizationId: string,
+    options?: {
+      include_system?: boolean
+      page?: number
+      limit?: number
+    }
+  ): Promise<any> {
     const params = new URLSearchParams({
       organization_id: organizationId,
       ...(options?.include_system && { include_system: 'true' }),
       ...(options?.page && { page: options.page.toString() }),
       ...(options?.limit && { limit: options.limit.toString() })
     })
-    
+
     return this.request(`/smart-code/search?${params}`, {
-      method: 'GET',
+      method: 'GET'
     })
   }
 
@@ -394,24 +407,27 @@ class HeraApiClient {
   async validate4Level(request: ValidationRequest): Promise<any> {
     return this.request('/validation/4-level', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
   // HERA-SPEAR Template System Methods
-  async listTemplates(organizationId?: string, options?: {
-    template_types?: string[]
-    include_system?: boolean
-    industry?: string[]
-  }): Promise<any> {
+  async listTemplates(
+    organizationId?: string,
+    options?: {
+      template_types?: string[]
+      include_system?: boolean
+      industry?: string[]
+    }
+  ): Promise<any> {
     const params = new URLSearchParams()
     if (organizationId) params.set('organization_id', organizationId)
     if (options?.template_types) params.set('template_types', options.template_types.join(','))
     if (options?.include_system) params.set('include_system', 'true')
     if (options?.industry) params.set('industry', options.industry.join(','))
-    
+
     return this.request(`/templates?${params}`, {
-      method: 'GET',
+      method: 'GET'
     })
   }
 
@@ -426,7 +442,7 @@ class HeraApiClient {
       body: JSON.stringify({
         action: 'copy',
         ...request
-      }),
+      })
     })
   }
 
@@ -441,7 +457,7 @@ class HeraApiClient {
       body: JSON.stringify({
         action: 'customize',
         ...request
-      }),
+      })
     })
   }
 
@@ -461,7 +477,7 @@ class HeraApiClient {
   }): Promise<any> {
     return this.request('/bom/calculate', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
@@ -473,8 +489,19 @@ class HeraApiClient {
       product_name: string
       customer_id?: string
       quantity: number
-      calculation_type: 'standard_pricing' | 'customer_specific' | 'volume_pricing' | 'dynamic_pricing' | 'profitability_analysis'
-      pricing_method: 'cost_plus' | 'market_based' | 'value_based' | 'competitive' | 'penetration' | 'skimming'
+      calculation_type:
+        | 'standard_pricing'
+        | 'customer_specific'
+        | 'volume_pricing'
+        | 'dynamic_pricing'
+        | 'profitability_analysis'
+      pricing_method:
+        | 'cost_plus'
+        | 'market_based'
+        | 'value_based'
+        | 'competitive'
+        | 'penetration'
+        | 'skimming'
     }
     pricing_components?: any
     sap_compatibility?: any
@@ -482,7 +509,7 @@ class HeraApiClient {
   }): Promise<any> {
     return this.request('/pricing/calculate', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
@@ -496,39 +523,53 @@ class HeraApiClient {
   }): Promise<any> {
     return this.request('/dag/execute', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
   // Industry Configuration Methods
   async configureIndustry(request: {
     organization_id: string
-    industry_type: 'restaurant' | 'healthcare' | 'manufacturing' | 'professional' | 'retail' | 'legal' | 'education'
+    industry_type:
+      | 'restaurant'
+      | 'healthcare'
+      | 'manufacturing'
+      | 'professional'
+      | 'retail'
+      | 'legal'
+      | 'education'
     configuration_options: any
     sap_migration?: any
     validation_requirements?: any
   }): Promise<any> {
     return this.request('/industry/configure', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     })
   }
 
   // Convenience methods for common smart code operations
-  async validateEntitySmartCode(organizationId: string, smartCode: string, validationLevel?: string): Promise<any> {
+  async validateEntitySmartCode(
+    organizationId: string,
+    smartCode: string,
+    validationLevel?: string
+  ): Promise<any> {
     return this.validateSmartCode({
       smart_code: smartCode,
-      validation_level: validationLevel as any || 'L2_SEMANTIC',
+      validation_level: (validationLevel as any) || 'L2_SEMANTIC',
       organization_id: organizationId
     })
   }
 
-  async generateRestaurantSmartCode(organizationId: string, context: {
-    sub_module: string
-    function_type: string
-    entity_type: string
-    description?: string
-  }): Promise<any> {
+  async generateRestaurantSmartCode(
+    organizationId: string,
+    context: {
+      sub_module: string
+      function_type: string
+      entity_type: string
+      description?: string
+    }
+  ): Promise<any> {
     return this.generateSmartCode({
       organization_id: organizationId,
       business_context: {
@@ -543,12 +584,15 @@ class HeraApiClient {
     })
   }
 
-  async generateHealthcareSmartCode(organizationId: string, context: {
-    sub_module: string
-    function_type: string
-    entity_type: string
-    description?: string
-  }): Promise<any> {
+  async generateHealthcareSmartCode(
+    organizationId: string,
+    context: {
+      sub_module: string
+      function_type: string
+      entity_type: string
+      description?: string
+    }
+  ): Promise<any> {
     return this.generateSmartCode({
       organization_id: organizationId,
       business_context: {
@@ -584,11 +628,15 @@ class HeraApiClient {
   }
 
   // High-level convenience methods for HERA-SPEAR deployment
-  async deployIndustryTemplate(organizationId: string, industryType: string, options?: {
-    deployment_mode?: '24_hour_rapid' | 'phased_rollout' | 'pilot_program'
-    customization_level?: 'standard' | 'customized' | 'fully_bespoke'
-    migrate_from_sap?: boolean
-  }): Promise<any> {
+  async deployIndustryTemplate(
+    organizationId: string,
+    industryType: string,
+    options?: {
+      deployment_mode?: '24_hour_rapid' | 'phased_rollout' | 'pilot_program'
+      customization_level?: 'standard' | 'customized' | 'fully_bespoke'
+      migrate_from_sap?: boolean
+    }
+  ): Promise<any> {
     return this.configureIndustry({
       organization_id: organizationId,
       industry_type: industryType as any,
@@ -598,12 +646,14 @@ class HeraApiClient {
         template_customization_level: options?.customization_level || 'standard',
         integration_requirements: ['accounting', 'crm']
       },
-      sap_migration: options?.migrate_from_sap ? {
-        migrate_from_sap: true,
-        sap_modules_to_replace: ['SAP_Standard'],
-        data_migration_scope: 'full',
-        migration_timeline_days: 1
-      } : undefined,
+      sap_migration: options?.migrate_from_sap
+        ? {
+            migrate_from_sap: true,
+            sap_modules_to_replace: ['SAP_Standard'],
+            data_migration_scope: 'full',
+            migration_timeline_days: 1
+          }
+        : undefined,
       validation_requirements: {
         industry_compliance_validation: true,
         performance_benchmarking: true,
@@ -641,10 +691,4 @@ export const heraApi = new Proxy({} as HeraApiClient, {
   }
 })
 
-export type {
-  CreateBusinessData,
-  HeraUserEntity,
-  HeraOrganization,
-  HeraContext,
-  HeraApiConfig
-}
+export type { CreateBusinessData, HeraUserEntity, HeraOrganization, HeraContext, HeraApiConfig }

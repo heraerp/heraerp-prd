@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Restaurant FOH & Sales Module
  * Smart Code: HERA.RESTAURANT.FOH.POS.v1
- * 
+ *
  * Front of House operations using Sacred Six Tables
  */
 
@@ -18,11 +18,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { 
-  Coffee, 
-  ShoppingCart, 
-  Users, 
-  CreditCard, 
+import {
+  Coffee,
+  ShoppingCart,
+  Users,
+  CreditCard,
   Clock,
   AlertCircle,
   ChefHat,
@@ -57,19 +57,19 @@ const RESTAURANT_CONFIG = {
     MENU_ITEM: 'HERA.RESTAURANT.FOH.MENU.ITEM.v1',
     TABLE: 'HERA.RESTAURANT.FOH.TABLE.v1',
     KITCHEN_STATION: 'HERA.RESTAURANT.FOH.KITCHEN.STATION.v1',
-    
-    // Transaction smart codes  
+
+    // Transaction smart codes
     SALE: 'HERA.RESTAURANT.FOH.POS.SALE.v1',
     REFUND: 'HERA.RESTAURANT.FOH.POS.REFUND.v1',
     PREAUTH: 'HERA.RESTAURANT.FOH.POS.PREAUTH.v1',
-    
+
     // Line item smart codes
     LINE_ITEM: 'HERA.RESTAURANT.FOH.POS.LINE.ITEM.v1',
     LINE_MODIFIER: 'HERA.RESTAURANT.FOH.POS.LINE.MODIFIER.v1',
     LINE_DISCOUNT: 'HERA.RESTAURANT.FOH.POS.LINE.DISCOUNT.v1',
     LINE_TAX: 'HERA.RESTAURANT.FOH.POS.LINE.TAX.v1',
     LINE_TIP: 'HERA.RESTAURANT.FOH.POS.LINE.TIP.v1',
-    
+
     // Inventory smart codes
     INVENTORY_ITEM: 'HERA.RESTAURANT.INV.ITEM.v1',
     SUPPLIER: 'HERA.RESTAURANT.INV.SUPPLIER.v1',
@@ -79,7 +79,7 @@ const RESTAURANT_CONFIG = {
     INVENTORY_ADJUSTMENT: 'HERA.RESTAURANT.INV.ADJUSTMENT.v1',
     INVENTORY_COUNT: 'HERA.RESTAURANT.INV.COUNT.v1',
     INVENTORY_TRANSFER: 'HERA.RESTAURANT.INV.TRANSFER.v1',
-    
+
     // Supplier smart codes
     SUPPLIER_CONTACT: 'HERA.RESTAURANT.SUP.CONTACT.v1',
     SUPPLIER_CATEGORY: 'HERA.RESTAURANT.SUP.CATEGORY.v1',
@@ -90,7 +90,6 @@ const RESTAURANT_CONFIG = {
 }
 
 function RestaurantContent() {
-
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isLoading, setIsLoading] = useState(false)
@@ -116,7 +115,7 @@ function RestaurantContent() {
         tables: 24,
         menuItems: 87,
         openOrders: 12,
-        dailySales: 15487.50
+        dailySales: 15487.5
       })
     }
   }, [isDemoMode])
@@ -125,17 +124,17 @@ function RestaurantContent() {
     setIsLoading(true)
     try {
       // Load tables
-      const tables = await universalApi.getEntities({ 
+      const tables = await universalApi.getEntities({
         entity_type: 'table',
         smart_code: RESTAURANT_CONFIG.smartCodes.TABLE
       })
-      
+
       // Load menu items
       const menuItems = await universalApi.getEntities({
         entity_type: 'menu_item',
         smart_code: RESTAURANT_CONFIG.smartCodes.MENU_ITEM
       })
-      
+
       // Load today's transactions
       const today = new Date().toISOString().split('T')[0]
       const sales = await universalApi.getTransactions({
@@ -143,13 +142,13 @@ function RestaurantContent() {
         smart_code: RESTAURANT_CONFIG.smartCodes.SALE,
         date_from: today
       })
-      
+
       // Calculate open orders (sales without completion relationship)
       const openOrders = sales.filter(s => s.status !== 'completed').length
       const dailySalesTotal = sales
         .filter(s => s.status === 'completed')
         .reduce((sum, s) => sum + (s.total_amount || 0), 0)
-      
+
       setSystemStatus({
         tables: tables.length,
         menuItems: menuItems.length,
@@ -164,9 +163,7 @@ function RestaurantContent() {
     }
   }
 
-
-  
-return (
+  return (
     <div className="container mx-auto p-4 max-w-7xl">
       {/* Header */}
       <div className="mb-6">
@@ -175,7 +172,7 @@ return (
           Restaurant FOH & Sales
         </h1>
         <p className="text-muted-foreground">
-          {isDemoMode ? 'Demo Mode - Mario\'s Authentic Italian Restaurant' : 'Live System'}
+          {isDemoMode ? "Demo Mode - Mario's Authentic Italian Restaurant" : 'Live System'}
         </p>
       </div>
 
@@ -249,7 +246,7 @@ return (
         </TabsList>
 
         <TabsContent value="dashboard">
-          <RestaurantDashboard 
+          <RestaurantDashboard
             organizationId={RESTAURANT_CONFIG.organizationId}
             smartCodes={RESTAURANT_CONFIG.smartCodes}
             isDemoMode={isDemoMode}
@@ -342,12 +339,11 @@ return (
       )}
     </div>
   )
-
 }
 
 export default function RestaurantPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Balance Sheet (Classified & Comparative)
  * Smart Code: HERA.FINANCE.BS.REPORT.v1
- * 
+ *
  * Classified balance sheet with current/non-current breakdown
  * Built on 6-table foundation with smart code intelligence
  */
@@ -20,7 +20,7 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import type { BranchType, DateSelectionType, ExportFormat } from '@/types/salon.types'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   Calendar,
@@ -113,17 +113,21 @@ interface BalanceSheetReport {
 
 // ----------------------------- Mock Data Generation ------------------------------------
 
-const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, branch?: string): BalanceSheetReport => {
+const generateMockBalanceSheetData = (
+  asOfDate: string,
+  compareDate?: string,
+  branch?: string
+): BalanceSheetReport => {
   // Generate realistic balance sheet data for a salon
   const isComparative = !!compareDate
-  
+
   // Assets - Current
   const cashAndEquivalents = 125000
   const accountsReceivable = 35000
   const inventory = 28000
   const prepaidExpenses = 12000
   const totalCurrentAssets = cashAndEquivalents + accountsReceivable + inventory + prepaidExpenses
-  
+
   // Assets - Non-Current
   const furnitureFixtures = 180000
   const accumulatedDepFF = -45000
@@ -136,41 +140,47 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
   const netEquipmentTools = equipmentTools + accumulatedDepET
   const rightOfUseAsset = 150000
   const securityDeposits = 15000
-  const totalNonCurrentAssets = netFurnitureFixtures + netLeaseholdImprovements + netEquipmentTools + rightOfUseAsset + securityDeposits
-  
+  const totalNonCurrentAssets =
+    netFurnitureFixtures +
+    netLeaseholdImprovements +
+    netEquipmentTools +
+    rightOfUseAsset +
+    securityDeposits
+
   const totalAssets = totalCurrentAssets + totalNonCurrentAssets
-  
+
   // Liabilities - Current
   const accountsPayable = 42000
   const accruedExpenses = 18000
   const unearnedRevenue = 12000
   const currentPortionLease = 36000
   const vatPayable = 8500
-  const totalCurrentLiabilities = accountsPayable + accruedExpenses + unearnedRevenue + currentPortionLease + vatPayable
-  
+  const totalCurrentLiabilities =
+    accountsPayable + accruedExpenses + unearnedRevenue + currentPortionLease + vatPayable
+
   // Liabilities - Non-Current
   const leaseObligations = 114000
   const longTermDebt = 50000
   const totalNonCurrentLiabilities = leaseObligations + longTermDebt
-  
+
   const totalLiabilities = totalCurrentLiabilities + totalNonCurrentLiabilities
-  
+
   // Equity
   const shareCapital = 100000
   const retainedEarnings = 283500
   const currentYearProfit = 89000
   const totalEquity = shareCapital + retainedEarnings + currentYearProfit
-  
+
   // Generate comparison amounts (10% growth)
   const growthFactor = 0.9
-  
+
   // Calculate KPIs
   const currentRatio = totalCurrentAssets / totalCurrentLiabilities
   const quickRatio = (totalCurrentAssets - inventory) / totalCurrentLiabilities
   const debtToEquity = totalLiabilities / totalEquity
   const workingCapital = totalCurrentAssets - totalCurrentLiabilities
   const equityRatio = totalEquity / totalAssets
-  
+
   const report: BalanceSheetReport = {
     header: {
       organization_id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
@@ -192,7 +202,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? totalAssets * growthFactor : undefined,
         isSectionTotal: true
       },
-      
+
       // Current Assets
       {
         section: 'ASSET',
@@ -234,7 +244,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? prepaidExpenses * growthFactor : undefined,
         indent: 1
       },
-      
+
       // Non-Current Assets
       {
         section: 'ASSET',
@@ -249,7 +259,9 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         subsection: 'NON_CURRENT',
         label: 'Property, Plant & Equipment (Net)',
         amount: netFurnitureFixtures + netLeaseholdImprovements + netEquipmentTools,
-        compareAmount: isComparative ? (netFurnitureFixtures + netLeaseholdImprovements + netEquipmentTools) * growthFactor : undefined,
+        compareAmount: isComparative
+          ? (netFurnitureFixtures + netLeaseholdImprovements + netEquipmentTools) * growthFactor
+          : undefined,
         indent: 1
       },
       {
@@ -292,7 +304,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? securityDeposits * growthFactor : undefined,
         indent: 1
       },
-      
+
       // Total Assets
       {
         section: 'ASSET',
@@ -302,7 +314,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? totalAssets * growthFactor : undefined,
         isTotal: true
       },
-      
+
       // LIABILITIES Section
       {
         section: 'LIABILITY',
@@ -312,7 +324,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? totalLiabilities * growthFactor : undefined,
         isSectionTotal: true
       },
-      
+
       // Current Liabilities
       {
         section: 'LIABILITY',
@@ -362,7 +374,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? vatPayable * growthFactor : undefined,
         indent: 1
       },
-      
+
       // Non-Current Liabilities
       {
         section: 'LIABILITY',
@@ -388,7 +400,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? longTermDebt * growthFactor : undefined,
         indent: 1
       },
-      
+
       // Total Liabilities
       {
         section: 'LIABILITY',
@@ -398,7 +410,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? totalLiabilities * growthFactor : undefined,
         isTotal: true
       },
-      
+
       // EQUITY Section
       {
         section: 'EQUITY',
@@ -432,7 +444,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? currentYearProfit * 0.85 : undefined,
         indent: 1
       },
-      
+
       // Total Equity
       {
         section: 'EQUITY',
@@ -442,7 +454,7 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
         compareAmount: isComparative ? totalEquity * growthFactor : undefined,
         isTotal: true
       },
-      
+
       // Total Liabilities & Equity
       {
         section: 'EQUITY',
@@ -471,19 +483,20 @@ const generateMockBalanceSheetData = (asOfDate: string, compareDate?: string, br
       equity_ratio: equityRatio
     }
   }
-  
+
   // Calculate variances if comparative
   if (isComparative) {
     report.lines.forEach(line => {
       if (line.compareAmount !== undefined) {
         line.variance = line.amount - line.compareAmount
-        line.variancePercent = line.compareAmount !== 0 
-          ? ((line.amount - line.compareAmount) / line.compareAmount) * 100 
-          : 0
+        line.variancePercent =
+          line.compareAmount !== 0
+            ? ((line.amount - line.compareAmount) / line.compareAmount) * 100
+            : 0
       }
     })
   }
-  
+
   return report
 }
 
@@ -539,20 +552,24 @@ const getSectionColor = (section: string) => {
 export default function SalonBalanceSheetPage() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const [loading, setLoading] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<'current' | 'prior_month' | 'prior_year' | 'custom'>('current')
+  const [selectedDate, setSelectedDate] = useState<
+    'current' | 'prior_month' | 'prior_year' | 'custom'
+  >('current')
   const [showComparison, setShowComparison] = useState(false)
   const [selectedBranch, setSelectedBranch] = useState<'all' | 'branch1' | 'branch2'>('all')
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['ASSET', 'LIABILITY', 'EQUITY']))
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(['ASSET', 'LIABILITY', 'EQUITY'])
+  )
   const [presentation, setPresentation] = useState<'CLASSIFIED' | 'UNCLASSIFIED'>('CLASSIFIED')
-  
+
   // Default organization ID for salon - Hair Talkz Park Regis
   const organizationId = currentOrganization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-  
+
   // Calculate dates
   const today = new Date()
   const currentYear = today.getFullYear()
   const currentMonth = today.getMonth()
-  
+
   const getAsOfDate = () => {
     switch (selectedDate) {
       case 'current':
@@ -566,19 +583,21 @@ export default function SalonBalanceSheetPage() {
         return `${currentYear}-12-31`
     }
   }
-  
+
   const asOfDate = getAsOfDate()
   const compareDate = showComparison ? `${currentYear - 1}-${asOfDate.substring(5)}` : undefined
-  
+
   // Generate mock data
   const balanceSheet = generateMockBalanceSheetData(
     asOfDate,
     compareDate,
-    selectedBranch === 'all' ? undefined : 
-    selectedBranch === 'branch1' ? 'Hair Talkz • Park Regis' :
-    'Hair Talkz • Mercure Gold'
+    selectedBranch === 'all'
+      ? undefined
+      : selectedBranch === 'branch1'
+        ? 'Hair Talkz • Park Regis'
+        : 'Hair Talkz • Mercure Gold'
   )
-  
+
   const toggleSection = (section: string) => {
     const newExpanded = new Set(expandedSections)
     if (newExpanded.has(section)) {
@@ -588,37 +607,34 @@ export default function SalonBalanceSheetPage() {
     }
     setExpandedSections(newExpanded)
   }
-  
+
   const exportReport = async (format: ExportFormat) => {
     // In production, this would generate actual PDF/CSV
-    handleError(
-      new Error('Export functionality not yet implemented'),
-      'bs-export',
-      { 
-        showToast: true,
-        fallbackMessage: `Export to ${format.toUpperCase()} will be available soon`
-      }
-    )
+    handleError(new Error('Export functionality not yet implemented'), 'bs-export', {
+      showToast: true,
+      fallbackMessage: `Export to ${format.toUpperCase()} will be available soon`
+    })
   }
-  
+
   const runBalanceCheck = () => {
     // Check if Assets = Liabilities + Equity
     const isBalanced = balanceSheet.totals.tie_check
     handleError(
-      new Error(isBalanced 
-        ? '✓ Balance Sheet is balanced! Assets = Liabilities + Equity'
-        : '⚠ Balance Sheet is NOT balanced! Please review entries.'
+      new Error(
+        isBalanced
+          ? '✓ Balance Sheet is balanced! Assets = Liabilities + Equity'
+          : '⚠ Balance Sheet is NOT balanced! Please review entries.'
       ),
       'bs-balance-check',
       {
         showToast: true,
-        fallbackMessage: isBalanced 
-          ? '✓ Balance Sheet is balanced!' 
+        fallbackMessage: isBalanced
+          ? '✓ Balance Sheet is balanced!'
           : '⚠ Balance Sheet is NOT balanced!'
       }
     )
   }
-  
+
   if (contextLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
@@ -633,7 +649,6 @@ export default function SalonBalanceSheetPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -676,7 +691,6 @@ export default function SalonBalanceSheetPage() {
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              
               {/* Date Selection */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -690,20 +704,22 @@ export default function SalonBalanceSheetPage() {
                       size="sm"
                       onClick={() => setSelectedDate(date)}
                       className={cn(
-                        "flex-1 text-xs",
-                        selectedDate === date 
-                          ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                          : ""
+                        'flex-1 text-xs',
+                        selectedDate === date
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                          : ''
                       )}
                     >
-                      {date === 'current' ? 'Current' : 
-                       date === 'prior_month' ? 'Prior Mo' : 
-                       'Prior Yr'}
+                      {date === 'current'
+                        ? 'Current'
+                        : date === 'prior_month'
+                          ? 'Prior Mo'
+                          : 'Prior Yr'}
                     </Button>
                   ))}
                 </div>
               </div>
-              
+
               {/* Branch Selection */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -711,7 +727,7 @@ export default function SalonBalanceSheetPage() {
                 </label>
                 <select
                   value={selectedBranch}
-                  onChange={(e) => setSelectedBranch(e.target.value as any)}
+                  onChange={e => setSelectedBranch(e.target.value as any)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="all">All Branches (Consolidated)</option>
@@ -719,7 +735,7 @@ export default function SalonBalanceSheetPage() {
                   <option value="branch2">Mercure Gold</option>
                 </select>
               </div>
-              
+
               {/* Presentation */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -731,10 +747,10 @@ export default function SalonBalanceSheetPage() {
                     size="sm"
                     onClick={() => setPresentation('CLASSIFIED')}
                     className={cn(
-                      "flex-1",
-                      presentation === 'CLASSIFIED' 
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                        : ""
+                      'flex-1',
+                      presentation === 'CLASSIFIED'
+                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                        : ''
                     )}
                   >
                     Classified
@@ -744,17 +760,17 @@ export default function SalonBalanceSheetPage() {
                     size="sm"
                     onClick={() => setPresentation('UNCLASSIFIED')}
                     className={cn(
-                      "flex-1",
-                      presentation === 'UNCLASSIFIED' 
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                        : ""
+                      'flex-1',
+                      presentation === 'UNCLASSIFIED'
+                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                        : ''
                     )}
                   >
                     Simple
                   </Button>
                 </div>
               </div>
-              
+
               {/* Comparison Toggle */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -770,7 +786,6 @@ export default function SalonBalanceSheetPage() {
                   {showComparison ? 'Hide' : 'Show'} Prior Year
                 </Button>
               </div>
-              
             </div>
           </CardContent>
         </Card>
@@ -790,7 +805,7 @@ export default function SalonBalanceSheetPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -804,7 +819,7 @@ export default function SalonBalanceSheetPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -821,7 +836,7 @@ export default function SalonBalanceSheetPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -838,7 +853,7 @@ export default function SalonBalanceSheetPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -872,12 +887,18 @@ export default function SalonBalanceSheetPage() {
                   As of {new Date(asOfDate).toLocaleDateString('en-AE')}
                 </Badge>
                 {balanceSheet.totals.tie_check ? (
-                  <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                  >
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Balanced
                   </Badge>
                 ) : (
-                  <Badge variant="secondary" className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                  <Badge
+                    variant="secondary"
+                    className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                  >
                     <AlertCircle className="w-3 h-3 mr-1" />
                     Unbalanced
                   </Badge>
@@ -894,12 +915,21 @@ export default function SalonBalanceSheetPage() {
                       Account
                     </th>
                     <th className="text-right px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {new Date(asOfDate).toLocaleDateString('en-AE', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {new Date(asOfDate).toLocaleDateString('en-AE', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
                     </th>
                     {showComparison && (
                       <>
                         <th className="text-right px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                          {compareDate && new Date(compareDate).toLocaleDateString('en-AE', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          {compareDate &&
+                            new Date(compareDate).toLocaleDateString('en-AE', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
                         </th>
                         <th className="text-right px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
                           Variance
@@ -914,60 +944,72 @@ export default function SalonBalanceSheetPage() {
                 <tbody>
                   {balanceSheet.lines.map((line, index) => {
                     const isSection = line.isSectionTotal
-                    const shouldShow = presentation === 'UNCLASSIFIED' 
-                      ? !line.indent || line.indent === 1 || line.isTotal || line.isSubtotal || line.isSectionTotal
-                      : true
-                    
+                    const shouldShow =
+                      presentation === 'UNCLASSIFIED'
+                        ? !line.indent ||
+                          line.indent === 1 ||
+                          line.isTotal ||
+                          line.isSubtotal ||
+                          line.isSectionTotal
+                        : true
+
                     if (!shouldShow) return null
-                    
+
                     return (
-                      <tr 
+                      <tr
                         key={index}
                         className={cn(
-                          "border-b border-gray-100 dark:border-gray-800",
-                          line.isTotal && "bg-gray-50 dark:bg-gray-900 font-bold",
-                          line.isSectionTotal && "bg-gray-50 dark:bg-gray-900 font-semibold",
-                          line.isSubtotal && "font-medium",
-                          (line.isSubtotal || line.isSectionTotal) && "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900"
+                          'border-b border-gray-100 dark:border-gray-800',
+                          line.isTotal && 'bg-gray-50 dark:bg-gray-900 font-bold',
+                          line.isSectionTotal && 'bg-gray-50 dark:bg-gray-900 font-semibold',
+                          line.isSubtotal && 'font-medium',
+                          (line.isSubtotal || line.isSectionTotal) &&
+                            'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900'
                         )}
-                        onClick={() => (line.isSubtotal || line.isSectionTotal) && toggleSection(line.section)}
+                        onClick={() =>
+                          (line.isSubtotal || line.isSectionTotal) && toggleSection(line.section)
+                        }
                       >
-                        <td className={cn(
-                          "px-6 py-3",
-                          line.indent && `pl-${6 + (line.indent * 4)}`
-                        )}>
-                          <div className={cn(
-                            "flex items-center gap-2",
-                            getSectionColor(line.section)
-                          )}>
+                        <td className={cn('px-6 py-3', line.indent && `pl-${6 + line.indent * 4}`)}>
+                          <div
+                            className={cn('flex items-center gap-2', getSectionColor(line.section))}
+                          >
                             {isSection && getSectionIcon(line.section)}
-                            {(line.isSubtotal || line.isSectionTotal) && expandedSections.has(line.section) && (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
-                            {(line.isSubtotal || line.isSectionTotal) && !expandedSections.has(line.section) && (
-                              <ChevronUp className="w-4 h-4" />
-                            )}
+                            {(line.isSubtotal || line.isSectionTotal) &&
+                              expandedSections.has(line.section) && (
+                                <ChevronDown className="w-4 h-4" />
+                              )}
+                            {(line.isSubtotal || line.isSectionTotal) &&
+                              !expandedSections.has(line.section) && (
+                                <ChevronUp className="w-4 h-4" />
+                              )}
                             {line.label}
                           </div>
                         </td>
-                        <td className={cn(
-                          "text-right px-6 py-3",
-                          line.amount < 0 && "text-red-600 dark:text-red-400"
-                        )}>
+                        <td
+                          className={cn(
+                            'text-right px-6 py-3',
+                            line.amount < 0 && 'text-red-600 dark:text-red-400'
+                          )}
+                        >
                           {formatCurrency(Math.abs(line.amount))}
                         </td>
                         {showComparison && (
                           <>
                             <td className="text-right px-6 py-3 text-gray-600 dark:text-gray-400">
-                              {line.compareAmount !== undefined 
+                              {line.compareAmount !== undefined
                                 ? formatCurrency(Math.abs(line.compareAmount))
                                 : '-'}
                             </td>
-                            <td className={cn(
-                              "text-right px-6 py-3",
-                              line.variance && line.variance > 0 ? "text-green-600" : "text-red-600"
-                            )}>
-                              {line.variance !== undefined 
+                            <td
+                              className={cn(
+                                'text-right px-6 py-3',
+                                line.variance && line.variance > 0
+                                  ? 'text-green-600'
+                                  : 'text-red-600'
+                              )}
+                            >
+                              {line.variance !== undefined
                                 ? formatCurrency(Math.abs(line.variance))
                                 : '-'}
                             </td>
@@ -975,13 +1017,19 @@ export default function SalonBalanceSheetPage() {
                               {line.variancePercent !== undefined ? (
                                 <div className="flex items-center justify-end gap-1">
                                   {getVarianceIcon(line.variance || 0)}
-                                  <span className={cn(
-                                    line.variance && line.variance > 0 ? "text-green-600" : "text-red-600"
-                                  )}>
+                                  <span
+                                    className={cn(
+                                      line.variance && line.variance > 0
+                                        ? 'text-green-600'
+                                        : 'text-red-600'
+                                    )}
+                                  >
                                     {formatPercent(Math.abs(line.variancePercent))}
                                   </span>
                                 </div>
-                              ) : '-'}
+                              ) : (
+                                '-'
+                              )}
                             </td>
                           </>
                         )}
@@ -1007,32 +1055,44 @@ export default function SalonBalanceSheetPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400">Current Assets</span>
-                  <span className="font-semibold">{formatCurrency(balanceSheet.totals.total_current_assets)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(balanceSheet.totals.total_current_assets)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400">Current Liabilities</span>
-                  <span className="font-semibold">{formatCurrency(balanceSheet.totals.total_current_liabilities)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(balanceSheet.totals.total_current_liabilities)}
+                  </span>
                 </div>
                 <div className="border-t pt-2">
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Working Capital</span>
-                    <span className="font-bold text-green-600">{formatCurrency(balanceSheet.kpis.working_capital)}</span>
+                    <span className="font-bold text-green-600">
+                      {formatCurrency(balanceSheet.kpis.working_capital)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     <span className="font-medium">Current Ratio</span>
-                    <span className={cn(
-                      "font-bold",
-                      balanceSheet.kpis.current_ratio >= 1.5 ? "text-green-600" : "text-yellow-600"
-                    )}>
+                    <span
+                      className={cn(
+                        'font-bold',
+                        balanceSheet.kpis.current_ratio >= 1.5
+                          ? 'text-green-600'
+                          : 'text-yellow-600'
+                      )}
+                    >
                       {formatRatio(balanceSheet.kpis.current_ratio)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     <span className="font-medium">Quick Ratio</span>
-                    <span className={cn(
-                      "font-bold",
-                      balanceSheet.kpis.quick_ratio >= 1 ? "text-green-600" : "text-yellow-600"
-                    )}>
+                    <span
+                      className={cn(
+                        'font-bold',
+                        balanceSheet.kpis.quick_ratio >= 1 ? 'text-green-600' : 'text-yellow-600'
+                      )}
+                    >
                       {formatRatio(balanceSheet.kpis.quick_ratio)}
                     </span>
                   </div>
@@ -1040,7 +1100,7 @@ export default function SalonBalanceSheetPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -1052,19 +1112,25 @@ export default function SalonBalanceSheetPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400">Total Debt</span>
-                  <span className="font-semibold">{formatCurrency(balanceSheet.totals.total_liabilities)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(balanceSheet.totals.total_liabilities)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400">Total Equity</span>
-                  <span className="font-semibold">{formatCurrency(balanceSheet.totals.total_equity)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(balanceSheet.totals.total_equity)}
+                  </span>
                 </div>
                 <div className="border-t pt-2">
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Debt-to-Equity</span>
-                    <span className={cn(
-                      "font-bold",
-                      balanceSheet.kpis.debt_to_equity <= 1 ? "text-green-600" : "text-yellow-600"
-                    )}>
+                    <span
+                      className={cn(
+                        'font-bold',
+                        balanceSheet.kpis.debt_to_equity <= 1 ? 'text-green-600' : 'text-yellow-600'
+                      )}
+                    >
                       {formatRatio(balanceSheet.kpis.debt_to_equity)}
                     </span>
                   </div>
@@ -1105,7 +1171,6 @@ export default function SalonBalanceSheetPage() {
             </Badge>
           </div>
         </div>
-        
       </div>
     </div>
   )

@@ -9,7 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import {
   BookOpen,
@@ -111,12 +117,14 @@ export function GLModule({
   onJournalPosted,
   onPeriodClosed
 }: GLModuleProps) {
-  const [activeTab, setActiveTab] = useState<'journal' | 'coa' | 'reports' | 'period' | 'auto'>('journal')
+  const [activeTab, setActiveTab] = useState<'journal' | 'coa' | 'reports' | 'period' | 'auto'>(
+    'journal'
+  )
   const [accounts, setAccounts] = useState<GLAccount[]>([])
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([])
   const [currentPeriod, setCurrentPeriod] = useState<string>('2024-01')
   const [loading, setLoading] = useState(false)
-  
+
   // Journal Entry Form State
   const [journalForm, setJournalForm] = useState<Partial<JournalEntry>>({
     date: new Date(),
@@ -139,18 +147,20 @@ export function GLModule({
           entity_type: 'gl_account'
         }
       })
-      
+
       if (response.data) {
-        setAccounts(response.data.map((acc: any) => ({
-          id: acc.id,
-          accountCode: acc.entity_code,
-          accountName: acc.entity_name,
-          accountType: (acc.metadata as any)?.account_type || 'asset',
-          normalBalance: (acc.metadata as any)?.normal_balance || 'debit',
-          balance: (acc.metadata as any)?.current_balance || 0,
-          parentAccount: (acc.metadata as any)?.parent_account,
-          isActive: acc.status !== 'inactive'
-        })))
+        setAccounts(
+          response.data.map((acc: any) => ({
+            id: acc.id,
+            accountCode: acc.entity_code,
+            accountName: acc.entity_name,
+            accountType: (acc.metadata as any)?.account_type || 'asset',
+            normalBalance: (acc.metadata as any)?.normal_balance || 'debit',
+            balance: (acc.metadata as any)?.current_balance || 0,
+            parentAccount: (acc.metadata as any)?.parent_account,
+            isActive: acc.status !== 'inactive'
+          }))
+        )
       }
     } catch (error) {
       console.error('Failed to load accounts:', error)
@@ -182,7 +192,7 @@ export function GLModule({
     setJournalForm(prev => {
       const newLines = [...(prev.lines || [])]
       newLines[index] = { ...newLines[index], [field]: value }
-      
+
       // Auto-populate account name when code is selected
       if (field === 'accountCode') {
         const account = accounts.find(acc => acc.accountCode === value)
@@ -190,7 +200,7 @@ export function GLModule({
           newLines[index].accountName = account.accountName
         }
       }
-      
+
       return { ...prev, lines: newLines }
     })
   }
@@ -217,7 +227,7 @@ export function GLModule({
 
     try {
       setLoading(true)
-      
+
       // Create journal transaction
       const journal = await universalApi.createTransaction({
         transaction_type: 'journal_entry',
@@ -267,7 +277,6 @@ export function GLModule({
 
       // Reload data
       loadAccounts()
-      
     } catch (error) {
       console.error('Failed to post journal:', error)
       alert('Failed to post journal entry')
@@ -277,20 +286,21 @@ export function GLModule({
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")}>
-      <Card className={cn(
-        "shadow-lg",
-        isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : "bg-white border-gray-200"
-      )}>
-        <CardHeader className={cn(
-          "border-b",
-          isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-        )}>
+    <div className={cn('min-h-screen', isDarkMode && 'dark')}>
+      <Card
+        className={cn(
+          'shadow-lg',
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+        )}
+      >
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
           <div className="flex items-center justify-between">
-            <CardTitle className={cn(
-              "text-xl flex items-center gap-2",
-              isDarkMode ? "text-white" : "text-gray-900"
-            )}>
+            <CardTitle
+              className={cn(
+                'text-xl flex items-center gap-2',
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              )}
+            >
               <BookOpen className="h-5 w-5" />
               General Ledger Module
             </CardTitle>
@@ -308,13 +318,12 @@ export function GLModule({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-6">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className={cn(
-              "grid w-full grid-cols-5",
-              isDarkMode ? "bg-[#292929]" : "bg-gray-100"
-            )}>
+          <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+            <TabsList
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+            >
               <TabsTrigger value="journal" className="gap-1">
                 <FileText className="h-4 w-4" />
                 Journal Entry
@@ -338,12 +347,14 @@ export function GLModule({
                 </TabsTrigger>
               )}
             </TabsList>
-            
+
             {/* Journal Entry Tab */}
             <TabsContent value="journal" className="space-y-4 mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">New Journal Entry</CardTitle>
                 </CardHeader>
@@ -354,8 +365,10 @@ export function GLModule({
                       <Input
                         type="date"
                         value={journalForm.date?.toISOString().split('T')[0]}
-                        onChange={(e) => setJournalForm(prev => ({ ...prev, date: new Date(e.target.value) }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setJournalForm(prev => ({ ...prev, date: new Date(e.target.value) }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -363,12 +376,14 @@ export function GLModule({
                       <Input
                         placeholder="Journal entry description"
                         value={journalForm.description}
-                        onChange={(e) => setJournalForm(prev => ({ ...prev, description: e.target.value }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setJournalForm(prev => ({ ...prev, description: e.target.value }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   {/* Ice Cream Specific Fields */}
                   {industrySpecific.coldChainAccounts && (
                     <div className="grid grid-cols-3 gap-4">
@@ -377,33 +392,44 @@ export function GLModule({
                         <Input
                           type="number"
                           placeholder="-18"
-                          onChange={(e) => setJournalForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, temperature: parseFloat(e.target.value) }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setJournalForm(prev => ({
+                              ...prev,
+                              metadata: {
+                                ...prev.metadata,
+                                temperature: parseFloat(e.target.value)
+                              }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Product Batch</Label>
                         <Input
                           placeholder="BATCH-2024-001"
-                          onChange={(e) => setJournalForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, productBatch: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setJournalForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, productBatch: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Season</Label>
                         <Select
-                          onValueChange={(value) => setJournalForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, season: value }
-                          }))}
+                          onValueChange={value =>
+                            setJournalForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, season: value }
+                            }))
+                          }
                         >
-                          <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                          <SelectTrigger
+                            className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                          >
                             <SelectValue placeholder="Select season" />
                           </SelectTrigger>
                           <SelectContent>
@@ -415,9 +441,9 @@ export function GLModule({
                       </div>
                     </div>
                   )}
-                  
+
                   <Separator />
-                  
+
                   {/* Journal Lines */}
                   <div>
                     <div className="flex justify-between items-center mb-2">
@@ -425,19 +451,21 @@ export function GLModule({
                       <Button
                         size="sm"
                         onClick={addJournalLine}
-                        className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                        className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                       >
                         Add Line
                       </Button>
                     </div>
-                    
+
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className={cn(
-                            "border-b",
-                            isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                          )}>
+                          <tr
+                            className={cn(
+                              'border-b',
+                              isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                            )}
+                          >
                             <th className="text-left py-2">Account</th>
                             <th className="text-left py-2">Description</th>
                             <th className="text-right py-2">Debit</th>
@@ -446,19 +474,26 @@ export function GLModule({
                         </thead>
                         <tbody>
                           {(journalForm.lines || []).map((line, index) => (
-                            <tr key={line.id} className={cn(
-                              "border-b",
-                              isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                            )}>
+                            <tr
+                              key={line.id}
+                              className={cn(
+                                'border-b',
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              )}
+                            >
                               <td className="py-2 pr-2">
                                 <Select
                                   value={line.accountCode}
-                                  onValueChange={(value) => updateJournalLine(index, 'accountCode', value)}
+                                  onValueChange={value =>
+                                    updateJournalLine(index, 'accountCode', value)
+                                  }
                                 >
-                                  <SelectTrigger className={cn(
-                                    "w-[200px]",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
-                                  )}>
+                                  <SelectTrigger
+                                    className={cn(
+                                      'w-[200px]',
+                                      isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
+                                    )}
+                                  >
                                     <SelectValue placeholder="Select account" />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -474,10 +509,12 @@ export function GLModule({
                                 <Input
                                   placeholder="Line description"
                                   value={line.description}
-                                  onChange={(e) => updateJournalLine(index, 'description', e.target.value)}
+                                  onChange={e =>
+                                    updateJournalLine(index, 'description', e.target.value)
+                                  }
                                   className={cn(
-                                    "h-8",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -486,10 +523,16 @@ export function GLModule({
                                   type="number"
                                   placeholder="0.00"
                                   value={line.debit || ''}
-                                  onChange={(e) => updateJournalLine(index, 'debit', parseFloat(e.target.value) || 0)}
+                                  onChange={e =>
+                                    updateJournalLine(
+                                      index,
+                                      'debit',
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className={cn(
-                                    "h-8 text-right",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8 text-right',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -498,10 +541,16 @@ export function GLModule({
                                   type="number"
                                   placeholder="0.00"
                                   value={line.credit || ''}
-                                  onChange={(e) => updateJournalLine(index, 'credit', parseFloat(e.target.value) || 0)}
+                                  onChange={e =>
+                                    updateJournalLine(
+                                      index,
+                                      'credit',
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className={cn(
-                                    "h-8 text-right",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8 text-right',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -510,7 +559,9 @@ export function GLModule({
                         </tbody>
                         <tfoot>
                           <tr className="font-semibold">
-                            <td colSpan={2} className="py-2 text-right">Totals:</td>
+                            <td colSpan={2} className="py-2 text-right">
+                              Totals:
+                            </td>
                             <td className="py-2 px-2 text-right">
                               {calculateTotals().debit.toFixed(2)}
                             </td>
@@ -521,7 +572,7 @@ export function GLModule({
                         </tfoot>
                       </table>
                     </div>
-                    
+
                     {/* Balance Check */}
                     <div className="mt-4">
                       {calculateTotals().debit === calculateTotals().credit ? (
@@ -535,29 +586,34 @@ export function GLModule({
                         <Alert className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
                           <AlertCircle className="h-4 w-4 text-red-600" />
                           <AlertDescription className="text-red-700 dark:text-red-400">
-                            Journal entry is not balanced. Difference: {Math.abs(calculateTotals().debit - calculateTotals().credit).toFixed(2)}
+                            Journal entry is not balanced. Difference:{' '}
+                            {Math.abs(calculateTotals().debit - calculateTotals().credit).toFixed(
+                              2
+                            )}
                           </AlertDescription>
                         </Alert>
                       )}
                     </div>
-                    
+
                     {/* Action Buttons */}
                     <div className="flex justify-end gap-2 mt-4">
                       <Button
                         variant="outline"
-                        onClick={() => setJournalForm({
-                          date: new Date(),
-                          description: '',
-                          status: 'draft',
-                          lines: []
-                        })}
+                        onClick={() =>
+                          setJournalForm({
+                            date: new Date(),
+                            description: '',
+                            status: 'draft',
+                            lines: []
+                          })
+                        }
                       >
                         Clear
                       </Button>
                       <Button
                         onClick={postJournal}
                         disabled={loading || calculateTotals().debit !== calculateTotals().credit}
-                        className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                        className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                       >
                         Post Journal
                       </Button>
@@ -566,12 +622,14 @@ export function GLModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Chart of Accounts Tab */}
             <TabsContent value="coa" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg">Chart of Accounts</CardTitle>
@@ -594,8 +652,8 @@ export function GLModule({
                         <div
                           key={account.id}
                           className={cn(
-                            "flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800",
-                            isDarkMode ? "bg-[#1f1f1f]" : "bg-white"
+                            'flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800',
+                            isDarkMode ? 'bg-[#1f1f1f]' : 'bg-white'
                           )}
                         >
                           <div className="flex items-center gap-3">
@@ -606,12 +664,12 @@ export function GLModule({
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge variant={account.normalBalance === 'debit' ? 'default' : 'secondary'}>
+                            <Badge
+                              variant={account.normalBalance === 'debit' ? 'default' : 'secondary'}
+                            >
                               {account.normalBalance}
                             </Badge>
-                            <span className="font-mono text-sm">
-                              {account.balance.toFixed(2)}
-                            </span>
+                            <span className="font-mono text-sm">{account.balance.toFixed(2)}</span>
                           </div>
                         </div>
                       ))}
@@ -620,14 +678,16 @@ export function GLModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Reports Tab */}
             <TabsContent value="reports" className="mt-4">
               <div className="grid grid-cols-2 gap-4">
-                <Card className={cn(
-                  "cursor-pointer hover:shadow-md transition-shadow",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                )}>
+                <Card
+                  className={cn(
+                    'cursor-pointer hover:shadow-md transition-shadow',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                  )}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <FileCheck className="h-8 w-8 text-blue-500" />
@@ -638,11 +698,13 @@ export function GLModule({
                     </div>
                   </CardContent>
                 </Card>
-                
-                <Card className={cn(
-                  "cursor-pointer hover:shadow-md transition-shadow",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                )}>
+
+                <Card
+                  className={cn(
+                    'cursor-pointer hover:shadow-md transition-shadow',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                  )}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <TrendingUp className="h-8 w-8 text-green-500" />
@@ -653,12 +715,14 @@ export function GLModule({
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 {industrySpecific.coldChainAccounts && (
-                  <Card className={cn(
-                    "cursor-pointer hover:shadow-md transition-shadow",
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                  )}>
+                  <Card
+                    className={cn(
+                      'cursor-pointer hover:shadow-md transition-shadow',
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                    )}
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3">
                         <Calculator className="h-8 w-8 text-purple-500" />
@@ -670,12 +734,14 @@ export function GLModule({
                     </CardContent>
                   </Card>
                 )}
-                
+
                 {industrySpecific.seasonalAnalysis && (
-                  <Card className={cn(
-                    "cursor-pointer hover:shadow-md transition-shadow",
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                  )}>
+                  <Card
+                    className={cn(
+                      'cursor-pointer hover:shadow-md transition-shadow',
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                    )}
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3">
                         <Calendar className="h-8 w-8 text-orange-500" />
@@ -689,12 +755,14 @@ export function GLModule({
                 )}
               </div>
             </TabsContent>
-            
+
             {/* Period Management Tab */}
             <TabsContent value="period" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Period Management</CardTitle>
                 </CardHeader>
@@ -706,13 +774,13 @@ export function GLModule({
                         Current Period: <strong>{currentPeriod}</strong>
                       </AlertDescription>
                     </Alert>
-                    
+
                     <div className="flex gap-2">
                       <Button variant="outline">
                         <Clock className="h-4 w-4 mr-1" />
                         Open Next Period
                       </Button>
-                      <Button 
+                      <Button
                         variant="destructive"
                         onClick={() => {
                           if (onPeriodClosed) {
@@ -728,13 +796,15 @@ export function GLModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Auto-Journal Tab */}
             {features.autoJournal && (
               <TabsContent value="auto" className="mt-4">
-                <Card className={cn(
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                )}>
+                <Card
+                  className={cn(
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  )}
+                >
                   <CardHeader>
                     <CardTitle className="text-lg">Auto-Journal Rules</CardTitle>
                   </CardHeader>
@@ -753,7 +823,7 @@ export function GLModule({
                           </div>
                         </div>
                       )}
-                      
+
                       {industrySpecific.batchLevelPosting && (
                         <div className="p-4 border rounded-lg">
                           <div className="flex items-center justify-between">
@@ -767,7 +837,7 @@ export function GLModule({
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="p-4 border rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
@@ -844,11 +914,7 @@ export const GL_MODULE_DNA = {
       ]
     }
   },
-  dependencies: [
-    'universalApi',
-    'Chart of Accounts setup',
-    'Organization context'
-  ],
+  dependencies: ['universalApi', 'Chart of Accounts setup', 'Organization context'],
   smartCodes: [
     'HERA.FIN.GL.TXN.JE.v1',
     'HERA.FIN.GL.ACC.*',

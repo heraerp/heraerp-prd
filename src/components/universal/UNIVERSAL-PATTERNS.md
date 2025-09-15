@@ -12,8 +12,9 @@ This document captures the key learnings, mistakes, and solutions from building 
 ## 🔐 **Authentication & State Management**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **Excessive API calls** - Auth context was fetched on every navigation
-2. **Race conditions** - Multiple auth checks happening simultaneously  
+2. **Race conditions** - Multiple auth checks happening simultaneously
 3. **Poor loading states** - Brief login screens appeared during navigation
 4. **No caching** - Same context fetched repeatedly
 5. **Overly aggressive state changes** - Token refresh triggered full re-authentication
@@ -21,6 +22,7 @@ This document captures the key learnings, mistakes, and solutions from building 
 ### ✅ **Best Practices Learned**
 
 #### **Use Caching & Throttling**
+
 ```typescript
 // ❌ Bad: Always fetch fresh
 const loadContext = async () => {
@@ -31,7 +33,7 @@ const loadContext = async () => {
 // ✅ Good: Cache with TTL
 const loadContext = async () => {
   const now = Date.now()
-  if (context && (now - lastFetch) < CACHE_DURATION) {
+  if (context && now - lastFetch < CACHE_DURATION) {
     console.log('Using cached context')
     return
   }
@@ -40,6 +42,7 @@ const loadContext = async () => {
 ```
 
 #### **Smart Auth State Handling**
+
 ```typescript
 // ❌ Bad: Strict authentication check
 const isAuthenticated = !!session && !!heraContext
@@ -49,6 +52,7 @@ const isAuthenticated = !!session && (!!heraContext || (isHeraLoading && lastFet
 ```
 
 #### **Differentiate Auth Events**
+
 ```typescript
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_IN') {
@@ -70,6 +74,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 ## 🌐 **API Client Design**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **No retry logic** - Single failures caused complete breakdowns
 2. **Poor error handling** - Generic error messages with no context
 3. **No request deduplication** - Same requests fired multiple times
@@ -79,6 +84,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 ### ✅ **Best Practices Learned**
 
 #### **Implement Exponential Backoff**
+
 ```typescript
 // ✅ Retry with exponential backoff
 for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -86,7 +92,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     return await makeRequest()
   } catch (error) {
     if (attempt === maxAttempts) throw error
-    
+
     const delay = retryDelay * Math.pow(retryMultiplier, attempt - 1)
     await sleep(delay)
   }
@@ -94,6 +100,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
 ```
 
 #### **Request Deduplication**
+
 ```typescript
 // ✅ Prevent duplicate requests
 if (this.pendingRequests.has(cacheKey)) {
@@ -105,6 +112,7 @@ this.pendingRequests.set(cacheKey, requestPromise)
 ```
 
 #### **Consistent Response Format**
+
 ```typescript
 // ✅ Always return consistent format
 interface APIResponse<T = any> {
@@ -121,6 +129,7 @@ interface APIResponse<T = any> {
 ## 📝 **Form Components & Modal Visibility**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **Shadcn/ui in modals** - Components had poor visibility in modal overlays
 2. **Inconsistent styling** - Mixed component libraries caused styling conflicts
 3. **Missing accessibility** - No proper labels, ARIA attributes
@@ -130,6 +139,7 @@ interface APIResponse<T = any> {
 ### ✅ **Best Practices Learned**
 
 #### **Always Use Native HTML in Modals**
+
 ```tsx
 // ❌ Bad: Shadcn components in modals
 <Label htmlFor="name">Name</Label>
@@ -148,6 +158,7 @@ interface APIResponse<T = any> {
 ```
 
 #### **Consistent Modal Structure**
+
 ```tsx
 // ✅ Standard modal with proper contrast
 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -160,6 +171,7 @@ interface APIResponse<T = any> {
 ```
 
 #### **Form Validation Patterns**
+
 ```tsx
 // ✅ Comprehensive form state management
 const { values, errors, touched, setValue, validate } = useFormState({
@@ -180,6 +192,7 @@ const validationRules = {
 ## 🎨 **Loading States & Error Handling**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **Generic loading screens** - Same loader for all contexts
 2. **No timeout handling** - Infinite loading with no escape
 3. **Poor error boundaries** - App crashes instead of graceful degradation
@@ -189,6 +202,7 @@ const validationRules = {
 ### ✅ **Best Practices Learned**
 
 #### **Context-Specific Loading States**
+
 ```tsx
 // ✅ Different loading states for different contexts
 if (isInitialLoading) {
@@ -205,6 +219,7 @@ if (isDataLoading) {
 ```
 
 #### **Timeout & Error Recovery**
+
 ```tsx
 // ✅ Loading with timeout and recovery
 <UniversalFullPageLoading
@@ -218,6 +233,7 @@ if (isDataLoading) {
 ```
 
 #### **Error Boundaries Everywhere**
+
 ```tsx
 // ✅ Wrap components in error boundaries
 <UniversalErrorBoundary
@@ -236,6 +252,7 @@ if (isDataLoading) {
 ## 🗄️ **Database & Universal API Patterns**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **Missing foreign key constraints** - Data integrity issues
 2. **Nullable required fields** - Runtime errors from unexpected nulls
 3. **Inconsistent API responses** - Different endpoints returned different formats
@@ -245,6 +262,7 @@ if (isDataLoading) {
 ### ✅ **Best Practices Learned**
 
 #### **Universal Entity Pattern**
+
 ```typescript
 // ✅ Consistent entity creation
 const createEntity = async (data: EntityInput) => {
@@ -256,7 +274,7 @@ const createEntity = async (data: EntityInput) => {
 
   // Create in core_entities
   const entity = await createCoreEntity(data)
-  
+
   // Create dynamic properties
   if (data.properties) {
     await createDynamicProperties(entity.id, data.properties)
@@ -267,6 +285,7 @@ const createEntity = async (data: EntityInput) => {
 ```
 
 #### **Proper Error Handling**
+
 ```typescript
 // ✅ Map database errors to user-friendly messages
 const handleDatabaseError = (error: any) => {
@@ -286,6 +305,7 @@ const handleDatabaseError = (error: any) => {
 ## 🏗️ **Component Architecture**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **Tightly coupled components** - Hard to reuse across different contexts
 2. **Props drilling** - Passing data through multiple levels
 3. **Mixed concerns** - UI, business logic, and data fetching in same component
@@ -295,32 +315,34 @@ const handleDatabaseError = (error: any) => {
 ### ✅ **Best Practices Learned**
 
 #### **Composition Over Inheritance**
+
 ```tsx
 // ✅ Composable components
 <UniversalForm onSubmit={handleSubmit}>
   <UniversalFieldGroup title="Basic Information">
-    <UniversalInput 
-      name="name" 
-      label="Name" 
+    <UniversalInput
+      name="name"
+      label="Name"
       value={values.name}
-      onChange={(value) => setValue('name', value)}
+      onChange={value => setValue('name', value)}
       error={errors.name}
       required
     />
   </UniversalFieldGroup>
-  
+
   <div className="flex gap-3">
     <UniversalButton type="submit" loading={isSubmitting}>
       Submit
     </UniversalButton>
     <UniversalButton variant="secondary" onClick={onCancel}>
-      Cancel  
+      Cancel
     </UniversalButton>
   </div>
 </UniversalForm>
 ```
 
 #### **Separation of Concerns**
+
 ```tsx
 // ✅ Separate data, logic, and presentation
 const useMenuItems = () => {
@@ -328,7 +350,7 @@ const useMenuItems = () => {
 }
 
 const MenuLogic = () => {
-  // Business logic & event handlers  
+  // Business logic & event handlers
 }
 
 const MenuPresentation = ({ items, onEdit, onDelete }) => {
@@ -341,6 +363,7 @@ const MenuPresentation = ({ items, onEdit, onDelete }) => {
 ## 📱 **Performance & Optimization**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **No memoization** - Unnecessary re-renders on every state change
 2. **Large bundle sizes** - Importing entire libraries for small features
 3. **No lazy loading** - All components loaded upfront
@@ -350,6 +373,7 @@ const MenuPresentation = ({ items, onEdit, onDelete }) => {
 ### ✅ **Best Practices Learned**
 
 #### **Smart Caching Strategy**
+
 ```typescript
 // ✅ Multi-level caching
 const cacheStrategy = {
@@ -363,17 +387,18 @@ const cacheStrategy = {
 ```
 
 #### **Optimistic Updates**
+
 ```tsx
 // ✅ Immediate UI feedback
 const updateItem = async (item: Item) => {
   // Update UI immediately
-  setItems(prev => prev.map(i => i.id === item.id ? item : i))
-  
+  setItems(prev => prev.map(i => (i.id === item.id ? item : i)))
+
   try {
     await api.updateItem(item)
   } catch (error) {
     // Revert on failure
-    setItems(prev => prev.map(i => i.id === item.id ? originalItem : i))
+    setItems(prev => prev.map(i => (i.id === item.id ? originalItem : i)))
     showError('Update failed')
   }
 }
@@ -384,6 +409,7 @@ const updateItem = async (item: Item) => {
 ## 🛡️ **Security & Validation**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **Client-side only validation** - Easily bypassed by malicious users
 2. **Exposed sensitive data** - Full user objects in client state
 3. **No input sanitization** - XSS vulnerabilities
@@ -393,20 +419,22 @@ const updateItem = async (item: Item) => {
 ### ✅ **Best Practices Learned**
 
 #### **Defense in Depth**
+
 ```typescript
 // ✅ Validate on both client and server
 const validateInput = (data: any) => {
   // Client-side validation for UX
   const clientValidation = validateOnClient(data)
-  
+
   // Always validate on server too
   const serverValidation = await validateOnServer(data)
-  
+
   return serverValidation // Server validation is authoritative
 }
 ```
 
 #### **Minimal Data Exposure**
+
 ```typescript
 // ✅ Only expose what's needed
 const sanitizeUser = (user: FullUser): PublicUser => ({
@@ -422,6 +450,7 @@ const sanitizeUser = (user: FullUser): PublicUser => ({
 ## 📚 **Testing Strategies**
 
 ### ❌ **Common Mistakes We Made**
+
 1. **No error case testing** - Only tested happy paths
 2. **Brittle tests** - Tests broke on UI changes
 3. **No integration testing** - Components tested in isolation
@@ -431,14 +460,15 @@ const sanitizeUser = (user: FullUser): PublicUser => ({
 ### ✅ **Best Practices Learned**
 
 #### **Test Error Scenarios**
+
 ```typescript
 // ✅ Test error cases
 describe('Menu API', () => {
   it('handles network errors gracefully', async () => {
     mockAPI.get.mockRejectedValue(new Error('Network error'))
-    
+
     const result = await loadMenuItems()
-    
+
     expect(result.success).toBe(false)
     expect(result.error).toBe('Failed to load menu items')
   })
@@ -446,22 +476,23 @@ describe('Menu API', () => {
 ```
 
 #### **Integration Testing**
+
 ```tsx
 // ✅ Test complete user flows
 test('user can create menu item', async () => {
   render(<MenuManager />)
-  
+
   // Click add button
   fireEvent.click(screen.getByText('Add Menu Item'))
-  
+
   // Fill form
   fireEvent.change(screen.getByLabelText('Name'), {
     target: { value: 'Pizza' }
   })
-  
+
   // Submit and verify
   fireEvent.click(screen.getByText('Submit'))
-  
+
   await waitFor(() => {
     expect(screen.getByText('Pizza')).toBeInTheDocument()
   })
@@ -473,13 +504,15 @@ test('user can create menu item', async () => {
 ## 🎯 **Key Takeaways**
 
 ### **Architecture Principles**
+
 1. **Fail gracefully** - Always have fallbacks and error boundaries
 2. **Cache aggressively** - Reduce API calls with smart caching
 3. **Validate everywhere** - Client UX, server security
 4. **Compose, don't inherit** - Build flexible, reusable components
 5. **Monitor everything** - Logs, metrics, and user feedback
 
-### **Development Workflow**  
+### **Development Workflow**
+
 1. **Start with types** - Define interfaces before implementation
 2. **Build error states first** - Handle failures before success
 3. **Test edge cases** - Null, empty, large data sets
@@ -487,6 +520,7 @@ test('user can create menu item', async () => {
 5. **Review security** - Audit every external input
 
 ### **User Experience**
+
 1. **Loading states matter** - Users need feedback during waits
 2. **Errors should be actionable** - Tell users what they can do
 3. **Performance is a feature** - Optimize for perceived speed
@@ -498,22 +532,25 @@ test('user can create menu item', async () => {
 ## 🚀 **Usage Examples**
 
 ### **Quick Start with Universal Components**
+
 ```tsx
-import { 
+import {
   UniversalAuthProvider,
-  UniversalForm, 
+  UniversalForm,
   UniversalInput,
   UniversalButton,
-  UniversalErrorBoundary 
+  UniversalErrorBoundary
 } from '@/components/universal'
 
 function MyApp() {
   return (
-    <UniversalAuthProvider config={{
-      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      heraApiBaseUrl: '/api/v1'
-    }}>
+    <UniversalAuthProvider
+      config={{
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        heraApiBaseUrl: '/api/v1'
+      }}
+    >
       <UniversalErrorBoundary>
         <MyComponent />
       </UniversalErrorBoundary>
@@ -523,6 +560,7 @@ function MyApp() {
 ```
 
 ### **Universal API Client**
+
 ```tsx
 import { createUniversalAPIClient } from '@/components/universal'
 
@@ -530,12 +568,12 @@ const api = createUniversalAPIClient({
   baseUrl: '/api/v1',
   retries: { maxRetries: 3 },
   cache: { ttl: 30000 },
-  onError: (error) => console.error('API Error:', error)
+  onError: error => console.error('API Error:', error)
 })
 
 // Usage
-const { success, data, error } = await api.get('/entities', { 
-  entity_type: 'menu_item' 
+const { success, data, error } = await api.get('/entities', {
+  entity_type: 'menu_item'
 })
 ```
 

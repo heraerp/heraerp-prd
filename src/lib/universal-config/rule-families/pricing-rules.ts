@@ -1,7 +1,7 @@
 /**
  * HERA Universal Configuration - Pricing Rules Family
  * Smart Code: HERA.UNIV.CONFIG.PRICING.*
- * 
+ *
  * Manages dynamic pricing, discounts, promotions, and service bundling
  */
 
@@ -40,28 +40,28 @@ export interface CartItem {
 // Pricing rule payload types
 export interface PricingPayload {
   adjustment_type: 'discount' | 'surcharge' | 'override' | 'bundle'
-  
+
   // Discount/surcharge configuration
   discount?: DiscountConfig
   surcharge?: SurchargeConfig
-  
+
   // Price override
   override_price?: number
   override_prices?: { [item_id: string]: number }
-  
+
   // Bundle pricing
   bundle?: BundleConfig
-  
+
   // Conditions for application
   min_purchase_amount?: number
   min_quantity?: number
   max_discount_amount?: number
-  
+
   // Stacking rules
   stackable: boolean
   stack_with?: string[] // Smart codes of compatible rules
   exclude_with?: string[] // Smart codes of incompatible rules
-  
+
   // Applicable items
   applies_to?: {
     services?: string[]
@@ -70,7 +70,7 @@ export interface PricingPayload {
     product_categories?: string[]
     exclude_items?: string[]
   }
-  
+
   // Time-based pricing
   dynamic_pricing?: {
     peak_multiplier?: number
@@ -78,23 +78,23 @@ export interface PricingPayload {
     last_minute_discount?: number
     advance_booking_discount?: number
   }
-  
+
   // Loyalty adjustments
   loyalty_multipliers?: {
     [tier: string]: number
   }
-  
+
   // Promo code configuration
   promo_codes?: string[]
   promo_code_required?: boolean
-  
+
   // Usage limits
   usage_limits?: {
     per_customer?: number
     total_uses?: number
     per_day?: number
   }
-  
+
   // Display configuration
   display?: {
     label: string
@@ -107,11 +107,11 @@ export interface PricingPayload {
 
 export interface DiscountConfig {
   type: 'percentage' | 'fixed' | 'bogo' | 'volume'
-  
+
   // Basic discount
   percentage?: number
   fixed_amount?: number
-  
+
   // BOGO (Buy One Get One)
   bogo?: {
     buy_quantity: number
@@ -119,7 +119,7 @@ export interface DiscountConfig {
     get_percentage?: number // Default 100 (free)
     applies_to_cheaper?: boolean
   }
-  
+
   // Volume/tiered discount
   volume_tiers?: {
     min_quantity: number
@@ -158,7 +158,7 @@ export interface BundleItem {
 export const PricingRuleFamily = {
   // Family identifier
   family: 'HERA.UNIV.CONFIG.PRICING',
-  
+
   // Sub-families
   subFamilies: {
     DISCOUNT: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT.v1',
@@ -172,12 +172,12 @@ export const PricingRuleFamily = {
     FLASH_SALE: 'HERA.UNIV.CONFIG.PRICING.FLASH_SALE.v1',
     MEMBER: 'HERA.UNIV.CONFIG.PRICING.MEMBER.v1'
   },
-  
+
   // Default conditions
   defaultConditions: {
     effective_from: new Date().toISOString()
   },
-  
+
   // Default payload
   defaultPayload: {
     adjustment_type: 'discount' as const,
@@ -187,65 +187,70 @@ export const PricingRuleFamily = {
       show_savings: true
     }
   },
-  
+
   // Validation
   validate: (rule: UniversalRule): string[] => {
     const errors: string[] = []
     const payload = rule.payload as PricingPayload
-    
+
     // Validate adjustment type
     if (!['discount', 'surcharge', 'override', 'bundle'].includes(payload.adjustment_type)) {
       errors.push('Invalid adjustment_type')
     }
-    
+
     // Validate discount configuration
     if (payload.discount) {
       if (!['percentage', 'fixed', 'bogo', 'volume'].includes(payload.discount.type)) {
         errors.push('Invalid discount type')
       }
-      
-      if (payload.discount.percentage !== undefined && 
-          (payload.discount.percentage < 0 || payload.discount.percentage > 100)) {
+
+      if (
+        payload.discount.percentage !== undefined &&
+        (payload.discount.percentage < 0 || payload.discount.percentage > 100)
+      ) {
         errors.push('Discount percentage must be between 0 and 100')
       }
-      
+
       if (payload.discount.fixed_amount !== undefined && payload.discount.fixed_amount < 0) {
         errors.push('Fixed discount amount must be positive')
       }
     }
-    
+
     // Validate surcharge
     if (payload.surcharge) {
       if (payload.surcharge.percentage !== undefined && payload.surcharge.percentage < 0) {
         errors.push('Surcharge percentage must be positive')
       }
-      
+
       if (payload.surcharge.fixed_amount !== undefined && payload.surcharge.fixed_amount < 0) {
         errors.push('Fixed surcharge amount must be positive')
       }
     }
-    
+
     // Validate bundle
     if (payload.bundle) {
       if (!payload.bundle.required_items || payload.bundle.required_items.length === 0) {
         errors.push('Bundle must have at least one required item')
       }
-      
-      if (payload.bundle.bundle_discount_percentage !== undefined &&
-          (payload.bundle.bundle_discount_percentage < 0 || payload.bundle.bundle_discount_percentage > 100)) {
+
+      if (
+        payload.bundle.bundle_discount_percentage !== undefined &&
+        (payload.bundle.bundle_discount_percentage < 0 ||
+          payload.bundle.bundle_discount_percentage > 100)
+      ) {
         errors.push('Bundle discount percentage must be between 0 and 100')
       }
     }
-    
+
     return errors
   },
-  
+
   // Merge strategy
   mergeStrategy: 'stack', // Stack compatible discounts
-  
+
   // Context requirements
   requiredContext: [],
-  
+
   // Sample templates
   templates: {
     percentageDiscount: {
@@ -269,16 +274,14 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     happyHour: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.DYNAMIC.v1',
       status: 'active',
       priority: 200,
       conditions: {
         effective_from: new Date().toISOString(),
-        time_windows: [
-          { start_time: '14:00', end_time: '16:00' }
-        ],
+        time_windows: [{ start_time: '14:00', end_time: '16:00' }],
         days_of_week: [1, 2, 3, 4, 5] // Weekdays
       },
       payload: {
@@ -297,7 +300,7 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     loyaltyTiers: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.LOYALTY.v1',
       status: 'active',
@@ -312,9 +315,9 @@ export const PricingRuleFamily = {
           percentage: 5 // Base discount
         },
         loyalty_multipliers: {
-          silver: 1.5,    // 7.5% discount
-          gold: 2.0,      // 10% discount
-          platinum: 3.0   // 15% discount
+          silver: 1.5, // 7.5% discount
+          gold: 2.0, // 10% discount
+          platinum: 3.0 // 15% discount
         },
         stackable: true,
         display: {
@@ -323,7 +326,7 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     serviceBundle: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.BUNDLE.v1',
       status: 'active',
@@ -344,8 +347,8 @@ export const PricingRuleFamily = {
           bundle_discount_percentage: 25,
           allow_substitutions: true,
           valid_substitutions: {
-            'manicure': ['pedicure', 'gel_manicure'],
-            'hair_treatment': ['deep_conditioning', 'scalp_treatment']
+            manicure: ['pedicure', 'gel_manicure'],
+            hair_treatment: ['deep_conditioning', 'scalp_treatment']
           }
         },
         stackable: false,
@@ -358,7 +361,7 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     volumeDiscount: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.VOLUME.v1',
       status: 'active',
@@ -387,7 +390,7 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     birthdaySpecial: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.PROMOTIONAL.v1',
       status: 'active',
@@ -415,16 +418,14 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     peakSurcharge: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.SURCHARGE.v1',
       status: 'active',
       priority: 50,
       conditions: {
         effective_from: new Date().toISOString(),
-        time_windows: [
-          { start_time: '17:00', end_time: '19:00' }
-        ],
+        time_windows: [{ start_time: '17:00', end_time: '19:00' }],
         days_of_week: [5, 6] // Friday & Saturday
       },
       payload: {
@@ -441,7 +442,7 @@ export const PricingRuleFamily = {
         }
       }
     },
-    
+
     flashSale: {
       smart_code: 'HERA.UNIV.CONFIG.PRICING.FLASH_SALE.v1',
       status: 'active',
@@ -488,7 +489,7 @@ export function calculatePriceAdjustment(
   let totalDiscount = 0
   let totalSurcharge = 0
   const appliedRules: string[] = []
-  
+
   // Apply discounts
   if (payload.adjustment_type === 'discount' && payload.discount) {
     const discount = calculateDiscount(basePrice, payload.discount, context)
@@ -496,7 +497,7 @@ export function calculatePriceAdjustment(
     adjustedPrice -= discount
     appliedRules.push('discount')
   }
-  
+
   // Apply surcharges
   if (payload.adjustment_type === 'surcharge' && payload.surcharge) {
     const surcharge = calculateSurcharge(basePrice, payload.surcharge)
@@ -504,14 +505,14 @@ export function calculatePriceAdjustment(
     adjustedPrice += surcharge
     appliedRules.push('surcharge')
   }
-  
+
   // Apply price override
   if (payload.adjustment_type === 'override' && payload.override_price !== undefined) {
     adjustedPrice = payload.override_price
     totalDiscount = basePrice - adjustedPrice
     appliedRules.push('override')
   }
-  
+
   return {
     adjustedPrice: Math.max(0, adjustedPrice),
     discount: totalDiscount,
@@ -527,46 +528,45 @@ function calculateDiscount(
 ): number {
   switch (discount.type) {
     case 'percentage':
-      return basePrice * (discount.percentage || 0) / 100
-      
+      return (basePrice * (discount.percentage || 0)) / 100
+
     case 'fixed':
       return Math.min(basePrice, discount.fixed_amount || 0)
-      
+
     case 'volume':
       if (!discount.volume_tiers || !context.quantity) return 0
-      
+
       // Find applicable tier
       const applicableTier = discount.volume_tiers
         .filter(tier => context.quantity >= tier.min_quantity)
         .sort((a, b) => b.min_quantity - a.min_quantity)[0]
-        
+
       if (!applicableTier) return 0
-      
+
       if (applicableTier.discount_percentage) {
-        return basePrice * applicableTier.discount_percentage / 100
+        return (basePrice * applicableTier.discount_percentage) / 100
       }
       return applicableTier.discount_amount || 0
-      
+
     default:
       return 0
   }
 }
 
-function calculateSurcharge(
-  basePrice: number,
-  surcharge: SurchargeConfig
-): number {
+function calculateSurcharge(basePrice: number, surcharge: SurchargeConfig): number {
   if (surcharge.type === 'percentage') {
-    return basePrice * (surcharge.percentage || 0) / 100
+    return (basePrice * (surcharge.percentage || 0)) / 100
   }
   return surcharge.fixed_amount || 0
 }
 
 // Type guard
 export function isPricingPayload(payload: any): payload is PricingPayload {
-  return payload && 
+  return (
+    payload &&
     typeof payload.adjustment_type === 'string' &&
     ['discount', 'surcharge', 'override', 'bundle'].includes(payload.adjustment_type)
+  )
 }
 
 // Export types

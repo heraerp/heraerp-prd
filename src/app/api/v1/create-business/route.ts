@@ -6,13 +6,7 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
 
     const body = await request.json()
-    const { 
-      supabase_user_id, 
-      email, 
-      full_name, 
-      business_name, 
-      business_type 
-    } = body
+    const { supabase_user_id, email, full_name, business_name, business_type } = body
 
     // Verify the JWT token
     const authHeader = request.headers.get('authorization')
@@ -24,10 +18,13 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.substring(7)
-    
+
     // Verify the token with Supabase
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabaseAdmin.auth.getUser(token)
+
     if (authError || !user || user.id !== supabase_user_id) {
       return NextResponse.json(
         { success: false, message: 'Invalid authentication' },
@@ -98,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     // Create user entity
     const entityCode = `USER-${email.substring(0, 3).toUpperCase()}-${Date.now()}`
-    
+
     const { data: newEntity, error: entityError } = await supabaseAdmin
       .from('core_entities')
       .insert({
@@ -162,46 +159,42 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user-organization relationship (FIXED: Use from/to instead of source/target)
-    const { error: relError } = await supabaseAdmin
-      .from('core_relationships')
-      .insert({
-        organization_id: newOrg.id,
-        from_entity_id: newEntity.id,  // User entity
-        to_entity_id: newOrg.id,       // Organization entity (as entity reference)
-        relationship_type: 'member_of',
-        relationship_strength: 1.0,
-        is_active: true,
-        metadata: {
-          role: 'owner',
-          is_primary: true,
-          joined_at: new Date().toISOString(),
-          permissions: ['full_access'],
-          created_via: 'business_creation'
-        }
-      })
+    const { error: relError } = await supabaseAdmin.from('core_relationships').insert({
+      organization_id: newOrg.id,
+      from_entity_id: newEntity.id, // User entity
+      to_entity_id: newOrg.id, // Organization entity (as entity reference)
+      relationship_type: 'member_of',
+      relationship_strength: 1.0,
+      is_active: true,
+      metadata: {
+        role: 'owner',
+        is_primary: true,
+        joined_at: new Date().toISOString(),
+        permissions: ['full_access'],
+        created_via: 'business_creation'
+      }
+    })
 
     if (relError) {
       console.error('Failed to create relationship:', relError)
     }
 
     // Track the registration in transactions
-    const { error: transError } = await supabaseAdmin
-      .from('universal_transactions')
-      .insert({
-        organization_id: newOrg.id,
-        transaction_type: 'user_registration',
-        transaction_code: `REG-${Date.now()}`,
-        transaction_date: new Date().toISOString(),
-        source_entity_id: newEntity.id,
-        total_amount: 0,
-        currency: 'USD',
-        status: 'completed',
-        metadata: {
-          registration_type: 'business_owner',
-          business_type,
-          source: 'api'
-        }
-      })
+    const { error: transError } = await supabaseAdmin.from('universal_transactions').insert({
+      organization_id: newOrg.id,
+      transaction_type: 'user_registration',
+      transaction_code: `REG-${Date.now()}`,
+      transaction_date: new Date().toISOString(),
+      source_entity_id: newEntity.id,
+      total_amount: 0,
+      currency: 'USD',
+      status: 'completed',
+      metadata: {
+        registration_type: 'business_owner',
+        business_type,
+        source: 'api'
+      }
+    })
 
     if (transError) {
       console.error('Failed to track registration:', transError)
@@ -229,12 +222,8 @@ export async function POST(request: NextRequest) {
         max_users: newOrg.max_users
       }
     })
-
   } catch (error) {
     console.error('Create business error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

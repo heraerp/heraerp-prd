@@ -137,7 +137,11 @@ export class AuditLogger {
    * Log security events
    */
   async logSecurityEvent(data: {
-    eventType: 'AUTHENTICATION_FAILED' | 'AUTHORIZATION_DENIED' | 'RATE_LIMIT_EXCEEDED' | 'SUSPICIOUS_ACTIVITY'
+    eventType:
+      | 'AUTHENTICATION_FAILED'
+      | 'AUTHORIZATION_DENIED'
+      | 'RATE_LIMIT_EXCEEDED'
+      | 'SUSPICIOUS_ACTIVITY'
     organizationId: string
     userId?: string
     ipAddress?: string
@@ -217,12 +221,12 @@ export class AuditLogger {
     try {
       // Add to buffer
       this.buffer.push(event)
-      
+
       // Flush if buffer is full
       if (this.buffer.length >= this.bufferSize) {
         await this.flush()
       }
-      
+
       // Immediate flush for critical events
       if (this.isCriticalEvent(event)) {
         await this.flush()
@@ -244,7 +248,7 @@ export class AuditLogger {
     try {
       // Send to audit storage system
       await this.sendToAuditStorage(events)
-      
+
       // Also send critical events to SIEM
       const criticalEvents = events.filter(e => this.isCriticalEvent(e))
       if (criticalEvents.length > 0) {
@@ -252,7 +256,7 @@ export class AuditLogger {
       }
     } catch (error) {
       console.error('Failed to flush audit events:', error)
-      
+
       // Re-add events to buffer for retry (with limit to prevent memory issues)
       if (this.buffer.length < this.bufferSize) {
         this.buffer.unshift(...events.slice(0, this.bufferSize - this.buffer.length))
@@ -269,17 +273,19 @@ export class AuditLogger {
     // - Database table for audit logs
     // - Secure file storage
     // - External audit service
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log(`📝 Audit: ${events.length} events logged`)
       events.forEach(event => {
-        console.log(`  ${event.eventType}: ${event.action} by ${event.userId || 'system'} on ${event.organizationId}`)
+        console.log(
+          `  ${event.eventType}: ${event.action} by ${event.userId || 'system'} on ${event.organizationId}`
+        )
       })
     }
-    
+
     // Example database implementation:
     // await this.database.insert('audit_logs', events)
-    
+
     // Example file implementation:
     // await this.fileLogger.writeEvents(events)
   }
@@ -290,11 +296,11 @@ export class AuditLogger {
   private async sendToSIEM(events: AuditEvent[]): Promise<void> {
     // TODO: Implement SIEM integration
     // Examples: Splunk, QRadar, Sentinel, etc.
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.warn(`🚨 SIEM Alert: ${events.length} critical audit events`)
     }
-    
+
     // Example SIEM implementations:
     // await this.splunkClient.sendEvents(events)
     // await this.sentinelClient.postLogs(events)
@@ -306,22 +312,20 @@ export class AuditLogger {
   private isCriticalEvent(event: AuditEvent): boolean {
     const criticalEventTypes = [
       'ERROR_OCCURRED',
-      'AI_ERROR', 
+      'AI_ERROR',
       'AUTHENTICATION_FAILED',
       'AUTHORIZATION_DENIED',
       'SUSPICIOUS_ACTIVITY',
       'CONFIGURATION_CHANGED'
     ]
-    
-    const criticalActions = [
-      'delete',
-      'security_violation',
-      'error'
-    ]
-    
-    return criticalEventTypes.includes(event.eventType) ||
-           criticalActions.includes(event.action) ||
-           (event.details?.severity === 'critical')
+
+    const criticalActions = ['delete', 'security_violation', 'error']
+
+    return (
+      criticalEventTypes.includes(event.eventType) ||
+      criticalActions.includes(event.action) ||
+      event.details?.severity === 'critical'
+    )
   }
 
   /**
@@ -338,7 +342,7 @@ export class AuditLogger {
   }): Promise<AuditEvent[]> {
     // TODO: Implement audit log querying
     // This would typically query your audit storage system
-    
+
     console.log('Querying audit logs with criteria:', criteria)
     return [] // Placeholder
   }
@@ -360,7 +364,7 @@ export class AuditLogger {
   }> {
     // TODO: Implement compliance reporting
     // This would analyze audit logs for compliance metrics
-    
+
     return {
       totalEvents: 0,
       eventsByType: {},

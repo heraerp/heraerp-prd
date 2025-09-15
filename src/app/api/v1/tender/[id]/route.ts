@@ -7,10 +7,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   return enterpriseMiddleware(request, async (req, ctx) => {
     const resolvedParams = await params
     const organizationId = ctx.organizationId
@@ -27,8 +24,8 @@ export async function GET(
 
       if (tenderError || !tender) {
         return NextResponse.json(
-          { 
-            success: false, 
+          {
+            success: false,
             error: 'Tender not found',
             smart_code: 'HERA.FURNITURE.TENDER.NOT_FOUND.v1'
           },
@@ -46,10 +43,12 @@ export async function GET(
       // 3. Get tender status from relationships
       const { data: statusRel, error: statusError } = await supabase
         .from('core_relationships')
-        .select(`
+        .select(
+          `
           *,
           status:to_entity_id(entity_code, entity_name)
-        `)
+        `
+        )
         .eq('from_entity_id', tenderId)
         .eq('relationship_type', 'has_status')
         .eq('organization_id', organizationId)
@@ -59,7 +58,8 @@ export async function GET(
       // 4. Get lots related to this tender
       const { data: lots, error: lotsError } = await supabase
         .from('core_relationships')
-        .select(`
+        .select(
+          `
           *,
           lot:to_entity_id(
             id,
@@ -67,7 +67,8 @@ export async function GET(
             entity_code,
             dynamic_data:core_dynamic_data(*)
           )
-        `)
+        `
+        )
         .eq('from_entity_id', tenderId)
         .eq('relationship_type', 'TENDER_HAS_LOT')
         .eq('organization_id', organizationId)
@@ -75,10 +76,12 @@ export async function GET(
       // 5. Get all transactions for this tender
       const { data: transactions, error: txnError } = await supabase
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           *,
           lines:universal_transaction_lines(*)
-        `)
+        `
+        )
         .eq('reference_entity_id', tenderId)
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false })
@@ -86,7 +89,8 @@ export async function GET(
       // 6. Get documents linked to this tender
       const { data: documents, error: docsError } = await supabase
         .from('core_relationships')
-        .select(`
+        .select(
+          `
           *,
           document:to_entity_id(
             id,
@@ -94,7 +98,8 @@ export async function GET(
             entity_code,
             dynamic_data:core_dynamic_data(*)
           )
-        `)
+        `
+        )
         .eq('from_entity_id', tenderId)
         .eq('relationship_type', 'TENDER_HAS_DOCUMENT')
         .eq('organization_id', organizationId)
@@ -112,21 +117,24 @@ export async function GET(
       // 8. Get competitor analysis
       const { data: competitors, error: compError } = await supabase
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           *,
           competitor:from_entity_id(
             id,
             entity_name,
             entity_code
           )
-        `)
+        `
+        )
         .eq('reference_entity_id', tenderId)
         .eq('smart_code', 'HERA.FURNITURE.TENDER.COMPETITOR.BID.DETECTED.v1')
         .eq('organization_id', organizationId)
 
       // Format dynamic data
       const dynamicFields = (dynamicData || []).reduce((acc: any, item: any) => {
-        acc[item.field_name] = item.field_value_text || item.field_value_number || item.field_value_date
+        acc[item.field_name] =
+          item.field_value_text || item.field_value_number || item.field_value_date
         return acc
       }, {})
 
@@ -134,10 +142,11 @@ export async function GET(
       const formattedLots = (lots || []).map((rel: any) => {
         const lotData = rel.lot
         const lotDynamic = (lotData?.dynamic_data || []).reduce((acc: any, item: any) => {
-          acc[item.field_name] = item.field_value_text || item.field_value_number || item.field_value_date
+          acc[item.field_name] =
+            item.field_value_text || item.field_value_number || item.field_value_date
           return acc
         }, {})
-        
+
         return {
           id: lotData.id,
           name: lotData.entity_name,
@@ -150,10 +159,11 @@ export async function GET(
       const formattedDocs = (documents || []).map((rel: any) => {
         const docData = rel.document
         const docDynamic = (docData?.dynamic_data || []).reduce((acc: any, item: any) => {
-          acc[item.field_name] = item.field_value_text || item.field_value_number || item.field_value_date
+          acc[item.field_name] =
+            item.field_value_text || item.field_value_number || item.field_value_date
           return acc
         }, {})
-        
+
         return {
           id: docData.id,
           name: docData.entity_name,
@@ -186,8 +196,8 @@ export async function GET(
     } catch (error) {
       console.error('Error fetching tender detail:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to fetch tender detail',
           smart_code: 'HERA.FURNITURE.TENDER.DETAIL.ERROR.v1'
         },
@@ -198,10 +208,7 @@ export async function GET(
 }
 
 // Calculate bid for a tender
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   return enterpriseMiddleware(request, async (req, ctx) => {
     const resolvedParams = await params
     const organizationId = ctx.organizationId
@@ -220,8 +227,8 @@ export async function POST(
 
       if (tenderError || !tender) {
         return NextResponse.json(
-          { 
-            success: false, 
+          {
+            success: false,
             error: 'Tender not found',
             smart_code: 'HERA.FURNITURE.TENDER.NOT_FOUND.v1'
           },
@@ -311,8 +318,8 @@ export async function POST(
     } catch (error) {
       console.error('Error calculating bid:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to calculate bid',
           smart_code: 'HERA.FURNITURE.TENDER.BID.CALCULATION.ERROR.v1'
         },

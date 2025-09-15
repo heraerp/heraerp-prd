@@ -3,7 +3,7 @@ import { heraValidationService } from './services/hera-validation-service'
 
 /**
  * 🧬 HERA Universal API v2 - Enterprise Grade
- * 
+ *
  * Standardized API for all 6 sacred tables with:
  * - Consistent response format
  * - Complete CRUD operations
@@ -33,22 +33,22 @@ export interface QueryOptions {
   // Pagination
   page?: number
   pageSize?: number
-  
+
   // Filtering
   filters?: Record<string, any>
   search?: string
   searchFields?: string[]
-  
+
   // Sorting
   orderBy?: string
   orderDirection?: 'asc' | 'desc'
-  
+
   // Field selection
   select?: string[]
-  
+
   // Organization override
   organizationId?: string
-  
+
   // Validation options
   skipValidation?: boolean
   validateOnly?: boolean
@@ -153,9 +153,9 @@ class UniversalAPIv2 {
   constructor() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    
+
     this.mockMode = !supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')
-    
+
     if (this.mockMode) {
       console.log('⚠️ HERA Universal API v2 running in mock mode')
     }
@@ -177,7 +177,9 @@ class UniversalAPIv2 {
 
   // ==================== Utility Methods ====================
 
-  private async executeWithTiming<T>(operation: () => Promise<T>): Promise<{ result: T; executionTime: number }> {
+  private async executeWithTiming<T>(
+    operation: () => Promise<T>
+  ): Promise<{ result: T; executionTime: number }> {
     const startTime = Date.now()
     const result = await operation()
     const executionTime = Date.now() - startTime
@@ -239,32 +241,38 @@ class UniversalAPIv2 {
     return query
   }
 
-  private async paginateQuery(query: any, options: QueryOptions): Promise<{ data: any[]; count: number }> {
+  private async paginateQuery(
+    query: any,
+    options: QueryOptions
+  ): Promise<{ data: any[]; count: number }> {
     const page = options.page || 1
     const pageSize = options.pageSize || this.defaultPageSize
-    
+
     // Get total count
     const countQuery = query
     const { count } = await countQuery
-    
+
     // Apply pagination
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
     query = query.range(from, to)
-    
+
     const { data, error } = await query
-    
+
     if (error) throw error
-    
+
     return { data: data || [], count: count || 0 }
   }
 
   // ==================== CRUD Operations for core_entities ====================
 
-  async createEntity(entity: Entity, options?: { skipValidation?: boolean; validateOnly?: boolean }): Promise<UniversalResponse<Entity>> {
+  async createEntity(
+    entity: Entity,
+    options?: { skipValidation?: boolean; validateOnly?: boolean }
+  ): Promise<UniversalResponse<Entity>> {
     try {
       const orgId = this.ensureOrganizationId(entity.organization_id)
-      
+
       // HERA Standards Validation
       if (!options?.skipValidation) {
         const validation = await heraValidationService.validateEntity({
@@ -274,19 +282,19 @@ class UniversalAPIv2 {
           smart_code: entity.smart_code,
           organization_id: orgId
         })
-        
+
         if (!validation.valid) {
           return {
             success: false,
             data: null,
             error: `Validation failed: ${validation.errors.map(e => e.message).join('; ')}`,
-            metadata: { 
+            metadata: {
               validationErrors: validation.errors,
               validationWarnings: validation.warnings
             }
           }
         }
-        
+
         // If validation only, return validation results without creating
         if (options?.validateOnly) {
           return {
@@ -300,7 +308,7 @@ class UniversalAPIv2 {
           }
         }
       }
-      
+
       if (this.mockMode) {
         const mockEntity = {
           id: crypto.randomUUID(),
@@ -324,12 +332,14 @@ class UniversalAPIv2 {
         })
 
         if (error) throw error
-        
+
         // If it's not a new entity, we might want to warn about duplicate
         if (data && data[0] && !data[0].is_new) {
-          console.warn(`Entity resolved to existing: matched by ${data[0].matched_by} with ${(data[0].confidence_score * 100).toFixed(0)}% confidence`)
+          console.warn(
+            `Entity resolved to existing: matched by ${data[0].matched_by} with ${(data[0].confidence_score * 100).toFixed(0)}% confidence`
+          )
         }
-        
+
         // Fetch the full entity data
         const entityId = data[0].entity_id
         const { data: fullEntity, error: fetchError } = await supabase
@@ -337,16 +347,16 @@ class UniversalAPIv2 {
           .select()
           .eq('id', entityId)
           .single()
-          
+
         if (fetchError) throw fetchError
-        
+
         // Store normalization metadata for reference
         const normalizationInfo = {
           isNew: data[0].is_new,
           matchedBy: data[0].matched_by,
           confidenceScore: data[0].confidence_score
         }
-        
+
         return { entity: fullEntity, normalizationInfo }
       })
 
@@ -354,7 +364,7 @@ class UniversalAPIv2 {
         success: true,
         data: result.entity,
         error: null,
-        metadata: { 
+        metadata: {
           executionTime,
           normalizationApplied: true,
           ...result.normalizationInfo
@@ -372,7 +382,7 @@ class UniversalAPIv2 {
   async getEntity(id: string, options?: QueryOptions): Promise<UniversalResponse<Entity>> {
     try {
       const orgId = this.ensureOrganizationId(options?.organizationId)
-      
+
       if (this.mockMode) {
         return { success: false, data: null, error: 'Mock mode - entity not found' }
       }
@@ -409,20 +419,20 @@ class UniversalAPIv2 {
   async getEntities(options: QueryOptions = {}): Promise<UniversalResponse<Entity[]>> {
     try {
       const orgId = this.ensureOrganizationId(options.organizationId)
-      
+
       if (this.mockMode) {
         return { success: true, data: [], error: null }
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
         let query = supabase.from('core_entities').select('*')
-        
+
         // Apply standard query options
         query = this.applyQueryOptions(query, { ...options, organizationId: orgId })
-        
+
         // Handle pagination
         const { data, count } = await this.paginateQuery(query, options)
-        
+
         return { data, count }
       })
 
@@ -454,7 +464,7 @@ class UniversalAPIv2 {
   async updateEntity(id: string, updates: Partial<Entity>): Promise<UniversalResponse<Entity>> {
     try {
       const orgId = this.ensureOrganizationId(updates.organization_id)
-      
+
       if (this.mockMode) {
         return {
           success: true,
@@ -497,7 +507,7 @@ class UniversalAPIv2 {
   async deleteEntity(id: string, soft = true): Promise<UniversalResponse<void>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (this.mockMode) {
         return { success: true, data: null, error: null }
       }
@@ -507,7 +517,7 @@ class UniversalAPIv2 {
           // Soft delete - mark as deleted
           const { error } = await supabase
             .from('core_entities')
-            .update({ 
+            .update({
               metadata: { ...{}, deleted: true, deleted_at: new Date().toISOString() },
               updated_at: new Date().toISOString()
             })
@@ -547,7 +557,7 @@ class UniversalAPIv2 {
   async createRelationship(relationship: Relationship): Promise<UniversalResponse<Relationship>> {
     try {
       const orgId = this.ensureOrganizationId(relationship.organization_id)
-      
+
       if (this.mockMode) {
         const mockRelationship = {
           id: crypto.randomUUID(),
@@ -594,18 +604,18 @@ class UniversalAPIv2 {
   async getRelationships(options: QueryOptions = {}): Promise<UniversalResponse<Relationship[]>> {
     try {
       const orgId = this.ensureOrganizationId(options.organizationId)
-      
+
       if (this.mockMode) {
         return { success: true, data: [], error: null }
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
         let query = supabase.from('core_relationships').select('*')
-        
+
         query = this.applyQueryOptions(query, { ...options, organizationId: orgId })
-        
+
         const { data, count } = await this.paginateQuery(query, options)
-        
+
         return { data, count }
       })
 
@@ -634,10 +644,13 @@ class UniversalAPIv2 {
     }
   }
 
-  async updateRelationship(id: string, updates: Partial<Relationship>): Promise<UniversalResponse<Relationship>> {
+  async updateRelationship(
+    id: string,
+    updates: Partial<Relationship>
+  ): Promise<UniversalResponse<Relationship>> {
     try {
       const orgId = this.ensureOrganizationId(updates.organization_id)
-      
+
       if (this.mockMode) {
         return {
           success: true,
@@ -680,7 +693,7 @@ class UniversalAPIv2 {
   async deleteRelationship(id: string): Promise<UniversalResponse<void>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (this.mockMode) {
         return { success: true, data: null, error: null }
       }
@@ -712,10 +725,13 @@ class UniversalAPIv2 {
 
   // ==================== CRUD Operations for universal_transactions ====================
 
-  async createTransaction(transaction: Transaction & { line_items?: any[] }, options?: { skipValidation?: boolean; validateOnly?: boolean }): Promise<UniversalResponse<Transaction>> {
+  async createTransaction(
+    transaction: Transaction & { line_items?: any[] },
+    options?: { skipValidation?: boolean; validateOnly?: boolean }
+  ): Promise<UniversalResponse<Transaction>> {
     try {
       const orgId = this.ensureOrganizationId(transaction.organization_id)
-      
+
       // HERA Standards Validation
       if (!options?.skipValidation) {
         const validation = await heraValidationService.validateTransaction({
@@ -725,19 +741,19 @@ class UniversalAPIv2 {
           organization_id: orgId,
           total_amount: transaction.total_amount
         })
-        
+
         if (!validation.valid) {
           return {
             success: false,
             data: null,
             error: `Validation failed: ${validation.errors.map(e => e.message).join('; ')}`,
-            metadata: { 
+            metadata: {
               validationErrors: validation.errors,
               validationWarnings: validation.warnings
             }
           }
         }
-        
+
         // If validation only, return validation results without creating
         if (options?.validateOnly) {
           return {
@@ -751,7 +767,7 @@ class UniversalAPIv2 {
           }
         }
       }
-      
+
       // If line_items are provided, use the enhanced method
       if (transaction.line_items && transaction.line_items.length > 0) {
         const result = await this.createTransactionWithLineItems(transaction, options)
@@ -774,7 +790,7 @@ class UniversalAPIv2 {
 
       // Otherwise use standard transaction creation
       // orgId already declared above
-      
+
       if (this.mockMode) {
         const mockTransaction = {
           id: crypto.randomUUID(),
@@ -818,10 +834,13 @@ class UniversalAPIv2 {
     }
   }
 
-  async getTransaction(id: string, options?: QueryOptions): Promise<UniversalResponse<Transaction>> {
+  async getTransaction(
+    id: string,
+    options?: QueryOptions
+  ): Promise<UniversalResponse<Transaction>> {
     try {
       const orgId = this.ensureOrganizationId(options?.organizationId)
-      
+
       if (this.mockMode) {
         return { success: false, data: null, error: 'Mock mode - transaction not found' }
       }
@@ -858,18 +877,18 @@ class UniversalAPIv2 {
   async getTransactions(options: QueryOptions = {}): Promise<UniversalResponse<Transaction[]>> {
     try {
       const orgId = this.ensureOrganizationId(options.organizationId)
-      
+
       if (this.mockMode) {
         return { success: true, data: [], error: null }
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
         let query = supabase.from('universal_transactions').select('*')
-        
+
         query = this.applyQueryOptions(query, { ...options, organizationId: orgId })
-        
+
         const { data, count } = await this.paginateQuery(query, options)
-        
+
         return { data, count }
       })
 
@@ -898,10 +917,13 @@ class UniversalAPIv2 {
     }
   }
 
-  async updateTransaction(id: string, updates: Partial<Transaction>): Promise<UniversalResponse<Transaction>> {
+  async updateTransaction(
+    id: string,
+    updates: Partial<Transaction>
+  ): Promise<UniversalResponse<Transaction>> {
     try {
       const orgId = this.ensureOrganizationId(updates.organization_id)
-      
+
       if (this.mockMode) {
         return {
           success: true,
@@ -944,7 +966,7 @@ class UniversalAPIv2 {
   async deleteTransaction(id: string, soft = true): Promise<UniversalResponse<void>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (this.mockMode) {
         return { success: true, data: null, error: null }
       }
@@ -953,7 +975,7 @@ class UniversalAPIv2 {
         if (soft) {
           const { error } = await supabase
             .from('universal_transactions')
-            .update({ 
+            .update({
               metadata: { ...{}, deleted: true, deleted_at: new Date().toISOString() },
               updated_at: new Date().toISOString()
             })
@@ -992,7 +1014,7 @@ class UniversalAPIv2 {
   async createTransactionLine(line: TransactionLine): Promise<UniversalResponse<TransactionLine>> {
     try {
       const orgId = this.ensureOrganizationId(line.organization_id)
-      
+
       if (this.mockMode) {
         const mockLine = {
           id: crypto.randomUUID(),
@@ -1036,21 +1058,23 @@ class UniversalAPIv2 {
     }
   }
 
-  async getTransactionLines(options: QueryOptions = {}): Promise<UniversalResponse<TransactionLine[]>> {
+  async getTransactionLines(
+    options: QueryOptions = {}
+  ): Promise<UniversalResponse<TransactionLine[]>> {
     try {
       const orgId = this.ensureOrganizationId(options.organizationId)
-      
+
       if (this.mockMode) {
         return { success: true, data: [], error: null }
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
         let query = supabase.from('universal_transaction_lines').select('*')
-        
+
         query = this.applyQueryOptions(query, { ...options, organizationId: orgId })
-        
+
         const { data, count } = await this.paginateQuery(query, options)
-        
+
         return { data, count }
       })
 
@@ -1079,10 +1103,13 @@ class UniversalAPIv2 {
     }
   }
 
-  async updateTransactionLine(id: string, updates: Partial<TransactionLine>): Promise<UniversalResponse<TransactionLine>> {
+  async updateTransactionLine(
+    id: string,
+    updates: Partial<TransactionLine>
+  ): Promise<UniversalResponse<TransactionLine>> {
     try {
       const orgId = this.ensureOrganizationId(updates.organization_id)
-      
+
       if (this.mockMode) {
         return {
           success: true,
@@ -1125,7 +1152,7 @@ class UniversalAPIv2 {
   async deleteTransactionLine(id: string): Promise<UniversalResponse<void>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (this.mockMode) {
         return { success: true, data: null, error: null }
       }
@@ -1168,7 +1195,7 @@ class UniversalAPIv2 {
   ): Promise<UniversalResponse<DynamicData>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       // Determine field type and value
       let fieldType: DynamicData['field_type']
       let dynamicData: Partial<DynamicData> = {
@@ -1271,7 +1298,7 @@ class UniversalAPIv2 {
   async getDynamicFields(entityId: string): Promise<UniversalResponse<DynamicData[]>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (this.mockMode) {
         return { success: true, data: [], error: null }
       }
@@ -1306,7 +1333,7 @@ class UniversalAPIv2 {
   async deleteDynamicField(entityId: string, fieldName: string): Promise<UniversalResponse<void>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (this.mockMode) {
         return { success: true, data: null, error: null }
       }
@@ -1371,7 +1398,10 @@ class UniversalAPIv2 {
     }
   }
 
-  async updateOrganization(id: string, updates: Partial<Organization>): Promise<UniversalResponse<Organization>> {
+  async updateOrganization(
+    id: string,
+    updates: Partial<Organization>
+  ): Promise<UniversalResponse<Organization>> {
     try {
       if (this.mockMode) {
         return {
@@ -1414,12 +1444,16 @@ class UniversalAPIv2 {
   // ==================== Batch Operations ====================
 
   async batchCreate<T extends Entity | Relationship | Transaction | TransactionLine>(
-    table: 'core_entities' | 'core_relationships' | 'universal_transactions' | 'universal_transaction_lines',
+    table:
+      | 'core_entities'
+      | 'core_relationships'
+      | 'universal_transactions'
+      | 'universal_transaction_lines',
     items: T[]
   ): Promise<UniversalResponse<T[]>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (items.length === 0) {
         return { success: true, data: [], error: null }
       }
@@ -1444,10 +1478,7 @@ class UniversalAPIv2 {
           updated_at: new Date().toISOString()
         }))
 
-        const { data, error } = await supabase
-          .from(table)
-          .insert(itemsWithDefaults)
-          .select()
+        const { data, error } = await supabase.from(table).insert(itemsWithDefaults).select()
 
         if (error) throw error
         return data
@@ -1457,9 +1488,9 @@ class UniversalAPIv2 {
         success: true,
         data: result,
         error: null,
-        metadata: { 
+        metadata: {
           executionTime,
-          count: result.length 
+          count: result.length
         }
       }
     } catch (error) {
@@ -1472,12 +1503,16 @@ class UniversalAPIv2 {
   }
 
   async batchUpdate<T extends Entity | Relationship | Transaction | TransactionLine>(
-    table: 'core_entities' | 'core_relationships' | 'universal_transactions' | 'universal_transaction_lines',
+    table:
+      | 'core_entities'
+      | 'core_relationships'
+      | 'universal_transactions'
+      | 'universal_transaction_lines',
     updates: Array<{ id: string; data: Partial<T> }>
   ): Promise<UniversalResponse<number>> {
     try {
       const orgId = this.ensureOrganizationId()
-      
+
       if (updates.length === 0) {
         return { success: true, data: 0, error: null }
       }
@@ -1512,7 +1547,7 @@ class UniversalAPIv2 {
         success: true,
         data: result,
         error: null,
-        metadata: { 
+        metadata: {
           executionTime,
           requested: updates.length,
           updated: result
@@ -1550,10 +1585,15 @@ class UniversalAPIv2 {
         metadata: stepData.metadata
       }
 
-      return await this.setDynamicField('', `wizard_step_${stepData.step}`, dynamicData.field_value_json, {
-        smart_code: dynamicData.smart_code,
-        metadata: dynamicData.metadata
-      })
+      return await this.setDynamicField(
+        '',
+        `wizard_step_${stepData.step}`,
+        dynamicData.field_value_json,
+        {
+          smart_code: dynamicData.smart_code,
+          metadata: dynamicData.metadata
+        }
+      )
     } catch (error) {
       return {
         success: false,
@@ -1576,7 +1616,7 @@ class UniversalAPIv2 {
       }
 
       const systemOrgId = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
-      
+
       const result = await this.getEntities({
         organizationId: systemOrgId,
         filters: {
@@ -1622,10 +1662,10 @@ class UniversalAPIv2 {
       })
 
       if (result.success) {
-        return { 
-          success: true, 
+        return {
+          success: true,
           data: { message: 'Organization activated successfully' },
-          error: null 
+          error: null
         }
       } else {
         return result
@@ -1640,9 +1680,13 @@ class UniversalAPIv2 {
   }
 
   // Mock COA template generator
-  private generateMockCOATemplate(request: { industry: string; country: string; currency: string }) {
+  private generateMockCOATemplate(request: {
+    industry: string
+    country: string
+    currency: string
+  }) {
     const industryPrefix = request.industry.toUpperCase()
-    
+
     const baseAccounts = [
       // Assets
       {
@@ -1754,7 +1798,7 @@ class UniversalAPIv2 {
   ): Promise<UniversalResponse<{ transaction: Transaction; lines: TransactionLine[] }>> {
     try {
       const orgId = this.ensureOrganizationId(transaction.organization_id)
-      
+
       if (this.mockMode) {
         const mockTransaction = {
           id: crypto.randomUUID(),
@@ -1763,27 +1807,28 @@ class UniversalAPIv2 {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
-        const mockLines = transaction.line_items?.map((line, index) => ({
-          id: crypto.randomUUID(),
-          ...line,
-          transaction_id: mockTransaction.id,
-          organization_id: orgId,
-          line_number: line.line_number || index + 1,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })) || []
-        
-        return { 
-          success: true, 
-          data: { transaction: mockTransaction, lines: mockLines }, 
-          error: null 
+        const mockLines =
+          transaction.line_items?.map((line, index) => ({
+            id: crypto.randomUUID(),
+            ...line,
+            transaction_id: mockTransaction.id,
+            organization_id: orgId,
+            line_number: line.line_number || index + 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })) || []
+
+        return {
+          success: true,
+          data: { transaction: mockTransaction, lines: mockLines },
+          error: null
         }
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
         // Extract line items from transaction data
         const { line_items, ...transactionData } = transaction
-        
+
         // Create transaction first
         const transactionId = crypto.randomUUID()
         const { data: txData, error: txError } = await supabase
@@ -1843,7 +1888,11 @@ class UniversalAPIv2 {
   // ==================== Backwards Compatibility Methods ====================
 
   // Legacy read method for backwards compatibility
-  async read(table: string, filter?: any, organizationId?: string): Promise<UniversalResponse<any[]>> {
+  async read(
+    table: string,
+    filter?: any,
+    organizationId?: string
+  ): Promise<UniversalResponse<any[]>> {
     try {
       const options: QueryOptions = {
         organizationId: organizationId || this.organizationId || undefined,
@@ -1864,7 +1913,7 @@ class UniversalAPIv2 {
           if (filter?.entity_id) {
             return await this.getDynamicFields(filter.entity_id)
           }
-          // Fall through to generic query
+        // Fall through to generic query
         default:
           // Generic query for any table
           if (this.mockMode) {
@@ -1952,7 +2001,7 @@ class UniversalAPIv2 {
   }): Promise<UniversalResponse<{ valid: boolean; errors: any[]; warnings: any[] }>> {
     try {
       const validation = await heraValidationService.validateEntity(entityData)
-      
+
       return {
         success: true,
         data: validation,
@@ -1979,7 +2028,7 @@ class UniversalAPIv2 {
   }): Promise<UniversalResponse<{ valid: boolean; errors: any[]; warnings: any[] }>> {
     try {
       const validation = await heraValidationService.validateTransaction(transactionData)
-      
+
       return {
         success: true,
         data: validation,
@@ -2005,7 +2054,7 @@ class UniversalAPIv2 {
   }): Promise<UniversalResponse<{ valid: boolean; errors: any[]; warnings: any[] }>> {
     try {
       const validation = await heraValidationService.validateRelationship(relationshipData)
-      
+
       return {
         success: true,
         data: validation,
@@ -2027,7 +2076,7 @@ class UniversalAPIv2 {
     try {
       const orgId = organizationId || this.ensureOrganizationId()
       const standards = await heraValidationService.getStandards(category, orgId)
-      
+
       return {
         success: true,
         data: standards,
@@ -2049,7 +2098,7 @@ class UniversalAPIv2 {
     try {
       const orgId = organizationId || this.ensureOrganizationId()
       const stats = await heraValidationService.getValidationStats(orgId)
-      
+
       return {
         success: true,
         data: stats,
@@ -2071,7 +2120,7 @@ class UniversalAPIv2 {
     try {
       const orgId = organizationId || this.ensureOrganizationId()
       await heraValidationService.loadStandards(orgId)
-      
+
       return {
         success: true,
         data: null,
@@ -2092,7 +2141,7 @@ class UniversalAPIv2 {
   clearValidationCache(): UniversalResponse<void> {
     try {
       heraValidationService.clearCache()
-      
+
       return {
         success: true,
         data: null,

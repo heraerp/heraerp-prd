@@ -3,29 +3,29 @@
  * Shows links to coverage, SBOM, traces, etc.
  */
 
-import React from 'react';
-import { FileText, Shield, Activity } from 'lucide-react';
+import React from 'react'
+import { FileText, Shield, Activity } from 'lucide-react'
 
 interface ArtifactLinksProps {
   artifacts?: {
-    coverage?: string;
-    sbom?: string;
-    trace?: string;
-    report?: string;
-    junit?: string;
-    screenshots?: string;
-  };
+    coverage?: string
+    sbom?: string
+    trace?: string
+    report?: string
+    junit?: string
+    screenshots?: string
+  }
 }
 
 export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
   if (!artifacts || Object.keys(artifacts).length === 0) {
-    return null;
+    return null
   }
 
   return (
     <div className="flex gap-3 text-sm">
       {artifacts.coverage && (
-        <a 
+        <a
           href={artifacts.coverage}
           className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
           target="_blank"
@@ -37,7 +37,7 @@ export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
         </a>
       )}
       {artifacts.sbom && (
-        <a 
+        <a
           href={artifacts.sbom}
           className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
           target="_blank"
@@ -49,7 +49,7 @@ export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
         </a>
       )}
       {artifacts.trace && (
-        <a 
+        <a
           href={artifacts.trace}
           className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
           target="_blank"
@@ -61,5 +61,5 @@ export function ArtifactLinks({ artifacts }: ArtifactLinksProps) {
         </a>
       )}
     </div>
-  );
+  )
 }

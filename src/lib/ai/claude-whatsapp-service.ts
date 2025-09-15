@@ -103,7 +103,8 @@ export class ClaudeWhatsAppService {
       } else if (!entities.date_hint && !entities.time_hint) {
         nextAction = {
           type: 'ask_datetime',
-          question: 'When would you like to come in? We have availability today, tomorrow, or later this week.',
+          question:
+            'When would you like to come in? We have availability today, tomorrow, or later this week.',
           needs_window_open: true
         }
       } else {
@@ -127,7 +128,7 @@ export class ClaudeWhatsAppService {
       return {
         intent: 'cancel_appointment',
         entities: {},
-        confidence: 0.90,
+        confidence: 0.9,
         next_action: {
           type: 'ask_booking_id',
           question: 'I can help you cancel. Please provide your booking ID or appointment date.',
@@ -144,7 +145,8 @@ export class ClaudeWhatsAppService {
         confidence: 0.85,
         next_action: {
           type: 'ask_booking_id',
-          question: 'I\'d be happy to reschedule. What\'s your booking ID or current appointment date?',
+          question:
+            "I'd be happy to reschedule. What's your booking ID or current appointment date?",
           needs_window_open: true
         }
       }
@@ -154,10 +156,11 @@ export class ClaudeWhatsAppService {
     return {
       intent: 'general_inquiry',
       entities: {},
-      confidence: 0.60,
+      confidence: 0.6,
       next_action: {
         type: 'show_options',
-        question: 'Hi! How can I help you today? You can:\n1. Book an appointment\n2. Check availability\n3. View our services\n4. Get directions',
+        question:
+          'Hi! How can I help you today? You can:\n1. Book an appointment\n2. Check availability\n3. View our services\n4. Get directions',
         needs_window_open: true
       }
     }
@@ -250,12 +253,12 @@ export class ClaudeWhatsAppService {
     if (intent.entities.services && (intent.entities.date_hint || intent.entities.time_hint)) {
       const topSlots = slots.slice(0, 3)
       let message = `Great! I have these times available for your ${intent.entities.services.join(' + ')}:\n\n`
-      
+
       topSlots.forEach((slot, index) => {
         const time = new Date(slot.start)
         message += `${index + 1}. ${time.toLocaleDateString()} at ${time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}\n`
       })
-      
+
       message += '\nReply with 1, 2, or 3 to book, or "more" for other times.'
       return message
     }
@@ -265,7 +268,7 @@ export class ClaudeWhatsAppService {
       return "I'd love to book you in! What service would you like? Our popular options:\n• Hair Color + Cut\n• Brazilian Blowout\n• Manicure + Pedicure\n• Full Highlights"
     }
 
-    return "When works best for you? I have good availability:\n• Today after 2pm\n• Tomorrow morning\n• This weekend"
+    return 'When works best for you? I have good availability:\n• Today after 2pm\n• Tomorrow morning\n• This weekend'
   }
 
   /**
@@ -277,7 +280,7 @@ export class ClaudeWhatsAppService {
     if (customer.last_marketing_sent_days_ago < 7) return false
     if (customer.lifetime_value < 200) return false
     if (customer.churn_risk_score < 0.7) return false
-    
+
     return true
   }
 

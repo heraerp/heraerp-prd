@@ -4,8 +4,8 @@
 export { default as UniversalAppointmentCalendar } from './UniversalAppointmentCalendar'
 export { default as AppointmentDetailsModal } from './AppointmentDetailsModal'
 export { default as CreateAppointmentModal } from './CreateAppointmentModal'
-export type { 
+export type {
   UniversalAppointment,
-  IndustryConfig, 
-  UniversalAppointmentCalendarProps 
+  IndustryConfig,
+  UniversalAppointmentCalendarProps
 } from './UniversalAppointmentCalendar'

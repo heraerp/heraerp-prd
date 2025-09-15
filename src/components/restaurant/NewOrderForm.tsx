@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Plus, 
-  Minus, 
+import {
+  Plus,
+  Minus,
   X,
   Search,
   ShoppingCart,
@@ -64,7 +64,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [isLoadingMenu, setIsLoadingMenu] = useState(true)
   const [isLoadingCustomers, setIsLoadingCustomers] = useState(true)
-  
+
   // Order state
   const [orderType, setOrderType] = useState<'dine_in' | 'takeout' | 'delivery'>('dine_in')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
@@ -72,7 +72,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
   const [serverName, setServerName] = useState('')
   const [specialNotes, setSpecialNotes] = useState('')
   const [cart, setCart] = useState<OrderItem[]>([])
-  
+
   // UI state
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -85,7 +85,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
         setIsLoadingMenu(true)
         const response = await fetch('/api/v1/restaurant/menu')
         const result = await response.json()
-        
+
         if (result.success) {
           setMenuItems(result.data.filter((item: MenuItem) => item.status === 'active'))
         } else {
@@ -104,10 +104,31 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
   // Mock customers (in real app, this would come from customers API)
   useEffect(() => {
     setCustomers([
-      { id: '550e8400-e29b-41d4-a716-446655440030', entity_name: 'Sarah Johnson', phone: '+1-555-123-4567', email: 'sarah@email.com' },
-      { id: '550e8400-e29b-41d4-a716-446655440031', entity_name: 'Mike Chen', phone: '+1-555-987-6543', email: 'mike@email.com' },
-      { id: '550e8400-e29b-41d4-a716-446655440032', entity_name: 'Emma Wilson', phone: '+1-555-456-7890', email: 'emma@email.com', address: '123 Oak Street, Apt 4B' },
-      { id: '550e8400-e29b-41d4-a716-446655440033', entity_name: 'Robert Davis', phone: '+1-555-789-0123', email: 'robert@email.com' }
+      {
+        id: '550e8400-e29b-41d4-a716-446655440030',
+        entity_name: 'Sarah Johnson',
+        phone: '+1-555-123-4567',
+        email: 'sarah@email.com'
+      },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440031',
+        entity_name: 'Mike Chen',
+        phone: '+1-555-987-6543',
+        email: 'mike@email.com'
+      },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440032',
+        entity_name: 'Emma Wilson',
+        phone: '+1-555-456-7890',
+        email: 'emma@email.com',
+        address: '123 Oak Street, Apt 4B'
+      },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440033',
+        entity_name: 'Robert Davis',
+        phone: '+1-555-789-0123',
+        email: 'robert@email.com'
+      }
     ])
     setIsLoadingCustomers(false)
   }, [])
@@ -117,8 +138,9 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
   // Filter menu items
   const filteredItems = menuItems.filter(item => {
-    const matchesSearch = item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -126,20 +148,23 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
   // Add item to cart
   const addToCart = (menuItem: MenuItem) => {
     const existingItem = cart.find(item => item.menu_item_id === menuItem.id)
-    
+
     if (existingItem) {
-      setCart(cart.map(item => 
-        item.menu_item_id === menuItem.id 
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ))
+      setCart(
+        cart.map(item =>
+          item.menu_item_id === menuItem.id ? { ...item, quantity: item.quantity + 1 } : item
+        )
+      )
     } else {
-      setCart([...cart, {
-        menu_item_id: menuItem.id,
-        menu_item_name: menuItem.entity_name,
-        quantity: 1,
-        unit_price: menuItem.price
-      }])
+      setCart([
+        ...cart,
+        {
+          menu_item_id: menuItem.id,
+          menu_item_name: menuItem.entity_name,
+          quantity: 1,
+          unit_price: menuItem.price
+        }
+      ])
     }
   }
 
@@ -153,16 +178,16 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
     if (newQuantity <= 0) {
       removeFromCart(menuItemId)
     } else {
-      setCart(cart.map(item => 
-        item.menu_item_id === menuItemId 
-          ? { ...item, quantity: newQuantity }
-          : item
-      ))
+      setCart(
+        cart.map(item =>
+          item.menu_item_id === menuItemId ? { ...item, quantity: newQuantity } : item
+        )
+      )
     }
   }
 
   // Calculate totals
-  const subtotal = cart.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0)
+  const subtotal = cart.reduce((sum, item) => sum + item.quantity * item.unit_price, 0)
   const tax = subtotal * 0.08 // 8% tax
   const total = subtotal + tax
 
@@ -174,7 +199,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
     }
 
     setIsSubmitting(true)
-    
+
     try {
       const orderData = {
         customer_id: selectedCustomer?.id || null,
@@ -194,7 +219,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         alert(`Order created successfully! Reference: ${result.data.reference_number}`)
         onOrderCreated()
@@ -231,17 +256,19 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   <Input
                     placeholder="Search menu items..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
                 </div>
                 <select
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  onChange={e => setSelectedCategory(e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm"
                 >
                   {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -249,11 +276,17 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
             {/* Menu Items Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredItems.map((item) => (
-                <Card key={item.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => addToCart(item)}>
+              {filteredItems.map(item => (
+                <Card
+                  key={item.id}
+                  className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => addToCart(item)}
+                >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium text-gray-900">{item.entity_name}</h3>
-                    <span className="text-lg font-bold text-green-600">${item.price.toFixed(2)}</span>
+                    <span className="text-lg font-bold text-green-600">
+                      ${item.price.toFixed(2)}
+                    </span>
                   </div>
                   <p className="text-sm text-gray-600 mb-2">{item.description}</p>
                   <div className="flex items-center justify-between">
@@ -261,7 +294,9 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                       <Clock className="w-3 h-3" />
                       <span>{item.prep_time} min</span>
                     </div>
-                    <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {item.category}
+                    </Badge>
                   </div>
                 </Card>
               ))}
@@ -279,10 +314,10 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
             <div className="mb-4">
               <Label className="text-sm font-medium text-gray-700 mb-2 block">Order Type</Label>
               <div className="flex gap-2">
-                {(['dine_in', 'takeout', 'delivery'] as const).map((type) => (
+                {(['dine_in', 'takeout', 'delivery'] as const).map(type => (
                   <Button
                     key={type}
-                    variant={orderType === type ? "default" : "outline"}
+                    variant={orderType === type ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setOrderType(type)}
                     className="flex-1"
@@ -301,7 +336,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
               <Label className="text-sm font-medium text-gray-700 mb-2 block">Customer</Label>
               <select
                 value={selectedCustomer?.id || ''}
-                onChange={(e) => {
+                onChange={e => {
                   const customer = customers.find(c => c.id === e.target.value)
                   setSelectedCustomer(customer || null)
                 }}
@@ -323,7 +358,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                 <Input
                   placeholder="e.g., 5"
                   value={tableNumber}
-                  onChange={(e) => setTableNumber(e.target.value)}
+                  onChange={e => setTableNumber(e.target.value)}
                 />
               </div>
             )}
@@ -334,16 +369,21 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
               <Input
                 placeholder="Server name"
                 value={serverName}
-                onChange={(e) => setServerName(e.target.value)}
+                onChange={e => setServerName(e.target.value)}
               />
             </div>
 
             {/* Cart Items */}
             <div className="mb-4">
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Order Items ({cart.length})</Label>
+              <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                Order Items ({cart.length})
+              </Label>
               <div className="space-y-2 max-h-48 overflow-y-auto">
-                {cart.map((item) => (
-                  <div key={item.menu_item_id} className="flex items-center justify-between p-2 bg-white rounded border">
+                {cart.map(item => (
+                  <div
+                    key={item.menu_item_id}
+                    className="flex items-center justify-between p-2 bg-white rounded border"
+                  >
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900">{item.menu_item_name}</p>
                       <p className="text-xs text-gray-500">${item.unit_price.toFixed(2)} each</p>
@@ -389,7 +429,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
               <textarea
                 placeholder="Any special instructions..."
                 value={specialNotes}
-                onChange={(e) => setSpecialNotes(e.target.value)}
+                onChange={e => setSpecialNotes(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none"
                 rows={2}
               />

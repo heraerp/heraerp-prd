@@ -1,16 +1,16 @@
 /**
  * Finance DNA Configuration Loader
- * 
+ *
  * Loads posting rules, activation matrices, and master data
  * from the universal 6-table architecture
  */
 
 import { supabaseAdmin } from '@/lib/supabase-server'
-import type { 
-  PostingRule, 
-  OrgFinanceConfig, 
+import type {
+  PostingRule,
+  OrgFinanceConfig,
   UniversalFinanceEvent,
-  UniversalFinanceLine 
+  UniversalFinanceLine
 } from './finance-integration-dna'
 
 export class FinanceDNALoader {
@@ -23,15 +23,15 @@ export class FinanceDNALoader {
       .select('*')
       .eq('id', organizationId)
       .single()
-    
+
     if (error || !org) {
       throw new Error(`Failed to load org config: ${error?.message}`)
     }
-    
+
     // Extract finance config from settings
     const settings = org.settings || {}
     const metadata = settings.finance_dna || {}
-    
+
     return {
       modules_enabled: metadata.modules_enabled || {
         SD: true,
@@ -48,7 +48,7 @@ export class FinanceDNALoader {
       deactivation_behaviour: metadata.deactivation_behaviour || {}
     }
   }
-  
+
   /**
    * Load posting rules from core_dynamic_data
    * Smart codes are stored as dynamic data with field_name = 'posting_rule'
@@ -60,16 +60,16 @@ export class FinanceDNALoader {
       .select('*')
       .eq('organization_id', organizationId)
       .eq('field_name', 'posting_rule')
-    
+
     // Then load system defaults (HERA System Organization)
     const { data: systemRules } = await supabaseAdmin
       .from('core_dynamic_data')
       .select('*')
-      .eq('organization_id', 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944')  // HERA System Org
+      .eq('organization_id', 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944') // HERA System Org
       .eq('field_name', 'posting_rule')
-    
+
     const rulesMap = new Map<string, PostingRule>()
-    
+
     // Load system rules first (defaults)
     systemRules?.forEach(rule => {
       if (rule.field_value_json) {
@@ -77,7 +77,7 @@ export class FinanceDNALoader {
         rulesMap.set(postingRule.smart_code, postingRule)
       }
     })
-    
+
     // Override with org-specific rules
     orgRules?.forEach(rule => {
       if (rule.field_value_json) {
@@ -85,29 +85,31 @@ export class FinanceDNALoader {
         rulesMap.set(postingRule.smart_code, postingRule)
       }
     })
-    
+
     return rulesMap
   }
-  
+
   /**
    * Load Chart of Accounts from core_entities
    */
   static async loadChartOfAccounts(organizationId: string): Promise<Map<string, any>> {
     const { data: accounts, error } = await supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data!inner(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'gl_account')
-    
+
     if (error) {
       throw new Error(`Failed to load COA: ${error.message}`)
     }
-    
+
     const coaMap = new Map()
-    
+
     accounts?.forEach(account => {
       const accountData = {
         id: account.id,
@@ -116,37 +118,38 @@ export class FinanceDNALoader {
         type: account.entity_subtype, // Asset, Liability, Revenue, etc.
         attributes: {}
       }
-      
+
       // Add dynamic attributes
       account.core_dynamic_data?.forEach((field: any) => {
-        accountData.attributes[field.field_name] = field.field_value_text || 
-                                                    field.field_value_number ||
-                                                    field.field_value_json
+        accountData.attributes[field.field_name] =
+          field.field_value_text || field.field_value_number || field.field_value_json
       })
-      
+
       coaMap.set(account.entity_code, accountData)
     })
-    
+
     return coaMap
   }
-  
+
   /**
    * Load master data relationships for account derivation
    * e.g., Customer -> AR Account, Product -> Revenue Account
    */
   static async loadMasterDataMappings(organizationId: string): Promise<Map<string, any>> {
     const mappings = new Map()
-    
+
     // Load customer -> AR account mappings
     const { data: customerMappings } = await supabaseAdmin
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         from_entity:from_entity_id(id, entity_code, entity_name),
         to_entity:to_entity_id(id, entity_code, entity_name)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('relationship_type', 'has_ar_account')
-    
+
     customerMappings?.forEach(mapping => {
       if (mapping.from_entity && mapping.to_entity) {
         mappings.set(
@@ -155,17 +158,19 @@ export class FinanceDNALoader {
         )
       }
     })
-    
+
     // Load product -> revenue account mappings
     const { data: productMappings } = await supabaseAdmin
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         from_entity:from_entity_id(id, entity_code, entity_name),
         to_entity:to_entity_id(id, entity_code, entity_name)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('relationship_type', 'has_revenue_account')
-    
+
     productMappings?.forEach(mapping => {
       if (mapping.from_entity && mapping.to_entity) {
         mappings.set(
@@ -174,36 +179,31 @@ export class FinanceDNALoader {
         )
       }
     })
-    
+
     // Add more mappings as needed...
-    
+
     return mappings
   }
-  
+
   /**
    * Save a posting rule to core_dynamic_data
    */
-  static async savePostingRule(
-    organizationId: string, 
-    rule: PostingRule
-  ): Promise<void> {
-    const { error } = await supabaseAdmin
-      .from('core_dynamic_data')
-      .insert({
-        organization_id: organizationId,
-        entity_id: organizationId,  // Use org ID as entity for now
-        field_name: 'posting_rule',
-        field_type: rule.smart_code,
-        field_value_json: rule,
-        smart_code: 'HERA.DNA.FINANCE.POSTING_RULE.v1',
-        ai_confidence: 1.0
-      })
-    
+  static async savePostingRule(organizationId: string, rule: PostingRule): Promise<void> {
+    const { error } = await supabaseAdmin.from('core_dynamic_data').insert({
+      organization_id: organizationId,
+      entity_id: organizationId, // Use org ID as entity for now
+      field_name: 'posting_rule',
+      field_type: rule.smart_code,
+      field_value_json: rule,
+      smart_code: 'HERA.DNA.FINANCE.POSTING_RULE.v1',
+      ai_confidence: 1.0
+    })
+
     if (error) {
       throw new Error(`Failed to save posting rule: ${error.message}`)
     }
   }
-  
+
   /**
    * Initialize default posting rules for an organization
    */
@@ -213,12 +213,12 @@ export class FinanceDNALoader {
   ): Promise<void> {
     // Import default rules based on industry
     const defaultRules = await import('./posting-rules/' + industryType)
-    
+
     for (const rule of defaultRules.POSTING_RULES) {
       await this.savePostingRule(organizationId, rule)
     }
   }
-  
+
   /**
    * Create a journal entry from a universal finance event
    */
@@ -250,11 +250,11 @@ export class FinanceDNALoader {
       })
       .select()
       .single()
-    
+
     if (headerError || !journal) {
       throw new Error(`Failed to create journal header: ${headerError?.message}`)
     }
-    
+
     // Create journal lines
     const lineItems = glLines.map((line, index) => ({
       organization_id: event.organization_id,
@@ -276,21 +276,18 @@ export class FinanceDNALoader {
         metadata: line.metadata
       }
     }))
-    
+
     const { error: linesError } = await supabaseAdmin
       .from('universal_transaction_lines')
       .insert(lineItems)
-    
+
     if (linesError) {
       // Rollback header on line failure
-      await supabaseAdmin
-        .from('universal_transactions')
-        .delete()
-        .eq('id', journal.id)
-      
+      await supabaseAdmin.from('universal_transactions').delete().eq('id', journal.id)
+
       throw new Error(`Failed to create journal lines: ${linesError.message}`)
     }
-    
+
     return journal.transaction_code
   }
 }
@@ -309,14 +306,14 @@ export class FinanceDNAActivation {
     }
   ): Promise<void> {
     console.log(`Activating Finance DNA for org ${organizationId}...`)
-    
+
     // 1. Update organization settings with activation matrix
     const { data: org } = await supabaseAdmin
       .from('core_organizations')
       .select('settings')
       .eq('id', organizationId)
       .single()
-    
+
     const settings = org?.settings || {}
     settings.finance_dna = {
       modules_enabled: { SD: true, MM: true, HR: true, FI: true },
@@ -330,19 +327,19 @@ export class FinanceDNAActivation {
       finance_dna_version: '1.0',
       activated_at: new Date().toISOString()
     }
-    
+
     const { error: updateError } = await supabaseAdmin
       .from('core_organizations')
       .update({ settings })
       .eq('id', organizationId)
-    
+
     if (updateError) {
       throw new Error(`Failed to update org metadata: ${updateError.message}`)
     }
-    
+
     // 2. Initialize default posting rules
     await FinanceDNALoader.initializeDefaultRules(organizationId, options.industryType)
-    
+
     // 3. Create initial COA if needed
     const { data: existingCOA } = await supabaseAdmin
       .from('core_entities')
@@ -350,13 +347,13 @@ export class FinanceDNAActivation {
       .eq('organization_id', organizationId)
       .eq('entity_type', 'gl_account')
       .limit(1)
-    
+
     if (!existingCOA || existingCOA.length === 0) {
       // No COA exists, create from template
       console.log(`Creating default COA for ${options.industryType}...`)
       // Implementation would load COA template and create accounts
     }
-    
+
     console.log(`Finance DNA activated successfully for org ${organizationId}`)
   }
 }

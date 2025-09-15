@@ -44,16 +44,18 @@ export async function GET(request: NextRequest) {
       // Execute the query directly since execute_sql RPC may not exist
       const { data: activeTenders, error: activeTendersError } = await supabase
         .from('core_entities')
-        .select(`
+        .select(
+          `
           id,
           entity_type,
           core_dynamic_data!inner(field_name, field_value_date)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.v1')
         .then(result => {
           if (result.error) return { data: null, error: result.error }
-          
+
           // Process the data to count active tenders and closing soon
           const tenders = result.data || []
           const activeTenderCount = tenders.length
@@ -68,10 +70,10 @@ export async function GET(request: NextRequest) {
             }
             return false
           }).length
-          
-          return { 
-            data: [{ active_tenders: activeTenderCount, closing_soon: closingSoon }], 
-            error: null 
+
+          return {
+            data: [{ active_tenders: activeTenderCount, closing_soon: closingSoon }],
+            error: null
           }
         })
 
@@ -79,10 +81,10 @@ export async function GET(request: NextRequest) {
       const currentMonth = new Date()
       currentMonth.setDate(1)
       currentMonth.setHours(0, 0, 0, 0)
-      
+
       const previousMonth = new Date(currentMonth)
       previousMonth.setMonth(previousMonth.getMonth() - 1)
-      
+
       const nextMonth = new Date(currentMonth)
       nextMonth.setMonth(nextMonth.getMonth() + 1)
 
@@ -102,10 +104,12 @@ export async function GET(request: NextRequest) {
         .gte('created_at', previousMonth.toISOString())
         .lt('created_at', currentMonth.toISOString())
 
-      const bidsSubmitted = [{
-        bids_submitted: currentBids || 0,
-        delta_vs_last_month: (currentBids || 0) - (previousBids || 0)
-      }]
+      const bidsSubmitted = [
+        {
+          bids_submitted: currentBids || 0,
+          delta_vs_last_month: (currentBids || 0) - (previousBids || 0)
+        }
+      ]
       const bidsError = null
 
       // 3. Win Rate (quarterly)
@@ -130,55 +134,66 @@ export async function GET(request: NextRequest) {
 
       const uniqueSubmitted = new Set(submittedTenders?.map(t => t.reference_entity_id) || [])
       const uniqueWon = new Set(wonTenders?.map(t => t.reference_entity_id) || [])
-      
-      const winRate = [{
-        win_rate_pct: uniqueSubmitted.size > 0 
-          ? Math.round((uniqueWon.size / uniqueSubmitted.size) * 100 * 100) / 100
-          : 0,
-        total_bids: uniqueSubmitted.size,
-        won_bids: uniqueWon.size
-      }]
+
+      const winRate = [
+        {
+          win_rate_pct:
+            uniqueSubmitted.size > 0
+              ? Math.round((uniqueWon.size / uniqueSubmitted.size) * 100 * 100) / 100
+              : 0,
+          total_bids: uniqueSubmitted.size,
+          won_bids: uniqueWon.size
+        }
+      ]
       const winRateError = null
 
       // 4. Total EMD (and locked amount)
       const { data: emdPaidTxns } = await supabase
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           id,
           universal_transaction_lines!inner(line_amount)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('smart_code', 'HERA.FURNITURE.FIN.EMD.PAID.v1')
 
       const { data: emdRefundedTxns } = await supabase
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           id,
           universal_transaction_lines!inner(line_amount)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('smart_code', 'HERA.FURNITURE.FIN.EMD.REFUND_RECEIVED.v1')
 
-      const totalEmdPaid = emdPaidTxns?.reduce((sum, txn) => {
-        const lineTotal = txn.universal_transaction_lines?.reduce(
-          (lineSum: number, line: any) => lineSum + (line.line_amount || 0), 
-          0
-        )
-        return sum + lineTotal
-      }, 0) || 0
+      const totalEmdPaid =
+        emdPaidTxns?.reduce((sum, txn) => {
+          const lineTotal = txn.universal_transaction_lines?.reduce(
+            (lineSum: number, line: any) => lineSum + (line.line_amount || 0),
+            0
+          )
+          return sum + lineTotal
+        }, 0) || 0
 
-      const totalEmdRefunded = emdRefundedTxns?.reduce((sum, txn) => {
-        const lineTotal = txn.universal_transaction_lines?.reduce(
-          (lineSum: number, line: any) => lineSum + (line.line_amount || 0), 
-          0
-        )
-        return sum + lineTotal
-      }, 0) || 0
+      const totalEmdRefunded =
+        emdRefundedTxns?.reduce((sum, txn) => {
+          const lineTotal = txn.universal_transaction_lines?.reduce(
+            (lineSum: number, line: any) => lineSum + (line.line_amount || 0),
+            0
+          )
+          return sum + lineTotal
+        }, 0) || 0
 
-      const emd = [{
-        total_emd_paid: totalEmdPaid,
-        locked_emd: totalEmdPaid - totalEmdRefunded
-      }]
+      const emd = [
+        {
+          total_emd_paid: totalEmdPaid,
+          locked_emd: totalEmdPaid - totalEmdRefunded
+        }
+      ]
       const emdError = null
 
       // Check for errors
@@ -215,8 +230,8 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error('Error fetching tender metrics:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to fetch tender metrics',
           smart_code: 'HERA.FURNITURE.TENDER.METRICS.ERROR.v1'
         },

@@ -5,7 +5,7 @@ import path from 'path'
 
 /**
  * HERA Complete System Generator API
- * 
+ *
  * Generate complete business systems (multiple modules at once)
  * Uses quick generation commands from package.json
  */
@@ -37,10 +37,7 @@ export async function POST(request: NextRequest) {
 
     const system = AVAILABLE_SYSTEMS[systemId]
     if (!system) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid system ID' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'Invalid system ID' }, { status: 400 })
     }
 
     console.log(`🚀 Generating complete system: ${system.name}`)
@@ -66,7 +63,7 @@ export async function POST(request: NextRequest) {
           path.join(process.cwd(), 'src', 'app', 'restaurant', moduleName),
           path.join(process.cwd(), 'src', 'app', 'api', 'v1', moduleName)
         ]
-        
+
         const exists = modulePaths.some(p => existsSync(p))
         return { moduleName, exists, paths: modulePaths }
       })
@@ -98,17 +95,16 @@ export async function POST(request: NextRequest) {
             'Customize generated components as needed'
           ]
         },
-        message: allModulesCreated 
+        message: allModulesCreated
           ? `Complete ${system.name} generated successfully!`
           : `System partially generated: ${createdModules.length}/${system.modules.length} modules created`
       })
-
     } catch (execError) {
       console.error('System generation execution error:', execError)
-      
+
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           message: 'System generation failed',
           error: execError.message,
           details: execError.toString(),
@@ -118,7 +114,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-
   } catch (error) {
     console.error('API error:', error)
     return NextResponse.json(
@@ -144,12 +139,8 @@ export async function GET(request: NextRequest) {
       },
       message: 'Available complete systems'
     })
-
   } catch (error) {
     console.error('API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

@@ -1,13 +1,13 @@
 /**
  * PWM Encryption API Route
- * 
+ *
  * Handles encryption/decryption requests for PWM sensitive data
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  encryptData, 
-  decryptData, 
+import {
+  encryptData,
+  decryptData,
   encryptSensitiveFields,
   decryptSensitiveFields,
   validateEncryptionSetup,
@@ -27,29 +27,26 @@ export async function POST(request: NextRequest) {
   try {
     const organizationId = request.headers.get('organization-id')
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID header required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID header required' }, { status: 400 })
     }
 
     const body: EncryptRequest = await request.json()
-    
+
     switch (body.action) {
       case 'encrypt':
         if (body.data) {
           // Encrypt single data string
           const encrypted = encryptData(body.data, organizationId)
-          return NextResponse.json({ 
-            success: true, 
-            encrypted_data: encrypted 
+          return NextResponse.json({
+            success: true,
+            encrypted_data: encrypted
           })
         } else if (body.sensitiveFields) {
           // Encrypt sensitive fields object
           const encryptedFields = encryptSensitiveFields(body.sensitiveFields, organizationId)
-          return NextResponse.json({ 
-            success: true, 
-            encrypted_fields: encryptedFields 
+          return NextResponse.json({
+            success: true,
+            encrypted_fields: encryptedFields
           })
         } else {
           return NextResponse.json(
@@ -62,16 +59,16 @@ export async function POST(request: NextRequest) {
         if (body.encryptedData) {
           // Decrypt single encrypted data
           const decrypted = decryptData(body.encryptedData, organizationId)
-          return NextResponse.json({ 
-            success: true, 
-            decrypted_data: decrypted.data 
+          return NextResponse.json({
+            success: true,
+            decrypted_data: decrypted.data
           })
         } else if (body.encryptedFields) {
           // Decrypt sensitive fields object
           const decryptedFields = decryptSensitiveFields(body.encryptedFields, organizationId)
-          return NextResponse.json({ 
-            success: true, 
-            decrypted_fields: decryptedFields 
+          return NextResponse.json({
+            success: true,
+            decrypted_fields: decryptedFields
           })
         } else {
           return NextResponse.json(
@@ -100,7 +97,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('PWM Encryption API error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Encryption operation failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -113,15 +110,12 @@ export async function GET(request: NextRequest) {
   try {
     const organizationId = request.headers.get('organization-id')
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID header required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID header required' }, { status: 400 })
     }
 
     // Return encryption status and configuration
     const validation = validateEncryptionSetup()
-    
+
     return NextResponse.json({
       success: true,
       encryption_status: {
@@ -134,7 +128,7 @@ export async function GET(request: NextRequest) {
       protected_fields: [
         'account_number',
         'ssn',
-        'tax_id', 
+        'tax_id',
         'routing_number',
         'beneficiary_info',
         'private_notes',
@@ -149,7 +143,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('PWM Encryption status error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to get encryption status',
         message: error instanceof Error ? error.message : 'Unknown error'
       },

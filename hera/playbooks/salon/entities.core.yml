@@ -1,0 +1,40 @@
+smart_code: HERA.SALON.MDM.ENTITY_CATALOG.CORE.v1
+items:
+  # ---- TYPES (governance) ----
+  - { slug: customer,        entity_type: ENTITY_TYPE,      name: "Customer" }
+  - { slug: stylist,         entity_type: ENTITY_TYPE,      name: "Stylist" }
+  - { slug: service,         entity_type: ENTITY_TYPE,      name: "Service" }
+  - { slug: product,         entity_type: ENTITY_TYPE,      name: "Product" }
+  - { slug: branch,          entity_type: ENTITY_TYPE,      name: "Branch" }
+  - { slug: chair,           entity_type: ENTITY_TYPE,      name: "Chair" }
+  - { slug: price_list,      entity_type: ENTITY_TYPE,      name: "Price List" }
+
+  - { slug: appointment,     entity_type: TRANSACTION_TYPE, name: "Appointment" }
+  - { slug: pos_order,       entity_type: TRANSACTION_TYPE, name: "POS Order" }
+  - { slug: service_invoice, entity_type: TRANSACTION_TYPE, name: "Service Invoice" }
+
+  - { slug: service_line,    entity_type: LINE_TYPE,        name: "Service Line" }
+  - { slug: item_line,       entity_type: LINE_TYPE,        name: "Item Line" }
+  - { slug: discount,        entity_type: LINE_TYPE,        name: "Discount Line" }
+  - { slug: tax,             entity_type: LINE_TYPE,        name: "Tax Line" }
+  - { slug: tip,             entity_type: LINE_TYPE,        name: "Tip Line" }
+  - { slug: fee,             entity_type: LINE_TYPE,        name: "Fee Line" }
+  - { slug: inventory_move_line, entity_type: LINE_TYPE,    name: "Inventory Move Line" }
+
+  - { slug: SERVICE_BOM,         entity_type: REL_TYPE,     name: "Service requires Product" }
+  - { slug: ASSIGNED_STYLIST,    entity_type: REL_TYPE,     name: "Assigned Stylist" }
+  - { slug: SERVICE_AT_BRANCH,   entity_type: REL_TYPE,     name: "Service at Branch" }
+  - { slug: BRANCH_HAS_CHAIR,    entity_type: REL_TYPE,     name: "Branch has Chair" }
+  - { slug: CUSTOMER_PRICE_LIST, entity_type: REL_TYPE,     name: "Customer Price List" }
+  - { slug: ITEM_IN_PRICE_LIST,  entity_type: REL_TYPE,     name: "Item in Price List" }
+
+  # ---- MASTER ENTITIES (seed examples) ----
+  - { slug: customer:ALICE_DXB,      entity_type: ENTITY, name: "Alice (DXB)",           metadata: { entity_type: "customer" } }
+  - { slug: stylist:STY001,          entity_type: ENTITY, name: "Stylist One",           metadata: { entity_type: "stylist" } }
+  - { slug: service:HAIRCUT_BASIC,   entity_type: ENTITY, name: "Basic Haircut",         metadata: { entity_type: "service" } }
+  - { slug: service:HAIR_COLOR,      entity_type: ENTITY, name: "Hair Coloring",         metadata: { entity_type: "service" } }
+  - { slug: product:SHAMPOO_RET,     entity_type: ENTITY, name: "Retail Shampoo",        metadata: { entity_type: "product" } }
+  - { slug: product:DYE_COLOR,       entity_type: ENTITY, name: "Color Dye (Consumable)",metadata: { entity_type: "product" } }
+  - { slug: branch:DUBAI_MAIN,       entity_type: ENTITY, name: "Dubai Main Branch",     metadata: { entity_type: "branch" } }
+  - { slug: chair:DUBAI_MAIN_01,     entity_type: ENTITY, name: "Chair #1 (DXB Main)",   metadata: { entity_type: "chair" } }
+  - { slug: price_list:STANDARD_AED, entity_type: ENTITY, name: "Standard Price List (AED)", metadata: { entity_type: "price_list" } }

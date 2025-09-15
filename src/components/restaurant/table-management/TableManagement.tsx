@@ -118,10 +118,10 @@ export function TableManagement() {
   const loadTables = async () => {
     try {
       setIsLoading(true)
-      
+
       const response = await fetch('/api/v1/restaurant/table-management')
       const result = await response.json()
-      
+
       if (result.success) {
         setTables(result.data.tables || [])
         setStats(result.data.stats || null)
@@ -140,7 +140,7 @@ export function TableManagement() {
   // Real-time updates
   useEffect(() => {
     loadTables()
-    
+
     // Only use polling if real-time is not connected
     if (!isConnected) {
       const interval = setInterval(loadTables, 30000) // Update every 30 seconds
@@ -150,11 +150,12 @@ export function TableManagement() {
 
   // Filter tables
   const filteredTables = tables.filter(table => {
-    const matchesSearch = table.table_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         table.server_name?.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      table.table_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      table.server_name?.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesLocation = filterLocation === 'all' || table.location === filterLocation
     const matchesStatus = filterStatus === 'all' || table.status === filterStatus
-    
+
     return matchesSearch && matchesLocation && matchesStatus
   })
 
@@ -182,7 +183,9 @@ export function TableManagement() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Table Management</h1>
-            <p className="text-gray-600 mt-1">Manage your restaurant floor plan and table assignments</p>
+            <p className="text-gray-600 mt-1">
+              Manage your restaurant floor plan and table assignments
+            </p>
           </div>
           <div className="flex items-center space-x-3">
             <Button
@@ -220,7 +223,7 @@ export function TableManagement() {
                 <LayoutGrid className="w-8 h-8 text-blue-500" />
               </div>
             </Card>
-            
+
             <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
               <div className="flex items-center justify-between">
                 <div>
@@ -230,7 +233,7 @@ export function TableManagement() {
                 <Users className="w-8 h-8 text-green-500" />
               </div>
             </Card>
-            
+
             <Card className="p-4 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
               <div className="flex items-center justify-between">
                 <div>
@@ -240,7 +243,7 @@ export function TableManagement() {
                 <Utensils className="w-8 h-8 text-red-500" />
               </div>
             </Card>
-            
+
             <Card className="p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
               <div className="flex items-center justify-between">
                 <div>
@@ -250,22 +253,26 @@ export function TableManagement() {
                 <Calendar className="w-8 h-8 text-yellow-500" />
               </div>
             </Card>
-            
+
             <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-purple-600 font-medium">Occupancy</p>
-                  <p className="text-2xl font-bold text-purple-900">{stats.table_occupancy_rate}%</p>
+                  <p className="text-2xl font-bold text-purple-900">
+                    {stats.table_occupancy_rate}%
+                  </p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-purple-500" />
               </div>
             </Card>
-            
+
             <Card className="p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-indigo-600 font-medium">Avg Turnover</p>
-                  <p className="text-2xl font-bold text-indigo-900">{stats.average_turnover_time}m</p>
+                  <p className="text-2xl font-bold text-indigo-900">
+                    {stats.average_turnover_time}m
+                  </p>
                 </div>
                 <Timer className="w-8 h-8 text-indigo-500" />
               </div>
@@ -298,15 +305,15 @@ export function TableManagement() {
             <Input
               placeholder="Search tables, servers..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <select
               value={filterLocation}
-              onChange={(e) => setFilterLocation(e.target.value)}
+              onChange={e => setFilterLocation(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Locations</option>
@@ -316,10 +323,10 @@ export function TableManagement() {
               <option value="bar">Bar</option>
               <option value="private">Private</option>
             </select>
-            
+
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={e => setFilterStatus(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
@@ -371,37 +378,23 @@ export function TableManagement() {
         </TabsContent>
 
         <TabsContent value="tables">
-          <TableCRUD
-            tables={filteredTables}
-            onTablesUpdate={loadTables}
-          />
+          <TableCRUD tables={filteredTables} onTablesUpdate={loadTables} />
         </TabsContent>
 
         <TabsContent value="combination">
-          <TableCombination
-            tables={tables}
-            onTablesUpdate={loadTables}
-          />
+          <TableCombination tables={tables} onTablesUpdate={loadTables} />
         </TabsContent>
 
         <TabsContent value="reservations">
-          <TableReservations
-            tables={tables}
-            onReservationUpdate={loadTables}
-          />
+          <TableReservations tables={tables} onReservationUpdate={loadTables} />
         </TabsContent>
 
         <TabsContent value="analytics">
-          <TableAnalytics
-            tables={tables}
-            stats={stats}
-          />
+          <TableAnalytics tables={tables} stats={stats} />
         </TabsContent>
 
         <TabsContent value="settings">
-          <TableSettings
-            onSettingsUpdate={loadTables}
-          />
+          <TableSettings onSettingsUpdate={loadTables} />
         </TabsContent>
       </Tabs>
     </div>

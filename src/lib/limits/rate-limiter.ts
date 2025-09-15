@@ -88,20 +88,14 @@ export class RateLimiter {
     api_group: string
   }): Promise<RateLimitResult> {
     const { organization_id, ip_address, endpoint, api_group } = params
-    
+
     // Get limits for organization
     const limits = await this.getOrganizationLimits(organization_id, api_group)
-    
+
     // Check both org and IP limits
     const [orgResult, ipResult] = await Promise.all([
-      this.checkWindowLimit(
-        `org:${organization_id}:${api_group}`,
-        limits
-      ),
-      this.checkWindowLimit(
-        `ip:${ip_address}:${api_group}`,
-        limits
-      )
+      this.checkWindowLimit(`org:${organization_id}:${api_group}`, limits),
+      this.checkWindowLimit(`ip:${ip_address}:${api_group}`, limits)
     ])
 
     // Use more restrictive limit
@@ -118,10 +112,7 @@ export class RateLimiter {
   /**
    * Check sliding window rate limit
    */
-  private async checkWindowLimit(
-    key: string,
-    config: RateLimitConfig
-  ): Promise<RateLimitResult> {
+  private async checkWindowLimit(key: string, config: RateLimitConfig): Promise<RateLimitResult> {
     const supabase = getSupabase()
     const now = new Date()
     const minuteAgo = new Date(now.getTime() - 60 * 1000)
@@ -137,19 +128,15 @@ export class RateLimiter {
       .order('transaction_date', { ascending: false })
 
     const requests = recentRequests || []
-    
+
     // Count requests in each window
-    const minuteCount = requests.filter(
-      r => new Date(r.transaction_date) >= minuteAgo
-    ).length
-    
+    const minuteCount = requests.filter(r => new Date(r.transaction_date) >= minuteAgo).length
+
     const hourCount = requests.length
 
     // Check burst (last few seconds)
     const burstWindow = new Date(now.getTime() - 10 * 1000) // 10 seconds
-    const burstCount = requests.filter(
-      r => new Date(r.transaction_date) >= burstWindow
-    ).length
+    const burstCount = requests.filter(r => new Date(r.transaction_date) >= burstWindow).length
 
     // Determine if allowed
     let allowed = true
@@ -174,23 +161,21 @@ export class RateLimiter {
 
     // Record this request if allowed
     if (allowed) {
-      await supabase
-        .from('universal_transactions')
-        .insert({
-          id: uuidv4(),
-          transaction_type: 'rate_limit',
-          transaction_date: now.toISOString(),
-          total_amount: 0,
-          smart_code: 'HERA.LIMITS.RATE.CHECK.v1',
-          organization_id: 'SYSTEM',
-          metadata: { key }
-        })
+      await supabase.from('universal_transactions').insert({
+        id: uuidv4(),
+        transaction_type: 'rate_limit',
+        transaction_date: now.toISOString(),
+        total_amount: 0,
+        smart_code: 'HERA.LIMITS.RATE.CHECK.v1',
+        organization_id: 'SYSTEM',
+        metadata: { key }
+      })
     }
 
     return {
       allowed,
       limit: limitHit || config.requests_per_minute,
-      remaining: allowed 
+      remaining: allowed
         ? Math.min(
             config.burst_size - burstCount,
             config.requests_per_minute - minuteCount,
@@ -205,10 +190,7 @@ export class RateLimiter {
   /**
    * Check idempotency key using external_reference
    */
-  async checkIdempotency(
-    key: string,
-    organizationId: string
-  ): Promise<IdempotencyResult> {
+  async checkIdempotency(key: string, organizationId: string): Promise<IdempotencyResult> {
     const supabase = getSupabase()
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
@@ -254,25 +236,23 @@ export class RateLimiter {
     const { key, organization_id, request_hash, response, status_code } = params
 
     // Store as idempotency transaction with external_reference
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'idempotency_cache',
-        transaction_code: `IDEM-${Date.now()}`,
-        external_reference: key, // Use the official column for idempotency
-        smart_code: 'HERA.API.IDEMPOTENCY.CACHE.v1',
-        organization_id,
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        metadata: {
-          request_hash,
-          response,
-          status_code,
-          created_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24h TTL
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'idempotency_cache',
+      transaction_code: `IDEM-${Date.now()}`,
+      external_reference: key, // Use the official column for idempotency
+      smart_code: 'HERA.API.IDEMPOTENCY.CACHE.v1',
+      organization_id,
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      metadata: {
+        request_hash,
+        response,
+        status_code,
+        created_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24h TTL
+      }
+    })
   }
 
   /**
@@ -285,7 +265,7 @@ export class RateLimiter {
     organization_id: string
   }): string {
     const { method, path, body, organization_id } = params
-    
+
     const content = JSON.stringify({
       method: method.toUpperCase(),
       path,
@@ -293,10 +273,7 @@ export class RateLimiter {
       organization_id
     })
 
-    return crypto
-      .createHash('sha256')
-      .update(content)
-      .digest('hex')
+    return crypto.createHash('sha256').update(content).digest('hex')
   }
 
   /**
@@ -325,12 +302,14 @@ export class RateLimiter {
     }
 
     // Return defaults
-    return this.defaultLimits.get(`api:${apiGroup}`) || {
-      requests_per_minute: 60,
-      requests_per_hour: 1000,
-      burst_size: 10,
-      enable_idempotency: false
-    }
+    return (
+      this.defaultLimits.get(`api:${apiGroup}`) || {
+        requests_per_minute: 60,
+        requests_per_hour: 1000,
+        burst_size: 10,
+        enable_idempotency: false
+      }
+    )
   }
 
   /**
@@ -344,22 +323,20 @@ export class RateLimiter {
   ): Promise<void> {
     const supabase = getSupabase()
 
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'rate_limit_exceeded',
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        smart_code: 'HERA.LIMITS.RATE.EXCEEDED.v1',
-        organization_id: organizationId,
-        metadata: {
-          ip_address: ipAddress,
-          endpoint,
-          api_group: apiGroup,
-          timestamp: new Date().toISOString()
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'rate_limit_exceeded',
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      smart_code: 'HERA.LIMITS.RATE.EXCEEDED.v1',
+      organization_id: organizationId,
+      metadata: {
+        ip_address: ipAddress,
+        endpoint,
+        api_group: apiGroup,
+        timestamp: new Date().toISOString()
+      }
+    })
   }
 
   /**
@@ -367,7 +344,7 @@ export class RateLimiter {
    */
   async cleanupExpired(): Promise<number> {
     const supabase = getSupabase()
-    
+
     // Delete expired idempotency records
     const { data: expired } = await supabase
       .from('core_entities')
@@ -378,22 +355,16 @@ export class RateLimiter {
     let cleaned = 0
 
     for (const record of expired || []) {
-      await supabase
-        .from('core_dynamic_data')
-        .delete()
-        .eq('entity_id', record.id)
+      await supabase.from('core_dynamic_data').delete().eq('entity_id', record.id)
 
-      await supabase
-        .from('core_entities')
-        .delete()
-        .eq('id', record.id)
+      await supabase.from('core_entities').delete().eq('id', record.id)
 
       cleaned++
     }
 
     // Clean old rate limit records (older than 2 hours)
     const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
-    
+
     await supabase
       .from('universal_transactions')
       .delete()

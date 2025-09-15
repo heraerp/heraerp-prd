@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id')
-    
+
     if (!organizationId) {
       return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
     }
@@ -56,34 +56,44 @@ export async function GET(request: NextRequest) {
     if (servicesError) throw servicesError
 
     // Merge dynamic data with categories and add service count
-    const enrichedCategories = categories?.map(category => {
-      const categoryDynamicData = dynamicData?.filter(d => d.entity_id === category.id) || []
-      const dynamicFields: any = {}
-      
-      categoryDynamicData.forEach(field => {
-        if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
-        if (field.field_value_number !== null) dynamicFields[field.field_name] = field.field_value_number
-        if (field.field_value_boolean !== null) dynamicFields[field.field_name] = field.field_value_boolean
-        if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
-      })
+    const enrichedCategories =
+      categories?.map(category => {
+        const categoryDynamicData = dynamicData?.filter(d => d.entity_id === category.id) || []
+        const dynamicFields: any = {}
 
-      // Count services in this category
-      const serviceCount = services?.filter(s => 
-        (s.metadata as any)?.category === category.entity_code ||
-        dynamicData?.find(d => d.entity_id === s.id && d.field_name === 'category' && d.field_value_text === category.entity_code)
-      ).length || 0
-      
-      return {
-        ...category,
-        ...dynamicFields,
-        service_count: serviceCount
-      }
-    }) || []
+        categoryDynamicData.forEach(field => {
+          if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
+          if (field.field_value_number !== null)
+            dynamicFields[field.field_name] = field.field_value_number
+          if (field.field_value_boolean !== null)
+            dynamicFields[field.field_name] = field.field_value_boolean
+          if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
+        })
+
+        // Count services in this category
+        const serviceCount =
+          services?.filter(
+            s =>
+              (s.metadata as any)?.category === category.entity_code ||
+              dynamicData?.find(
+                d =>
+                  d.entity_id === s.id &&
+                  d.field_name === 'category' &&
+                  d.field_value_text === category.entity_code
+              )
+          ).length || 0
+
+        return {
+          ...category,
+          ...dynamicFields,
+          service_count: serviceCount
+        }
+      }) || []
 
     // Calculate analytics
     const totalCategories = enrichedCategories.length
-    const activeCategories = enrichedCategories.filter(c => 
-      (c.metadata as any)?.is_active !== false && c.is_active !== false
+    const activeCategories = enrichedCategories.filter(
+      c => (c.metadata as any)?.is_active !== false && c.is_active !== false
     ).length
     const totalServices = services?.length || 0
 
@@ -91,7 +101,8 @@ export async function GET(request: NextRequest) {
       total_categories: totalCategories,
       active_categories: activeCategories,
       total_services: totalServices,
-      average_services_per_category: totalCategories > 0 ? Math.round(totalServices / totalCategories) : 0
+      average_services_per_category:
+        totalCategories > 0 ? Math.round(totalServices / totalCategories) : 0
     }
 
     return NextResponse.json({
@@ -111,15 +122,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const {
-      category_name,
-      description,
-      color_code,
-      icon,
-      sort_order,
-      is_active,
-      organization_id
-    } = body
+    const { category_name, description, color_code, icon, sort_order, is_active, organization_id } =
+      body
 
     if (!category_name || !organization_id) {
       return NextResponse.json(
@@ -134,7 +138,7 @@ export async function POST(request: NextRequest) {
       .replace(/[^A-Z0-9]/g, '_')
       .replace(/_+/g, '_')
       .substring(0, 20)
-    
+
     const smartCode = `${SMART_CODE_PREFIX}.${categoryCode}.v1`
 
     // Create category entity
@@ -220,22 +224,12 @@ export async function POST(request: NextRequest) {
 }
 
 // PUT: Update category
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const body = await request.json()
     const { id: categoryId } = await params
 
-    const {
-      category_name,
-      description,
-      color_code,
-      icon,
-      sort_order,
-      is_active
-    } = body
+    const { category_name, description, color_code, icon, sort_order, is_active } = body
 
     // Generate new category code if name changed
     let categoryCode = undefined
@@ -305,16 +299,17 @@ export async function PUT(
     }
 
     for (const field of fieldsToUpdate) {
-      const { error: upsertError } = await supabase
-        .from('core_dynamic_data')
-        .upsert({
+      const { error: upsertError } = await supabase.from('core_dynamic_data').upsert(
+        {
           entity_id: categoryId,
           field_name: field.field_name,
           ...field,
           updated_at: new Date().toISOString()
-        }, {
+        },
+        {
           onConflict: 'entity_id,field_name'
-        })
+        }
+      )
 
       if (upsertError) throw upsertError
     }

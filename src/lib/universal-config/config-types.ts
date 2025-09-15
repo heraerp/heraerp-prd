@@ -96,7 +96,12 @@ export const CONFIG_TYPES = {
     smartCodePrefix: 'HERA.SALON.SKILL',
     displayName: 'Staff Skill',
     pluralName: 'Staff Skills',
-    defaultFields: ['description', 'certification_required', 'service_category', 'proficiency_levels']
+    defaultFields: [
+      'description',
+      'certification_required',
+      'service_category',
+      'proficiency_levels'
+    ]
   },
   PRODUCT_TYPE: {
     entityType: 'salon_product_type',
@@ -131,7 +136,13 @@ export const CONFIG_TYPES = {
     smartCodePrefix: 'HERA.SALON.BOOKING',
     displayName: 'Booking Rule',
     pluralName: 'Booking Rules',
-    defaultFields: ['rule_type', 'advance_days', 'cancellation_hours', 'deposit_required', 'is_active']
+    defaultFields: [
+      'rule_type',
+      'advance_days',
+      'cancellation_hours',
+      'deposit_required',
+      'is_active'
+    ]
   },
   LOYALTY_TIER: {
     entityType: 'loyalty_tier',
@@ -145,7 +156,13 @@ export const CONFIG_TYPES = {
     smartCodePrefix: 'HERA.SALON.PACKAGE',
     displayName: 'Package Type',
     pluralName: 'Package Types',
-    defaultFields: ['description', 'validity_days', 'services_included', 'discount_percentage', 'is_active']
+    defaultFields: [
+      'description',
+      'validity_days',
+      'services_included',
+      'discount_percentage',
+      'is_active'
+    ]
   },
   // Inventory Management Configurations
   PRODUCT_ITEM: {
@@ -155,7 +172,22 @@ export const CONFIG_TYPES = {
     pluralName: 'Products',
     relatedEntityType: 'stock_movement',
     relatedFieldName: 'product_id',
-    defaultFields: ['sku', 'barcode', 'category', 'brand', 'cost_price', 'retail_price', 'professional_price', 'min_stock', 'max_stock', 'reorder_point', 'unit_of_measure', 'is_consumable', 'is_retail', 'expiry_tracking']
+    defaultFields: [
+      'sku',
+      'barcode',
+      'category',
+      'brand',
+      'cost_price',
+      'retail_price',
+      'professional_price',
+      'min_stock',
+      'max_stock',
+      'reorder_point',
+      'unit_of_measure',
+      'is_consumable',
+      'is_retail',
+      'expiry_tracking'
+    ]
   },
   PRODUCT_BRAND: {
     entityType: 'product_brand',
@@ -164,7 +196,15 @@ export const CONFIG_TYPES = {
     pluralName: 'Brands',
     relatedEntityType: 'salon_product_item',
     relatedFieldName: 'brand',
-    defaultFields: ['description', 'website', 'contact_person', 'phone', 'email', 'is_preferred', 'discount_percentage']
+    defaultFields: [
+      'description',
+      'website',
+      'contact_person',
+      'phone',
+      'email',
+      'is_preferred',
+      'discount_percentage'
+    ]
   },
   INVENTORY_SUPPLIER: {
     entityType: 'inventory_supplier',
@@ -173,6 +213,15 @@ export const CONFIG_TYPES = {
     pluralName: 'Suppliers',
     relatedEntityType: 'salon_product_item',
     relatedFieldName: 'preferred_supplier',
-    defaultFields: ['contact_name', 'phone', 'email', 'address', 'payment_terms', 'delivery_days', 'minimum_order', 'is_active']
+    defaultFields: [
+      'contact_name',
+      'phone',
+      'email',
+      'address',
+      'payment_terms',
+      'delivery_days',
+      'minimum_order',
+      'is_active'
+    ]
   }
 } as const

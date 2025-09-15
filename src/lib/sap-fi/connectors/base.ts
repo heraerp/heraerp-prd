@@ -62,16 +62,16 @@ export interface ISAPConnector {
   postDocument(transaction: UniversalTransaction): Promise<SAPDocument>
   reverseDocument(documentNumber: string, reason: string): Promise<SAPDocument>
   parkDocument(transaction: UniversalTransaction): Promise<SAPDocument>
-  
+
   // Master Data
   syncMasterData(entityType: string): Promise<MasterDataResult>
   getMasterDataRecord(entityType: string, key: string): Promise<any>
-  
+
   // Queries
   getBalance(glAccount: string, period: string): Promise<GLBalance>
   getOpenItems(accountType: 'customer' | 'vendor', accountId: string): Promise<any[]>
   getDocument(documentNumber: string, fiscalYear: string): Promise<any>
-  
+
   // Utilities
   validateConnection(): Promise<boolean>
   getSystemInfo(): Promise<any>
@@ -82,11 +82,11 @@ export abstract class BaseSAPConnector implements ISAPConnector {
   protected config: SAPConfig
   protected accessToken?: string
   protected tokenExpiry?: Date
-  
+
   constructor(config: SAPConfig) {
     this.config = config
   }
-  
+
   // Abstract methods to be implemented by specific connectors
   abstract postDocument(transaction: UniversalTransaction): Promise<SAPDocument>
   abstract reverseDocument(documentNumber: string, reason: string): Promise<SAPDocument>
@@ -98,7 +98,7 @@ export abstract class BaseSAPConnector implements ISAPConnector {
   abstract getDocument(documentNumber: string, fiscalYear: string): Promise<any>
   abstract validateConnection(): Promise<boolean>
   abstract getSystemInfo(): Promise<any>
-  
+
   // Common helper methods
   protected mapTransactionToSAP(transaction: UniversalTransaction): any {
     // Map HERA transaction to SAP format
@@ -110,7 +110,7 @@ export abstract class BaseSAPConnector implements ISAPConnector {
       HeaderText: transaction.description || '',
       DocumentCurrency: transaction.currency || 'USD'
     }
-    
+
     // Map based on Smart Code
     const docTypeMapping: Record<string, string> = {
       'HERA.ERP.FI.JE.POST.v1': 'SA',
@@ -119,12 +119,12 @@ export abstract class BaseSAPConnector implements ISAPConnector {
       'HERA.ERP.FI.AP.PAYMENT.v1': 'KZ',
       'HERA.ERP.FI.AR.RECEIPT.v1': 'DZ'
     }
-    
+
     sapDoc.DocumentType = docTypeMapping[transaction.smart_code] || 'SA'
-    
+
     return sapDoc
   }
-  
+
   protected mapTransactionLines(lines: UniversalTransactionLine[]): any[] {
     return lines.map((line, index) => ({
       ItemNumber: index + 1,
@@ -136,7 +136,7 @@ export abstract class BaseSAPConnector implements ISAPConnector {
       TaxCode: line.tax_code
     }))
   }
-  
+
   protected handleSAPError(error: any): never {
     // Standardize error handling across connectors
     const errorMessage = error.message || error.toString()
@@ -145,7 +145,7 @@ export abstract class BaseSAPConnector implements ISAPConnector {
       message: errorMessage,
       details: error.details || {}
     }
-    
+
     throw new SAPIntegrationError(errorMessage, sapError)
   }
 }
@@ -154,7 +154,7 @@ export abstract class BaseSAPConnector implements ISAPConnector {
 export class SAPIntegrationError extends Error {
   public sapError: any
   public retryable: boolean
-  
+
   constructor(message: string, sapError: any, retryable: boolean = false) {
     super(message)
     this.name = 'SAPIntegrationError'

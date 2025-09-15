@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     const { action, settings, fileName, fileData } = body
 
     if (!action) {
-      return NextResponse.json(
-        { success: false, error: 'Action is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Action is required' }, { status: 400 })
     }
 
     // Create cloud storage service from settings
@@ -40,11 +37,11 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         // Convert base64 to blob if needed
         const fileBlob = new Blob([fileData], { type: 'application/octet-stream' })
         const uploadResult = await cloudStorageService.uploadFile(fileName, fileBlob)
-        
+
         return NextResponse.json({
           success: true,
           data: uploadResult,
@@ -54,7 +51,7 @@ export async function POST(request: NextRequest) {
       case 'list_files':
         const { path, limit } = body
         const files = await cloudStorageService.listFiles(path, limit)
-        
+
         return NextResponse.json({
           success: true,
           data: { files },
@@ -69,7 +66,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         const file = await cloudStorageService.getFile(key)
         return NextResponse.json({
           success: true,
@@ -85,7 +82,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         const deleteResult = await cloudStorageService.deleteFile(fileKey)
         return NextResponse.json({
           success: deleteResult,
@@ -100,7 +97,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         const processResult = await cloudStorageService.processFile(processKey, processingType)
         return NextResponse.json({
           success: true,
@@ -117,8 +114,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Cloud storage API error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -131,7 +128,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action')
-    
+
     if (action === 'health') {
       return NextResponse.json({
         success: true,
@@ -193,8 +190,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Cloud storage GET error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

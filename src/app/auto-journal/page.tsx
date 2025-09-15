@@ -9,11 +9,33 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Zap, Bot, TrendingUp, Clock, CheckCircle, AlertTriangle, 
-  DollarSign, FileText, BarChart3, PieChart, RefreshCw, Play,
-  Pause, Settings, Eye, Download, Calendar, Target, Sparkles,
-  Brain, Cog, Database, Activity, ArrowRight, Users, Building
+import {
+  Zap,
+  Bot,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  DollarSign,
+  FileText,
+  BarChart3,
+  PieChart,
+  RefreshCw,
+  Play,
+  Pause,
+  Settings,
+  Eye,
+  Download,
+  Calendar,
+  Target,
+  Sparkles,
+  Brain,
+  Cog,
+  Database,
+  Activity,
+  ArrowRight,
+  Users,
+  Building
 } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
 
@@ -51,7 +73,7 @@ export default function AutoJournalPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isProcessing, setBatchProcessing] = useState(false)
   const [selectedPeriod, setSelectedPeriod] = useState<7 | 30 | 90>(7)
-  
+
   // Set organization context for demo
   useEffect(() => {
     universalApi.setOrganizationId('demo-auto-journal-org')
@@ -127,21 +149,19 @@ export default function AutoJournalPage() {
                 <Bot className="h-7 w-7 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">
-                  HERA Auto-Journal Engine
-                </h1>
+                <h1 className="text-3xl font-bold text-slate-900">HERA Auto-Journal Engine</h1>
                 <p className="text-sm text-slate-600">
                   Intelligent journal entry automation with AI integration
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4 text-gray-500" />
-                <select 
+                <select
                   value={selectedPeriod}
-                  onChange={(e) => setSelectedPeriod(Number(e.target.value) as 7 | 30 | 90)}
+                  onChange={e => setSelectedPeriod(Number(e.target.value) as 7 | 30 | 90)}
                   className="border rounded-md px-3 py-1 text-sm"
                 >
                   <option value={7}>Last 7 days</option>
@@ -153,8 +173,8 @@ export default function AutoJournalPage() {
                 <CheckCircle className="w-4 h-4 mr-1" />
                 Production Ready
               </Badge>
-              <Button 
-                onClick={runBatchProcessing} 
+              <Button
+                onClick={runBatchProcessing}
                 disabled={isProcessing}
                 className="bg-blue-600 hover:bg-blue-700"
               >
@@ -285,7 +305,9 @@ export default function AutoJournalPage() {
                         <span className="text-sm font-medium">Immediate Processing</span>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold">{stats?.processing_modes.immediate || 89}</div>
+                        <div className="font-semibold">
+                          {stats?.processing_modes.immediate || 89}
+                        </div>
                         <div className="text-xs text-gray-500">Large transactions</div>
                       </div>
                     </div>
@@ -297,7 +319,9 @@ export default function AutoJournalPage() {
                         <span className="text-sm font-medium">Batch Processing</span>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold">{stats?.processing_modes.batched || 156}</div>
+                        <div className="font-semibold">
+                          {stats?.processing_modes.batched || 156}
+                        </div>
                         <div className="text-xs text-gray-500">Small transactions</div>
                       </div>
                     </div>
@@ -337,7 +361,8 @@ export default function AutoJournalPage() {
                         <span className="font-medium text-purple-900">Smart Recommendations</span>
                       </div>
                       <p className="text-sm text-purple-700">
-                        AI detected 3 expense patterns that could be optimized for better GL classification
+                        AI detected 3 expense patterns that could be optimized for better GL
+                        classification
                       </p>
                     </div>
 
@@ -347,7 +372,8 @@ export default function AutoJournalPage() {
                         <span className="font-medium text-blue-900">Accuracy Improvement</span>
                       </div>
                       <p className="text-sm text-blue-700">
-                        Journal classification accuracy improved by 8.3% this period through machine learning
+                        Journal classification accuracy improved by 8.3% this period through machine
+                        learning
                       </p>
                     </div>
 
@@ -421,15 +447,50 @@ export default function AutoJournalPage() {
                 <CardContent>
                   <div className="space-y-3">
                     {[
-                      { time: '2 min ago', type: 'Sale Transaction', amount: '$125.50', mode: 'Batched', status: 'success' },
-                      { time: '5 min ago', type: 'Vendor Payment', amount: '$2,500.00', mode: 'Immediate', status: 'success' },
-                      { time: '12 min ago', type: 'Customer Receipt', amount: '$850.00', mode: 'Immediate', status: 'success' },
-                      { time: '18 min ago', type: 'Expense Reimbursement', amount: '$67.25', mode: 'Batched', status: 'success' },
-                      { time: '25 min ago', type: 'Inventory Adjustment', amount: '$340.00', mode: 'Immediate', status: 'review' }
+                      {
+                        time: '2 min ago',
+                        type: 'Sale Transaction',
+                        amount: '$125.50',
+                        mode: 'Batched',
+                        status: 'success'
+                      },
+                      {
+                        time: '5 min ago',
+                        type: 'Vendor Payment',
+                        amount: '$2,500.00',
+                        mode: 'Immediate',
+                        status: 'success'
+                      },
+                      {
+                        time: '12 min ago',
+                        type: 'Customer Receipt',
+                        amount: '$850.00',
+                        mode: 'Immediate',
+                        status: 'success'
+                      },
+                      {
+                        time: '18 min ago',
+                        type: 'Expense Reimbursement',
+                        amount: '$67.25',
+                        mode: 'Batched',
+                        status: 'success'
+                      },
+                      {
+                        time: '25 min ago',
+                        type: 'Inventory Adjustment',
+                        amount: '$340.00',
+                        mode: 'Immediate',
+                        status: 'review'
+                      }
                     ].map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      >
                         <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${activity.status === 'success' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${activity.status === 'success' ? 'bg-green-500' : 'bg-yellow-500'}`}
+                          ></div>
                           <div>
                             <div className="font-medium text-sm">{activity.type}</div>
                             <div className="text-xs text-gray-500">{activity.time}</div>
@@ -509,9 +570,7 @@ export default function AutoJournalPage() {
                   <RefreshCw className="w-5 h-5 text-orange-600" />
                   Pending Batch Transactions
                 </CardTitle>
-                <CardDescription>
-                  Small transactions queued for batch processing
-                </CardDescription>
+                <CardDescription>Small transactions queued for batch processing</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -519,11 +578,11 @@ export default function AutoJournalPage() {
                     <div key={index} className="p-4 border rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium capitalize">{batch.transaction_type}</span>
-                        <Badge 
-                          variant={batch.ready_for_batch ? "default" : "secondary"}
-                          className={batch.ready_for_batch ? "bg-green-100 text-green-700" : ""}
+                        <Badge
+                          variant={batch.ready_for_batch ? 'default' : 'secondary'}
+                          className={batch.ready_for_batch ? 'bg-green-100 text-green-700' : ''}
                         >
-                          {batch.ready_for_batch ? "Ready" : "Pending"}
+                          {batch.ready_for_batch ? 'Ready' : 'Pending'}
                         </Badge>
                       </div>
                       <div className="space-y-1 text-sm text-gray-600">
@@ -542,7 +601,7 @@ export default function AutoJournalPage() {
                     </div>
                   ))}
                 </div>
-                
+
                 {pendingBatches.length === 0 && (
                   <div className="text-center py-8">
                     <CheckCircle className="w-12 h-12 mx-auto text-green-500 mb-4" />
@@ -564,16 +623,16 @@ export default function AutoJournalPage() {
                     <TrendingUp className="w-5 h-5 text-green-600" />
                     Efficiency Impact
                   </CardTitle>
-                  <CardDescription>
-                    Business impact of auto-journal automation
-                  </CardDescription>
+                  <CardDescription>Business impact of auto-journal automation</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">Manual Entries Avoided</span>
-                        <span className="font-semibold">{stats?.savings.manual_entries_avoided || 134}</span>
+                        <span className="font-semibold">
+                          {stats?.savings.manual_entries_avoided || 134}
+                        </span>
                       </div>
                       <Progress value={85} className="h-2" />
                       <p className="text-xs text-gray-500 mt-1">85% automation rate achieved</p>
@@ -582,7 +641,9 @@ export default function AutoJournalPage() {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">Time Savings</span>
-                        <span className="font-semibold">{stats?.savings.time_saved_hours || 23.4} hours</span>
+                        <span className="font-semibold">
+                          {stats?.savings.time_saved_hours || 23.4} hours
+                        </span>
                       </div>
                       <Progress value={92} className="h-2" />
                       <p className="text-xs text-gray-500 mt-1">92% efficiency improvement</p>
@@ -653,20 +714,20 @@ export default function AutoJournalPage() {
                     Revolutionary automation compared to manual journal entry systems
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">85%</div>
                     <div className="text-blue-100 text-sm">Automation Rate</div>
                     <div className="text-xs text-blue-200 mt-1">vs 0% traditional</div>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">92%</div>
                     <div className="text-blue-100 text-sm">Time Savings</div>
                     <div className="text-xs text-blue-200 mt-1">vs manual process</div>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">87%</div>
                     <div className="text-blue-100 text-sm">Error Reduction</div>
@@ -685,9 +746,7 @@ export default function AutoJournalPage() {
                   <Settings className="w-5 h-5 text-gray-600" />
                   Auto-Journal Configuration
                 </CardTitle>
-                <CardDescription>
-                  Configure processing rules and thresholds
-                </CardDescription>
+                <CardDescription>Configure processing rules and thresholds</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
@@ -699,62 +758,72 @@ export default function AutoJournalPage() {
                           <label className="text-sm font-medium">Immediate Processing Amount</label>
                           <div className="flex items-center gap-2 mt-1">
                             <DollarSign className="w-4 h-4 text-gray-400" />
-                            <input 
-                              type="number" 
-                              defaultValue={1000} 
+                            <input
+                              type="number"
+                              defaultValue={1000}
                               className="border rounded px-3 py-1 text-sm"
                             />
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">Transactions above this amount processed immediately</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Transactions above this amount processed immediately
+                          </p>
                         </div>
-                        
+
                         <div>
                           <label className="text-sm font-medium">Batch Minimum Amount</label>
                           <div className="flex items-center gap-2 mt-1">
                             <DollarSign className="w-4 h-4 text-gray-400" />
-                            <input 
-                              type="number" 
-                              defaultValue={300} 
+                            <input
+                              type="number"
+                              defaultValue={300}
                               className="border rounded px-3 py-1 text-sm"
                             />
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">Minimum total for batch processing</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Minimum total for batch processing
+                          </p>
                         </div>
-                        
+
                         <div>
                           <label className="text-sm font-medium">Batch Size Minimum</label>
-                          <input 
-                            type="number" 
-                            defaultValue={3} 
+                          <input
+                            type="number"
+                            defaultValue={3}
                             className="border rounded px-3 py-1 text-sm w-20"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Minimum transactions to create batch</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Minimum transactions to create batch
+                          </p>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <h4 className="font-medium">AI Configuration</h4>
                       <div className="space-y-3">
                         <div>
                           <label className="text-sm font-medium">Confidence Threshold</label>
                           <div className="flex items-center gap-2 mt-1">
-                            <input 
-                              type="range" 
-                              min="80" 
-                              max="99" 
-                              defaultValue={95} 
+                            <input
+                              type="range"
+                              min="80"
+                              max="99"
+                              defaultValue={95}
                               className="flex-1"
                             />
                             <span className="text-sm font-medium w-12">95%</span>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">Minimum AI confidence for auto-processing</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Minimum AI confidence for auto-processing
+                          </p>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                           <div>
                             <label className="text-sm font-medium">Enable AI Analysis</label>
-                            <p className="text-xs text-gray-500">Use AI for complex transaction patterns</p>
+                            <p className="text-xs text-gray-500">
+                              Use AI for complex transaction patterns
+                            </p>
                           </div>
                           <Button variant="outline" size="sm">
                             <CheckCircle className="w-4 h-4 mr-1 text-green-500" />
@@ -764,7 +833,7 @@ export default function AutoJournalPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-t pt-6">
                     <div className="flex items-center justify-between">
                       <div>

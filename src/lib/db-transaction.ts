@@ -65,7 +65,7 @@ export class DatabaseTransaction {
         try {
           const result = await operation()
           this.results.set(name, result)
-          
+
           // Store rollback function if the operation returns one
           if (result && typeof result === 'object' && 'rollback' in result) {
             completedOperations.push({
@@ -120,15 +120,10 @@ export class DatabaseTransaction {
         }
       }
 
-      throw new APIError(
-        'Transaction failed and was rolled back',
-        500,
-        'TRANSACTION_FAILED',
-        {
-          transactionId: this.transactionId,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        }
-      )
+      throw new APIError('Transaction failed and was rolled back', 500, 'TRANSACTION_FAILED', {
+        transactionId: this.transactionId,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      })
     }
   }
 }
@@ -145,21 +140,14 @@ export function createReversibleOperation<T>(
   return {
     name: `insert_${table}_${Date.now()}`,
     operation: async () => {
-      const { data, error } = await client
-        .from(table)
-        .insert(insertData)
-        .select()
-        .single()
+      const { data, error } = await client.from(table).insert(insertData).select().single()
 
       if (error) throw error
 
       return {
         ...data,
         rollback: async () => {
-          await client
-            .from(table)
-            .delete()
-            .eq(identifierField, data[identifierField])
+          await client.from(table).delete().eq(identifierField, data[identifierField])
         }
       }
     }

@@ -1,7 +1,7 @@
 /**
  * HERA Document Upload API
  * Smart Code: HERA.DOCS.UPLOAD.API.v1
- * 
+ *
  * Handles document uploads for transaction evidence
  * Supports PDF and image formats with multi-tenant isolation
  */
@@ -50,19 +50,16 @@ export async function POST(request: NextRequest) {
 
     if (!validationResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Validation failed',
-          details: validationResult.error.errors 
+          details: validationResult.error.errors
         },
         { status: 400 }
       )
     }
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
     // Validate file type
@@ -77,10 +74,7 @@ export async function POST(request: NextRequest) {
     // Validate file size (5MB max)
     const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: 'File size exceeds 5MB limit' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'File size exceeds 5MB limit' }, { status: 400 })
     }
 
     // Generate unique file path
@@ -93,8 +87,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(arrayBuffer)
 
     // Upload to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabaseAdmin
-      .storage
+    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
       .from('documents')
       .upload(filePath, buffer, {
         contentType: file.type,
@@ -110,10 +103,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Get public URL
-    const { data: { publicUrl } } = supabaseAdmin
-      .storage
-      .from('documents')
-      .getPublicUrl(filePath)
+    const {
+      data: { publicUrl }
+    } = supabaseAdmin.storage.from('documents').getPublicUrl(filePath)
 
     // Create document record in core_entities
     const { data: documentEntity, error: entityError } = await supabaseAdmin
@@ -146,19 +138,17 @@ export async function POST(request: NextRequest) {
 
     // If transactionId provided, create relationship
     if (transactionId && documentEntity) {
-      const { error: relError } = await supabaseAdmin
-        .from('core_relationships')
-        .insert({
-          organization_id: organizationId,
-          from_entity_id: transactionId,
-          to_entity_id: documentEntity.id,
-          relationship_type: 'has_document',
-          smart_code: 'HERA.DOCS.REL.TRANSACTION.v1',
-          metadata: {
-            document_type: 'evidence',
-            upload_timestamp: new Date().toISOString()
-          }
-        })
+      const { error: relError } = await supabaseAdmin.from('core_relationships').insert({
+        organization_id: organizationId,
+        from_entity_id: transactionId,
+        to_entity_id: documentEntity.id,
+        relationship_type: 'has_document',
+        smart_code: 'HERA.DOCS.REL.TRANSACTION.v1',
+        metadata: {
+          document_type: 'evidence',
+          upload_timestamp: new Date().toISOString()
+        }
+      })
 
       if (relError) {
         console.error('Relationship creation error:', relError)
@@ -167,19 +157,17 @@ export async function POST(request: NextRequest) {
 
     // If entityId provided, create relationship to entity
     if (entityId && documentEntity) {
-      const { error: relError } = await supabaseAdmin
-        .from('core_relationships')
-        .insert({
-          organization_id: organizationId,
-          from_entity_id: entityId,
-          to_entity_id: documentEntity.id,
-          relationship_type: 'has_document',
-          smart_code: 'HERA.DOCS.REL.ENTITY.v1',
-          metadata: {
-            document_type: 'attachment',
-            upload_timestamp: new Date().toISOString()
-          }
-        })
+      const { error: relError } = await supabaseAdmin.from('core_relationships').insert({
+        organization_id: organizationId,
+        from_entity_id: entityId,
+        to_entity_id: documentEntity.id,
+        relationship_type: 'has_document',
+        smart_code: 'HERA.DOCS.REL.ENTITY.v1',
+        metadata: {
+          document_type: 'attachment',
+          upload_timestamp: new Date().toISOString()
+        }
+      })
 
       if (relError) {
         console.error('Entity relationship creation error:', relError)
@@ -198,11 +186,10 @@ export async function POST(request: NextRequest) {
         uploadedAt: new Date().toISOString()
       }
     })
-
   } catch (error) {
     console.error('Document upload error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -219,10 +206,7 @@ export async function GET(request: NextRequest) {
     const organizationId = searchParams.get('organizationId')
 
     if (!documentId || !organizationId) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
     }
 
     // Fetch document entity
@@ -235,10 +219,7 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (error || !document) {
-      return NextResponse.json(
-        { error: 'Document not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Document not found' }, { status: 404 })
     }
 
     // Return document information
@@ -253,12 +234,8 @@ export async function GET(request: NextRequest) {
         uploadedAt: document.created_at
       }
     })
-
   } catch (error) {
     console.error('Document retrieval error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

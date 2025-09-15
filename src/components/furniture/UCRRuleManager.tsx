@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Settings, 
-  Shield, 
-  Calculator, 
-  DollarSign, 
-  CheckCircle, 
+import {
+  Settings,
+  Shield,
+  Calculator,
+  DollarSign,
+  CheckCircle,
   Calendar,
   AlertTriangle,
   Code,
@@ -28,7 +28,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 
 interface UCRRule {
@@ -78,9 +78,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
         organizationId
       })
 
-      const ucrRules = entities?.filter((e: any) => 
-        e.entity_type === 'ucr_rule'
-      ) || []
+      const ucrRules = entities?.filter((e: any) => e.entity_type === 'ucr_rule') || []
 
       // Get dynamic data for rules
       const { data: dynamicData } = await universalApi.read({
@@ -90,14 +88,12 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
       // Build complete rule objects
       const rulesWithLogic = ucrRules.map((rule: any) => {
-        const ruleData = dynamicData?.filter((d: any) => 
-          d.entity_id === rule.id
-        ) || []
+        const ruleData = dynamicData?.filter((d: any) => d.entity_id === rule.id) || []
 
         const parseField = (fieldName: string) => {
           const field = ruleData.find((d: any) => d.field_name === fieldName)
           if (!field) return null
-          
+
           if (field.field_value_json) {
             try {
               return JSON.parse(field.field_value_json)
@@ -105,7 +101,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
               return field.field_value_json
             }
           }
-          
+
           return field.field_value_number || field.field_value_text
         }
 
@@ -127,7 +123,6 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
       if (rulesWithLogic.length > 0 && !selectedRule) {
         setSelectedRule(rulesWithLogic[0])
       }
-
     } catch (err) {
       console.error('Error loading UCR rules:', err)
     } finally {
@@ -138,15 +133,13 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
   const getRuleIcon = (type: string) => {
     const config = ruleTypeConfig[type as keyof typeof ruleTypeConfig] || ruleTypeConfig.defaulting
     const Icon = config.icon
-    return <Icon className={cn("h-5 w-5", config.color)} />
+    return <Icon className={cn('h-5 w-5', config.color)} />
   }
 
   const getRuleBadge = (type: string) => {
     const config = ruleTypeConfig[type as keyof typeof ruleTypeConfig] || ruleTypeConfig.defaulting
     return (
-      <Badge className={cn("text-xs", config.bgColor, config.color, "border-none")}>
-        {type}
-      </Badge>
+      <Badge className={cn('text-xs', config.bgColor, config.color, 'border-none')}>{type}</Badge>
     )
   }
 
@@ -170,10 +163,14 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
       success: Math.random() > 0.3, // Simulate success/failure
       executionTime: Math.round(Math.random() * 100) + 20,
       context: testContext,
-      result: rule.type === 'pricing' ? { calculated_price: 3750 } :
-              rule.type === 'validation' ? { validated: true } :
-              rule.type === 'approval' ? { approval_required: true, approver: 'sales_manager' } :
-              { processed: true }
+      result:
+        rule.type === 'pricing'
+          ? { calculated_price: 3750 }
+          : rule.type === 'validation'
+            ? { validated: true }
+            : rule.type === 'approval'
+              ? { approval_required: true, approver: 'sales_manager' }
+              : { processed: true }
     }
 
     setExecutionResults(prev => [result, ...prev.slice(0, 4)])
@@ -181,7 +178,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
 
   if (loading) {
     return (
-      <div className={cn("space-y-6", className)}>
+      <div className={cn('space-y-6', className)}>
         <Skeleton className="h-20 w-full" />
         <Skeleton className="h-96 w-full" />
       </div>
@@ -189,7 +186,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -215,7 +212,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gray-800/50 border-gray-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -225,13 +222,11 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                   {rules.filter(r => r.status === 'active').length}
                 </p>
               </div>
-              <Badge className="bg-green-500/20 text-green-400 border-green-500/50">
-                Active
-              </Badge>
+              <Badge className="bg-green-500/20 text-green-400 border-green-500/50">Active</Badge>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gray-800/50 border-gray-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -245,15 +240,13 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gray-800/50 border-gray-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400">Executions Today</p>
-                <p className="text-2xl font-bold text-white">
-                  {executionResults.length}
-                </p>
+                <p className="text-2xl font-bold text-white">{executionResults.length}</p>
               </div>
               <Play className="h-8 w-8 text-purple-500" />
             </div>
@@ -274,8 +267,8 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                 <div
                   key={rule.id}
                   className={cn(
-                    "p-3 rounded-lg cursor-pointer transition-all hover:bg-gray-700/50",
-                    selectedRule?.id === rule.id && "bg-gray-700/50 ring-1 ring-amber-500"
+                    'p-3 rounded-lg cursor-pointer transition-all hover:bg-gray-700/50',
+                    selectedRule?.id === rule.id && 'bg-gray-700/50 ring-1 ring-amber-500'
                   )}
                   onClick={() => setSelectedRule(rule)}
                 >
@@ -309,11 +302,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                     <Pencil className="h-4 w-4 mr-1" />
                     Edit
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => testRule(selectedRule)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => testRule(selectedRule)}>
                     <Play className="h-4 w-4 mr-1" />
                     Test
                   </Button>
@@ -384,19 +373,19 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
                           <div
                             key={idx}
                             className={cn(
-                              "p-3 rounded-lg border",
-                              result.success 
-                                ? "bg-green-500/10 border-green-500/50" 
-                                : "bg-red-500/10 border-red-500/50"
+                              'p-3 rounded-lg border',
+                              result.success
+                                ? 'bg-green-500/10 border-green-500/50'
+                                : 'bg-red-500/10 border-red-500/50'
                             )}
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <Badge variant={result.success ? "default" : "destructive"}>
-                                {result.success ? "Success" : "Failed"}
+                              <Badge variant={result.success ? 'default' : 'destructive'}>
+                                {result.success ? 'Success' : 'Failed'}
                               </Badge>
                               <span className="text-xs text-gray-400">
-                                {new Date(result.timestamp).toLocaleTimeString()} 
-                                ({result.executionTime}ms)
+                                {new Date(result.timestamp).toLocaleTimeString()}(
+                                {result.executionTime}ms)
                               </span>
                             </div>
                             <pre className="text-xs text-white">

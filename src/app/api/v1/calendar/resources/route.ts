@@ -98,7 +98,7 @@ class MockCalendarResourceDB {
       entity_code: 'CHEF_MR_001',
       smart_code: 'HERA.REST.CRM.RES.CHEF.v1',
       status: 'active',
-      ai_confidence: 0.90,
+      ai_confidence: 0.9,
       resource_type: 'STAFF',
       industry_type: 'restaurant',
       availability_windows: JSON.stringify([
@@ -200,12 +200,14 @@ class MockCalendarResourceDB {
         resources = resources.filter(r => r.status === filters.status)
       }
       if (filters.skills && filters.skills.length > 0) {
-        resources = resources.filter(r => 
-          r.skills && r.skills.some(skill => 
-            filters.skills!.some(filterSkill => 
-              skill.toLowerCase().includes(filterSkill.toLowerCase())
+        resources = resources.filter(
+          r =>
+            r.skills &&
+            r.skills.some(skill =>
+              filters.skills!.some(filterSkill =>
+                skill.toLowerCase().includes(filterSkill.toLowerCase())
+              )
             )
-          )
         )
       }
     }
@@ -229,25 +231,32 @@ class MockCalendarResourceDB {
       ai_confidence: resource.ai_confidence || 0.8,
       resource_type: resource.resource_type || 'STAFF',
       industry_type: resource.industry_type || 'universal',
-      availability_windows: resource.availability_windows || JSON.stringify([
-        { start: '09:00', end: '17:00', days: ['MON', 'TUE', 'WED', 'THU', 'FRI'] }
-      ]),
+      availability_windows:
+        resource.availability_windows ||
+        JSON.stringify([
+          { start: '09:00', end: '17:00', days: ['MON', 'TUE', 'WED', 'THU', 'FRI'] }
+        ]),
       capacity: resource.capacity || 1,
       skills: resource.skills || [],
       location: resource.location,
       cost_per_hour: resource.cost_per_hour || 0,
       maintenance_schedule: resource.maintenance_schedule || JSON.stringify([]),
-      booking_rules: resource.booking_rules || JSON.stringify({
-        advance_booking_days: 30,
-        cancellation_hours: 24
-      })
+      booking_rules:
+        resource.booking_rules ||
+        JSON.stringify({
+          advance_booking_days: 30,
+          cancellation_hours: 24
+        })
     }
 
     this.resources.push(newResource)
     return newResource
   }
 
-  static async update(resourceId: string, updates: Partial<UniversalResource>): Promise<UniversalResource | null> {
+  static async update(
+    resourceId: string,
+    updates: Partial<UniversalResource>
+  ): Promise<UniversalResource | null> {
     const index = this.resources.findIndex(r => r.entity_id === resourceId)
     if (index === -1) return null
 
@@ -269,12 +278,9 @@ export async function GET(request: NextRequest) {
   try {
     const headersList = await headers()
     const organizationId = headersList.get('X-Organization-ID')
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const { searchParams } = new URL(request.url)
@@ -290,10 +296,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(resources)
   } catch (error) {
     console.error('Error fetching resources:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch resources' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch resources' }, { status: 500 })
   }
 }
 
@@ -302,16 +305,13 @@ export async function POST(request: NextRequest) {
   try {
     const headersList = await headers()
     const organizationId = headersList.get('X-Organization-ID')
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const resourceData = await request.json()
-    
+
     // Ensure organization_id is set
     resourceData.organization_id = organizationId
 
@@ -327,10 +327,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!resourceData.entity_name) {
-      return NextResponse.json(
-        { error: 'Resource name is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Resource name is required' }, { status: 400 })
     }
 
     const newResource = await MockCalendarResourceDB.create(resourceData)
@@ -338,9 +335,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newResource, { status: 201 })
   } catch (error) {
     console.error('Error creating resource:', error)
-    return NextResponse.json(
-      { error: 'Failed to create resource' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create resource' }, { status: 500 })
   }
 }

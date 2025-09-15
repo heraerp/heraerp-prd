@@ -20,7 +20,7 @@ export async function createFinanceTransaction(
         credit: 0
       },
       {
-        account: 'Service Revenue', 
+        account: 'Service Revenue',
         debit: 0,
         credit: amount - vatAmount
       },

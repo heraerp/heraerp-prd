@@ -7,24 +7,20 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 // Only create client if we have the required environment variables
-const supabase = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null
+const supabase =
+  supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null
 
 export async function GET(request: NextRequest) {
   try {
     // Check if Supabase client is initialized
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database connection not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 })
     }
 
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -35,13 +31,13 @@ export async function GET(request: NextRequest) {
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Special handling for demo users
@@ -66,7 +62,7 @@ export async function GET(request: NextRequest) {
       },
       'demo@mariosrestaurant.com': {
         id: 'a5d9c8f7-8f5e-4b7c-9e3f-f2d8a7c9e4b5',
-        name: 'Mario\'s Authentic Italian',
+        name: "Mario's Authentic Italian",
         settings: {
           subdomain: 'restaurant',
           industry: 'restaurant',
@@ -83,7 +79,7 @@ export async function GET(request: NextRequest) {
         }
       }
     }
-    
+
     if (user.email && demoUsers[user.email]) {
       return NextResponse.json({
         success: true,
@@ -98,10 +94,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching organizations:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch organizations' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch organizations' }, { status: 500 })
     }
 
     // Check if this is the universal demo user
@@ -149,7 +142,7 @@ export async function GET(request: NextRequest) {
           is_active: true
         }
       ]
-      
+
       return NextResponse.json({
         success: true,
         organizations: demoOrgs
@@ -159,10 +152,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('Organizations API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -170,16 +160,13 @@ export async function POST(request: NextRequest) {
   try {
     // Check if Supabase client is initialized
     if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database connection not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 })
     }
 
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -190,18 +177,18 @@ export async function POST(request: NextRequest) {
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Get request body
     const body = await request.json()
-    const { 
+    const {
       organization_name,
       organization_type = 'general',
       subdomain,
@@ -221,16 +208,22 @@ export async function POST(request: NextRequest) {
     if (!subdomainRegex.test(subdomain)) {
       console.error('Invalid subdomain format:', subdomain)
       return NextResponse.json(
-        { error: 'Invalid subdomain format. Use lowercase letters, numbers, and hyphens only. Minimum 1 character.' },
+        {
+          error:
+            'Invalid subdomain format. Use lowercase letters, numbers, and hyphens only. Minimum 1 character.'
+        },
         { status: 400 }
       )
     }
 
     // Check subdomain availability
     console.log('Checking subdomain availability for:', subdomain)
-    const { data: availabilityCheck, error: availabilityError } = await supabase.rpc('check_subdomain_availability', {
-      p_subdomain: subdomain
-    })
+    const { data: availabilityCheck, error: availabilityError } = await supabase.rpc(
+      'check_subdomain_availability',
+      {
+        p_subdomain: subdomain
+      }
+    )
 
     console.log('Availability check result:', availabilityCheck)
     console.log('Availability check error:', availabilityError)
@@ -244,10 +237,10 @@ export async function POST(request: NextRequest) {
         .eq('entity_type', 'organization')
         .eq('metadata->>subdomain', subdomain)
         .limit(1)
-      
+
       if (existingOrgs && existingOrgs.length > 0) {
         return NextResponse.json(
-          { 
+          {
             error: 'Subdomain not available',
             reason: 'taken'
           },
@@ -256,7 +249,7 @@ export async function POST(request: NextRequest) {
       }
     } else if (!availabilityCheck?.available) {
       return NextResponse.json(
-        { 
+        {
           error: 'Subdomain not available',
           reason: availabilityCheck?.reason || 'unknown'
         },
@@ -294,19 +287,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      organization: data.organization,
-      user: data.user,
-      next_step: `/auth/organizations/${data.organization.id}/apps`
-    }, { status: 201 })
-
+    return NextResponse.json(
+      {
+        success: true,
+        organization: data.organization,
+        user: data.user,
+        next_step: `/auth/organizations/${data.organization.id}/apps`
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Create organization error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 

@@ -1,29 +1,29 @@
-'use client';
+'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light' | 'dark' | 'system'
 
 interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  actualTheme: 'light' | 'dark';
+  theme: Theme
+  setTheme: (theme: Theme) => void
+  actualTheme: 'light' | 'dark'
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function useTheme() {
-  const context = useContext(ThemeContext);
+  const context = useContext(ThemeContext)
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useTheme must be used within a ThemeProvider')
   }
-  return context;
+  return context
 }
 
 interface ThemeProviderProps {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
+  children: React.ReactNode
+  defaultTheme?: Theme
+  storageKey?: string
 }
 
 export function HeraThemeProvider({
@@ -31,107 +31,115 @@ export function HeraThemeProvider({
   defaultTheme = 'dark',
   storageKey = 'hera-theme'
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
-  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark');
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>(defaultTheme)
+  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark')
+  const [mounted, setMounted] = useState(false)
 
   // Prevent hydration mismatch
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
-    if (!mounted) return;
-    
+    if (!mounted) return
+
     // Load theme from localStorage or use default
-    const savedTheme = localStorage.getItem(storageKey) as Theme;
+    const savedTheme = localStorage.getItem(storageKey) as Theme
     if (savedTheme) {
-      setTheme(savedTheme);
+      setTheme(savedTheme)
     }
-  }, [storageKey, mounted]);
+  }, [storageKey, mounted])
 
   useEffect(() => {
-    if (!mounted) return;
-    
-    const root = window.document.documentElement;
-    
+    if (!mounted) return
+
+    const root = window.document.documentElement
+
     // Remove existing theme classes
-    root.classList.remove('light', 'dark');
-    
-    let effectiveTheme: 'light' | 'dark' = 'dark';
-    
+    root.classList.remove('light', 'dark')
+
+    let effectiveTheme: 'light' | 'dark' = 'dark'
+
     if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      effectiveTheme = systemTheme;
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+      effectiveTheme = systemTheme
     } else {
-      effectiveTheme = theme;
+      effectiveTheme = theme
     }
-    
+
     // Apply theme class
-    root.classList.add(effectiveTheme);
-    setActualTheme(effectiveTheme);
-    
+    root.classList.add(effectiveTheme)
+    setActualTheme(effectiveTheme)
+
     // Save to localStorage
-    localStorage.setItem(storageKey, theme);
-  }, [theme, storageKey, mounted]);
+    localStorage.setItem(storageKey, theme)
+  }, [theme, storageKey, mounted])
 
   // Listen for system theme changes
   useEffect(() => {
-    if (!mounted || theme !== 'system') return;
+    if (!mounted || theme !== 'system') return
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = (e: MediaQueryListEvent) => {
-      setActualTheme(e.matches ? 'dark' : 'light');
-      const root = window.document.documentElement;
-      root.classList.remove('light', 'dark');
-      root.classList.add(e.matches ? 'dark' : 'light');
-    };
+      setActualTheme(e.matches ? 'dark' : 'light')
+      const root = window.document.documentElement
+      root.classList.remove('light', 'dark')
+      root.classList.add(e.matches ? 'dark' : 'light')
+    }
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme, mounted]);
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [theme, mounted])
 
   // Render children with fallback during hydration
   if (!mounted) {
     return (
-      <ThemeContext.Provider value={{ theme: defaultTheme, setTheme, actualTheme: defaultTheme === 'system' ? 'dark' : defaultTheme }}>
+      <ThemeContext.Provider
+        value={{
+          theme: defaultTheme,
+          setTheme,
+          actualTheme: defaultTheme === 'system' ? 'dark' : defaultTheme
+        }}
+      >
         {children}
       </ThemeContext.Provider>
-    );
+    )
   }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, actualTheme }}>
       {children}
     </ThemeContext.Provider>
-  );
+  )
 }
 
 // Theme Toggle Component
 export function HeraThemeToggle({ className }: { className?: string }) {
-  const { theme, setTheme, actualTheme } = useTheme();
-  
+  const { theme, setTheme, actualTheme } = useTheme()
+
   const toggleTheme = () => {
     if (theme === 'light') {
-      setTheme('dark');
+      setTheme('dark')
     } else if (theme === 'dark') {
-      setTheme('system');
+      setTheme('system')
     } else {
-      setTheme('light');
+      setTheme('light')
     }
-  };
+  }
 
   const getIcon = () => {
     if (theme === 'system') {
-      return '🖥️';
+      return '🖥️'
     }
-    return actualTheme === 'dark' ? '🌙' : '☀️';
-  };
+    return actualTheme === 'dark' ? '🌙' : '☀️'
+  }
 
   const getLabel = () => {
-    if (theme === 'system') return 'System';
-    return actualTheme === 'dark' ? 'Dark' : 'Light';
-  };
+    if (theme === 'system') return 'System'
+    return actualTheme === 'dark' ? 'Dark' : 'Light'
+  }
 
   return (
     <button
@@ -149,5 +157,5 @@ export function HeraThemeToggle({ className }: { className?: string }) {
       <span className="text-base">{getIcon()}</span>
       <span>{getLabel()}</span>
     </button>
-  );
+  )
 }

@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { getOrganizationContextFromURL, DEMO_ORGANIZATIONS, AppType } from '@/lib/organization-context-client'
+import {
+  getOrganizationContextFromURL,
+  DEMO_ORGANIZATIONS,
+  AppType
+} from '@/lib/organization-context-client'
 
 export interface OrganizationInfo {
   organizationId: string
@@ -14,7 +18,7 @@ export interface OrganizationInfo {
 
 /**
  * Hook to get the current organization context
- * 
+ *
  * Priority order:
  * 1. If authenticated and has currentOrganization from MultiOrgAuth, use that
  * 2. If on a custom subdomain (e.g., mario.heraerp.com), use subdomain org
@@ -57,7 +61,7 @@ export function useOrganizationContext(): {
         }
         const host = window.location.host
         const context = getOrganizationContextFromURL(host, pathname)
-        
+
         if (context) {
           setOrganization({
             organizationId: context.organizationId,

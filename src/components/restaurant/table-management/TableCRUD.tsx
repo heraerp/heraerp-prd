@@ -15,7 +15,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import {
   Table,
@@ -23,7 +23,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import { toast } from 'sonner'
 import {
@@ -98,7 +98,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [selectedTable, setSelectedTable] = useState<TableData | null>(null)
   const [bulkSelection, setBulkSelection] = useState<string[]>([])
-  
+
   // Form state
   const [formData, setFormData] = useState<Partial<TableData>>({
     table_number: '',
@@ -133,7 +133,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Table created successfully')
@@ -150,14 +150,14 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
 
   const updateTable = async () => {
     if (!selectedTable) return
-    
+
     try {
       const response = await fetch(`/api/v1/restaurant/table-management/${selectedTable.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Table updated successfully')
@@ -174,12 +174,12 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
 
   const deleteTable = async (tableId: string) => {
     if (!confirm('Are you sure you want to delete this table?')) return
-    
+
     try {
       const response = await fetch(`/api/v1/restaurant/table-management/${tableId}`, {
         method: 'DELETE'
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Table deleted successfully')
@@ -195,12 +195,12 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
   const bulkDelete = async () => {
     if (bulkSelection.length === 0) return
     if (!confirm(`Are you sure you want to delete ${bulkSelection.length} tables?`)) return
-    
+
     try {
       const promises = bulkSelection.map(tableId =>
         fetch(`/api/v1/restaurant/table-management/${tableId}`, { method: 'DELETE' })
       )
-      
+
       await Promise.all(promises)
       toast.success(`${bulkSelection.length} tables deleted successfully`)
       setBulkSelection([])
@@ -216,14 +216,14 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
       table_number: `${table.table_number}_copy`,
       status: 'available'
     }
-    
+
     try {
       const response = await fetch('/api/v1/restaurant/table-management', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTableData)
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Table duplicated successfully')
@@ -285,10 +285,10 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
 
   const exportTables = () => {
     const dataStr = JSON.stringify(tables, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-    
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+
     const exportFileDefaultName = `tables_${new Date().toISOString().split('T')[0]}.json`
-    
+
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)
     linkElement.setAttribute('download', exportFileDefaultName)
@@ -302,9 +302,11 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Table Management</h3>
-            <p className="text-sm text-gray-600 mt-1">Manage your restaurant tables and their configurations</p>
+            <p className="text-sm text-gray-600 mt-1">
+              Manage your restaurant tables and their configurations
+            </p>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Button variant="outline" onClick={exportTables}>
               <Download className="w-4 h-4 mr-2" />
@@ -324,7 +326,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                     Create a new table with custom configuration
                   </DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -332,7 +334,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       <Input
                         id="table_number"
                         value={formData.table_number}
-                        onChange={(e) => setFormData({ ...formData, table_number: e.target.value })}
+                        onChange={e => setFormData({ ...formData, table_number: e.target.value })}
                         placeholder="e.g., T1, A1"
                       />
                     </div>
@@ -342,20 +344,24 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                         id="capacity"
                         type="number"
                         value={formData.capacity}
-                        onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                        onChange={e =>
+                          setFormData({ ...formData, capacity: parseInt(e.target.value) })
+                        }
                         min="1"
                         max="20"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="location">Location</Label>
                       <select
                         id="location"
                         value={formData.location}
-                        onChange={(e) => setFormData({ ...formData, location: e.target.value as any })}
+                        onChange={e =>
+                          setFormData({ ...formData, location: e.target.value as any })
+                        }
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="indoor">Indoor</option>
@@ -370,7 +376,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       <select
                         id="shape"
                         value={formData.shape}
-                        onChange={(e) => setFormData({ ...formData, shape: e.target.value as any })}
+                        onChange={e => setFormData({ ...formData, shape: e.target.value as any })}
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="square">Square</option>
@@ -380,14 +386,16 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       </select>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="pricing_tier">Pricing Tier</Label>
                       <select
                         id="pricing_tier"
                         value={formData.pricing_tier}
-                        onChange={(e) => setFormData({ ...formData, pricing_tier: e.target.value as any })}
+                        onChange={e =>
+                          setFormData({ ...formData, pricing_tier: e.target.value as any })
+                        }
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="standard">Standard</option>
@@ -400,7 +408,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       <select
                         id="status"
                         value={formData.status}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                        onChange={e => setFormData({ ...formData, status: e.target.value as any })}
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="available">Available</option>
@@ -408,7 +416,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       </select>
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label>Features</Label>
                     <div className="grid grid-cols-2 gap-3 mt-2">
@@ -426,46 +434,67 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label>Reservation Settings</Label>
                     <div className="space-y-3 mt-2">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="advance_booking_days" className="text-sm">Advance Booking (days)</Label>
+                          <Label htmlFor="advance_booking_days" className="text-sm">
+                            Advance Booking (days)
+                          </Label>
                           <Input
                             id="advance_booking_days"
                             type="number"
                             value={formData.advance_booking_days}
-                            onChange={(e) => setFormData({ ...formData, advance_booking_days: parseInt(e.target.value) })}
+                            onChange={e =>
+                              setFormData({
+                                ...formData,
+                                advance_booking_days: parseInt(e.target.value)
+                              })
+                            }
                             min="0"
                             max="365"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="max_booking_duration" className="text-sm">Max Duration (minutes)</Label>
+                          <Label htmlFor="max_booking_duration" className="text-sm">
+                            Max Duration (minutes)
+                          </Label>
                           <Input
                             id="max_booking_duration"
                             type="number"
                             value={formData.max_booking_duration}
-                            onChange={(e) => setFormData({ ...formData, max_booking_duration: parseInt(e.target.value) })}
+                            onChange={e =>
+                              setFormData({
+                                ...formData,
+                                max_booking_duration: parseInt(e.target.value)
+                              })
+                            }
                             min="30"
                             max="480"
                           />
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center space-x-3">
                         <Switch
                           checked={formData.requires_deposit || false}
-                          onCheckedChange={(checked) => setFormData({ ...formData, requires_deposit: checked })}
+                          onCheckedChange={checked =>
+                            setFormData({ ...formData, requires_deposit: checked })
+                          }
                         />
                         <Label className="cursor-pointer">Requires Deposit</Label>
                         {formData.requires_deposit && (
                           <Input
                             type="number"
                             value={formData.deposit_amount}
-                            onChange={(e) => setFormData({ ...formData, deposit_amount: parseFloat(e.target.value) })}
+                            onChange={e =>
+                              setFormData({
+                                ...formData,
+                                deposit_amount: parseFloat(e.target.value)
+                              })
+                            }
                             placeholder="Amount"
                             className="w-24"
                             min="0"
@@ -473,29 +502,31 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                           />
                         )}
                       </div>
-                      
+
                       <div className="flex items-center space-x-3">
                         <Switch
                           checked={formData.is_combinable || false}
-                          onCheckedChange={(checked) => setFormData({ ...formData, is_combinable: checked })}
+                          onCheckedChange={checked =>
+                            setFormData({ ...formData, is_combinable: checked })
+                          }
                         />
                         <Label className="cursor-pointer">Can be combined with other tables</Label>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="notes">Notes</Label>
                     <Textarea
                       id="notes"
                       value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      onChange={e => setFormData({ ...formData, notes: e.target.value })}
                       placeholder="Any special notes about this table..."
                       rows={3}
                     />
                   </div>
                 </div>
-                
+
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                     Cancel
@@ -509,7 +540,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
             </Dialog>
           </div>
         </div>
-        
+
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mt-6">
           <div className="relative flex-1">
@@ -517,15 +548,15 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
             <Input
               placeholder="Search tables..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <select
               value={filterLocation}
-              onChange={(e) => setFilterLocation(e.target.value)}
+              onChange={e => setFilterLocation(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Locations</option>
@@ -535,10 +566,10 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
               <option value="bar">Bar</option>
               <option value="private">Private</option>
             </select>
-            
+
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={e => setFilterStatus(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
@@ -551,7 +582,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
           </div>
         </div>
       </Card>
-      
+
       {/* Table List */}
       <Card>
         <div className="overflow-x-auto">
@@ -561,8 +592,10 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                 <TableHead className="w-12">
                   <input
                     type="checkbox"
-                    checked={bulkSelection.length === filteredTables.length && filteredTables.length > 0}
-                    onChange={(e) => {
+                    checked={
+                      bulkSelection.length === filteredTables.length && filteredTables.length > 0
+                    }
+                    onChange={e => {
                       if (e.target.checked) {
                         setBulkSelection(filteredTables.map(t => t.id))
                       } else {
@@ -589,13 +622,13 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredTables.map((table) => (
+                filteredTables.map(table => (
                   <TableRow key={table.id}>
                     <TableCell>
                       <input
                         type="checkbox"
                         checked={bulkSelection.includes(table.id)}
-                        onChange={(e) => {
+                        onChange={e => {
                           if (e.target.checked) {
                             setBulkSelection([...bulkSelection, table.id])
                           } else {
@@ -628,9 +661,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusBadge(table.status)}>
-                        {table.status}
-                      </Badge>
+                      <Badge className={getStatusBadge(table.status)}>{table.status}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
@@ -643,33 +674,31 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                           ) : null
                         })}
                         {table.features.length > 3 && (
-                          <span className="text-xs text-gray-500">+{table.features.length - 3}</span>
+                          <span className="text-xs text-gray-500">
+                            +{table.features.length - 3}
+                          </span>
                         )}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={
-                        table.pricing_tier === 'vip' ? 'bg-purple-100 text-purple-800' :
-                        table.pricing_tier === 'premium' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }>
+                      <Badge
+                        className={
+                          table.pricing_tier === 'vip'
+                            ? 'bg-purple-100 text-purple-800'
+                            : table.pricing_tier === 'premium'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-gray-100 text-gray-800'
+                        }
+                      >
                         {table.pricing_tier}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(table)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(table)}>
                           <Pencil className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => duplicateTable(table)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => duplicateTable(table)}>
                           <Copy className="w-4 h-4" />
                         </Button>
                         <Button
@@ -688,7 +717,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
             </TableBody>
           </Table>
         </div>
-        
+
         {/* Bulk Actions */}
         {bulkSelection.length > 0 && (
           <div className="p-4 bg-gray-50 border-t flex items-center justify-between">
@@ -707,17 +736,15 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
           </div>
         )}
       </Card>
-      
+
       {/* Pencil Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Pencil Table</DialogTitle>
-            <DialogDescription>
-              Update table configuration
-            </DialogDescription>
+            <DialogDescription>Update table configuration</DialogDescription>
           </DialogHeader>
-          
+
           {/* Same form as Add Dialog */}
           <div className="grid gap-4 py-4">
             {/* ... same form fields as in Add Dialog ... */}
@@ -727,7 +754,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                 <Input
                   id="edit_table_number"
                   value={formData.table_number}
-                  onChange={(e) => setFormData({ ...formData, table_number: e.target.value })}
+                  onChange={e => setFormData({ ...formData, table_number: e.target.value })}
                   placeholder="e.g., T1, A1"
                 />
               </div>
@@ -737,20 +764,20 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                   id="edit_capacity"
                   type="number"
                   value={formData.capacity}
-                  onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                  onChange={e => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
                   min="1"
                   max="20"
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit_location">Location</Label>
                 <select
                   id="edit_location"
                   value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value as any })}
+                  onChange={e => setFormData({ ...formData, location: e.target.value as any })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="indoor">Indoor</option>
@@ -765,7 +792,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
                 <select
                   id="edit_status"
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                  onChange={e => setFormData({ ...formData, status: e.target.value as any })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="available">Available</option>
@@ -777,7 +804,7 @@ export function TableCRUD({ tables, onTablesUpdate }: TableCRUDProps) {
               </div>
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
               Cancel

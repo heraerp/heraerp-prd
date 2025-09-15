@@ -3,7 +3,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Activity,
   TrendingUp,
   Users,
@@ -70,7 +70,7 @@ export function TodaysMetrics({ className }: TodaysMetricsProps) {
   ]
 
   return (
-    <Card className={cn("border-purple-200 dark:border-purple-800 shadow-sm", className)}>
+    <Card className={cn('border-purple-200 dark:border-purple-800 shadow-sm', className)}>
       <CardHeader className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
         <CardTitle className="text-sm flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
@@ -89,17 +89,30 @@ export function TodaysMetrics({ className }: TodaysMetricsProps) {
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className={cn("w-6 h-6 rounded-md bg-gradient-to-br flex items-center justify-center", metric.color)}>
+                  <div
+                    className={cn(
+                      'w-6 h-6 rounded-md bg-gradient-to-br flex items-center justify-center',
+                      metric.color
+                    )}
+                  >
                     <Icon className="h-3 w-3 text-white" />
                   </div>
                   <span className="text-sm font-medium">{metric.label}</span>
                 </div>
                 {metric.change !== undefined && (
-                  <div className={cn(
-                    "flex items-center gap-1 text-xs font-medium",
-                    metric.change > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-                  )}>
-                    {metric.change > 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                  <div
+                    className={cn(
+                      'flex items-center gap-1 text-xs font-medium',
+                      metric.change > 0
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-red-600 dark:text-red-400'
+                    )}
+                  >
+                    {metric.change > 0 ? (
+                      <ArrowUp className="h-3 w-3" />
+                    ) : (
+                      <ArrowDown className="h-3 w-3" />
+                    )}
                     {Math.abs(metric.change)}%
                   </div>
                 )}

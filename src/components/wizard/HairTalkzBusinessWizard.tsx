@@ -35,7 +35,7 @@ function HairTalkzWizardContent() {
       <div className="p-6">
         <BusinessSetupWizard />
       </div>
-      
+
       {/* Hair Talkz Footer */}
       <div className="bg-white/50 backdrop-blur-sm border-t border-sage-200 py-4 px-6 text-center">
         <p className="text-sage-600 text-sm">

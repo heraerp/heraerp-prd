@@ -5,18 +5,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { 
-  Users, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  UserPlus, 
+import {
+  Users,
+  Plus,
+  Edit,
+  Trash2,
+  UserPlus,
   UserMinus,
   Crown,
   Briefcase,
@@ -124,7 +136,7 @@ export function TeamManagement() {
     try {
       const response = await fetch('/api/v1/audit/teams?action=list_teams')
       const data = await response.json()
-      
+
       if (data.success) {
         setTeams(data.data)
       }
@@ -140,7 +152,7 @@ export function TeamManagement() {
     try {
       const response = await fetch(`/api/v1/audit/teams?action=team_members&teamId=${teamId}`)
       const data = await response.json()
-      
+
       if (data.success) {
         setTeamMembers(data.data)
       }
@@ -162,7 +174,7 @@ export function TeamManagement() {
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         toast.success('Team created successfully')
         setShowCreateForm(false)
@@ -189,7 +201,7 @@ export function TeamManagement() {
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         toast.success('Team updated successfully')
         loadTeams()
@@ -216,7 +228,7 @@ export function TeamManagement() {
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         toast.success('Team deleted successfully')
         loadTeams()
@@ -251,22 +263,33 @@ export function TeamManagement() {
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'partner': return <Crown className="w-4 h-4 text-yellow-600" />
-      case 'manager': return <Briefcase className="w-4 h-4 text-blue-600" />
-      case 'senior': return <GraduationCap className="w-4 h-4 text-green-600" />
-      case 'staff': return <Users className="w-4 h-4 text-gray-600" />
-      case 'intern': return <Star className="w-4 h-4 text-purple-600" />
-      default: return <Users className="w-4 h-4" />
+      case 'partner':
+        return <Crown className="w-4 h-4 text-yellow-600" />
+      case 'manager':
+        return <Briefcase className="w-4 h-4 text-blue-600" />
+      case 'senior':
+        return <GraduationCap className="w-4 h-4 text-green-600" />
+      case 'staff':
+        return <Users className="w-4 h-4 text-gray-600" />
+      case 'intern':
+        return <Star className="w-4 h-4 text-purple-600" />
+      default:
+        return <Users className="w-4 h-4" />
     }
   }
 
   const getTeamTypeColor = (type: string) => {
     switch (type) {
-      case 'engagement': return 'bg-blue-100 text-blue-800'
-      case 'quality_review': return 'bg-green-100 text-green-800'
-      case 'specialized': return 'bg-purple-100 text-purple-800'
-      case 'training': return 'bg-orange-100 text-orange-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'engagement':
+        return 'bg-blue-100 text-blue-800'
+      case 'quality_review':
+        return 'bg-green-100 text-green-800'
+      case 'specialized':
+        return 'bg-purple-100 text-purple-800'
+      case 'training':
+        return 'bg-orange-100 text-orange-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -302,12 +325,12 @@ export function TeamManagement() {
               </Button>
             </DialogTrigger>
             {showCreateForm && (
-              <div 
+              <div
                 className="fixed inset-0 bg-black/60 z-[90]"
                 onClick={() => setShowCreateForm(false)}
               />
             )}
-            <DialogContent 
+            <DialogContent
               className="max-w-2xl bg-white border border-gray-200 shadow-2xl z-[100] 
                          fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
                          rounded-lg p-6"
@@ -323,7 +346,7 @@ export function TeamManagement() {
                 </DialogTitle>
               </DialogHeader>
               <div className="max-h-[70vh] overflow-y-auto pt-4">
-                <CreateTeamForm 
+                <CreateTeamForm
                   formData={formData}
                   setFormData={setFormData}
                   onSubmit={handleCreateTeam}
@@ -372,7 +395,8 @@ export function TeamManagement() {
               <div>
                 <p className="text-sm text-gray-600">Avg Utilization</p>
                 <p className="text-2xl font-bold text-orange-600">
-                  {Math.round(teams.reduce((sum, t) => sum + t.current_workload, 0) / teams.length)}%
+                  {Math.round(teams.reduce((sum, t) => sum + t.current_workload, 0) / teams.length)}
+                  %
                 </p>
               </div>
               <TrendingUp className="w-8 h-8 text-orange-500" />
@@ -407,7 +431,7 @@ export function TeamManagement() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {teams.map((team) => (
+              {teams.map(team => (
                 <div
                   key={team.id}
                   className={`p-4 border rounded-lg cursor-pointer transition-all ${
@@ -426,7 +450,9 @@ export function TeamManagement() {
                         <Badge className={getTeamTypeColor(team.team_type)}>
                           {team.team_type.replace('_', ' ')}
                         </Badge>
-                        <span className={`text-sm font-medium ${getWorkloadColor(team.current_workload)}`}>
+                        <span
+                          className={`text-sm font-medium ${getWorkloadColor(team.current_workload)}`}
+                        >
                           {team.current_workload}% utilized
                         </span>
                       </div>
@@ -450,7 +476,7 @@ export function TeamManagement() {
         {/* Team Details */}
         <div className="lg:col-span-2">
           {selectedTeam ? (
-            <TeamDetails 
+            <TeamDetails
               team={selectedTeam}
               members={teamMembers}
               onUpdateTeam={handleUpdateTeam}
@@ -473,11 +499,11 @@ export function TeamManagement() {
   )
 }
 
-function CreateTeamForm({ 
-  formData, 
-  setFormData, 
-  onSubmit, 
-  onCancel 
+function CreateTeamForm({
+  formData,
+  setFormData,
+  onSubmit,
+  onCancel
 }: {
   formData: TeamFormData
   setFormData: (data: TeamFormData) => void
@@ -485,31 +511,44 @@ function CreateTeamForm({
   onCancel: () => void
 }) {
   const specializations = [
-    'Public Companies', 'Financial Services', 'SOX Compliance', 
-    'Internal Controls', 'EQCR', 'Quality Control', 'Risk Assessment',
-    'Banking', 'Insurance', 'Healthcare', 'Manufacturing', 'Technology'
+    'Public Companies',
+    'Financial Services',
+    'SOX Compliance',
+    'Internal Controls',
+    'EQCR',
+    'Quality Control',
+    'Risk Assessment',
+    'Banking',
+    'Insurance',
+    'Healthcare',
+    'Manufacturing',
+    'Technology'
   ]
 
   return (
     <div className="space-y-6 bg-white p-1">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="team_name" className="text-gray-700 font-medium">Team Name</Label>
+          <Label htmlFor="team_name" className="text-gray-700 font-medium">
+            Team Name
+          </Label>
           <Input
             id="team_name"
             className="mt-1 bg-white border border-gray-300 text-gray-900"
             value={formData.team_name}
-            onChange={(e) => setFormData({ ...formData, team_name: e.target.value })}
+            onChange={e => setFormData({ ...formData, team_name: e.target.value })}
             placeholder="Senior Engagement Team Alpha"
           />
         </div>
         <div>
-          <Label htmlFor="team_code" className="text-gray-700 font-medium">Team Code</Label>
+          <Label htmlFor="team_code" className="text-gray-700 font-medium">
+            Team Code
+          </Label>
           <Input
             id="team_code"
             className="mt-1 bg-white border border-gray-300 text-gray-900"
             value={formData.team_code}
-            onChange={(e) => setFormData({ ...formData, team_code: e.target.value })}
+            onChange={e => setFormData({ ...formData, team_code: e.target.value })}
             placeholder="GSPU-ENG-001"
           />
         </div>
@@ -518,7 +557,10 @@ function CreateTeamForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="team_type">Team Type</Label>
-          <Select value={formData.team_type} onValueChange={(value: any) => setFormData({ ...formData, team_type: value })}>
+          <Select
+            value={formData.team_type}
+            onValueChange={(value: any) => setFormData({ ...formData, team_type: value })}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -536,7 +578,9 @@ function CreateTeamForm({
             id="max_capacity"
             type="number"
             value={formData.max_capacity}
-            onChange={(e) => setFormData({ ...formData, max_capacity: parseInt(e.target.value) || 10 })}
+            onChange={e =>
+              setFormData({ ...formData, max_capacity: parseInt(e.target.value) || 10 })
+            }
           />
         </div>
       </div>
@@ -547,13 +591,16 @@ function CreateTeamForm({
           <Input
             id="team_lead_name"
             value={formData.team_lead_name}
-            onChange={(e) => setFormData({ ...formData, team_lead_name: e.target.value })}
+            onChange={e => setFormData({ ...formData, team_lead_name: e.target.value })}
             placeholder="John Smith"
           />
         </div>
         <div>
           <Label htmlFor="office_location">Office Location</Label>
-          <Select value={formData.office_location} onValueChange={(value) => setFormData({ ...formData, office_location: value })}>
+          <Select
+            value={formData.office_location}
+            onValueChange={value => setFormData({ ...formData, office_location: value })}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -572,22 +619,22 @@ function CreateTeamForm({
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={e => setFormData({ ...formData, description: e.target.value })}
           placeholder="Specialized team for high-risk public company audits"
           rows={3}
         />
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={onCancel}
           className="bg-white border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           Cancel
         </Button>
-        <Button 
-          onClick={onSubmit} 
+        <Button
+          onClick={onSubmit}
           disabled={!formData.team_name || !formData.team_lead_name}
           className="bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -598,12 +645,12 @@ function CreateTeamForm({
   )
 }
 
-function TeamDetails({ 
-  team, 
-  members, 
-  onUpdateTeam, 
+function TeamDetails({
+  team,
+  members,
+  onUpdateTeam,
   onDeleteTeam,
-  onMembersChanged 
+  onMembersChanged
 }: {
   team: AuditTeam
   members: TeamMember[]
@@ -620,15 +667,17 @@ function TeamDetails({
               <Building className="w-5 h-5" />
               {team.entity_name}
             </CardTitle>
-            <p className="text-sm text-gray-600 mt-1">{team.entity_code} • {team.office_location}</p>
+            <p className="text-sm text-gray-600 mt-1">
+              {team.entity_code} • {team.office_location}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline">
               <Pencil className="w-4 h-4 mr-1" />
               Edit
             </Button>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
               onClick={() => onDeleteTeam(team.id)}
               className="text-red-600 hover:text-red-700"
@@ -654,7 +703,13 @@ function TeamDetails({
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Type:</span>
-                    <Badge className={team.team_type === 'engagement' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}>
+                    <Badge
+                      className={
+                        team.team_type === 'engagement'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-green-100 text-green-800'
+                      }
+                    >
                       {team.team_type.replace('_', ' ')}
                     </Badge>
                   </div>
@@ -664,11 +719,15 @@ function TeamDetails({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Capacity:</span>
-                    <span className="text-sm font-medium">{members.length}/{team.max_capacity}</span>
+                    <span className="text-sm font-medium">
+                      {members.length}/{team.max_capacity}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Utilization:</span>
-                    <span className={`text-sm font-medium ${team.current_workload >= 90 ? 'text-red-600' : 'text-green-600'}`}>
+                    <span
+                      className={`text-sm font-medium ${team.current_workload >= 90 ? 'text-red-600' : 'text-green-600'}`}
+                    >
                       {team.current_workload}%
                     </span>
                   </div>
@@ -685,7 +744,7 @@ function TeamDetails({
                 </div>
               </div>
             </div>
-            
+
             {team.description && (
               <div>
                 <h4 className="font-medium text-gray-900 mb-2">Description</h4>
@@ -702,10 +761,13 @@ function TeamDetails({
                 Add Member
               </Button>
             </div>
-            
+
             <div className="space-y-3">
-              {members.map((member) => (
-                <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+              {members.map(member => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="flex items-center gap-3">
                     {getRoleIcon(member.role)}
                     <div>
@@ -714,7 +776,9 @@ function TeamDetails({
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium">{member.availability_percentage}% available</p>
+                    <p className="text-sm font-medium">
+                      {member.availability_percentage}% available
+                    </p>
                     {member.specialization.length > 0 && (
                       <p className="text-xs text-gray-600">{member.specialization.join(', ')}</p>
                     )}
@@ -743,7 +807,9 @@ function TeamDetails({
                     <span className="text-sm text-gray-600">Performance Rating</span>
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-yellow-500" />
-                      <span className="font-medium">{team.metadata.team_performance_rating}/5.0</span>
+                      <span className="font-medium">
+                        {team.metadata.team_performance_rating}/5.0
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -752,12 +818,16 @@ function TeamDetails({
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Avg Duration</span>
-                    <span className="font-medium">{team.metadata.avg_engagement_duration} days</span>
+                    <span className="font-medium">
+                      {team.metadata.avg_engagement_duration} days
+                    </span>
                   </div>
                   {team.metadata.client_satisfaction_rating && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Client Satisfaction</span>
-                      <span className="font-medium">{team.metadata.client_satisfaction_rating}/5.0</span>
+                      <span className="font-medium">
+                        {team.metadata.client_satisfaction_rating}/5.0
+                      </span>
                     </div>
                   )}
                 </div>
@@ -772,11 +842,17 @@ function TeamDetails({
 
 function getRoleIcon(role: string) {
   switch (role) {
-    case 'partner': return <Crown className="w-4 h-4 text-yellow-600" />
-    case 'manager': return <Briefcase className="w-4 h-4 text-blue-600" />
-    case 'senior': return <GraduationCap className="w-4 h-4 text-green-600" />
-    case 'staff': return <Users className="w-4 h-4 text-gray-600" />
-    case 'intern': return <Star className="w-4 h-4 text-purple-600" />
-    default: return <Users className="w-4 h-4" />
+    case 'partner':
+      return <Crown className="w-4 h-4 text-yellow-600" />
+    case 'manager':
+      return <Briefcase className="w-4 h-4 text-blue-600" />
+    case 'senior':
+      return <GraduationCap className="w-4 h-4 text-green-600" />
+    case 'staff':
+      return <Users className="w-4 h-4 text-gray-600" />
+    case 'intern':
+      return <Star className="w-4 h-4 text-purple-600" />
+    default:
+      return <Users className="w-4 h-4" />
   }
 }

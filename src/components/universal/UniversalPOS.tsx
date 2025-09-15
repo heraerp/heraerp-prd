@@ -12,12 +12,35 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { 
-  ShoppingCart, Plus, Minus, Trash2, CreditCard, DollarSign,
-  Clock, Star, Save, Receipt, CheckCircle, Printer, Smartphone,
-  Banknote, Wallet, QrCode, Gift, Split, Calculator, Zap
+import {
+  ShoppingCart,
+  Plus,
+  Minus,
+  Trash2,
+  CreditCard,
+  DollarSign,
+  Clock,
+  Star,
+  Save,
+  Receipt,
+  CheckCircle,
+  Printer,
+  Smartphone,
+  Banknote,
+  Wallet,
+  QrCode,
+  Gift,
+  Split,
+  Calculator,
+  Zap
 } from 'lucide-react'
 
 // ================================================================================
@@ -88,11 +111,11 @@ export interface UniversalPOSProps {
 // UNIVERSAL POS COMPONENT
 // ================================================================================
 
-export function UniversalPOS({ 
-  config, 
-  items, 
-  onTransaction, 
-  onSave, 
+export function UniversalPOS({
+  config,
+  items,
+  onTransaction,
+  onSave,
   demoMode = false,
   className = ''
 }: UniversalPOSProps) {
@@ -101,12 +124,12 @@ export function UniversalPOS({
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [selectedCustomer, setSelectedCustomer] = useState(null)
-  
+
   // Payment State
   const [paymentMethod, setPaymentMethod] = useState('cash')
   const [splitPayment, setSplitPayment] = useState(false)
   const [paymentMethods, setPaymentMethods] = useState([{ method: 'cash', amount: 0 }])
-  
+
   // Transaction State
   const [hasChanges, setHasChanges] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
@@ -120,11 +143,11 @@ export function UniversalPOS({
   const addToCart = (item: POSItem) => {
     const existingItem = cart.find(cartItem => cartItem.id === item.id)
     if (existingItem) {
-      setCart(cart.map(cartItem =>
-        cartItem.id === item.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      ))
+      setCart(
+        cart.map(cartItem =>
+          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+        )
+      )
     } else {
       setCart([...cart, { ...item, quantity: 1 }])
     }
@@ -140,9 +163,7 @@ export function UniversalPOS({
     if (newQuantity === 0) {
       removeFromCart(itemId)
     } else {
-      setCart(cart.map(item =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      ))
+      setCart(cart.map(item => (item.id === itemId ? { ...item, quantity: newQuantity } : item)))
     }
     setHasChanges(true)
   }
@@ -152,7 +173,7 @@ export function UniversalPOS({
   // ============================================================================
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0)
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0)
   }
 
   const getTax = () => {
@@ -222,7 +243,7 @@ export function UniversalPOS({
 
   const processPayment = () => {
     if (cart.length === 0) return
-    
+
     const transaction = {
       id: `TXN-${Date.now()}`,
       businessType: config.businessType,
@@ -236,10 +257,10 @@ export function UniversalPOS({
       receiptNumber: `${config.businessType.toUpperCase()}-${Math.floor(Math.random() * 100000)}`,
       currency: config.currency
     }
-    
+
     setLastTransaction(transaction)
     onTransaction?.(transaction)
-    
+
     // Clear cart after successful payment
     setCart([])
     setSelectedCustomer(null)
@@ -247,13 +268,13 @@ export function UniversalPOS({
     setSplitPayment(false)
     setPaymentMethods([{ method: 'cash', amount: 0 }])
     setReceiptPrinted(false)
-    
+
     alert(`${config.businessName}: Payment processed successfully!`)
   }
 
   const printReceipt = () => {
     if (!lastTransaction) return
-    
+
     const receiptContent = `
       ${config.receiptHeader}
       ================================
@@ -262,10 +283,13 @@ export function UniversalPOS({
       ================================
       
       ITEMS:
-      ${lastTransaction.items.map(item => 
-        `${item.name} x${item.quantity}${item.type === 'service' && item.provider ? ` (${item.provider})` : ''}
+      ${lastTransaction.items
+        .map(
+          item =>
+            `${item.name} x${item.quantity}${item.type === 'service' && item.provider ? ` (${item.provider})` : ''}
          ${config.currency}${(item.price * item.quantity).toFixed(2)}`
-      ).join('\n')}
+        )
+        .join('\n')}
       
       --------------------------------
       Subtotal: ${config.currency}${lastTransaction.subtotal.toFixed(2)}
@@ -275,14 +299,16 @@ export function UniversalPOS({
       ================================
       
       Payment Method: ${
-        Array.isArray(lastTransaction.paymentMethod) 
-          ? lastTransaction.paymentMethod.map(p => `${p.method}: ${config.currency}${p.amount.toFixed(2)}`).join(', ')
+        Array.isArray(lastTransaction.paymentMethod)
+          ? lastTransaction.paymentMethod
+              .map(p => `${p.method}: ${config.currency}${p.amount.toFixed(2)}`)
+              .join(', ')
           : lastTransaction.paymentMethod
       }
       
       ${config.receiptFooter}
     `
-    
+
     const printWindow = window.open('', '_blank')
     if (printWindow) {
       printWindow.document.write(`
@@ -318,21 +344,29 @@ export function UniversalPOS({
   // ============================================================================
 
   const filteredItems = items.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.category.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter
     return matchesSearch && matchesCategory
   })
 
   const getPaymentIcon = (method: string) => {
-    switch(method) {
-      case 'cash': return <Banknote className="h-4 w-4" />
-      case 'card': return <CreditCard className="h-4 w-4" />
-      case 'apple_pay': return <Smartphone className="h-4 w-4" />
-      case 'google_pay': return <Wallet className="h-4 w-4" />
-      case 'venmo': return <QrCode className="h-4 w-4" />
-      case 'gift_card': return <Gift className="h-4 w-4" />
-      default: return <DollarSign className="h-4 w-4" />
+    switch (method) {
+      case 'cash':
+        return <Banknote className="h-4 w-4" />
+      case 'card':
+        return <CreditCard className="h-4 w-4" />
+      case 'apple_pay':
+        return <Smartphone className="h-4 w-4" />
+      case 'google_pay':
+        return <Wallet className="h-4 w-4" />
+      case 'venmo':
+        return <QrCode className="h-4 w-4" />
+      case 'gift_card':
+        return <Gift className="h-4 w-4" />
+      default:
+        return <DollarSign className="h-4 w-4" />
     }
   }
 
@@ -340,9 +374,11 @@ export function UniversalPOS({
     if (config.theme.icon) {
       return <config.theme.icon className="h-6 w-6 text-white drop-shadow-sm" />
     }
-    return item.type === 'service' 
-      ? <Star className="h-6 w-6 text-white drop-shadow-sm" />
-      : <ShoppingCart className="h-6 w-6 text-white drop-shadow-sm" />
+    return item.type === 'service' ? (
+      <Star className="h-6 w-6 text-white drop-shadow-sm" />
+    ) : (
+      <ShoppingCart className="h-6 w-6 text-white drop-shadow-sm" />
+    )
   }
 
   // ============================================================================
@@ -359,7 +395,7 @@ export function UniversalPOS({
               <Input
                 placeholder={`Search ${config.businessType} items...`}
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="bg-white/60 backdrop-blur-sm border-white/30 text-slate-800 placeholder:text-slate-500 focus:bg-white/80 transition-all"
               />
             </div>
@@ -368,8 +404,10 @@ export function UniversalPOS({
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
               <SelectContent className="hera-select-content">
-                <SelectItem value="all" className="hera-select-item">All Categories</SelectItem>
-                {config.itemCategories.map((category) => (
+                <SelectItem value="all" className="hera-select-item">
+                  All Categories
+                </SelectItem>
+                {config.itemCategories.map(category => (
                   <SelectItem key={category} value={category} className="hera-select-item">
                     {category}
                   </SelectItem>
@@ -384,9 +422,9 @@ export function UniversalPOS({
         {/* Items Grid */}
         <div className="lg:col-span-2 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredItems.map((item) => (
-              <Card 
-                key={item.id} 
+            {filteredItems.map(item => (
+              <Card
+                key={item.id}
                 className="bg-white/40 backdrop-blur-xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer"
                 onClick={() => addToCart(item)}
               >
@@ -394,19 +432,31 @@ export function UniversalPOS({
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 flex-1">
                       <div className="relative">
-                        <div className={`absolute inset-0 ${config.theme.primaryColor}/20 rounded-lg blur-md group-hover:blur-lg transition-all`}></div>
-                        <div className={`h-12 w-12 bg-gradient-to-br ${config.theme.primaryColor}/90 ${config.theme.secondaryColor}/90 rounded-lg flex items-center justify-center shadow-lg relative`}>
+                        <div
+                          className={`absolute inset-0 ${config.theme.primaryColor}/20 rounded-lg blur-md group-hover:blur-lg transition-all`}
+                        ></div>
+                        <div
+                          className={`h-12 w-12 bg-gradient-to-br ${config.theme.primaryColor}/90 ${config.theme.secondaryColor}/90 rounded-lg flex items-center justify-center shadow-lg relative`}
+                        >
                           {getItemIcon(item)}
                         </div>
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <p className="font-semibold text-slate-800">{item.name}</p>
-                          <Badge className={item.type === 'service' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-green-100 text-green-800 border-green-200'}>
+                          <Badge
+                            className={
+                              item.type === 'service'
+                                ? 'bg-blue-100 text-blue-800 border-blue-200'
+                                : 'bg-green-100 text-green-800 border-green-200'
+                            }
+                          >
                             {item.type}
                           </Badge>
                         </div>
-                        <p className="text-sm text-slate-600 mb-2 font-medium">{item.description}</p>
+                        <p className="text-sm text-slate-600 mb-2 font-medium">
+                          {item.description}
+                        </p>
                         <div className="flex items-center gap-3 text-xs text-slate-500">
                           {item.type === 'service' ? (
                             <>
@@ -431,16 +481,17 @@ export function UniversalPOS({
                                   Stock: {item.stock}
                                 </span>
                               )}
-                              {item.brand && (
-                                <span className="text-slate-600">{item.brand}</span>
-                              )}
+                              {item.brand && <span className="text-slate-600">{item.brand}</span>}
                             </>
                           )}
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-emerald-700">{config.currency}{item.price}</p>
+                      <p className="text-lg font-bold text-emerald-700">
+                        {config.currency}
+                        {item.price}
+                      </p>
                       <Button size="sm" className={`${config.theme.accentColor} text-white mt-2`}>
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -459,7 +510,9 @@ export function UniversalPOS({
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-slate-800">
                 <div className={`p-2 ${config.theme.primaryColor}/20 rounded-lg`}>
-                  <ShoppingCart className={`h-6 w-6 ${config.theme.primaryColor.replace('bg-', 'text-')}`} />
+                  <ShoppingCart
+                    className={`h-6 w-6 ${config.theme.primaryColor.replace('bg-', 'text-')}`}
+                  />
                 </div>
                 <span className="text-lg font-semibold">Current Sale ({cart.length})</span>
               </CardTitle>
@@ -473,17 +526,23 @@ export function UniversalPOS({
                     <p className="text-sm text-slate-500">Add items to start</p>
                   </div>
                 ) : (
-                  cart.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 bg-white/50 rounded-lg">
+                  cart.map(item => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-3 bg-white/50 rounded-lg"
+                    >
                       <div className="flex-1">
                         <p className="font-semibold text-slate-800 text-sm">{item.name}</p>
-                        <p className="text-xs text-slate-600">{config.currency}{item.price} each</p>
+                        <p className="text-xs text-slate-600">
+                          {config.currency}
+                          {item.price} each
+                        </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={(e) => {
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={e => {
                             e.stopPropagation()
                             updateQuantity(item.id, item.quantity - 1)
                           }}
@@ -492,10 +551,10 @@ export function UniversalPOS({
                           <Minus className="h-3 w-3" />
                         </Button>
                         <span className="text-sm font-medium w-8 text-center">{item.quantity}</span>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={(e) => {
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={e => {
                             e.stopPropagation()
                             updateQuantity(item.id, item.quantity + 1)
                           }}
@@ -503,10 +562,10 @@ export function UniversalPOS({
                         >
                           <Plus className="h-3 w-3" />
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive" 
-                          onClick={(e) => {
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={e => {
                             e.stopPropagation()
                             removeFromCart(item.id)
                           }}
@@ -526,16 +585,27 @@ export function UniversalPOS({
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Subtotal:</span>
-                      <span className="font-medium text-slate-800">{config.currency}{getCartTotal().toFixed(2)}</span>
+                      <span className="font-medium text-slate-800">
+                        {config.currency}
+                        {getCartTotal().toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Tax ({(config.taxRate * 100).toFixed(1)}%):</span>
-                      <span className="font-medium text-slate-800">{config.currency}{getTax().toFixed(2)}</span>
+                      <span className="text-slate-600">
+                        Tax ({(config.taxRate * 100).toFixed(1)}%):
+                      </span>
+                      <span className="font-medium text-slate-800">
+                        {config.currency}
+                        {getTax().toFixed(2)}
+                      </span>
                     </div>
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                       <span className="text-slate-800">Total:</span>
-                      <span className="text-emerald-700">{config.currency}{getFinalTotal().toFixed(2)}</span>
+                      <span className="text-emerald-700">
+                        {config.currency}
+                        {getFinalTotal().toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </>
@@ -557,7 +627,7 @@ export function UniversalPOS({
                   {config.features.splitPayments && (
                     <Button
                       size="sm"
-                      variant={splitPayment ? "default" : "outline"}
+                      variant={splitPayment ? 'default' : 'outline'}
                       onClick={() => setSplitPayment(!splitPayment)}
                       className="text-xs"
                     >
@@ -572,7 +642,7 @@ export function UniversalPOS({
                   <div>
                     <Label className="text-slate-700 font-medium mb-2 block">Payment Method</Label>
                     <div className="grid grid-cols-2 gap-2 mb-3">
-                      {Object.entries(config.paymentMethods).map(([method, enabled]) => 
+                      {Object.entries(config.paymentMethods).map(([method, enabled]) =>
                         enabled ? (
                           <Button
                             key={method}
@@ -606,14 +676,21 @@ export function UniversalPOS({
                     </div>
                     {paymentMethods.map((pm, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <Select value={pm.method} onValueChange={(value) => updatePaymentMethodType(index, value)}>
+                        <Select
+                          value={pm.method}
+                          onValueChange={value => updatePaymentMethodType(index, value)}
+                        >
                           <SelectTrigger className="w-32 bg-white/60 backdrop-blur-sm border-white/30">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="hera-select-content">
-                            {Object.entries(config.paymentMethods).map(([method, enabled]) => 
+                            {Object.entries(config.paymentMethods).map(([method, enabled]) =>
                               enabled ? (
-                                <SelectItem key={method} value={method} className="hera-select-item">
+                                <SelectItem
+                                  key={method}
+                                  value={method}
+                                  className="hera-select-item"
+                                >
                                   <div className="flex items-center gap-2">
                                     {getPaymentIcon(method)}
                                     <span className="capitalize">{method.replace('_', ' ')}</span>
@@ -628,7 +705,7 @@ export function UniversalPOS({
                             type="number"
                             placeholder="Amount"
                             value={pm.amount || ''}
-                            onChange={(e) => updatePaymentMethodAmount(index, e.target.value)}
+                            onChange={e => updatePaymentMethodAmount(index, e.target.value)}
                             className="bg-white/60 backdrop-blur-sm border-white/30 pr-10"
                           />
                           {getRemainingAmount() > 0 && pm.amount === 0 && (
@@ -668,19 +745,33 @@ export function UniversalPOS({
                       <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2">
                         <div className="flex justify-between text-sm font-medium">
                           <span>Total Entered:</span>
-                          <span className={getTotalPaymentAmount() === getFinalTotal() ? 'text-green-600' : 'text-red-600'}>
-                            {config.currency}{getTotalPaymentAmount().toFixed(2)} / {config.currency}{getFinalTotal().toFixed(2)}
+                          <span
+                            className={
+                              getTotalPaymentAmount() === getFinalTotal()
+                                ? 'text-green-600'
+                                : 'text-red-600'
+                            }
+                          >
+                            {config.currency}
+                            {getTotalPaymentAmount().toFixed(2)} / {config.currency}
+                            {getFinalTotal().toFixed(2)}
                           </span>
                         </div>
                         {getRemainingAmount() > 0 ? (
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-orange-600 font-medium">Remaining:</span>
-                            <span className="text-orange-600 font-bold">{config.currency}{getRemainingAmount().toFixed(2)}</span>
+                            <span className="text-orange-600 font-bold">
+                              {config.currency}
+                              {getRemainingAmount().toFixed(2)}
+                            </span>
                           </div>
                         ) : getRemainingAmount() < 0 ? (
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-red-600 font-medium">Overpaid:</span>
-                            <span className="text-red-600 font-bold">{config.currency}{Math.abs(getRemainingAmount()).toFixed(2)}</span>
+                            <span className="text-red-600 font-bold">
+                              {config.currency}
+                              {Math.abs(getRemainingAmount()).toFixed(2)}
+                            </span>
                           </div>
                         ) : (
                           <div className="flex items-center justify-center text-sm">
@@ -694,28 +785,22 @@ export function UniversalPOS({
                 )}
 
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={processPayment}
-                    disabled={splitPayment && Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01}
+                    disabled={
+                      splitPayment && Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01
+                    }
                     className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Receipt className="h-5 w-5 mr-2" />
-                    {splitPayment ? (
-                      Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01 ? (
-                        `Remaining: ${config.currency}${getRemainingAmount().toFixed(2)}`
-                      ) : (
-                        `Process Split Payment (${paymentMethods.length} methods)`
-                      )
-                    ) : (
-                      `Process Payment (${config.currency}${getFinalTotal().toFixed(2)})`
-                    )}
+                    {splitPayment
+                      ? Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01
+                        ? `Remaining: ${config.currency}${getRemainingAmount().toFixed(2)}`
+                        : `Process Split Payment (${paymentMethods.length} methods)`
+                      : `Process Payment (${config.currency}${getFinalTotal().toFixed(2)})`}
                   </Button>
                   {config.features.printing && lastTransaction && (
-                    <Button
-                      onClick={printReceipt}
-                      variant="outline"
-                      className="px-4"
-                    >
+                    <Button onClick={printReceipt} variant="outline" className="px-4">
                       <Printer className="h-5 w-5" />
                     </Button>
                   )}
@@ -731,9 +816,7 @@ export function UniversalPOS({
                         </span>
                       </div>
                       {receiptPrinted && (
-                        <Badge className="bg-green-100 text-green-700">
-                          Receipt Printed
-                        </Badge>
+                        <Badge className="bg-green-100 text-green-700">Receipt Printed</Badge>
                       )}
                     </div>
                   </div>

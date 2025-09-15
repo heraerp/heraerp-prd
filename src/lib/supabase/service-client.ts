@@ -21,7 +21,7 @@ export function createServiceClient() {
 // Helper to create entities with service role
 export async function createEntityWithServiceRole(data: any) {
   const supabase = createServiceClient()
-  
+
   const { data: entity, error } = await supabase
     .from('core_entities')
     .insert(data)

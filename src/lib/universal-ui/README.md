@@ -7,21 +7,27 @@ The Universal UI system is a revolutionary approach to building enterprise appli
 ## Core Concepts
 
 ### 1. Smart Code Driven
+
 Every entity has a smart code that determines:
+
 - Which widgets to display
 - How data should be presented
 - Available actions and workflows
 - Business rules and validations
 
 ### 2. Metadata-Powered Views
+
 UI configuration is stored in `core_dynamic_data` as JSON metadata that describes:
+
 - Widget types and layouts
 - Field configurations
 - Data sources and queries
 - Actions and navigation
 
 ### 3. Zero Custom Components
+
 New entity types automatically get:
+
 - Complete CRUD interfaces
 - List views with sorting/filtering
 - Detail forms with validation
@@ -54,10 +60,11 @@ UniversalRenderer (Main Component)
 ## Usage
 
 ### Basic Implementation
+
 ```tsx
 import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 
-<UniversalRenderer
+;<UniversalRenderer
   smartCode="HERA.FURN.BOM.ITEM.PRODUCT.v1"
   viewType="detail"
   entityId={productId}
@@ -67,6 +74,7 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 ```
 
 ### View Types
+
 - **detail** - Single entity view with all details
 - **list** - Grid view of multiple entities
 - **form** - Data entry/edit form
@@ -77,6 +85,7 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 ## Metadata Structure
 
 ### View Metadata
+
 ```json
 {
   "id": "view-id",
@@ -107,6 +116,7 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 ### Widget Types
 
 #### Form Widget
+
 ```json
 {
   "type": "form",
@@ -125,6 +135,7 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 ```
 
 #### Grid Widget
+
 ```json
 {
   "type": "grid",
@@ -148,11 +159,13 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 The Furniture BOM implementation demonstrates:
 
 ### 1. Complex Data Relationships
+
 - Products have components (via relationships)
 - Components can be raw materials or sub-assemblies
 - Multi-level BOMs with cost rollup
 
 ### 2. Rich UI Without Code
+
 - Stats dashboard with cost breakdowns
 - Component grid with inline editing
 - Cost charts and visualizations
@@ -160,6 +173,7 @@ The Furniture BOM implementation demonstrates:
 - Workflow status management
 
 ### 3. Smart Code Intelligence
+
 ```
 HERA.FURN.BOM.ITEM.PRODUCT.v1
 ├── Industry: FURN (Furniture)
@@ -171,11 +185,13 @@ HERA.FURN.BOM.ITEM.PRODUCT.v1
 ## API Integration
 
 ### Get View Metadata
+
 ```typescript
 GET /api/v1/universal-ui?action=get_metadata&smart_code=XXX&view_type=detail
 ```
 
 ### Execute Actions
+
 ```typescript
 POST /api/v1/universal-ui
 {
@@ -187,6 +203,7 @@ POST /api/v1/universal-ui
 ```
 
 ### Calculate BOM Cost
+
 ```typescript
 POST /api/v1/universal-ui
 {
@@ -208,6 +225,7 @@ POST /api/v1/universal-ui/seed
 ```
 
 This creates:
+
 - Workflow statuses
 - Raw material components
 - Sub-assemblies with relationships
@@ -217,18 +235,21 @@ This creates:
 ## Extending the System
 
 ### Adding New Widget Types
+
 1. Create widget component in `/widgets`
 2. Register in `UniversalRenderer`
 3. Define widget config schema
 4. Handle data loading and actions
 
 ### Custom View Metadata
+
 1. Create metadata JSON structure
 2. Store in `core_dynamic_data`
 3. Reference by smart code
 4. Override default generation
 
 ### Industry-Specific Patterns
+
 - Use smart code prefixes (FURN, REST, HLTH)
 - Define industry widgets and layouts
 - Create reusable metadata templates

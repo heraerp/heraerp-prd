@@ -29,22 +29,22 @@ export class TestGenerator {
    */
   async generateTestSuite(): Promise<string[]> {
     const generatedFiles: string[] = []
-    
+
     // Generate shared helpers
-    generatedFiles.push(...await this.generateSharedHelpers())
-    
+    generatedFiles.push(...(await this.generateSharedHelpers()))
+
     // Generate Jest API tests
-    generatedFiles.push(...await this.generateJestTests())
-    
+    generatedFiles.push(...(await this.generateJestTests()))
+
     // Generate Playwright E2E tests
-    generatedFiles.push(...await this.generatePlaywrightTests())
-    
+    generatedFiles.push(...(await this.generatePlaywrightTests()))
+
     // Generate configs
-    generatedFiles.push(...await this.generateConfigs())
-    
+    generatedFiles.push(...(await this.generateConfigs()))
+
     // Generate CI config
     generatedFiles.push(await this.generateCIConfig())
-    
+
     return generatedFiles
   }
 
@@ -53,7 +53,7 @@ export class TestGenerator {
    */
   private async generateSharedHelpers(): Promise<string[]> {
     const files: string[] = []
-    
+
     // HTTP helper
     const httpHelper = `/**
  * Shared HTTP helper for tests
@@ -356,7 +356,9 @@ describe('${this.config.moduleManifest.name} - API Tests', () => {
   })
 
   describe('Guardrail Compliance', () => {
-    ${this.config.guardrailPacks?.map(pack => `
+    ${this.config.guardrailPacks
+      ?.map(
+        pack => `
     test('should comply with ${pack} guardrails', async () => {
       const response = await client.universalApi('EVALUATE_GUARDRAILS', {
         context: {
@@ -368,11 +370,15 @@ describe('${this.config.moduleManifest.name} - API Tests', () => {
 
       Assertions.assertGuardrailCompliance(response.data, '${pack}')
     })
-    `).join('\n')}
+    `
+      )
+      .join('\n')}
   })
 
   describe('Contract Tests', () => {
-    ${this.config.moduleManifest.entrypoints.api.map(endpoint => `
+    ${this.config.moduleManifest.entrypoints.api
+      .map(
+        endpoint => `
     test('should validate ${endpoint} contract', async () => {
       // Contract test for ${endpoint}
       const response = await client.request('${endpoint}', {
@@ -382,7 +388,9 @@ describe('${this.config.moduleManifest.name} - API Tests', () => {
       expect(response).toBeDefined()
       // Add specific contract assertions based on OpenAPI spec
     })
-    `).join('\n')}
+    `
+      )
+      .join('\n')}
   })
 })
 `
@@ -485,11 +493,12 @@ test.describe('${this.config.moduleManifest.name} - E2E Tests', () => {
     }
   })
 
-  ${this.config.moduleManifest.entrypoints.ui.map((component, index) => {
-    const componentName = component.replace('dna:', '')
-    const route = this.getRouteForComponent(componentName)
-    
-    return `
+  ${this.config.moduleManifest.entrypoints.ui
+    .map((component, index) => {
+      const componentName = component.replace('dna:', '')
+      const route = this.getRouteForComponent(componentName)
+
+      return `
   test.describe('${componentName} Component', () => {
     test('should render ${componentName}', async () => {
       await test.step('Navigate to ${componentName}', async () => {
@@ -524,7 +533,9 @@ test.describe('${this.config.moduleManifest.name} - E2E Tests', () => {
 
     ${this.generatePersonaTests(componentName)}
   })
-  `}).join('\n')}
+  `
+    })
+    .join('\n')}
 
   test.describe('Cross-Component Flows', () => {
     test('should complete end-to-end workflow', async () => {
@@ -534,7 +545,9 @@ test.describe('${this.config.moduleManifest.name} - E2E Tests', () => {
   })
 
   test.describe('Responsive Design', () => {
-    ${(this.config.testMatrix.browsers || ['chromium']).map(browser => `
+    ${(this.config.testMatrix.browsers || ['chromium'])
+      .map(
+        browser => `
     test('should work on ${browser}', async ({ browser }) => {
       const context = await browser.newContext({
         viewport: this.getViewportForBrowser('${browser}')
@@ -548,7 +561,9 @@ test.describe('${this.config.moduleManifest.name} - E2E Tests', () => {
         path: \`artifacts/screenshots/${moduleName}-${browser}.png\`
       })
     })
-    `).join('\n')}
+    `
+      )
+      .join('\n')}
   })
 })
 `
@@ -564,11 +579,12 @@ import { test, expect } from '@playwright/test'
 import { injectAxe, checkA11y } from 'axe-playwright'
 
 test.describe('${this.config.moduleManifest.name} - Accessibility', () => {
-  ${this.config.moduleManifest.entrypoints.ui.map(component => {
-    const componentName = component.replace('dna:', '')
-    const route = this.getRouteForComponent(componentName)
-    
-    return `
+  ${this.config.moduleManifest.entrypoints.ui
+    .map(component => {
+      const componentName = component.replace('dna:', '')
+      const route = this.getRouteForComponent(componentName)
+
+      return `
   test('${componentName} should pass WCAG checks', async ({ page }) => {
     await page.goto('${route}')
     await injectAxe(page)
@@ -589,7 +605,9 @@ test.describe('${this.config.moduleManifest.name} - Accessibility', () => {
 
     expect(violations).toBeNull()
   })
-  `}).join('\n')}
+  `
+    })
+    .join('\n')}
 })
 `
     files.push(await this.writeTestFile(`tests/e2e/${moduleName}/accessibility.spec.ts`, a11yTest))
@@ -670,11 +688,15 @@ export default defineConfig({
   },
 
   projects: [
-    ${(this.config.testMatrix.browsers || ['chromium']).map(browser => `
+    ${(this.config.testMatrix.browsers || ['chromium'])
+      .map(
+        browser => `
     {
       name: '${browser}',
       use: { ...devices['${this.getDeviceForBrowser(browser)}'] },
-    }`).join(',')}
+    }`
+      )
+      .join(',')}
   ],
 
   outputDir: 'artifacts/test-results/',
@@ -709,15 +731,15 @@ afterAll(async () => {
 
     // Package.json scripts
     const packageScripts = {
-      "test": "npm run test:api && npm run test:e2e",
-      "test:api": "jest --config jest.config.ts",
-      "test:e2e": "playwright test",
-      "test:contract": "jest --testMatch='**/contract/**/*.spec.ts'",
-      "test:watch": "jest --watch",
-      "test:coverage": "jest --coverage",
-      "test:e2e:headed": "playwright test --headed",
-      "test:e2e:debug": "playwright test --debug",
-      "test:e2e:ui": "playwright test --ui"
+      test: 'npm run test:api && npm run test:e2e',
+      'test:api': 'jest --config jest.config.ts',
+      'test:e2e': 'playwright test',
+      'test:contract': "jest --testMatch='**/contract/**/*.spec.ts'",
+      'test:watch': 'jest --watch',
+      'test:coverage': 'jest --coverage',
+      'test:e2e:headed': 'playwright test --headed',
+      'test:e2e:debug': 'playwright test --debug',
+      'test:e2e:ui': 'playwright test --ui'
     }
 
     return files
@@ -833,21 +855,24 @@ jobs:
 
   private getRouteForComponent(componentName: string): string {
     // Simple mapping - in real implementation would use route config
-    return `/${componentName.toLowerCase().replace(/([A-Z])/g, '-$1').replace(/^-/, '')}`
+    return `/${componentName
+      .toLowerCase()
+      .replace(/([A-Z])/g, '-$1')
+      .replace(/^-/, '')}`
   }
 
   private getDeviceForBrowser(browser: string): string {
     const deviceMap = {
-      'chromium': 'Desktop Chrome',
-      'firefox': 'Desktop Firefox',
-      'webkit': 'Desktop Safari',
+      chromium: 'Desktop Chrome',
+      firefox: 'Desktop Firefox',
+      webkit: 'Desktop Safari',
       'mobile-chrome': 'Pixel 5',
       'mobile-safari': 'iPhone 13'
     }
     return deviceMap[browser] || 'Desktop Chrome'
   }
 
-  private getViewportForBrowser(browser: string): { width: number, height: number } {
+  private getViewportForBrowser(browser: string): { width: number; height: number } {
     if (browser.includes('mobile')) {
       return { width: 375, height: 667 }
     }
@@ -855,7 +880,9 @@ jobs:
   }
 
   private generatePersonaTests(componentName: string): string {
-    return (this.config.testMatrix.personas || ['user']).map(persona => `
+    return (this.config.testMatrix.personas || ['user'])
+      .map(
+        persona => `
     test('should work for ${persona} persona', async () => {
       // Set persona context
       await page.evaluate((p) => {
@@ -871,7 +898,9 @@ jobs:
         await expect(page.locator('[data-admin-only]')).not.toBeVisible()
       }
     })
-    `).join('\n')
+    `
+      )
+      .join('\n')
   }
 
   private generateE2EWorkflow(): string {

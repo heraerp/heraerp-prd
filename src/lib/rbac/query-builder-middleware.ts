@@ -49,14 +49,14 @@ export class RLSQueryBuilder {
     return new Proxy(supabase, {
       get(target, prop) {
         if (prop === 'from') {
-          return function(table: string) {
+          return function (table: string) {
             const query = target.from(table)
-            
+
             // Automatically add organization_id filter
             if (shouldFilterTable(table)) {
               return wrapQuery(query, context.organization_id)
             }
-            
+
             return query
           }
         }
@@ -97,7 +97,7 @@ function wrapQuery(query: any, organizationId: string): any {
 
   // Override select
   if (originalSelect) {
-    query.select = function(...args: any[]) {
+    query.select = function (...args: any[]) {
       const result = originalSelect(...args)
       // Always add organization filter
       return result.eq('organization_id', organizationId)
@@ -106,7 +106,7 @@ function wrapQuery(query: any, organizationId: string): any {
 
   // Override insert
   if (originalInsert) {
-    query.insert = function(values: any | any[], options?: any) {
+    query.insert = function (values: any | any[], options?: any) {
       // Ensure organization_id is set
       if (Array.isArray(values)) {
         values = values.map(v => ({
@@ -119,32 +119,32 @@ function wrapQuery(query: any, organizationId: string): any {
           organization_id: values.organization_id || organizationId
         }
       }
-      
+
       // Validate organization_id matches context
       const validateOrgId = (v: any) => {
         if (v.organization_id && v.organization_id !== organizationId) {
           throw new Error(`Organization mismatch: ${v.organization_id} != ${organizationId}`)
         }
       }
-      
+
       if (Array.isArray(values)) {
         values.forEach(validateOrgId)
       } else {
         validateOrgId(values)
       }
-      
+
       return originalInsert(values, options)
     }
   }
 
   // Override update
   if (originalUpdate) {
-    query.update = function(values: any, options?: any) {
+    query.update = function (values: any, options?: any) {
       // Prevent updating organization_id
       if (values.organization_id && values.organization_id !== organizationId) {
         throw new Error('Cannot update organization_id')
       }
-      
+
       const result = originalUpdate(values, options)
       // Ensure update only affects current org
       return result.eq('organization_id', organizationId)
@@ -153,7 +153,7 @@ function wrapQuery(query: any, organizationId: string): any {
 
   // Override upsert
   if (originalUpsert) {
-    query.upsert = function(values: any | any[], options?: any) {
+    query.upsert = function (values: any | any[], options?: any) {
       // Ensure organization_id is set
       if (Array.isArray(values)) {
         values = values.map(v => ({
@@ -166,14 +166,14 @@ function wrapQuery(query: any, organizationId: string): any {
           organization_id: values.organization_id || organizationId
         }
       }
-      
+
       return originalUpsert(values, options)
     }
   }
 
   // Override delete
   if (originalDelete) {
-    query.delete = function(options?: any) {
+    query.delete = function (options?: any) {
       const result = originalDelete(options)
       // Ensure delete only affects current org
       return result.eq('organization_id', organizationId)
@@ -188,7 +188,7 @@ function wrapQuery(query: any, organizationId: string): any {
  */
 export function rlsMiddleware(req: any, res: any, next: any) {
   const requestId = req.headers['x-request-id'] || generateRequestId()
-  
+
   // Extract context from JWT or session
   const context: RLSContext = {
     organization_id: req.session?.organization_id || req.jwt?.organization_id,
@@ -208,7 +208,7 @@ export function rlsMiddleware(req: any, res: any, next: any) {
 
   // Set context
   RLSQueryBuilder.setContext(requestId, context)
-  
+
   // Store request ID for cleanup
   req.rlsRequestId = requestId
 

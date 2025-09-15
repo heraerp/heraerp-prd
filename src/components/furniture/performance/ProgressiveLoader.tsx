@@ -1,26 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect, useRef } from 'react'
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface LoadingStage {
-  id: string;
-  label: string;
-  duration?: number; // Optional duration in ms
+  id: string
+  label: string
+  duration?: number // Optional duration in ms
 }
 
 interface ProgressiveLoaderProps {
-  stages: LoadingStage[];
-  onComplete?: () => void;
-  onError?: (error: Error) => void;
-  className?: string;
-  showProgress?: boolean;
-  autoStart?: boolean;
+  stages: LoadingStage[]
+  onComplete?: () => void
+  onError?: (error: Error) => void
+  className?: string
+  showProgress?: boolean
+  autoStart?: boolean
 }
 
 interface StageState {
-  id: string;
-  status: 'pending' | 'loading' | 'completed' | 'error';
-  error?: string;
+  id: string
+  status: 'pending' | 'loading' | 'completed' | 'error'
+  error?: string
 }
 
 export function ProgressiveLoader({
@@ -33,123 +33,115 @@ export function ProgressiveLoader({
 }: ProgressiveLoaderProps) {
   const [stageStates, setStageStates] = useState<StageState[]>(
     stages.map(stage => ({ id: stage.id, status: 'pending' }))
-  );
-  const [currentStageIndex, setCurrentStageIndex] = useState(-1);
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  const abortRef = useRef(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  )
+  const [currentStageIndex, setCurrentStageIndex] = useState(-1)
+  const [progress, setProgress] = useState(0)
+  const [isComplete, setIsComplete] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const abortRef = useRef(false)
+  const timeoutRef = useRef<NodeJS.Timeout>()
 
   // Start loading process
   const start = async () => {
-    abortRef.current = false;
-    setCurrentStageIndex(0);
-    setProgress(0);
-    setIsComplete(false);
-    setError(null);
-    setStageStates(stages.map(stage => ({ id: stage.id, status: 'pending' })));
-  };
+    abortRef.current = false
+    setCurrentStageIndex(0)
+    setProgress(0)
+    setIsComplete(false)
+    setError(null)
+    setStageStates(stages.map(stage => ({ id: stage.id, status: 'pending' })))
+  }
 
   // Stop loading process
   const stop = () => {
-    abortRef.current = true;
+    abortRef.current = true
     if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+      clearTimeout(timeoutRef.current)
     }
-  };
+  }
 
   // Process stages
   useEffect(() => {
-    if (currentStageIndex < 0 || currentStageIndex >= stages.length) return;
-    if (abortRef.current) return;
+    if (currentStageIndex < 0 || currentStageIndex >= stages.length) return
+    if (abortRef.current) return
 
     const processStage = async () => {
-      const stage = stages[currentStageIndex];
-      
+      const stage = stages[currentStageIndex]
+
       // Update stage status to loading
-      setStageStates(prev => 
-        prev.map(s => 
-          s.id === stage.id ? { ...s, status: 'loading' } : s
-        )
-      );
+      setStageStates(prev => prev.map(s => (s.id === stage.id ? { ...s, status: 'loading' } : s)))
 
       try {
         // Simulate stage duration or use provided duration
-        const duration = stage.duration || 1000 + Math.random() * 2000;
-        
+        const duration = stage.duration || 1000 + Math.random() * 2000
+
         await new Promise((resolve, reject) => {
           timeoutRef.current = setTimeout(() => {
             if (abortRef.current) {
-              reject(new Error('Loading aborted'));
+              reject(new Error('Loading aborted'))
             } else {
-              resolve(undefined);
+              resolve(undefined)
             }
-          }, duration);
-        });
+          }, duration)
+        })
 
         // Update stage status to completed
-        setStageStates(prev => 
-          prev.map(s => 
-            s.id === stage.id ? { ...s, status: 'completed' } : s
-          )
-        );
+        setStageStates(prev =>
+          prev.map(s => (s.id === stage.id ? { ...s, status: 'completed' } : s))
+        )
 
         // Update progress
-        const newProgress = ((currentStageIndex + 1) / stages.length) * 100;
-        setProgress(newProgress);
+        const newProgress = ((currentStageIndex + 1) / stages.length) * 100
+        setProgress(newProgress)
 
         // Move to next stage or complete
         if (currentStageIndex < stages.length - 1) {
-          setCurrentStageIndex(prev => prev + 1);
+          setCurrentStageIndex(prev => prev + 1)
         } else {
-          setIsComplete(true);
-          onComplete?.();
+          setIsComplete(true)
+          onComplete?.()
         }
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+
         // Update stage status to error
-        setStageStates(prev => 
-          prev.map(s => 
-            s.id === stage.id ? { ...s, status: 'error', error: errorMessage } : s
-          )
-        );
+        setStageStates(prev =>
+          prev.map(s => (s.id === stage.id ? { ...s, status: 'error', error: errorMessage } : s))
+        )
 
-        setError(errorMessage);
-        onError?.(err instanceof Error ? err : new Error(errorMessage));
+        setError(errorMessage)
+        onError?.(err instanceof Error ? err : new Error(errorMessage))
       }
-    };
+    }
 
-    processStage();
-  }, [currentStageIndex, stages, onComplete, onError]);
+    processStage()
+  }, [currentStageIndex, stages, onComplete, onError])
 
   // Auto start on mount
   useEffect(() => {
     if (autoStart) {
-      start();
+      start()
     }
 
     return () => {
-      stop();
-    };
-  }, [autoStart]);
+      stop()
+    }
+  }, [autoStart])
 
   const getStageIcon = (status: StageState['status']) => {
     switch (status) {
       case 'loading':
-        return <Loader2 className="h-5 w-5 animate-spin text-blue-600" />;
+        return <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
       case 'completed':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-green-600" />
       case 'error':
-        return <AlertCircle className="h-5 w-5 text-red-600" />;
+        return <AlertCircle className="h-5 w-5 text-red-600" />
       default:
-        return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />;
+        return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
     }
-  };
+  }
 
-  const currentStage = currentStageIndex >= 0 ? stages[currentStageIndex] : null;
+  const currentStage = currentStageIndex >= 0 ? stages[currentStageIndex] : null
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -181,8 +173,8 @@ export function ProgressiveLoader({
       {/* Stage list */}
       <div className="space-y-2">
         {stages.map((stage, index) => {
-          const stageState = stageStates.find(s => s.id === stage.id);
-          if (!stageState) return null;
+          const stageState = stageStates.find(s => s.id === stage.id)
+          if (!stageState) return null
 
           return (
             <div
@@ -196,13 +188,15 @@ export function ProgressiveLoader({
             >
               {getStageIcon(stageState.status)}
               <div className="flex-1">
-                <div className={cn(
-                  'text-sm font-medium',
-                  stageState.status === 'completed' && 'text-green-900 dark:text-green-100',
-                  stageState.status === 'error' && 'text-red-900 dark:text-red-100',
-                  stageState.status === 'loading' && 'text-blue-900 dark:text-blue-100',
-                  stageState.status === 'pending' && 'text-gray-500 dark:text-gray-400'
-                )}>
+                <div
+                  className={cn(
+                    'text-sm font-medium',
+                    stageState.status === 'completed' && 'text-green-900 dark:text-green-100',
+                    stageState.status === 'error' && 'text-red-900 dark:text-red-100',
+                    stageState.status === 'loading' && 'text-blue-900 dark:text-blue-100',
+                    stageState.status === 'pending' && 'text-gray-500 dark:text-gray-400'
+                  )}
+                >
                   {stage.label}
                 </div>
                 {stageState.error && (
@@ -212,12 +206,10 @@ export function ProgressiveLoader({
                 )}
               </div>
               {stageState.status === 'completed' && (
-                <div className="text-xs text-green-600 dark:text-green-400">
-                  Complete
-                </div>
+                <div className="text-xs text-green-600 dark:text-green-400">Complete</div>
               )}
             </div>
-          );
+          )
         })}
       </div>
 
@@ -235,9 +227,7 @@ export function ProgressiveLoader({
       {error && (
         <div className="flex items-center justify-center space-x-2 py-4 text-red-600">
           <AlertCircle className="h-6 w-6" />
-          <span className="text-lg font-medium">
-            Loading failed: {error}
-          </span>
+          <span className="text-lg font-medium">Loading failed: {error}</span>
         </div>
       )}
 
@@ -255,5 +245,5 @@ export function ProgressiveLoader({
         </div>
       )}
     </div>
-  );
+  )
 }

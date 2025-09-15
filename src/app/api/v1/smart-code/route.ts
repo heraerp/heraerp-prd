@@ -3,7 +3,7 @@ import { smartCodeEngine, SmartCodeExecution } from '@/lib/smart-code-engine'
 
 /**
  * Smart Code API Endpoint
- * 
+ *
  * Handles execution of HERA Smart Codes for automatic business logic processing
  * Integrates with Universal 7-Table Schema for consistent data management
  */
@@ -29,12 +29,15 @@ export async function GET(request: NextRequest) {
 
       case 'search':
         if (!pattern) {
-          return NextResponse.json({
-            success: false,
-            error: 'Search pattern required'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Search pattern required'
+            },
+            { status: 400 }
+          )
         }
-        
+
         const searchResults = smartCodeEngine.searchSmartCodes(pattern)
         return NextResponse.json({
           success: true,
@@ -48,12 +51,15 @@ export async function GET(request: NextRequest) {
 
       case 'domain':
         if (!domain) {
-          return NextResponse.json({
-            success: false,
-            error: 'Domain parameter required'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Domain parameter required'
+            },
+            { status: 400 }
+          )
         }
-        
+
         const domainCodes = smartCodeEngine.getSmartCodesByDomain(domain)
         return NextResponse.json({
           success: true,
@@ -71,11 +77,12 @@ export async function GET(request: NextRequest) {
           domains: [...new Set(smartCodeEngine.getAllSmartCodes().map(code => code.domain))],
           entities: [...new Set(smartCodeEngine.getAllSmartCodes().map(code => code.entity))],
           actions: [...new Set(smartCodeEngine.getAllSmartCodes().map(code => code.action))],
-          recentlyAdded: smartCodeEngine.getAllSmartCodes()
+          recentlyAdded: smartCodeEngine
+            .getAllSmartCodes()
             .sort((a, b) => b.code.localeCompare(a.code))
             .slice(0, 10)
         }
-        
+
         return NextResponse.json({
           success: true,
           data: registry,
@@ -83,18 +90,23 @@ export async function GET(request: NextRequest) {
         })
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action. Available: list, search, domain, registry'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid action. Available: list, search, domain, registry'
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('Smart Code GET error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -105,26 +117,35 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!action) {
-      return NextResponse.json({
-        success: false,
-        error: 'Action parameter required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Action parameter required'
+        },
+        { status: 400 }
+      )
     }
 
     switch (action) {
       case 'execute':
         if (!smart_code) {
-          return NextResponse.json({
-            success: false,
-            error: 'Smart code parameter required for execution'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Smart code parameter required for execution'
+            },
+            { status: 400 }
+          )
         }
 
         if (!organization_id) {
-          return NextResponse.json({
-            success: false,
-            error: 'Organization ID required for execution'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Organization ID required for execution'
+            },
+            { status: 400 }
+          )
         }
 
         const execution: SmartCodeExecution = {
@@ -136,7 +157,7 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await smartCodeEngine.executeSmartCode(execution)
-        
+
         return NextResponse.json({
           success: result.success,
           data: result.data,
@@ -154,12 +175,15 @@ export async function POST(request: NextRequest) {
 
       case 'generate':
         const { domain, entity, action: businessAction, businessLogic } = body
-        
+
         if (!domain || !entity || !businessAction) {
-          return NextResponse.json({
-            success: false,
-            error: 'Domain, entity, and action required for generation'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Domain, entity, and action required for generation'
+            },
+            { status: 400 }
+          )
         }
 
         const generatedCode = smartCodeEngine.generateSmartCode(
@@ -183,15 +207,18 @@ export async function POST(request: NextRequest) {
 
       case 'validate':
         if (!smart_code) {
-          return NextResponse.json({
-            success: false,
-            error: 'Smart code required for validation'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Smart code required for validation'
+            },
+            { status: 400 }
+          )
         }
 
         const allCodes = smartCodeEngine.getAllSmartCodes()
         const codeExists = allCodes.find(code => code.code === smart_code)
-        
+
         if (!codeExists) {
           return NextResponse.json({
             success: false,
@@ -214,12 +241,15 @@ export async function POST(request: NextRequest) {
 
       case 'batch_execute':
         const { executions } = body
-        
+
         if (!Array.isArray(executions) || executions.length === 0) {
-          return NextResponse.json({
-            success: false,
-            error: 'Executions array required for batch execution'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Executions array required for batch execution'
+            },
+            { status: 400 }
+          )
         }
 
         const batchResults = []
@@ -257,19 +287,24 @@ export async function POST(request: NextRequest) {
         })
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action. Available: execute, generate, validate, batch_execute'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid action. Available: execute, generate, validate, batch_execute'
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('Smart Code POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -279,10 +314,13 @@ export async function PUT(request: NextRequest) {
     const { smart_code, updates } = body
 
     if (!smart_code || !updates) {
-      return NextResponse.json({
-        success: false,
-        error: 'Smart code and updates required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Smart code and updates required'
+        },
+        { status: 400 }
+      )
     }
 
     // Mock update - implement actual update logic
@@ -295,13 +333,15 @@ export async function PUT(request: NextRequest) {
         message: 'Smart Code updated successfully'
       }
     })
-
   } catch (error) {
     console.error('Smart Code PUT error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -311,10 +351,13 @@ export async function DELETE(request: NextRequest) {
     const smartCode = searchParams.get('smart_code')
 
     if (!smartCode) {
-      return NextResponse.json({
-        success: false,
-        error: 'Smart code parameter required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Smart code parameter required'
+        },
+        { status: 400 }
+      )
     }
 
     // Mock deletion - implement actual deletion logic
@@ -326,12 +369,14 @@ export async function DELETE(request: NextRequest) {
         message: 'Smart Code deleted successfully'
       }
     })
-
   } catch (error) {
     console.error('Smart Code DELETE error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }

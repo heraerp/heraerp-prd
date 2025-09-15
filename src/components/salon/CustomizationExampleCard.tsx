@@ -47,17 +47,23 @@ export function CustomizationExampleCard() {
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-green-600" />
                 <span className="text-green-700 dark:text-green-300">Grace period: 30 min</span>
-                <Badge variant="outline" className="text-xs">Changed</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Changed
+                </Badge>
               </div>
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-green-600" />
                 <span className="text-green-700 dark:text-green-300">No-show fee: 50%</span>
-                <Badge variant="outline" className="text-xs">Changed</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Changed
+                </Badge>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-green-600" />
                 <span className="text-green-700 dark:text-green-300">VIP fee: 0%</span>
-                <Badge variant="outline" className="text-xs">Changed</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Changed
+                </Badge>
               </div>
             </div>
           </div>
@@ -65,7 +71,8 @@ export function CustomizationExampleCard() {
 
         <div className="mt-4 p-3 bg-purple-100/50 dark:bg-purple-900/20 rounded-lg">
           <p className="text-sm text-purple-800 dark:text-purple-200">
-            <strong>Customize any aspect:</strong> Grace periods, fees, VIP exceptions, notification timing, and more - all through an intuitive interface with no coding required.
+            <strong>Customize any aspect:</strong> Grace periods, fees, VIP exceptions, notification
+            timing, and more - all through an intuitive interface with no coding required.
           </p>
         </div>
       </CardContent>

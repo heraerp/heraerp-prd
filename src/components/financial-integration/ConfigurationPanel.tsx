@@ -5,17 +5,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
-import { 
-  Settings, 
-  Shield, 
-  Globe, 
-  Database, 
+import {
+  Settings,
+  Shield,
+  Globe,
+  Database,
   CheckCircle2,
   AlertCircle,
   Loader2,
@@ -95,7 +101,9 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
   const loadConfiguration = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`/api/v1/financial-integration/config?organization_id=${organizationId}`)
+      const response = await fetch(
+        `/api/v1/financial-integration/config?organization_id=${organizationId}`
+      )
       if (response.ok) {
         const data = await response.json()
         if (data.configured) {
@@ -126,7 +134,8 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
       const result = await response.json()
       setTestResult({
         success: result.success,
-        message: result.message || (result.success ? 'Connection successful!' : 'Connection failed'),
+        message:
+          result.message || (result.success ? 'Connection successful!' : 'Connection failed'),
         details: result.systemInfo
       })
 
@@ -200,7 +209,9 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                   <Label htmlFor="system-type">System Type</Label>
                   <Select
                     value={config.systemType}
-                    onValueChange={(value: any) => setConfig(prev => ({ ...prev, systemType: value }))}
+                    onValueChange={(value: any) =>
+                      setConfig(prev => ({ ...prev, systemType: value }))
+                    }
                   >
                     <SelectTrigger id="system-type">
                       <SelectValue />
@@ -224,7 +235,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                     id="base-url"
                     placeholder="https://your-system.example.com"
                     value={config.baseUrl}
-                    onChange={(e) => setConfig(prev => ({ ...prev, baseUrl: e.target.value }))}
+                    onChange={e => setConfig(prev => ({ ...prev, baseUrl: e.target.value }))}
                   />
                 </div>
 
@@ -235,14 +246,16 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                       id="company-code"
                       placeholder="1000"
                       value={config.companyCode}
-                      onChange={(e) => setConfig(prev => ({ ...prev, companyCode: e.target.value }))}
+                      onChange={e => setConfig(prev => ({ ...prev, companyCode: e.target.value }))}
                     />
                   </div>
                   <div>
                     <Label htmlFor="chart-of-accounts">Chart of Accounts</Label>
                     <Select
                       value={config.chartOfAccounts}
-                      onValueChange={(value) => setConfig(prev => ({ ...prev, chartOfAccounts: value }))}
+                      onValueChange={value =>
+                        setConfig(prev => ({ ...prev, chartOfAccounts: value }))
+                      }
                     >
                       <SelectTrigger id="chart-of-accounts">
                         <SelectValue />
@@ -314,9 +327,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                       <FileText className="h-5 w-5 text-muted-foreground" />
                       <div>
                         <p className="font-medium">GL Accounts</p>
-                        <p className="text-sm text-muted-foreground">
-                          Map general ledger accounts
-                        </p>
+                        <p className="text-sm text-muted-foreground">Map general ledger accounts</p>
                       </div>
                     </div>
                     <Button variant="outline" size="sm">
@@ -369,7 +380,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                     </div>
                     <Switch
                       checked={config.features.autoPosting}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={checked =>
                         setConfig(prev => ({
                           ...prev,
                           features: { ...prev.features, autoPosting: checked }
@@ -387,7 +398,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                     </div>
                     <Switch
                       checked={config.features.duplicateDetection}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={checked =>
                         setConfig(prev => ({
                           ...prev,
                           features: { ...prev.features, duplicateDetection: checked }
@@ -405,7 +416,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                     </div>
                     <Switch
                       checked={config.features.realTimeSync}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={checked =>
                         setConfig(prev => ({
                           ...prev,
                           features: { ...prev.features, realTimeSync: checked }
@@ -423,7 +434,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                     </div>
                     <Switch
                       checked={config.features.batchProcessing}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={checked =>
                         setConfig(prev => ({
                           ...prev,
                           features: { ...prev.features, batchProcessing: checked }
@@ -450,7 +461,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                     <Label>Authentication Type</Label>
                     <Select
                       value={config.credentials.authType}
-                      onValueChange={(value: any) => 
+                      onValueChange={(value: any) =>
                         setConfig(prev => ({
                           ...prev,
                           credentials: { ...prev.credentials, authType: value }
@@ -476,7 +487,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                           id="client-id"
                           placeholder="your-client-id"
                           value={config.credentials.clientId || ''}
-                          onChange={(e) => 
+                          onChange={e =>
                             setConfig(prev => ({
                               ...prev,
                               credentials: { ...prev.credentials, clientId: e.target.value }
@@ -486,11 +497,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                       </div>
                       <div>
                         <Label htmlFor="client-secret">Client Secret</Label>
-                        <Input
-                          id="client-secret"
-                          type="password"
-                          placeholder="••••••••••••"
-                        />
+                        <Input id="client-secret" type="password" placeholder="••••••••••••" />
                       </div>
                     </>
                   )}
@@ -503,7 +510,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                           id="username"
                           placeholder="service-user"
                           value={config.credentials.username || ''}
-                          onChange={(e) => 
+                          onChange={e =>
                             setConfig(prev => ({
                               ...prev,
                               credentials: { ...prev.credentials, username: e.target.value }
@@ -513,11 +520,7 @@ export function ConfigurationPanel({ organizationId, onConfigSave }: Configurati
                       </div>
                       <div>
                         <Label htmlFor="password">Password</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          placeholder="••••••••••••"
-                        />
+                        <Input id="password" type="password" placeholder="••••••••••••" />
                       </div>
                     </>
                   )}

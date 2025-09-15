@@ -1,7 +1,7 @@
 /**
  * HERA DNA Auto-Enforcement System
  * Main entry point for guaranteed enterprise component usage
- * 
+ *
  * This system GUARANTEES HERA DNA Enterprise components are used in ALL scenarios:
  * - Regular development
  * - Emergency situations (firefighting)
@@ -71,7 +71,12 @@ export { EnterpriseDashboard } from './components/enterprise/EnterpriseDashboard
 
 // Layout Components
 export { HeraSidebar, HERA_SIDEBAR_DNA } from './components/layout/hera-sidebar-dna'
-export type { HeraSidebarProps, HeraSidebarConfig, HeraSidebarNavItem, HeraSidebarApp } from './components/layout/hera-sidebar-dna'
+export type {
+  HeraSidebarProps,
+  HeraSidebarConfig,
+  HeraSidebarNavItem,
+  HeraSidebarApp
+} from './components/layout/hera-sidebar-dna'
 
 // Financial Module Components
 export { GLModule, GL_MODULE_DNA } from './modules/financial/gl-module-dna'
@@ -94,29 +99,29 @@ export type { FAModuleProps } from './modules/financial/fa-module-dna'
 /**
  * Universal DNA Enforcement Function
  * Works for ANY development request, ANY timing, ANY context
- * 
+ *
  * @param userRequest - Any development request (string)
  * @param context - Optional context information
  * @returns Complete enforcement result with code and instructions
  */
 export function universalDNAEnforcement(
-  userRequest: string, 
+  userRequest: string,
   context: { urgency?: 'low' | 'medium' | 'high' | 'critical' | 'firefight' } = {}
 ) {
   // Import locally to avoid circular dependencies
   const { createFullEnforcementResult } = require('./auto-select/hera-dna-auto-select')
   const { interceptDevelopment } = require('./middleware/hera-dna-middleware')
-  
+
   // Get comprehensive enforcement result
   const fullResult = createFullEnforcementResult(userRequest)
-  
+
   // Get middleware result for workflow integration
   const middlewareResult = interceptDevelopment(userRequest)
-  
+
   return {
     // Original enforcement data
     ...fullResult,
-    
+
     // Middleware integration
     workflowIntegration: {
       allowed: middlewareResult.allowed,
@@ -124,14 +129,15 @@ export function universalDNAEnforcement(
       enforcementActive: middlewareResult.enforcementActive,
       warnings: middlewareResult.warnings
     },
-    
+
     // Convenience accessors
     primaryComponent: fullResult.autoSelect.selection.primary,
     generatedCode: fullResult.autoSelect.generatedCode,
     isEmergency: context.urgency === 'firefight' || context.urgency === 'critical',
-    isMandatory: fullResult.enforcement.enforcementLevel === 'mandatory' || 
-                fullResult.enforcement.enforcementLevel === 'critical',
-    
+    isMandatory:
+      fullResult.enforcement.enforcementLevel === 'mandatory' ||
+      fullResult.enforcement.enforcementLevel === 'critical',
+
     // Quick usage instructions
     quickStart: {
       imports: fullResult.autoSelect.selection.imports,
@@ -156,16 +162,19 @@ export function emergencyDNAEnforcement(userRequest: string) {
  * Returns just the component information for immediate use
  */
 export function quickDNASelect(userRequest: string): {
-  component: string,
-  code: string,
-  imports: string[],
+  component: string
+  code: string
+  imports: string[]
   confidence: number
 } {
-  const { getEnterpriseComponents, generateEnterpriseCode } = require('./auto-select/hera-dna-auto-select')
-  
+  const {
+    getEnterpriseComponents,
+    generateEnterpriseCode
+  } = require('./auto-select/hera-dna-auto-select')
+
   const selection = getEnterpriseComponents(userRequest)
   const code = generateEnterpriseCode(userRequest)
-  
+
   return {
     component: selection.primary,
     code: code,
@@ -180,18 +189,18 @@ export function quickDNASelect(userRequest: string): {
  */
 export function setupCompleteDNASystem(projectPath: string = process.cwd()) {
   const { setupGitHooks } = require('./hooks/hera-dna-hooks')
-  
+
   console.log('🧬 Setting up complete HERA DNA Auto-Enforcement System...\n')
-  
+
   // Setup Git hooks
   setupGitHooks(projectPath)
-  
+
   console.log('✅ Git hooks installed (pre-commit, pre-push, pre-build)')
   console.log('✅ Validation rules configured')
   console.log('✅ Middleware integration active')
   console.log('✅ Auto-selection system ready')
   console.log('✅ Emergency enforcement protocols enabled')
-  
+
   console.log('\n🎯 System Features:')
   console.log('  • Automatic component selection based on context')
   console.log('  • Emergency/firefight mode with maximum stability')
@@ -199,10 +208,10 @@ export function setupCompleteDNASystem(projectPath: string = process.cwd()) {
   console.log('  • Real-time validation and auto-fixes')
   console.log('  • CI/CD pipeline integration ready')
   console.log('  • Professional glassmorphism design guaranteed')
-  
+
   console.log('\n🚀 HERA DNA Auto-Enforcement System is now active!')
   console.log('   All development will automatically use Enterprise components.\n')
-  
+
   return {
     installed: true,
     features: [
@@ -223,7 +232,7 @@ export default {
   emergencyDNAEnforcement,
   quickDNASelect,
   setupCompleteDNASystem,
-  
+
   // System components
   DNAEnforcer: require('./auto-enforce/hera-dna-enforcer').DNAEnforcer,
   autoSelector: require('./auto-select/hera-dna-auto-select').heraDNAAutoSelector,

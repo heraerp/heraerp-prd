@@ -1,39 +1,62 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Filter, Plus, Edit, Trash2, Eye, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {
+  Search,
+  Filter,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface ConfigRule {
-  id: string;
-  name: string;
-  category: string;
-  type: 'validation' | 'transformation' | 'business_logic' | 'integration';
-  scope: 'global' | 'organization' | 'entity_type' | 'specific';
-  status: 'active' | 'inactive' | 'draft' | 'deprecated';
-  priority: number;
-  description: string;
-  smart_code: string;
-  created_at: string;
-  updated_at: string;
-  applied_count: number;
-  error_count: number;
-  success_rate: number;
-  organization_id?: string;
+  id: string
+  name: string
+  category: string
+  type: 'validation' | 'transformation' | 'business_logic' | 'integration'
+  scope: 'global' | 'organization' | 'entity_type' | 'specific'
+  status: 'active' | 'inactive' | 'draft' | 'deprecated'
+  priority: number
+  description: string
+  smart_code: string
+  created_at: string
+  updated_at: string
+  applied_count: number
+  error_count: number
+  success_rate: number
+  organization_id?: string
 }
 
 interface RulesListProps {
-  className?: string;
-  onEditRule?: (rule: ConfigRule) => void;
-  onDeleteRule?: (ruleId: string) => void;
-  onViewRule?: (rule: ConfigRule) => void;
-  onCreateRule?: () => void;
+  className?: string
+  onEditRule?: (rule: ConfigRule) => void
+  onDeleteRule?: (ruleId: string) => void
+  onViewRule?: (rule: ConfigRule) => void
+  onCreateRule?: () => void
 }
 
 export function RulesList({
@@ -43,14 +66,14 @@ export function RulesList({
   onViewRule,
   onCreateRule
 }: RulesListProps) {
-  const [rules, setRules] = useState<ConfigRule[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [sortField, setSortField] = useState<keyof ConfigRule>('updated_at');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [rules, setRules] = useState<ConfigRule[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  const [typeFilter, setTypeFilter] = useState<string>('all')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [sortField, setSortField] = useState<keyof ConfigRule>('updated_at')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 
   // Mock data for demonstration
   const mockRules: ConfigRule[] = [
@@ -118,54 +141,53 @@ export function RulesList({
       error_count: 0,
       success_rate: 0
     }
-  ];
+  ]
 
   useEffect(() => {
     // Simulate loading delay
     const timer = setTimeout(() => {
-      setRules(mockRules);
-      setLoading(false);
-    }, 1000);
+      setRules(mockRules)
+      setLoading(false)
+    }, 1000)
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearTimeout(timer)
+  }, [])
 
   const filteredRules = rules.filter(rule => {
-    const matchesSearch = rule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         rule.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         rule.smart_code.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || rule.category === categoryFilter;
-    const matchesType = typeFilter === 'all' || rule.type === typeFilter;
-    const matchesStatus = statusFilter === 'all' || rule.status === statusFilter;
+    const matchesSearch =
+      rule.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      rule.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      rule.smart_code.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCategory = categoryFilter === 'all' || rule.category === categoryFilter
+    const matchesType = typeFilter === 'all' || rule.type === typeFilter
+    const matchesStatus = statusFilter === 'all' || rule.status === statusFilter
 
-    return matchesSearch && matchesCategory && matchesType && matchesStatus;
-  });
+    return matchesSearch && matchesCategory && matchesType && matchesStatus
+  })
 
   const sortedRules = [...filteredRules].sort((a, b) => {
-    const aValue = a[sortField];
-    const bValue = b[sortField];
-    
+    const aValue = a[sortField]
+    const bValue = b[sortField]
+
     if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection === 'asc' 
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
+      return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
     }
-    
+
     if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue
     }
-    
-    return 0;
-  });
+
+    return 0
+  })
 
   const handleSort = (field: keyof ConfigRule) => {
     if (field === sortField) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
-      setSortField(field);
-      setSortDirection('desc');
+      setSortField(field)
+      setSortDirection('desc')
     }
-  };
+  }
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, string> = {
@@ -173,14 +195,14 @@ export function RulesList({
       inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-800/30 dark:text-gray-300',
       draft: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
       deprecated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-    };
+    }
 
     return (
       <Badge className={cn('font-medium', variants[status] || variants.inactive)}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
-    );
-  };
+    )
+  }
 
   const getTypeBadge = (type: string) => {
     const variants: Record<string, string> = {
@@ -188,30 +210,35 @@ export function RulesList({
       transformation: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
       business_logic: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300',
       integration: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-    };
+    }
 
     return (
       <Badge variant="outline" className={cn('font-medium', variants[type] || variants.validation)}>
         {type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
       </Badge>
-    );
-  };
+    )
+  }
 
   const getScopeIcon = (scope: string) => {
     switch (scope) {
-      case 'global': return <div className="w-2 h-2 bg-green-500 rounded-full" title="Global" />;
-      case 'organization': return <div className="w-2 h-2 bg-blue-500 rounded-full" title="Organization" />;
-      case 'entity_type': return <div className="w-2 h-2 bg-yellow-500 rounded-full" title="Entity Type" />;
-      case 'specific': return <div className="w-2 h-2 bg-red-500 rounded-full" title="Specific" />;
-      default: return <div className="w-2 h-2 bg-gray-500 rounded-full" />;
+      case 'global':
+        return <div className="w-2 h-2 bg-green-500 rounded-full" title="Global" />
+      case 'organization':
+        return <div className="w-2 h-2 bg-blue-500 rounded-full" title="Organization" />
+      case 'entity_type':
+        return <div className="w-2 h-2 bg-yellow-500 rounded-full" title="Entity Type" />
+      case 'specific':
+        return <div className="w-2 h-2 bg-red-500 rounded-full" title="Specific" />
+      default:
+        return <div className="w-2 h-2 bg-gray-500 rounded-full" />
     }
-  };
+  }
 
   const getSuccessRateIcon = (rate: number) => {
-    if (rate >= 95) return <CheckCircle className="w-4 h-4 text-green-500" />;
-    if (rate >= 80) return <AlertCircle className="w-4 h-4 text-yellow-500" />;
-    return <AlertCircle className="w-4 h-4 text-red-500" />;
-  };
+    if (rate >= 95) return <CheckCircle className="w-4 h-4 text-green-500" />
+    if (rate >= 80) return <AlertCircle className="w-4 h-4 text-yellow-500" />
+    return <AlertCircle className="w-4 h-4 text-red-500" />
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -224,10 +251,11 @@ export function RulesList({
                 Configuration Rules
               </CardTitle>
               <CardDescription className="!text-gray-600 dark:!text-gray-300">
-                Manage universal configuration rules that control system behavior across organizations
+                Manage universal configuration rules that control system behavior across
+                organizations
               </CardDescription>
             </div>
-            <Button 
+            <Button
               onClick={onCreateRule}
               className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
             >
@@ -248,7 +276,7 @@ export function RulesList({
               <Input
                 placeholder="Search rules by name, description, or smart code..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
               />
             </div>
@@ -295,14 +323,14 @@ export function RulesList({
                 </SelectContent>
               </Select>
 
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="icon"
                 onClick={() => {
-                  setSearchQuery('');
-                  setCategoryFilter('all');
-                  setTypeFilter('all');
-                  setStatusFilter('all');
+                  setSearchQuery('')
+                  setCategoryFilter('all')
+                  setTypeFilter('all')
+                  setStatusFilter('all')
                 }}
                 className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
               >
@@ -326,7 +354,7 @@ export function RulesList({
                 <TableHeader>
                   <TableRow className="hover:bg-transparent border-white/20 dark:border-gray-700/30">
                     <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
-                      <button 
+                      <button
                         onClick={() => handleSort('name')}
                         className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
@@ -336,10 +364,14 @@ export function RulesList({
                         )}
                       </button>
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">Type & Scope</TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">Status</TableHead>
                     <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
-                      <button 
+                      Type & Scope
+                    </TableHead>
+                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                      Status
+                    </TableHead>
+                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                      <button
                         onClick={() => handleSort('priority')}
                         className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
@@ -349,14 +381,20 @@ export function RulesList({
                         )}
                       </button>
                     </TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">Performance</TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">Smart Code</TableHead>
-                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">Actions</TableHead>
+                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                      Performance
+                    </TableHead>
+                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                      Smart Code
+                    </TableHead>
+                    <TableHead className="font-semibold !text-gray-900 dark:!text-gray-100">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedRules.map((rule) => (
-                    <TableRow 
+                  {sortedRules.map(rule => (
+                    <TableRow
                       key={rule.id}
                       className="hover:bg-white/30 dark:hover:bg-gray-800/30 border-white/20 dark:border-gray-700/30 transition-colors"
                     >
@@ -384,9 +422,7 @@ export function RulesList({
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        {getStatusBadge(rule.status)}
-                      </TableCell>
+                      <TableCell>{getStatusBadge(rule.status)}</TableCell>
                       <TableCell>
                         <div className="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full">
                           <span className="text-sm font-semibold text-blue-800 dark:text-blue-300">
@@ -501,11 +537,13 @@ export function RulesList({
               <div className="text-2xl font-bold !text-purple-700 dark:!text-purple-300">
                 {rules.reduce((sum, r) => sum + r.applied_count, 0).toLocaleString()}
               </div>
-              <div className="text-sm !text-purple-600 dark:!text-purple-400">Total Applications</div>
+              <div className="text-sm !text-purple-600 dark:!text-purple-400">
+                Total Applications
+              </div>
             </CardContent>
           </Card>
         </div>
       )}
     </div>
-  );
+  )
 }

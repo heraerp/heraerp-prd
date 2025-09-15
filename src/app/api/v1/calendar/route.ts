@@ -1,24 +1,24 @@
 /**
  * HERA DNA Universal Calendar API
  * Smart Code: HERA.API.CALENDAR.UNIVERSAL.v1
- * 
+ *
  * RESTful API for calendar operations using Sacred Six Tables architecture
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { 
-  CalendarEvent, 
-  CalendarResource, 
-  CalendarQueryParams, 
-  CreateEventRequest, 
+import {
+  CalendarEvent,
+  CalendarResource,
+  CalendarQueryParams,
+  CreateEventRequest,
   UpdateEventRequest,
   CreateResourceRequest,
   UpdateResourceRequest,
   CalendarApiResponse,
   EventsResponse,
-  ResourcesResponse 
+  ResourcesResponse
 } from '@/types/calendar-api.types'
 
 // GET /api/v1/calendar - Fetch events and resources
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
-    
+
     const params: CalendarQueryParams = {
       organization_id: searchParams.get('organization_id') || '',
       start: searchParams.get('start') || undefined,
@@ -44,17 +44,21 @@ export async function GET(request: NextRequest) {
     }
 
     if (!params.organization_id) {
-      return NextResponse.json({
-        success: false,
-        error: 'organization_id is required',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'organization_id is required',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
 
     // Fetch events from universal_transactions with Sacred Six Tables pattern
     let eventsQuery = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         id,
         transaction_type,
         transaction_date,
@@ -77,7 +81,8 @@ export async function GET(request: NextRequest) {
           line_amount,
           metadata
         )
-      `)
+      `
+      )
       .eq('organization_id', params.organization_id)
       .like('smart_code', 'HERA.%.CALENDAR.%')
 
@@ -107,17 +112,21 @@ export async function GET(request: NextRequest) {
     const { data: eventsData, error: eventsError } = await eventsQuery
 
     if (eventsError) {
-      return NextResponse.json({
-        success: false,
-        error: `Failed to fetch events: ${eventsError.message}`,
-        timestamp: new Date().toISOString()
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Failed to fetch events: ${eventsError.message}`,
+          timestamp: new Date().toISOString()
+        },
+        { status: 500 }
+      )
     }
 
     // Fetch resources from core_entities
     let resourcesQuery = supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_type,
         entity_name,
@@ -136,7 +145,8 @@ export async function GET(request: NextRequest) {
           field_value_date,
           metadata
         )
-      `)
+      `
+      )
       .eq('organization_id', params.organization_id)
       .like('smart_code', 'HERA.%.CALENDAR.RESOURCE.%')
 
@@ -147,56 +157,64 @@ export async function GET(request: NextRequest) {
     const { data: resourcesData, error: resourcesError } = await resourcesQuery
 
     if (resourcesError) {
-      return NextResponse.json({
-        success: false,
-        error: `Failed to fetch resources: ${resourcesError.message}`,
-        timestamp: new Date().toISOString()
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Failed to fetch resources: ${resourcesError.message}`,
+          timestamp: new Date().toISOString()
+        },
+        { status: 500 }
+      )
     }
 
     // Transform data to FullCalendar format
-    const events: CalendarEvent[] = eventsData?.map(event => ({
-      id: event.id,
-      title: extractEventTitle(event),
-      start: event.transaction_date,
-      end: calculateEventEnd(event),
-      allDay: isAllDayEvent(event),
-      resourceId: event.to_entity_id, // Resource assignment
-      extendedProps: {
-        entity_id: event.id,
-        smart_code: event.smart_code,
-        organization_id: event.organization_id,
-        event_type: mapEventType(event.transaction_type),
-        status: event.status || 'confirmed',
-        customer_id: event.from_entity_id,
-        staff_id: event.to_entity_id,
-        service_id: extractServiceId(event),
-        notes: event.notes || '',
-        metadata: event.metadata || {}
-      },
-      backgroundColor: getEventColor(event.smart_code, event.status),
-      borderColor: getEventBorderColor(event.smart_code, event.status),
-      textColor: getEventTextColor(event.smart_code, event.status),
-      classNames: [`calendar-event-${event.transaction_type}`, `smart-code-${event.smart_code.replace(/\./g, '-').toLowerCase()}`]
-    })) || []
+    const events: CalendarEvent[] =
+      eventsData?.map(event => ({
+        id: event.id,
+        title: extractEventTitle(event),
+        start: event.transaction_date,
+        end: calculateEventEnd(event),
+        allDay: isAllDayEvent(event),
+        resourceId: event.to_entity_id, // Resource assignment
+        extendedProps: {
+          entity_id: event.id,
+          smart_code: event.smart_code,
+          organization_id: event.organization_id,
+          event_type: mapEventType(event.transaction_type),
+          status: event.status || 'confirmed',
+          customer_id: event.from_entity_id,
+          staff_id: event.to_entity_id,
+          service_id: extractServiceId(event),
+          notes: event.notes || '',
+          metadata: event.metadata || {}
+        },
+        backgroundColor: getEventColor(event.smart_code, event.status),
+        borderColor: getEventBorderColor(event.smart_code, event.status),
+        textColor: getEventTextColor(event.smart_code, event.status),
+        classNames: [
+          `calendar-event-${event.transaction_type}`,
+          `smart-code-${event.smart_code.replace(/\./g, '-').toLowerCase()}`
+        ]
+      })) || []
 
-    const resources: CalendarResource[] = resourcesData?.map(resource => ({
-      id: resource.id,
-      title: resource.entity_name,
-      extendedProps: {
-        entity_id: resource.id,
-        smart_code: resource.smart_code,
-        organization_id: resource.organization_id,
-        resource_type: extractResourceType(resource.smart_code),
-        capacity: extractCapacity(resource),
-        skills: extractSkills(resource),
-        availability: extractAvailability(resource),
-        metadata: resource.metadata || {}
-      },
-      eventBackgroundColor: getResourceEventColor(resource.smart_code),
-      eventBorderColor: getResourceEventBorderColor(resource.smart_code),
-      eventTextColor: getResourceEventTextColor(resource.smart_code)
-    })) || []
+    const resources: CalendarResource[] =
+      resourcesData?.map(resource => ({
+        id: resource.id,
+        title: resource.entity_name,
+        extendedProps: {
+          entity_id: resource.id,
+          smart_code: resource.smart_code,
+          organization_id: resource.organization_id,
+          resource_type: extractResourceType(resource.smart_code),
+          capacity: extractCapacity(resource),
+          skills: extractSkills(resource),
+          availability: extractAvailability(resource),
+          metadata: resource.metadata || {}
+        },
+        eventBackgroundColor: getResourceEventColor(resource.smart_code),
+        eventBorderColor: getResourceEventBorderColor(resource.smart_code),
+        eventTextColor: getResourceEventTextColor(resource.smart_code)
+      })) || []
 
     const response: EventsResponse = {
       success: true,
@@ -210,13 +228,15 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -233,19 +253,24 @@ export async function POST(request: NextRequest) {
     } else if (body.resource_type) {
       return createResource(supabase, body as CreateResourceRequest)
     } else {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid request: must specify event_type or resource_type',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid request: must specify event_type or resource_type',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -257,11 +282,14 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
 
     if (!body.id) {
-      return NextResponse.json({
-        success: false,
-        error: 'ID is required for updates',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ID is required for updates',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
 
     // Determine if updating event or resource
@@ -270,19 +298,24 @@ export async function PUT(request: NextRequest) {
     } else if (body.resource_type !== undefined) {
       return updateResource(supabase, body as UpdateResourceRequest)
     } else {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid request: must specify event_type or resource_type for updates',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid request: must specify event_type or resource_type for updates',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -292,17 +325,20 @@ export async function DELETE(request: NextRequest) {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
     const { searchParams } = new URL(request.url)
-    
+
     const id = searchParams.get('id')
     const type = searchParams.get('type') // 'event' or 'resource'
     const organization_id = searchParams.get('organization_id')
 
     if (!id || !type || !organization_id) {
-      return NextResponse.json({
-        success: false,
-        error: 'id, type, and organization_id are required',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'id, type, and organization_id are required',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
 
     if (type === 'event') {
@@ -310,19 +346,24 @@ export async function DELETE(request: NextRequest) {
     } else if (type === 'resource') {
       return deleteResource(supabase, id, organization_id)
     } else {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid type: must be "event" or "resource"',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid type: must be "event" or "resource"',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -352,11 +393,14 @@ async function createEvent(supabase: any, eventData: CreateEventRequest) {
     .single()
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Failed to create event: ${error.message}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to create event: ${error.message}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({
@@ -388,11 +432,14 @@ async function createResource(supabase: any, resourceData: CreateResourceRequest
     .single()
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Failed to create resource: ${error.message}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to create resource: ${error.message}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({
@@ -405,7 +452,11 @@ async function createResource(supabase: any, resourceData: CreateResourceRequest
 
 // Additional helper functions for data transformation and business logic
 function extractEventTitle(event: any): string {
-  return (event.metadata as any)?.title || event.notes || `${event.transaction_type} - ${event.transaction_date}`
+  return (
+    (event.metadata as any)?.title ||
+    event.notes ||
+    `${event.transaction_type} - ${event.transaction_date}`
+  )
 }
 
 function calculateEventEnd(event: any): string | undefined {
@@ -416,14 +467,16 @@ function isAllDayEvent(event: any): boolean {
   return (event.metadata as any)?.allDay || false
 }
 
-function mapEventType(transactionType: string): 'appointment' | 'block' | 'holiday' | 'shift' | 'maintenance' {
+function mapEventType(
+  transactionType: string
+): 'appointment' | 'block' | 'holiday' | 'shift' | 'maintenance' {
   const mapping: Record<string, any> = {
-    'appointment': 'appointment',
-    'booking': 'appointment',
-    'block': 'block',
-    'holiday': 'holiday',
-    'shift': 'shift',
-    'maintenance': 'maintenance'
+    appointment: 'appointment',
+    booking: 'appointment',
+    block: 'block',
+    holiday: 'holiday',
+    shift: 'shift',
+    maintenance: 'maintenance'
   }
   return mapping[transactionType] || 'appointment'
 }
@@ -457,7 +510,10 @@ function extractResourceType(smartCode: string): 'staff' | 'room' | 'equipment' 
 }
 
 function extractCapacity(resource: any): number | undefined {
-  return (resource.metadata as any)?.capacity || resource.core_dynamic_data?.find((d: any) => d.field_name === 'capacity')?.field_value_number
+  return (
+    (resource.metadata as any)?.capacity ||
+    resource.core_dynamic_data?.find((d: any) => d.field_name === 'capacity')?.field_value_number
+  )
 }
 
 function extractSkills(resource: any): string[] {
@@ -538,11 +594,14 @@ async function updateEvent(supabase: any, eventData: UpdateEventRequest) {
     .single()
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Failed to update event: ${error.message}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to update event: ${error.message}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({
@@ -567,11 +626,14 @@ async function updateResource(supabase: any, resourceData: UpdateResourceRequest
     .single()
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Failed to update resource: ${error.message}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to update resource: ${error.message}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({
@@ -590,11 +652,14 @@ async function deleteEvent(supabase: any, id: string, organizationId: string) {
     .eq('organization_id', organizationId)
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Failed to delete event: ${error.message}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to delete event: ${error.message}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({
@@ -612,11 +677,14 @@ async function deleteResource(supabase: any, id: string, organizationId: string)
     .eq('organization_id', organizationId)
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-      error: `Failed to delete resource: ${error.message}`,
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Failed to delete resource: ${error.message}`,
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({

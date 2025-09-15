@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   FileCheck,
@@ -33,18 +33,18 @@ import {
   Lock,
   Unlock
 } from 'lucide-react'
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  BarChart, 
-  Bar, 
-  PieChart, 
-  Pie, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
   Cell,
   LineChart,
   Line,
@@ -81,7 +81,7 @@ export default function IPOPage() {
   const [ipoReadiness, setIpoReadiness] = useState(73)
   const [targetValuation, setTargetValuation] = useState(2500) // In Crores
   const [currentValuation, setCurrentValuation] = useState(1850) // In Crores
-  
+
   const [financialMetrics, setFinancialMetrics] = useState({
     revenue: { current: 540, target: 720, unit: 'Cr' },
     ebitda: { current: 162, target: 216, unit: 'Cr' },
@@ -101,20 +101,69 @@ export default function IPOPage() {
   ])
 
   const [complianceItems, setComplianceItems] = useState<ComplianceItem[]>([
-    { category: 'Financial', item: 'Audited financials for 3 years', status: 'completed', priority: 'critical' },
-    { category: 'Financial', item: 'Quarterly results for last 8 quarters', status: 'completed', priority: 'critical' },
-    { category: 'Legal', item: 'SEBI compliance documentation', status: 'in-progress', priority: 'critical', progress: 85 },
+    {
+      category: 'Financial',
+      item: 'Audited financials for 3 years',
+      status: 'completed',
+      priority: 'critical'
+    },
+    {
+      category: 'Financial',
+      item: 'Quarterly results for last 8 quarters',
+      status: 'completed',
+      priority: 'critical'
+    },
+    {
+      category: 'Legal',
+      item: 'SEBI compliance documentation',
+      status: 'in-progress',
+      priority: 'critical',
+      progress: 85
+    },
     { category: 'Legal', item: 'Board resolution for IPO', status: 'completed', priority: 'high' },
-    { category: 'Corporate', item: 'Independent directors appointment', status: 'in-progress', priority: 'high', progress: 60 },
-    { category: 'Corporate', item: 'Audit committee formation', status: 'completed', priority: 'high' },
-    { category: 'Operations', item: 'ERP system implementation', status: 'completed', priority: 'medium' },
-    { category: 'Operations', item: 'Risk management framework', status: 'in-progress', priority: 'high', progress: 70 },
-    { category: 'Financial', item: 'GST compliance certificate', status: 'completed', priority: 'high' },
-    { category: 'Legal', item: 'IP rights documentation', status: 'pending', priority: 'medium', dueDate: '2024-08-15' }
+    {
+      category: 'Corporate',
+      item: 'Independent directors appointment',
+      status: 'in-progress',
+      priority: 'high',
+      progress: 60
+    },
+    {
+      category: 'Corporate',
+      item: 'Audit committee formation',
+      status: 'completed',
+      priority: 'high'
+    },
+    {
+      category: 'Operations',
+      item: 'ERP system implementation',
+      status: 'completed',
+      priority: 'medium'
+    },
+    {
+      category: 'Operations',
+      item: 'Risk management framework',
+      status: 'in-progress',
+      priority: 'high',
+      progress: 70
+    },
+    {
+      category: 'Financial',
+      item: 'GST compliance certificate',
+      status: 'completed',
+      priority: 'high'
+    },
+    {
+      category: 'Legal',
+      item: 'IP rights documentation',
+      status: 'pending',
+      priority: 'medium',
+      dueDate: '2024-08-15'
+    }
   ])
 
   const [milestones, setMilestones] = useState<MilestoneItem[]>([
-    { 
+    {
       title: 'Series B Funding Closed',
       date: '2023-03-15',
       status: 'achieved',
@@ -184,59 +233,60 @@ export default function IPOPage() {
   async function fetchIPOData() {
     try {
       // Fetch IPO-related data from Supabase - run queries in parallel
-      const [ipoEntityResult, financialResult, complianceResult, milestonesResult] = await Promise.all([
-        supabase
-          .from('core_entities')
-          .select('metadata')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'ipo_preparation')
-          .single(),
+      const [ipoEntityResult, financialResult, complianceResult, milestonesResult] =
+        await Promise.all([
+          supabase
+            .from('core_entities')
+            .select('metadata')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('entity_type', 'ipo_preparation')
+            .single(),
 
-        supabase
-          .from('core_entities')
-          .select('metadata')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'financial_metrics')
-          .single(),
+          supabase
+            .from('core_entities')
+            .select('metadata')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('entity_type', 'financial_metrics')
+            .single(),
 
-        supabase
-          .from('core_entities')
-          .select('metadata')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('entity_type', 'compliance_tracker'),
+          supabase
+            .from('core_entities')
+            .select('metadata')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('entity_type', 'compliance_tracker'),
 
-        supabase
-          .from('universal_transactions')
-          .select('*')
-          .eq('organization_id', INDIA_VISION_ORG_ID)
-          .eq('transaction_type', 'milestone')
-          .order('transaction_date', { ascending: true })
-      ])
+          supabase
+            .from('universal_transactions')
+            .select('*')
+            .eq('organization_id', INDIA_VISION_ORG_ID)
+            .eq('transaction_type', 'milestone')
+            .order('transaction_date', { ascending: true })
+        ])
 
       // Process IPO preparation data
       if (ipoEntityResult.data?.metadata) {
         const ipoData = ipoEntityResult.data.metadata
-        
+
         if (ipoData.readiness_score) {
           setIpoReadiness(ipoData.readiness_score)
         }
-        
+
         if (ipoData.target_valuation) {
           setTargetValuation(ipoData.target_valuation)
         }
-        
+
         if (ipoData.current_valuation) {
           setCurrentValuation(ipoData.current_valuation)
         }
-        
+
         if (ipoData.growth_metrics) {
           setGrowthMetrics(ipoData.growth_metrics)
         }
-        
+
         if (ipoData.investor_metrics) {
           setInvestorMetrics(ipoData.investor_metrics)
         }
-        
+
         if (ipoData.peer_comparison) {
           setPeerComparison(ipoData.peer_comparison)
         }
@@ -260,7 +310,7 @@ export default function IPOPage() {
           progress: item.metadata?.progress || 0,
           dueDate: item.metadata?.due_date
         }))
-        
+
         setComplianceItems(compliance)
       }
 
@@ -273,10 +323,9 @@ export default function IPOPage() {
           description: txn.metadata?.description || '',
           impact: txn.metadata?.impact || 'medium'
         }))
-        
+
         setMilestones(milestoneData)
       }
-
     } catch (error) {
       console.error('Error fetching IPO data:', error)
       // Keep fallback data on error
@@ -290,7 +339,8 @@ export default function IPOPage() {
   }
 
   // Defensive normalization for charts: ensure arrays for Recharts components
-  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const toArray = (v: any): any[] =>
+    Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : []
   const safeInvestorMetrics = toArray(investorMetrics)
   const safeGrowthMetrics = toArray(growthMetrics)
 
@@ -300,16 +350,19 @@ export default function IPOPage() {
   const complianceProgress = Math.round((completedCompliance / totalCompliance) * 100)
 
   // Group compliance by category
-  const complianceByCategory = complianceItems.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = { total: 0, completed: 0 }
-    }
-    acc[item.category].total++
-    if (item.status === 'completed') {
-      acc[item.category].completed++
-    }
-    return acc
-  }, {} as Record<string, { total: number; completed: number }>)
+  const complianceByCategory = complianceItems.reduce(
+    (acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = { total: 0, completed: 0 }
+      }
+      acc[item.category].total++
+      if (item.status === 'completed') {
+        acc[item.category].completed++
+      }
+      return acc
+    },
+    {} as Record<string, { total: number; completed: number }>
+  )
 
   const complianceCategoryData = Object.entries(complianceByCategory).map(([category, data]) => ({
     category,
@@ -326,10 +379,12 @@ export default function IPOPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             IPO Preparation Dashboard
           </h1>
-          <p className="text-white/60 mt-1">Track India Vision's journey to Initial Public Offering</p>
+          <p className="text-white/60 mt-1">
+            Track India Vision's journey to Initial Public Offering
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/20 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -359,7 +414,7 @@ export default function IPOPage() {
               <p className="text-sm text-white/60 mt-1">Ready for IPO</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Readiness Progress */}
             <div>
@@ -370,7 +425,10 @@ export default function IPOPage() {
                     <span className="text-sm font-medium text-[#00DDFF]">90%</span>
                   </div>
                   <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-full" style={{ width: '90%' }} />
+                    <div
+                      className="h-full bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-full"
+                      style={{ width: '90%' }}
+                    />
                   </div>
                 </div>
                 <div>
@@ -379,7 +437,10 @@ export default function IPOPage() {
                     <span className="text-sm font-medium text-[#fff685]">75%</span>
                   </div>
                   <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-full" style={{ width: '75%' }} />
+                    <div
+                      className="h-full bg-gradient-to-r from-[#fff685] to-[#00DDFF] rounded-full"
+                      style={{ width: '75%' }}
+                    />
                   </div>
                 </div>
                 <div>
@@ -388,7 +449,10 @@ export default function IPOPage() {
                     <span className="text-sm font-medium text-emerald-400">85%</span>
                   </div>
                   <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full" style={{ width: '85%' }} />
+                    <div
+                      className="h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full"
+                      style={{ width: '85%' }}
+                    />
                   </div>
                 </div>
                 <div>
@@ -397,7 +461,10 @@ export default function IPOPage() {
                     <span className="text-sm font-medium text-purple-400">70%</span>
                   </div>
                   <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-purple-400 to-pink-500 rounded-full" style={{ width: '70%' }} />
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-400 to-pink-500 rounded-full"
+                      style={{ width: '70%' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -450,7 +517,7 @@ export default function IPOPage() {
         {Object.entries(financialMetrics).map(([key, metric]) => {
           const progress = (metric.current / metric.target) * 100
           const isOnTrack = progress >= 80
-          
+
           return (
             <div key={key} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
@@ -461,10 +528,13 @@ export default function IPOPage() {
                       {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                     </h3>
                     <p className="text-2xl font-bold text-white">
-                      {metric.current}{metric.unit}
+                      {metric.current}
+                      {metric.unit}
                     </p>
                   </div>
-                  <div className={`p-2 rounded-lg ${isOnTrack ? 'bg-emerald-500/20' : 'bg-yellow-500/20'}`}>
+                  <div
+                    className={`p-2 rounded-lg ${isOnTrack ? 'bg-emerald-500/20' : 'bg-yellow-500/20'}`}
+                  >
                     {isOnTrack ? (
                       <CheckCircle2 className="h-5 w-5 text-emerald-400" />
                     ) : (
@@ -475,12 +545,17 @@ export default function IPOPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-white/40">Target</span>
-                    <span className="text-white/60">{metric.target}{metric.unit}</span>
+                    <span className="text-white/60">
+                      {metric.target}
+                      {metric.unit}
+                    </span>
                   </div>
                   <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        isOnTrack ? 'bg-gradient-to-r from-emerald-400 to-green-500' : 'bg-gradient-to-r from-yellow-400 to-amber-500'
+                        isOnTrack
+                          ? 'bg-gradient-to-r from-emerald-400 to-green-500'
+                          : 'bg-gradient-to-r from-yellow-400 to-amber-500'
                       }`}
                       style={{ width: `${Math.min(progress, 100)}%` }}
                     />
@@ -502,41 +577,41 @@ export default function IPOPage() {
               <ComposedChart data={safeGrowthMetrics}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#00DDFF" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#00DDFF" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#00DDFF" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="year" stroke="rgba(255,255,255,0.5)" />
                 <YAxis yAxisId="left" stroke="rgba(255,255,255,0.5)" />
                 <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.5)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
                 />
-                <Area 
+                <Area
                   yAxisId="left"
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stroke="#00DDFF" 
-                  fillOpacity={1} 
-                  fill="url(#revenueGradient)" 
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#00DDFF"
+                  fillOpacity={1}
+                  fill="url(#revenueGradient)"
                   strokeWidth={2}
                 />
-                <Line 
+                <Line
                   yAxisId="left"
-                  type="monotone" 
-                  dataKey="profit" 
-                  stroke="#fff685" 
+                  type="monotone"
+                  dataKey="profit"
+                  stroke="#fff685"
                   strokeWidth={2}
                 />
-                <Bar 
+                <Bar
                   yAxisId="right"
-                  dataKey="subscribers" 
-                  fill="#ff1d58" 
+                  dataKey="subscribers"
+                  fill="#ff1d58"
                   opacity={0.5}
                   radius={[8, 8, 0, 0]}
                 />
@@ -550,7 +625,7 @@ export default function IPOPage() {
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-white mb-6">Peer Valuation</h2>
             <div className="space-y-4">
-              {peerComparison.map((peer) => (
+              {peerComparison.map(peer => (
                 <div key={peer.company} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-white">{peer.company}</span>
@@ -590,14 +665,16 @@ export default function IPOPage() {
               </div>
               <div className="flex items-center space-x-2 text-xs">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span className="text-white/60">{completedCompliance}/{totalCompliance}</span>
+                <span className="text-white/60">
+                  {completedCompliance}/{totalCompliance}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Category Progress */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {complianceCategoryData.map((cat) => (
+            {complianceCategoryData.map(cat => (
               <div key={cat.category} className="text-center">
                 <div className="relative w-20 h-20 mx-auto mb-2">
                   <svg className="w-full h-full transform -rotate-90">
@@ -617,7 +694,7 @@ export default function IPOPage() {
                       strokeWidth="8"
                       fill="none"
                       strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 36 * cat.progress / 100} ${2 * Math.PI * 36}`}
+                      strokeDasharray={`${(2 * Math.PI * 36 * cat.progress) / 100} ${2 * Math.PI * 36}`}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -625,7 +702,9 @@ export default function IPOPage() {
                   </div>
                 </div>
                 <p className="text-xs text-white/60">{cat.category}</p>
-                <p className="text-xs text-white/40">{cat.completed}/{cat.total}</p>
+                <p className="text-xs text-white/40">
+                  {cat.completed}/{cat.total}
+                </p>
               </div>
             ))}
           </div>
@@ -633,12 +712,20 @@ export default function IPOPage() {
           {/* Compliance Items */}
           <div className="space-y-3">
             {complianceItems.slice(0, 5).map((item, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 hover:bg-white/20 transition-colors">
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 hover:bg-white/20 transition-colors"
+              >
                 <div className="flex items-center space-x-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    item.status === 'completed' ? 'bg-emerald-500/20' :
-                    item.status === 'in-progress' ? 'bg-yellow-500/20' : 'bg-red-500/20'
-                  }`}>
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      item.status === 'completed'
+                        ? 'bg-emerald-500/20'
+                        : item.status === 'in-progress'
+                          ? 'bg-yellow-500/20'
+                          : 'bg-red-500/20'
+                    }`}
+                  >
                     {item.status === 'completed' ? (
                       <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                     ) : item.status === 'in-progress' ? (
@@ -657,13 +744,19 @@ export default function IPOPage() {
                     <p className="text-sm font-medium text-[#00DDFF]">{item.progress}%</p>
                   )}
                   {item.dueDate && (
-                    <p className="text-xs text-white/40">Due: {new Date(item.dueDate).toLocaleDateString()}</p>
+                    <p className="text-xs text-white/40">
+                      Due: {new Date(item.dueDate).toLocaleDateString()}
+                    </p>
                   )}
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    item.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
-                    item.priority === 'high' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-blue-500/20 text-blue-400'
-                  }`}>
+                  <span
+                    className={`text-xs px-2 py-1 rounded ${
+                      item.priority === 'critical'
+                        ? 'bg-red-500/20 text-red-400'
+                        : item.priority === 'high'
+                          ? 'bg-yellow-500/20 text-yellow-400'
+                          : 'bg-blue-500/20 text-blue-400'
+                    }`}
+                  >
                     {item.priority}
                   </span>
                 </div>
@@ -685,25 +778,25 @@ export default function IPOPage() {
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
                 <PolarAngleAxis dataKey="metric" stroke="rgba(255,255,255,0.5)" />
                 <PolarRadiusAxis stroke="rgba(255,255,255,0.3)" />
-                <Radar 
-                  name="India Vision" 
-                  dataKey="value" 
-                  stroke="#00DDFF" 
-                  fill="#00DDFF" 
+                <Radar
+                  name="India Vision"
+                  dataKey="value"
+                  stroke="#00DDFF"
+                  fill="#00DDFF"
                   fillOpacity={0.3}
                   strokeWidth={2}
                 />
-                <Radar 
-                  name="Industry Benchmark" 
-                  dataKey="benchmark" 
-                  stroke="#fff685" 
-                  fill="#fff685" 
+                <Radar
+                  name="Industry Benchmark"
+                  dataKey="benchmark"
+                  stroke="#fff685"
+                  fill="#fff685"
                   fillOpacity={0.1}
                   strokeWidth={2}
                 />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
@@ -722,11 +815,13 @@ export default function IPOPage() {
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-white/10" />
               {milestones.map((milestone, index) => (
                 <div key={index} className="relative flex items-start space-x-4">
-                  <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center ${
-                    milestone.status === 'achieved' 
-                      ? 'bg-emerald-500/20 border-2 border-emerald-500' 
-                      : 'bg-white/10 border-2 border-white/20'
-                  }`}>
+                  <div
+                    className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center ${
+                      milestone.status === 'achieved'
+                        ? 'bg-emerald-500/20 border-2 border-emerald-500'
+                        : 'bg-white/10 border-2 border-white/20'
+                    }`}
+                  >
                     {milestone.status === 'achieved' ? (
                       <CheckCircle2 className="h-6 w-6 text-emerald-400" />
                     ) : (
@@ -736,26 +831,32 @@ export default function IPOPage() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className={`font-medium ${
-                          milestone.status === 'achieved' ? 'text-white' : 'text-white/60'
-                        }`}>
+                        <h3
+                          className={`font-medium ${
+                            milestone.status === 'achieved' ? 'text-white' : 'text-white/60'
+                          }`}
+                        >
                           {milestone.title}
                         </h3>
                         <p className="text-xs text-white/40 mt-1">{milestone.description}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-white/60">
-                          {new Date(milestone.date).toLocaleDateString('en-US', { 
-                            month: 'short', 
+                          {new Date(milestone.date).toLocaleDateString('en-US', {
+                            month: 'short',
                             day: 'numeric',
                             year: 'numeric'
                           })}
                         </p>
-                        <span className={`text-xs px-2 py-1 rounded inline-block mt-1 ${
-                          milestone.impact === 'high' ? 'bg-red-500/20 text-red-400' :
-                          milestone.impact === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                          'bg-blue-500/20 text-blue-400'
-                        }`}>
+                        <span
+                          className={`text-xs px-2 py-1 rounded inline-block mt-1 ${
+                            milestone.impact === 'high'
+                              ? 'bg-red-500/20 text-red-400'
+                              : milestone.impact === 'medium'
+                                ? 'bg-yellow-500/20 text-yellow-400'
+                                : 'bg-blue-500/20 text-blue-400'
+                          }`}
+                        >
                           {milestone.impact} impact
                         </span>
                       </div>
@@ -790,7 +891,7 @@ export default function IPOPage() {
                 </li>
               </ul>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
               <div className="flex items-center space-x-2 mb-2">
                 <Clock className="h-5 w-5 text-yellow-400" />
@@ -807,7 +908,7 @@ export default function IPOPage() {
                 </li>
               </ul>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
               <div className="flex items-center space-x-2 mb-2">
                 <Target className="h-5 w-5 text-emerald-400" />

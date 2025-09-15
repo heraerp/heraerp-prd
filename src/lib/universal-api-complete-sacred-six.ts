@@ -4,13 +4,18 @@
  * Fixes the gap in our current implementation
  */
 
-import { UniversalAPIEnterprise, ExecuteRequest, QueryRequest, UniversalResponse } from './universal-api-enterprise'
+import {
+  UniversalAPIEnterprise,
+  ExecuteRequest,
+  QueryRequest,
+  UniversalResponse
+} from './universal-api-enterprise'
 
 // ================================================================================
 // SACRED SIX TABLE DEFINITIONS - Complete Coverage
 // ================================================================================
 
-export type SacredSixTable = 
+export type SacredSixTable =
   | 'core_organizations'
   | 'core_entities'
   | 'core_dynamic_data'
@@ -19,11 +24,25 @@ export type SacredSixTable =
   | 'universal_transaction_lines'
 
 // Enhanced operation types for ALL tables
-export type SacredSixOperation = 
-  | 'create' | 'read' | 'update' | 'archive' | 'restore' | 'delete'
-  | 'bulk_create' | 'bulk_read' | 'bulk_update' | 'bulk_archive' | 'bulk_delete'
-  | 'upsert' | 'merge' | 'sync'
-  | 'transaction' | 'query' | 'count' | 'exists'
+export type SacredSixOperation =
+  | 'create'
+  | 'read'
+  | 'update'
+  | 'archive'
+  | 'restore'
+  | 'delete'
+  | 'bulk_create'
+  | 'bulk_read'
+  | 'bulk_update'
+  | 'bulk_archive'
+  | 'bulk_delete'
+  | 'upsert'
+  | 'merge'
+  | 'sync'
+  | 'transaction'
+  | 'query'
+  | 'count'
+  | 'exists'
 
 // Table-specific interfaces for complete type safety
 export interface OrganizationData {
@@ -120,7 +139,7 @@ export interface TransactionLineData {
 }
 
 // Union type for all table data
-export type SacredSixData = 
+export type SacredSixData =
   | OrganizationData
   | EntityData
   | DynamicData
@@ -133,12 +152,13 @@ export type SacredSixData =
 // ================================================================================
 
 export class UniversalAPISacredSix extends UniversalAPIEnterprise {
-  
   // ============================================================================
   // CORE_ORGANIZATIONS - Complete Operations
   // ============================================================================
-  
-  async createOrganization(data: Omit<OrganizationData, 'id' | 'created_at' | 'updated_at'>): Promise<UniversalResponse<OrganizationData>> {
+
+  async createOrganization(
+    data: Omit<OrganizationData, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<UniversalResponse<OrganizationData>> {
     return this.execute({
       entity: 'core_organizations',
       organization_id: data.parent_organization_id || 'system',
@@ -148,7 +168,9 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async queryOrganizations(filters?: Partial<OrganizationData>): Promise<UniversalResponse<OrganizationData[]>> {
+  async queryOrganizations(
+    filters?: Partial<OrganizationData>
+  ): Promise<UniversalResponse<OrganizationData[]>> {
     return this.query({
       entity: 'core_organizations',
       organization_id: 'system', // System-level query
@@ -157,7 +179,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async updateOrganization(id: string, data: Partial<OrganizationData>): Promise<UniversalResponse<OrganizationData>> {
+  async updateOrganization(
+    id: string,
+    data: Partial<OrganizationData>
+  ): Promise<UniversalResponse<OrganizationData>> {
     return this.execute({
       entity: 'core_organizations',
       organization_id: data.parent_organization_id || 'system',
@@ -185,8 +210,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   // ============================================================================
   // CORE_ENTITIES - Enhanced Operations
   // ============================================================================
-  
-  async createEntity(data: Omit<EntityData, 'id' | 'created_at' | 'updated_at'>): Promise<UniversalResponse<EntityData>> {
+
+  async createEntity(
+    data: Omit<EntityData, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<UniversalResponse<EntityData>> {
     return this.execute({
       entity: 'core_entities',
       organization_id: data.organization_id,
@@ -196,7 +223,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async queryEntities(organizationId: string, filters?: Partial<EntityData>): Promise<UniversalResponse<EntityData[]>> {
+  async queryEntities(
+    organizationId: string,
+    filters?: Partial<EntityData>
+  ): Promise<UniversalResponse<EntityData[]>> {
     return this.query({
       entity: 'core_entities',
       organization_id: organizationId,
@@ -205,7 +235,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async bulkCreateEntities(organizationId: string, entities: Omit<EntityData, 'id' | 'created_at' | 'updated_at'>[]): Promise<UniversalResponse> {
+  async bulkCreateEntities(
+    organizationId: string,
+    entities: Omit<EntityData, 'id' | 'created_at' | 'updated_at'>[]
+  ): Promise<UniversalResponse> {
     return this.execute({
       entity: 'core_entities',
       organization_id: organizationId,
@@ -221,8 +254,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   // ============================================================================
   // CORE_DYNAMIC_DATA - Direct Operations (NEW!)
   // ============================================================================
-  
-  async createDynamicField(data: Omit<DynamicData, 'id' | 'created_at' | 'updated_at'>): Promise<UniversalResponse<DynamicData>> {
+
+  async createDynamicField(
+    data: Omit<DynamicData, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<UniversalResponse<DynamicData>> {
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: data.organization_id,
@@ -232,7 +267,11 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async queryDynamicFields(organizationId: string, entityId?: string, fieldName?: string): Promise<UniversalResponse<DynamicData[]>> {
+  async queryDynamicFields(
+    organizationId: string,
+    entityId?: string,
+    fieldName?: string
+  ): Promise<UniversalResponse<DynamicData[]>> {
     const filters: Partial<DynamicData> = {}
     if (entityId) filters.entity_id = entityId
     if (fieldName) filters.field_name = fieldName
@@ -245,7 +284,11 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async updateDynamicField(id: string, organizationId: string, data: Partial<DynamicData>): Promise<UniversalResponse<DynamicData>> {
+  async updateDynamicField(
+    id: string,
+    organizationId: string,
+    data: Partial<DynamicData>
+  ): Promise<UniversalResponse<DynamicData>> {
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
@@ -255,7 +298,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async bulkUpsertDynamicFields(organizationId: string, fields: DynamicData[]): Promise<UniversalResponse> {
+  async bulkUpsertDynamicFields(
+    organizationId: string,
+    fields: DynamicData[]
+  ): Promise<UniversalResponse> {
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
@@ -270,9 +316,12 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   }
 
   // Advanced dynamic data operations
-  async getEntityDynamicData(organizationId: string, entityId: string): Promise<Record<string, any>> {
+  async getEntityDynamicData(
+    organizationId: string,
+    entityId: string
+  ): Promise<Record<string, any>> {
     const response = await this.queryDynamicFields(organizationId, entityId)
-    
+
     if (response.status === 'success' && response.rows) {
       const dynamicData: Record<string, any> = {}
       response.rows.forEach((field: DynamicData) => {
@@ -297,15 +346,17 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
       })
       return dynamicData
     }
-    
+
     return {}
   }
 
   // ============================================================================
   // CORE_RELATIONSHIPS - Direct Operations (ENHANCED!)
   // ============================================================================
-  
-  async createRelationship(data: Omit<RelationshipData, 'id' | 'created_at' | 'updated_at'>): Promise<UniversalResponse<RelationshipData>> {
+
+  async createRelationship(
+    data: Omit<RelationshipData, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<UniversalResponse<RelationshipData>> {
     return this.execute({
       entity: 'core_relationships',
       organization_id: data.organization_id,
@@ -319,7 +370,12 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async queryRelationships(organizationId: string, fromEntityId?: string, toEntityId?: string, relationshipType?: string): Promise<UniversalResponse<RelationshipData[]>> {
+  async queryRelationships(
+    organizationId: string,
+    fromEntityId?: string,
+    toEntityId?: string,
+    relationshipType?: string
+  ): Promise<UniversalResponse<RelationshipData[]>> {
     const filters: Partial<RelationshipData> = { is_active: true }
     if (fromEntityId) filters.from_entity_id = fromEntityId
     if (toEntityId) filters.to_entity_id = toEntityId
@@ -333,7 +389,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async bulkCreateRelationships(organizationId: string, relationships: Omit<RelationshipData, 'id' | 'created_at' | 'updated_at'>[]): Promise<UniversalResponse> {
+  async bulkCreateRelationships(
+    organizationId: string,
+    relationships: Omit<RelationshipData, 'id' | 'created_at' | 'updated_at'>[]
+  ): Promise<UniversalResponse> {
     return this.execute({
       entity: 'core_relationships',
       organization_id: organizationId,
@@ -351,7 +410,11 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   }
 
   // Advanced relationship operations
-  async getEntityHierarchy(organizationId: string, rootEntityId: string, relationshipType: string = 'parent_of'): Promise<any> {
+  async getEntityHierarchy(
+    organizationId: string,
+    rootEntityId: string,
+    relationshipType: string = 'parent_of'
+  ): Promise<any> {
     return this.query({
       entity: 'core_relationships',
       organization_id: organizationId,
@@ -369,7 +432,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
             type: 'inner'
           },
           {
-            entity: 'core_entities', 
+            entity: 'core_entities',
             alias: 'child_entities',
             on: { left: 'to_entity_id', right: 'id' },
             type: 'inner'
@@ -382,8 +445,11 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   // ============================================================================
   // UNIVERSAL_TRANSACTIONS - Enhanced Operations
   // ============================================================================
-  
-  async createTransaction(data: Omit<TransactionData, 'id' | 'created_at' | 'updated_at'>, lines?: Omit<TransactionLineData, 'id' | 'transaction_id' | 'created_at' | 'updated_at'>[]): Promise<UniversalResponse<TransactionData>> {
+
+  async createTransaction(
+    data: Omit<TransactionData, 'id' | 'created_at' | 'updated_at'>,
+    lines?: Omit<TransactionLineData, 'id' | 'transaction_id' | 'created_at' | 'updated_at'>[]
+  ): Promise<UniversalResponse<TransactionData>> {
     const operations: any[] = [
       {
         entity: 'universal_transactions',
@@ -419,7 +485,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async queryTransactions(organizationId: string, filters?: Partial<TransactionData>): Promise<UniversalResponse<TransactionData[]>> {
+  async queryTransactions(
+    organizationId: string,
+    filters?: Partial<TransactionData>
+  ): Promise<UniversalResponse<TransactionData[]>> {
     return this.query({
       entity: 'universal_transactions',
       organization_id: organizationId,
@@ -431,8 +500,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   // ============================================================================
   // UNIVERSAL_TRANSACTION_LINES - Direct Operations (NEW!)
   // ============================================================================
-  
-  async createTransactionLine(data: Omit<TransactionLineData, 'id' | 'created_at' | 'updated_at'>): Promise<UniversalResponse<TransactionLineData>> {
+
+  async createTransactionLine(
+    data: Omit<TransactionLineData, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<UniversalResponse<TransactionLineData>> {
     return this.execute({
       entity: 'universal_transaction_lines',
       organization_id: data.organization_id,
@@ -442,7 +513,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async queryTransactionLines(organizationId: string, transactionId?: string): Promise<UniversalResponse<TransactionLineData[]>> {
+  async queryTransactionLines(
+    organizationId: string,
+    transactionId?: string
+  ): Promise<UniversalResponse<TransactionLineData[]>> {
     const filters: Partial<TransactionLineData> = {}
     if (transactionId) filters.transaction_id = transactionId
 
@@ -454,7 +528,11 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async updateTransactionLine(id: string, organizationId: string, data: Partial<TransactionLineData>): Promise<UniversalResponse<TransactionLineData>> {
+  async updateTransactionLine(
+    id: string,
+    organizationId: string,
+    data: Partial<TransactionLineData>
+  ): Promise<UniversalResponse<TransactionLineData>> {
     return this.execute({
       entity: 'universal_transaction_lines',
       organization_id: organizationId,
@@ -464,7 +542,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     })
   }
 
-  async bulkCreateTransactionLines(organizationId: string, lines: Omit<TransactionLineData, 'id' | 'created_at' | 'updated_at'>[]): Promise<UniversalResponse> {
+  async bulkCreateTransactionLines(
+    organizationId: string,
+    lines: Omit<TransactionLineData, 'id' | 'created_at' | 'updated_at'>[]
+  ): Promise<UniversalResponse> {
     return this.execute({
       entity: 'universal_transaction_lines',
       organization_id: organizationId,
@@ -480,8 +561,13 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   // ============================================================================
   // CROSS-TABLE OPERATIONS (TRUE UNIVERSAL POWER)
   // ============================================================================
-  
-  async createCompleteEntity(organizationId: string, entityData: Omit<EntityData, 'id' | 'organization_id' | 'created_at' | 'updated_at'>, dynamicFields?: Record<string, any>, relationships?: Omit<RelationshipData, 'id' | 'organization_id' | 'created_at' | 'updated_at'>[]): Promise<UniversalResponse> {
+
+  async createCompleteEntity(
+    organizationId: string,
+    entityData: Omit<EntityData, 'id' | 'organization_id' | 'created_at' | 'updated_at'>,
+    dynamicFields?: Record<string, any>,
+    relationships?: Omit<RelationshipData, 'id' | 'organization_id' | 'created_at' | 'updated_at'>[]
+  ): Promise<UniversalResponse> {
     const operations: any[] = [
       {
         entity: 'core_entities',
@@ -537,36 +623,37 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   }
 
   // Get complete entity with all related data
-  async getCompleteEntity(organizationId: string, entityId: string): Promise<{
+  async getCompleteEntity(
+    organizationId: string,
+    entityId: string
+  ): Promise<{
     entity: EntityData
     dynamicData: Record<string, any>
     relationships: RelationshipData[]
     transactions: TransactionData[]
   }> {
     // Query all related data in parallel
-    const [entityResponse, dynamicDataResponse, relationshipsResponse, transactionsResponse] = await Promise.all([
-      this.query({
-        entity: 'core_entities',
-        organization_id: organizationId,
-        smart_code: 'HERA.ENT.GET.v1',
-        query: { filters: { id: entityId } }
-      }),
-      this.getEntityDynamicData(organizationId, entityId),
-      this.queryRelationships(organizationId, entityId),
-      this.query({
-        entity: 'universal_transactions',
-        organization_id: organizationId,
-        smart_code: 'HERA.TXN.BY.ENTITY.QUERY.v1',
-        query: {
-          filters: {
-            $or: [
-              { from_entity_id: entityId },
-              { to_entity_id: entityId }
-            ]
+    const [entityResponse, dynamicDataResponse, relationshipsResponse, transactionsResponse] =
+      await Promise.all([
+        this.query({
+          entity: 'core_entities',
+          organization_id: organizationId,
+          smart_code: 'HERA.ENT.GET.v1',
+          query: { filters: { id: entityId } }
+        }),
+        this.getEntityDynamicData(organizationId, entityId),
+        this.queryRelationships(organizationId, entityId),
+        this.query({
+          entity: 'universal_transactions',
+          organization_id: organizationId,
+          smart_code: 'HERA.TXN.BY.ENTITY.QUERY.v1',
+          query: {
+            filters: {
+              $or: [{ from_entity_id: entityId }, { to_entity_id: entityId }]
+            }
           }
-        }
-      })
-    ])
+        })
+      ])
 
     return {
       entity: entityResponse.rows?.[0] || {},
@@ -579,7 +666,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
   // ============================================================================
   // TABLE STATISTICS AND HEALTH
   // ============================================================================
-  
+
   async getTableStatistics(organizationId: string): Promise<Record<SacredSixTable, number>> {
     const tables: SacredSixTable[] = [
       'core_organizations',
@@ -591,15 +678,13 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     ]
 
     const counts = await Promise.all(
-      tables.map(table => 
+      tables.map(table =>
         this.query({
           entity: table,
           organization_id: table === 'core_organizations' ? 'system' : organizationId,
           smart_code: `HERA.${table.toUpperCase()}.COUNT.v1`,
           query: {
-            aggregations: [
-              { metrics: [{ fn: 'count', as: 'total' }] }
-            ]
+            aggregations: [{ metrics: [{ fn: 'count', as: 'total' }] }]
           }
         })
       )
@@ -624,10 +709,10 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     // Check entity references
     const entitiesResponse = await this.queryEntities(organizationId)
     const relationshipsResponse = await this.queryRelationships(organizationId)
-    
+
     if (entitiesResponse.rows && relationshipsResponse.rows) {
       const entityIds = new Set(entitiesResponse.rows.map(e => e.id))
-      
+
       relationshipsResponse.rows.forEach(rel => {
         if (!entityIds.has(rel.from_entity_id)) {
           issues.push(`Orphaned relationship: from_entity_id ${rel.from_entity_id} not found`)
@@ -665,16 +750,16 @@ export default UniversalAPISacredSix
 
 /**
  * COMPLETE SACRED SIX COVERAGE ACHIEVED ✅
- * 
+ *
  * This implementation provides EQUAL TREATMENT for all 6 Sacred Tables:
- * 
+ *
  * 1. ✅ core_organizations - Full CRUD + hierarchy management
- * 2. ✅ core_entities - Enhanced CRUD + bulk operations  
+ * 2. ✅ core_entities - Enhanced CRUD + bulk operations
  * 3. ✅ core_dynamic_data - Direct operations (NEW!) + advanced field management
  * 4. ✅ core_relationships - Enhanced CRUD + hierarchy traversal + cycle prevention
  * 5. ✅ universal_transactions - Complete transaction management + line integration
  * 6. ✅ universal_transaction_lines - Direct operations (NEW!) + bulk line management
- * 
+ *
  * REVOLUTIONARY FEATURES:
  * • Every table has: create, read, update, archive, delete, bulk operations
  * • Cross-table operations with reference resolution
@@ -682,7 +767,7 @@ export default UniversalAPISacredSix
  * • Data integrity validation across all tables
  * • Performance statistics and health monitoring
  * • Type-safe interfaces for all table operations
- * 
+ *
  * SACRED SIX PRINCIPLES MAINTAINED:
  * • No schema changes required for any business logic
  * • Perfect multi-tenant isolation via organization_id

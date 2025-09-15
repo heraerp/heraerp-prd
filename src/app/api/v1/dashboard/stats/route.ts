@@ -15,10 +15,13 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.substring(7)
-    
+
     // Verify the token with Supabase
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabaseAdmin.auth.getUser(token)
+
     if (authError || !user) {
       return NextResponse.json(
         { success: false, message: 'Invalid authentication' },
@@ -89,12 +92,8 @@ export async function GET(request: NextRequest) {
       transactions_count: transactionsCount,
       total_value: totalValue
     })
-
   } catch (error) {
     console.error('Get dashboard stats error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

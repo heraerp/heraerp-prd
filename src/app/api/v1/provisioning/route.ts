@@ -1,6 +1,6 @@
 /**
  * 🚀 HERA Provisioning API
- * 
+ *
  * API endpoints for tenant provisioning
  * - POST: Create new tenant
  * - PUT: Update tenant modules
@@ -24,22 +24,27 @@ export async function POST(request: NextRequest) {
     // Check authentication
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
-    const { data: { user } } = await supabase.auth.getUser()
-    
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
+
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
     // Parse request body
-    const body = await request.json() as ProvisioningRequest
+    const body = (await request.json()) as ProvisioningRequest
 
     // Validate required fields
-    if (!body.organizationName || !body.subdomain || !body.industryType || !body.ownerEmail || !body.ownerName) {
+    if (
+      !body.organizationName ||
+      !body.subdomain ||
+      !body.industryType ||
+      !body.ownerEmail ||
+      !body.ownerName
+    ) {
       return NextResponse.json(
-        { 
+        {
           error: 'Missing required fields',
           required: ['organizationName', 'subdomain', 'industryType', 'ownerEmail', 'ownerName']
         },
@@ -59,10 +64,7 @@ export async function POST(request: NextRequest) {
     const result = await provisioningService.provisionTenant(body)
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error || 'Provisioning failed' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: result.error || 'Provisioning failed' }, { status: 400 })
     }
 
     // Return success with tenant details
@@ -74,13 +76,9 @@ export async function POST(request: NextRequest) {
       accessUrl: `https://${result.subdomain}.heraerp.com`,
       message: 'Tenant provisioned successfully'
     })
-
   } catch (error) {
     console.error('[Provisioning API] Error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -92,13 +90,12 @@ export async function PUT(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
-    const { data: { user } } = await supabase.auth.getUser()
-    
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
+
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -128,7 +125,7 @@ export async function PUT(request: NextRequest) {
     }
 
     let result: any
-    
+
     switch (action) {
       case 'grant':
         result = await entitlementsService.grantModuleAccess({
@@ -151,23 +148,16 @@ export async function PUT(request: NextRequest) {
     }
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error || 'Operation failed' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: result.error || 'Operation failed' }, { status: 400 })
     }
 
     return NextResponse.json({
       success: true,
       message: `Module ${action}ed successfully`
     })
-
   } catch (error) {
     console.error('[Provisioning API] Update error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -179,13 +169,12 @@ export async function DELETE(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createClient(cookieStore)
-    const { data: { user } } = await supabase.auth.getUser()
-    
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
+
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
     // Get organization ID from query params
@@ -193,10 +182,7 @@ export async function DELETE(request: NextRequest) {
     const organizationId = searchParams.get('organizationId')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organizationId required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organizationId required' }, { status: 400 })
     }
 
     // Check if user is owner of the organization
@@ -220,23 +206,16 @@ export async function DELETE(request: NextRequest) {
     const result = await provisioningService.deprovisionTenant(organizationId)
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error || 'Deprovisioning failed' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: result.error || 'Deprovisioning failed' }, { status: 400 })
     }
 
     return NextResponse.json({
       success: true,
       message: 'Tenant deprovisioned successfully'
     })
-
   } catch (error) {
     console.error('[Provisioning API] Delete error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -251,10 +230,7 @@ export async function GET(request: NextRequest) {
     const checkAvailability = searchParams.get('checkAvailability') === 'true'
 
     if (!subdomain) {
-      return NextResponse.json(
-        { error: 'subdomain parameter required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'subdomain parameter required' }, { status: 400 })
     }
 
     // Check availability
@@ -269,12 +245,9 @@ export async function GET(request: NextRequest) {
 
     // Get tenant info
     const tenant = await resolveTenant(subdomain)
-    
+
     if (!tenant) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
     }
 
     return NextResponse.json({
@@ -290,12 +263,8 @@ export async function GET(request: NextRequest) {
       })),
       settings: tenant.settings
     })
-
   } catch (error) {
     console.error('[Provisioning API] Get error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -12,20 +12,17 @@ const sizeMap = {
   xl: { width: 240, height: 96, fontSize: 72 }
 }
 
-export function HeraGradientLogo({ 
-  className = '', 
-  size = 'lg'
-}: HeraGradientLogoProps) {
+export function HeraGradientLogo({ className = '', size = 'lg' }: HeraGradientLogoProps) {
   const { width, height, fontSize } = sizeMap[size]
-  
+
   const gradientId = `heraGradient-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
-    <svg 
-      width={width} 
-      height={height} 
-      viewBox={`0 0 ${width} ${height}`} 
-      fill="none" 
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -39,7 +36,7 @@ export function HeraGradientLogo({
           <stop offset="100%" style={{ stopColor: '#06B6D4' }} />
         </linearGradient>
       </defs>
-      
+
       {/* HERA text with bold letterforms */}
       <text
         x="50%"
@@ -59,22 +56,19 @@ export function HeraGradientLogo({
 }
 
 // Alternative version with individual letter control for perfect gradient
-export function HeraGradientLogoAdvanced({ 
-  className = '', 
-  size = 'lg'
-}: HeraGradientLogoProps) {
+export function HeraGradientLogoAdvanced({ className = '', size = 'lg' }: HeraGradientLogoProps) {
   const { width, height } = sizeMap[size]
   const letterWidth = width / 4.5
   const letterHeight = height * 0.7
-  
+
   const gradientId = `heraAdvGradient-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
-    <svg 
-      width={width} 
-      height={height} 
-      viewBox={`0 0 ${width} ${height}`} 
-      fill="none" 
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -90,7 +84,7 @@ export function HeraGradientLogoAdvanced({
           <stop offset="100%" style={{ stopColor: '#06B6D4' }} />
         </linearGradient>
       </defs>
-      
+
       <g>
         {/* H */}
         <path
@@ -111,7 +105,7 @@ export function HeraGradientLogoAdvanced({
           `}
           fill={`url(#${gradientId})`}
         />
-        
+
         {/* E */}
         <path
           d={`
@@ -131,7 +125,7 @@ export function HeraGradientLogoAdvanced({
           `}
           fill={`url(#${gradientId})`}
         />
-        
+
         {/* R */}
         <path
           d={`
@@ -156,7 +150,7 @@ export function HeraGradientLogoAdvanced({
           `}
           fill={`url(#${gradientId})`}
         />
-        
+
         {/* A */}
         <path
           d={`

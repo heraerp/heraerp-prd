@@ -1,0 +1,25 @@
+smart_code: HERA.SALON.MDM.DYNAMIC_KEYS.CORE.v1
+items:
+  # Service keys
+  - { slug: service.category,            entity_type: ENTITY, name: "Service Category",      metadata: { type: "text" } }
+  - { slug: service.duration_min,        entity_type: ENTITY, name: "Duration (min)",        metadata: { type: "number" } }
+  - { slug: service.base_fee,            entity_type: ENTITY, name: "Base Fee",              metadata: { type: "number" } }
+
+  # Product keys
+  - { slug: product.sku,                 entity_type: ENTITY, name: "SKU",                   metadata: { type: "text" } }
+  - { slug: product.category,            entity_type: ENTITY, name: "Category",              metadata: { type: "text" } }
+  - { slug: product.reorder_level,       entity_type: ENTITY, name: "Reorder Level",         metadata: { type: "number" } }
+
+  # Stylist keys
+  - { slug: stylist.skill_level,         entity_type: ENTITY, name: "Skill Level",           metadata: { type: "text", allowed: ["junior","mid","senior"] } }
+  - { slug: stylist.rate_hour,           entity_type: ENTITY, name: "Rate per Hour",         metadata: { type: "number" } }
+  - { slug: stylist.commission_pct,      entity_type: ENTITY, name: "Commission %",          metadata: { type: "number" } }
+
+  # Branch keys
+  - { slug: branch.location_pin,         entity_type: ENTITY, name: "Location PIN",          metadata: { type: "text" } }
+  - { slug: branch.phone,                entity_type: ENTITY, name: "Phone",                 metadata: { type: "text" } }
+
+  # Price list keys (reuse sales pattern)
+  - { slug: price_list.currency,         entity_type: ENTITY, name: "Currency Code",         metadata: { type: "text", pattern: "^[A-Z]{3}$" } }
+  - { slug: price_list.effective_from,   entity_type: ENTITY, name: "Effective From",        metadata: { type: "date" } }
+  - { slug: price_list.effective_to,     entity_type: ENTITY, name: "Effective To",          metadata: { type: "date" } }

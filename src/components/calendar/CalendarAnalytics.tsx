@@ -9,14 +9,14 @@ import {
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
+  SheetTitle
 } from '@/components/ui/sheet'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   BarChart3,
   TrendingUp,
   TrendingDown,
@@ -30,7 +30,7 @@ import {
   RefreshCw
 } from 'lucide-react'
 
-import { 
+import {
   UniversalResource,
   UniversalAppointment,
   ResourceUtilization,
@@ -60,7 +60,6 @@ export function CalendarAnalytics({
   on_close,
   date_range
 }: CalendarAnalyticsProps) {
-
   // ==================== STATE MANAGEMENT ====================
   const [loading, setLoading] = useState(false)
   const [analytics, setAnalytics] = useState<CalendarAnalyticsType | null>(null)
@@ -105,19 +104,26 @@ export function CalendarAnalytics({
 
   // ==================== COMPUTED ANALYTICS ====================
   const computedMetrics = useMemo(() => {
-    const filteredAppointments = appointments.filter(apt => 
-      apt.start_time >= date_range.start && apt.start_time <= date_range.end
+    const filteredAppointments = appointments.filter(
+      apt => apt.start_time >= date_range.start && apt.start_time <= date_range.end
     )
 
     const totalAppointments = filteredAppointments.length
-    const confirmedAppointments = filteredAppointments.filter(apt => apt.status === 'confirmed').length
-    const completedAppointments = filteredAppointments.filter(apt => apt.status === 'completed').length
-    const cancelledAppointments = filteredAppointments.filter(apt => apt.status === 'cancelled').length
+    const confirmedAppointments = filteredAppointments.filter(
+      apt => apt.status === 'confirmed'
+    ).length
+    const completedAppointments = filteredAppointments.filter(
+      apt => apt.status === 'completed'
+    ).length
+    const cancelledAppointments = filteredAppointments.filter(
+      apt => apt.status === 'cancelled'
+    ).length
     const noShowAppointments = filteredAppointments.filter(apt => apt.status === 'no_show').length
 
-    const averageUtilization = utilization.length > 0 
-      ? utilization.reduce((sum, u) => sum + u.utilization_percentage, 0) / utilization.length
-      : 0
+    const averageUtilization =
+      utilization.length > 0
+        ? utilization.reduce((sum, u) => sum + u.utilization_percentage, 0) / utilization.length
+        : 0
 
     const totalRevenue = utilization.reduce((sum, u) => sum + (u.revenue_generated || 0), 0)
 
@@ -127,9 +133,12 @@ export function CalendarAnalytics({
       const hour = new Date(apt.start_time).getHours()
       hourCounts[hour] = (hourCounts[hour] || 0) + 1
     })
-    const peakHour = Object.entries(hourCounts).length > 0 
-      ? Object.entries(hourCounts).reduce((a, b) => hourCounts[a[0] as any] > hourCounts[b[0] as any] ? a : b)?.[0]
-      : null
+    const peakHour =
+      Object.entries(hourCounts).length > 0
+        ? Object.entries(hourCounts).reduce((a, b) =>
+            hourCounts[a[0] as any] > hourCounts[b[0] as any] ? a : b
+          )?.[0]
+        : null
 
     // Day of week analysis
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -138,9 +147,12 @@ export function CalendarAnalytics({
       const day = new Date(apt.start_time).getDay()
       dayCounts[day] = (dayCounts[day] || 0) + 1
     })
-    const peakDay = Object.entries(dayCounts).length > 0
-      ? Object.entries(dayCounts).reduce((a, b) => dayCounts[a[0] as any] > dayCounts[b[0] as any] ? a : b)?.[0]
-      : null
+    const peakDay =
+      Object.entries(dayCounts).length > 0
+        ? Object.entries(dayCounts).reduce((a, b) =>
+            dayCounts[a[0] as any] > dayCounts[b[0] as any] ? a : b
+          )?.[0]
+        : null
 
     return {
       totalAppointments,
@@ -148,9 +160,11 @@ export function CalendarAnalytics({
       completedAppointments,
       cancelledAppointments,
       noShowAppointments,
-      confirmationRate: totalAppointments > 0 ? (confirmedAppointments / totalAppointments) * 100 : 0,
+      confirmationRate:
+        totalAppointments > 0 ? (confirmedAppointments / totalAppointments) * 100 : 0,
       completionRate: totalAppointments > 0 ? (completedAppointments / totalAppointments) * 100 : 0,
-      cancellationRate: totalAppointments > 0 ? (cancelledAppointments / totalAppointments) * 100 : 0,
+      cancellationRate:
+        totalAppointments > 0 ? (cancelledAppointments / totalAppointments) * 100 : 0,
       noShowRate: totalAppointments > 0 ? (noShowAppointments / totalAppointments) * 100 : 0,
       averageUtilization,
       totalRevenue,
@@ -193,15 +207,21 @@ export function CalendarAnalytics({
     }
   }
 
-  const benchmark = industryBenchmarks[industry_type as keyof typeof industryBenchmarks] || industryBenchmarks.universal
+  const benchmark =
+    industryBenchmarks[industry_type as keyof typeof industryBenchmarks] ||
+    industryBenchmarks.universal
 
   // ==================== RENDER HELPERS ====================
-  const getPerformanceIndicator = (value: number, benchmarkValue: number, higherIsBetter: boolean = true) => {
+  const getPerformanceIndicator = (
+    value: number,
+    benchmarkValue: number,
+    higherIsBetter: boolean = true
+  ) => {
     const threshold = benchmarkValue * 0.1 // 10% threshold
-    const isGood = higherIsBetter 
-      ? value >= (benchmarkValue - threshold)
-      : value <= (benchmarkValue + threshold)
-    
+    const isGood = higherIsBetter
+      ? value >= benchmarkValue - threshold
+      : value <= benchmarkValue + threshold
+
     return isGood ? (
       <CheckCircle className="h-4 w-4 text-green-600" />
     ) : (
@@ -224,14 +244,20 @@ export function CalendarAnalytics({
             <div className="text-2xl font-bold">{computedMetrics.totalAppointments}</div>
             <div className="text-sm text-gray-600">Total Appointments</div>
             <div className="text-xs text-gray-500 mt-1">
-              Last {Math.ceil((date_range.end.getTime() - date_range.start.getTime()) / (1000 * 60 * 60 * 24))} days
+              Last{' '}
+              {Math.ceil(
+                (date_range.end.getTime() - date_range.start.getTime()) / (1000 * 60 * 60 * 24)
+              )}{' '}
+              days
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4 text-center">
-            <div className={`text-2xl font-bold ${getUtilizationColor(computedMetrics.averageUtilization)}`}>
+            <div
+              className={`text-2xl font-bold ${getUtilizationColor(computedMetrics.averageUtilization)}`}
+            >
               {Math.round(computedMetrics.averageUtilization)}%
             </div>
             <div className="text-sm text-gray-600">Average Utilization</div>
@@ -248,14 +274,18 @@ export function CalendarAnalytics({
             <div className="text-sm text-gray-600">Completion Rate</div>
             <div className="flex items-center justify-center mt-1">
               {getPerformanceIndicator(computedMetrics.completionRate, benchmark.completionRate)}
-              <span className="text-xs text-gray-500 ml-1">vs {benchmark.completionRate}% target</span>
+              <span className="text-xs text-gray-500 ml-1">
+                vs {benchmark.completionRate}% target
+              </span>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold">${computedMetrics.totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              ${computedMetrics.totalRevenue.toLocaleString()}
+            </div>
             <div className="text-sm text-gray-600">Total Revenue</div>
             <div className="text-xs text-gray-500 mt-1">
               {computedMetrics.totalRevenue > 0 ? 'Tracked revenue' : 'Revenue tracking off'}
@@ -301,10 +331,7 @@ export function CalendarAnalytics({
                 <div className="text-sm text-gray-500">Target: ≤{benchmark.noShowRate}%</div>
               </div>
             </div>
-            <Progress 
-              value={Math.min(computedMetrics.noShowRate, 50)} 
-              className="h-2" 
-            />
+            <Progress value={Math.min(computedMetrics.noShowRate, 50)} className="h-2" />
           </div>
 
           <div className="space-y-3">
@@ -337,10 +364,9 @@ export function CalendarAnalytics({
             <div className="flex items-center justify-between">
               <span className="font-medium">Peak Hour:</span>
               <Badge variant="secondary">
-                {computedMetrics.peakHour !== null ? 
-                  `${computedMetrics.peakHour}:00 - ${computedMetrics.peakHour + 1}:00` : 
-                  'No data'
-                }
+                {computedMetrics.peakHour !== null
+                  ? `${computedMetrics.peakHour}:00 - ${computedMetrics.peakHour + 1}:00`
+                  : 'No data'}
               </Badge>
             </div>
           </CardContent>
@@ -386,23 +412,28 @@ export function CalendarAnalytics({
                     <div>
                       <h3 className="font-medium">{resource.resource_name}</h3>
                       <p className="text-sm text-gray-600">
-                        {resource.appointments_count} appointments • {Math.round(resource.total_booked_hours)} hours
+                        {resource.appointments_count} appointments •{' '}
+                        {Math.round(resource.total_booked_hours)} hours
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className={`text-lg font-bold ${getUtilizationColor(resource.utilization_percentage)}`}>
+                      <div
+                        className={`text-lg font-bold ${getUtilizationColor(resource.utilization_percentage)}`}
+                      >
                         {Math.round(resource.utilization_percentage)}%
                       </div>
                       <div className="text-sm text-gray-500">Utilization</div>
                     </div>
                   </div>
-                  
+
                   <Progress value={resource.utilization_percentage} className="h-2 mb-3" />
-                  
+
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <span className="text-gray-600">Available:</span>
-                      <div className="font-medium">{Math.round(resource.total_available_hours)}h</div>
+                      <div className="font-medium">
+                        {Math.round(resource.total_available_hours)}h
+                      </div>
                     </div>
                     <div>
                       <span className="text-gray-600">Booked:</span>
@@ -411,20 +442,26 @@ export function CalendarAnalytics({
                     {resource.revenue_generated && (
                       <div>
                         <span className="text-gray-600">Revenue:</span>
-                        <div className="font-medium">${resource.revenue_generated.toLocaleString()}</div>
+                        <div className="font-medium">
+                          ${resource.revenue_generated.toLocaleString()}
+                        </div>
                       </div>
                     )}
                   </div>
-                  
+
                   {(resource.no_show_rate > 0 || resource.cancellation_rate > 0) && (
                     <div className="grid grid-cols-2 gap-4 text-sm mt-3 pt-3 border-t">
                       <div>
                         <span className="text-gray-600">No-show rate:</span>
-                        <div className="font-medium text-orange-600">{Math.round(resource.no_show_rate)}%</div>
+                        <div className="font-medium text-orange-600">
+                          {Math.round(resource.no_show_rate)}%
+                        </div>
                       </div>
                       <div>
                         <span className="text-gray-600">Cancellation rate:</span>
-                        <div className="font-medium text-red-600">{Math.round(resource.cancellation_rate)}%</div>
+                        <div className="font-medium text-red-600">
+                          {Math.round(resource.cancellation_rate)}%
+                        </div>
                       </div>
                     </div>
                   )}
@@ -459,7 +496,8 @@ export function CalendarAnalytics({
         <div className="mt-6">
           <div className="flex items-center justify-between mb-6">
             <div className="text-sm text-gray-600">
-              Analysis period: {date_range.start.toLocaleDateString()} - {date_range.end.toLocaleDateString()}
+              Analysis period: {date_range.start.toLocaleDateString()} -{' '}
+              {date_range.end.toLocaleDateString()}
             </div>
             <Button variant="outline" size="sm" onClick={loadAnalyticsData} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
@@ -479,13 +517,9 @@ export function CalendarAnalytics({
                 <TabsTrigger value="resources">Resources ({resources.length})</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview">
-                {renderOverviewTab()}
-              </TabsContent>
+              <TabsContent value="overview">{renderOverviewTab()}</TabsContent>
 
-              <TabsContent value="resources">
-                {renderResourcesTab()}
-              </TabsContent>
+              <TabsContent value="resources">{renderResourcesTab()}</TabsContent>
             </Tabs>
           )}
         </div>

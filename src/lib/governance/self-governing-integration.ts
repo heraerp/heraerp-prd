@@ -47,7 +47,8 @@ export class SelfGoverningIntegration {
       const component: DNAComponent = {
         id: entity.id,
         component_name: entity.entity_name,
-        component_type: this.extractMetadataValue(entity.metadata, 'component_type') || 'specialized',
+        component_type:
+          this.extractMetadataValue(entity.metadata, 'component_type') || 'specialized',
         category: this.extractMetadataValue(entity.metadata, 'category') || 'universal',
         component_code: this.getDynamicValue(dynamicData, 'component_code', ''),
         props_schema: this.getDynamicValue(dynamicData, 'props_schema', {}),
@@ -99,8 +100,10 @@ export class SelfGoverningIntegration {
         demo_data_generator: this.getDynamicValue(dynamicData, 'demo_data_generator', ''),
         smart_codes: this.extractMetadataValue(entity.metadata, 'smart_codes') || [],
         business_rules: this.getDynamicValue(dynamicData, 'business_rules', {}),
-        required_components: this.extractMetadataValue(entity.metadata, 'required_components') || [],
-        optional_components: this.extractMetadataValue(entity.metadata, 'optional_components') || [],
+        required_components:
+          this.extractMetadataValue(entity.metadata, 'required_components') || [],
+        optional_components:
+          this.extractMetadataValue(entity.metadata, 'optional_components') || [],
         version: this.getDynamicValue(dynamicData, 'version', '1.0.0'),
         status: entity.status as 'active' | 'deprecated' | 'beta'
       }
@@ -117,7 +120,9 @@ export class SelfGoverningIntegration {
   /**
    * Get entity type definitions from self-governing standards
    */
-  static async getEntityTypeDefinitionsFromStandards(category?: string): Promise<EntityTypeDefinition[]> {
+  static async getEntityTypeDefinitionsFromStandards(
+    category?: string
+  ): Promise<EntityTypeDefinition[]> {
     const entityStandards = await universalApi.getEntities({
       organization_id: this.SYSTEM_ORG_ID,
       entity_type: 'standard_entity_type',
@@ -159,7 +164,9 @@ export class SelfGoverningIntegration {
   /**
    * Get field type definitions from self-governing standards
    */
-  static async getFieldTypeDefinitionsFromStandards(category?: string): Promise<FieldTypeDefinition[]> {
+  static async getFieldTypeDefinitionsFromStandards(
+    category?: string
+  ): Promise<FieldTypeDefinition[]> {
     // Get field registry entity
     const fieldRegistry = await universalApi.getEntities({
       organization_id: this.SYSTEM_ORG_ID,
@@ -179,7 +186,7 @@ export class SelfGoverningIntegration {
 
     for (const field of fieldData) {
       const fieldDefinition = field.field_value_json || {}
-      
+
       const definition: FieldTypeDefinition = {
         id: field.id,
         field_type: field.field_name,
@@ -205,7 +212,9 @@ export class SelfGoverningIntegration {
   /**
    * Get smart code definitions from self-governing standards
    */
-  static async getSmartCodeDefinitionsFromStandards(industry?: string): Promise<SmartCodeDefinition[]> {
+  static async getSmartCodeDefinitionsFromStandards(
+    industry?: string
+  ): Promise<SmartCodeDefinition[]> {
     // Get smart code registry entity
     const smartCodeRegistry = await universalApi.getEntities({
       organization_id: this.SYSTEM_ORG_ID,
@@ -225,10 +234,10 @@ export class SelfGoverningIntegration {
 
     for (const code of codeData) {
       const codeDefinition = code.field_value_json || {}
-      
+
       // Parse smart code components
       const smartCodeParts = code.field_name.split('.')
-      
+
       const definition: SmartCodeDefinition = {
         id: code.id,
         smart_code: code.field_name,
@@ -248,7 +257,8 @@ export class SelfGoverningIntegration {
       }
 
       // Apply industry filter
-      if (industry && definition.industry !== industry && definition.industry !== 'universal') continue
+      if (industry && definition.industry !== industry && definition.industry !== 'universal')
+        continue
 
       definitions.push(definition)
     }
@@ -342,7 +352,11 @@ export class SelfGoverningIntegration {
       active_templates: this.getDynamicValue(dynamicData, 'active_templates', []),
       template_customizations: this.getDynamicValue(dynamicData, 'template_customizations', {}),
       enabled_entity_types: this.getDynamicValue(dynamicData, 'enabled_entity_types', []),
-      entity_type_customizations: this.getDynamicValue(dynamicData, 'entity_type_customizations', {}),
+      entity_type_customizations: this.getDynamicValue(
+        dynamicData,
+        'entity_type_customizations',
+        {}
+      ),
       enabled_field_types: this.getDynamicValue(dynamicData, 'enabled_field_types', []),
       field_type_customizations: this.getDynamicValue(dynamicData, 'field_type_customizations', {}),
       enabled_business_rules: this.getDynamicValue(dynamicData, 'enabled_business_rules', []),
@@ -357,7 +371,9 @@ export class SelfGoverningIntegration {
   /**
    * Get organization configuration from universal tables
    */
-  static async getOrganizationConfigFromStandards(organizationId: string): Promise<OrganizationSystemConfig | null> {
+  static async getOrganizationConfigFromStandards(
+    organizationId: string
+  ): Promise<OrganizationSystemConfig | null> {
     const configEntities = await universalApi.getEntities({
       organization_id: organizationId,
       entity_type: 'organization_system_config',
@@ -380,7 +396,11 @@ export class SelfGoverningIntegration {
       active_templates: this.getDynamicValue(dynamicData, 'active_templates', []),
       template_customizations: this.getDynamicValue(dynamicData, 'template_customizations', {}),
       enabled_entity_types: this.getDynamicValue(dynamicData, 'enabled_entity_types', []),
-      entity_type_customizations: this.getDynamicValue(dynamicData, 'entity_type_customizations', {}),
+      entity_type_customizations: this.getDynamicValue(
+        dynamicData,
+        'entity_type_customizations',
+        {}
+      ),
       enabled_field_types: this.getDynamicValue(dynamicData, 'enabled_field_types', []),
       field_type_customizations: this.getDynamicValue(dynamicData, 'field_type_customizations', {}),
       enabled_business_rules: this.getDynamicValue(dynamicData, 'enabled_business_rules', []),
@@ -495,16 +515,18 @@ export class EnhancedSchemaManager {
   /**
    * Get organization configuration with self-governing integration
    */
-  static async getOrganizationConfig(organizationId: string): Promise<OrganizationSystemConfig | null> {
+  static async getOrganizationConfig(
+    organizationId: string
+  ): Promise<OrganizationSystemConfig | null> {
     try {
       const { schemaManager } = await import('@/lib/schema/schema-manager')
       const config = await schemaManager.getOrganizationConfig(organizationId)
-      
+
       // If no config found in traditional tables, check self-governing standards
       if (!config) {
         return await SelfGoverningIntegration.getOrganizationConfigFromStandards(organizationId)
       }
-      
+
       return config
     } catch (error) {
       console.log('Using self-governing standards for organization config')
@@ -525,7 +547,11 @@ export class EnhancedSchemaManager {
       return await schemaManager.upsertOrganizationConfig(organizationId, config, userId)
     } catch (error) {
       console.log('Using self-governing standards for organization config update')
-      return await SelfGoverningIntegration.upsertOrganizationConfigInStandards(organizationId, config, userId)
+      return await SelfGoverningIntegration.upsertOrganizationConfigInStandards(
+        organizationId,
+        config,
+        userId
+      )
     }
   }
 }

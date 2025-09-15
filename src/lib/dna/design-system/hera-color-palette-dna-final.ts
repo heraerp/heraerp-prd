@@ -20,7 +20,7 @@ export interface ColorTokens {
       surface: ColorToken
       surfaceAlt: ColorToken
       border: ColorToken
-      
+
       // Brand colors
       primary: ColorToken
       primaryFg: ColorToken
@@ -28,13 +28,13 @@ export interface ColorTokens {
       secondaryFg: ColorToken
       accent: ColorToken
       accentFg: ColorToken
-      
+
       // Extended palette
       purple: ColorToken
       amber: ColorToken
       red: ColorToken
       gold: ColorToken
-      
+
       // Status colors - WCAG AAA compliant
       success: ColorToken
       successFg: ColorToken
@@ -42,7 +42,7 @@ export interface ColorTokens {
       warningFg: ColorToken
       danger: ColorToken
       dangerFg: ColorToken
-      
+
       // Typography
       text: ColorToken
       textMuted: ColorToken
@@ -77,69 +77,69 @@ export interface ColorTokens {
  * ALL 20 critical color pairs now pass accessibility requirements
  */
 export const HERA_COLOR_TOKENS_FINAL: ColorTokens = {
-  version: "1.0-final",
-  brand: "HERA",
-  modes: ["light", "dark"],
+  version: '1.0-final',
+  brand: 'HERA',
+  modes: ['light', 'dark'],
   tokens: {
     color: {
       // Base colors - Perfect contrast
-      bg: { light: "#FFFFFF", dark: "#0B0F17" },
-      surface: { light: "#F8FAFC", dark: "#111725" },
-      surfaceAlt: { light: "#EEF2F7", dark: "#161D2D" },
-      border: { light: "#CBD5E1", dark: "#3A4A5C" }, // Enhanced visibility
+      bg: { light: '#FFFFFF', dark: '#0B0F17' },
+      surface: { light: '#F8FAFC', dark: '#111725' },
+      surfaceAlt: { light: '#EEF2F7', dark: '#161D2D' },
+      border: { light: '#CBD5E1', dark: '#3A4A5C' }, // Enhanced visibility
 
       // Brand colors - HERA Primary Blue (WCAG compliant)
-      primary: { light: "#2563EB", dark: "#60A5FA" }, // Perfect 5.17:1 contrast
-      primaryFg: { light: "#FFFFFF", dark: "#0A0E14" },
+      primary: { light: '#2563EB', dark: '#60A5FA' }, // Perfect 5.17:1 contrast
+      primaryFg: { light: '#FFFFFF', dark: '#0A0E14' },
 
       // HERA Secondary Cyan - Excellent contrast maintained
-      secondary: { light: "#06B6D4", dark: "#22D3EE" },
-      secondaryFg: { light: "#0A0E14", dark: "#0A0E14" },
+      secondary: { light: '#06B6D4', dark: '#22D3EE' },
+      secondaryFg: { light: '#0A0E14', dark: '#0A0E14' },
 
       // HERA Accent Green - Excellent contrast maintained
-      accent: { light: "#10B981", dark: "#34D399" },
-      accentFg: { light: "#0A0E14", dark: "#0A0E14" },
+      accent: { light: '#10B981', dark: '#34D399' },
+      accentFg: { light: '#0A0E14', dark: '#0A0E14' },
 
       // Extended palette
-      purple: { light: "#8B5CF6", dark: "#A78BFA" },
-      amber: { light: "#F59E0B", dark: "#FBBF24" },
-      red: { light: "#EF4444", dark: "#F87171" },
-      gold: { light: "#FBBF24", dark: "#FCD34D" },
+      purple: { light: '#8B5CF6', dark: '#A78BFA' },
+      amber: { light: '#F59E0B', dark: '#FBBF24' },
+      red: { light: '#EF4444', dark: '#F87171' },
+      gold: { light: '#FBBF24', dark: '#FCD34D' },
 
       // Status colors - FINAL WCAG AAA COMPLIANT VERSION
-      success: { light: "#15803D", dark: "#22C55E" }, // FINAL FIX: Even darker green (4.50:1)
-      successFg: { light: "#FFFFFF", dark: "#0A0E14" },
-      warning: { light: "#A16207", dark: "#EAB308" }, // FINAL FIX: Much darker yellow (4.52:1)
-      warningFg: { light: "#FFFFFF", dark: "#0A0E14" },
-      danger: { light: "#DC2626", dark: "#EF4444" }, // Already compliant
-      dangerFg: { light: "#FFFFFF", dark: "#0A0E14" },
+      success: { light: '#15803D', dark: '#22C55E' }, // FINAL FIX: Even darker green (4.50:1)
+      successFg: { light: '#FFFFFF', dark: '#0A0E14' },
+      warning: { light: '#A16207', dark: '#EAB308' }, // FINAL FIX: Much darker yellow (4.52:1)
+      warningFg: { light: '#FFFFFF', dark: '#0A0E14' },
+      danger: { light: '#DC2626', dark: '#EF4444' }, // Already compliant
+      dangerFg: { light: '#FFFFFF', dark: '#0A0E14' },
 
       // Typography - Excellent contrast maintained
-      text: { light: "#0A0E14", dark: "#E8EDF5" },
-      textMuted: { light: "#64748B", dark: "#94A3B8" },
-      focusRing: { light: "#2563EB", dark: "#60A5FA" }
+      text: { light: '#0A0E14', dark: '#E8EDF5' },
+      textMuted: { light: '#64748B', dark: '#94A3B8' },
+      focusRing: { light: '#2563EB', dark: '#60A5FA' }
     },
     state: {
       // Updated to match new primary color
-      primaryHover: { light: "#1D4ED8", dark: "#4B91F3" },
-      primaryActive: { light: "#1E40AF", dark: "#3C7EE0" },
-      secondaryHover: { light: "#0893AE", dark: "#1ABBD3" },
-      secondaryActive: { light: "#077C93", dark: "#159FB4" },
-      accentHover: { light: "#0FA171", dark: "#2FC08A" },
-      accentActive: { light: "#0C8C62", dark: "#29A878" }
+      primaryHover: { light: '#1D4ED8', dark: '#4B91F3' },
+      primaryActive: { light: '#1E40AF', dark: '#3C7EE0' },
+      secondaryHover: { light: '#0893AE', dark: '#1ABBD3' },
+      secondaryActive: { light: '#077C93', dark: '#159FB4' },
+      accentHover: { light: '#0FA171', dark: '#2FC08A' },
+      accentActive: { light: '#0C8C62', dark: '#29A878' }
     },
     elevation: {
-      shadow1: "0 1px 2px rgba(0,0,0,.06)",
-      shadow2: "0 4px 10px rgba(0,0,0,.08)"
+      shadow1: '0 1px 2px rgba(0,0,0,.06)',
+      shadow2: '0 4px 10px rgba(0,0,0,.08)'
     },
     radius: {
-      sm: "8px",
-      md: "12px", 
-      lg: "16px",
-      xl: "20px"
+      sm: '8px',
+      md: '12px',
+      lg: '16px',
+      xl: '20px'
     },
     gradient: {
-      brand: "linear-gradient(45deg, #2563EB, #06B6D4, #10B981)"
+      brand: 'linear-gradient(45deg, #2563EB, #06B6D4, #10B981)'
     }
   }
 }
@@ -150,7 +150,7 @@ export const HERA_COLOR_TOKENS_FINAL: ColorTokens = {
 export class HeraCSSVariableGeneratorFinal {
   static generateLightMode(): string {
     const { tokens } = HERA_COLOR_TOKENS_FINAL
-    
+
     return `
 /* HERA DNA Colors - FINAL WCAG AAA COMPLIANT VERSION */
 :root {
@@ -218,7 +218,7 @@ export class HeraCSSVariableGeneratorFinal {
 
   static generateDarkMode(): string {
     const { tokens } = HERA_COLOR_TOKENS_FINAL
-    
+
     return `
 /* Dark mode - WCAG AAA compliant */
 :root.dark {
@@ -317,10 +317,26 @@ export class HeraColorEnforcementIntegration {
 
     // Check for non-WCAG compliant color usage
     const problematicPatterns = [
-      { pattern: /#3B82F6/g, issue: 'Old primary blue (low contrast)', fix: 'Use var(--color-primary) or #2563EB' },
-      { pattern: /#22C55E/g, issue: 'Old success green (low contrast)', fix: 'Use var(--color-success) or #15803D' },
-      { pattern: /#F59E0B/g, issue: 'Old warning yellow (low contrast)', fix: 'Use var(--color-warning) or #A16207' },
-      { pattern: /#E5E7EB/g, issue: 'Old border color (poor visibility)', fix: 'Use var(--color-border) or #CBD5E1' }
+      {
+        pattern: /#3B82F6/g,
+        issue: 'Old primary blue (low contrast)',
+        fix: 'Use var(--color-primary) or #2563EB'
+      },
+      {
+        pattern: /#22C55E/g,
+        issue: 'Old success green (low contrast)',
+        fix: 'Use var(--color-success) or #15803D'
+      },
+      {
+        pattern: /#F59E0B/g,
+        issue: 'Old warning yellow (low contrast)',
+        fix: 'Use var(--color-warning) or #A16207'
+      },
+      {
+        pattern: /#E5E7EB/g,
+        issue: 'Old border color (poor visibility)',
+        fix: 'Use var(--color-border) or #CBD5E1'
+      }
     ]
 
     problematicPatterns.forEach(({ pattern, issue, fix }) => {
@@ -350,7 +366,7 @@ export class HeraColorEnforcementIntegration {
   </div>
   <p className="mt-1 text-sm">Your changes have been saved successfully.</p>
 </div>`,
-      
+
       'warning-alert': `
 <div className="bg-warning text-warning-fg border border-warning rounded-lg p-4">
   <div className="flex items-center space-x-2">
@@ -359,12 +375,12 @@ export class HeraColorEnforcementIntegration {
   </div>
   <p className="mt-1 text-sm">Please review your input before continuing.</p>
 </div>`,
-      
+
       'primary-button': `
 <button className="bg-primary text-primary-fg hover:bg-[var(--state-primary-hover)] active:bg-[var(--state-primary-active)] px-6 py-2 rounded-lg font-medium transition-all duration-200 focus:ring-2 focus:ring-[var(--color-focus)] focus:ring-offset-2">
   Save Changes
 </button>`,
-      
+
       'enterprise-card': `
 <div className="bg-surface border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200">
   <h3 className="text-lg font-semibold text-text mb-2">Card Title</h3>
@@ -392,17 +408,19 @@ export const HERA_DNA_COLOR_ENFORCEMENT = {
     'var(--color-text)',
     'var(--color-bg)'
   ],
-  
-  validateComponent: (code: string) => HeraColorEnforcementIntegration.validateEnterpriseColors(code),
-  
-  generateAccessibleComponent: (type: string) => HeraColorEnforcementIntegration.generateAccessibleComponent(type),
-  
+
+  validateComponent: (code: string) =>
+    HeraColorEnforcementIntegration.validateEnterpriseColors(code),
+
+  generateAccessibleComponent: (type: string) =>
+    HeraColorEnforcementIntegration.generateAccessibleComponent(type),
+
   contrastPairs: FINAL_VALIDATION_PAIRS
 }
 
 /**
  * FINAL SYSTEM SUMMARY:
- * 
+ *
  * ✅ 100% WCAG AA/AAA Compliance: All text pairs pass contrast requirements
  * ✅ Enterprise Component Ready: Perfect for EnterpriseCard, EnterpriseStatsCard, EnterpriseDashboard
  * ✅ Auto-Enforcement Integration: Validates accessibility in development workflow
@@ -410,7 +428,7 @@ export const HERA_DNA_COLOR_ENFORCEMENT = {
  * ✅ Production Optimized: Minified CSS variables for performance
  * ✅ Developer Experience: Semantic color names eliminate guesswork
  * ✅ Future-Proof: Easy to extend and maintain
- * 
+ *
  * RESULT: A bulletproof color system that guarantees accessibility compliance
  * while providing the professional design quality HERA DNA demands.
  */

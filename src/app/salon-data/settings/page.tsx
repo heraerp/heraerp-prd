@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic'
 import React, { useRef, useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
-import { 
-  Settings, 
-  Shield, 
-  Users, 
-  Building2, 
+import {
+  Settings,
+  Shield,
+  Users,
+  Building2,
   Code,
   Database,
   Bell,
@@ -28,22 +28,22 @@ const settingSections = [
   {
     title: 'Business Configuration',
     items: [
-      { 
-        name: 'Universal Configuration Rules', 
+      {
+        name: 'Universal Configuration Rules',
         description: 'Manage salon business logic without code changes',
         icon: Code,
         href: '/salon-data/settings/ucr',
         color: 'text-champagne-500'
       },
-      { 
-        name: 'Organization Settings', 
+      {
+        name: 'Organization Settings',
         description: 'Salon details and preferences',
         icon: Building2,
         href: '/salon-data/settings/organization',
         color: 'text-sage-500'
       },
-      { 
-        name: 'Staff Management', 
+      {
+        name: 'Staff Management',
         description: 'Manage stylists and permissions',
         icon: Users,
         href: '/salon-data/settings/staff',
@@ -54,22 +54,22 @@ const settingSections = [
   {
     title: 'Salon Operations',
     items: [
-      { 
-        name: 'Service Menu', 
+      {
+        name: 'Service Menu',
         description: 'Hair and beauty services configuration',
         icon: Sparkles,
         href: '/salon-data/settings/services',
         color: 'text-sage-600'
       },
-      { 
-        name: 'Appointment Rules', 
+      {
+        name: 'Appointment Rules',
         description: 'Booking and scheduling settings',
         icon: Calendar,
         href: '/salon-data/settings/appointments',
         color: 'text-dusty-rose-600'
       },
-      { 
-        name: 'Pricing & Promotions', 
+      {
+        name: 'Pricing & Promotions',
         description: 'Service pricing and special offers',
         icon: CreditCard,
         href: '/salon-data/settings/pricing',
@@ -80,22 +80,22 @@ const settingSections = [
   {
     title: 'System Configuration',
     items: [
-      { 
-        name: 'Security', 
+      {
+        name: 'Security',
         description: 'Authentication and access control',
         icon: Shield,
         href: '/salon-data/settings/security',
         color: 'text-red-500'
       },
-      { 
-        name: 'Notifications', 
+      {
+        name: 'Notifications',
         description: 'Appointment reminders and alerts',
         icon: Bell,
         href: '/salon-data/settings/notifications',
         color: 'text-yellow-500'
       },
-      { 
-        name: 'Reports & Analytics', 
+      {
+        name: 'Reports & Analytics',
         description: 'Performance tracking and insights',
         icon: FileText,
         href: '/salon-data/settings/reports',
@@ -131,7 +131,7 @@ export default function SalonDataSettingsPage() {
   }, [])
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="min-h-screen relative overflow-hidden"
       style={{
@@ -155,7 +155,7 @@ export default function SalonDataSettingsPage() {
     >
       {/* Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, transparent 70%)`,
@@ -165,7 +165,7 @@ export default function SalonDataSettingsPage() {
             filter: 'blur(40px)'
           }}
         />
-        <div 
+        <div
           className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%)`,
@@ -181,8 +181,8 @@ export default function SalonDataSettingsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <Link 
-              href="/salon-data" 
+            <Link
+              href="/salon-data"
               className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -198,11 +198,11 @@ export default function SalonDataSettingsPage() {
         </div>
 
         {/* Setting Sections */}
-        {settingSections.map((section) => (
+        {settingSections.map(section => (
           <div key={section.title} className="space-y-4">
             <h2 className="text-xl font-semibold text-white/90">{section.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {section.items.map((item) => {
+              {section.items.map(item => {
                 const gradientColors = {
                   'text-champagne-500': 'from-amber-400 to-orange-600',
                   'text-sage-500': 'from-green-400 to-emerald-600',
@@ -214,13 +214,17 @@ export default function SalonDataSettingsPage() {
                   'text-yellow-500': 'from-yellow-400 to-yellow-600',
                   'text-indigo-500': 'from-indigo-400 to-purple-600'
                 }
-                const gradient = gradientColors[item.color as keyof typeof gradientColors] || 'from-purple-400 to-pink-600'
-                
+                const gradient =
+                  gradientColors[item.color as keyof typeof gradientColors] ||
+                  'from-purple-400 to-pink-600'
+
                 return (
                   <Link key={item.name} href={item.href} className="group">
                     <div className="relative h-full bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-white/20 cursor-pointer">
                       <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}>
+                        <div
+                          className={`w-12 h-12 rounded-xl bg-gradient-to-r ${gradient} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow`}
+                        >
                           <item.icon className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex-1">
@@ -232,8 +236,10 @@ export default function SalonDataSettingsPage() {
                           </p>
                         </div>
                       </div>
-                      <ChevronRight className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 
-                        opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                      <ChevronRight
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 
+                        opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"
+                      />
                     </div>
                   </Link>
                 )
@@ -255,10 +261,11 @@ export default function SalonDataSettingsPage() {
                   Revolutionary: Universal Configuration Rules (UCR) for Salons
                 </h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">
-                  Change salon business logic without touching code. Configure service pricing, appointment rules, 
-                  staff commissions, loyalty programs, and more through a visual interface tailored for beauty businesses.
+                  Change salon business logic without touching code. Configure service pricing,
+                  appointment rules, staff commissions, loyalty programs, and more through a visual
+                  interface tailored for beauty businesses.
                 </p>
-                <Link 
+                <Link
                   href="/salon-data/settings/ucr"
                   className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium transition-colors group"
                 >
@@ -273,7 +280,8 @@ export default function SalonDataSettingsPage() {
         {/* Add animation styles */}
         <style jsx global>{`
           @keyframes float {
-            0%, 100% {
+            0%,
+            100% {
               transform: translateY(0) translateX(0);
             }
             33% {

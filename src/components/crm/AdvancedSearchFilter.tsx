@@ -1,7 +1,7 @@
 /**
  * HERA CRM Advanced Search & Filter Component
  * Professional search and filtering capabilities for production CRM
- * 
+ *
  * Project Manager Task: Advanced Search and Filtering Capabilities (Task #7)
  */
 
@@ -12,25 +12,49 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Search, Filter, X, Calendar, DollarSign, Users, Building,
-  Target, CheckSquare, Star, ArrowUpDown, Sliders, 
-  Save, RefreshCw, Download, Upload, Eye, EyeOff,
-  ChevronDown, ChevronUp, SlidersHorizontal, Zap
+import {
+  Search,
+  Filter,
+  X,
+  Calendar,
+  DollarSign,
+  Users,
+  Building,
+  Target,
+  CheckSquare,
+  Star,
+  ArrowUpDown,
+  Sliders,
+  Save,
+  RefreshCw,
+  Download,
+  Upload,
+  Eye,
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
+  SlidersHorizontal,
+  Zap
 } from 'lucide-react'
 
 // Types for search and filtering
 export interface SearchFilters {
   // Global search
   globalSearch: string
-  
+
   // Entity-specific filters
   entityType: 'contact' | 'opportunity' | 'task' | 'all'
-  
+
   // Contact filters
   contactName: string
   company: string
@@ -38,21 +62,21 @@ export interface SearchFilters {
   phone: string
   contactStatus: string[]
   contactTags: string[]
-  
+
   // Opportunity filters
   opportunityName: string
   stage: string[]
   valueRange: { min: number; max: number }
   probabilityRange: { min: number; max: number }
   closeDate: { start: string; end: string }
-  
+
   // Task filters
   taskTitle: string
   taskStatus: string[]
   priority: string[]
   assignee: string[]
   dueDate: { start: string; end: string }
-  
+
   // Universal filters
   dateRange: { start: string; end: string }
   createdBy: string[]
@@ -144,7 +168,9 @@ export function AdvancedSearchFilter({
   // State for UI
   const [isExpanded, setIsExpanded] = useState(false)
   const [activeTab, setActiveTab] = useState('basic')
-  const [savedSearches, setSavedSearches] = useState<Array<{ name: string; filters: SearchFilters; sort: SortOptions }>>([])
+  const [savedSearches, setSavedSearches] = useState<
+    Array<{ name: string; filters: SearchFilters; sort: SortOptions }>
+  >([])
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null)
   const [quickFilters, setQuickFilters] = useState({
     showActiveOnly: false,
@@ -166,14 +192,16 @@ export function AdvancedSearchFilter({
 
   // Check if advanced filters are applied
   const hasAdvancedFilters = () => {
-    return filters.contactStatus.length > 0 ||
-           filters.stage.length > 0 ||
-           filters.priority.length > 0 ||
-           filters.tags.length > 0 ||
-           filters.valueRange.min > 0 ||
-           filters.valueRange.max < 1000000 ||
-           filters.dateRange.start ||
-           filters.dateRange.end
+    return (
+      filters.contactStatus.length > 0 ||
+      filters.stage.length > 0 ||
+      filters.priority.length > 0 ||
+      filters.tags.length > 0 ||
+      filters.valueRange.min > 0 ||
+      filters.valueRange.max < 1000000 ||
+      filters.dateRange.start ||
+      filters.dateRange.end
+    )
   }
 
   // Active filter count
@@ -238,28 +266,31 @@ export function AdvancedSearchFilter({
   const saveCurrentSearch = () => {
     const name = prompt('Enter a name for this saved search:')
     if (name) {
-      setSavedSearches(prev => [...prev, {
-        name,
-        filters: { ...filters },
-        sort: { ...sortOptions }
-      }])
+      setSavedSearches(prev => [
+        ...prev,
+        {
+          name,
+          filters: { ...filters },
+          sort: { ...sortOptions }
+        }
+      ])
     }
   }
 
   // Apply quick filters
   const applyQuickFilter = (filterType: keyof typeof quickFilters) => {
     setQuickFilters(prev => ({ ...prev, [filterType]: !prev[filterType] }))
-    
+
     // Apply the actual filter logic
     switch (filterType) {
       case 'showActiveOnly':
-        updateFilters({ 
-          contactStatus: quickFilters.showActiveOnly ? [] : ['customer', 'prospect'] 
+        updateFilters({
+          contactStatus: quickFilters.showActiveOnly ? [] : ['customer', 'prospect']
         })
         break
       case 'showHighValue':
-        updateFilters({ 
-          valueRange: quickFilters.showHighValue 
+        updateFilters({
+          valueRange: quickFilters.showHighValue
             ? { min: 0, max: 1000000 }
             : { min: 10000, max: 1000000 }
         })
@@ -267,8 +298,8 @@ export function AdvancedSearchFilter({
       case 'showRecentActivity':
         const lastWeek = new Date()
         lastWeek.setDate(lastWeek.getDate() - 7)
-        updateFilters({ 
-          dateRange: quickFilters.showRecentActivity 
+        updateFilters({
+          dateRange: quickFilters.showRecentActivity
             ? { start: '', end: '' }
             : { start: lastWeek.toISOString().split('T')[0], end: '' }
         })
@@ -296,24 +327,20 @@ export function AdvancedSearchFilter({
               </Badge>
             )}
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setIsExpanded(!isExpanded)}>
               <SlidersHorizontal className="h-4 w-4 mr-2" />
               {isExpanded ? 'Hide Filters' : 'Show Filters'}
-              {isExpanded ? <ChevronUp className="h-4 w-4 ml-1" /> : <ChevronDown className="h-4 w-4 ml-1" />}
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 ml-1" />
+              ) : (
+                <ChevronDown className="h-4 w-4 ml-1" />
+              )}
             </Button>
-            
+
             {activeFilterCount > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearAllFilters}
-              >
+              <Button variant="ghost" size="sm" onClick={clearAllFilters}>
                 Clear All
               </Button>
             )}
@@ -326,7 +353,7 @@ export function AdvancedSearchFilter({
           <Input
             placeholder="Search contacts, opportunities, tasks..."
             value={filters.globalSearch}
-            onChange={(e) => updateFilters({ globalSearch: e.target.value })}
+            onChange={e => updateFilters({ globalSearch: e.target.value })}
             className="pl-10 pr-12"
           />
           {isLoading && (
@@ -337,7 +364,7 @@ export function AdvancedSearchFilter({
         {/* Quick Filters */}
         <div className="flex flex-wrap gap-2">
           <Button
-            variant={quickFilters.showActiveOnly ? "default" : "outline"}
+            variant={quickFilters.showActiveOnly ? 'default' : 'outline'}
             size="sm"
             onClick={() => applyQuickFilter('showActiveOnly')}
           >
@@ -345,7 +372,7 @@ export function AdvancedSearchFilter({
             Active Only
           </Button>
           <Button
-            variant={quickFilters.showHighValue ? "default" : "outline"}
+            variant={quickFilters.showHighValue ? 'default' : 'outline'}
             size="sm"
             onClick={() => applyQuickFilter('showHighValue')}
           >
@@ -353,7 +380,7 @@ export function AdvancedSearchFilter({
             High Value
           </Button>
           <Button
-            variant={quickFilters.showRecentActivity ? "default" : "outline"}
+            variant={quickFilters.showRecentActivity ? 'default' : 'outline'}
             size="sm"
             onClick={() => applyQuickFilter('showRecentActivity')}
           >
@@ -361,7 +388,7 @@ export function AdvancedSearchFilter({
             Recent Activity
           </Button>
           <Button
-            variant={quickFilters.showMyItems ? "default" : "outline"}
+            variant={quickFilters.showMyItems ? 'default' : 'outline'}
             size="sm"
             onClick={() => applyQuickFilter('showMyItems')}
           >
@@ -386,8 +413,8 @@ export function AdvancedSearchFilter({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>Entity Type</Label>
-                  <Select 
-                    value={filters.entityType} 
+                  <Select
+                    value={filters.entityType}
                     onValueChange={(value: any) => updateFilters({ entityType: value })}
                   >
                     <SelectTrigger>
@@ -408,16 +435,20 @@ export function AdvancedSearchFilter({
                     <Input
                       type="date"
                       value={filters.dateRange.start}
-                      onChange={(e) => updateFilters({ 
-                        dateRange: { ...filters.dateRange, start: e.target.value }
-                      })}
+                      onChange={e =>
+                        updateFilters({
+                          dateRange: { ...filters.dateRange, start: e.target.value }
+                        })
+                      }
                     />
                     <Input
                       type="date"
                       value={filters.dateRange.end}
-                      onChange={(e) => updateFilters({ 
-                        dateRange: { ...filters.dateRange, end: e.target.value }
-                      })}
+                      onChange={e =>
+                        updateFilters({
+                          dateRange: { ...filters.dateRange, end: e.target.value }
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -425,9 +456,9 @@ export function AdvancedSearchFilter({
                 <div>
                   <Label>Sort By</Label>
                   <div className="flex gap-2">
-                    <Select 
-                      value={sortOptions.field} 
-                      onValueChange={(field) => setSortOptions(prev => ({ ...prev, field }))}
+                    <Select
+                      value={sortOptions.field}
+                      onValueChange={field => setSortOptions(prev => ({ ...prev, field }))}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -444,10 +475,12 @@ export function AdvancedSearchFilter({
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => setSortOptions(prev => ({ 
-                        ...prev, 
-                        direction: prev.direction === 'asc' ? 'desc' : 'asc' 
-                      }))}
+                      onClick={() =>
+                        setSortOptions(prev => ({
+                          ...prev,
+                          direction: prev.direction === 'asc' ? 'desc' : 'asc'
+                        }))
+                      }
                     >
                       <ArrowUpDown className="h-4 w-4" />
                     </Button>
@@ -459,10 +492,10 @@ export function AdvancedSearchFilter({
               <div>
                 <Label>Tags</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {availableFilters.tags.map((tag) => (
+                  {availableFilters.tags.map(tag => (
                     <Badge
                       key={tag}
-                      variant={filters.tags.includes(tag) ? "default" : "outline"}
+                      variant={filters.tags.includes(tag) ? 'default' : 'outline'}
                       className="cursor-pointer"
                       onClick={() => {
                         const newTags = filters.tags.includes(tag)
@@ -485,7 +518,7 @@ export function AdvancedSearchFilter({
                   <Label>Contact Name</Label>
                   <Input
                     value={filters.contactName}
-                    onChange={(e) => updateFilters({ contactName: e.target.value })}
+                    onChange={e => updateFilters({ contactName: e.target.value })}
                     placeholder="Search by name..."
                   />
                 </div>
@@ -493,7 +526,7 @@ export function AdvancedSearchFilter({
                   <Label>Company</Label>
                   <Input
                     value={filters.company}
-                    onChange={(e) => updateFilters({ company: e.target.value })}
+                    onChange={e => updateFilters({ company: e.target.value })}
                     placeholder="Search by company..."
                   />
                 </div>
@@ -501,7 +534,7 @@ export function AdvancedSearchFilter({
                   <Label>Email</Label>
                   <Input
                     value={filters.email}
-                    onChange={(e) => updateFilters({ email: e.target.value })}
+                    onChange={e => updateFilters({ email: e.target.value })}
                     placeholder="Search by email..."
                   />
                 </div>
@@ -509,7 +542,7 @@ export function AdvancedSearchFilter({
                   <Label>Phone</Label>
                   <Input
                     value={filters.phone}
-                    onChange={(e) => updateFilters({ phone: e.target.value })}
+                    onChange={e => updateFilters({ phone: e.target.value })}
                     placeholder="Search by phone..."
                   />
                 </div>
@@ -519,10 +552,10 @@ export function AdvancedSearchFilter({
               <div>
                 <Label>Contact Status</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {availableFilters.contactStatuses.map((status) => (
+                  {availableFilters.contactStatuses.map(status => (
                     <Badge
                       key={status}
-                      variant={filters.contactStatus.includes(status) ? "default" : "outline"}
+                      variant={filters.contactStatus.includes(status) ? 'default' : 'outline'}
                       className="cursor-pointer capitalize"
                       onClick={() => {
                         const newStatuses = filters.contactStatus.includes(status)
@@ -545,7 +578,7 @@ export function AdvancedSearchFilter({
                   <Label>Opportunity Name</Label>
                   <Input
                     value={filters.opportunityName}
-                    onChange={(e) => updateFilters({ opportunityName: e.target.value })}
+                    onChange={e => updateFilters({ opportunityName: e.target.value })}
                     placeholder="Search opportunities..."
                   />
                 </div>
@@ -555,16 +588,20 @@ export function AdvancedSearchFilter({
                     <Input
                       type="date"
                       value={filters.closeDate.start}
-                      onChange={(e) => updateFilters({ 
-                        closeDate: { ...filters.closeDate, start: e.target.value }
-                      })}
+                      onChange={e =>
+                        updateFilters({
+                          closeDate: { ...filters.closeDate, start: e.target.value }
+                        })
+                      }
                     />
                     <Input
                       type="date"
                       value={filters.closeDate.end}
-                      onChange={(e) => updateFilters({ 
-                        closeDate: { ...filters.closeDate, end: e.target.value }
-                      })}
+                      onChange={e =>
+                        updateFilters({
+                          closeDate: { ...filters.closeDate, end: e.target.value }
+                        })
+                      }
                     />
                   </div>
                 </div>
@@ -578,23 +615,27 @@ export function AdvancedSearchFilter({
                     type="number"
                     placeholder="Min value"
                     value={filters.valueRange.min || ''}
-                    onChange={(e) => updateFilters({ 
-                      valueRange: { 
-                        ...filters.valueRange, 
-                        min: parseInt(e.target.value) || 0 
-                      }
-                    })}
+                    onChange={e =>
+                      updateFilters({
+                        valueRange: {
+                          ...filters.valueRange,
+                          min: parseInt(e.target.value) || 0
+                        }
+                      })
+                    }
                   />
                   <Input
                     type="number"
                     placeholder="Max value"
                     value={filters.valueRange.max === 1000000 ? '' : filters.valueRange.max}
-                    onChange={(e) => updateFilters({ 
-                      valueRange: { 
-                        ...filters.valueRange, 
-                        max: parseInt(e.target.value) || 1000000 
-                      }
-                    })}
+                    onChange={e =>
+                      updateFilters({
+                        valueRange: {
+                          ...filters.valueRange,
+                          max: parseInt(e.target.value) || 1000000
+                        }
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -603,10 +644,10 @@ export function AdvancedSearchFilter({
               <div>
                 <Label>Stages</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {availableFilters.stages.map((stage) => (
+                  {availableFilters.stages.map(stage => (
                     <Badge
                       key={stage}
-                      variant={filters.stage.includes(stage) ? "default" : "outline"}
+                      variant={filters.stage.includes(stage) ? 'default' : 'outline'}
                       className="cursor-pointer capitalize"
                       onClick={() => {
                         const newStages = filters.stage.includes(stage)
@@ -628,10 +669,10 @@ export function AdvancedSearchFilter({
                 <div>
                   <Label>Priority</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {availableFilters.priorities.map((priority) => (
+                    {availableFilters.priorities.map(priority => (
                       <Badge
                         key={priority}
-                        variant={filters.priority.includes(priority) ? "default" : "outline"}
+                        variant={filters.priority.includes(priority) ? 'default' : 'outline'}
                         className="cursor-pointer capitalize"
                         onClick={() => {
                           const newPriorities = filters.priority.includes(priority)
@@ -649,10 +690,10 @@ export function AdvancedSearchFilter({
                 <div>
                   <Label>Assignee</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {availableFilters.assignees.map((assignee) => (
+                    {availableFilters.assignees.map(assignee => (
                       <Badge
                         key={assignee}
-                        variant={filters.assignee.includes(assignee) ? "default" : "outline"}
+                        variant={filters.assignee.includes(assignee) ? 'default' : 'outline'}
                         className="cursor-pointer"
                         onClick={() => {
                           const newAssignees = filters.assignee.includes(assignee)
@@ -682,7 +723,7 @@ export function AdvancedSearchFilter({
                     Save Current Search
                   </Button>
                 </div>
-                
+
                 {savedSearches.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {savedSearches.map((search, index) => (
@@ -711,22 +752,19 @@ export function AdvancedSearchFilter({
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4 border-t">
             <div className="flex gap-2">
-              <Button 
-                onClick={handleSearch} 
-                disabled={isLoading}
-              >
+              <Button onClick={handleSearch} disabled={isLoading}>
                 <Search className="h-4 w-4 mr-2" />
                 {isLoading ? 'Searching...' : 'Search'}
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={clearAllFilters}
                 disabled={activeFilterCount === 0}
               >
                 Clear All
               </Button>
             </div>
-            
+
             {searchResults && (
               <div className="text-sm text-muted-foreground">
                 Found {searchResults.filteredCount} results in {searchResults.searchTime}ms

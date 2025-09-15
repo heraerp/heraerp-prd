@@ -1,9 +1,9 @@
 /**
  * Tender Service - Sacred Six Integration
- * 
+ *
  * This service provides all tender management operations using HERA's
  * universal 6-table architecture with Finance-DNA integration.
- * 
+ *
  * Key Features:
  * - Complete tender lifecycle management
  * - AI-powered bid strategy calculations
@@ -129,7 +129,7 @@ class TenderService {
     const response = await fetch(`${this.baseUrl}/metrics`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await this.getAuthToken()}`
+        Authorization: `Bearer ${await this.getAuthToken()}`
       }
     })
 
@@ -169,7 +169,7 @@ class TenderService {
     const response = await fetch(`${this.baseUrl}/list-simple?${searchParams}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await this.getAuthToken()}`
+        Authorization: `Bearer ${await this.getAuthToken()}`
       }
     })
 
@@ -188,7 +188,7 @@ class TenderService {
     const response = await fetch(`${this.baseUrl}/${tenderId}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await this.getAuthToken()}`
+        Authorization: `Bearer ${await this.getAuthToken()}`
       }
     })
 
@@ -203,15 +203,18 @@ class TenderService {
   /**
    * Calculate bid for a tender using AI
    */
-  async calculateBid(tenderId: string, params: {
-    costs?: {
-      transport_mt?: number
-      handling_mt?: number
+  async calculateBid(
+    tenderId: string,
+    params: {
+      costs?: {
+        transport_mt?: number
+        handling_mt?: number
+      }
+      margin_preference?: 'aggressive' | 'moderate' | 'conservative'
+      include_competitors?: boolean
+      estimated_amount?: number
     }
-    margin_preference?: 'aggressive' | 'moderate' | 'conservative'
-    include_competitors?: boolean
-    estimated_amount?: number
-  }): Promise<{
+  ): Promise<{
     ai_task_id?: string
     draft_bid_id: string
     [key: string]: any
@@ -246,7 +249,7 @@ class TenderService {
     const response = await fetch(`${this.baseUrl}/analytics?period=${period}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await this.getAuthToken()}`
+        Authorization: `Bearer ${await this.getAuthToken()}`
       }
     })
 
@@ -338,14 +341,17 @@ class TenderService {
   /**
    * Submit a bid for a tender
    */
-  async submitBid(tenderId: string, bid: {
-    amount: number
-    margin_percentage: number
-    transport_cost: number
-    handling_cost: number
-    technical_bid_doc?: string
-    price_bid_doc?: string
-  }): Promise<string> {
+  async submitBid(
+    tenderId: string,
+    bid: {
+      amount: number
+      margin_percentage: number
+      transport_cost: number
+      handling_cost: number
+      technical_bid_doc?: string
+      price_bid_doc?: string
+    }
+  ): Promise<string> {
     // Create bid submission transaction
     const transaction = await universalApi.createTransaction({
       transaction_type: 'bid_submission',
@@ -378,11 +384,15 @@ class TenderService {
   /**
    * Pay EMD for a tender
    */
-  async payEMD(tenderId: string, amount: number, paymentDetails: {
-    payment_method: string
-    reference_number: string
-    bank_name?: string
-  }): Promise<string> {
+  async payEMD(
+    tenderId: string,
+    amount: number,
+    paymentDetails: {
+      payment_method: string
+      reference_number: string
+      bank_name?: string
+    }
+  ): Promise<string> {
     // Create EMD payment transaction (Finance-DNA ready)
     const transaction = await universalApi.createTransaction({
       transaction_type: 'emd_payment',
@@ -430,14 +440,14 @@ class TenderService {
           // Fall through
         }
       }
-      
+
       // Try to get from custom auth storage
       const authToken = localStorage.getItem('hera-auth-token')
       if (authToken) {
         return authToken
       }
     }
-    
+
     return 'no-token'
   }
 }

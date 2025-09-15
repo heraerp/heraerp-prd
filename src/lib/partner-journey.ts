@@ -1,9 +1,9 @@
 /**
  * HERA Partner Journey Orchestration
  * Steve Jobs-Inspired Seamless Experience Engine
- * 
+ *
  * "Simplicity is the ultimate sophistication." - Steve Jobs
- * 
+ *
  * This system creates the invisible magic that makes the partner experience
  * feel inevitable, intuitive, and inspiring.
  */
@@ -96,7 +96,11 @@ export class PartnerJourneyOrchestrator {
         id: 'master',
         name: 'Master Modern Sales',
         path: '/partner-system/training',
-        completionCriteria: ['completed_core_modules', 'passed_assessments', 'earned_certification'],
+        completionCriteria: [
+          'completed_core_modules',
+          'passed_assessments',
+          'earned_certification'
+        ],
         nextStep: 'thrive',
         experience: {
           mood: 'mastery',
@@ -125,7 +129,7 @@ export class PartnerJourneyOrchestrator {
   // Track partner progress through the journey
   trackProgress(partnerId: string, stepId: string, action: string, data?: any): void {
     let progress = this.partnerProgress.get(partnerId)
-    
+
     if (!progress) {
       progress = {
         currentStep: stepId,
@@ -144,7 +148,7 @@ export class PartnerJourneyOrchestrator {
     // Update activity
     progress.lastActivity = new Date().toISOString()
     progress.engagement.interactions++
-    
+
     // Store action data
     if (data) {
       progress.userData = { ...progress.userData, ...data }
@@ -156,7 +160,7 @@ export class PartnerJourneyOrchestrator {
       if (!progress.completedSteps.includes(stepId)) {
         progress.completedSteps.push(stepId)
       }
-      
+
       // Move to next step
       if (step.nextStep && progress.currentStep === stepId) {
         progress.currentStep = step.nextStep
@@ -198,7 +202,7 @@ export class PartnerJourneyOrchestrator {
     } else if (enthusiasm === 'low') {
       message = "Let's make this simple..."
       urgency = 'low'
-      personalizedCTA = "Take one small step"
+      personalizedCTA = 'Take one small step'
     }
 
     return {
@@ -210,7 +214,10 @@ export class PartnerJourneyOrchestrator {
   }
 
   // Create seamless transitions between steps
-  createTransition(fromStep: string, toStep: string): {
+  createTransition(
+    fromStep: string,
+    toStep: string
+  ): {
     animation: 'slide' | 'fade' | 'zoom'
     duration: number
     message: string
@@ -226,33 +233,38 @@ export class PartnerJourneyOrchestrator {
       'envision->join': {
         animation: 'zoom',
         duration: 600,
-        message: "Ready to make this real?",
+        message: 'Ready to make this real?',
         prebriefing: "Let's get you set up in just 4 simple steps"
       },
       'join->master': {
         animation: 'fade',
         duration: 1000,
-        message: "Welcome to HERA! Time to become unstoppable.",
+        message: 'Welcome to HERA! Time to become unstoppable.',
         prebriefing: "Your partner account is ready. Now let's make you a sales master."
       },
       'master->thrive': {
         animation: 'slide',
         duration: 700,
         message: "You're ready. Let's see your success in real-time.",
-        prebriefing: "Welcome to your partner dashboard - your mission control"
+        prebriefing: 'Welcome to your partner dashboard - your mission control'
       }
     }
 
     const key = `${fromStep}->${toStep}`
-    return transitions[key] || {
-      animation: 'fade',
-      duration: 500,
-      message: "Let's continue your journey..."
-    }
+    return (
+      transitions[key] || {
+        animation: 'fade',
+        duration: 500,
+        message: "Let's continue your journey..."
+      }
+    )
   }
 
   // Smart routing - knows where partner should go next
-  getSmartRoute(partnerId: string, currentPath: string): {
+  getSmartRoute(
+    partnerId: string,
+    currentPath: string
+  ): {
     recommendedPath: string
     reason: string
     confidence: number
@@ -290,7 +302,7 @@ export class PartnerJourneyOrchestrator {
 
     return {
       recommendedPath: currentPath,
-      reason: 'You\'re exactly where you need to be',
+      reason: "You're exactly where you need to be",
       confidence: 1.0
     }
   }
@@ -298,7 +310,7 @@ export class PartnerJourneyOrchestrator {
   // Generate personalized encouragement
   getEncouragement(partnerId: string): string {
     const progress = this.partnerProgress.get(partnerId)
-    if (!progress) return "Ready to start something amazing?"
+    if (!progress) return 'Ready to start something amazing?'
 
     const completedCount = progress.completedSteps.length
     const enthusiasm = progress.engagement.enthusiasm
@@ -306,8 +318,8 @@ export class PartnerJourneyOrchestrator {
     const encouragements = {
       high: [
         "You're absolutely crushing this! 🚀",
-        "Your enthusiasm is contagious! Keep going! ⚡",
-        "This is exactly the energy we love to see! 🔥"
+        'Your enthusiasm is contagious! Keep going! ⚡',
+        'This is exactly the energy we love to see! 🔥'
       ],
       medium: [
         "Great progress! You're building something special. 📈",
@@ -315,7 +327,7 @@ export class PartnerJourneyOrchestrator {
         "One step at a time, you're getting there! 👍"
       ],
       low: [
-        "Every great journey starts with a single step. 🌱",
+        'Every great journey starts with a single step. 🌱',
         "Take your time - we're here when you're ready. 🤝",
         "Small progress is still progress. You've got this! 💪"
       ]
@@ -345,8 +357,8 @@ export class PartnerJourneyOrchestrator {
     const progress = this.partnerProgress.get(partnerId)
     if (!progress) return 0
 
-    const completed = step.completionCriteria.filter(criteria => 
-      progress.userData[criteria] === true
+    const completed = step.completionCriteria.filter(
+      criteria => progress.userData[criteria] === true
     ).length
 
     return completed / step.completionCriteria.length
@@ -354,14 +366,15 @@ export class PartnerJourneyOrchestrator {
 
   private calculateEnthusiasm(progress: PartnerProgress): 'low' | 'medium' | 'high' {
     const { interactions, timeSpent } = progress.engagement
-    const daysSinceStart = (Date.now() - new Date(progress.startedAt).getTime()) / (1000 * 60 * 60 * 24)
-    
+    const daysSinceStart =
+      (Date.now() - new Date(progress.startedAt).getTime()) / (1000 * 60 * 60 * 24)
+
     // High engagement indicators
     if (interactions > 10 && timeSpent > 1800 && daysSinceStart < 7) return 'high'
-    
-    // Low engagement indicators  
+
+    // Low engagement indicators
     if (interactions < 3 && daysSinceStart > 3) return 'low'
-    
+
     return 'medium'
   }
 }
@@ -374,16 +387,15 @@ export function usePartnerJourney(partnerId?: string) {
   if (!partnerId) return null
 
   return {
-    trackProgress: (stepId: string, action: string, data?: any) => 
+    trackProgress: (stepId: string, action: string, data?: any) =>
       partnerJourney.trackProgress(partnerId, stepId, action, data),
-    
+
     getNextAction: () => partnerJourney.getNextAction(partnerId),
-    
-    getSmartRoute: (currentPath: string) => 
-      partnerJourney.getSmartRoute(partnerId, currentPath),
-    
+
+    getSmartRoute: (currentPath: string) => partnerJourney.getSmartRoute(partnerId, currentPath),
+
     getEncouragement: () => partnerJourney.getEncouragement(partnerId),
-    
+
     createTransition: (fromStep: string, toStep: string) =>
       partnerJourney.createTransition(fromStep, toStep)
   }

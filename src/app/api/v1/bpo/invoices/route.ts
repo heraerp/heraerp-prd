@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BPOInvoiceEntity, BPOInvoiceStatus, BPOPriority, BPOComplexity, BPO_SMART_CODES } from '@/lib/bpo/bpo-entities'
+import {
+  BPOInvoiceEntity,
+  BPOInvoiceStatus,
+  BPOPriority,
+  BPOComplexity,
+  BPO_SMART_CODES
+} from '@/lib/bpo/bpo-entities'
 
 // Mock invoice storage
 let mockInvoices: BPOInvoiceEntity[] = [
@@ -17,7 +23,7 @@ let mockInvoices: BPOInvoiceEntity[] = [
     invoice_number: 'INV-2024-001',
     vendor_name: 'Office Supplies Inc.',
     invoice_date: new Date('2024-08-10'),
-    total_amount: 2450.00,
+    total_amount: 2450.0,
     currency: 'USD',
     priority: 'medium',
     complexity: 'standard',
@@ -39,7 +45,7 @@ let mockInvoices: BPOInvoiceEntity[] = [
     invoice_number: 'INV-2024-002',
     vendor_name: 'Software Licensing Corp',
     invoice_date: new Date('2024-08-09'),
-    total_amount: 15750.00,
+    total_amount: 15750.0,
     currency: 'USD',
     priority: 'high',
     complexity: 'complex',
@@ -64,10 +70,7 @@ export async function GET(request: NextRequest) {
     if (invoiceId) {
       const invoice = mockInvoices.find(inv => inv.entity_id === invoiceId)
       if (!invoice) {
-        return NextResponse.json(
-          { success: false, error: 'Invoice not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ success: false, error: 'Invoice not found' }, { status: 404 })
       }
       return NextResponse.json({
         success: true,
@@ -96,13 +99,13 @@ export async function GET(request: NextRequest) {
       const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 }
       const aPriority = priorityOrder[a.priority || 'medium']
       const bPriority = priorityOrder[b.priority || 'medium']
-      
+
       if (aPriority !== bPriority) return bPriority - aPriority
-      
+
       if (a.sla_deadline && b.sla_deadline) {
         return a.sla_deadline.getTime() - b.sla_deadline.getTime()
       }
-      
+
       return 0
     })
 
@@ -115,8 +118,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error retrieving BPO invoices:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to retrieve invoices',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -171,15 +174,12 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Invalid action specified' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Invalid action specified' }, { status: 400 })
   } catch (error) {
     console.error('Error creating BPO invoice:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to create invoice',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -195,10 +195,7 @@ export async function PUT(request: NextRequest) {
 
     const invoiceIndex = mockInvoices.findIndex(inv => inv.entity_id === invoice_id)
     if (invoiceIndex === -1) {
-      return NextResponse.json(
-        { success: false, error: 'Invoice not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Invoice not found' }, { status: 404 })
     }
 
     const invoice = mockInvoices[invoiceIndex]
@@ -285,15 +282,12 @@ export async function PUT(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Invalid action specified' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Invalid action specified' }, { status: 400 })
   } catch (error) {
     console.error('Error updating BPO invoice:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to update invoice',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -308,18 +302,12 @@ export async function DELETE(request: NextRequest) {
     const invoiceId = searchParams.get('invoiceId')
 
     if (!invoiceId) {
-      return NextResponse.json(
-        { success: false, error: 'Invoice ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, error: 'Invoice ID is required' }, { status: 400 })
     }
 
     const invoiceIndex = mockInvoices.findIndex(inv => inv.entity_id === invoiceId)
     if (invoiceIndex === -1) {
-      return NextResponse.json(
-        { success: false, error: 'Invoice not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Invoice not found' }, { status: 404 })
     }
 
     const deletedInvoice = mockInvoices.splice(invoiceIndex, 1)[0]
@@ -332,8 +320,8 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('Error deleting BPO invoice:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to delete invoice',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -343,7 +331,10 @@ export async function DELETE(request: NextRequest) {
 }
 
 // Helper function to calculate SLA hours based on complexity and priority
-function getSLAHours(complexity: BPOComplexity = 'standard', priority: BPOPriority = 'medium'): number {
+function getSLAHours(
+  complexity: BPOComplexity = 'standard',
+  priority: BPOPriority = 'medium'
+): number {
   const slaMatrix: Record<BPOComplexity, Record<BPOPriority, number>> = {
     simple: { urgent: 2, high: 6, medium: 12, low: 24 },
     standard: { urgent: 4, high: 12, medium: 24, low: 48 },

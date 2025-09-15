@@ -1,0 +1,30 @@
+{
+  "header": {
+    "transaction_type": "appointment",
+    "transaction_code": "APPT-DXB-0001",
+    "transaction_date": "2025-09-16T08:00:00Z",
+    "smart_code": "HERA.SALON.APPOINTMENT.BOOKED.v1",
+    "status": "approved",
+    "organization_id": "00000000-0000-0000-0000-000000000001",
+    "currency_code": "AED",
+    "total_amount": 0,
+    "reference_entity_id": null,
+    "metadata": {
+      "chair_slug": "chair:DUBAI_MAIN_01",
+      "start_time": "2025-09-16T08:00:00Z",
+      "end_time": "2025-09-16T09:00:00Z"
+    }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "service",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 0,
+      "line_amount": 0,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.APPOINTMENT.LINE.v1"
+    }
+  ]
+}

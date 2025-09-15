@@ -180,7 +180,7 @@ export class SchemaManager {
     status?: string
   }): Promise<DNAComponent[]> {
     const cacheKey = `dna_components_${JSON.stringify(filters)}`
-    
+
     if (this.systemSchemaCache.has(cacheKey)) {
       const cached = this.systemSchemaCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -188,10 +188,7 @@ export class SchemaManager {
       }
     }
 
-    let query = this.supabase
-      .from('dna_components')
-      .select('*')
-      .eq('status', 'active')
+    let query = this.supabase.from('dna_components').select('*').eq('status', 'active')
 
     if (filters?.type) query = query.eq('component_type', filters.type)
     if (filters?.category) query = query.eq('category', filters.category)
@@ -214,7 +211,7 @@ export class SchemaManager {
    */
   async getDNATemplates(industry?: string): Promise<DNATemplate[]> {
     const cacheKey = `dna_templates_${industry || 'all'}`
-    
+
     if (this.systemSchemaCache.has(cacheKey)) {
       const cached = this.systemSchemaCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -222,10 +219,7 @@ export class SchemaManager {
       }
     }
 
-    let query = this.supabase
-      .from('dna_templates')
-      .select('*')
-      .eq('status', 'active')
+    let query = this.supabase.from('dna_templates').select('*').eq('status', 'active')
 
     if (industry) {
       query = query.eq('industry', industry)
@@ -248,7 +242,7 @@ export class SchemaManager {
    */
   async getSmartCodeDefinitions(industry?: string): Promise<SmartCodeDefinition[]> {
     const cacheKey = `smart_codes_${industry || 'all'}`
-    
+
     if (this.systemSchemaCache.has(cacheKey)) {
       const cached = this.systemSchemaCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -256,10 +250,7 @@ export class SchemaManager {
       }
     }
 
-    let query = this.supabase
-      .from('smart_code_definitions')
-      .select('*')
-      .eq('status', 'active')
+    let query = this.supabase.from('smart_code_definitions').select('*').eq('status', 'active')
 
     if (industry) {
       query = query.eq('industry', industry)
@@ -282,7 +273,7 @@ export class SchemaManager {
    */
   async getEntityTypeDefinitions(category?: string): Promise<EntityTypeDefinition[]> {
     const cacheKey = `entity_types_${category || 'all'}`
-    
+
     if (this.systemSchemaCache.has(cacheKey)) {
       const cached = this.systemSchemaCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -290,10 +281,7 @@ export class SchemaManager {
       }
     }
 
-    let query = this.supabase
-      .from('entity_type_definitions')
-      .select('*')
-      .eq('status', 'active')
+    let query = this.supabase.from('entity_type_definitions').select('*').eq('status', 'active')
 
     if (category) {
       query = query.eq('category', category)
@@ -316,7 +304,7 @@ export class SchemaManager {
    */
   async getFieldTypeDefinitions(category?: string): Promise<FieldTypeDefinition[]> {
     const cacheKey = `field_types_${category || 'all'}`
-    
+
     if (this.systemSchemaCache.has(cacheKey)) {
       const cached = this.systemSchemaCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -324,10 +312,7 @@ export class SchemaManager {
       }
     }
 
-    let query = this.supabase
-      .from('field_type_definitions')
-      .select('*')
-      .eq('status', 'active')
+    let query = this.supabase.from('field_type_definitions').select('*').eq('status', 'active')
 
     if (category) {
       query = query.eq('category', category)
@@ -354,7 +339,7 @@ export class SchemaManager {
    */
   async getOrganizationConfig(organizationId: string): Promise<OrganizationSystemConfig | null> {
     const cacheKey = `org_config_${organizationId}`
-    
+
     if (this.organizationConfigCache.has(cacheKey)) {
       const cached = this.organizationConfigCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -527,7 +512,7 @@ export class SchemaManager {
    */
   async getCompleteSystemSchema(organizationId: string): Promise<CompleteSystemSchema> {
     const cacheKey = `complete_schema_${organizationId}`
-    
+
     if (this.organizationConfigCache.has(cacheKey)) {
       const cached = this.organizationConfigCache.get(cacheKey)
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
@@ -536,8 +521,9 @@ export class SchemaManager {
     }
 
     // Use the stored function for optimal performance
-    const { data, error } = await this.supabase
-      .rpc('get_organization_system_schema', { org_id: organizationId })
+    const { data, error } = await this.supabase.rpc('get_organization_system_schema', {
+      org_id: organizationId
+    })
 
     if (error) {
       throw new Error(`Failed to fetch complete system schema: ${error.message}`)
@@ -574,9 +560,10 @@ export class SchemaManager {
 
     // Get organization's field selection
     const fieldSelections = await this.getUserEntityFieldSelections(organizationId, entityType)
-    const fieldSelection = fieldSelections.find(
-      sel => sel.selection_type === selectionType && sel.is_default
-    ) || fieldSelections[0] || null
+    const fieldSelection =
+      fieldSelections.find(sel => sel.selection_type === selectionType && sel.is_default) ||
+      fieldSelections[0] ||
+      null
 
     // Get form configuration
     const formConfigurations = await this.getDynamicFormConfigurations(
@@ -584,9 +571,8 @@ export class SchemaManager {
       entityType,
       selectionType === 'form' ? 'create' : undefined
     )
-    const formConfiguration = formConfigurations.find(
-      config => config.is_default
-    ) || formConfigurations[0] || null
+    const formConfiguration =
+      formConfigurations.find(config => config.is_default) || formConfigurations[0] || null
 
     // Merge to get effective fields
     let effectiveFields = { ...entityDefinition.base_fields }
@@ -638,8 +624,9 @@ export class SchemaManager {
     errors: string[]
     warnings: string[]
   }> {
-    const { data, error } = await this.supabase
-      .rpc('validate_organization_config', { org_id: organizationId })
+    const { data, error } = await this.supabase.rpc('validate_organization_config', {
+      org_id: organizationId
+    })
 
     if (error) {
       throw new Error(`Failed to validate organization config: ${error.message}`)
@@ -664,8 +651,9 @@ export class SchemaManager {
    * Clear cache for specific organization
    */
   clearOrganizationCache(organizationId: string): void {
-    const keysToDelete = Array.from(this.organizationConfigCache.keys())
-      .filter(key => key.includes(organizationId))
+    const keysToDelete = Array.from(this.organizationConfigCache.keys()).filter(key =>
+      key.includes(organizationId)
+    )
 
     keysToDelete.forEach(key => {
       this.organizationConfigCache.delete(key)

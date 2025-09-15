@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Payroll Processing System
  * Smart Code: HERA.SALON.PAYROLL.MODULE.v1
- * 
+ *
  * Complete payroll system with direct deposit, commissions, taxes,
  * and multi-location compliance - all on 6-table foundation
  */
@@ -21,7 +21,7 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import type { PayrollEmployee } from '@/types/salon.types'
-import { 
+import {
   DollarSign,
   Users,
   Calendar,
@@ -195,9 +195,11 @@ const compensationTypes = [
 export default function SalonPayrollSystem() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
-  
+
   // State Management
-  const [activeTab, setActiveTab] = useState<'overview' | 'employees' | 'runs' | 'reports' | 'settings'>('overview')
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'employees' | 'runs' | 'reports' | 'settings'
+  >('overview')
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [showPayrollModal, setShowPayrollModal] = useState(false)
   const [showEmployeeModal, setShowEmployeeModal] = useState(false)
@@ -217,7 +219,8 @@ export default function SalonPayrollSystem() {
     activePayroll: mockEmployees.filter(e => e.status === 'active').length,
     ytdPayroll: mockEmployees.reduce((sum, e) => sum + e.ytd_earnings, 0),
     ytdTaxes: mockEmployees.reduce((sum, e) => sum + e.ytd_earnings * 0.22, 0),
-    avgPayPerEmployee: mockEmployees.reduce((sum, e) => sum + e.ytd_earnings, 0) / mockEmployees.length,
+    avgPayPerEmployee:
+      mockEmployees.reduce((sum, e) => sum + e.ytd_earnings, 0) / mockEmployees.length,
     nextPayDate: new Date('2024-03-29')
   }
 
@@ -236,14 +239,10 @@ export default function SalonPayrollSystem() {
     try {
       // Simulate payroll run
       await new Promise(resolve => setTimeout(resolve, 3000))
-      handleError(
-        new Error('Payroll run completed successfully!'),
-        'payroll-run',
-        { 
-          showToast: true,
-          fallbackMessage: 'Payroll run completed successfully!'
-        }
-      )
+      handleError(new Error('Payroll run completed successfully!'), 'payroll-run', {
+        showToast: true,
+        fallbackMessage: 'Payroll run completed successfully!'
+      })
     } catch (error) {
       handleError(error, 'payroll-run', {
         showToast: true,
@@ -267,9 +266,7 @@ export default function SalonPayrollSystem() {
               <Users className="w-4 h-4 text-purple-600" />
             </div>
             <p className="text-2xl font-bold">{payrollStats.totalEmployees}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              {payrollStats.activePayroll} active
-            </p>
+            <p className="text-xs text-gray-500 mt-1">{payrollStats.activePayroll} active</p>
           </CardContent>
         </Card>
 
@@ -293,9 +290,7 @@ export default function SalonPayrollSystem() {
               <Receipt className="w-4 h-4 text-orange-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(payrollStats.ytdTaxes)}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              Federal, State, FICA
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Federal, State, FICA</p>
           </CardContent>
         </Card>
 
@@ -306,13 +301,17 @@ export default function SalonPayrollSystem() {
               <Calendar className="w-4 h-4 text-blue-600" />
             </div>
             <p className="text-2xl font-bold">
-              {payrollStats.nextPayDate.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric' 
+              {payrollStats.nextPayDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
               })}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              In {Math.ceil((payrollStats.nextPayDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days
+              In{' '}
+              {Math.ceil(
+                (payrollStats.nextPayDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+              )}{' '}
+              days
             </p>
           </CardContent>
         </Card>
@@ -358,23 +357,32 @@ export default function SalonPayrollSystem() {
         <CardContent>
           <div className="space-y-4">
             {mockPayrollRuns.map(run => (
-              <div key={run.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div
+                key={run.id}
+                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+              >
                 <div className="flex items-center gap-4">
-                  <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center",
-                    run.status === 'completed' ? "bg-green-100 dark:bg-green-900" : "bg-yellow-100 dark:bg-yellow-900"
-                  )}>
-                    {run.status === 'completed' ? 
-                      <CheckCircle className="w-5 h-5 text-green-600" /> : 
+                  <div
+                    className={cn(
+                      'w-10 h-10 rounded-full flex items-center justify-center',
+                      run.status === 'completed'
+                        ? 'bg-green-100 dark:bg-green-900'
+                        : 'bg-yellow-100 dark:bg-yellow-900'
+                    )}
+                  >
+                    {run.status === 'completed' ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : (
                       <Clock className="w-5 h-5 text-yellow-600" />
-                    }
+                    )}
                   </div>
                   <div>
                     <p className="font-medium">
                       {run.run_type.charAt(0).toUpperCase() + run.run_type.slice(1)} Payroll
                     </p>
                     <p className="text-sm text-gray-500">
-                      {run.pay_period_start.toLocaleDateString()} - {run.pay_period_end.toLocaleDateString()}
+                      {run.pay_period_start.toLocaleDateString()} -{' '}
+                      {run.pay_period_end.toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -400,7 +408,7 @@ export default function SalonPayrollSystem() {
             <Input
               placeholder="Search employees..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-9"
             />
           </div>
@@ -452,7 +460,7 @@ export default function SalonPayrollSystem() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {mockEmployees.map((employee) => (
+                {mockEmployees.map(employee => (
                   <tr key={employee.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                     <td className="px-6 py-4">
                       <div>
@@ -468,20 +476,19 @@ export default function SalonPayrollSystem() {
                     </td>
                     <td className="px-6 py-4 text-sm">{employee.pay_schedule}</td>
                     <td className="px-6 py-4 text-sm">
-                      {employee.compensation_type === 'hybrid' ? 
-                        `$${employee.base_rate}/hr + ${employee.commission_rate}%` :
-                        employee.compensation_type === 'commission' ?
-                        `${employee.commission_rate}% commission` :
-                        employee.compensation_type === 'hourly' ?
-                        `$${employee.base_rate}/hour` :
-                        `$${employee.base_rate}/month`
-                      }
+                      {employee.compensation_type === 'hybrid'
+                        ? `$${employee.base_rate}/hr + ${employee.commission_rate}%`
+                        : employee.compensation_type === 'commission'
+                          ? `${employee.commission_rate}% commission`
+                          : employee.compensation_type === 'hourly'
+                            ? `$${employee.base_rate}/hour`
+                            : `$${employee.base_rate}/month`}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       {formatCurrency(employee.ytd_earnings)}
                     </td>
                     <td className="px-6 py-4">
-                      <Badge 
+                      <Badge
                         variant={employee.status === 'active' ? 'default' : 'secondary'}
                         className="text-xs"
                       >
@@ -542,7 +549,8 @@ export default function SalonPayrollSystem() {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                This will process payroll for 12 active employees. Total estimated: {formatCurrency(45600)}
+                This will process payroll for 12 active employees. Total estimated:{' '}
+                {formatCurrency(45600)}
               </AlertDescription>
             </Alert>
 
@@ -575,23 +583,53 @@ export default function SalonPayrollSystem() {
         <CardContent>
           <div className="space-y-4">
             {[
-              { step: 1, title: 'Calculate Hours', description: 'Import time tracking data', status: 'completed' },
-              { step: 2, title: 'Calculate Commissions', description: 'Process sales commissions', status: 'completed' },
-              { step: 3, title: 'Apply Deductions', description: 'Calculate taxes and benefits', status: 'current' },
-              { step: 4, title: 'Review & Approve', description: 'Final review before processing', status: 'pending' },
-              { step: 5, title: 'Process Payments', description: 'Send to bank for direct deposit', status: 'pending' }
-            ].map((step) => (
+              {
+                step: 1,
+                title: 'Calculate Hours',
+                description: 'Import time tracking data',
+                status: 'completed'
+              },
+              {
+                step: 2,
+                title: 'Calculate Commissions',
+                description: 'Process sales commissions',
+                status: 'completed'
+              },
+              {
+                step: 3,
+                title: 'Apply Deductions',
+                description: 'Calculate taxes and benefits',
+                status: 'current'
+              },
+              {
+                step: 4,
+                title: 'Review & Approve',
+                description: 'Final review before processing',
+                status: 'pending'
+              },
+              {
+                step: 5,
+                title: 'Process Payments',
+                description: 'Send to bank for direct deposit',
+                status: 'pending'
+              }
+            ].map(step => (
               <div key={step.step} className="flex items-center gap-4">
-                <div className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center",
-                  step.status === 'completed' ? "bg-green-100 text-green-600" :
-                  step.status === 'current' ? "bg-purple-100 text-purple-600" :
-                  "bg-gray-100 text-gray-400"
-                )}>
-                  {step.status === 'completed' ? 
-                    <CheckCircle className="w-5 h-5" /> : 
+                <div
+                  className={cn(
+                    'w-10 h-10 rounded-full flex items-center justify-center',
+                    step.status === 'completed'
+                      ? 'bg-green-100 text-green-600'
+                      : step.status === 'current'
+                        ? 'bg-purple-100 text-purple-600'
+                        : 'bg-gray-100 text-gray-400'
+                  )}
+                >
+                  {step.status === 'completed' ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
                     <span className="font-semibold">{step.step}</span>
-                  }
+                  )}
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{step.title}</p>
@@ -609,38 +647,38 @@ export default function SalonPayrollSystem() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-          { 
-            title: 'Payroll Register', 
+          {
+            title: 'Payroll Register',
             description: 'Detailed breakdown of all payroll runs',
             icon: <FileText className="w-8 h-8" />,
             color: 'from-purple-500 to-purple-700'
           },
-          { 
-            title: 'Tax Summary', 
+          {
+            title: 'Tax Summary',
             description: 'Federal, state, and local tax reports',
             icon: <Receipt className="w-8 h-8" />,
             color: 'from-blue-500 to-indigo-600'
           },
-          { 
-            title: 'Commission Report', 
+          {
+            title: 'Commission Report',
             description: 'Employee commission calculations',
             icon: <Percent className="w-8 h-8" />,
             color: 'from-green-500 to-emerald-600'
           },
-          { 
-            title: 'YTD Summary', 
+          {
+            title: 'YTD Summary',
             description: 'Year-to-date earnings and deductions',
             icon: <Calendar className="w-8 h-8" />,
             color: 'from-amber-500 to-orange-600'
           },
-          { 
-            title: 'Pay Stub History', 
+          {
+            title: 'Pay Stub History',
             description: 'All employee pay stubs',
             icon: <CreditCard className="w-8 h-8" />,
             color: 'from-red-500 to-pink-600'
           },
-          { 
-            title: 'W-2/1099 Forms', 
+          {
+            title: 'W-2/1099 Forms',
             description: 'Year-end tax documents',
             icon: <Shield className="w-8 h-8" />,
             color: 'from-indigo-500 to-purple-600'
@@ -649,10 +687,12 @@ export default function SalonPayrollSystem() {
           <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className={cn(
-                  "w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white",
-                  report.color
-                )}>
+                <div
+                  className={cn(
+                    'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white',
+                    report.color
+                  )}
+                >
                   {report.icon}
                 </div>
                 <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -680,7 +720,10 @@ export default function SalonPayrollSystem() {
             <h3 className="font-semibold mb-4">Pay Schedules</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {paySchedules.map(schedule => (
-                <div key={schedule.value} className="flex items-center justify-between p-4 border rounded-lg">
+                <div
+                  key={schedule.value}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div>
                     <p className="font-medium">{schedule.label}</p>
                     <p className="text-sm text-gray-500">
@@ -707,14 +750,18 @@ export default function SalonPayrollSystem() {
                   <p className="font-medium">Federal Tax ID</p>
                   <p className="text-sm text-gray-500">XX-XXXXXXX</p>
                 </div>
-                <Button variant="outline" size="sm">Update</Button>
+                <Button variant="outline" size="sm">
+                  Update
+                </Button>
               </div>
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div>
                   <p className="font-medium">State Tax Registration</p>
                   <p className="text-sm text-gray-500">Active in 1 state</p>
                 </div>
-                <Button variant="outline" size="sm">Manage</Button>
+                <Button variant="outline" size="sm">
+                  Manage
+                </Button>
               </div>
             </div>
           </div>
@@ -733,7 +780,9 @@ export default function SalonPayrollSystem() {
                     <p className="text-sm text-gray-500">Bank of America ****1234</p>
                   </div>
                 </div>
-                <Badge variant="default" className="bg-green-600">Active</Badge>
+                <Badge variant="default" className="bg-green-600">
+                  Active
+                </Badge>
               </div>
               <Button variant="outline" className="w-full">
                 Update Banking Information
@@ -765,7 +814,7 @@ export default function SalonPayrollSystem() {
   )
 
   // ----------------------------- Run Payroll Modal ------------------------------------
-  
+
   const RunPayrollModal = () => {
     if (!showPayrollModal) return null
 
@@ -775,11 +824,7 @@ export default function SalonPayrollSystem() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Run Payroll - March 16-31, 2024</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPayrollModal(false)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowPayrollModal(false)}>
                 <X className="w-4 h-4" />
               </Button>
             </CardTitle>
@@ -838,8 +883,12 @@ export default function SalonPayrollSystem() {
                         <td className="text-right px-4 py-2">{formatCurrency(1200)}</td>
                         <td className="text-right px-4 py-2">{formatCurrency(2300)}</td>
                         <td className="text-right px-4 py-2 font-medium">{formatCurrency(3500)}</td>
-                        <td className="text-right px-4 py-2 text-orange-600">{formatCurrency(770)}</td>
-                        <td className="text-right px-4 py-2 font-medium text-green-600">{formatCurrency(2730)}</td>
+                        <td className="text-right px-4 py-2 text-orange-600">
+                          {formatCurrency(770)}
+                        </td>
+                        <td className="text-right px-4 py-2 font-medium text-green-600">
+                          {formatCurrency(2730)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -849,10 +898,7 @@ export default function SalonPayrollSystem() {
 
             {/* Actions */}
             <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowPayrollModal(false)}
-              >
+              <Button variant="outline" onClick={() => setShowPayrollModal(false)}>
                 Cancel
               </Button>
               <Button variant="outline">
@@ -909,7 +955,7 @@ export default function SalonPayrollSystem() {
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </Button>
-              
+
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Payroll Management
@@ -919,13 +965,13 @@ export default function SalonPayrollSystem() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
                 <Bell className="w-4 h-4 mr-2" />
                 Reminders
               </Button>
-              <Button 
+              <Button
                 onClick={() => setShowPayrollModal(true)}
                 className="bg-purple-600 hover:bg-purple-700 text-white"
               >
@@ -939,7 +985,12 @@ export default function SalonPayrollSystem() {
 
       {/* Main Content */}
       <div className="p-6 max-w-[1600px] mx-auto">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'overview' | 'employees' | 'runs' | 'reports' | 'settings')}>
+        <Tabs
+          value={activeTab}
+          onValueChange={value =>
+            setActiveTab(value as 'overview' | 'employees' | 'runs' | 'reports' | 'settings')
+          }
+        >
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="employees">Employees</TabsTrigger>
@@ -947,29 +998,29 @@ export default function SalonPayrollSystem() {
             <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="overview">
             <OverviewTab />
           </TabsContent>
-          
+
           <TabsContent value="employees">
             <EmployeesTab />
           </TabsContent>
-          
+
           <TabsContent value="runs">
             <RunsTab />
           </TabsContent>
-          
+
           <TabsContent value="reports">
             <ReportsTab />
           </TabsContent>
-          
+
           <TabsContent value="settings">
             <SettingsTab />
           </TabsContent>
         </Tabs>
       </div>
-      
+
       {/* Run Payroll Modal */}
       <RunPayrollModal />
     </div>

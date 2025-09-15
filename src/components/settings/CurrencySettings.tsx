@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
@@ -37,7 +37,7 @@ export function CurrencySettings() {
       const response = await fetch(`/api/v1/organizations/${currentOrganization.id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           currency_code: selectedCurrency
@@ -50,7 +50,7 @@ export function CurrencySettings() {
 
       toast({
         title: 'Currency Updated',
-        description: `Your organization currency has been changed to ${selectedCurrency}`,
+        description: `Your organization currency has been changed to ${selectedCurrency}`
       })
 
       // Refresh organization data
@@ -62,7 +62,7 @@ export function CurrencySettings() {
       toast({
         title: 'Error',
         description: 'Failed to update currency settings',
-        variant: 'destructive',
+        variant: 'destructive'
       })
     } finally {
       setLoading(false)
@@ -88,7 +88,7 @@ export function CurrencySettings() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {currencies.map((currency) => (
+              {currencies.map(currency => (
                 <SelectItem key={currency.code} value={currency.code}>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm">{currency.symbol}</span>
@@ -105,8 +105,8 @@ export function CurrencySettings() {
         </div>
 
         <div className="pt-4">
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={loading || selectedCurrency === currentOrganization?.currency_code}
           >
             <Save className="mr-2 h-4 w-4" />

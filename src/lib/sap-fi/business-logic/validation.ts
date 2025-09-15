@@ -26,28 +26,28 @@ export class SAPValidationService {
   ): Promise<ValidationResult> {
     const errors: ValidationError[] = []
     const warnings: ValidationWarning[] = []
-    
+
     // Run all validations
     this.validateGLBalance(transaction, lines, errors)
     this.validateRequiredFields(transaction, errors)
     this.validateSmartCode(transaction, errors)
     this.validatePostingDate(transaction, warnings)
     this.validateDocumentType(transaction, errors)
-    
+
     // Additional validations based on transaction type
     if (transaction.smart_code.includes('.AP.INVOICE.')) {
       this.validateAPInvoice(transaction, errors, warnings)
     } else if (transaction.smart_code.includes('.AR.INVOICE.')) {
       this.validateARInvoice(transaction, errors, warnings)
     }
-    
+
     return {
       valid: errors.length === 0,
       errors,
       warnings
     }
   }
-  
+
   // GL Balance validation
   private static validateGLBalance(
     transaction: UniversalTransaction,
@@ -56,7 +56,7 @@ export class SAPValidationService {
   ): void {
     const totalDebits = lines.reduce((sum, line) => sum + (line.debit_amount || 0), 0)
     const totalCredits = lines.reduce((sum, line) => sum + (line.credit_amount || 0), 0)
-    
+
     if (Math.abs(totalDebits - totalCredits) > 0.01) {
       errors.push({
         field: 'lines',
@@ -65,7 +65,7 @@ export class SAPValidationService {
       })
     }
   }
-  
+
   // Required fields validation
   private static validateRequiredFields(
     transaction: UniversalTransaction,
@@ -78,7 +78,7 @@ export class SAPValidationService {
         code: 'REQUIRED_FIELD'
       })
     }
-    
+
     if (!transaction.organization_id) {
       errors.push({
         field: 'organization_id',
@@ -86,7 +86,7 @@ export class SAPValidationService {
         code: 'REQUIRED_FIELD'
       })
     }
-    
+
     if (!transaction.smart_code) {
       errors.push({
         field: 'smart_code',
@@ -95,7 +95,7 @@ export class SAPValidationService {
       })
     }
   }
-  
+
   // Smart code validation
   private static validateSmartCode(
     transaction: UniversalTransaction,
@@ -108,7 +108,7 @@ export class SAPValidationService {
       'HERA.ERP.FI.AP.PAYMENT.v1',
       'HERA.ERP.FI.AR.RECEIPT.v1'
     ]
-    
+
     if (!validSmartCodes.includes(transaction.smart_code)) {
       errors.push({
         field: 'smart_code',
@@ -117,7 +117,7 @@ export class SAPValidationService {
       })
     }
   }
-  
+
   // Posting date validation
   private static validatePostingDate(
     transaction: UniversalTransaction,
@@ -125,7 +125,7 @@ export class SAPValidationService {
   ): void {
     const postingDate = new Date(transaction.posting_date || transaction.transaction_date)
     const today = new Date()
-    
+
     // Warn if posting date is in the future
     if (postingDate > today) {
       warnings.push({
@@ -134,7 +134,7 @@ export class SAPValidationService {
         code: 'FUTURE_POSTING_DATE'
       })
     }
-    
+
     // Warn if posting date is too old (more than 90 days)
     const daysDiff = Math.floor((today.getTime() - postingDate.getTime()) / (1000 * 60 * 60 * 24))
     if (daysDiff > 90) {
@@ -145,7 +145,7 @@ export class SAPValidationService {
       })
     }
   }
-  
+
   // Document type validation
   private static validateDocumentType(
     transaction: UniversalTransaction,
@@ -157,7 +157,7 @@ export class SAPValidationService {
       'HERA.ERP.FI.AP.INVOICE.v1': ['KR', 'RE'],
       'HERA.ERP.FI.AR.INVOICE.v1': ['DR', 'RV']
     }
-    
+
     const allowedTypes = smartCodeToDocType[transaction.smart_code]
     if (allowedTypes && (transaction.metadata as any)?.document_type) {
       if (!allowedTypes.includes(transaction.metadata.document_type)) {
@@ -169,7 +169,7 @@ export class SAPValidationService {
       }
     }
   }
-  
+
   // AP Invoice specific validation
   private static validateAPInvoice(
     transaction: UniversalTransaction,
@@ -184,7 +184,7 @@ export class SAPValidationService {
         code: 'VENDOR_REQUIRED'
       })
     }
-    
+
     // Invoice number recommended
     if (!(transaction.metadata as any)?.invoice_number) {
       warnings.push({
@@ -193,12 +193,12 @@ export class SAPValidationService {
         code: 'INVOICE_NUMBER_MISSING'
       })
     }
-    
+
     // Due date validation
     if ((transaction.metadata as any)?.due_date) {
       const dueDate = new Date(transaction.metadata.due_date)
       const invoiceDate = new Date(transaction.transaction_date)
-      
+
       if (dueDate < invoiceDate) {
         errors.push({
           field: 'due_date',
@@ -208,7 +208,7 @@ export class SAPValidationService {
       }
     }
   }
-  
+
   // AR Invoice specific validation
   private static validateARInvoice(
     transaction: UniversalTransaction,
@@ -223,7 +223,7 @@ export class SAPValidationService {
         code: 'CUSTOMER_REQUIRED'
       })
     }
-    
+
     // Payment terms validation
     if (!(transaction.metadata as any)?.payment_terms) {
       warnings.push({
@@ -233,7 +233,7 @@ export class SAPValidationService {
       })
     }
   }
-  
+
   // Duplicate check
   static async checkDuplicate(
     transaction: UniversalTransaction,
@@ -245,42 +245,47 @@ export class SAPValidationService {
   }> {
     const matches: UniversalTransaction[] = []
     let maxConfidence = 0
-    
+
     for (const existing of existingTransactions) {
       let confidence = 0
-      
+
       // Same vendor/customer
       if (existing.source_entity_id === transaction.source_entity_id) {
         confidence += 0.3
       }
-      
+
       // Same amount
       if (Math.abs(existing.total_amount - transaction.total_amount) < 0.01) {
         confidence += 0.3
       }
-      
+
       // Same invoice number
-      if ((existing.metadata as any)?.invoice_number === (transaction.metadata as any)?.invoice_number &&
-          (transaction.metadata as any)?.invoice_number) {
+      if (
+        (existing.metadata as any)?.invoice_number ===
+          (transaction.metadata as any)?.invoice_number &&
+        (transaction.metadata as any)?.invoice_number
+      ) {
         confidence += 0.4
       }
-      
+
       // Close dates (within 7 days)
-      const daysDiff = Math.abs(
-        new Date(existing.transaction_date).getTime() - 
-        new Date(transaction.transaction_date).getTime()
-      ) / (1000 * 60 * 60 * 24)
-      
+      const daysDiff =
+        Math.abs(
+          new Date(existing.transaction_date).getTime() -
+            new Date(transaction.transaction_date).getTime()
+        ) /
+        (1000 * 60 * 60 * 24)
+
       if (daysDiff < 7) {
         confidence += 0.1
       }
-      
+
       if (confidence > 0.7) {
         matches.push(existing)
         maxConfidence = Math.max(maxConfidence, confidence)
       }
     }
-    
+
     return {
       isDuplicate: maxConfidence > 0.85,
       confidence: maxConfidence,

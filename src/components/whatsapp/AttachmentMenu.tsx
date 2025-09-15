@@ -1,22 +1,9 @@
 'use client'
 
 import React, { useRef } from 'react'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
-import { 
-  Paperclip,
-  Image,
-  FileText,
-  User,
-  MapPin,
-  Camera,
-  Mic,
-  Sticker
-} from 'lucide-react'
+import { Paperclip, Image, FileText, User, MapPin, Camera, Mic, Sticker } from 'lucide-react'
 
 interface AttachmentMenuProps {
   onImageSelect?: (files: FileList) => void
@@ -39,7 +26,7 @@ export function AttachmentMenu({
 }: AttachmentMenuProps) {
   const imageInputRef = useRef<HTMLInputElement>(null)
   const documentInputRef = useRef<HTMLInputElement>(null)
-  
+
   const attachmentOptions = [
     {
       icon: Image,
@@ -84,7 +71,7 @@ export function AttachmentMenu({
       onClick: onStickerSelect
     }
   ]
-  
+
   return (
     <>
       <Popover>
@@ -113,7 +100,7 @@ export function AttachmentMenu({
           </div>
         </PopoverContent>
       </Popover>
-      
+
       {/* Hidden file inputs */}
       <input
         ref={imageInputRef}
@@ -121,7 +108,7 @@ export function AttachmentMenu({
         accept="image/*,video/*"
         multiple
         className="hidden"
-        onChange={(e) => e.target.files && onImageSelect?.(e.target.files)}
+        onChange={e => e.target.files && onImageSelect?.(e.target.files)}
       />
       <input
         ref={documentInputRef}
@@ -129,7 +116,7 @@ export function AttachmentMenu({
         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
         multiple
         className="hidden"
-        onChange={(e) => e.target.files && onDocumentSelect?.(e.target.files)}
+        onChange={e => e.target.files && onDocumentSelect?.(e.target.files)}
       />
     </>
   )

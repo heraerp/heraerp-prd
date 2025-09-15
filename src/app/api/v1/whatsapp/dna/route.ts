@@ -73,16 +73,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: true, data: reminderResult })
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Unknown action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Unknown action' }, { status: 400 })
     }
   } catch (error) {
     console.error('WhatsApp DNA API error:', error)
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }
 }

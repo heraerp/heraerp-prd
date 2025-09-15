@@ -12,16 +12,16 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  TableRow
+} from '@/components/ui/table'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   FileText,
   Upload,
@@ -83,9 +83,11 @@ const documentCategories = [
 
 const getFileIcon = (fileType: string) => {
   if (fileType.includes('pdf')) return <FileText className="h-5 w-5 text-red-500" />
-  if (fileType.includes('sheet') || fileType.includes('excel')) return <FileSpreadsheet className="h-5 w-5 text-green-500" />
+  if (fileType.includes('sheet') || fileType.includes('excel'))
+    return <FileSpreadsheet className="h-5 w-5 text-green-500" />
   if (fileType.includes('image')) return <FileImage className="h-5 w-5 text-blue-500" />
-  if (fileType.includes('word') || fileType.includes('doc')) return <FileText className="h-5 w-5 text-blue-600" />
+  if (fileType.includes('word') || fileType.includes('doc'))
+    return <FileText className="h-5 w-5 text-blue-600" />
   return <File className="h-5 w-5 text-gray-500" />
 }
 
@@ -195,19 +197,18 @@ export default function DocumentsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = 
+    const matchesSearch =
       doc.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.metadata.file_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.metadata.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesTab = 
+
+    const matchesTab =
       activeTab === 'all' ||
       (activeTab === 'templates' && doc.metadata.is_template) ||
       (activeTab === 'documents' && !doc.metadata.is_template)
-    
-    const matchesCategory = 
-      selectedCategory === 'all' || doc.metadata.category === selectedCategory
-    
+
+    const matchesCategory = selectedCategory === 'all' || doc.metadata.category === selectedCategory
+
     return matchesSearch && matchesTab && matchesCategory
   })
 
@@ -215,7 +216,7 @@ export default function DocumentsPage() {
     setDocuments(prev => prev.filter(doc => doc.id !== docId))
     toast({
       title: 'Document Deleted',
-      description: 'The document has been deleted.',
+      description: 'The document has been deleted.'
     })
   }
 
@@ -233,11 +234,11 @@ export default function DocumentsPage() {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }
-    
+
     setDocuments(prev => [newDoc, ...prev])
     toast({
       title: 'Document Duplicated',
-      description: 'A copy of the document has been created.',
+      description: 'A copy of the document has been created.'
     })
   }
 
@@ -269,8 +270,8 @@ export default function DocumentsPage() {
           <Card
             key={cat.value}
             className={cn(
-              "p-4 cursor-pointer transition-colors",
-              selectedCategory === cat.value && "border-primary"
+              'p-4 cursor-pointer transition-colors',
+              selectedCategory === cat.value && 'border-primary'
             )}
             onClick={() => setSelectedCategory(cat.value)}
           >
@@ -291,14 +292,11 @@ export default function DocumentsPage() {
               <Input
                 placeholder="Search documents..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setSelectedCategory('all')}
-            >
+            <Button variant="outline" onClick={() => setSelectedCategory('all')}>
               <Filter className="h-4 w-4 mr-2" />
               Clear Filters
             </Button>
@@ -324,9 +322,7 @@ export default function DocumentsPage() {
 
           <TabsContent value={activeTab} className="mt-6">
             {filteredDocuments.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No documents found
-              </div>
+              <div className="text-center py-8 text-muted-foreground">No documents found</div>
             ) : (
               <Table>
                 <TableHeader>
@@ -340,7 +336,7 @@ export default function DocumentsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredDocuments.map((doc) => (
+                  {filteredDocuments.map(doc => (
                     <TableRow key={doc.id}>
                       <TableCell>
                         <div className="flex items-start gap-3">
@@ -377,7 +373,10 @@ export default function DocumentsPage() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {documentCategories.find(cat => cat.value === doc.metadata.category)?.label}
+                          {
+                            documentCategories.find(cat => cat.value === doc.metadata.category)
+                              ?.label
+                          }
                         </Badge>
                       </TableCell>
                       <TableCell>{formatFileSize(doc.metadata.file_size)}</TableCell>

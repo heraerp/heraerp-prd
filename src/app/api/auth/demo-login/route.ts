@@ -12,27 +12,24 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Sign in with demo credentials
     const { data, error } = await supabase.auth.signInWithPassword({
       email: DEMO_CREDENTIALS.email,
       password: DEMO_CREDENTIALS.password
     })
-    
+
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: error.message }, { status: 401 })
     }
-    
+
     // Set a cookie to indicate demo login
     const response = NextResponse.json({
       success: true,
       user: data.user,
       redirectUrl: '/furniture'
     })
-    
+
     // Set a custom cookie to bypass organization checks
     response.cookies.set('demo_login', 'true', {
       httpOnly: true,
@@ -40,13 +37,10 @@ export async function POST(request: NextRequest) {
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7 // 7 days
     })
-    
+
     return response
   } catch (error) {
     console.error('Demo login error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

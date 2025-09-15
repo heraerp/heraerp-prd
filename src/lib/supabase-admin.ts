@@ -13,12 +13,13 @@ export function getSupabaseAdmin() {
   if (supabaseAdmin) {
     return supabaseAdmin
   }
-  
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 
-                      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY ||
-                      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
   if (!supabaseUrl || !supabaseKey) {
     // During build time, return a mock client
     if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
@@ -28,19 +29,19 @@ export function getSupabaseAdmin() {
           select: () => ({ data: [], error: null }),
           insert: () => ({ data: [], error: null }),
           update: () => ({ data: [], error: null }),
-          delete: () => ({ data: [], error: null }),
+          delete: () => ({ data: [], error: null })
         })
       } as any
     }
     throw new Error('Missing Supabase environment variables')
   }
-  
+
   // Create and cache the client
   supabaseAdmin = createClient(supabaseUrl, supabaseKey, {
     auth: {
       persistSession: false
     }
   })
-  
+
   return supabaseAdmin
 }

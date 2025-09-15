@@ -1,10 +1,10 @@
 /**
  * 🔬 HERA Configuration Rules Preview API
- * 
+ *
  * Test configuration changes before applying them to production.
  * Enables safe experimentation with rule changes and provides
  * impact analysis for configuration modifications.
- * 
+ *
  * Features:
  * - Test rule evaluation with sample contexts
  * - Diff analysis between current and proposed configurations
@@ -57,17 +57,23 @@ export async function POST(request: NextRequest) {
     })
 
     if (!organization_id) {
-      return NextResponse.json({
-        success: false,
-        error: 'organization_id is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'organization_id is required'
+        },
+        { status: 400 }
+      )
     }
 
     if (!test_contexts || test_contexts.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'At least one test context is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'At least one test context is required'
+        },
+        { status: 400 }
+      )
     }
 
     // Run preview evaluation
@@ -83,14 +89,16 @@ export async function POST(request: NextRequest) {
       success: true,
       ...results
     })
-
   } catch (error) {
     console.error('Config Preview error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -102,52 +110,57 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'schema':
         return getPreviewSchema()
-      
+
       case 'sample_contexts':
         const industry = searchParams.get('industry')
         return getSampleContexts(industry)
-      
+
       case 'impact_analysis':
         const organizationId = searchParams.get('organization_id')
         const configKey = searchParams.get('config_key')
         if (!organizationId || !configKey) {
-          return NextResponse.json({
-            success: false,
-            error: 'organization_id and config_key are required for impact analysis'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'organization_id and config_key are required for impact analysis'
+            },
+            { status: 400 }
+          )
         }
         return await getImpactAnalysis(organizationId, configKey)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: ['schema', 'sample_contexts', 'impact_analysis']
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: ['schema', 'sample_contexts', 'impact_analysis']
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Config Preview GET error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // Run preview evaluation
-async function runPreviewEvaluation(params: PreviewRequest & { 
-  compare_with_current: boolean,
-  performance_test: boolean 
-}) {
-  const {
-    organization_id,
-    test_rules,
-    test_contexts,
-    compare_with_current,
-    performance_test
-  } = params
+async function runPreviewEvaluation(
+  params: PreviewRequest & {
+    compare_with_current: boolean
+    performance_test: boolean
+  }
+) {
+  const { organization_id, test_rules, test_contexts, compare_with_current, performance_test } =
+    params
 
   const results = {
     test_results: [] as any[],
@@ -164,14 +177,10 @@ async function runPreviewEvaluation(params: PreviewRequest & {
   // For each test context, evaluate with test rules
   for (const testCase of test_contexts) {
     const startTime = Date.now()
-    
+
     // Evaluate with test rules
-    const testValue = await evaluateWithTestRules(
-      organization_id,
-      testCase.context,
-      test_rules
-    )
-    
+    const testValue = await evaluateWithTestRules(organization_id, testCase.context, test_rules)
+
     let currentValue = null
     if (compare_with_current && supabase) {
       currentValue = await evaluateCurrentRules(
@@ -180,16 +189,17 @@ async function runPreviewEvaluation(params: PreviewRequest & {
         test_rules[0]?.config_key // Assuming testing single config key
       )
     }
-    
+
     const evaluationTime = Date.now() - startTime
-    
+
     // Determine test result
-    const passed = testCase.expected_value === undefined || 
-                  JSON.stringify(testCase.expected_value) === JSON.stringify(testValue)
-    
-    const changed = currentValue !== null && 
-                   JSON.stringify(currentValue) !== JSON.stringify(testValue)
-    
+    const passed =
+      testCase.expected_value === undefined ||
+      JSON.stringify(testCase.expected_value) === JSON.stringify(testValue)
+
+    const changed =
+      currentValue !== null && JSON.stringify(currentValue) !== JSON.stringify(testValue)
+
     const result = {
       test_name: testCase.name,
       context: testCase.context,
@@ -200,20 +210,20 @@ async function runPreviewEvaluation(params: PreviewRequest & {
       changed_from_current: changed,
       evaluation_time_ms: evaluationTime
     }
-    
+
     results.test_results.push(result)
-    
+
     if (passed) results.summary.passed++
     else results.summary.failed++
-    
+
     if (changed) results.summary.changed_from_current++
   }
-  
+
   // Generate comparison summary
   if (compare_with_current) {
     results.comparison = generateComparisonSummary(results.test_results)
   }
-  
+
   // Run performance tests if requested
   if (performance_test) {
     results.performance_metrics = await runPerformanceTest(
@@ -222,7 +232,7 @@ async function runPreviewEvaluation(params: PreviewRequest & {
       test_contexts[0]?.context || {}
     )
   }
-  
+
   return results
 }
 
@@ -234,14 +244,14 @@ async function evaluateWithTestRules(
 ): Promise<any> {
   // Sort rules by priority (descending)
   const sortedRules = [...testRules].sort((a, b) => (b.priority || 0) - (a.priority || 0))
-  
+
   // Find first matching rule
   for (const rule of sortedRules) {
     if (evaluateConditions(rule.conditions, context)) {
       return rule.config_value
     }
   }
-  
+
   // Find default rule
   const defaultRule = sortedRules.find(r => r.rule_type === 'default')
   return defaultRule?.config_value || null
@@ -250,30 +260,26 @@ async function evaluateWithTestRules(
 // Evaluate conditions
 function evaluateConditions(conditions: any, context: any = {}): boolean {
   if (!conditions) return true
-  
+
   try {
     // Handle simple equality conditions
     if (conditions.operator === 'equals') {
       return context[conditions.field] === conditions.value
     }
-    
+
     // Handle complex AND/OR conditions
     if (conditions.operator === 'and') {
-      return conditions.conditions.every((cond: any) => 
-        evaluateConditions(cond, context)
-      )
+      return conditions.conditions.every((cond: any) => evaluateConditions(cond, context))
     }
-    
+
     if (conditions.operator === 'or') {
-      return conditions.conditions.some((cond: any) => 
-        evaluateConditions(cond, context)
-      )
+      return conditions.conditions.some((cond: any) => evaluateConditions(cond, context))
     }
-    
+
     // Handle comparison operators
     const contextValue = context[conditions.field]
     const conditionValue = conditions.value
-    
+
     switch (conditions.operator) {
       case 'greater_than':
         return Number(contextValue) > Number(conditionValue)
@@ -309,12 +315,13 @@ async function evaluateCurrentRules(
   configKey: string
 ): Promise<any> {
   if (!supabase) return null
-  
+
   try {
     // Fetch current rules
     const { data: rules } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data!inner (
           field_name,
@@ -323,45 +330,44 @@ async function evaluateCurrentRules(
           field_value_boolean,
           field_value_json
         )
-      `)
+      `
+      )
       .eq('entity_type', 'configuration_rule')
       .eq('organization_id', organizationId)
       .eq('status', 'active')
-    
+
     if (!rules || rules.length === 0) return null
-    
+
     // Filter and evaluate
     const relevantRules = rules.filter(rule => {
-      const keyField = rule.core_dynamic_data?.find(
-        (f: any) => f.field_name === 'config_key'
-      )
+      const keyField = rule.core_dynamic_data?.find((f: any) => f.field_name === 'config_key')
       return keyField?.field_value === configKey
     })
-    
+
     // Sort by priority and evaluate
     const sortedRules = relevantRules.sort((a, b) => {
       const aPriority = (a.metadata as any)?.priority || 0
       const bPriority = (b.metadata as any)?.priority || 0
       return bPriority - aPriority
     })
-    
+
     for (const rule of sortedRules) {
       const conditionsField = rule.core_dynamic_data?.find(
         (f: any) => f.field_name === 'conditions'
       )
-      
+
       if (evaluateConditions(conditionsField?.field_value_json, context)) {
-        const valueField = rule.core_dynamic_data?.find(
-          (f: any) => f.field_name === 'config_value'
+        const valueField = rule.core_dynamic_data?.find((f: any) => f.field_name === 'config_value')
+
+        return (
+          valueField?.field_value_json ||
+          valueField?.field_value ||
+          valueField?.field_value_number ||
+          valueField?.field_value_boolean
         )
-        
-        return valueField?.field_value_json || 
-               valueField?.field_value || 
-               valueField?.field_value_number ||
-               valueField?.field_value_boolean
       }
     }
-    
+
     return null
   } catch (error) {
     console.error('Error evaluating current rules:', error)
@@ -372,7 +378,7 @@ async function evaluateCurrentRules(
 // Generate comparison summary
 function generateComparisonSummary(testResults: any[]) {
   const changes = testResults.filter(r => r.changed_from_current)
-  
+
   return {
     total_evaluations: testResults.length,
     changed_count: changes.length,
@@ -396,12 +402,12 @@ function classifyImpact(currentValue: any, newValue: any): string {
     if (percentChange > 10) return 'medium'
     return 'low'
   }
-  
+
   // Boolean changes
   if (typeof currentValue === 'boolean' && typeof newValue === 'boolean') {
     return currentValue !== newValue ? 'high' : 'none'
   }
-  
+
   // String/object changes
   return JSON.stringify(currentValue) !== JSON.stringify(newValue) ? 'medium' : 'none'
 }
@@ -421,22 +427,22 @@ async function runPerformanceTest(
     max_time_ms: 0,
     percentiles: {} as any
   }
-  
+
   const times: number[] = []
-  
+
   for (let i = 0; i < iterations; i++) {
     const start = Date.now()
     await evaluateWithTestRules(organizationId, sampleContext, testRules)
     const elapsed = Date.now() - start
-    
+
     times.push(elapsed)
     results.total_time_ms += elapsed
     results.min_time_ms = Math.min(results.min_time_ms, elapsed)
     results.max_time_ms = Math.max(results.max_time_ms, elapsed)
   }
-  
+
   results.average_time_ms = results.total_time_ms / iterations
-  
+
   // Calculate percentiles
   times.sort((a, b) => a - b)
   results.percentiles = {
@@ -445,7 +451,7 @@ async function runPerformanceTest(
     p95: times[Math.floor(iterations * 0.95)],
     p99: times[Math.floor(iterations * 0.99)]
   }
-  
+
   return results
 }
 
@@ -537,19 +543,37 @@ function getPreviewSchema() {
 function getSampleContexts(industry?: string | null) {
   const contexts: any = {
     restaurant: [
-      { name: 'Small order', context: { industry: 'restaurant', amount: 50, transaction_type: 'sale' } },
-      { name: 'Large order', context: { industry: 'restaurant', amount: 500, transaction_type: 'sale' } },
-      { name: 'Delivery order', context: { industry: 'restaurant', order_type: 'delivery', amount: 150 } }
+      {
+        name: 'Small order',
+        context: { industry: 'restaurant', amount: 50, transaction_type: 'sale' }
+      },
+      {
+        name: 'Large order',
+        context: { industry: 'restaurant', amount: 500, transaction_type: 'sale' }
+      },
+      {
+        name: 'Delivery order',
+        context: { industry: 'restaurant', order_type: 'delivery', amount: 150 }
+      }
     ],
     healthcare: [
-      { name: 'Patient payment', context: { industry: 'healthcare', transaction_type: 'payment', amount: 200 } },
-      { name: 'Insurance claim', context: { industry: 'healthcare', transaction_type: 'insurance_claim', amount: 5000 } },
+      {
+        name: 'Patient payment',
+        context: { industry: 'healthcare', transaction_type: 'payment', amount: 200 }
+      },
+      {
+        name: 'Insurance claim',
+        context: { industry: 'healthcare', transaction_type: 'insurance_claim', amount: 5000 }
+      },
       { name: 'Lab test', context: { industry: 'healthcare', service_type: 'lab', amount: 150 } }
     ],
     retail: [
       { name: 'In-store sale', context: { industry: 'retail', channel: 'store', amount: 75 } },
       { name: 'Online order', context: { industry: 'retail', channel: 'online', amount: 250 } },
-      { name: 'Wholesale order', context: { industry: 'retail', customer_type: 'wholesale', amount: 5000 } }
+      {
+        name: 'Wholesale order',
+        context: { industry: 'retail', customer_type: 'wholesale', amount: 5000 }
+      }
     ],
     default: [
       { name: 'Small transaction', context: { amount: 100, transaction_type: 'sale' } },
@@ -557,9 +581,9 @@ function getSampleContexts(industry?: string | null) {
       { name: 'Admin user', context: { user_role: 'admin' } }
     ]
   }
-  
+
   const selectedContexts = industry && contexts[industry] ? contexts[industry] : contexts.default
-  
+
   return NextResponse.json({
     success: true,
     industry: industry || 'default',
@@ -569,10 +593,7 @@ function getSampleContexts(industry?: string | null) {
 }
 
 // Get impact analysis for a configuration change
-async function getImpactAnalysis(
-  organizationId: string,
-  configKey: string
-): Promise<NextResponse> {
+async function getImpactAnalysis(organizationId: string, configKey: string): Promise<NextResponse> {
   // In production, analyze historical usage and dependencies
   return NextResponse.json({
     success: true,

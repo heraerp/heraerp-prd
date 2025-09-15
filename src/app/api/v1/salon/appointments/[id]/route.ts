@@ -6,50 +6,50 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 // GET single appointment
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: appointmentId } = await params
-    
+
     const { data: appointment, error } = await supabase
       .from('universal_transactions')
       .select('*')
       .eq('id', appointmentId)
       .eq('transaction_type', 'appointment')
       .single()
-    
+
     if (error) {
       console.error('Error fetching appointment:', error)
-      return NextResponse.json({ 
-        success: false, 
-        error: error.message 
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message
+        },
+        { status: 404 }
+      )
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      appointment 
+    return NextResponse.json({
+      success: true,
+      appointment
     })
   } catch (error) {
     console.error('Error in appointment GET:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // UPDATE appointment
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: appointmentId } = await params
     const body = await request.json()
-    
+
     console.log('Updating appointment:', appointmentId, body)
 
     const {
@@ -94,10 +94,13 @@ export async function PUT(
 
     if (error) {
       console.error('Error updating appointment:', error)
-      return NextResponse.json({ 
-        success: false, 
-        error: error.message 
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message
+        },
+        { status: 500 }
+      )
     }
 
     // Update transaction line if it exists
@@ -117,17 +120,20 @@ export async function PUT(
       })
       .eq('transaction_id', appointmentId)
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       appointment,
       message: 'Appointment updated successfully'
     })
   } catch (error) {
     console.error('Error in appointment PUT:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -140,7 +146,7 @@ export async function DELETE(
     const { id: appointmentId } = await params
     const { searchParams } = new URL(request.url)
     const reason = searchParams.get('reason') || 'Customer request'
-    
+
     console.log('Cancelling appointment:', appointmentId, 'Reason:', reason)
 
     // Update appointment status to cancelled
@@ -162,36 +168,39 @@ export async function DELETE(
 
     if (error) {
       console.error('Error cancelling appointment:', error)
-      return NextResponse.json({ 
-        success: false, 
-        error: error.message 
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message
+        },
+        { status: 500 }
+      )
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       appointment,
       message: 'Appointment cancelled successfully'
     })
   } catch (error) {
     console.error('Error in appointment DELETE:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // RESCHEDULE appointment
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: appointmentId } = await params
     const body = await request.json()
     const { date, time } = body
-    
+
     console.log('Rescheduling appointment:', appointmentId, 'to', date, time)
 
     // Update appointment date and time only
@@ -213,22 +222,28 @@ export async function PATCH(
 
     if (error) {
       console.error('Error rescheduling appointment:', error)
-      return NextResponse.json({ 
-        success: false, 
-        error: error.message 
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message
+        },
+        { status: 500 }
+      )
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       appointment,
       message: 'Appointment rescheduled successfully'
     })
   } catch (error) {
     console.error('Error in appointment PATCH:', error)
-    return NextResponse.json({ 
-      success: false, 
-      error: 'Internal server error' 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }

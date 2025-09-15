@@ -64,7 +64,7 @@ export class DemoToSaaSConversionService {
    */
   static async convertDemoToSaaS(conversionData: ConversionData): Promise<ConversionResult> {
     try {
-      console.log('🚀 Starting demo to SaaS conversion...', { 
+      console.log('🚀 Starting demo to SaaS conversion...', {
         company: conversionData.companyName,
         subdomain: conversionData.subdomain,
         module: conversionData.demoModule
@@ -72,19 +72,19 @@ export class DemoToSaaSConversionService {
 
       // Step 1: Create production organization
       const productionOrg = await this.createProductionOrganization(conversionData)
-      
+
       // Step 2: Create production user account
       const productionUser = await this.createProductionUser(conversionData, productionOrg.id)
-      
+
       // Step 3: Initialize fresh production business
       const businessSetup = await this.initializeProductionBusiness(
         productionOrg.id,
         conversionData.demoModule
       )
-      
+
       // Step 4: Set up subdomain (would integrate with DNS provider in production)
       await this.setupProductionDomain(conversionData.subdomain, productionOrg.id)
-      
+
       // Step 5: Activate plan features
       await this.activateSubscriptionFeatures(productionOrg.id, conversionData.plan.type)
 
@@ -109,7 +109,7 @@ export class DemoToSaaSConversionService {
    */
   private static async createProductionOrganization(conversionData: ConversionData) {
     const orgId = uuidv4()
-    
+
     const { data, error } = await supabase
       .from('core_organizations')
       .insert({
@@ -148,9 +148,12 @@ export class DemoToSaaSConversionService {
   /**
    * Create production user account
    */
-  private static async createProductionUser(conversionData: ConversionData, organizationId: string) {
+  private static async createProductionUser(
+    conversionData: ConversionData,
+    organizationId: string
+  ) {
     const tempPassword = this.generateSecurePassword()
-    
+
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
       email: conversionData.businessEmail,
       password: tempPassword,
@@ -173,31 +176,23 @@ export class DemoToSaaSConversionService {
     }
 
     // Create user entity in core_entities
-    const { error: entityError } = await supabase
-      .from('core_entities')
-      .insert({
-        id: authData.user.id,
-        organization_id: organizationId,
-        entity_type: 'user',
-        entity_name: conversionData.ownerName,
-        entity_code: `USER-OWNER-${conversionData.subdomain.toUpperCase()}`,
-        smart_code: `HERA.${conversionData.demoModule.toUpperCase()}.USER.OWNER.v1`,
-        status: 'active',
-        metadata: {
-          email: conversionData.businessEmail,
-          role: 'owner',
-          plan: conversionData.plan.type,
-          converted_from_demo: true,
-          phone: conversionData.phone,
-          permissions: [
-            'all:read',
-            'all:write', 
-            'all:delete',
-            'admin:manage',
-            'billing:manage'
-          ]
-        }
-      })
+    const { error: entityError } = await supabase.from('core_entities').insert({
+      id: authData.user.id,
+      organization_id: organizationId,
+      entity_type: 'user',
+      entity_name: conversionData.ownerName,
+      entity_code: `USER-OWNER-${conversionData.subdomain.toUpperCase()}`,
+      smart_code: `HERA.${conversionData.demoModule.toUpperCase()}.USER.OWNER.v1`,
+      status: 'active',
+      metadata: {
+        email: conversionData.businessEmail,
+        role: 'owner',
+        plan: conversionData.plan.type,
+        converted_from_demo: true,
+        phone: conversionData.phone,
+        permissions: ['all:read', 'all:write', 'all:delete', 'admin:manage', 'billing:manage']
+      }
+    })
 
     if (entityError) {
       console.warn('⚠️  Could not create user entity:', entityError.message)
@@ -219,14 +214,16 @@ export class DemoToSaaSConversionService {
     try {
       // 1. Create Chart of Accounts with IFRS compliance
       const coaResult = await this.setupChartOfAccounts(organizationId, businessType)
-      
+
       // 2. Create basic business entity templates (not demo data)
       const templates = await this.createBusinessTemplates(organizationId, businessType)
-      
+
       // 3. Setup basic workflows and statuses
       const workflows = await this.setupBusinessWorkflows(organizationId, businessType)
 
-      console.log(`✅ Production business initialized: ${coaResult.accounts} GL accounts, ${templates.length} templates, ${workflows.length} workflows`)
+      console.log(
+        `✅ Production business initialized: ${coaResult.accounts} GL accounts, ${templates.length} templates, ${workflows.length} workflows`
+      )
 
       return {
         setupType: 'fresh_production_business',
@@ -250,22 +247,47 @@ export class DemoToSaaSConversionService {
       furniture: [
         { code: '1100', name: 'Cash and Bank', type: 'asset', category: 'current_assets' },
         { code: '1200', name: 'Accounts Receivable', type: 'asset', category: 'current_assets' },
-        { code: '1300', name: 'Inventory - Raw Materials', type: 'asset', category: 'current_assets' },
-        { code: '1310', name: 'Inventory - Finished Goods', type: 'asset', category: 'current_assets' },
+        {
+          code: '1300',
+          name: 'Inventory - Raw Materials',
+          type: 'asset',
+          category: 'current_assets'
+        },
+        {
+          code: '1310',
+          name: 'Inventory - Finished Goods',
+          type: 'asset',
+          category: 'current_assets'
+        },
         { code: '1500', name: 'Equipment and Machinery', type: 'asset', category: 'fixed_assets' },
-        { code: '2100', name: 'Accounts Payable', type: 'liability', category: 'current_liabilities' },
-        { code: '3000', name: 'Owner\'s Equity', type: 'equity', category: 'equity' },
+        {
+          code: '2100',
+          name: 'Accounts Payable',
+          type: 'liability',
+          category: 'current_liabilities'
+        },
+        { code: '3000', name: "Owner's Equity", type: 'equity', category: 'equity' },
         { code: '4100', name: 'Sales Revenue', type: 'revenue', category: 'operating_revenue' },
         { code: '5100', name: 'Cost of Goods Sold', type: 'expense', category: 'cost_of_sales' },
-        { code: '6100', name: 'Operating Expenses', type: 'expense', category: 'operating_expenses' }
+        {
+          code: '6100',
+          name: 'Operating Expenses',
+          type: 'expense',
+          category: 'operating_expenses'
+        }
       ],
       salon: [
         { code: '1100', name: 'Cash and Bank', type: 'asset', category: 'current_assets' },
         { code: '1200', name: 'Accounts Receivable', type: 'asset', category: 'current_assets' },
         { code: '1300', name: 'Product Inventory', type: 'asset', category: 'current_assets' },
         { code: '1500', name: 'Salon Equipment', type: 'asset', category: 'fixed_assets' },
-        { code: '2100', name: 'Accounts Payable', type: 'liability', category: 'current_liabilities' },
-        { code: '3000', name: 'Owner\'s Equity', type: 'equity', category: 'equity' },
+        {
+          code: '2100',
+          name: 'Accounts Payable',
+          type: 'liability',
+          category: 'current_liabilities'
+        },
+        { code: '3000', name: "Owner's Equity", type: 'equity', category: 'equity' },
         { code: '4100', name: 'Service Revenue', type: 'revenue', category: 'operating_revenue' },
         { code: '4200', name: 'Product Sales', type: 'revenue', category: 'operating_revenue' },
         { code: '5100', name: 'Product Costs', type: 'expense', category: 'cost_of_sales' },
@@ -277,21 +299,41 @@ export class DemoToSaaSConversionService {
         { code: '1300', name: 'Food Inventory', type: 'asset', category: 'current_assets' },
         { code: '1310', name: 'Beverage Inventory', type: 'asset', category: 'current_assets' },
         { code: '1500', name: 'Kitchen Equipment', type: 'asset', category: 'fixed_assets' },
-        { code: '2100', name: 'Accounts Payable', type: 'liability', category: 'current_liabilities' },
-        { code: '3000', name: 'Owner\'s Equity', type: 'equity', category: 'equity' },
+        {
+          code: '2100',
+          name: 'Accounts Payable',
+          type: 'liability',
+          category: 'current_liabilities'
+        },
+        { code: '3000', name: "Owner's Equity", type: 'equity', category: 'equity' },
         { code: '4100', name: 'Food Sales', type: 'revenue', category: 'operating_revenue' },
         { code: '4200', name: 'Beverage Sales', type: 'revenue', category: 'operating_revenue' },
         { code: '5100', name: 'Cost of Food Sold', type: 'expense', category: 'cost_of_sales' },
-        { code: '6100', name: 'Kitchen Staff Wages', type: 'expense', category: 'operating_expenses' }
+        {
+          code: '6100',
+          name: 'Kitchen Staff Wages',
+          type: 'expense',
+          category: 'operating_expenses'
+        }
       ],
       crm: [
         { code: '1100', name: 'Cash and Bank', type: 'asset', category: 'current_assets' },
         { code: '1200', name: 'Accounts Receivable', type: 'asset', category: 'current_assets' },
         { code: '1500', name: 'Office Equipment', type: 'asset', category: 'fixed_assets' },
-        { code: '2100', name: 'Accounts Payable', type: 'liability', category: 'current_liabilities' },
-        { code: '3000', name: 'Owner\'s Equity', type: 'equity', category: 'equity' },
+        {
+          code: '2100',
+          name: 'Accounts Payable',
+          type: 'liability',
+          category: 'current_liabilities'
+        },
+        { code: '3000', name: "Owner's Equity", type: 'equity', category: 'equity' },
         { code: '4100', name: 'Service Revenue', type: 'revenue', category: 'operating_revenue' },
-        { code: '4200', name: 'Consulting Revenue', type: 'revenue', category: 'operating_revenue' },
+        {
+          code: '4200',
+          name: 'Consulting Revenue',
+          type: 'revenue',
+          category: 'operating_revenue'
+        },
         { code: '6100', name: 'Staff Salaries', type: 'expense', category: 'operating_expenses' },
         { code: '6200', name: 'Software Licenses', type: 'expense', category: 'operating_expenses' }
       ]
@@ -336,14 +378,26 @@ export class DemoToSaaSConversionService {
   private static async createBusinessTemplates(organizationId: string, businessType: string) {
     const templates: Record<string, any[]> = {
       furniture: [
-        { type: 'product_category', name: 'Bedroom Furniture', description: 'Beds, dressers, nightstands' },
-        { type: 'product_category', name: 'Living Room Furniture', description: 'Sofas, coffee tables, chairs' },
+        {
+          type: 'product_category',
+          name: 'Bedroom Furniture',
+          description: 'Beds, dressers, nightstands'
+        },
+        {
+          type: 'product_category',
+          name: 'Living Room Furniture',
+          description: 'Sofas, coffee tables, chairs'
+        },
         { type: 'supplier_type', name: 'Wood Suppliers', description: 'Raw material suppliers' },
         { type: 'customer_type', name: 'Retail Customers', description: 'Individual customers' }
       ],
       salon: [
         { type: 'service_category', name: 'Hair Services', description: 'Cuts, color, styling' },
-        { type: 'service_category', name: 'Beauty Treatments', description: 'Facials, manicures, pedicures' },
+        {
+          type: 'service_category',
+          name: 'Beauty Treatments',
+          description: 'Facials, manicures, pedicures'
+        },
         { type: 'staff_role', name: 'Hair Stylist', description: 'Licensed hair professional' },
         { type: 'customer_type', name: 'Regular Clients', description: 'Repeat customers' }
       ],
@@ -357,7 +411,11 @@ export class DemoToSaaSConversionService {
         { type: 'lead_source', name: 'Website Inquiry', description: 'Leads from website forms' },
         { type: 'lead_status', name: 'Qualified Lead', description: 'Leads that meet criteria' },
         { type: 'customer_type', name: 'Enterprise Client', description: 'Large business clients' },
-        { type: 'pipeline_stage', name: 'Proposal Sent', description: 'Proposal submitted to prospect' }
+        {
+          type: 'pipeline_stage',
+          name: 'Proposal Sent',
+          description: 'Proposal submitted to prospect'
+        }
       ]
     }
 
@@ -442,18 +500,18 @@ export class DemoToSaaSConversionService {
    */
   private static async setupProductionDomain(subdomain: string, organizationId: string) {
     console.log('🌐 Setting up production domain...', { subdomain, organizationId })
-    
+
     // In production, this would:
     // 1. Create DNS records with provider (Cloudflare, Route53, etc.)
     // 2. Generate SSL certificate
     // 3. Update load balancer routing
     // 4. Configure CDN
-    
+
     // For demo, we'll just log the setup
     console.log(`   ✅ Domain configured: ${subdomain}.heraerp.com`)
     console.log('   ✅ SSL certificate generated')
     console.log('   ✅ CDN routing configured')
-    
+
     // Update organization with domain status
     await supabase
       .from('core_organizations')
@@ -474,9 +532,9 @@ export class DemoToSaaSConversionService {
    */
   private static async activateSubscriptionFeatures(organizationId: string, planType: string) {
     console.log('🔧 Activating subscription features...', { organizationId, planType })
-    
+
     const features = this.getPlanFeatures(planType)
-    
+
     // Update organization with feature flags
     const { error } = await supabase
       .from('core_organizations')
@@ -502,14 +560,10 @@ export class DemoToSaaSConversionService {
    */
   private static getPlanFeatures(planType: string): string[] {
     const planFeatures = {
-      starter: [
-        'basic-reports',
-        'mobile-app',
-        'email-support'
-      ],
+      starter: ['basic-reports', 'mobile-app', 'email-support'],
       professional: [
         'basic-reports',
-        'advanced-reports', 
+        'advanced-reports',
         'mobile-app',
         'api-access',
         'integrations',
@@ -519,7 +573,7 @@ export class DemoToSaaSConversionService {
       enterprise: [
         'basic-reports',
         'advanced-reports',
-        'mobile-app', 
+        'mobile-app',
         'api-access',
         'integrations',
         'priority-support',
@@ -570,18 +624,20 @@ export class DemoToSaaSConversionService {
     const length = 12
     const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*'
     let password = ''
-    
+
     for (let i = 0; i < length; i++) {
       password += charset.charAt(Math.floor(Math.random() * charset.length))
     }
-    
+
     return password
   }
 
   /**
    * Check subdomain availability
    */
-  static async checkSubdomainAvailability(subdomain: string): Promise<{ available: boolean, reason?: string }> {
+  static async checkSubdomainAvailability(
+    subdomain: string
+  ): Promise<{ available: boolean; reason?: string }> {
     try {
       const { data, error } = await supabase
         .from('core_organizations')
@@ -613,7 +669,7 @@ export class DemoToSaaSConversionService {
         .select('id')
         .eq('organization_id', organizationId)
 
-      // Get transactions created  
+      // Get transactions created
       const { data: transactions } = await supabase
         .from('universal_transactions')
         .select('id')
@@ -647,9 +703,9 @@ export class DemoToSaaSConversionService {
    */
   private static inferFeaturesUsed(entities: any[], transactions: any[]): string[] {
     const features = []
-    
+
     if (entities.some(e => e.entity_type === 'customer')) features.push('customers')
-    if (entities.some(e => e.entity_type === 'product')) features.push('inventory') 
+    if (entities.some(e => e.entity_type === 'product')) features.push('inventory')
     if (entities.some(e => e.entity_type === 'employee')) features.push('staff')
     if (transactions.some(t => t.transaction_type === 'sale')) features.push('orders')
     if (transactions.length > 0) features.push('reports')

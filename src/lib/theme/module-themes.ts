@@ -20,7 +20,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'pink',
     secondaryColor: 'purple'
   },
-  
+
   // Blue/Cyan theme (Healthcare, Medical)
   healthcare: {
     brandGradient: 'from-blue-400 to-cyan-600',
@@ -29,7 +29,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'blue',
     secondaryColor: 'cyan'
   },
-  
+
   // Green/Emerald theme (Finance, Banking)
   finance: {
     brandGradient: 'from-green-400 to-emerald-600',
@@ -38,7 +38,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'green',
     secondaryColor: 'emerald'
   },
-  
+
   // Orange/Red theme (Restaurant, Food)
   restaurant: {
     brandGradient: 'from-orange-400 to-red-600',
@@ -47,7 +47,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'orange',
     secondaryColor: 'red'
   },
-  
+
   // Indigo/Violet theme (Professional Services)
   professional: {
     brandGradient: 'from-indigo-400 to-violet-600',
@@ -56,7 +56,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'indigo',
     secondaryColor: 'violet'
   },
-  
+
   // Teal/Blue theme (Manufacturing, Industry)
   manufacturing: {
     brandGradient: 'from-teal-400 to-blue-600',
@@ -65,7 +65,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'teal',
     secondaryColor: 'blue'
   },
-  
+
   // Yellow/Amber theme (Retail, Shopping)
   retail: {
     brandGradient: 'from-yellow-400 to-amber-600',
@@ -74,7 +74,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'yellow',
     secondaryColor: 'amber'
   },
-  
+
   // Purple/Pink theme (Creative, Design)
   creative: {
     brandGradient: 'from-purple-400 to-pink-600',
@@ -83,7 +83,7 @@ export const moduleThemes: Record<string, ModuleTheme> = {
     primaryColor: 'purple',
     secondaryColor: 'pink'
   },
-  
+
   // Gray/Slate theme (Default, Corporate)
   default: {
     brandGradient: 'from-gray-600 to-slate-800',

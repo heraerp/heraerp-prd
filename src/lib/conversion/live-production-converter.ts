@@ -14,7 +14,15 @@ import { universalApi } from '@/lib/universal-api'
 export interface LiveConversionRequest {
   businessInfo: {
     name: string
-    type: 'salon' | 'restaurant' | 'retail' | 'healthcare' | 'automotive' | 'gym' | 'photography' | 'legal'
+    type:
+      | 'salon'
+      | 'restaurant'
+      | 'retail'
+      | 'healthcare'
+      | 'automotive'
+      | 'gym'
+      | 'photography'
+      | 'legal'
     ownerName: string
     email: string
     phone?: string
@@ -78,7 +86,7 @@ export class LiveProductionConverter {
    */
   async executeConversion(request: LiveConversionRequest): Promise<LiveConversionResult> {
     this.log('🚀 Starting LIVE production conversion...')
-    
+
     const result: LiveConversionResult = {
       success: false,
       migrationStats: {
@@ -175,7 +183,6 @@ export class LiveProductionConverter {
       await this.saveConversionRecord(result)
 
       return result
-
     } catch (error) {
       this.log(`❌ LIVE conversion failed: ${error.message}`)
       result.errors.push(error.message)
@@ -370,13 +377,25 @@ export class LiveProductionConverter {
    */
   private async applyUICustomizations(customizations: any, organizationId: string) {
     if (customizations.theme) {
-      await universalApi.setDynamicField(organizationId, 'ui_theme', JSON.stringify(customizations.theme))
+      await universalApi.setDynamicField(
+        organizationId,
+        'ui_theme',
+        JSON.stringify(customizations.theme)
+      )
     }
     if (customizations.branding) {
-      await universalApi.setDynamicField(organizationId, 'branding', JSON.stringify(customizations.branding))
+      await universalApi.setDynamicField(
+        organizationId,
+        'branding',
+        JSON.stringify(customizations.branding)
+      )
     }
     if (customizations.layout) {
-      await universalApi.setDynamicField(organizationId, 'layout_preferences', JSON.stringify(customizations.layout))
+      await universalApi.setDynamicField(
+        organizationId,
+        'layout_preferences',
+        JSON.stringify(customizations.layout)
+      )
     }
   }
 
@@ -406,7 +425,6 @@ export class LiveProductionConverter {
       }
 
       return { success: true, errors: [] }
-
     } catch (error) {
       return { success: false, errors: [error.message] }
     }
@@ -428,12 +446,16 @@ export class LiveProductionConverter {
    * Generate subdomain from business name
    */
   private generateSubdomain(businessName: string): string {
-    return businessName
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-      .substring(0, 20) + '-' + Math.random().toString(36).substr(2, 4)
+    return (
+      businessName
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .substring(0, 20) +
+      '-' +
+      Math.random().toString(36).substr(2, 4)
+    )
   }
 
   /**
@@ -441,22 +463,20 @@ export class LiveProductionConverter {
    */
   private async saveConversionRecord(result: LiveConversionResult) {
     try {
-      const { error } = await supabase
-        .from('conversion_audit_log')
-        .insert({
-          conversion_id: this.conversionId,
-          organization_id: result.supabaseOrgId,
-          conversion_type: 'progressive_to_production',
-          success: result.success,
-          migration_stats: result.migrationStats,
-          errors: result.errors,
-          logs: this.logs,
-          timestamp: result.timestamp,
-          metadata: {
-            production_urls: result.productionUrls,
-            credentials_generated: true
-          }
-        })
+      const { error } = await supabase.from('conversion_audit_log').insert({
+        conversion_id: this.conversionId,
+        organization_id: result.supabaseOrgId,
+        conversion_type: 'progressive_to_production',
+        success: result.success,
+        migration_stats: result.migrationStats,
+        errors: result.errors,
+        logs: this.logs,
+        timestamp: result.timestamp,
+        metadata: {
+          production_urls: result.productionUrls,
+          credentials_generated: true
+        }
+      })
 
       if (error) {
         console.error('Failed to save conversion audit log:', error)
@@ -488,7 +508,9 @@ export class LiveProductionConverter {
 // EXPORT FUNCTIONS
 // ================================================================================
 
-export async function executeLiveConversion(request: LiveConversionRequest): Promise<LiveConversionResult> {
+export async function executeLiveConversion(
+  request: LiveConversionRequest
+): Promise<LiveConversionResult> {
   const converter = new LiveProductionConverter()
   return await converter.executeConversion(request)
 }

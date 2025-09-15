@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Rocket, 
-  TrendingUp, 
-  Users, 
+import {
+  Rocket,
+  TrendingUp,
+  Users,
   Database,
   Clock,
   ArrowRight,
@@ -34,10 +34,14 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
   const getReadinessColor = (readiness: string) => {
     switch (readiness) {
-      case 'high': return 'bg-green-500'
-      case 'medium': return 'bg-yellow-500'  
-      case 'low': return 'bg-gray-400'
-      default: return 'bg-gray-400'
+      case 'high':
+        return 'bg-green-500'
+      case 'medium':
+        return 'bg-yellow-500'
+      case 'low':
+        return 'bg-gray-400'
+      default:
+        return 'bg-gray-400'
     }
   }
 
@@ -52,17 +56,19 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
   }
 
   return (
-    <Card 
+    <Card
       className="relative overflow-hidden border-2 border-gradient-to-r from-emerald-200 to-blue-200 dark:from-emerald-800 dark:to-blue-800 shadow-xl mb-6"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-blue-500/10 to-purple-500/10 dark:from-emerald-500/20 dark:via-blue-500/20 dark:to-purple-500/20" />
-      
+
       {/* Sparkle Animation */}
       <div className="absolute top-4 right-4 opacity-60">
-        <Sparkles className={`w-6 h-6 text-emerald-500 transition-transform duration-500 ${isHovered ? 'rotate-180 scale-110' : ''}`} />
+        <Sparkles
+          className={`w-6 h-6 text-emerald-500 transition-transform duration-500 ${isHovered ? 'rotate-180 scale-110' : ''}`}
+        />
       </div>
 
       <div className="relative p-6">
@@ -81,7 +87,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
             </div>
           </div>
 
-          <Badge 
+          <Badge
             className={`${getReadinessColor(metrics.conversionReadiness)} text-white px-3 py-1`}
           >
             {metrics.conversionReadiness.toUpperCase()} READINESS
@@ -92,25 +98,33 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
             <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">{metrics.sessionDuration}</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
+              {metrics.sessionDuration}
+            </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">Time Spent</div>
           </div>
 
           <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
             <CheckCircle className="w-5 h-5 text-green-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">{metrics.featuresUsed.length}</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
+              {metrics.featuresUsed.length}
+            </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">Features Explored</div>
           </div>
 
           <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
             <Database className="w-5 h-5 text-purple-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">{metrics.dataCreated}</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
+              {metrics.dataCreated}
+            </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">Records Created</div>
           </div>
 
           <div className="text-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg backdrop-blur-sm">
             <TrendingUp className="w-5 h-5 text-orange-500 mx-auto mb-1" />
-            <div className="text-lg font-bold text-gray-900 dark:text-white">{metrics.returnVisits}</div>
+            <div className="text-lg font-bold text-gray-900 dark:text-white">
+              {metrics.returnVisits}
+            </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">Return Visits</div>
           </div>
         </div>
@@ -153,9 +167,9 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              <strong>{metrics.featuresUsed.length} features</strong> explored in demo • 
-              <strong>Fresh production</strong> environment •
-              <strong> Zero downtime</strong> conversion
+              <strong>{metrics.featuresUsed.length} features</strong> explored in demo •
+              <strong>Fresh production</strong> environment •<strong> Zero downtime</strong>{' '}
+              conversion
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
               Conversion takes ~3 minutes • 30-day money-back guarantee
@@ -180,12 +194,13 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
 
       {/* Animated Border Glow */}
       <div className="absolute inset-0 rounded-lg opacity-60">
-        <div className={`absolute inset-0 rounded-lg border-2 border-transparent bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 transition-opacity duration-300 ${isHovered ? 'animate-pulse' : ''}`} 
-             style={{ 
-               background: 'linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6)',
-               WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-               WebkitMaskComposite: 'exclude'
-             }} 
+        <div
+          className={`absolute inset-0 rounded-lg border-2 border-transparent bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 transition-opacity duration-300 ${isHovered ? 'animate-pulse' : ''}`}
+          style={{
+            background: 'linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6)',
+            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'exclude'
+          }}
         />
       </div>
     </Card>
@@ -208,10 +223,6 @@ export function ConversionBannerExample() {
   }
 
   return (
-    <ConversionBanner
-      demoModule="furniture"
-      metrics={sampleMetrics}
-      onConvert={handleConversion}
-    />
+    <ConversionBanner demoModule="furniture" metrics={sampleMetrics} onConvert={handleConversion} />
   )
 }

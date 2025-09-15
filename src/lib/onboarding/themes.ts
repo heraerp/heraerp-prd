@@ -1,12 +1,12 @@
 /**
  * HERA Universal Onboarding - Theme System
- * 
+ *
  * Provides light, dark, and high-contrast themes for Joyride
  * Follows HERA DNA design principles with oklch colors
  */
 
-import type { Styles as JoyrideStyles } from 'react-joyride';
-import type { OnboardingTheme } from './types';
+import type { Styles as JoyrideStyles } from 'react-joyride'
+import type { OnboardingTheme } from './types'
 
 /**
  * HERA brand colors in oklch format
@@ -19,7 +19,7 @@ const heraColors = {
   emeraldAccent: 'oklch(0.64 0.12 160)',
   amberGold: 'oklch(0.69 0.12 85)',
   purple: 'oklch(0.58 0.192 280)',
-  
+
   // Neutral colors
   white: '#ffffff',
   black: '#000000',
@@ -33,13 +33,13 @@ const heraColors = {
   gray700: 'rgb(55 65 81)',
   gray800: 'rgb(31 41 55)',
   gray900: 'rgb(17 24 39)',
-  
+
   // Semantic colors
   success: 'oklch(0.64 0.12 160)',
   warning: 'oklch(0.69 0.12 85)',
   error: 'oklch(0.55 0.192 20)',
-  info: 'oklch(0.68 0.12 200)',
-};
+  info: 'oklch(0.68 0.12 200)'
+}
 
 /**
  * Light theme configuration
@@ -57,9 +57,9 @@ export const lightTheme: OnboardingTheme = {
     buttonHover: heraColors.cyanSecondary,
     skipLinkColor: heraColors.gray500,
     progressBarBackground: heraColors.gray200,
-    progressBarFill: heraColors.primaryBlue,
-  },
-};
+    progressBarFill: heraColors.primaryBlue
+  }
+}
 
 /**
  * Dark theme configuration
@@ -77,9 +77,9 @@ export const darkTheme: OnboardingTheme = {
     buttonHover: heraColors.emeraldAccent,
     skipLinkColor: heraColors.gray400,
     progressBarBackground: heraColors.gray700,
-    progressBarFill: heraColors.cyanSecondary,
-  },
-};
+    progressBarFill: heraColors.cyanSecondary
+  }
+}
 
 /**
  * High contrast theme for accessibility
@@ -97,9 +97,9 @@ export const highContrastTheme: OnboardingTheme = {
     buttonHover: heraColors.amberGold,
     skipLinkColor: heraColors.white,
     progressBarBackground: heraColors.gray800,
-    progressBarFill: heraColors.amberGold,
-  },
-};
+    progressBarFill: heraColors.amberGold
+  }
+}
 
 /**
  * Get theme by name with fallback
@@ -107,11 +107,11 @@ export const highContrastTheme: OnboardingTheme = {
 export function getTheme(themeName: 'light' | 'dark' | 'highContrast' = 'light'): OnboardingTheme {
   switch (themeName) {
     case 'dark':
-      return darkTheme;
+      return darkTheme
     case 'highContrast':
-      return highContrastTheme;
+      return highContrastTheme
     default:
-      return lightTheme;
+      return lightTheme
   }
 }
 
@@ -119,23 +119,23 @@ export function getTheme(themeName: 'light' | 'dark' | 'highContrast' = 'light')
  * Convert HERA theme tokens to Joyride styles
  */
 export function getJoyrideStyles(theme: OnboardingTheme): any {
-  const { tokens } = theme;
-  
+  const { tokens } = theme
+
   return {
     beacon: {
       color: tokens.beaconColor,
       // Increase size for better visibility
       inner: {
         width: 20,
-        height: 20,
+        height: 20
       },
       outer: {
         width: 26,
         height: 26,
-        border: `2px solid ${tokens.beaconColor}`,
-      },
+        border: `2px solid ${tokens.beaconColor}`
+      }
     },
-    
+
     tooltip: {
       backgroundColor: tokens.bubbleBackground,
       color: tokens.bubbleText,
@@ -147,34 +147,34 @@ export function getJoyrideStyles(theme: OnboardingTheme): any {
       padding: '24px',
       // HERA glass morphism effect
       backdropFilter: 'blur(10px)',
-      border: `1px solid ${theme.name === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+      border: `1px solid ${theme.name === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`
     },
-    
+
     tooltipContainer: {
-      textAlign: 'left',
+      textAlign: 'left'
     },
-    
+
     tooltipTitle: {
       fontSize: '20px',
       fontWeight: 600,
       marginBottom: '12px',
-      color: tokens.bubbleText,
+      color: tokens.bubbleText
     },
-    
+
     tooltipContent: {
       fontSize: '16px',
       lineHeight: '1.6',
       color: tokens.bubbleText,
-      opacity: 0.9,
+      opacity: 0.9
     },
-    
+
     tooltipFooter: {
       marginTop: '20px',
       display: 'flex',
       justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: 'center'
     },
-    
+
     buttonBack: {
       backgroundColor: 'transparent',
       border: `2px solid ${tokens.buttonBackground}`,
@@ -186,10 +186,10 @@ export function getJoyrideStyles(theme: OnboardingTheme): any {
       transition: 'all 0.2s ease',
       '&:hover': {
         backgroundColor: tokens.buttonBackground,
-        color: tokens.buttonText,
-      },
+        color: tokens.buttonText
+      }
     },
-    
+
     buttonNext: {
       backgroundColor: tokens.buttonBackground,
       border: `2px solid ${tokens.buttonBackground}`,
@@ -201,10 +201,10 @@ export function getJoyrideStyles(theme: OnboardingTheme): any {
       transition: 'all 0.2s ease',
       '&:hover': {
         backgroundColor: tokens.buttonHover,
-        borderColor: tokens.buttonHover,
-      },
+        borderColor: tokens.buttonHover
+      }
     },
-    
+
     buttonClose: {
       color: tokens.skipLinkColor,
       fontSize: '24px',
@@ -216,41 +216,41 @@ export function getJoyrideStyles(theme: OnboardingTheme): any {
       width: 'auto',
       height: 'auto',
       '&:hover': {
-        color: tokens.bubbleText,
-      },
+        color: tokens.bubbleText
+      }
     },
-    
+
     buttonSkip: {
       color: tokens.skipLinkColor,
       fontSize: '14px',
       textDecoration: 'underline',
       '&:hover': {
-        color: tokens.bubbleText,
-      },
+        color: tokens.bubbleText
+      }
     },
-    
+
     overlay: {
       backgroundColor: tokens.overlayColor,
       mixBlendMode: 'normal',
       // Smooth animation
-      transition: 'opacity 0.3s ease',
+      transition: 'opacity 0.3s ease'
     },
-    
+
     spotlight: {
       backgroundColor: 'transparent',
       border: `2px solid ${tokens.spotlightBorder}`,
       borderRadius: '8px',
       boxShadow: `0 0 0 4px ${tokens.spotlightBorder}33`, // 20% opacity
-      transition: 'all 0.3s ease',
+      transition: 'all 0.3s ease'
     },
-    
+
     floater: {
       // Arrow pointing to element
       arrow: {
-        color: tokens.bubbleBackground,
-      },
+        color: tokens.bubbleBackground
+      }
     },
-    
+
     options: {
       // Global options that affect styling
       arrowColor: tokens.bubbleBackground,
@@ -258,9 +258,9 @@ export function getJoyrideStyles(theme: OnboardingTheme): any {
       primaryColor: tokens.buttonBackground,
       spotlightShadow: `0 0 20px ${tokens.spotlightBorder}66`, // 40% opacity
       textColor: tokens.bubbleText,
-      zIndex: 10000,
-    },
-  };
+      zIndex: 10000
+    }
+  }
 }
 
 /**
@@ -270,39 +270,39 @@ export function getJoyrideStyles(theme: OnboardingTheme): any {
 export function getA11yStyles(baseStyles: any): any {
   return {
     ...baseStyles,
-    
+
     buttonBack: {
       ...baseStyles.buttonBack,
       '&:focus': {
         outline: '3px solid currentColor',
-        outlineOffset: '2px',
-      },
+        outlineOffset: '2px'
+      }
     },
-    
+
     buttonNext: {
       ...baseStyles.buttonNext,
       '&:focus': {
         outline: '3px solid currentColor',
-        outlineOffset: '2px',
-      },
+        outlineOffset: '2px'
+      }
     },
-    
+
     buttonClose: {
       ...baseStyles.buttonClose,
       '&:focus': {
         outline: '3px solid currentColor',
-        outlineOffset: '2px',
-      },
+        outlineOffset: '2px'
+      }
     },
-    
+
     buttonSkip: {
       ...baseStyles.buttonSkip,
       '&:focus': {
         outline: '3px solid currentColor',
-        outlineOffset: '2px',
-      },
-    },
-  };
+        outlineOffset: '2px'
+      }
+    }
+  }
 }
 
 /**
@@ -312,41 +312,45 @@ export function getA11yStyles(baseStyles: any): any {
 export function getReducedMotionStyles(baseStyles: any): any {
   return {
     ...baseStyles,
-    
+
     beacon: {
       ...baseStyles.beacon,
       // Remove pulsing animation
       '& > span:first-child': {
-        animation: 'none',
-      },
+        animation: 'none'
+      }
     },
-    
+
     tooltip: {
       ...baseStyles.tooltip,
-      transition: 'none',
+      transition: 'none'
     },
-    
+
     overlay: {
       ...baseStyles.overlay,
-      transition: 'none',
+      transition: 'none'
     },
-    
+
     spotlight: {
       ...baseStyles.spotlight,
-      transition: 'none',
-    },
-  };
+      transition: 'none'
+    }
+  }
 }
 
 /**
  * Progress bar styles for step indicators
  */
-export function getProgressStyles(theme: OnboardingTheme, current: number, total: number): {
-  container: React.CSSProperties;
-  bar: React.CSSProperties;
+export function getProgressStyles(
+  theme: OnboardingTheme,
+  current: number,
+  total: number
+): {
+  container: React.CSSProperties
+  bar: React.CSSProperties
 } {
-  const progress = (current / total) * 100;
-  
+  const progress = (current / total) * 100
+
   return {
     container: {
       width: '100%',
@@ -354,14 +358,14 @@ export function getProgressStyles(theme: OnboardingTheme, current: number, total
       backgroundColor: theme.tokens.progressBarBackground,
       borderRadius: '2px',
       marginBottom: '16px',
-      overflow: 'hidden',
+      overflow: 'hidden'
     },
     bar: {
       width: `${progress}%`,
       height: '100%',
       backgroundColor: theme.tokens.progressBarFill,
       borderRadius: '2px',
-      transition: 'width 0.3s ease',
-    },
-  };
+      transition: 'width 0.3s ease'
+    }
+  }
 }

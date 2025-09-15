@@ -1,6 +1,7 @@
 # HERA CLI
 
 ## Overview
+
 The HERA CLI accelerates local development and validation against the Sacred Six data contract. It ships with three core commands: `init`, `smart-code validate`, and `tx` (create/list).
 
 - Entry: `npm run hera -- <command>`
@@ -9,6 +10,7 @@ The HERA CLI accelerates local development and validation against the Sacred Six
 - Guardrails: `src/lib/guardrails/hera-guardrails.ts`, `src/lib/smart-code.ts`
 
 ## Setup
+
 - Node 20+
 - Env: set `DATABASE_URL` for Postgres (use `?sslmode=require` on managed hosts)
 - Install deps: `npm i` (includes `pg`, `tsx`, `dotenv` as dev deps; scripts run via tsx)
@@ -17,6 +19,7 @@ The HERA CLI accelerates local development and validation against the Sacred Six
   - Dry‑run SQL: `npm run db:seed:print`
 
 ## Commands
+
 - `hera init [--org <uuid>] [--write-config] [--json]`
   - Verifies DB connectivity, Sacred Six presence, and optional `.hera-cli.json` write.
 - `hera smart-code validate "<SMART_CODE>" [--semantic] [--json]`
@@ -27,11 +30,13 @@ The HERA CLI accelerates local development and validation against the Sacred Six
   - Lists transactions with basic filters.
 
 Examples
+
 - `npm run hera -- smart-code validate "HERA.RETAIL.ORDERS.SALE.ONLINE.v1" --semantic --json`
 - `npm run hera -- tx create --org $ORG --type SALE --code "HERA.RETAIL.ORDERS.SALE.ONLINE.v1" --lines '[{"line_number":1,"line_type":"ITEM","line_amount":19.99,"smart_code":"HERA.RETAIL.ORDERS.LINE.ITEM.v1"}]' --json`
 - `npm run hera -- tx list --org $ORG --since 2025-01-01 --json`
 
 ## Troubleshooting
+
 - Missing DB URL: set `DATABASE_URL` in shell or `.env`.
 - SSL errors on Postgres: append `?sslmode=require` to `DATABASE_URL` (or configure SSL in your provider).
 - JSON parse errors for `--lines`: wrap JSON in single quotes and escape inner quotes.
@@ -39,5 +44,6 @@ Examples
 - Exit codes: see `CLI_EXIT_CODES` in `src/lib/guardrails/hera-guardrails.ts` for failure reasons.
 
 ## Notes
+
 - Use seeds and Playwright auth state for deterministic e2e (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`).
 - All business flows must land in `universal_transactions` (+ lines); no ad‑hoc tables.

@@ -13,5 +13,5 @@ export default function BusinessSetupWizardPage() {
 
 export const metadata = {
   title: 'HERA Business Setup Wizard',
-  description: 'Configure your organization using HERA\'s Universal Configuration Rules'
+  description: "Configure your organization using HERA's Universal Configuration Rules"
 }

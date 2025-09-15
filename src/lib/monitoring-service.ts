@@ -141,11 +141,13 @@ export class MonitoringService {
       success: data.success.toString()
     }
 
-    await Promise.all([
-      this.incrementCounter('ai_classifications_total', tags),
-      this.recordGauge('ai_confidence_score', data.confidence, tags),
-      data.durationMs ? this.recordTiming('ai_classification', data.durationMs, tags) : null
-    ].filter(Boolean))
+    await Promise.all(
+      [
+        this.incrementCounter('ai_classifications_total', tags),
+        this.recordGauge('ai_confidence_score', data.confidence, tags),
+        data.durationMs ? this.recordTiming('ai_classification', data.durationMs, tags) : null
+      ].filter(Boolean)
+    )
 
     // Alert on low confidence or failures
     if (!data.success || data.confidence < 0.6) {
@@ -213,7 +215,7 @@ export class MonitoringService {
    */
   async recordAIServiceDegradation(reason: string): Promise<void> {
     await this.incrementCounter('ai_service_degradation', { reason })
-    
+
     await this.sendAlert('AI_SERVICE_DEGRADED', {
       severity: 'high',
       message: `AI service degraded: ${reason}`,
@@ -257,10 +259,7 @@ export class MonitoringService {
   /**
    * Send alert
    */
-  async sendAlert(
-    alertType: string,
-    alert: Omit<AlertData, 'type' | 'timestamp'>
-  ): Promise<void> {
+  async sendAlert(alertType: string, alert: Omit<AlertData, 'type' | 'timestamp'>): Promise<void> {
     const alertData: AlertData = {
       ...alert,
       type: alertType,
@@ -270,7 +269,7 @@ export class MonitoringService {
     try {
       // Send to alerting system (PagerDuty, Slack, etc.)
       await this.sendAlertExternal(alertData)
-      
+
       // Also log critical alerts
       await this.log({
         level: alertData.severity === 'critical' ? 'critical' : 'warn',
@@ -353,7 +352,7 @@ export class MonitoringService {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}:${v}`)
       .join(',')
-    
+
     return `${name}{${tagString}}`
   }
 
@@ -364,7 +363,7 @@ export class MonitoringService {
   private async sendMetric(metric: MetricData): Promise<void> {
     // TODO: Implement actual metric sending to your monitoring system
     // Examples: DataDog, CloudWatch, Prometheus, etc.
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.debug(`Metric: ${metric.name} = ${metric.value}`, metric.tags)
     }
@@ -378,7 +377,6 @@ export class MonitoringService {
   private async sendLog(log: any): Promise<void> {
     // TODO: Implement actual log sending to your logging system
     // Examples: ELK Stack, CloudWatch Logs, Splunk, etc.
-    
     // Example implementations:
     // await this.elasticClient.index({ index: 'hera-logs', body: log })
     // await this.cloudWatchLogs.putLogEvents({...})
@@ -387,7 +385,7 @@ export class MonitoringService {
   private async sendAlertExternal(alert: AlertData): Promise<void> {
     // TODO: Implement actual alert sending to your alerting system
     // Examples: PagerDuty, Slack, OpsGenie, etc.
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.warn(`🚨 ALERT [${alert.severity.toUpperCase()}]: ${alert.message}`)
     }
@@ -408,7 +406,7 @@ export class MonitoringService {
 export function createMonitoringMiddleware(monitoring: MonitoringService) {
   return (req: any, res: any, next: any) => {
     const startTime = Date.now()
-    
+
     res.on('finish', async () => {
       const duration = Date.now() - startTime
       const tags = {
@@ -416,16 +414,16 @@ export function createMonitoringMiddleware(monitoring: MonitoringService) {
         route: req.route?.path || req.path,
         status_code: res.statusCode.toString()
       }
-      
+
       await monitoring.recordTiming('http_request', duration, tags)
-      
+
       if (res.statusCode >= 400) {
         await monitoring.incrementCounter('http_errors_total', tags)
       } else {
         await monitoring.incrementCounter('http_requests_total', tags)
       }
     })
-    
+
     next()
   }
 }

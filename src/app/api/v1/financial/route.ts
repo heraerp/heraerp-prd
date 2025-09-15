@@ -4,8 +4,16 @@ import { NextRequest, NextResponse } from 'next/server'
 // Implements all 8 core financial modules with HERA DNA patterns
 
 interface FinancialApiRequest {
-  action: 'journal_entry' | 'invoice' | 'payment' | 'bank_deposit' | 'asset_acquisition' | 
-          'budget_create' | 'tax_calculation' | 'financial_report' | 'kpi_calculate'
+  action:
+    | 'journal_entry'
+    | 'invoice'
+    | 'payment'
+    | 'bank_deposit'
+    | 'asset_acquisition'
+    | 'budget_create'
+    | 'tax_calculation'
+    | 'financial_report'
+    | 'kpi_calculate'
   data: any
   smart_code: string
   organization_id?: string
@@ -71,54 +79,154 @@ interface BudgetData {
 // Chart of Accounts Structure (HERA Universal)
 const CHART_OF_ACCOUNTS = {
   // Assets (1000-1999)
-  '1100': { name: 'Cash - Operating Account', type: 'asset', normal_balance: 'debit', financial_statement: 'balance_sheet' },
-  '1110': { name: 'Cash - Savings Account', type: 'asset', normal_balance: 'debit', financial_statement: 'balance_sheet' },
-  '1200': { name: 'Accounts Receivable', type: 'asset', normal_balance: 'debit', financial_statement: 'balance_sheet' },
-  '1300': { name: 'Inventory', type: 'asset', normal_balance: 'debit', financial_statement: 'balance_sheet' },
-  '1500': { name: 'Equipment', type: 'asset', normal_balance: 'debit', financial_statement: 'balance_sheet' },
-  '1510': { name: 'Accumulated Depreciation - Equipment', type: 'asset', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  
+  '1100': {
+    name: 'Cash - Operating Account',
+    type: 'asset',
+    normal_balance: 'debit',
+    financial_statement: 'balance_sheet'
+  },
+  '1110': {
+    name: 'Cash - Savings Account',
+    type: 'asset',
+    normal_balance: 'debit',
+    financial_statement: 'balance_sheet'
+  },
+  '1200': {
+    name: 'Accounts Receivable',
+    type: 'asset',
+    normal_balance: 'debit',
+    financial_statement: 'balance_sheet'
+  },
+  '1300': {
+    name: 'Inventory',
+    type: 'asset',
+    normal_balance: 'debit',
+    financial_statement: 'balance_sheet'
+  },
+  '1500': {
+    name: 'Equipment',
+    type: 'asset',
+    normal_balance: 'debit',
+    financial_statement: 'balance_sheet'
+  },
+  '1510': {
+    name: 'Accumulated Depreciation - Equipment',
+    type: 'asset',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+
   // Liabilities (2000-2999)
-  '2100': { name: 'Accounts Payable', type: 'liability', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  '2200': { name: 'Accrued Expenses', type: 'liability', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  '2300': { name: 'Sales Tax Payable', type: 'liability', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  '2500': { name: 'Short-term Loans', type: 'liability', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  
+  '2100': {
+    name: 'Accounts Payable',
+    type: 'liability',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+  '2200': {
+    name: 'Accrued Expenses',
+    type: 'liability',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+  '2300': {
+    name: 'Sales Tax Payable',
+    type: 'liability',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+  '2500': {
+    name: 'Short-term Loans',
+    type: 'liability',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+
   // Equity (3000-3999)
-  '3100': { name: 'Common Stock', type: 'equity', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  '3200': { name: 'Retained Earnings', type: 'equity', normal_balance: 'credit', financial_statement: 'balance_sheet' },
-  
+  '3100': {
+    name: 'Common Stock',
+    type: 'equity',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+  '3200': {
+    name: 'Retained Earnings',
+    type: 'equity',
+    normal_balance: 'credit',
+    financial_statement: 'balance_sheet'
+  },
+
   // Revenue (4000-4999)
-  '4100': { name: 'Sales Revenue', type: 'revenue', normal_balance: 'credit', financial_statement: 'income_statement' },
-  '4200': { name: 'Service Revenue', type: 'revenue', normal_balance: 'credit', financial_statement: 'income_statement' },
-  '4300': { name: 'Interest Income', type: 'revenue', normal_balance: 'credit', financial_statement: 'income_statement' },
-  
+  '4100': {
+    name: 'Sales Revenue',
+    type: 'revenue',
+    normal_balance: 'credit',
+    financial_statement: 'income_statement'
+  },
+  '4200': {
+    name: 'Service Revenue',
+    type: 'revenue',
+    normal_balance: 'credit',
+    financial_statement: 'income_statement'
+  },
+  '4300': {
+    name: 'Interest Income',
+    type: 'revenue',
+    normal_balance: 'credit',
+    financial_statement: 'income_statement'
+  },
+
   // Expenses (5000-5999)
-  '5100': { name: 'Cost of Goods Sold', type: 'expense', normal_balance: 'debit', financial_statement: 'income_statement' },
-  '5200': { name: 'Salaries and Wages', type: 'expense', normal_balance: 'debit', financial_statement: 'income_statement' },
-  '5300': { name: 'Rent Expense', type: 'expense', normal_balance: 'debit', financial_statement: 'income_statement' },
-  '5400': { name: 'Utilities', type: 'expense', normal_balance: 'debit', financial_statement: 'income_statement' },
-  '5900': { name: 'Depreciation Expense', type: 'expense', normal_balance: 'debit', financial_statement: 'income_statement' }
+  '5100': {
+    name: 'Cost of Goods Sold',
+    type: 'expense',
+    normal_balance: 'debit',
+    financial_statement: 'income_statement'
+  },
+  '5200': {
+    name: 'Salaries and Wages',
+    type: 'expense',
+    normal_balance: 'debit',
+    financial_statement: 'income_statement'
+  },
+  '5300': {
+    name: 'Rent Expense',
+    type: 'expense',
+    normal_balance: 'debit',
+    financial_statement: 'income_statement'
+  },
+  '5400': {
+    name: 'Utilities',
+    type: 'expense',
+    normal_balance: 'debit',
+    financial_statement: 'income_statement'
+  },
+  '5900': {
+    name: 'Depreciation Expense',
+    type: 'expense',
+    normal_balance: 'debit',
+    financial_statement: 'income_statement'
+  }
 }
 
 // KPI Calculation Formulas
 const KPI_FORMULAS = {
-  current_ratio: (current_assets: number, current_liabilities: number) => 
+  current_ratio: (current_assets: number, current_liabilities: number) =>
     current_liabilities === 0 ? 0 : current_assets / current_liabilities,
-  
-  quick_ratio: (current_assets: number, inventory: number, current_liabilities: number) => 
+
+  quick_ratio: (current_assets: number, inventory: number, current_liabilities: number) =>
     current_liabilities === 0 ? 0 : (current_assets - inventory) / current_liabilities,
-  
-  gross_profit_margin: (revenue: number, cogs: number) => 
+
+  gross_profit_margin: (revenue: number, cogs: number) =>
     revenue === 0 ? 0 : ((revenue - cogs) / revenue) * 100,
-  
-  net_profit_margin: (net_income: number, revenue: number) => 
+
+  net_profit_margin: (net_income: number, revenue: number) =>
     revenue === 0 ? 0 : (net_income / revenue) * 100,
-  
-  return_on_assets: (net_income: number, total_assets: number) => 
+
+  return_on_assets: (net_income: number, total_assets: number) =>
     total_assets === 0 ? 0 : (net_income / total_assets) * 100,
-  
-  debt_to_equity: (total_debt: number, total_equity: number) => 
+
+  debt_to_equity: (total_debt: number, total_equity: number) =>
     total_equity === 0 ? 0 : total_debt / total_equity
 }
 
@@ -129,11 +237,15 @@ export async function POST(request: NextRequest) {
 
     // Validate smart code format
     if (!smart_code || !smart_code.startsWith('HERA.FIN.')) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid smart code. Must follow HERA.FIN.{MODULE}.{TYPE}.{FUNCTION}.v{VERSION} pattern',
-        code: 'INVALID_SMART_CODE'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Invalid smart code. Must follow HERA.FIN.{MODULE}.{TYPE}.{FUNCTION}.v{VERSION} pattern',
+          code: 'INVALID_SMART_CODE'
+        },
+        { status: 400 }
+      )
     }
 
     console.log(`🔧 Financial API: ${action} with smart code: ${smart_code}`)
@@ -141,50 +253,61 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'journal_entry':
         return await handleJournalEntry(data, smart_code, organization_id)
-      
+
       case 'invoice':
         return await handleInvoice(data, smart_code, organization_id)
-      
+
       case 'payment':
         return await handlePayment(data, smart_code, organization_id)
-      
+
       case 'bank_deposit':
         return await handleBankDeposit(data, smart_code, organization_id)
-      
+
       case 'asset_acquisition':
         return await handleAssetAcquisition(data, smart_code, organization_id)
-      
+
       case 'budget_create':
         return await handleBudgetCreate(data, smart_code, organization_id)
-      
+
       case 'tax_calculation':
         return await handleTaxCalculation(data, smart_code, organization_id)
-      
+
       case 'financial_report':
         return await handleFinancialReport(data, smart_code, organization_id)
-      
+
       case 'kpi_calculate':
         return await handleKPICalculation(data, smart_code, organization_id)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: `Unsupported action: ${action}`,
-          supported_actions: [
-            'journal_entry', 'invoice', 'payment', 'bank_deposit', 
-            'asset_acquisition', 'budget_create', 'tax_calculation', 
-            'financial_report', 'kpi_calculate'
-          ]
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unsupported action: ${action}`,
+            supported_actions: [
+              'journal_entry',
+              'invoice',
+              'payment',
+              'bank_deposit',
+              'asset_acquisition',
+              'budget_create',
+              'tax_calculation',
+              'financial_report',
+              'kpi_calculate'
+            ]
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Financial API Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -203,91 +326,116 @@ export async function GET(request: NextRequest) {
           smart_code: 'HERA.FIN.GL.ENT.COA.v1',
           total_accounts: Object.keys(CHART_OF_ACCOUNTS).length
         })
-      
+
       case 'account_balance':
         const account_code = searchParams.get('account_code')
         if (!account_code || !CHART_OF_ACCOUNTS[account_code as keyof typeof CHART_OF_ACCOUNTS]) {
-          return NextResponse.json({
-            success: false,
-            error: 'Invalid or missing account_code'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Invalid or missing account_code'
+            },
+            { status: 400 }
+          )
         }
-        
+
         return NextResponse.json({
           success: true,
           data: {
             account_code,
             account_name: CHART_OF_ACCOUNTS[account_code as keyof typeof CHART_OF_ACCOUNTS].name,
             balance: Math.floor(Math.random() * 100000), // Mock balance
-            balance_type: CHART_OF_ACCOUNTS[account_code as keyof typeof CHART_OF_ACCOUNTS].normal_balance,
+            balance_type:
+              CHART_OF_ACCOUNTS[account_code as keyof typeof CHART_OF_ACCOUNTS].normal_balance,
             last_updated: new Date().toISOString()
           },
           smart_code: 'HERA.FIN.GL.RPT.BAL.v1'
         })
-      
+
       case 'trial_balance':
         return await generateTrialBalance(organization_id)
-      
+
       case 'income_statement':
         return await generateIncomeStatement(organization_id)
-      
+
       case 'balance_sheet':
         return await generateBalanceSheet(organization_id)
-      
+
       case 'cash_flow':
         return await generateCashFlowStatement(organization_id)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: 'Unsupported GET action',
-          supported_actions: [
-            'chart_of_accounts', 'account_balance', 'trial_balance', 
-            'income_statement', 'balance_sheet', 'cash_flow'
-          ]
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Unsupported GET action',
+            supported_actions: [
+              'chart_of_accounts',
+              'account_balance',
+              'trial_balance',
+              'income_statement',
+              'balance_sheet',
+              'cash_flow'
+            ]
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Financial API GET Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // Journal Entry Handler (HERA.FIN.GL.TXN.JE.v1)
-async function handleJournalEntry(data: JournalEntryData, smart_code: string, organization_id: string) {
+async function handleJournalEntry(
+  data: JournalEntryData,
+  smart_code: string,
+  organization_id: string
+) {
   // Validate double-entry bookkeeping
   const totalDebits = data.lines.reduce((sum, line) => sum + (line.debit_amount || 0), 0)
   const totalCredits = data.lines.reduce((sum, line) => sum + (line.credit_amount || 0), 0)
-  
+
   if (Math.abs(totalDebits - totalCredits) > 0.01) {
-    return NextResponse.json({
-      success: false,
-      error: 'Journal entry is not balanced',
-      details: {
-        total_debits: totalDebits,
-        total_credits: totalCredits,
-        difference: totalDebits - totalCredits
-      }
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Journal entry is not balanced',
+        details: {
+          total_debits: totalDebits,
+          total_credits: totalCredits,
+          difference: totalDebits - totalCredits
+        }
+      },
+      { status: 400 }
+    )
   }
 
   // Validate all accounts exist
-  const invalidAccounts = data.lines.filter(line => !CHART_OF_ACCOUNTS[line.account_code as keyof typeof CHART_OF_ACCOUNTS])
+  const invalidAccounts = data.lines.filter(
+    line => !CHART_OF_ACCOUNTS[line.account_code as keyof typeof CHART_OF_ACCOUNTS]
+  )
   if (invalidAccounts.length > 0) {
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid account codes found',
-      invalid_accounts: invalidAccounts.map(line => line.account_code)
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid account codes found',
+        invalid_accounts: invalidAccounts.map(line => line.account_code)
+      },
+      { status: 400 }
+    )
   }
 
   const journal_entry_id = `JE-${Date.now()}`
-  
+
   return NextResponse.json({
     success: true,
     message: 'Journal entry created successfully',
@@ -311,7 +459,7 @@ async function handleJournalEntry(data: JournalEntryData, smart_code: string, or
 // Invoice Handler (HERA.FIN.AR.TXN.INV.v1)
 async function handleInvoice(data: InvoiceData, smart_code: string, organization_id: string) {
   const invoice_id = `INV-${Date.now()}`
-  
+
   return NextResponse.json({
     success: true,
     message: 'Invoice created successfully',
@@ -350,7 +498,7 @@ async function handleInvoice(data: InvoiceData, smart_code: string, organization
 async function handlePayment(data: PaymentData, smart_code: string, organization_id: string) {
   const payment_id = `PMT-${Date.now()}`
   const is_ar_payment = smart_code.includes('AR')
-  
+
   return NextResponse.json({
     success: true,
     message: 'Payment processed successfully',
@@ -365,40 +513,42 @@ async function handlePayment(data: PaymentData, smart_code: string, organization
     },
     smart_code,
     organization_id,
-    gl_entries: is_ar_payment ? [
-      {
-        account_code: '1100',
-        account_name: 'Cash - Operating Account',
-        debit_amount: data.amount,
-        credit_amount: 0
-      },
-      {
-        account_code: '1200',
-        account_name: 'Accounts Receivable',
-        debit_amount: 0,
-        credit_amount: data.amount
-      }
-    ] : [
-      {
-        account_code: '2100',
-        account_name: 'Accounts Payable',
-        debit_amount: data.amount,
-        credit_amount: 0
-      },
-      {
-        account_code: '1100',
-        account_name: 'Cash - Operating Account',
-        debit_amount: 0,
-        credit_amount: data.amount
-      }
-    ]
+    gl_entries: is_ar_payment
+      ? [
+          {
+            account_code: '1100',
+            account_name: 'Cash - Operating Account',
+            debit_amount: data.amount,
+            credit_amount: 0
+          },
+          {
+            account_code: '1200',
+            account_name: 'Accounts Receivable',
+            debit_amount: 0,
+            credit_amount: data.amount
+          }
+        ]
+      : [
+          {
+            account_code: '2100',
+            account_name: 'Accounts Payable',
+            debit_amount: data.amount,
+            credit_amount: 0
+          },
+          {
+            account_code: '1100',
+            account_name: 'Cash - Operating Account',
+            debit_amount: 0,
+            credit_amount: data.amount
+          }
+        ]
   })
 }
 
 // Bank Deposit Handler (HERA.FIN.BL.TXN.DEP.v1)
 async function handleBankDeposit(data: any, smart_code: string, organization_id: string) {
   const deposit_id = `DEP-${Date.now()}`
-  
+
   return NextResponse.json({
     success: true,
     message: 'Bank deposit recorded successfully',
@@ -416,10 +566,14 @@ async function handleBankDeposit(data: any, smart_code: string, organization_id:
 }
 
 // Asset Acquisition Handler (HERA.FIN.AA.TXN.ACQ.v1)
-async function handleAssetAcquisition(data: AssetData, smart_code: string, organization_id: string) {
+async function handleAssetAcquisition(
+  data: AssetData,
+  smart_code: string,
+  organization_id: string
+) {
   const asset_id = `ASSET-${Date.now()}`
   const monthly_depreciation = data.acquisition_cost / (data.useful_life * 12)
-  
+
   return NextResponse.json({
     success: true,
     message: 'Asset acquired and recorded successfully',
@@ -458,7 +612,7 @@ async function handleAssetAcquisition(data: AssetData, smart_code: string, organ
 async function handleBudgetCreate(data: BudgetData, smart_code: string, organization_id: string) {
   const budget_id = `BUD-${Date.now()}`
   const total_budget = data.line_items.reduce((sum, item) => sum + item.budgeted_amount, 0)
-  
+
   return NextResponse.json({
     success: true,
     message: 'Budget created successfully',
@@ -482,9 +636,9 @@ async function handleBudgetCreate(data: BudgetData, smart_code: string, organiza
 
 // Tax Calculation Handler (HERA.FIN.TX.TXN.VAT.v1)
 async function handleTaxCalculation(data: any, smart_code: string, organization_id: string) {
-  const tax_rate = data.tax_rate || 0.10 // Default 10%
+  const tax_rate = data.tax_rate || 0.1 // Default 10%
   const tax_amount = data.taxable_amount * tax_rate
-  
+
   return NextResponse.json({
     success: true,
     message: 'Tax calculated successfully',
@@ -504,7 +658,7 @@ async function handleTaxCalculation(data: any, smart_code: string, organization_
 // Financial Report Handler (HERA.FIN.REPT.RPT.*.v1)
 async function handleFinancialReport(data: any, smart_code: string, organization_id: string) {
   const report_type = data.report_type || 'general'
-  
+
   return NextResponse.json({
     success: true,
     message: 'Financial report generated successfully',
@@ -523,7 +677,7 @@ async function handleFinancialReport(data: any, smart_code: string, organization
 // KPI Calculation Handler (HERA.FIN.REPT.KPI.*.v1)
 async function handleKPICalculation(data: any, smart_code: string, organization_id: string) {
   const kpi_type = data.kpi_type || 'current_ratio'
-  
+
   // Mock financial data for calculation
   const financial_data = {
     current_assets: 500000,
@@ -536,17 +690,24 @@ async function handleKPICalculation(data: any, smart_code: string, organization_
     total_debt: 300000,
     total_equity: 450000
   }
-  
+
   let kpi_value = 0
   let kpi_formula = ''
-  
+
   switch (kpi_type) {
     case 'current_ratio':
-      kpi_value = KPI_FORMULAS.current_ratio(financial_data.current_assets, financial_data.current_liabilities)
+      kpi_value = KPI_FORMULAS.current_ratio(
+        financial_data.current_assets,
+        financial_data.current_liabilities
+      )
       kpi_formula = 'Current Assets / Current Liabilities'
       break
     case 'quick_ratio':
-      kpi_value = KPI_FORMULAS.quick_ratio(financial_data.current_assets, financial_data.inventory, financial_data.current_liabilities)
+      kpi_value = KPI_FORMULAS.quick_ratio(
+        financial_data.current_assets,
+        financial_data.inventory,
+        financial_data.current_liabilities
+      )
       kpi_formula = '(Current Assets - Inventory) / Current Liabilities'
       break
     case 'gross_profit_margin':
@@ -558,15 +719,21 @@ async function handleKPICalculation(data: any, smart_code: string, organization_
       kpi_formula = 'Net Income / Revenue * 100'
       break
     case 'return_on_assets':
-      kpi_value = KPI_FORMULAS.return_on_assets(financial_data.net_income, financial_data.total_assets)
+      kpi_value = KPI_FORMULAS.return_on_assets(
+        financial_data.net_income,
+        financial_data.total_assets
+      )
       kpi_formula = 'Net Income / Total Assets * 100'
       break
     case 'debt_to_equity':
-      kpi_value = KPI_FORMULAS.debt_to_equity(financial_data.total_debt, financial_data.total_equity)
+      kpi_value = KPI_FORMULAS.debt_to_equity(
+        financial_data.total_debt,
+        financial_data.total_equity
+      )
       kpi_formula = 'Total Debt / Total Equity'
       break
   }
-  
+
   return NextResponse.json({
     success: true,
     message: 'KPI calculated successfully',
@@ -619,19 +786,19 @@ function generateMockReportData(report_type: string) {
 
 function getBenchmarkValue(kpi_type: string): number {
   const benchmarks: { [key: string]: number } = {
-    'current_ratio': 2.0,
-    'quick_ratio': 1.0,
-    'gross_profit_margin': 30.0,
-    'net_profit_margin': 10.0,
-    'return_on_assets': 8.0,
-    'debt_to_equity': 0.5
+    current_ratio: 2.0,
+    quick_ratio: 1.0,
+    gross_profit_margin: 30.0,
+    net_profit_margin: 10.0,
+    return_on_assets: 8.0,
+    debt_to_equity: 0.5
   }
   return benchmarks[kpi_type] || 0
 }
 
 function getPerformanceRating(kpi_type: string, value: number): string {
   const benchmark = getBenchmarkValue(kpi_type)
-  
+
   if (kpi_type === 'debt_to_equity') {
     // Lower is better for debt ratios
     if (value <= benchmark * 0.8) return 'Excellent'
@@ -696,7 +863,7 @@ async function generateIncomeStatement(organization_id: string) {
         total_expenses: 1070000
       },
       net_income: 180000,
-      earnings_per_share: 1.80
+      earnings_per_share: 1.8
     },
     smart_code: 'HERA.FIN.GL.RPT.PL.v1',
     organization_id

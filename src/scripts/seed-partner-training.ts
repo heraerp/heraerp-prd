@@ -1,7 +1,7 @@
 /**
  * HERA Partner Training System Seed Data
  * Smart Code: HERA.PAR.TRN.SEED.SETUP.v1
- * 
+ *
  * META BREAKTHROUGH: Seeding training system using HERA's own universal architecture
  * Training modules as entities, content as dynamic data, assessments as relationships
  */
@@ -11,7 +11,7 @@ import { getHeraAPI } from '@/lib/hera-api'
 export async function seedPartnerTrainingSystem() {
   const heraApi = getHeraAPI()
   const organizationId = '719dfed1-09b4-4ca8-bfda-f682460de945' // HERA System Org
-  
+
   console.log('🚀 Seeding HERA Partner Training System...')
 
   try {
@@ -21,14 +21,14 @@ export async function seedPartnerTrainingSystem() {
         entity_name: 'HERA Business Impact & Value Proposition',
         entity_code: 'TRN-VALUE-001',
         metadata: {
-          description: 'Master HERA\'s business impact and learn to communicate value that sells',
+          description: "Master HERA's business impact and learn to communicate value that sells",
           category: 'business_impact',
           difficulty: 'beginner',
           sequence_order: 1,
           estimated_duration: '90 minutes',
           prerequisites: [],
           learning_objectives: [
-            'Articulate HERA\'s 10x business advantage',
+            "Articulate HERA's 10x business advantage",
             'Position HERA vs SAP/competitors with confidence',
             'Calculate customer ROI in real-time',
             'Handle price objections like a pro'
@@ -41,7 +41,7 @@ export async function seedPartnerTrainingSystem() {
         dynamic_data: {
           content_outline: JSON.stringify([
             { section: 'The $2.9M SAP Problem Every Business Faces', duration: '15 min' },
-            { section: 'HERA\'s 10x Business Advantage', duration: '20 min' },
+            { section: "HERA's 10x Business Advantage", duration: '20 min' },
             { section: 'Real Customer Success Stories', duration: '25 min' },
             { section: 'ROI Calculator Mastery', duration: '15 min' },
             { section: 'Objection Handling Playbook', duration: '15 min' }
@@ -57,7 +57,11 @@ export async function seedPartnerTrainingSystem() {
               title: 'Restaurant Chain: 0 to 50 Locations with HERA',
               url: 'https://training.hera.com/success-stories/restaurant-growth',
               duration: '12 min',
-              key_points: ['Scaled without complexity', 'Real-time multi-location control', 'Franchise-ready in weeks']
+              key_points: [
+                'Scaled without complexity',
+                'Real-time multi-location control',
+                'Franchise-ready in weeks'
+              ]
             }
           ]),
           value_props: JSON.stringify([
@@ -80,12 +84,18 @@ export async function seedPartnerTrainingSystem() {
           objection_handlers: JSON.stringify([
             {
               objection: '"This seems too good to be true"',
-              response: 'I understand the skepticism. Every one of our 500+ customers said the exact same thing. Here\'s a live demo of three actual customer environments running right now...',
-              proof_points: ['Live customer demos', 'Public case studies', 'Reference calls available']
+              response:
+                "I understand the skepticism. Every one of our 500+ customers said the exact same thing. Here's a live demo of three actual customer environments running right now...",
+              proof_points: [
+                'Live customer demos',
+                'Public case studies',
+                'Reference calls available'
+              ]
             },
             {
               objection: '"We\'re happy with our current system"',
-              response: 'That\'s great! Happy is good. But what if I could show you how to be 10x happier while saving $200K per year? Would 15 minutes be worth $200K?',
+              response:
+                "That's great! Happy is good. But what if I could show you how to be 10x happier while saving $200K per year? Would 15 minutes be worth $200K?",
               proof_points: ['ROI calculator', 'Current system assessment', 'No-risk pilot program']
             }
           ])
@@ -124,14 +134,18 @@ export async function seedPartnerTrainingSystem() {
             {
               tactic: 'LinkedIn CEO Hunting',
               description: 'Target CEOs of 50-500 employee companies with specific pain points',
-              script: 'Hi [Name], I noticed [Company] just hit [milestone]. Congrats! I\'m helping similar companies save $200K+/year on their ERP costs. Worth a 15-min conversation?',
+              script:
+                "Hi [Name], I noticed [Company] just hit [milestone]. Congrats! I'm helping similar companies save $200K+/year on their ERP costs. Worth a 15-min conversation?",
               success_rate: '15-20% response rate',
               daily_target: '10 personalized messages'
             },
             {
               tactic: 'SAP Horror Stories Content',
               description: 'Create viral content about SAP implementation failures',
-              examples: ['"Why We Fired Our $500K SAP Consultants"', '"The $2.9M Mistake Most CEOs Make"'],
+              examples: [
+                '"Why We Fired Our $500K SAP Consultants"',
+                '"The $2.9M Mistake Most CEOs Make"'
+              ],
               distribution: ['LinkedIn posts', 'Industry forums', 'Email newsletters'],
               viral_potential: 'High - everyone has SAP horror stories'
             },
@@ -147,14 +161,16 @@ export async function seedPartnerTrainingSystem() {
             {
               strategy: 'Customer Success Story Amplification',
               method: 'Turn customer wins into viral LinkedIn posts',
-              template: '[Customer] just saved $300K in their first year with HERA. Here\'s exactly how they did it... [detailed breakdown]',
+              template:
+                "[Customer] just saved $300K in their first year with HERA. Here's exactly how they did it... [detailed breakdown]",
               engagement: 'Tag customer, use industry hashtags, share metrics',
               virality: 'Customers love sharing their wins - free promotion'
             },
             {
               strategy: 'SAP vs HERA Challenge',
               method: 'Public comparison challenges with existing SAP users',
-              offer: 'We\'ll implement HERA alongside your SAP for 30 days. If HERA isn\'t 10x better, we pay YOU $10,000.',
+              offer:
+                "We'll implement HERA alongside your SAP for 30 days. If HERA isn't 10x better, we pay YOU $10,000.",
               psychology: 'Confidence + skin in the game = massive credibility',
               spread: 'Shocking offer gets shared organically'
             }
@@ -195,31 +211,37 @@ export async function seedPartnerTrainingSystem() {
             {
               technique: 'The Assumptive Close',
               scenario: 'When customer shows strong interest',
-              script: 'Based on everything we\'ve discussed, it sounds like HERA is exactly what [Company] needs. Should we get you started with the 30-day pilot, or would you prefer to begin with the full implementation?',
+              script:
+                "Based on everything we've discussed, it sounds like HERA is exactly what [Company] needs. Should we get you started with the 30-day pilot, or would you prefer to begin with the full implementation?",
               psychology: 'Assumes the sale, gives control through choice'
             },
             {
               technique: 'The Pain Amplification Close',
               scenario: 'When customer is hesitant about change',
-              script: 'I understand change is challenging. But what\'s the cost of staying with your current system for another year? Another $200K in consultants? Another failed project? Sometimes the biggest risk is doing nothing.',
+              script:
+                "I understand change is challenging. But what's the cost of staying with your current system for another year? Another $200K in consultants? Another failed project? Sometimes the biggest risk is doing nothing.",
               psychology: 'Makes status quo feel riskier than change'
             },
             {
               technique: 'The Scarcity Close',
               scenario: 'When customer needs urgency',
-              script: 'I\'ve got capacity for 2 more implementations this quarter. Given your timeline, we\'d need to start by [date] to meet your [goal]. Should I hold that spot for you?',
+              script:
+                "I've got capacity for 2 more implementations this quarter. Given your timeline, we'd need to start by [date] to meet your [goal]. Should I hold that spot for you?",
               psychology: 'Limited availability creates urgency'
             }
           ]),
           objection_mastery: JSON.stringify([
             {
               objection: '"We need to think about it"',
-              response: 'Absolutely, this is an important decision. Let me ask - what specifically would you like to think about? Is it the investment, the timeline, or something else?',
-              follow_up: 'Address specific concern, then: "If we could resolve [concern], would you be ready to move forward?"'
+              response:
+                'Absolutely, this is an important decision. Let me ask - what specifically would you like to think about? Is it the investment, the timeline, or something else?',
+              follow_up:
+                'Address specific concern, then: "If we could resolve [concern], would you be ready to move forward?"'
             },
             {
               objection: '"The price is too high"',
-              response: 'I understand price is a consideration. Let\'s look at this differently - what\'s the cost of your current system over the next 3 years? [Calculate]. HERA will save you $[amount] over that period. Isn\'t that worth the investment?',
+              response:
+                "I understand price is a consideration. Let's look at this differently - what's the cost of your current system over the next 3 years? [Calculate]. HERA will save you $[amount] over that period. Isn't that worth the investment?",
               follow_up: 'Show total cost of ownership comparison'
             }
           ])
@@ -281,7 +303,8 @@ export async function seedPartnerTrainingSystem() {
             {
               system: 'The Quarterly Business Review Referral Ask',
               timing: 'During positive QBR meetings',
-              script: 'You\'ve seen incredible results with HERA. Who else in your network is struggling with the same challenges you had before HERA?',
+              script:
+                "You've seen incredible results with HERA. Who else in your network is struggling with the same challenges you had before HERA?",
               incentive: '$2,000 credit + 3 months free service for successful referrals',
               conversion_rate: '40% of happy customers give referrals'
             },
@@ -478,7 +501,6 @@ export async function seedPartnerTrainingSystem() {
       certifications_created: certifications.length,
       meta_breakthrough: 'Training system built using HERA to manage HERA partner education'
     }
-
   } catch (error) {
     console.error('❌ Partner Training System seed failed:', error)
     throw error

@@ -17,21 +17,21 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 export default function SignUpPage() {
   const router = useRouter()
   const { register } = useMultiOrgAuth()
-  
+
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Form data
   const [formData, setFormData] = useState({
     // Step 1: Account
     email: '',
     password: '',
     confirmPassword: '',
-    
+
     // Step 2: Profile
     full_name: '',
-    phone: '',
+    phone: ''
   })
 
   const handleStep1Submit = async (e: React.FormEvent) => {
@@ -65,9 +65,10 @@ export default function SignUpPage() {
       if (result && result.user) {
         // For new users, identities array will have entries
         // For existing users, it will be empty or the user object will have different characteristics
-        const isExistingUser = !result.session || 
-                              (result.user.identities && result.user.identities.length === 0) ||
-                              result.user.email_confirmed_at !== null
+        const isExistingUser =
+          !result.session ||
+          (result.user.identities && result.user.identities.length === 0) ||
+          result.user.email_confirmed_at !== null
 
         if (isExistingUser) {
           setError('An account with this email already exists. Please sign in instead.')
@@ -84,10 +85,12 @@ export default function SignUpPage() {
     } catch (err) {
       // Handle specific Supabase errors
       const errorMessage = err instanceof Error ? err.message : 'Failed to create account'
-      
+
       // Check for common existing user error messages
-      if (errorMessage.toLowerCase().includes('already registered') || 
-          errorMessage.toLowerCase().includes('already exists')) {
+      if (
+        errorMessage.toLowerCase().includes('already registered') ||
+        errorMessage.toLowerCase().includes('already exists')
+      ) {
         setError('An account with this email already exists. Please sign in instead.')
         // Redirect to login after 2 seconds
         setTimeout(() => {
@@ -125,11 +128,15 @@ export default function SignUpPage() {
                 <span className="text-white font-bold text-sm sm:text-lg">H</span>
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">HERA ERP</h1>
-                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">Universal Business Platform</p>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                  HERA ERP
+                </h1>
+                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">
+                  Universal Business Platform
+                </p>
               </div>
             </Link>
-            
+
             <Link href="/auth/login">
               <Button variant="outline" size="sm" className="!text-slate-700 dark:!text-slate-200">
                 Sign In
@@ -141,193 +148,245 @@ export default function SignUpPage() {
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-lg mx-auto">
-        {/* Progress indicator */}
-        <div className="mb-8">
-          <div className="flex items-center justify-center space-x-4">
-            <div className={`flex items-center ${step >= 1 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                step >= 1 ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110' : 'bg-slate-200 dark:bg-slate-700'
-              }`}>
-                <span className="font-semibold">1</span>
+          {/* Progress indicator */}
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-4">
+              <div
+                className={`flex items-center ${step >= 1 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+              >
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    step >= 1
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110'
+                      : 'bg-slate-200 dark:bg-slate-700'
+                  }`}
+                >
+                  <span className="font-semibold">1</span>
+                </div>
+                <span className="ml-2 hidden sm:inline font-medium">Account</span>
               </div>
-              <span className="ml-2 hidden sm:inline font-medium">Account</span>
-            </div>
-            <div className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`} />
-            <div className={`flex items-center ${step >= 2 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                step >= 2 ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110' : 'bg-slate-200 dark:bg-slate-700'
-              }`}>
-                <span className="font-semibold">2</span>
+              <div
+                className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}
+              />
+              <div
+                className={`flex items-center ${step >= 2 ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
+              >
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    step >= 2
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white transform scale-110'
+                      : 'bg-slate-200 dark:bg-slate-700'
+                  }`}
+                >
+                  <span className="font-semibold">2</span>
+                </div>
+                <span className="ml-2 hidden sm:inline font-medium">Profile</span>
               </div>
-              <span className="ml-2 hidden sm:inline font-medium">Profile</span>
-            </div>
-            <div className={`w-16 h-1 rounded-full bg-slate-200 dark:bg-slate-700`} />
-            <div className="flex items-center text-slate-400 dark:text-slate-500">
-              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shadow-lg">
-                <span className="font-semibold">3</span>
+              <div className={`w-16 h-1 rounded-full bg-slate-200 dark:bg-slate-700`} />
+              <div className="flex items-center text-slate-400 dark:text-slate-500">
+                <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shadow-lg">
+                  <span className="font-semibold">3</span>
+                </div>
+                <span className="ml-2 hidden sm:inline font-medium">Organization</span>
               </div>
-              <span className="ml-2 hidden sm:inline font-medium">Organization</span>
             </div>
           </div>
-        </div>
 
-        {step === 1 && (
-          <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <CardHeader className="text-center pb-6 pt-8">
-              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">Create Your HERA Account</CardTitle>
-              <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
-                Start your journey to enterprise-grade ERP in minutes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pb-8">
-              <form onSubmit={handleStep1Submit} className="space-y-4">
-                {error && (
-                  <Alert variant="destructive" className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription className="text-red-800 dark:text-red-200">{error}</AlertDescription>
-                  </Alert>
-                )}
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                    disabled={isLoading}
-                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    required
-                    disabled={isLoading}
-                    minLength={8}
-                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
-                  />
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
-                    Must be at least 8 characters
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700 dark:text-slate-300">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                    required
-                    disabled={isLoading}
-                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
-                  />
-                </div>
-                
-                <Button
-                  type="submit"
-                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Account...
-                    </>
-                  ) : (
-                    <>
-                      Continue
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
+          {step === 1 && (
+            <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <CardHeader className="text-center pb-6 pt-8">
+                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
+                  Create Your HERA Account
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
+                  Start your journey to enterprise-grade ERP in minutes
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pb-8">
+                <form onSubmit={handleStep1Submit} className="space-y-4">
+                  {error && (
+                    <Alert
+                      variant="destructive"
+                      className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800"
+                    >
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription className="text-red-800 dark:text-red-200">
+                        {error}
+                      </AlertDescription>
+                    </Alert>
                   )}
-                </Button>
-              </form>
-              
-              <div className="mt-6 text-center text-sm">
-                <span className="text-slate-600 dark:text-slate-400">Already have an account?</span>
-                {' '}
-                <Link href="/auth/login" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-all duration-200">
-                  Sign in
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
-        {step === 2 && (
-          <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-            <CardHeader className="text-center pb-6 pt-8">
-              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">Complete Your Profile</CardTitle>
-              <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
-                Tell us a bit about yourself (optional)
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pb-8">
-              <form onSubmit={handleStep2Submit} className="space-y-4">
-                <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    ✓ Account created successfully! Check your email to verify your address.
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="full_name" className="text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</Label>
-                  <Input
-                    id="full_name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={formData.full_name}
-                    onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                    disabled={isLoading}
-                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-medium text-slate-700 dark:text-slate-300">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+1 (555) 123-4567"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    disabled={isLoading}
-                    className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
-                  />
-                </div>
-                
-                <div className="flex gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1 h-12 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-                    onClick={() => router.push('/auth/organizations/new')}
-                  >
-                    Skip
-                  </Button>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Email Address
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={e => setFormData({ ...formData, email: e.target.value })}
+                      required
+                      disabled={isLoading}
+                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="password"
+                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Password
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={e => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      disabled={isLoading}
+                      minLength={8}
+                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                    />
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      Must be at least 8 characters
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="confirmPassword"
+                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Confirm Password
+                    </Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      required
+                      disabled={isLoading}
+                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                    />
+                  </div>
+
                   <Button
                     type="submit"
-                    className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                     disabled={isLoading}
                   >
-                    Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : (
+                      <>
+                        Continue
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
                   </Button>
+                </form>
+
+                <div className="mt-6 text-center text-sm">
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Already have an account?
+                  </span>{' '}
+                  <Link
+                    href="/auth/login"
+                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-all duration-200"
+                  >
+                    Sign in
+                  </Link>
                 </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+          )}
+
+          {step === 2 && (
+            <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <CardHeader className="text-center pb-6 pt-8">
+                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">
+                  Complete Your Profile
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400 mt-2">
+                  Tell us a bit about yourself (optional)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pb-8">
+                <form onSubmit={handleStep2Submit} className="space-y-4">
+                  <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+                    <p className="text-sm text-green-800 dark:text-green-200">
+                      ✓ Account created successfully! Check your email to verify your address.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="full_name"
+                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Full Name
+                    </Label>
+                    <Input
+                      id="full_name"
+                      type="text"
+                      placeholder="John Doe"
+                      value={formData.full_name}
+                      onChange={e => setFormData({ ...formData, full_name: e.target.value })}
+                      disabled={isLoading}
+                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="phone"
+                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+1 (555) 123-4567"
+                      value={formData.phone}
+                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                      disabled={isLoading}
+                      className="h-12 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1 h-12 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      onClick={() => router.push('/auth/organizations/new')}
+                    >
+                      Skip
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                      disabled={isLoading}
+                    >
+                      Continue
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

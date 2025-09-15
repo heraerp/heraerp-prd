@@ -7,7 +7,7 @@ import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { TestimonialCard } from '@/components/franchise/TestimonialCard'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   ArrowRight,
   Clock,
   TrendingUp,
@@ -27,8 +27,9 @@ import {
 
 export const metadata: Metadata = {
   title: 'Start Today - HERA Franchise Final Push',
-  description: 'This is your moment. Limited territories remaining. Join the ERP revolution and start earning $25K–$500K+ annually.',
-  keywords: 'HERA franchise final decision, start today, limited territories, ERP opportunity',
+  description:
+    'This is your moment. Limited territories remaining. Join the ERP revolution and start earning $25K–$500K+ annually.',
+  keywords: 'HERA franchise final decision, start today, limited territories, ERP opportunity'
 }
 
 const urgencyFactors = [
@@ -89,7 +90,8 @@ const testimonialFinal = {
   name: 'Jennifer Walsh',
   title: 'HERA Partner - Pacific Northwest',
   company: 'Earned $340K in Year 2',
-  testimonial: 'I almost didn\'t apply because I thought it was too good to be true. Two years later, I\'ve earned more than my previous 5 years combined. The regret would have haunted me forever if I hadn\'t taken action.',
+  testimonial:
+    "I almost didn't apply because I thought it was too good to be true. Two years later, I've earned more than my previous 5 years combined. The regret would have haunted me forever if I hadn't taken action.",
   rating: 5
 }
 
@@ -124,26 +126,26 @@ export default function StartPage() {
               Territory Scarcity Alert
             </h2>
             <p className="text-lg text-red-800 dark:text-red-200 max-w-2xl mx-auto">
-              High-value territories are being claimed daily. Don't let someone else take your market.
+              High-value territories are being claimed daily. Don't let someone else take your
+              market.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {urgencyFactors.map((factor, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-6 border-2 border-red-200 dark:border-red-800 shadow-lg">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-6 border-2 border-red-200 dark:border-red-800 shadow-lg"
+              >
                 <factor.icon className={`h-8 w-8 ${factor.color} mb-3`} />
-                <h3 className="font-bold text-slate-900 dark:text-white mb-2">
-                  {factor.title}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {factor.description}
-                </p>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-2">{factor.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{factor.description}</p>
               </div>
             ))}
           </div>
 
           <div className="text-center">
-            <Button 
+            <Button
               asChild
               size="lg"
               className="bg-red-600 hover:bg-red-700 text-white font-bold px-12 py-6 text-xl animate-pulse"
@@ -168,21 +170,20 @@ export default function StartPage() {
               What Are You Really Buying?
             </h2>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              This isn't just a business opportunity. This is your escape plan from everything 
-              you hate about your current situation.
+              This isn't just a business opportunity. This is your escape plan from everything you
+              hate about your current situation.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             {emotionalTriggers.map((trigger, index) => (
-              <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20">
+              <div
+                key={index}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20"
+              >
                 <trigger.icon className="h-12 w-12 text-white mb-4" />
-                <h3 className="text-2xl font-bold text-white mb-3">
-                  {trigger.title}
-                </h3>
-                <p className="text-lg text-blue-100 mb-4">
-                  {trigger.description}
-                </p>
+                <h3 className="text-2xl font-bold text-white mb-3">{trigger.title}</h3>
+                <p className="text-lg text-blue-100 mb-4">{trigger.description}</p>
                 <div className="border-t border-white/20 pt-4">
                   <p className="text-sm text-yellow-300 font-medium">
                     <strong>Real Impact:</strong> {trigger.impact}
@@ -199,8 +200,8 @@ export default function StartPage() {
             <p className="text-xl text-blue-100 mb-8">
               The question is: "Can I afford NOT to do this?"
             </p>
-            
-            <Button 
+
+            <Button
               asChild
               size="lg"
               className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-12 py-6 text-xl"
@@ -246,16 +247,13 @@ export default function StartPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {finalStats.map((stat, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm text-center">
-                <div className="text-4xl font-bold text-blue-600 mb-2">
-                  {stat.stat}
-                </div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
-                  {stat.label}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {stat.sublabel}
-                </p>
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm text-center"
+              >
+                <div className="text-4xl font-bold text-blue-600 mb-2">{stat.stat}</div>
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">{stat.label}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{stat.sublabel}</p>
               </div>
             ))}
           </div>
@@ -342,11 +340,11 @@ export default function StartPage() {
             <h1 className="text-4xl lg:text-6xl font-bold text-white mb-8 leading-tight">
               The Time Is NOW
             </h1>
-            
+
             <p className="text-2xl text-blue-100 mb-6">
               You've seen the proof. You know the opportunity. You understand the urgency.
             </p>
-            
+
             <p className="text-xl text-white mb-12 font-medium">
               The only thing standing between you and financial freedom is a decision.
             </p>
@@ -357,21 +355,27 @@ export default function StartPage() {
               </h3>
               <div className="grid md:grid-cols-3 gap-6 text-left">
                 <div className="flex items-start">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">1</div>
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">
+                    1
+                  </div>
                   <div>
                     <p className="text-white font-semibold">Click Apply</p>
                     <p className="text-blue-100 text-sm">3-minute application</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">2</div>
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">
+                    2
+                  </div>
                   <div>
                     <p className="text-white font-semibold">Get Approved</p>
                     <p className="text-blue-100 text-sm">24-48 hour response</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">3</div>
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black text-sm font-bold mr-3 mt-1">
+                    3
+                  </div>
                   <div>
                     <p className="text-white font-semibold">Start Earning</p>
                     <p className="text-blue-100 text-sm">First commission in 60 days</p>
@@ -381,7 +385,7 @@ export default function StartPage() {
             </div>
 
             <div className="space-y-6">
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-16 py-8 text-2xl shadow-2xl transform hover:scale-105 transition-all duration-200"
@@ -397,26 +401,22 @@ export default function StartPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                <Button 
+                <Button
                   asChild
                   variant="outline"
                   size="lg"
                   className="border-white text-white hover:bg-white/10 px-8 py-4 text-lg"
                 >
-                  <a href="tel:+1-800-HERA-NOW">
-                    Call Now: 1-800-HERA-NOW
-                  </a>
+                  <a href="tel:+1-800-HERA-NOW">Call Now: 1-800-HERA-NOW</a>
                 </Button>
-                
-                <Button 
+
+                <Button
                   asChild
                   variant="outline"
                   size="lg"
                   className="border-white text-white hover:bg-white/10 px-8 py-4 text-lg"
                 >
-                  <a href="mailto:franchise@hera.com">
-                    Email: franchise@hera.com
-                  </a>
+                  <a href="mailto:franchise@hera.com">Email: franchise@hera.com</a>
                 </Button>
               </div>
             </div>

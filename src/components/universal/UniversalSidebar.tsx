@@ -37,12 +37,12 @@ interface UniversalSidebarProps {
 }
 
 // Mobile Bottom Navigation Component
-const MobileBottomNav = React.memo(function MobileBottomNav({ 
-  sidebarItems, 
-  isActive, 
+const MobileBottomNav = React.memo(function MobileBottomNav({
+  sidebarItems,
+  isActive,
   moduleColor,
-  onNavigate 
-}: { 
+  onNavigate
+}: {
   sidebarItems: SidebarItem[]
   isActive: (href: string) => boolean
   moduleColor: { from: string; to: string }
@@ -53,40 +53,41 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-2xl border-t border-white/20 z-40 shadow-2xl">
       <div className="grid grid-cols-4 gap-0">
-        {mainItems.map((item) => {
+        {mainItems.map(item => {
           const Icon = item.icon
           const active = isActive(item.href)
-          
+
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={onNavigate}
               className={cn(
-                "flex flex-col items-center justify-center py-3 relative",
+                'flex flex-col items-center justify-center py-3 relative',
                 active
                   ? `bg-gradient-to-t ${moduleColor.from}/10 ${moduleColor.to}/10 text-gray-900`
-                  : "text-gray-500"
+                  : 'text-gray-500'
               )}
             >
               <div className="relative">
-                <Icon className={cn(
-                  "h-5 w-5",
-                  active ? "text-violet-600" : "text-gray-400"
-                )} />
+                <Icon className={cn('h-5 w-5', active ? 'text-violet-600' : 'text-gray-400')} />
                 {item.badge && (
-                  <span className={cn(
-                    "absolute -top-1 -right-1 text-[8px] px-1 rounded-full text-white min-w-[14px] text-center",
-                    item.badgeColor || "bg-gray-600"
-                  )}>
+                  <span
+                    className={cn(
+                      'absolute -top-1 -right-1 text-[8px] px-1 rounded-full text-white min-w-[14px] text-center',
+                      item.badgeColor || 'bg-gray-600'
+                    )}
+                  >
                     {item.badge}
                   </span>
                 )}
               </div>
-              <span className={cn(
-                "text-[10px] mt-1 font-medium",
-                active ? "text-gray-900" : "text-gray-500"
-              )}>
+              <span
+                className={cn(
+                  'text-[10px] mt-1 font-medium',
+                  active ? 'text-gray-900' : 'text-gray-500'
+                )}
+              >
                 {item.title}
               </span>
             </Link>
@@ -98,15 +99,15 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
 })
 
 // Apps Modal Component
-const AppsModal = React.memo(function AppsModal({ 
-  isOpen, 
-  onClose, 
-  isActive, 
+const AppsModal = React.memo(function AppsModal({
+  isOpen,
+  onClose,
+  isActive,
   allApps,
   moduleColor,
   moduleName,
-  onNavigate 
-}: { 
+  onNavigate
+}: {
   isOpen: boolean
   onClose: () => void
   isActive: (href: string) => boolean
@@ -131,19 +132,20 @@ const AppsModal = React.memo(function AppsModal({
   return createPortal(
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={onClose} />
+
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-white/80 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-white/20">
             <div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">All {moduleName} Apps</h2>
-              <p className="text-sm text-gray-600 mt-1">Access all your {moduleName.toLowerCase()} tools</p>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                All {moduleName} Apps
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Access all your {moduleName.toLowerCase()} tools
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -152,14 +154,14 @@ const AppsModal = React.memo(function AppsModal({
               <X className="h-6 w-6" />
             </button>
           </div>
-          
+
           {/* Apps Grid */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {allApps.map((app) => {
+              {allApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
-                
+
                 return (
                   <Link
                     key={app.href}
@@ -169,24 +171,30 @@ const AppsModal = React.memo(function AppsModal({
                       if (onNavigate) onNavigate()
                     }}
                     className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group",
-                      "bg-white/50 hover:bg-white/70 backdrop-blur-sm",
-                      "border border-white/20 hover:border-violet-400/30",
-                      "hover:shadow-lg hover:scale-[1.02]",
-                      active && "bg-white/70 border-violet-400/50 shadow-lg"
+                      'flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group',
+                      'bg-white/50 hover:bg-white/70 backdrop-blur-sm',
+                      'border border-white/20 hover:border-violet-400/30',
+                      'hover:shadow-lg hover:scale-[1.02]',
+                      active && 'bg-white/70 border-violet-400/50 shadow-lg'
                     )}
                   >
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center mb-2 shadow-md",
-                      "bg-gradient-to-br",
-                      active ? `${moduleColor.from} ${moduleColor.to}` : "from-violet-500 to-purple-600 group-hover:from-violet-600 group-hover:to-purple-700"
-                    )}>
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center mb-2 shadow-md',
+                        'bg-gradient-to-br',
+                        active
+                          ? `${moduleColor.from} ${moduleColor.to}`
+                          : 'from-violet-500 to-purple-600 group-hover:from-violet-600 group-hover:to-purple-700'
+                      )}
+                    >
                       <Icon className="h-6 w-6 text-white" />
                     </div>
-                    <span className={cn(
-                      "text-xs font-medium text-center",
-                      active ? "text-violet-600" : "text-gray-700 group-hover:text-violet-600"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-xs font-medium text-center',
+                        active ? 'text-violet-600' : 'text-gray-700 group-hover:text-violet-600'
+                      )}
+                    >
                       {app.title}
                     </span>
                   </Link>
@@ -217,12 +225,15 @@ function UniversalSidebar({
   const [showAppsModal, setShowAppsModal] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const isActive = useCallback((href: string) => {
-    const basePath = href.split('/').slice(0, 2).join('/')
-    if (pathname === href) return true
-    if (pathname.startsWith(href) && href !== basePath) return true
-    return false
-  }, [pathname])
+  const isActive = useCallback(
+    (href: string) => {
+      const basePath = href.split('/').slice(0, 2).join('/')
+      if (pathname === href) return true
+      if (pathname.startsWith(href) && href !== basePath) return true
+      return false
+    },
+    [pathname]
+  )
 
   const handleNavClick = useCallback(() => {
     setIsMobileMenuOpen(false)
@@ -243,7 +254,13 @@ function UniversalSidebar({
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <div className={cn("w-8 h-8 rounded-lg bg-gradient-to-r flex items-center justify-center", moduleColor.from, moduleColor.to)}>
+            <div
+              className={cn(
+                'w-8 h-8 rounded-lg bg-gradient-to-r flex items-center justify-center',
+                moduleColor.from,
+                moduleColor.to
+              )}
+            >
               <ModuleIcon className="h-5 w-5 text-white" />
             </div>
             <span className="text-sm font-medium text-gray-900">{moduleName}</span>
@@ -253,21 +270,29 @@ function UniversalSidebar({
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar - Desktop always visible, Mobile slide-in */}
-      <div className={cn(
-        "fixed left-0 top-0 h-full bg-white/80 backdrop-blur-2xl border-r border-white/20 w-64 lg:w-20 z-40 shadow-2xl transition-transform duration-300",
-        "lg:translate-x-0",
-        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <div
+        className={cn(
+          'fixed left-0 top-0 h-full bg-white/80 backdrop-blur-2xl border-r border-white/20 w-64 lg:w-20 z-40 shadow-2xl transition-transform duration-300',
+          'lg:translate-x-0',
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
         {/* Logo Section */}
         <div className="h-20 flex flex-col items-center justify-center border-b border-white/20 bg-white/30">
-          <div className={cn("w-10 h-10 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg", moduleColor.from, moduleColor.to)}>
+          <div
+            className={cn(
+              'w-10 h-10 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg',
+              moduleColor.from,
+              moduleColor.to
+            )}
+          >
             <ModuleIcon className="h-6 w-6 text-white" />
           </div>
           <span className="text-[10px] text-gray-700 mt-1 font-semibold">{moduleName}</span>
@@ -276,44 +301,52 @@ function UniversalSidebar({
         {/* Navigation Items */}
         <nav className="flex-1 overflow-y-auto py-1 pb-20 lg:pb-0">
           <div className="space-y-0">
-            {sidebarItems.map((item) => {
+            {sidebarItems.map(item => {
               const Icon = item.icon
               const active = isActive(item.href)
-              
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={handleNavClick}
                   className={cn(
-                    "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative",
+                    'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative',
                     active
                       ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-900 backdrop-blur-sm`
-                      : "text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm"
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm'
                   )}
                 >
                   <div className="relative">
-                    <Icon className={cn(
-                      "h-5 w-5",
-                      active ? "text-violet-600" : "text-gray-600 group-hover:text-violet-600"
-                    )} />
-                    
+                    <Icon
+                      className={cn(
+                        'h-5 w-5',
+                        active ? 'text-violet-600' : 'text-gray-600 group-hover:text-violet-600'
+                      )}
+                    />
+
                     {/* Badge indicator */}
                     {item.badge && (
-                      <span className={cn(
-                        "absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center",
-                        item.badgeColor || "bg-gray-600"
-                      )}>
+                      <span
+                        className={cn(
+                          'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+                          item.badgeColor || 'bg-gray-600'
+                        )}
+                      >
                         {item.badge}
                       </span>
                     )}
                   </div>
-                  
+
                   {/* Text label */}
-                  <span className={cn(
-                    "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight",
-                    active ? "text-gray-900" : "text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700"
-                  )}>
+                  <span
+                    className={cn(
+                      'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight',
+                      active
+                        ? 'text-gray-900'
+                        : 'text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700'
+                    )}
+                  >
                     {item.title}
                   </span>
 
@@ -327,13 +360,13 @@ function UniversalSidebar({
                 </Link>
               )
             })}
-            
+
             {/* More Apps Button */}
             <button
               onClick={() => setShowAppsModal(true)}
               className={cn(
-                "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-200 group relative",
-                "text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm"
+                'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-200 group relative',
+                'text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm'
               )}
             >
               <Grid3x3 className="h-5 w-5 text-gray-600 group-hover:text-violet-600" />
@@ -344,38 +377,42 @@ function UniversalSidebar({
           </div>
 
           {/* Separator */}
-          {bottomItems.length > 0 && (
-            <div className="my-2 mx-4 border-t border-white/20" />
-          )}
+          {bottomItems.length > 0 && <div className="my-2 mx-4 border-t border-white/20" />}
 
           {/* Bottom Items */}
           {bottomItems.length > 0 && (
             <div className="space-y-0">
-              {bottomItems.map((item) => {
+              {bottomItems.map(item => {
                 const Icon = item.icon
                 const active = isActive(item.href)
-                
+
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={handleNavClick}
                     className={cn(
-                      "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative",
+                      'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 transition-all duration-200 group relative',
                       active
                         ? `bg-gradient-to-r ${moduleColor.from}/20 ${moduleColor.to}/20 text-gray-900 backdrop-blur-sm`
-                        : "text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm"
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-white/30 hover:backdrop-blur-sm'
                     )}
                   >
-                    <Icon className={cn(
-                      "h-5 w-5",
-                      active ? "text-violet-600" : "text-gray-600 group-hover:text-violet-600"
-                    )} />
-                    
-                    <span className={cn(
-                      "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight",
-                      active ? "text-gray-900" : "text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700"
-                    )}>
+                    <Icon
+                      className={cn(
+                        'h-5 w-5',
+                        active ? 'text-violet-600' : 'text-gray-600 group-hover:text-violet-600'
+                      )}
+                    />
+
+                    <span
+                      className={cn(
+                        'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight',
+                        active
+                          ? 'text-gray-900'
+                          : 'text-gray-600 lg:text-gray-500 group-hover:text-gray-900 lg:group-hover:text-gray-700'
+                      )}
+                    >
                       {item.title}
                     </span>
                   </Link>
@@ -394,10 +431,14 @@ function UniversalSidebar({
                 return (
                   <div key={index} className="flex items-center justify-between px-2 lg:px-2 py-1">
                     <div className="flex items-center gap-2 lg:gap-0">
-                      <Icon className={cn("h-4 lg:h-3 w-4 lg:w-3", indicator.color)} />
-                      <span className="lg:hidden text-sm text-gray-700 font-medium">{indicator.label}</span>
+                      <Icon className={cn('h-4 lg:h-3 w-4 lg:w-3', indicator.color)} />
+                      <span className="lg:hidden text-sm text-gray-700 font-medium">
+                        {indicator.label}
+                      </span>
                     </div>
-                    <span className="text-sm lg:text-[9px] text-gray-800 lg:text-gray-700 font-semibold">{indicator.value}</span>
+                    <span className="text-sm lg:text-[9px] text-gray-800 lg:text-gray-700 font-semibold">
+                      {indicator.value}
+                    </span>
                   </div>
                 )
               })}
@@ -412,25 +453,27 @@ function UniversalSidebar({
               <p className="text-xs text-gray-600 mb-1">Organization</p>
               <p className="text-sm text-gray-900 font-medium truncate">{organizationName}</p>
               {organizationId && (
-                <p className="text-xs text-gray-600 mt-1 truncate">ID: {organizationId.slice(0, 8)}...</p>
+                <p className="text-xs text-gray-600 mt-1 truncate">
+                  ID: {organizationId.slice(0, 8)}...
+                </p>
               )}
             </div>
           </div>
         )}
       </div>
-      
+
       {/* Mobile Bottom Navigation */}
-      <MobileBottomNav 
+      <MobileBottomNav
         sidebarItems={sidebarItems}
         isActive={isActive}
         moduleColor={moduleColor}
         onNavigate={handleNavClick}
       />
-      
+
       {/* Apps Modal */}
-      <AppsModal 
-        isOpen={showAppsModal} 
-        onClose={() => setShowAppsModal(false)} 
+      <AppsModal
+        isOpen={showAppsModal}
+        onClose={() => setShowAppsModal(false)}
         isActive={isActive}
         allApps={allApps}
         moduleColor={moduleColor}

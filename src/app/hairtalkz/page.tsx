@@ -4,15 +4,19 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { HairTalkzOrgProvider, HairTalkzOrgLoading, useHairTalkzOrg } from '@/components/wizard/HairTalkzOrgContext'
+import {
+  HairTalkzOrgProvider,
+  HairTalkzOrgLoading,
+  useHairTalkzOrg
+} from '@/components/wizard/HairTalkzOrgContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Sparkles, 
-  Calendar, 
-  Users, 
-  DollarSign, 
+import {
+  Sparkles,
+  Calendar,
+  Users,
+  DollarSign,
   Scissors,
   Star,
   TrendingUp,
@@ -32,7 +36,7 @@ function HairTalkzDashboardContent() {
   // Hair Talkz salon stats with AI + ERP + Modern theme
   const stats = [
     {
-      label: 'Today\'s Appointments',
+      label: "Today's Appointments",
       value: '28',
       change: '+4 walk-ins',
       trend: 'up' as const,
@@ -66,17 +70,51 @@ function HairTalkzDashboardContent() {
   ]
 
   const todaysSchedule = [
-    { time: '10:00', client: 'Sarah Ahmed', service: 'Hair Color & Cut', duration: '2h', status: 'confirmed' },
-    { time: '11:30', client: 'Fatima Al-Rashid', service: 'Keratin Treatment', duration: '3h', status: 'confirmed' },
-    { time: '14:00', client: 'Aisha Hassan', service: 'Bridal Package', duration: '4h', status: 'premium' },
-    { time: '16:30', client: 'Maryam Khalil', service: 'Hair Wash & Blow Dry', duration: '1h', status: 'confirmed' }
+    {
+      time: '10:00',
+      client: 'Sarah Ahmed',
+      service: 'Hair Color & Cut',
+      duration: '2h',
+      status: 'confirmed'
+    },
+    {
+      time: '11:30',
+      client: 'Fatima Al-Rashid',
+      service: 'Keratin Treatment',
+      duration: '3h',
+      status: 'confirmed'
+    },
+    {
+      time: '14:00',
+      client: 'Aisha Hassan',
+      service: 'Bridal Package',
+      duration: '4h',
+      status: 'premium'
+    },
+    {
+      time: '16:30',
+      client: 'Maryam Khalil',
+      service: 'Hair Wash & Blow Dry',
+      duration: '1h',
+      status: 'confirmed'
+    }
   ]
 
   const quickActions = [
-    { label: 'Book Appointment', href: '/hairtalkz/appointments/new', icon: Calendar, color: 'sage' },
+    {
+      label: 'Book Appointment',
+      href: '/hairtalkz/appointments/new',
+      icon: Calendar,
+      color: 'sage'
+    },
     { label: 'Client Management', href: '/hairtalkz/clients', icon: Users, color: 'dusty-rose' },
-    { label: 'Product Inventory', href: '/hairtalkz/inventory', icon: Sparkles, color: 'champagne' },
-    { label: 'Financial Reports', href: '/hairtalkz/reports', icon: DollarSign, color: 'sage' },
+    {
+      label: 'Product Inventory',
+      href: '/hairtalkz/inventory',
+      icon: Sparkles,
+      color: 'champagne'
+    },
+    { label: 'Financial Reports', href: '/hairtalkz/reports', icon: DollarSign, color: 'sage' }
   ]
 
   return (
@@ -116,10 +154,13 @@ function HairTalkzDashboardContent() {
       <div className="max-w-7xl mx-auto p-6 space-y-8">
         {/* Key Metrics with AI + ERP + Modern theme */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat) => {
+          {stats.map(stat => {
             const Icon = stat.icon
             return (
-              <Card key={stat.label} className="overflow-hidden border-white/20 bg-white/70 backdrop-blur-sm">
+              <Card
+                key={stat.label}
+                className="overflow-hidden border-white/20 bg-white/70 backdrop-blur-sm"
+              >
                 <CardContent className="p-0">
                   <div className={`bg-gradient-to-r ${stat.gradient} p-4 text-white`}>
                     <div className="flex items-center justify-between">
@@ -149,29 +190,33 @@ function HairTalkzDashboardContent() {
                 <span>Today's Appointments</span>
               </CardTitle>
               <CardDescription>
-                Schedule for {new Date().toLocaleDateString('en-AE', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                Schedule for{' '}
+                {new Date().toLocaleDateString('en-AE', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 })}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {todaysSchedule.map((appointment, index) => (
-                <div key={index} className="flex items-center space-x-4 p-3 rounded-lg bg-gradient-to-r from-sage-50 to-dusty-rose-50">
-                  <div className="text-sm font-mono text-sage-700 w-16">
-                    {appointment.time}
-                  </div>
+                <div
+                  key={index}
+                  className="flex items-center space-x-4 p-3 rounded-lg bg-gradient-to-r from-sage-50 to-dusty-rose-50"
+                >
+                  <div className="text-sm font-mono text-sage-700 w-16">{appointment.time}</div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-800">{appointment.client}</div>
                     <div className="text-sm text-gray-600">{appointment.service}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-gray-600">{appointment.duration}</div>
-                    <Badge 
+                    <Badge
                       variant={appointment.status === 'premium' ? 'default' : 'secondary'}
-                      className={appointment.status === 'premium' ? 'bg-champagne-500 text-white' : ''}
+                      className={
+                        appointment.status === 'premium' ? 'bg-champagne-500 text-white' : ''
+                      }
                     >
                       {appointment.status}
                     </Badge>
@@ -193,17 +238,17 @@ function HairTalkzDashboardContent() {
                 <Sparkles className="h-5 w-5 text-champagne-600" />
                 <span>Salon Operations</span>
               </CardTitle>
-              <CardDescription>
-                Quick access to key salon management features
-              </CardDescription>
+              <CardDescription>Quick access to key salon management features</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {quickActions.map((action) => {
+                {quickActions.map(action => {
                   const Icon = action.icon
                   return (
                     <Link key={action.label} href={action.href}>
-                      <Card className={`p-4 hover:scale-105 transition-transform cursor-pointer bg-gradient-to-br from-${action.color}-100 to-${action.color}-200 border-${action.color}-200`}>
+                      <Card
+                        className={`p-4 hover:scale-105 transition-transform cursor-pointer bg-gradient-to-br from-${action.color}-100 to-${action.color}-200 border-${action.color}-200`}
+                      >
                         <div className="flex flex-col items-center text-center space-y-2">
                           <Icon className={`h-8 w-8 text-${action.color}-600`} />
                           <span className="text-sm font-medium">{action.label}</span>
@@ -213,7 +258,7 @@ function HairTalkzDashboardContent() {
                   )
                 })}
               </div>
-              
+
               {/* HERA Business Setup Wizard */}
               <div className="mt-6 p-4 bg-gradient-to-r from-sage-100 via-dusty-rose-100 to-champagne-100 rounded-lg border border-sage-200">
                 <div className="flex items-start space-x-3">
@@ -223,11 +268,12 @@ function HairTalkzDashboardContent() {
                   <div className="flex-1">
                     <h3 className="font-semibold text-sage-800">Need to setup a new salon?</h3>
                     <p className="text-sm text-sage-600 mt-1">
-                      Use HERA's Business Setup Wizard to create a complete salon management system in 30 seconds
+                      Use HERA's Business Setup Wizard to create a complete salon management system
+                      in 30 seconds
                     </p>
                     <Link href="/wizard/hairtalkz">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         className="mt-3 bg-gradient-to-r from-sage-500 to-champagne-500 hover:from-sage-600 hover:to-champagne-600"
                       >
                         <Sparkles className="h-4 w-4 mr-2" />
@@ -259,7 +305,8 @@ function HairTalkzDashboardContent() {
                 </div>
                 <h3 className="font-semibold text-sage-800">AI-Powered</h3>
                 <p className="text-sm text-sage-600">
-                  Smart scheduling, inventory prediction, and customer insights powered by advanced AI
+                  Smart scheduling, inventory prediction, and customer insights powered by advanced
+                  AI
                 </p>
               </div>
               <div className="space-y-3">

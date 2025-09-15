@@ -12,8 +12,14 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -31,10 +37,10 @@ import {
   Download,
   Plus
 } from 'lucide-react'
-import { universalApi } from '@/lib/universal-api'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { useFinanceData } from '@/lib/furniture/use-finance-data'
 import { cn } from '@/lib/utils'
 
 // GL Account columns
@@ -44,9 +50,7 @@ const glAccountColumns = [
     label: 'Account Code',
     sortable: true,
     width: '120px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     key: 'entity_name',
@@ -57,18 +61,18 @@ const glAccountColumns = [
       const indent = depth * 24
       const isHeader = (row.metadata as any)?.account_type === 'header'
       const hasChildren = row.children && row.children.length > 0
-      
+
       return (
         <div style={{ paddingLeft: `${indent}px` }} className="flex items-start gap-1">
-          {depth > 0 && (
-            <span className="text-gray-500 text-xs mt-1">└─</span>
-          )}
+          {depth > 0 && <span className="text-gray-500 text-xs mt-1">└─</span>}
           <div>
-            <p className={cn(
-              "font-medium",
-              isHeader && "text-blue-600 dark:text-blue-400",
-              !isHeader && depth > 0 && "text-sm"
-            )}>
+            <p
+              className={cn(
+                'font-medium',
+                isHeader && 'text-blue-600 dark:text-blue-400',
+                !isHeader && depth > 0 && 'text-sm'
+              )}
+            >
               {value}
             </p>
             {(row.metadata as any)?.ifrs_classification && (
@@ -86,11 +90,11 @@ const glAccountColumns = [
     render: (_: any, row: any) => {
       const type = (row.metadata as any)?.account_type || 'detail'
       const colors = {
-        'header': 'bg-blue-500/20 text-blue-600',
-        'detail': 'bg-gray-500/20 text-gray-600'
+        header: 'bg-blue-500/20 text-blue-600',
+        detail: 'bg-gray-500/20 text-gray-600'
       }
       return (
-        <Badge variant="outline" className={cn("border-0", colors[type])}>
+        <Badge variant="outline" className={cn('border-0', colors[type])}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </Badge>
       )
@@ -104,10 +108,9 @@ const glAccountColumns = [
     render: (_: any, row: any) => {
       const balance = (row.metadata as any)?.normal_balance || 'debit'
       return (
-        <span className={cn(
-          "font-medium",
-          balance === 'debit' ? "text-red-600" : "text-green-600"
-        )}>
+        <span
+          className={cn('font-medium', balance === 'debit' ? 'text-red-600' : 'text-green-600')}
+        >
           {balance.toUpperCase()}
         </span>
       )
@@ -121,17 +124,15 @@ const glAccountColumns = [
     render: (_: any, row: any) => {
       const balance = row.current_balance || 0
       const balanceType = row.balance_type || 'Dr'
-      
+
       if (balance === 0) {
         return <span className="font-mono text-gray-500">-</span>
       }
-      
+
       return (
-        <span className={cn(
-          "font-mono",
-          balanceType === 'Cr' ? "text-green-600" : "text-red-600"
-        )}>
-          ₹{balance.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {balanceType}
+        <span className={cn('font-mono', balanceType === 'Cr' ? 'text-green-600' : 'text-red-600')}>
+          ₹{balance.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{' '}
+          {balanceType}
         </span>
       )
     }
@@ -142,7 +143,7 @@ const glAccountColumns = [
     align: 'center' as const,
     render: (_: any, row: any) => (
       <div className="flex gap-1 justify-center">
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-gray-700">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted-foreground/10">
           <FileText className="h-4 w-4" />
         </Button>
       </div>
@@ -153,143 +154,24 @@ const glAccountColumns = [
 export default function FurnitureFinance() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  const [glAccounts, setGlAccounts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+
+  const { glAccounts, metrics, loading, refresh } = useFinanceData(organizationId)
+
   const [activeTab, setActiveTab] = useState('chart-of-accounts')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState('all')
   const [selectedLevel, setSelectedLevel] = useState('all')
-  
-  // Financial metrics
-  const [metrics, setMetrics] = useState({
-    totalAssets: 0,
-    totalLiabilities: 0,
-    totalEquity: 0,
-    totalRevenue: 0,
-    totalExpenses: 0,
-    netProfit: 0
-  })
 
-  useEffect(() => {
-    if (organizationId && !orgLoading) {
-      loadFinancialData()
-    }
-  }, [organizationId, orgLoading])
-
-  const loadFinancialData = async () => {
-    try {
-      setLoading(true)
-      universalApi.setOrganizationId(organizationId)
-      
-      // Load GL accounts
-      const { data: allEntities } = await universalApi.read('core_entities')
-      
-      // Filter for GL accounts
-      const accounts = allEntities?.filter((e: any) => 
-        e.entity_type === 'gl_account'
-      ) || []
-      
-      // Sort by account code
-      accounts.sort((a: any, b: any) => a.entity_code.localeCompare(b.entity_code))
-      
-      // Load transaction lines to calculate balances
-      const { data: allTransactionLines } = await universalApi.read('universal_transaction_lines')
-      
-      // Load dynamic data for stored balances
-      const { data: dynamicBalances } = await universalApi.read('core_dynamic_data')
-      
-      // Calculate balances from transaction lines
-      const balancesByAccount: Record<string, { debit: number, credit: number, balance: number }> = {}
-      
-      if (allTransactionLines) {
-        allTransactionLines.forEach((line: any) => {
-          if (line.entity_id && line.line_data) {
-            if (!balancesByAccount[line.entity_id]) {
-              balancesByAccount[line.entity_id] = { debit: 0, credit: 0, balance: 0 }
-            }
-            balancesByAccount[line.entity_id].debit += line.line_data?.debit_amount || 0
-            balancesByAccount[line.entity_id].credit += line.line_data?.credit_amount || 0
-          }
-        })
-        
-        // Calculate net balance
-        Object.keys(balancesByAccount).forEach(accountId => {
-          const account = balancesByAccount[accountId]
-          account.balance = account.debit - account.credit
-        })
-      }
-      
-      // Enhance accounts with balance information
-      const accountsWithBalances = accounts.map((account: any) => {
-        const balance = balancesByAccount[account.id] || { debit: 0, credit: 0, balance: 0 }
-        return {
-          ...account,
-          current_balance: Math.abs(balance.balance),
-          balance_type: balance.balance >= 0 ? 'Dr' : 'Cr',
-          debit_total: balance.debit,
-          credit_total: balance.credit
-        }
-      })
-      
-      setGlAccounts(accountsWithBalances)
-      
-      // Calculate summary metrics from actual balances
-      let totalAssets = 0
-      let totalLiabilities = 0
-      let totalEquity = 0
-      let totalRevenue = 0
-      let totalExpenses = 0
-      
-      accountsWithBalances.forEach((account: any) => {
-        const balance = account.current_balance || 0
-        const accountCode = account.entity_code
-        
-        if (accountCode.startsWith('1')) {
-          // Assets (debit balance is positive)
-          totalAssets += account.balance_type === 'Dr' ? balance : -balance
-        } else if (accountCode.startsWith('2')) {
-          // Liabilities (credit balance is positive)
-          totalLiabilities += account.balance_type === 'Cr' ? balance : -balance
-        } else if (accountCode.startsWith('3')) {
-          // Equity (credit balance is positive)
-          totalEquity += account.balance_type === 'Cr' ? balance : -balance
-        } else if (accountCode.startsWith('4')) {
-          // Revenue (credit balance is positive)
-          totalRevenue += account.balance_type === 'Cr' ? balance : -balance
-        } else if (accountCode.startsWith('5')) {
-          // Expenses (debit balance is positive)
-          totalExpenses += account.balance_type === 'Dr' ? balance : -balance
-        }
-      })
-      
-      const netProfit = totalRevenue - totalExpenses
-      
-      setMetrics({
-        totalAssets,
-        totalLiabilities,
-        totalEquity: totalEquity || (totalAssets - totalLiabilities), // Calculate if not directly available
-        totalRevenue,
-        totalExpenses,
-        netProfit
-      })
-      
-    } catch (error) {
-      console.error('Failed to load financial data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-  
   // Build hierarchical structure
   const buildHierarchy = () => {
     const hierarchy: any[] = []
     const accountMap: Record<string, any> = {}
-    
+
     // Create a map for easy lookup
     glAccounts.forEach(account => {
       accountMap[account.entity_code] = { ...account, children: [] }
     })
-    
+
     // Build the tree
     glAccounts.forEach(account => {
       const parentCode = (account.metadata as any)?.parent_account
@@ -300,7 +182,7 @@ export default function FurnitureFinance() {
         hierarchy.push(accountMap[account.entity_code])
       }
     })
-    
+
     // Flatten the hierarchy for table display with proper ordering
     const flattenHierarchy = (nodes: any[], depth = 0): any[] => {
       const result: any[] = []
@@ -314,26 +196,28 @@ export default function FurnitureFinance() {
       })
       return result
     }
-    
+
     // Sort top level by code
     hierarchy.sort((a, b) => a.entity_code.localeCompare(b.entity_code))
     return flattenHierarchy(hierarchy)
   }
-  
+
   const hierarchicalAccounts = buildHierarchy()
-  
+
   // Filter hierarchical accounts
   const filteredAccounts = hierarchicalAccounts.filter(account => {
-    const matchesSearch = !searchTerm || 
+    const matchesSearch =
+      !searchTerm ||
       account.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       account.entity_code.includes(searchTerm)
-    
-    const matchesType = selectedType === 'all' || 
-      (account.metadata as any)?.account_type === selectedType
-    
-    const matchesLevel = selectedLevel === 'all' || 
+
+    const matchesType =
+      selectedType === 'all' || (account.metadata as any)?.account_type === selectedType
+
+    const matchesLevel =
+      selectedLevel === 'all' ||
       (account.metadata as any)?.account_level?.toString() === selectedLevel
-    
+
     return matchesSearch && matchesType && matchesLevel
   })
 
@@ -346,12 +230,10 @@ export default function FurnitureFinance() {
   if (isAuthenticated) {
     if (!isAuthenticated) {
       return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
-          <Alert className="max-w-md bg-gray-800/50 border-gray-700">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6">
+          <Alert className="max-w-md bg-card/50 border-border">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Please log in to access finance management.
-            </AlertDescription>
+            <AlertDescription>Please log in to access finance management.</AlertDescription>
           </Alert>
         </div>
       )
@@ -359,7 +241,7 @@ export default function FurnitureFinance() {
 
     if (contextLoading) {
       return (
-        <div className="min-h-screen bg-gray-900 p-6">
+        <div className="min-h-screen bg-background p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             <Skeleton className="h-10 w-64" />
             <div className="grid grid-cols-3 gap-4">
@@ -375,49 +257,49 @@ export default function FurnitureFinance() {
   }
 
   const statCards = [
-    { 
-      label: 'Total Assets', 
-      value: `₹${(metrics.totalAssets / 100000).toFixed(2)}L`, 
+    {
+      label: 'Total Assets',
+      value: `₹${(metrics.totalAssets / 100000).toFixed(2)}L`,
       icon: Building,
       color: 'text-blue-500',
       description: 'Current + Non-current',
       change: '+12%'
     },
-    { 
-      label: 'Total Liabilities', 
-      value: `₹${(metrics.totalLiabilities / 100000).toFixed(2)}L`, 
+    {
+      label: 'Total Liabilities',
+      value: `₹${(metrics.totalLiabilities / 100000).toFixed(2)}L`,
       icon: CreditCard,
       color: 'text-red-500',
       description: 'Payables + Loans',
       change: '-5%'
     },
-    { 
-      label: 'Total Equity', 
-      value: `₹${(metrics.totalEquity / 100000).toFixed(2)}L`, 
+    {
+      label: 'Total Equity',
+      value: `₹${(metrics.totalEquity / 100000).toFixed(2)}L`,
       icon: PiggyBank,
       color: 'text-green-500',
       description: 'Assets - Liabilities',
       change: '+18%'
     },
-    { 
-      label: 'Revenue YTD', 
-      value: `₹${(metrics.totalRevenue / 100000).toFixed(2)}L`, 
+    {
+      label: 'Revenue YTD',
+      value: `₹${(metrics.totalRevenue / 100000).toFixed(2)}L`,
       icon: TrendingUp,
       color: 'text-emerald-500',
       description: 'Year to date',
       change: '+22%'
     },
-    { 
-      label: 'Expenses YTD', 
-      value: `₹${(metrics.totalExpenses / 100000).toFixed(2)}L`, 
+    {
+      label: 'Expenses YTD',
+      value: `₹${(metrics.totalExpenses / 100000).toFixed(2)}L`,
       icon: Receipt,
       color: 'text-amber-500',
       description: 'Operating costs',
       change: '+15%'
     },
-    { 
-      label: 'Net Profit', 
-      value: `₹${(metrics.netProfit / 100000).toFixed(2)}L`, 
+    {
+      label: 'Net Profit',
+      value: `₹${(metrics.netProfit / 100000).toFixed(2)}L`,
       icon: DollarSign,
       color: metrics.netProfit > 0 ? 'text-green-500' : 'text-red-500',
       description: 'Revenue - Expenses',
@@ -435,7 +317,7 @@ export default function FurnitureFinance() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <FurniturePageHeader
@@ -458,23 +340,29 @@ export default function FurnitureFinance() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {statCards.map((stat, index) => (
-            <Card key={index} className="p-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-card/50 border-border hover:bg-card/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-gray-400">{stat.label}</p>
-                  <stat.icon className={cn("h-4 w-4", stat.color)} />
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <stat.icon className={cn('h-4 w-4', stat.color)} />
                 </div>
-                <p className="text-xl font-bold text-white">{stat.value}</p>
+                <p className="text-xl font-bold text-foreground">{stat.value}</p>
                 <p className="text-xs text-gray-500">{stat.description}</p>
                 <div className="flex items-center gap-1">
-                  {stat.change.startsWith('+') ? 
-                    <TrendingUp className="h-3 w-3 text-green-500" /> : 
+                  {stat.change.startsWith('+') ? (
+                    <TrendingUp className="h-3 w-3 text-green-500" />
+                  ) : (
                     <TrendingDown className="h-3 w-3 text-red-500" />
-                  }
-                  <span className={cn(
-                    "text-xs",
-                    stat.change.startsWith('+') ? "text-green-500" : "text-red-500"
-                  )}>
+                  )}
+                  <span
+                    className={cn(
+                      'text-xs',
+                      stat.change.startsWith('+') ? 'text-green-500' : 'text-red-500'
+                    )}
+                  >
                     {stat.change}
                   </span>
                 </div>
@@ -486,50 +374,59 @@ export default function FurnitureFinance() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <div className="flex justify-between items-center">
-            <TabsList className="bg-gray-800 border-gray-700">
-              <TabsTrigger value="chart-of-accounts" className="data-[state=active]:bg-gray-700">
+            <TabsList className="bg-muted border-border">
+              <TabsTrigger
+                value="chart-of-accounts"
+                className="data-[state=active]:bg-muted-foreground/10"
+              >
                 <FileText className="h-4 w-4 mr-2" />
                 Chart of Accounts
               </TabsTrigger>
-              <TabsTrigger value="financial-reports" className="data-[state=active]:bg-gray-700">
+              <TabsTrigger
+                value="financial-reports"
+                className="data-[state=active]:bg-muted-foreground/10"
+              >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Financial Reports
               </TabsTrigger>
-              <TabsTrigger value="gst-compliance" className="data-[state=active]:bg-gray-700">
+              <TabsTrigger
+                value="gst-compliance"
+                className="data-[state=active]:bg-muted-foreground/10"
+              >
                 <Calculator className="h-4 w-4 mr-2" />
                 GST Compliance
               </TabsTrigger>
             </TabsList>
-            
+
             {/* Search and Filters */}
             {activeTab === 'chart-of-accounts' && (
               <div className="flex gap-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search accounts..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-400 w-64"
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground w-64"
                   />
                 </div>
-                
+
                 <Select value={selectedType} onValueChange={setSelectedType}>
-                  <SelectTrigger className="w-32 bg-gray-900/50 border-gray-600 text-white">
+                  <SelectTrigger className="w-32 bg-background/50 border-border text-foreground">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectContent className="bg-muted border-border">
                     <SelectItem value="all">All Types</SelectItem>
                     <SelectItem value="header">Header</SelectItem>
                     <SelectItem value="detail">Detail</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-                  <SelectTrigger className="w-32 bg-gray-900/50 border-gray-600 text-white">
+                  <SelectTrigger className="w-32 bg-background/50 border-border text-foreground">
                     <SelectValue placeholder="Level" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectContent className="bg-muted border-border">
                     <SelectItem value="all">All Levels</SelectItem>
                     <SelectItem value="1">Level 1</SelectItem>
                     <SelectItem value="2">Level 2</SelectItem>
@@ -542,50 +439,51 @@ export default function FurnitureFinance() {
           </div>
 
           <TabsContent value="chart-of-accounts" className="space-y-4">
-            <Card className="p-4 bg-gray-800/50 border-gray-700">
+            <Card className="p-4 bg-card/50 border-border">
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="h-5 w-5 text-blue-500" />
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   Universal Chart of Accounts - Indian Furniture Industry
                 </h3>
               </div>
-              
-              <div className="text-sm text-gray-400 mb-4">
-                Total Accounts: {glAccounts.length} | 
-                Headers: {glAccounts.filter(a => (a.metadata as any)?.account_type === 'header').length} | 
-                Details: {glAccounts.filter(a => (a.metadata as any)?.account_type === 'detail').length}
+
+              <div className="text-sm text-muted-foreground mb-4">
+                Total Accounts: {glAccounts.length} | Headers:{' '}
+                {glAccounts.filter(a => (a.metadata as any)?.account_type === 'header').length} |
+                Details:{' '}
+                {glAccounts.filter(a => (a.metadata as any)?.account_type === 'detail').length}
               </div>
-              
+
               {loading ? (
                 <div className="flex items-center justify-center p-8">
                   <div className="text-center space-y-2">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-                    <p className="text-sm text-gray-400">Loading GL accounts...</p>
+                    <p className="text-sm text-muted-foreground">Loading GL accounts...</p>
                   </div>
                 </div>
               ) : filteredAccounts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center p-8 text-center">
                   <FileText className="h-12 w-12 text-gray-500 mb-3" />
                   <h3 className="text-lg font-medium text-gray-300">No GL accounts found</h3>
-                  <p className="text-sm text-gray-400 mt-1">
-                    {searchTerm 
-                      ? "Try adjusting your search or filters." 
-                      : "GL accounts will appear here when created."}
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {searchTerm
+                      ? 'Try adjusting your search or filters.'
+                      : 'GL accounts will appear here when created.'}
                   </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-700">
-                    <thead className="bg-gray-800">
+                    <thead className="bg-muted">
                       <tr>
-                        {glAccountColumns.map((column) => (
+                        {glAccountColumns.map(column => (
                           <th
                             key={column.key}
                             className={cn(
-                              "px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider",
-                              column.align === 'center' && "text-center",
-                              column.align === 'right' && "text-right",
-                              !column.align && "text-left"
+                              'px-6 py-3 text-xs font-medium text-gray-300 uppercase tracking-wider',
+                              column.align === 'center' && 'text-center',
+                              column.align === 'right' && 'text-right',
+                              !column.align && 'text-left'
                             )}
                             style={{ width: column.width }}
                           >
@@ -595,21 +493,20 @@ export default function FurnitureFinance() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700">
-                      {filteredAccounts.map((account) => (
-                        <tr key={account.id} className="hover:bg-gray-800/50">
-                          {glAccountColumns.map((column) => (
+                      {filteredAccounts.map(account => (
+                        <tr key={account.id} className="hover:bg-card/50">
+                          {glAccountColumns.map(column => (
                             <td
                               key={column.key}
                               className={cn(
-                                "px-6 py-4 text-sm text-gray-300",
-                                column.align === 'center' && "text-center",
-                                column.align === 'right' && "text-right"
+                                'px-6 py-4 text-sm text-gray-300',
+                                column.align === 'center' && 'text-center',
+                                column.align === 'right' && 'text-right'
                               )}
                             >
-                              {column.render 
+                              {column.render
                                 ? column.render(account[column.key], account)
-                                : account[column.key]
-                              }
+                                : account[column.key]}
                             </td>
                           ))}
                         </tr>
@@ -623,8 +520,8 @@ export default function FurnitureFinance() {
 
           <TabsContent value="financial-reports" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="p-6 bg-gray-800/50 border-gray-700">
-                <h3 className="text-lg font-semibold mb-4 text-white">Quick Reports</h3>
+              <Card className="p-6 bg-card/50 border-border">
+                <h3 className="text-lg font-semibold mb-4 text-foreground">Quick Reports</h3>
                 <div className="space-y-3">
                   {[
                     { name: 'Trial Balance', icon: Calculator, date: 'As of today' },
@@ -632,41 +529,56 @@ export default function FurnitureFinance() {
                     { name: 'Balance Sheet', icon: Building, date: 'As of today' },
                     { name: 'Cash Flow Statement', icon: DollarSign, date: 'YTD 2025' },
                     { name: 'General Ledger', icon: FileText, date: 'Current month' }
-                  ].map((report) => (
-                    <div key={report.name} className="flex items-center justify-between p-3 rounded-lg bg-gray-900/50 hover:bg-gray-900/70 cursor-pointer">
+                  ].map(report => (
+                    <div
+                      key={report.name}
+                      className="flex items-center justify-between p-3 rounded-lg bg-background/50 hover:bg-background/70 cursor-pointer"
+                    >
                       <div className="flex items-center gap-3">
-                        <report.icon className="h-5 w-5 text-gray-400" />
+                        <report.icon className="h-5 w-5 text-muted-foreground" />
                         <div>
                           <p className="font-medium">{report.name}</p>
-                          <p className="text-sm text-gray-400">{report.date}</p>
+                          <p className="text-sm text-muted-foreground">{report.date}</p>
                         </div>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-gray-400" />
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     </div>
                   ))}
                 </div>
               </Card>
-              
-              <Card className="p-6 bg-gray-800/50 border-gray-700">
-                <h3 className="text-lg font-semibold mb-4 text-white">Financial Ratios</h3>
+
+              <Card className="p-6 bg-card/50 border-border">
+                <h3 className="text-lg font-semibold mb-4 text-foreground">Financial Ratios</h3>
                 <div className="space-y-4">
                   {[
                     { name: 'Current Ratio', value: '2.4', status: 'good', benchmark: '> 2.0' },
                     { name: 'Quick Ratio', value: '1.8', status: 'good', benchmark: '> 1.5' },
                     { name: 'Debt to Equity', value: '0.6', status: 'good', benchmark: '< 1.0' },
-                    { name: 'Gross Profit Margin', value: '42%', status: 'good', benchmark: '> 35%' },
-                    { name: 'Net Profit Margin', value: '18%', status: 'warning', benchmark: '> 20%' }
-                  ].map((ratio) => (
+                    {
+                      name: 'Gross Profit Margin',
+                      value: '42%',
+                      status: 'good',
+                      benchmark: '> 35%'
+                    },
+                    {
+                      name: 'Net Profit Margin',
+                      value: '18%',
+                      status: 'warning',
+                      benchmark: '> 20%'
+                    }
+                  ].map(ratio => (
                     <div key={ratio.name} className="space-y-1">
                       <div className="flex justify-between items-center">
                         <span className="text-sm">{ratio.name}</span>
                         <div className="flex items-center gap-2">
                           <span className="font-mono font-medium">{ratio.value}</span>
-                          <Badge 
-                            variant="outline" 
+                          <Badge
+                            variant="outline"
                             className={cn(
-                              "border-0",
-                              ratio.status === 'good' ? "bg-green-500/20 text-green-600" : "bg-amber-500/20 text-amber-600"
+                              'border-0',
+                              ratio.status === 'good'
+                                ? 'bg-green-500/20 text-green-600'
+                                : 'bg-amber-500/20 text-amber-600'
                             )}
                           >
                             {ratio.benchmark}
@@ -681,26 +593,26 @@ export default function FurnitureFinance() {
           </TabsContent>
 
           <TabsContent value="gst-compliance" className="space-y-4">
-            <Card className="p-6 bg-gray-800/50 border-gray-700">
-              <h3 className="text-lg font-semibold mb-4 text-white">GST Summary</h3>
+            <Card className="p-6 bg-card/50 border-border">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">GST Summary</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-400">Output GST</p>
+                  <p className="text-sm text-muted-foreground">Output GST</p>
                   <p className="text-2xl font-bold">₹2,45,600</p>
                   <p className="text-xs text-gray-500">On sales this month</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-400">Input GST</p>
+                  <p className="text-sm text-muted-foreground">Input GST</p>
                   <p className="text-2xl font-bold">₹1,82,300</p>
                   <p className="text-xs text-gray-500">On purchases this month</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-400">GST Payable</p>
+                  <p className="text-sm text-muted-foreground">GST Payable</p>
                   <p className="text-2xl font-bold text-amber-500">₹63,300</p>
                   <p className="text-xs text-gray-500">Due by 20th Jan</p>
                 </div>
               </div>
-              
+
               <div className="mt-6 space-y-3">
                 <h4 className="font-medium">Compliance Status</h4>
                 <div className="space-y-2">
@@ -708,25 +620,30 @@ export default function FurnitureFinance() {
                     { filing: 'GSTR-1', status: 'Filed', date: '11th Jan 2025' },
                     { filing: 'GSTR-3B', status: 'Pending', date: 'Due 20th Jan' },
                     { filing: 'GSTR-2A', status: 'Downloaded', date: '10th Jan 2025' }
-                  ].map((item) => (
-                    <div key={item.filing} className="flex items-center justify-between p-3 rounded bg-gray-900/50">
+                  ].map(item => (
+                    <div
+                      key={item.filing}
+                      className="flex items-center justify-between p-3 rounded bg-background/50"
+                    >
                       <div className="flex items-center gap-3">
-                        <FileText className="h-4 w-4 text-gray-400" />
+                        <FileText className="h-4 w-4 text-muted-foreground" />
                         <span>{item.filing}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Badge 
-                          variant="outline" 
+                        <Badge
+                          variant="outline"
                           className={cn(
-                            "border-0",
-                            item.status === 'Filed' ? "bg-green-500/20 text-green-600" : 
-                            item.status === 'Pending' ? "bg-amber-500/20 text-amber-600" :
-                            "bg-blue-500/20 text-blue-600"
+                            'border-0',
+                            item.status === 'Filed'
+                              ? 'bg-green-500/20 text-green-600'
+                              : item.status === 'Pending'
+                                ? 'bg-amber-500/20 text-amber-600'
+                                : 'bg-blue-500/20 text-blue-600'
                           )}
                         >
                           {item.status}
                         </Badge>
-                        <span className="text-sm text-gray-400">{item.date}</span>
+                        <span className="text-sm text-muted-foreground">{item.date}</span>
                       </div>
                     </div>
                   ))}

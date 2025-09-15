@@ -79,11 +79,7 @@ export const salonUATTestSuite: UATTestSuite = {
       description: 'Verify all progressive data migrates correctly to production',
       category: 'data_integrity',
       priority: 'critical',
-      mcpCommands: [
-        'extract-progressive-data',
-        'validate-data-mapping',
-        'check-entity-counts'
-      ],
+      mcpCommands: ['extract-progressive-data', 'validate-data-mapping', 'check-entity-counts'],
       steps: [
         {
           stepNumber: 1,
@@ -121,11 +117,7 @@ export const salonUATTestSuite: UATTestSuite = {
       description: 'Verify POS system works identically in production',
       category: 'functionality',
       priority: 'critical',
-      mcpCommands: [
-        'test-pos-functionality',
-        'verify-split-payments',
-        'test-receipt-printing'
-      ],
+      mcpCommands: ['test-pos-functionality', 'verify-split-payments', 'test-receipt-printing'],
       steps: [
         {
           stepNumber: 1,
@@ -163,11 +155,7 @@ export const salonUATTestSuite: UATTestSuite = {
       description: 'Verify all UI customizations and branding preserved',
       category: 'ui',
       priority: 'high',
-      mcpCommands: [
-        'verify-ui-theme',
-        'check-branding-elements',
-        'test-responsive-design'
-      ],
+      mcpCommands: ['verify-ui-theme', 'check-branding-elements', 'test-responsive-design'],
       steps: [
         {
           stepNumber: 1,
@@ -205,11 +193,7 @@ export const salonUATTestSuite: UATTestSuite = {
       description: 'Verify auto-journal system works with converted data',
       category: 'integration',
       priority: 'high',
-      mcpCommands: [
-        'test-auto-journal-posting',
-        'verify-gl-mappings',
-        'check-journal-automation'
-      ],
+      mcpCommands: ['test-auto-journal-posting', 'verify-gl-mappings', 'check-journal-automation'],
       steps: [
         {
           stepNumber: 1,
@@ -247,11 +231,7 @@ export const salonUATTestSuite: UATTestSuite = {
       description: 'Verify production performance meets progressive standards',
       category: 'performance',
       priority: 'medium',
-      mcpCommands: [
-        'benchmark-page-load',
-        'test-transaction-speed',
-        'measure-memory-usage'
-      ],
+      mcpCommands: ['benchmark-page-load', 'test-transaction-speed', 'measure-memory-usage'],
       steps: [
         {
           stepNumber: 1,
@@ -303,7 +283,7 @@ export class MCPUATExecutor {
    */
   async executeUATSuite(): Promise<UATExecutionSummary> {
     console.log(`🧪 Starting MCP UAT Execution: ${this.testSuite.name}`)
-    
+
     const startTime = Date.now()
     let passed = 0
     let failed = 0
@@ -311,11 +291,11 @@ export class MCPUATExecutor {
 
     for (const testCase of this.testSuite.testCases) {
       console.log(`\n🔍 Executing: ${testCase.name}`)
-      
+
       try {
         testCase.status = 'running'
         const result = await this.executeTestCase(testCase)
-        
+
         if (result.success) {
           testCase.status = 'passed'
           passed++
@@ -324,10 +304,9 @@ export class MCPUATExecutor {
           failed++
           testCase.errors = result.errors
         }
-        
+
         testCase.executionTime = result.executionTime
         testCase.actualResults = result.actualResults
-
       } catch (error) {
         console.error(`❌ Test case ${testCase.id} failed:`, error)
         testCase.status = 'failed'
@@ -358,7 +337,7 @@ export class MCPUATExecutor {
     console.log(`   Passed: ${passed}`)
     console.log(`   Failed: ${failed}`)
     console.log(`   Pass Rate: ${summary.passRate.toFixed(1)}%`)
-    
+
     return summary
   }
 
@@ -381,7 +360,7 @@ export class MCPUATExecutor {
         console.log(`   🔧 Executing MCP: ${mcpCommand}`)
         const result = await this.executeMCPCommand(mcpCommand)
         actualResults.push(result.output)
-        
+
         if (!result.success) {
           errors.push(`MCP command failed: ${mcpCommand} - ${result.error}`)
         }
@@ -390,12 +369,12 @@ export class MCPUATExecutor {
       // Execute test steps
       for (const step of testCase.steps) {
         console.log(`   📝 Step ${step.stepNumber}: ${step.action}`)
-        
+
         if (step.mcpCommand) {
           const result = await this.executeMCPCommand(step.mcpCommand)
           step.actualOutcome = result.output
           step.status = result.success ? 'passed' : 'failed'
-          
+
           if (!result.success) {
             errors.push(`Step ${step.stepNumber} failed: ${result.error}`)
             step.notes = result.error
@@ -416,7 +395,6 @@ export class MCPUATExecutor {
         actualResults,
         errors
       }
-
     } catch (error) {
       return {
         success: false,
@@ -437,35 +415,35 @@ export class MCPUATExecutor {
   }> {
     try {
       console.log(`     🤖 MCP: ${command}`)
-      
+
       // Parse MCP command
       const [baseCommand, ...args] = command.split(' ')
-      
+
       switch (baseCommand) {
         case 'extract-progressive-data':
           return await this.handleExtractProgressiveData(args)
-        
+
         case 'validate-data-mapping':
           return await this.handleValidateDataMapping(args)
-        
+
         case 'migrate-entities':
           return await this.handleMigrateEntities(args)
-        
+
         case 'create-test-sale':
           return await this.handleCreateTestSale(args)
-        
+
         case 'test-split-payment':
           return await this.handleTestSplitPayment(args)
-        
+
         case 'verify-ui-theme':
           return await this.handleVerifyUITheme(args)
-        
+
         case 'process-sale-with-journal':
           return await this.handleProcessSaleWithJournal(args)
-        
+
         case 'benchmark-load-time':
           return await this.handleBenchmarkLoadTime(args)
-        
+
         default:
           return {
             success: false,
@@ -473,7 +451,6 @@ export class MCPUATExecutor {
             error: `Unknown MCP command: ${baseCommand}`
           }
       }
-
     } catch (error) {
       return {
         success: false,
@@ -490,7 +467,7 @@ export class MCPUATExecutor {
   private async handleExtractProgressiveData(args: string[]) {
     // Simulate progressive data extraction
     const dataType = args.find(arg => arg.startsWith('--type='))?.split('=')[1] || 'all'
-    
+
     const mockData = {
       customers: 15,
       services: 8,
@@ -515,7 +492,7 @@ export class MCPUATExecutor {
   private async handleMigrateEntities(args: string[]) {
     // Simulate entity migration
     const entityType = args.find(arg => arg.startsWith('--type='))?.split('=')[1] || 'entities'
-    
+
     return {
       success: true,
       output: `Successfully migrated ${entityType} to production with zero data loss`
@@ -526,7 +503,7 @@ export class MCPUATExecutor {
     // Simulate test sale creation
     const customer = args.find(arg => arg.startsWith('--customer='))?.split('=')[1]
     const items = args.find(arg => arg.startsWith('--items='))?.split('=')[1]
-    
+
     return {
       success: true,
       output: `Test sale created - Customer: ${customer}, Items: ${items}, Total: $85.00`
@@ -537,7 +514,7 @@ export class MCPUATExecutor {
     // Simulate split payment testing
     const amount = args.find(arg => arg.startsWith('--amount='))?.split('=')[1]
     const methods = args.find(arg => arg.startsWith('--methods='))?.split('=')[1]
-    
+
     return {
       success: true,
       output: `Split payment processed - Amount: $${amount}, Methods: ${methods}, Auto-complete: ✅`
@@ -556,7 +533,7 @@ export class MCPUATExecutor {
     // Simulate auto-journal processing
     const amount = args.find(arg => arg.startsWith('--amount='))?.split('=')[1]
     const service = args.find(arg => arg.startsWith('--service='))?.split('=')[1]
-    
+
     return {
       success: true,
       output: `Sale processed with auto-journal - ${service}: $${amount}, GL entries created automatically`
@@ -567,7 +544,7 @@ export class MCPUATExecutor {
     // Simulate performance benchmarking
     const page = args.find(arg => arg.startsWith('--page='))?.split('=')[1]
     const mockLoadTime = Math.random() * 1000 + 500 // 500-1500ms
-    
+
     return {
       success: mockLoadTime < 2000,
       output: `${page} load time: ${mockLoadTime.toFixed(0)}ms (${mockLoadTime < 2000 ? 'PASS' : 'FAIL'})`
@@ -580,38 +557,44 @@ export class MCPUATExecutor {
 
   private getCriticalIssues(): string[] {
     const criticalIssues: string[] = []
-    
+
     for (const testCase of this.testSuite.testCases) {
       if (testCase.priority === 'critical' && testCase.status === 'failed') {
         criticalIssues.push(`${testCase.name}: ${testCase.errors?.join(', ') || 'Unknown error'}`)
       }
     }
-    
+
     return criticalIssues
   }
 
   private getRecommendations(): string[] {
     const recommendations: string[] = []
-    
+
     const failedTests = this.testSuite.testCases.filter(t => t.status === 'failed')
-    const passRate = ((this.testSuite.testCases.length - failedTests.length) / this.testSuite.testCases.length) * 100
-    
+    const passRate =
+      ((this.testSuite.testCases.length - failedTests.length) / this.testSuite.testCases.length) *
+      100
+
     if (passRate < 90) {
-      recommendations.push('Pass rate below 90% - review failed test cases before production deployment')
+      recommendations.push(
+        'Pass rate below 90% - review failed test cases before production deployment'
+      )
     }
-    
+
     if (failedTests.some(t => t.priority === 'critical')) {
-      recommendations.push('Critical test failures detected - resolve immediately before deployment')
+      recommendations.push(
+        'Critical test failures detected - resolve immediately before deployment'
+      )
     }
-    
+
     if (failedTests.some(t => t.category === 'performance')) {
       recommendations.push('Performance issues detected - optimize before production deployment')
     }
-    
+
     if (passRate >= 95) {
       recommendations.push('Excellent test results - ready for production deployment')
     }
-    
+
     return recommendations
   }
 }
@@ -643,9 +626,11 @@ ${summary.criticalIssues.length > 0 ? summary.criticalIssues.map(issue => `- ${i
 ${summary.recommendations.map(rec => `- ${rec}`).join('\n')}
 
 ## Deployment Status
-${summary.passRate >= 95 && summary.criticalIssues.length === 0 
-  ? '🟢 **APPROVED FOR PRODUCTION DEPLOYMENT**' 
-  : '🔴 **REQUIRES ATTENTION BEFORE DEPLOYMENT**'}
+${
+  summary.passRate >= 95 && summary.criticalIssues.length === 0
+    ? '🟢 **APPROVED FOR PRODUCTION DEPLOYMENT**'
+    : '🔴 **REQUIRES ATTENTION BEFORE DEPLOYMENT**'
+}
   `
 
   return report

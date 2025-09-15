@@ -13,10 +13,24 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Database, Code, Wand2, ArrowRight, Sparkles, FileCode, 
-  Terminal, Zap, GitBranch, Package, Rocket, Shield,
-  CheckCircle, Clock, TrendingUp, Users, ArrowLeft
+import {
+  Database,
+  Code,
+  Wand2,
+  ArrowRight,
+  Sparkles,
+  FileCode,
+  Terminal,
+  Zap,
+  GitBranch,
+  Package,
+  Rocket,
+  Shield,
+  CheckCircle,
+  Clock,
+  TrendingUp,
+  Users,
+  ArrowLeft
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -162,8 +176,8 @@ export default function MCPToolsDashboard() {
                 <div>
                   <h2 className="text-3xl font-bold mb-4">Progressive to Production in 4 Steps</h2>
                   <p className="text-indigo-100 mb-6 text-lg">
-                    Convert your progressive demo data and pages into a fully functional production system 
-                    with our MCP-powered tools. No manual coding required.
+                    Convert your progressive demo data and pages into a fully functional production
+                    system with our MCP-powered tools. No manual coding required.
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
@@ -217,7 +231,7 @@ export default function MCPToolsDashboard() {
 
         {/* Tools Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {tools.map((tool) => {
+          {tools.map(tool => {
             const Icon = tool.icon
             const colorClasses = {
               blue: 'from-blue-500 to-indigo-600',
@@ -225,12 +239,17 @@ export default function MCPToolsDashboard() {
               green: 'from-green-500 to-emerald-600',
               indigo: 'from-indigo-500 to-purple-600'
             }
-            
+
             return (
-              <Card key={tool.id} className="bg-white/40 backdrop-blur-xl border-white/20 shadow-xl hover:shadow-2xl transition-all group">
+              <Card
+                key={tool.id}
+                className="bg-white/40 backdrop-blur-xl border-white/20 shadow-xl hover:shadow-2xl transition-all group"
+              >
                 <CardHeader>
                   <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 bg-gradient-to-br ${colorClasses[tool.color]} rounded-xl text-white shadow-lg`}>
+                    <div
+                      className={`p-3 bg-gradient-to-br ${colorClasses[tool.color]} rounded-xl text-white shadow-lg`}
+                    >
                       <Icon className="h-6 w-6" />
                     </div>
                     <Badge variant="outline" className="text-xs">
@@ -252,7 +271,7 @@ export default function MCPToolsDashboard() {
                       </div>
                     ))}
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-2 mb-6 text-center">
                     {Object.entries(tool.stats).map(([key, value]) => (
                       <div key={key} className="bg-white/50 rounded-lg p-2">
@@ -263,8 +282,11 @@ export default function MCPToolsDashboard() {
                       </div>
                     ))}
                   </div>
-                  
-                  <Button asChild className={`w-full bg-gradient-to-r ${colorClasses[tool.color]} hover:opacity-90 text-white`}>
+
+                  <Button
+                    asChild
+                    className={`w-full bg-gradient-to-r ${colorClasses[tool.color]} hover:opacity-90 text-white`}
+                  >
                     <Link href={tool.href}>
                       <Icon className="h-4 w-4 mr-2" />
                       Open Tool
@@ -302,7 +324,7 @@ export default function MCPToolsDashboard() {
 <div>{demoData.customers[0].name}</div>`}</pre>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold text-lg mb-3 text-slate-800">After (Production)</h3>
                 <div className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm font-mono">
@@ -321,14 +343,15 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 p-4 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <TrendingUp className="h-5 w-5 text-green-600" />
                 <div>
                   <p className="font-semibold text-green-800">Conversion Benefits</p>
                   <p className="text-sm text-green-700">
-                    Real-time data • Multi-tenant security • API integration • Production scalability
+                    Real-time data • Multi-tenant security • API integration • Production
+                    scalability
                   </p>
                 </div>
               </div>
@@ -343,8 +366,8 @@ useEffect(() => {
               <Sparkles className="h-12 w-12 text-purple-600 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Ready to Convert?</h3>
               <p className="text-slate-700 mb-6 max-w-md">
-                Start with the SQL Converter to analyze your progressive data, then use the Page Wizard 
-                to transform your code. It's that simple!
+                Start with the SQL Converter to analyze your progressive data, then use the Page
+                Wizard to transform your code. It's that simple!
               </p>
               <div className="flex gap-4 justify-center">
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">

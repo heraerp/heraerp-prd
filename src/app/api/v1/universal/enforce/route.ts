@@ -1,7 +1,7 @@
 /**
  * 🔐 HERA Universal Transaction Enforcement API
  * Smart Code: HERA.API.UNIVERSAL.ENFORCEMENT.v1
- * 
+ *
  * Mandatory middleware for ALL transaction creation
  * Ensures COA and Document Number compliance
  */
@@ -22,17 +22,11 @@ export async function POST(request: NextRequest) {
 
     // Validate required parameters
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organizationId is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organizationId is required' }, { status: 400 })
     }
 
     if (!transactionType) {
-      return NextResponse.json(
-        { error: 'transactionType is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'transactionType is required' }, { status: 400 })
     }
 
     // Run enforcement checks
@@ -44,13 +38,16 @@ export async function POST(request: NextRequest) {
     )
 
     if (!result.valid) {
-      return NextResponse.json({
-        success: false,
-        valid: false,
-        errors: result.errors,
-        enforcement_failed: true,
-        message: 'Transaction enforcement failed - COA or document number issues'
-      }, { status: 422 })
+      return NextResponse.json(
+        {
+          success: false,
+          valid: false,
+          errors: result.errors,
+          enforcement_failed: true,
+          message: 'Transaction enforcement failed - COA or document number issues'
+        },
+        { status: 422 }
+      )
     }
 
     // Return successful enforcement result
@@ -66,19 +63,21 @@ export async function POST(request: NextRequest) {
         gl_accounts_validated: lineItems.length > 0,
         auto_assignments_made: result.enhancedLines.length > lineItems.length
       },
-      message: validateOnly 
+      message: validateOnly
         ? 'Transaction passes all enforcement checks'
         : 'Transaction ready for processing with enforced standards'
     })
-
   } catch (error) {
     console.error('Transaction enforcement error:', error)
-    return NextResponse.json({
-      success: false,
-      valid: false,
-      error: 'Transaction enforcement system error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        valid: false,
+        error: 'Transaction enforcement system error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -104,7 +103,7 @@ export async function GET(request: NextRequest) {
         supported_business_types: [
           'universal',
           'salon',
-          'restaurant', 
+          'restaurant',
           'healthcare',
           'retail',
           'manufacturing',
@@ -125,9 +124,9 @@ export async function GET(request: NextRequest) {
     // Return organization-specific enforcement status
     const { COADocumentEnforcer } = await import('@/lib/coa-document-enforcement')
     const enforcer = new COADocumentEnforcer(organizationId, businessType)
-    
+
     const coaValidation = await enforcer.validateCOAExists()
-    
+
     return NextResponse.json({
       organization_id: organizationId,
       business_type: businessType,
@@ -140,12 +139,14 @@ export async function GET(request: NextRequest) {
       },
       last_checked: new Date().toISOString()
     })
-    
   } catch (error) {
-    return NextResponse.json({
-      organization_id: organizationId,
-      error: 'Unable to check enforcement status',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        organization_id: organizationId,
+        error: 'Unable to check enforcement status',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

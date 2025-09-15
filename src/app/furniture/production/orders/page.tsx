@@ -2,9 +2,23 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Search, Filter, MoreVertical, Calendar, Package, Clock, AlertCircle, CheckCircle, ArrowRight } from 'lucide-react'
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreVertical,
+  Calendar,
+  Package,
+  Clock,
+  AlertCircle,
+  CheckCircle,
+  ArrowRight
+} from 'lucide-react'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useUniversalData,
+  universalFilters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
@@ -15,10 +29,10 @@ export default function ProductionOrdersPage() {
   // Load production orders from universal_transactions
   const { data: productionOrders, isLoading: ordersLoading } = useUniversalData({
     table: 'universal_transactions',
-    filter: (item) => 
+    filter: item =>
       item.transaction_type === 'production_order' &&
       item.organization_id === organizationId &&
-      (!searchTerm || 
+      (!searchTerm ||
         item.transaction_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.description?.toLowerCase().includes(searchTerm.toLowerCase())),
     organizationId,
@@ -28,7 +42,7 @@ export default function ProductionOrdersPage() {
   // Load entities for customer names and products
   const { data: entities } = useUniversalData({
     table: 'core_entities',
-    filter: (item) => item.organization_id === organizationId,
+    filter: item => item.organization_id === organizationId,
     organizationId,
     enabled: !!organizationId
   })
@@ -36,7 +50,7 @@ export default function ProductionOrdersPage() {
   // Load transaction lines for order details
   const { data: transactionLines } = useUniversalData({
     table: 'universal_transaction_lines',
-    filter: (item) => item.organization_id === organizationId,
+    filter: item => item.organization_id === organizationId,
     organizationId,
     enabled: !!organizationId
   })
@@ -52,17 +66,35 @@ export default function ProductionOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-800 dark:text-yellow-200', icon: Clock },
-      in_progress: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-800 dark:text-blue-200', icon: Package },
-      completed: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-200', icon: CheckCircle },
-      cancelled: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-200', icon: AlertCircle }
+      pending: {
+        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+        text: 'text-yellow-800 dark:text-yellow-200',
+        icon: Clock
+      },
+      in_progress: {
+        bg: 'bg-blue-100 dark:bg-blue-900/30',
+        text: 'text-blue-800 dark:text-blue-200',
+        icon: Package
+      },
+      completed: {
+        bg: 'bg-green-100 dark:bg-green-900/30',
+        text: 'text-green-800 dark:text-green-200',
+        icon: CheckCircle
+      },
+      cancelled: {
+        bg: 'bg-red-100 dark:bg-red-900/30',
+        text: 'text-red-800 dark:text-red-200',
+        icon: AlertCircle
+      }
     }
-    
+
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
     const Icon = config.icon
-    
+
     return (
-      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+      <span
+        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
+      >
         <Icon className="h-3 w-3" />
         {status.replace('_', ' ').charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
       </span>
@@ -90,7 +122,9 @@ export default function ProductionOrdersPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Production Orders</h1>
-          <p className="text-gray-600 dark:text-gray-400">Manage manufacturing orders and track production</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Manage manufacturing orders and track production
+          </p>
         </div>
         <Link
           href="/furniture/production/orders/new"
@@ -111,9 +145,13 @@ export default function ProductionOrdersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Orders</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Total Orders
+                  </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.total}</div>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {stats.total}
+                    </div>
                   </dd>
                 </dl>
               </div>
@@ -129,9 +167,13 @@ export default function ProductionOrdersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Pending</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Pending
+                  </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.pending}</div>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {stats.pending}
+                    </div>
                   </dd>
                 </dl>
               </div>
@@ -147,9 +189,13 @@ export default function ProductionOrdersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">In Progress</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    In Progress
+                  </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.inProgress}</div>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {stats.inProgress}
+                    </div>
                   </dd>
                 </dl>
               </div>
@@ -165,9 +211,13 @@ export default function ProductionOrdersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Completed</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Completed
+                  </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.completed}</div>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {stats.completed}
+                    </div>
                   </dd>
                 </dl>
               </div>
@@ -187,7 +237,7 @@ export default function ProductionOrdersPage() {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 placeholder="Search orders..."
               />
@@ -236,12 +286,15 @@ export default function ProductionOrdersPage() {
                 </tr>
               ) : productionOrders?.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                  >
                     No production orders found. Create your first order to get started.
                   </td>
                 </tr>
               ) : (
-                productionOrders?.map((order) => {
+                productionOrders?.map(order => {
                   const items = getOrderItems(order.id)
                   return (
                     <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -298,8 +351,12 @@ export default function ProductionOrdersPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Track Production</h3>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Monitor order progress</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                Track Production
+              </h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Monitor order progress
+              </p>
             </div>
             <ArrowRight className="h-5 w-5 text-gray-400" />
           </div>

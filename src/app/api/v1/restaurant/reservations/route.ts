@@ -3,7 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 /**
  * Modern Restaurant Reservations API - HERA Universal Architecture
- * 
+ *
  * Features:
  * - Real-time table availability checking
  * - Opening hours integration
@@ -58,14 +58,70 @@ const RESTAURANT_CONFIG = {
     sunday: { open: '10:00', close: '21:00' }
   },
   tables: [
-    { id: '1', number: 1, capacity: 2, location: 'indoor', features: ['window'], status: 'available' },
-    { id: '2', number: 2, capacity: 4, location: 'indoor', features: ['booth'], status: 'available' },
-    { id: '3', number: 3, capacity: 6, location: 'indoor', features: ['round'], status: 'available' },
-    { id: '4', number: 4, capacity: 2, location: 'outdoor', features: ['patio'], status: 'available' },
-    { id: '5', number: 5, capacity: 4, location: 'outdoor', features: ['garden'], status: 'available' },
-    { id: '6', number: 6, capacity: 8, location: 'private', features: ['private dining'], status: 'available' },
-    { id: '7', number: 7, capacity: 4, location: 'indoor', features: ['bar view'], status: 'available' },
-    { id: '8', number: 8, capacity: 2, location: 'indoor', features: ['intimate'], status: 'available' }
+    {
+      id: '1',
+      number: 1,
+      capacity: 2,
+      location: 'indoor',
+      features: ['window'],
+      status: 'available'
+    },
+    {
+      id: '2',
+      number: 2,
+      capacity: 4,
+      location: 'indoor',
+      features: ['booth'],
+      status: 'available'
+    },
+    {
+      id: '3',
+      number: 3,
+      capacity: 6,
+      location: 'indoor',
+      features: ['round'],
+      status: 'available'
+    },
+    {
+      id: '4',
+      number: 4,
+      capacity: 2,
+      location: 'outdoor',
+      features: ['patio'],
+      status: 'available'
+    },
+    {
+      id: '5',
+      number: 5,
+      capacity: 4,
+      location: 'outdoor',
+      features: ['garden'],
+      status: 'available'
+    },
+    {
+      id: '6',
+      number: 6,
+      capacity: 8,
+      location: 'private',
+      features: ['private dining'],
+      status: 'available'
+    },
+    {
+      id: '7',
+      number: 7,
+      capacity: 4,
+      location: 'indoor',
+      features: ['bar view'],
+      status: 'available'
+    },
+    {
+      id: '8',
+      number: 8,
+      capacity: 2,
+      location: 'indoor',
+      features: ['intimate'],
+      status: 'available'
+    }
   ] as Table[],
   reservationSettings: {
     maxAdvanceDays: 30,
@@ -94,12 +150,8 @@ export async function GET(request: NextRequest) {
       case 'get_tables':
         return await getTables()
       default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     console.error('Reservations API error:', error)
     return NextResponse.json(
@@ -122,12 +174,8 @@ export async function POST(request: NextRequest) {
       case 'cancel_reservation':
         return await cancelReservation(body)
       default:
-        return NextResponse.json(
-          { success: false, message: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
     }
-
   } catch (error) {
     console.error('Reservations POST error:', error)
     return NextResponse.json(
@@ -140,9 +188,11 @@ export async function POST(request: NextRequest) {
 async function getAvailability(date: string, partySize: number) {
   try {
     // Get day of week
-    const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'lowercase' }) as keyof OpeningHours
+    const dayOfWeek = new Date(date).toLocaleDateString('en-US', {
+      weekday: 'lowercase'
+    }) as keyof OpeningHours
     const dayHours = RESTAURANT_CONFIG.openingHours[dayOfWeek]
-    
+
     if (dayHours?.closed) {
       return NextResponse.json({
         success: true,
@@ -157,10 +207,16 @@ async function getAvailability(date: string, partySize: number) {
 
     // Get existing reservations for the date
     const existingReservations = await getExistingReservations(date)
-    
+
     // Generate available time slots
-    const timeSlots = generateTimeSlots(dayHours.open, dayHours.close, date, partySize, existingReservations)
-    
+    const timeSlots = generateTimeSlots(
+      dayHours.open,
+      dayHours.close,
+      date,
+      partySize,
+      existingReservations
+    )
+
     return NextResponse.json({
       success: true,
       data: {
@@ -171,7 +227,6 @@ async function getAvailability(date: string, partySize: number) {
         totalTables: RESTAURANT_CONFIG.tables.length
       }
     })
-
   } catch (error) {
     console.error('Error getting availability:', error)
     return NextResponse.json(
@@ -186,36 +241,41 @@ async function getExistingReservations(date: string): Promise<Reservation[]> {
     // Query reservations from universal_transactions
     const { data: transactions, error } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         lines:universal_transaction_lines(*),
         customer:core_entities!universal_transactions_source_entity_id_fkey(*)
-      `)
+      `
+      )
       .eq('organization_id', MARIO_ORG_ID)
       .eq('transaction_type', 'reservation')
       .gte('transaction_date', date)
-      .lt('transaction_date', new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+      .lt(
+        'transaction_date',
+        new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      )
       .in('status', ['confirmed', 'pending', 'completed'])
 
     if (error) throw error
 
     // Convert transactions to reservations
-    const reservations: Reservation[] = transactions?.map(txn => ({
-      id: txn.id,
-      customerName: txn.customer?.entity_name || 'Unknown',
-      customerPhone: (txn.metadata as any)?.phone || '',
-      customerEmail: (txn.metadata as any)?.email || '',
-      date: txn.transaction_date,
-      time: (txn.metadata as any)?.time || '00:00',
-      partySize: (txn.metadata as any)?.partySize || 2,
-      tableId: (txn.metadata as any)?.tableId,
-      status: txn.status as any,
-      specialRequests: (txn.metadata as any)?.specialRequests,
-      createdAt: txn.created_at
-    })) || []
+    const reservations: Reservation[] =
+      transactions?.map(txn => ({
+        id: txn.id,
+        customerName: txn.customer?.entity_name || 'Unknown',
+        customerPhone: (txn.metadata as any)?.phone || '',
+        customerEmail: (txn.metadata as any)?.email || '',
+        date: txn.transaction_date,
+        time: (txn.metadata as any)?.time || '00:00',
+        partySize: (txn.metadata as any)?.partySize || 2,
+        tableId: (txn.metadata as any)?.tableId,
+        status: txn.status as any,
+        specialRequests: (txn.metadata as any)?.specialRequests,
+        createdAt: txn.created_at
+      })) || []
 
     return reservations
-
   } catch (error) {
     console.error('Error getting existing reservations:', error)
     // Return mock data as fallback
@@ -248,20 +308,35 @@ async function getExistingReservations(date: string): Promise<Reservation[]> {
   }
 }
 
-function generateTimeSlots(openTime: string, closeTime: string, date: string, partySize: number, existingReservations: Reservation[]) {
+function generateTimeSlots(
+  openTime: string,
+  closeTime: string,
+  date: string,
+  partySize: number,
+  existingReservations: Reservation[]
+) {
   const slots = []
   const startHour = parseInt(openTime.split(':')[0])
   const startMinute = parseInt(openTime.split(':')[1])
   const endHour = parseInt(closeTime.split(':')[0])
-  
+
   for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += RESTAURANT_CONFIG.reservationSettings.slotInterval) {
+    for (
+      let minute = 0;
+      minute < 60;
+      minute += RESTAURANT_CONFIG.reservationSettings.slotInterval
+    ) {
       if (hour === startHour && minute < startMinute) continue
-      
+
       const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-      const availableTables = getAvailableTablesForSlot(timeString, date, existingReservations, partySize)
+      const availableTables = getAvailableTablesForSlot(
+        timeString,
+        date,
+        existingReservations,
+        partySize
+      )
       const totalCapacity = availableTables.reduce((sum, table) => sum + table.capacity, 0)
-      
+
       slots.push({
         time: timeString,
         available: availableTables.length > 0 && totalCapacity >= partySize,
@@ -270,30 +345,35 @@ function generateTimeSlots(openTime: string, closeTime: string, date: string, pa
       })
     }
   }
-  
+
   return slots
 }
 
-function getAvailableTablesForSlot(time: string, date: string, existingReservations: Reservation[], partySize: number): Table[] {
+function getAvailableTablesForSlot(
+  time: string,
+  date: string,
+  existingReservations: Reservation[],
+  partySize: number
+): Table[] {
   // Filter out tables that are already reserved for this time slot
   const reservedTableIds = existingReservations
     .filter(r => r.date === date && isTimeConflict(r.time, time))
     .map(r => r.tableId)
     .filter(Boolean)
-  
-  return RESTAURANT_CONFIG.tables
-    .filter(table => 
-      table.status === 'available' && 
+
+  return RESTAURANT_CONFIG.tables.filter(
+    table =>
+      table.status === 'available' &&
       !reservedTableIds.includes(table.id) &&
       table.capacity >= partySize
-    )
+  )
 }
 
 function isTimeConflict(existingTime: string, newTime: string): boolean {
   const existing = new Date(`2000-01-01T${existingTime}:00`)
   const newReservation = new Date(`2000-01-01T${newTime}:00`)
   const duration = RESTAURANT_CONFIG.reservationSettings.defaultDurationMinutes * 60 * 1000
-  
+
   return (
     (newReservation >= existing && newReservation < new Date(existing.getTime() + duration)) ||
     (existing >= newReservation && existing < new Date(newReservation.getTime() + duration))
@@ -303,7 +383,7 @@ function isTimeConflict(existingTime: string, newTime: string): boolean {
 async function getReservations(date: string) {
   try {
     const reservations = await getExistingReservations(date)
-    
+
     return NextResponse.json({
       success: true,
       data: {
@@ -312,7 +392,6 @@ async function getReservations(date: string) {
         count: reservations.length
       }
     })
-
   } catch (error) {
     console.error('Error getting reservations:', error)
     return NextResponse.json(
@@ -363,7 +442,7 @@ async function createReservation(body: any) {
     // Check availability
     const existingReservations = await getExistingReservations(date)
     const availableTables = getAvailableTablesForSlot(time, date, existingReservations, partySize)
-    
+
     if (availableTables.length === 0) {
       return NextResponse.json(
         { success: false, message: 'No tables available for this time slot' },
@@ -372,7 +451,7 @@ async function createReservation(body: any) {
     }
 
     // Select best table (prefer exact capacity match)
-    const bestTable = tableId 
+    const bestTable = tableId
       ? availableTables.find(t => t.id === tableId)
       : availableTables.sort((a, b) => {
           const aScore = a.capacity === partySize ? 100 : Math.abs(a.capacity - partySize)
@@ -389,7 +468,7 @@ async function createReservation(body: any) {
 
     // Create or get customer entity
     let customerId = await getOrCreateCustomer(customerName, customerPhone, customerEmail)
-    
+
     // Create reservation transaction
     const { data: reservation, error } = await supabase
       .from('universal_transactions')
@@ -434,7 +513,6 @@ async function createReservation(body: any) {
       },
       message: 'Reservation created successfully'
     })
-
   } catch (error) {
     console.error('Error creating reservation:', error)
     return NextResponse.json(
@@ -480,7 +558,6 @@ async function getOrCreateCustomer(name: string, phone: string, email: string): 
 
     if (error) throw error
     return newCustomer.id
-
   } catch (error) {
     console.error('Error getting/creating customer:', error)
     throw error
@@ -512,7 +589,11 @@ function generateReservationNumber(): string {
 }
 
 function generateCustomerCode(name: string): string {
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase()
+  const initials = name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
   const timestamp = Date.now().toString().slice(-4)
   return `CUST-${initials}-${timestamp}`
 }

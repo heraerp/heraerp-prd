@@ -1,7 +1,7 @@
 /**
  * HERA Fiscal Year Close DNA Engine
  * Smart Code: HERA.FIN.FISCAL.CLOSE.ENGINE.v1
- * 
+ *
  * End-to-end fiscal year closing with GL integration
  * Zero schema changes - uses universal tables only
  */
@@ -14,7 +14,7 @@ export const FISCAL_CLOSE_SMART_CODES = {
   CLOSE_JOURNAL: 'HERA.FIN.GL.JOURNAL.CLOSE.YEAR.v1',
   REVERSAL_JOURNAL: 'HERA.FIN.GL.JOURNAL.REVERSAL.CLOSE.YEAR.v1',
   CONSOLIDATION_ELIM: 'HERA.FIN.GL.JOURNAL.CONSOLIDATION.ELIM.v1',
-  
+
   // Line codes
   REVENUE_CLOSE: 'HERA.FIN.GL.LINE.REVENUE.CLOSE.v1',
   EXPENSE_CLOSE: 'HERA.FIN.GL.LINE.EXPENSE.CLOSE.v1',
@@ -141,7 +141,6 @@ export class FiscalCloseEngine {
         net_income: netIncome,
         closing_entries: closingEntries
       }
-
     } catch (error) {
       console.error('Fiscal close error:', error)
       return {
@@ -193,7 +192,10 @@ export class FiscalCloseEngine {
   /**
    * Get accounts by type for closing
    */
-  private async getAccountsByType(accountType: 'revenue' | 'expense', asOfDate: string): Promise<AccountSummary[]> {
+  private async getAccountsByType(
+    accountType: 'revenue' | 'expense',
+    asOfDate: string
+  ): Promise<AccountSummary[]> {
     const accounts = await universalApi.query('core_entities', {
       filters: {
         organization_id: this.organizationId,
@@ -206,7 +208,7 @@ export class FiscalCloseEngine {
 
     // Get balances for each account
     const accountsWithBalances = await Promise.all(
-      accounts.data.map(async (account) => {
+      accounts.data.map(async account => {
         const balance = await this.getAccountBalance(account.id, asOfDate)
         return {
           account_id: account.id,

@@ -18,10 +18,22 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  Package, Wand2, CheckCircle, AlertTriangle, ArrowRight, 
-  Sparkles, FolderOpen, Loader2, ArrowLeft, Save, 
-  FileCode, Zap, RefreshCw, Download, Copy
+import {
+  Package,
+  Wand2,
+  CheckCircle,
+  AlertTriangle,
+  ArrowRight,
+  Sparkles,
+  FolderOpen,
+  Loader2,
+  ArrowLeft,
+  Save,
+  FileCode,
+  Zap,
+  RefreshCw,
+  Download,
+  Copy
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -45,13 +57,15 @@ export default function MCPBatchWizard() {
 
   const loadProgressivePages = async () => {
     if (!baseUrl) return
-    
+
     setIsLoadingPages(true)
     try {
       const urlPath = baseUrl.replace(/^https?:\/\/[^\/]+/, '')
-      const response = await fetch(`/api/list-progressive-pages?path=${encodeURIComponent(urlPath)}`)
+      const response = await fetch(
+        `/api/list-progressive-pages?path=${encodeURIComponent(urlPath)}`
+      )
       const data = await response.json()
-      
+
       if (data.success && data.pages) {
         setPages(data.pages.map(page => ({ ...page, selected: true, status: 'pending' })))
       } else {
@@ -66,9 +80,9 @@ export default function MCPBatchWizard() {
   }
 
   const togglePageSelection = (index: number) => {
-    setPages(prev => prev.map((page, i) => 
-      i === index ? { ...page, selected: !page.selected } : page
-    ))
+    setPages(prev =>
+      prev.map((page, i) => (i === index ? { ...page, selected: !page.selected } : page))
+    )
   }
 
   const selectAll = (selected: boolean) => {
@@ -79,29 +93,29 @@ export default function MCPBatchWizard() {
     // Fetch page content
     const fullUrl = baseUrl.replace(/\/[^\/]+\/?$/, '') + '/' + page.path
     const urlPath = fullUrl.replace(/^https?:\/\/[^\/]+/, '')
-    
+
     const fetchResponse = await fetch(`/api/fetch-page-content?path=${encodeURIComponent(urlPath)}`)
     const fetchData = await fetchResponse.json()
-    
+
     if (!fetchData.success || !fetchData.content) {
       throw new Error('Failed to fetch page content')
     }
 
     // Convert the page (simplified version - in production, this would use the full conversion logic)
     let converted = fetchData.content
-    
+
     // Add imports
     converted = addUniversalImports(converted)
-    
+
     // Convert static data to dynamic
     converted = convertToDynamicState(converted)
-    
+
     // Add API connections
     converted = addAPIConnections(converted)
-    
+
     // Clean up
     converted = cleanupCode(converted)
-    
+
     return converted
   }
 
@@ -112,22 +126,22 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 `
-    
+
     const importEndIndex = code.lastIndexOf('import')
     const nextLineIndex = code.indexOf('\n', importEndIndex)
-    
+
     return code.slice(0, nextLineIndex + 1) + '\n' + imports + code.slice(nextLineIndex + 1)
   }
 
   const convertToDynamicState = (code: string): string => {
     let converted = code
-    
+
     // Replace hard-coded demo data arrays
     converted = converted.replace(
       /const\s+initial\w+\s*=\s*\[[\s\S]*?\]/g,
       'const [data, setData] = useState([])\n  const [isLoading, setIsLoading] = useState(true)'
     )
-    
+
     return converted
   }
 
@@ -147,20 +161,20 @@ import { Loader2 } from 'lucide-react'
     const response = await fetch('/api/save-production-file', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         content: convertedCode,
         originalPath: page.path,
         fileName: 'page.tsx'
-      }),
+      })
     })
-    
+
     const data = await response.json()
     if (!data.success) {
       throw new Error(data.error || 'Failed to save file')
     }
-    
+
     return data.filePath
   }
 
@@ -177,32 +191,36 @@ import { Loader2 } from 'lucide-react'
     for (let i = 0; i < selectedPages.length; i++) {
       const page = selectedPages[i]
       const pageIndex = pages.findIndex(p => p.path === page.path)
-      
+
       setCurrentPage(page.displayName)
-      
+
       // Update status to processing
-      setPages(prev => prev.map((p, idx) => 
-        idx === pageIndex ? { ...p, status: 'processing' } : p
-      ))
+      setPages(prev =>
+        prev.map((p, idx) => (idx === pageIndex ? { ...p, status: 'processing' } : p))
+      )
 
       try {
         // Convert the page
         const convertedCode = await fetchAndConvertPage(page)
-        
+
         // Save to production
         await savePage(page, convertedCode)
-        
+
         // Update status to completed
-        setPages(prev => prev.map((p, idx) => 
-          idx === pageIndex ? { ...p, status: 'completed', convertedCode } : p
-        ))
+        setPages(prev =>
+          prev.map((p, idx) =>
+            idx === pageIndex ? { ...p, status: 'completed', convertedCode } : p
+          )
+        )
       } catch (error) {
         console.error(`Error converting ${page.displayName}:`, error)
-        
+
         // Update status to error
-        setPages(prev => prev.map((p, idx) => 
-          idx === pageIndex ? { ...p, status: 'error', error: error.message } : p
-        ))
+        setPages(prev =>
+          prev.map((p, idx) =>
+            idx === pageIndex ? { ...p, status: 'error', error: error.message } : p
+          )
+        )
       }
 
       setConversionProgress(((i + 1) / selectedPages.length) * 100)
@@ -245,7 +263,9 @@ import { Loader2 } from 'lucide-react'
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   Batch Production Wizard
                 </h1>
-                <p className="text-slate-700 font-medium">Convert All Progressive Pages to Production at Once</p>
+                <p className="text-slate-700 font-medium">
+                  Convert All Progressive Pages to Production at Once
+                </p>
               </div>
             </div>
             <Badge className="px-4 py-2 bg-indigo-500/20 text-indigo-800 border-indigo-500/30">
@@ -273,13 +293,13 @@ import { Loader2 } from 'lucide-react'
                     id="base-url"
                     placeholder="e.g., https://heraerp.com/salon-progressive"
                     value={baseUrl}
-                    onChange={(e) => setBaseUrl(e.target.value)}
+                    onChange={e => setBaseUrl(e.target.value)}
                     className="bg-white/80 border-slate-200"
                   />
                   <p className="text-xs text-slate-700 mt-1 font-medium">
                     Enter the base URL of a progressive app
                   </p>
-                  
+
                   {/* Quick Demo Links */}
                   <div className="mt-2">
                     <p className="text-xs text-slate-800 mb-1 font-medium">Quick demos:</p>
@@ -308,7 +328,7 @@ import { Loader2 } from 'lucide-react'
                     </div>
                   </div>
                 </div>
-                
+
                 <Button
                   onClick={loadProgressivePages}
                   disabled={!baseUrl || isLoadingPages}
@@ -339,18 +359,10 @@ import { Loader2 } from 'lucide-react'
                       Select Pages to Convert
                     </CardTitle>
                     <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => selectAll(true)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => selectAll(true)}>
                         Select All
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => selectAll(false)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => selectAll(false)}>
                         Clear All
                       </Button>
                     </div>
@@ -376,7 +388,7 @@ import { Loader2 } from 'lucide-react'
                       </div>
                     ))}
                   </div>
-                  
+
                   <Button
                     onClick={startBatchConversion}
                     disabled={isConverting || pages.filter(p => p.selected).length === 0}
@@ -412,11 +424,13 @@ import { Loader2 } from 'lucide-react'
                 </CardHeader>
                 <CardContent>
                   <Progress value={conversionProgress} className="mb-4" />
-                  
+
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Total Pages:</span>
-                      <span className="font-semibold text-slate-900">{pages.filter(p => p.selected).length}</span>
+                      <span className="font-semibold text-slate-900">
+                        {pages.filter(p => p.selected).length}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-700 font-medium">Completed:</span>
@@ -429,13 +443,11 @@ import { Loader2 } from 'lucide-react'
                       </div>
                     )}
                   </div>
-                  
+
                   {currentPage && (
                     <Alert className="mt-4">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <AlertDescription>
-                        Converting: {currentPage}
-                      </AlertDescription>
+                      <AlertDescription>Converting: {currentPage}</AlertDescription>
                     </Alert>
                   )}
                 </CardContent>
@@ -450,7 +462,7 @@ import { Loader2 } from 'lucide-react'
                     <Sparkles className="h-5 w-5 text-green-600" />
                     Conversion Complete!
                   </h3>
-                  
+
                   <div className="space-y-2 text-sm mb-4">
                     <p className="text-slate-800">
                       Successfully converted {completedCount} pages to production.
@@ -461,14 +473,14 @@ import { Loader2 } from 'lucide-react'
                       </p>
                     )}
                   </div>
-                  
+
                   <Alert>
                     <CheckCircle className="h-4 w-4" />
                     <AlertDescription>
                       All converted pages have been saved to their production directories!
                     </AlertDescription>
                   </Alert>
-                  
+
                   <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
                     <h4 className="font-medium text-indigo-900 mb-2">Next Steps:</h4>
                     <ol className="text-sm text-indigo-800 space-y-1">

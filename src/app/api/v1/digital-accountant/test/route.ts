@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
       .from('core_organizations')
       .select('id, organization_name')
       .limit(1)
-    
+
     if (error) {
       return NextResponse.json({
         success: false,
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         details: error.message
       })
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Digital Accountant API is working',

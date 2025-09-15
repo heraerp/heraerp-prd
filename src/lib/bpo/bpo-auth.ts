@@ -10,23 +10,23 @@ export interface BPOUser {
   role: BPOUserRole
   organization_id: string
   department?: string
-  
+
   // BPO-specific properties
   shift?: 'morning' | 'afternoon' | 'night' | 'flexible'
-  specializations?: string[]  // e.g., ['vendor_invoices', 'expense_reports', 'complex_audits']
+  specializations?: string[] // e.g., ['vendor_invoices', 'expense_reports', 'complex_audits']
   experience_level?: 'junior' | 'senior' | 'expert'
-  
+
   // Performance metrics
   current_workload?: number
   average_processing_time?: number
   quality_score?: number
   sla_compliance_rate?: number
-  
+
   // Access permissions
   can_escalate?: boolean
   can_approve_high_value?: boolean
   max_invoice_amount?: number
-  
+
   created_at: Date
   last_login?: Date
   status: 'active' | 'inactive' | 'on_leave'
@@ -40,26 +40,26 @@ export interface BPOPermissions {
   can_edit_invoice_details: boolean
   can_delete_invoice: boolean
   can_bulk_upload: boolean
-  
+
   // Processing workflow
   can_claim_from_queue: boolean
   can_process_invoice: boolean
   can_verify_work: boolean
   can_approve_completion: boolean
   can_reject_work: boolean
-  
+
   // Communication
   can_raise_query: boolean
   can_respond_to_query: boolean
   can_escalate_issue: boolean
   can_close_thread: boolean
-  
+
   // Analytics and reporting
   can_view_team_analytics: boolean
   can_view_individual_analytics: boolean
   can_export_reports: boolean
   can_view_audit_trail: boolean
-  
+
   // System administration
   can_manage_users: boolean
   can_configure_sla: boolean
@@ -76,32 +76,32 @@ export function getBPOPermissions(role: BPOUserRole): BPOPermissions {
       can_edit_invoice_details: true,
       can_delete_invoice: true,
       can_bulk_upload: true,
-      
+
       // Processing workflow
       can_claim_from_queue: false,
       can_process_invoice: false,
       can_verify_work: false,
       can_approve_completion: true,
       can_reject_work: true,
-      
+
       // Communication
       can_raise_query: false, // BO raises queries to HO
       can_respond_to_query: true,
       can_escalate_issue: true,
       can_close_thread: true,
-      
+
       // Analytics and reporting
       can_view_team_analytics: false,
       can_view_individual_analytics: true, // Own performance
       can_export_reports: true,
       can_view_audit_trail: true,
-      
+
       // System administration
       can_manage_users: false,
       can_configure_sla: false,
       can_access_system_settings: false
     },
-    
+
     'back-office': {
       // Invoice management
       can_submit_invoice: false,
@@ -109,95 +109,95 @@ export function getBPOPermissions(role: BPOUserRole): BPOPermissions {
       can_edit_invoice_details: false,
       can_delete_invoice: false,
       can_bulk_upload: false,
-      
+
       // Processing workflow
       can_claim_from_queue: true,
       can_process_invoice: true,
       can_verify_work: true,
       can_approve_completion: false, // Only HO approves
       can_reject_work: false,
-      
+
       // Communication
       can_raise_query: true,
       can_respond_to_query: true,
       can_escalate_issue: true,
       can_close_thread: false, // Only HO closes
-      
+
       // Analytics and reporting
       can_view_team_analytics: false,
       can_view_individual_analytics: true,
       can_export_reports: false,
       can_view_audit_trail: true,
-      
+
       // System administration
       can_manage_users: false,
       can_configure_sla: false,
       can_access_system_settings: false
     },
-    
-    'supervisor': {
+
+    supervisor: {
       // Invoice management
       can_submit_invoice: false,
       can_view_all_invoices: true,
       can_edit_invoice_details: true,
       can_delete_invoice: false,
       can_bulk_upload: false,
-      
+
       // Processing workflow
       can_claim_from_queue: true,
       can_process_invoice: true,
       can_verify_work: true,
       can_approve_completion: true,
       can_reject_work: true,
-      
+
       // Communication
       can_raise_query: true,
       can_respond_to_query: true,
       can_escalate_issue: true,
       can_close_thread: true,
-      
+
       // Analytics and reporting
       can_view_team_analytics: true,
       can_view_individual_analytics: true,
       can_export_reports: true,
       can_view_audit_trail: true,
-      
+
       // System administration
       can_manage_users: true,
       can_configure_sla: true,
       can_access_system_settings: false
     },
-    
-    'admin': {
+
+    admin: {
       // Full permissions for system admin
       can_submit_invoice: true,
       can_view_all_invoices: true,
       can_edit_invoice_details: true,
       can_delete_invoice: true,
       can_bulk_upload: true,
-      
+
       can_claim_from_queue: true,
       can_process_invoice: true,
       can_verify_work: true,
       can_approve_completion: true,
       can_reject_work: true,
-      
+
       can_raise_query: true,
       can_respond_to_query: true,
       can_escalate_issue: true,
       can_close_thread: true,
-      
+
       can_view_team_analytics: true,
       can_view_individual_analytics: true,
       can_export_reports: true,
       can_view_audit_trail: true,
-      
+
       can_manage_users: true,
       can_configure_sla: true,
       can_access_system_settings: true
     }
   }
-  
+
   return permissions[role]
 }
 
@@ -208,17 +208,21 @@ export function hasPermission(user: BPOUser, permission: keyof BPOPermissions): 
 }
 
 // Check if user can access specific invoice
-export function canAccessInvoice(user: BPOUser, invoiceOrgId: string, assignedUserId?: string): boolean {
+export function canAccessInvoice(
+  user: BPOUser,
+  invoiceOrgId: string,
+  assignedUserId?: string
+): boolean {
   // Head office users can only access their own organization's invoices
   if (user.role === 'head-office') {
     return user.organization_id === invoiceOrgId
   }
-  
+
   // Back office users can access invoices assigned to them or unassigned from their department
   if (user.role === 'back-office') {
     return !assignedUserId || assignedUserId === user.id
   }
-  
+
   // Supervisors and admins can access all invoices
   return user.role === 'supervisor' || user.role === 'admin'
 }
@@ -262,7 +266,7 @@ export const MOCK_BPO_USERS: BPOUser[] = [
     last_login: new Date(),
     status: 'active'
   },
-  
+
   // Back Office users
   {
     id: 'bo-user-1',
@@ -301,7 +305,7 @@ export const MOCK_BPO_USERS: BPOUser[] = [
     last_login: new Date(),
     status: 'active'
   },
-  
+
   // Supervisor
   {
     id: 'sup-user-1',
@@ -337,7 +341,7 @@ export function getMockBPOUsersByRole(role: BPOUserRole): BPOUser[] {
 // Simulate authentication
 export function authenticateBPOUser(email: string, role?: BPOUserRole): BPOUser | null {
   let user = MOCK_BPO_USERS.find(u => u.email === email)
-  
+
   // If no user found but role specified, create a demo user
   if (!user && role) {
     const orgId = role === 'head-office' ? 'org-demo-client' : 'org-bpo-service'
@@ -356,7 +360,7 @@ export function authenticateBPOUser(email: string, role?: BPOUserRole): BPOUser 
       status: 'active'
     }
   }
-  
+
   return user
 }
 
@@ -373,12 +377,12 @@ export function getAccessibleOrganizations(user: BPOUser): string[] {
   if (user.role === 'head-office') {
     return [user.organization_id]
   }
-  
+
   if (user.role === 'back-office') {
     // Back office can see invoices from all client organizations they're assigned to
     return ['org-acme-corp', 'org-techstart', 'org-retail-chain', 'org-manufacturing']
   }
-  
+
   // Supervisors and admins can see all
   return ['*']
 }

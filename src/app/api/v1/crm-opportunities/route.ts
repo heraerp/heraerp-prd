@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || 'demo_org'
-    
+
     // Demo opportunities data with sales stages
     const opportunities = [
       {
@@ -74,11 +74,16 @@ export async function GET(request: NextRequest) {
       success: true,
       data: opportunities,
       count: opportunities.length,
-      total_pipeline_value: opportunities.reduce((sum, opp) => sum + opp.dynamic_fields.deal_value, 0),
-      weighted_pipeline: opportunities.reduce((sum, opp) => sum + (opp.dynamic_fields.deal_value * opp.dynamic_fields.probability / 100), 0),
+      total_pipeline_value: opportunities.reduce(
+        (sum, opp) => sum + opp.dynamic_fields.deal_value,
+        0
+      ),
+      weighted_pipeline: opportunities.reduce(
+        (sum, opp) => sum + (opp.dynamic_fields.deal_value * opp.dynamic_fields.probability) / 100,
+        0
+      ),
       message: 'Opportunities retrieved successfully'
     })
-
   } catch (error) {
     console.error('CRM Opportunities API error:', error)
     return NextResponse.json(
@@ -91,16 +96,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      organization_id, 
-      name, 
-      contact, 
-      stage, 
-      value, 
-      close_date, 
-      probability, 
-      description 
-    } = body
+    const { organization_id, name, contact, stage, value, close_date, probability, description } =
+      body
 
     if (!name || !contact || !stage) {
       return NextResponse.json(
@@ -137,7 +134,6 @@ export async function POST(request: NextRequest) {
       data: newOpportunity,
       message: 'Opportunity created successfully'
     })
-
   } catch (error) {
     console.error('Create opportunity error:', error)
     return NextResponse.json(
@@ -176,7 +172,6 @@ export async function PUT(request: NextRequest) {
       data: updatedOpportunity,
       message: 'Opportunity updated successfully'
     })
-
   } catch (error) {
     console.error('Update opportunity error:', error)
     return NextResponse.json(

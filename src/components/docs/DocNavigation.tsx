@@ -21,12 +21,12 @@ interface DocNavigationProps {
   onNavigate?: () => void
 }
 
-function NavigationTree({ 
-  items, 
-  docType, 
-  currentPath, 
+function NavigationTree({
+  items,
+  docType,
+  currentPath,
   onNavigate,
-  level = 0 
+  level = 0
 }: {
   items: NavigationItem[]
   docType: 'dev' | 'user'
@@ -48,8 +48,8 @@ function NavigationTree({
   }
 
   return (
-    <ul className={cn("space-y-1", level > 0 && "ml-4 mt-2")}>
-      {items.map((item) => {
+    <ul className={cn('space-y-1', level > 0 && 'ml-4 mt-2')}>
+      {items.map(item => {
         const href = `/docs/${docType}/${item.slug}`
         const isActive = pathname === href
         const hasChildren = item.children && item.children.length > 0
@@ -57,12 +57,14 @@ function NavigationTree({
 
         return (
           <li key={item.id}>
-            <div className={cn(
-              "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium",
-              isActive 
-                ? "bg-hera-primary/10 text-hera-primary" 
-                : "text-muted-foreground hover:text-foreground hover:bg-accent"
-            )}>
+            <div
+              className={cn(
+                'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium',
+                isActive
+                  ? 'bg-hera-primary/10 text-hera-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+              )}
+            >
               {hasChildren && (
                 <button
                   onClick={() => toggleExpanded(item.id)}
@@ -75,14 +77,11 @@ function NavigationTree({
                   )}
                 </button>
               )}
-              
+
               <Link
                 href={href}
                 onClick={onNavigate}
-                className={cn(
-                  "flex-1 truncate",
-                  !hasChildren && "ml-6"
-                )}
+                className={cn('flex-1 truncate', !hasChildren && 'ml-6')}
               >
                 {item.title}
               </Link>
@@ -104,21 +103,24 @@ function NavigationTree({
   )
 }
 
-export default function DocNavigation({ 
-  navigation, 
-  docType, 
-  currentPath, 
-  onNavigate 
+export default function DocNavigation({
+  navigation,
+  docType,
+  currentPath,
+  onNavigate
 }: DocNavigationProps) {
   // Group navigation items by sections if they have a 'section' property
-  const groupedNavigation = navigation.reduce((acc, item) => {
-    const section = (item as any).section || 'General'
-    if (!acc[section]) {
-      acc[section] = []
-    }
-    acc[section].push(item)
-    return acc
-  }, {} as Record<string, NavigationItem[]>)
+  const groupedNavigation = navigation.reduce(
+    (acc, item) => {
+      const section = (item as any).section || 'General'
+      if (!acc[section]) {
+        acc[section] = []
+      }
+      acc[section].push(item)
+      return acc
+    },
+    {} as Record<string, NavigationItem[]>
+  )
 
   const sections = Object.keys(groupedNavigation)
 
@@ -141,7 +143,7 @@ export default function DocNavigation({
       ) : (
         // Multiple sections - show section headers
         <div className="space-y-4">
-          {sections.map((section) => (
+          {sections.map(section => (
             <div key={section}>
               <h5 className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {section}

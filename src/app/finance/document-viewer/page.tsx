@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Financial Document Viewer (Similar to SAP FB03)
  * Smart Code: HERA.FIN.DOC.VIEWER.v1
- * 
+ *
  * Display financial documents with organization and fiscal year filtering
  */
 
@@ -16,13 +16,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { 
+import {
   Search,
   FileText,
   Calendar,
@@ -54,16 +60,16 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  TableRow
+} from '@/components/ui/table'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 interface Organization {
   id: string
@@ -120,20 +126,21 @@ interface SearchCriteria {
 
 export default function FinancialDocumentViewer() {
   const router = useRouter()
-  const { user, organizations, currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
-  
+  const { user, organizations, currentOrganization, isAuthenticated, contextLoading } =
+    useMultiOrgAuth()
+
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
     organizationId: currentOrganization?.id || '',
     fiscalYear: new Date().getFullYear().toString()
   })
-  
+
   const [documents, setDocuments] = useState<FinancialDocument[]>([])
   const [selectedDocument, setSelectedDocument] = useState<FinancialDocument | null>(null)
   const [loading, setLoading] = useState(false)
   const [searchMode, setSearchMode] = useState<'simple' | 'advanced'>('simple')
   const [sortField, setSortField] = useState<string>('transaction_date')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
-  
+
   // Update organization when context changes
   useEffect(() => {
     if (currentOrganization?.id) {
@@ -143,19 +150,19 @@ export default function FinancialDocumentViewer() {
       }))
     }
   }, [currentOrganization])
-  
+
   // Search for documents
   const searchDocuments = async () => {
     if (!searchCriteria.organizationId) {
       alert('Please select an organization')
       return
     }
-    
+
     setLoading(true)
     try {
       const params = new URLSearchParams()
       params.append('organizationId', searchCriteria.organizationId)
-      
+
       if (searchCriteria.documentNumber) {
         params.append('documentNumber', searchCriteria.documentNumber)
       }
@@ -180,13 +187,13 @@ export default function FinancialDocumentViewer() {
       if (searchCriteria.status) {
         params.append('status', searchCriteria.status)
       }
-      
+
       params.append('sortField', sortField)
       params.append('sortDirection', sortDirection)
-      
+
       const response = await fetch(`/api/v1/finance/documents?${params.toString()}`)
       const data = await response.json()
-      
+
       if (data.success) {
         setDocuments(data.documents || [])
         if (data.documents?.length > 0) {
@@ -203,14 +210,16 @@ export default function FinancialDocumentViewer() {
       setLoading(false)
     }
   }
-  
+
   // Load document details
   const loadDocumentDetails = async (documentId: string) => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/v1/finance/documents/${documentId}?organizationId=${searchCriteria.organizationId}`)
+      const response = await fetch(
+        `/api/v1/finance/documents/${documentId}?organizationId=${searchCriteria.organizationId}`
+      )
       const data = await response.json()
-      
+
       if (data.success) {
         setSelectedDocument(data.document)
       }
@@ -220,7 +229,7 @@ export default function FinancialDocumentViewer() {
       setLoading(false)
     }
   }
-  
+
   // Format currency
   const formatCurrency = (amount: number, currency: string = 'AED') => {
     return new Intl.NumberFormat('en-AE', {
@@ -229,34 +238,49 @@ export default function FinancialDocumentViewer() {
       minimumFractionDigits: 2
     }).format(amount)
   }
-  
+
   // Get document type badge color
   const getDocumentTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
-      'journal_entry': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      'sale': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      'purchase': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      'payment': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      'receipt': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-      'transfer': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      journal_entry: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      sale: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      purchase: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      payment: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      receipt: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+      transfer: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
     return colors[type] || 'bg-gray-100 text-gray-800'
   }
-  
+
   // Get status badge
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'posted':
-        return <Badge className="bg-green-500 text-white"><CheckCircle className="w-3 h-3 mr-1" />Posted</Badge>
+        return (
+          <Badge className="bg-green-500 text-white">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Posted
+          </Badge>
+        )
       case 'draft':
-        return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Draft</Badge>
+        return (
+          <Badge variant="secondary">
+            <Clock className="w-3 h-3 mr-1" />
+            Draft
+          </Badge>
+        )
       case 'cancelled':
-        return <Badge variant="destructive"><AlertCircle className="w-3 h-3 mr-1" />Cancelled</Badge>
+        return (
+          <Badge variant="destructive">
+            <AlertCircle className="w-3 h-3 mr-1" />
+            Cancelled
+          </Badge>
+        )
       default:
         return <Badge variant="outline">{status}</Badge>
     }
   }
-  
+
   if (contextLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -267,7 +291,7 @@ export default function FinancialDocumentViewer() {
       </div>
     )
   }
-  
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -280,7 +304,7 @@ export default function FinancialDocumentViewer() {
       </div>
     )
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-[1600px] mx-auto p-4 space-y-6">
@@ -295,19 +319,15 @@ export default function FinancialDocumentViewer() {
               View and analyze financial documents across organizations and fiscal years
             </p>
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push('/finance')}
-            >
+            <Button variant="outline" size="sm" onClick={() => router.push('/finance')}>
               <ChevronLeft className="w-4 h-4 mr-1" />
               Back to Finance
             </Button>
           </div>
         </div>
-        
+
         {/* Search Panel */}
         <Card>
           <CardHeader>
@@ -316,7 +336,7 @@ export default function FinancialDocumentViewer() {
                 <Search className="w-5 h-5" />
                 Document Search
               </span>
-              <Tabs value={searchMode} onValueChange={(v) => setSearchMode(v as any)}>
+              <Tabs value={searchMode} onValueChange={v => setSearchMode(v as any)}>
                 <TabsList>
                   <TabsTrigger value="simple">Simple</TabsTrigger>
                   <TabsTrigger value="advanced">Advanced</TabsTrigger>
@@ -333,9 +353,11 @@ export default function FinancialDocumentViewer() {
                     <Building2 className="w-4 h-4" />
                     Organization
                   </Label>
-                  <Select 
-                    value={searchCriteria.organizationId} 
-                    onValueChange={(value) => setSearchCriteria({...searchCriteria, organizationId: value})}
+                  <Select
+                    value={searchCriteria.organizationId}
+                    onValueChange={value =>
+                      setSearchCriteria({ ...searchCriteria, organizationId: value })
+                    }
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select organization" />
@@ -349,27 +371,31 @@ export default function FinancialDocumentViewer() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <Label className="flex items-center gap-2 mb-2">
                     <Calendar className="w-4 h-4" />
                     Fiscal Year
                   </Label>
-                  <Select 
-                    value={searchCriteria.fiscalYear} 
-                    onValueChange={(value) => setSearchCriteria({...searchCriteria, fiscalYear: value})}
+                  <Select
+                    value={searchCriteria.fiscalYear}
+                    onValueChange={value =>
+                      setSearchCriteria({ ...searchCriteria, fiscalYear: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select fiscal year" />
                     </SelectTrigger>
                     <SelectContent>
                       {[2025, 2024, 2023, 2022, 2021].map(year => (
-                        <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <Label className="flex items-center gap-2 mb-2">
                     <Hash className="w-4 h-4" />
@@ -378,12 +404,14 @@ export default function FinancialDocumentViewer() {
                   <Input
                     placeholder="e.g., JE-001234"
                     value={searchCriteria.documentNumber || ''}
-                    onChange={(e) => setSearchCriteria({...searchCriteria, documentNumber: e.target.value})}
-                    onKeyPress={(e) => e.key === 'Enter' && searchDocuments()}
+                    onChange={e =>
+                      setSearchCriteria({ ...searchCriteria, documentNumber: e.target.value })
+                    }
+                    onKeyPress={e => e.key === 'Enter' && searchDocuments()}
                   />
                 </div>
               </div>
-              
+
               {/* Advanced Search Options */}
               {searchMode === 'advanced' && (
                 <>
@@ -391,9 +419,11 @@ export default function FinancialDocumentViewer() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label>Document Type</Label>
-                      <Select 
-                        value={searchCriteria.documentType || ''} 
-                        onValueChange={(value) => setSearchCriteria({...searchCriteria, documentType: value})}
+                      <Select
+                        value={searchCriteria.documentType || ''}
+                        onValueChange={value =>
+                          setSearchCriteria({ ...searchCriteria, documentType: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="All types" />
@@ -409,50 +439,66 @@ export default function FinancialDocumentViewer() {
                         </SelectContent>
                       </Select>
                     </div>
-                    
+
                     <div>
                       <Label>Date From</Label>
                       <Input
                         type="date"
                         value={searchCriteria.dateFrom || ''}
-                        onChange={(e) => setSearchCriteria({...searchCriteria, dateFrom: e.target.value})}
+                        onChange={e =>
+                          setSearchCriteria({ ...searchCriteria, dateFrom: e.target.value })
+                        }
                       />
                     </div>
-                    
+
                     <div>
                       <Label>Date To</Label>
                       <Input
                         type="date"
                         value={searchCriteria.dateTo || ''}
-                        onChange={(e) => setSearchCriteria({...searchCriteria, dateTo: e.target.value})}
+                        onChange={e =>
+                          setSearchCriteria({ ...searchCriteria, dateTo: e.target.value })
+                        }
                       />
                     </div>
-                    
+
                     <div>
                       <Label>Min Amount</Label>
                       <Input
                         type="number"
                         placeholder="0.00"
                         value={searchCriteria.minAmount || ''}
-                        onChange={(e) => setSearchCriteria({...searchCriteria, minAmount: parseFloat(e.target.value) || undefined})}
+                        onChange={e =>
+                          setSearchCriteria({
+                            ...searchCriteria,
+                            minAmount: parseFloat(e.target.value) || undefined
+                          })
+                        }
                       />
                     </div>
-                    
+
                     <div>
                       <Label>Max Amount</Label>
                       <Input
                         type="number"
                         placeholder="999,999.99"
                         value={searchCriteria.maxAmount || ''}
-                        onChange={(e) => setSearchCriteria({...searchCriteria, maxAmount: parseFloat(e.target.value) || undefined})}
+                        onChange={e =>
+                          setSearchCriteria({
+                            ...searchCriteria,
+                            maxAmount: parseFloat(e.target.value) || undefined
+                          })
+                        }
                       />
                     </div>
-                    
+
                     <div>
                       <Label>Status</Label>
-                      <Select 
-                        value={searchCriteria.status || ''} 
-                        onValueChange={(value) => setSearchCriteria({...searchCriteria, status: value})}
+                      <Select
+                        value={searchCriteria.status || ''}
+                        onValueChange={value =>
+                          setSearchCriteria({ ...searchCriteria, status: value })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="All statuses" />
@@ -468,7 +514,7 @@ export default function FinancialDocumentViewer() {
                   </div>
                 </>
               )}
-              
+
               <div className="flex justify-end gap-2">
                 <Button
                   variant="outline"
@@ -500,7 +546,7 @@ export default function FinancialDocumentViewer() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Results */}
         {documents.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -515,12 +561,12 @@ export default function FinancialDocumentViewer() {
               <CardContent className="p-0">
                 <ScrollArea className="h-[600px]">
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {documents.map((doc) => (
+                    {documents.map(doc => (
                       <div
                         key={doc.id}
                         className={cn(
-                          "p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors",
-                          selectedDocument?.id === doc.id && "bg-blue-50 dark:bg-blue-900/20"
+                          'p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors',
+                          selectedDocument?.id === doc.id && 'bg-blue-50 dark:bg-blue-900/20'
                         )}
                         onClick={() => setSelectedDocument(doc)}
                       >
@@ -529,13 +575,15 @@ export default function FinancialDocumentViewer() {
                             <p className="font-medium text-sm text-gray-900 dark:text-white">
                               {doc.transaction_code}
                             </p>
-                            <Badge className={cn("mt-1", getDocumentTypeBadge(doc.transaction_type))}>
+                            <Badge
+                              className={cn('mt-1', getDocumentTypeBadge(doc.transaction_type))}
+                            >
                               {doc.transaction_type.replace('_', ' ')}
                             </Badge>
                           </div>
                           {getStatusBadge(doc.status || 'draft')}
                         </div>
-                        
+
                         <div className="space-y-1 text-sm">
                           <p className="text-gray-600 dark:text-gray-400">
                             <CalendarDays className="w-3 h-3 inline mr-1" />
@@ -556,7 +604,7 @@ export default function FinancialDocumentViewer() {
                 </ScrollArea>
               </CardContent>
             </Card>
-            
+
             {/* Document Details */}
             <Card className="lg:col-span-2">
               {selectedDocument ? (
@@ -586,7 +634,7 @@ export default function FinancialDocumentViewer() {
                         <TabsTrigger value="lines">Line Items</TabsTrigger>
                         <TabsTrigger value="metadata">Additional Info</TabsTrigger>
                       </TabsList>
-                      
+
                       <TabsContent value="header" className="space-y-4 mt-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
@@ -595,29 +643,39 @@ export default function FinancialDocumentViewer() {
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Document Type</Label>
-                            <Badge className={getDocumentTypeBadge(selectedDocument.transaction_type)}>
+                            <Badge
+                              className={getDocumentTypeBadge(selectedDocument.transaction_type)}
+                            >
                               {selectedDocument.transaction_type.replace('_', ' ')}
                             </Badge>
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Transaction Date</Label>
                             <p className="font-medium">
-                              {formatDate(new Date(selectedDocument.transaction_date), 'dd MMM yyyy')}
+                              {formatDate(
+                                new Date(selectedDocument.transaction_date),
+                                'dd MMM yyyy'
+                              )}
                             </p>
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Posting Date</Label>
                             <p className="font-medium">
-                              {selectedDocument.posting_date 
+                              {selectedDocument.posting_date
                                 ? formatDate(new Date(selectedDocument.posting_date), 'dd MMM yyyy')
-                                : formatDate(new Date(selectedDocument.transaction_date), 'dd MMM yyyy')
-                              }
+                                : formatDate(
+                                    new Date(selectedDocument.transaction_date),
+                                    'dd MMM yyyy'
+                                  )}
                             </p>
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Total Amount</Label>
                             <p className="font-medium text-lg">
-                              {formatCurrency(selectedDocument.total_amount, selectedDocument.currency)}
+                              {formatCurrency(
+                                selectedDocument.total_amount,
+                                selectedDocument.currency
+                              )}
                             </p>
                           </div>
                           <div>
@@ -628,24 +686,29 @@ export default function FinancialDocumentViewer() {
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Reference Number</Label>
-                            <p className="font-medium">{selectedDocument.reference_number || '-'}</p>
+                            <p className="font-medium">
+                              {selectedDocument.reference_number || '-'}
+                            </p>
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Fiscal Period</Label>
                             <p className="font-medium">
-                              {selectedDocument.fiscal_year || new Date(selectedDocument.transaction_date).getFullYear()} / 
-                              {selectedDocument.fiscal_period || formatDate(new Date(selectedDocument.transaction_date), 'MM')}
+                              {selectedDocument.fiscal_year ||
+                                new Date(selectedDocument.transaction_date).getFullYear()}{' '}
+                              /
+                              {selectedDocument.fiscal_period ||
+                                formatDate(new Date(selectedDocument.transaction_date), 'MM')}
                             </p>
                           </div>
                         </div>
-                        
+
                         {selectedDocument.description && (
                           <div>
                             <Label className="text-xs text-gray-500">Description</Label>
                             <p className="font-medium mt-1">{selectedDocument.description}</p>
                           </div>
                         )}
-                        
+
                         <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                           <div>
                             <Label className="text-xs text-gray-500">Created By</Label>
@@ -654,12 +717,15 @@ export default function FinancialDocumentViewer() {
                           <div>
                             <Label className="text-xs text-gray-500">Created At</Label>
                             <p className="font-medium">
-                              {formatDate(new Date(selectedDocument.created_at), 'dd MMM yyyy HH:mm')}
+                              {formatDate(
+                                new Date(selectedDocument.created_at),
+                                'dd MMM yyyy HH:mm'
+                              )}
                             </p>
                           </div>
                         </div>
                       </TabsContent>
-                      
+
                       <TabsContent value="lines" className="mt-4">
                         {selectedDocument.lines && selectedDocument.lines.length > 0 ? (
                           <Table>
@@ -674,7 +740,7 @@ export default function FinancialDocumentViewer() {
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {selectedDocument.lines.map((line) => (
+                              {selectedDocument.lines.map(line => (
                                 <TableRow key={line.id}>
                                   <TableCell className="font-medium">{line.line_number}</TableCell>
                                   <TableCell>
@@ -685,25 +751,40 @@ export default function FinancialDocumentViewer() {
                                   </TableCell>
                                   <TableCell>{line.description || '-'}</TableCell>
                                   <TableCell className="text-right">
-                                    {line.debit_amount ? formatCurrency(line.debit_amount, selectedDocument.currency) : '-'}
+                                    {line.debit_amount
+                                      ? formatCurrency(line.debit_amount, selectedDocument.currency)
+                                      : '-'}
                                   </TableCell>
                                   <TableCell className="text-right">
-                                    {line.credit_amount ? formatCurrency(line.credit_amount, selectedDocument.currency) : '-'}
+                                    {line.credit_amount
+                                      ? formatCurrency(
+                                          line.credit_amount,
+                                          selectedDocument.currency
+                                        )
+                                      : '-'}
                                   </TableCell>
                                   <TableCell>{line.cost_center || '-'}</TableCell>
                                 </TableRow>
                               ))}
                               <TableRow className="font-medium bg-gray-50 dark:bg-gray-800">
-                                <TableCell colSpan={3} className="text-right">Total</TableCell>
+                                <TableCell colSpan={3} className="text-right">
+                                  Total
+                                </TableCell>
                                 <TableCell className="text-right">
                                   {formatCurrency(
-                                    selectedDocument.lines.reduce((sum, line) => sum + (line.debit_amount || 0), 0),
+                                    selectedDocument.lines.reduce(
+                                      (sum, line) => sum + (line.debit_amount || 0),
+                                      0
+                                    ),
                                     selectedDocument.currency
                                   )}
                                 </TableCell>
                                 <TableCell className="text-right">
                                   {formatCurrency(
-                                    selectedDocument.lines.reduce((sum, line) => sum + (line.credit_amount || 0), 0),
+                                    selectedDocument.lines.reduce(
+                                      (sum, line) => sum + (line.credit_amount || 0),
+                                      0
+                                    ),
                                     selectedDocument.currency
                                   )}
                                 </TableCell>
@@ -717,16 +798,18 @@ export default function FinancialDocumentViewer() {
                           </div>
                         )}
                       </TabsContent>
-                      
+
                       <TabsContent value="metadata" className="mt-4">
                         <div className="space-y-4">
                           {selectedDocument.smart_code && (
                             <div>
                               <Label className="text-xs text-gray-500">Smart Code</Label>
-                              <p className="font-mono text-sm mt-1">{selectedDocument.smart_code}</p>
+                              <p className="font-mono text-sm mt-1">
+                                {selectedDocument.smart_code}
+                              </p>
                             </div>
                           )}
-                          
+
                           {selectedDocument.metadata && (
                             <div>
                               <Label className="text-xs text-gray-500">Additional Metadata</Label>
@@ -751,7 +834,7 @@ export default function FinancialDocumentViewer() {
             </Card>
           </div>
         )}
-        
+
         {/* No Results */}
         {documents.length === 0 && !loading && searchCriteria.organizationId && (
           <Card>

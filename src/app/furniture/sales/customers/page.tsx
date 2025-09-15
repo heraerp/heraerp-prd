@@ -2,9 +2,26 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Search, Filter, MoreVertical, Phone, Mail, MapPin, Building2, Calendar, IndianRupee, TrendingUp, Edit, Trash2 } from 'lucide-react'
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreVertical,
+  Phone,
+  Mail,
+  MapPin,
+  Building2,
+  Calendar,
+  IndianRupee,
+  TrendingUp,
+  Edit,
+  Trash2
+} from 'lucide-react'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useUniversalData,
+  universalFilters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
@@ -18,12 +35,16 @@ export default function CustomersPage() {
   const [deleteLoading, setDeleteLoading] = useState(false)
 
   // Load customers from core_entities
-  const { data: customers, isLoading: customersLoading, refetch } = useUniversalData({
+  const {
+    data: customers,
+    isLoading: customersLoading,
+    refetch
+  } = useUniversalData({
     table: 'core_entities',
-    filter: (item) => 
+    filter: item =>
       item.entity_type === 'customer' &&
       item.organization_id === organizationId &&
-      (!searchTerm || 
+      (!searchTerm ||
         item.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.entity_code?.toLowerCase().includes(searchTerm.toLowerCase())),
     organizationId,
@@ -33,7 +54,7 @@ export default function CustomersPage() {
   // Load customer dynamic data (contact info, credit limits, etc.)
   const { data: dynamicData } = useUniversalData({
     table: 'core_dynamic_data',
-    filter: (item) => item.organization_id === organizationId,
+    filter: item => item.organization_id === organizationId,
     organizationId,
     enabled: !!organizationId
   })
@@ -41,18 +62,15 @@ export default function CustomersPage() {
   // Load sales transactions for customer metrics
   const { data: transactions } = useUniversalData({
     table: 'universal_transactions',
-    filter: (item) => 
-      item.organization_id === organizationId &&
-      item.transaction_type === 'sales_order',
+    filter: item =>
+      item.organization_id === organizationId && item.transaction_type === 'sales_order',
     organizationId,
     enabled: !!organizationId
   })
 
   // Get customer dynamic fields
   const getCustomerField = (customerId: string, fieldName: string) => {
-    const field = dynamicData?.find(d => 
-      d.entity_id === customerId && d.field_name === fieldName
-    )
+    const field = dynamicData?.find(d => d.entity_id === customerId && d.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || ''
   }
 
@@ -61,8 +79,9 @@ export default function CustomersPage() {
     const customerTransactions = transactions?.filter(t => t.from_entity_id === customerId) || []
     const totalRevenue = customerTransactions.reduce((sum, t) => sum + t.total_amount, 0)
     const orderCount = customerTransactions.length
-    const lastOrderDate = customerTransactions
-      .sort((a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime())[0]?.transaction_date
+    const lastOrderDate = customerTransactions.sort(
+      (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+    )[0]?.transaction_date
 
     return {
       totalRevenue,
@@ -75,30 +94,36 @@ export default function CustomersPage() {
   const filteredCustomers = customers?.filter(customer => {
     if (filterType === 'active') {
       const metrics = getCustomerMetrics(customer.id)
-      return metrics.orderCount > 0 && metrics.lastOrderDate && 
-        new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) // Active in last 90 days
+      return (
+        metrics.orderCount > 0 &&
+        metrics.lastOrderDate &&
+        new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+      ) // Active in last 90 days
     }
     if (filterType === 'inactive') {
       const metrics = getCustomerMetrics(customer.id)
-      return metrics.orderCount === 0 || !metrics.lastOrderDate ||
+      return (
+        metrics.orderCount === 0 ||
+        !metrics.lastOrderDate ||
         new Date(metrics.lastOrderDate) <= new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+      )
     }
     return true
   })
 
   const handleDeleteCustomer = async () => {
     if (!customerToDelete) return
-    
+
     setDeleteLoading(true)
     try {
       universalApi.setOrganizationId(organizationId!)
-      
+
       // Delete customer entity (this will cascade to dynamic data)
       await universalApi.deleteEntity(customerToDelete.id)
-      
+
       // Refresh the list
       await refetch()
-      
+
       // Close modal and reset
       setShowDeleteModal(false)
       setCustomerToDelete(null)
@@ -112,11 +137,15 @@ export default function CustomersPage() {
 
   const stats = {
     total: customers?.length || 0,
-    active: filteredCustomers?.filter(c => {
-      const metrics = getCustomerMetrics(c.id)
-      return metrics.orderCount > 0 && metrics.lastOrderDate && 
-        new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
-    }).length || 0,
+    active:
+      filteredCustomers?.filter(c => {
+        const metrics = getCustomerMetrics(c.id)
+        return (
+          metrics.orderCount > 0 &&
+          metrics.lastOrderDate &&
+          new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+        )
+      }).length || 0,
     totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0
   }
 
@@ -155,9 +184,13 @@ export default function CustomersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Customers</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Total Customers
+                  </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.total}</div>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {stats.total}
+                    </div>
                   </dd>
                 </dl>
               </div>
@@ -173,10 +206,16 @@ export default function CustomersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Active Customers</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Active Customers
+                  </dt>
                   <dd className="flex items-baseline">
-                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.active}</div>
-                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">({Math.round((stats.active / stats.total) * 100) || 0}%)</span>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {stats.active}
+                    </div>
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                      ({Math.round((stats.active / stats.total) * 100) || 0}%)
+                    </span>
                   </dd>
                 </dl>
               </div>
@@ -192,7 +231,9 @@ export default function CustomersPage() {
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Revenue</dt>
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                    Total Revenue
+                  </dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(stats.totalRevenue)}
@@ -216,7 +257,7 @@ export default function CustomersPage() {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 placeholder="Search customers..."
               />
@@ -293,19 +334,22 @@ export default function CustomersPage() {
                 </tr>
               ) : filteredCustomers?.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                    {searchTerm || filterType !== 'all' 
-                      ? 'No customers found matching your criteria.' 
+                  <td
+                    colSpan={7}
+                    className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                  >
+                    {searchTerm || filterType !== 'all'
+                      ? 'No customers found matching your criteria.'
                       : 'No customers yet. Add your first customer to get started.'}
                   </td>
                 </tr>
               ) : (
-                filteredCustomers?.map((customer) => {
+                filteredCustomers?.map(customer => {
                   const metrics = getCustomerMetrics(customer.id)
                   const email = getCustomerField(customer.id, 'email')
                   const phone = getCustomerField(customer.id, 'phone')
                   const creditLimit = getCustomerField(customer.id, 'credit_limit')
-                  
+
                   return (
                     <tr key={customer.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -346,7 +390,7 @@ export default function CustomersPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {metrics.lastOrderDate 
+                          {metrics.lastOrderDate
                             ? format(new Date(metrics.lastOrderDate), 'MMM dd, yyyy')
                             : 'No orders yet'}
                         </div>
@@ -390,8 +434,8 @@ export default function CustomersPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6 space-y-4">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">Delete Customer</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete <strong>{customerToDelete?.entity_name}</strong>? 
-              This action cannot be undone.
+              Are you sure you want to delete <strong>{customerToDelete?.entity_name}</strong>? This
+              action cannot be undone.
             </p>
             <div className="flex justify-end gap-3">
               <button

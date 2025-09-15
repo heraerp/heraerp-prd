@@ -9,10 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Factory, 
-  Package, 
-  Clock, 
+import {
+  Factory,
+  Package,
+  Clock,
   CheckCircle,
   AlertCircle,
   Plus,
@@ -26,62 +26,30 @@ import {
   ArrowDown
 } from 'lucide-react'
 import Link from 'next/link'
-import { useDemoOrganization, OrganizationInfo, OrganizationLoading } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters, universalSorters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useDemoOrganization,
+  OrganizationInfo,
+  OrganizationLoading
+} from '@/lib/dna/patterns/demo-org-pattern'
+import { useProductionData } from '@/lib/dna/patterns/universal-api-endpoint-pattern'
+import NewProductionOrderModal from '@/components/furniture/NewProductionOrderModal'
 import { cn } from '@/lib/utils'
 
 export default function FurnitureProduction() {
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
-  
-  // Load production orders
-  const { data: productionOrders, loading: ordersLoading } = useUniversalData({
-    table: 'universal_transactions',
-    filter: (t) => 
-      t.transaction_type === 'production_order' &&
-      t.smart_code?.includes('HERA.MFG.PROD'),
-    sort: universalSorters.byCreatedDesc,
-    organizationId,
-    enabled: !!organizationId
-  })
+  const [showNewOrderModal, setShowNewOrderModal] = useState(false)
 
-  // Load work centers
-  const { data: workCenters, loading: centersLoading } = useUniversalData({
-    table: 'core_entities',
-    filter: universalFilters.byEntityType('work_center'),
-    organizationId,
-    enabled: !!organizationId
-  })
-
-  // Load products for production order details
-  const { data: products } = useUniversalData({
-    table: 'core_entities',
-    filter: universalFilters.byEntityType('product'),
-    organizationId,
-    enabled: !!organizationId
-  })
-
-  // Load transaction lines for progress tracking
-  const { data: transactionLines } = useUniversalData({
-    table: 'universal_transaction_lines',
-    organizationId,
-    enabled: !!organizationId
-  })
-
-  // Load relationships for status
-  const { data: relationships } = useUniversalData({
-    table: 'core_relationships',
-    filter: (r) => r.relationship_type === 'has_status',
-    organizationId,
-    enabled: !!organizationId
-  })
-
-  // Load status entities
-  const { data: statusEntities } = useUniversalData({
-    table: 'core_entities',
-    filter: universalFilters.byEntityType('workflow_status'),
-    organizationId,
-    enabled: !!organizationId
-  })
+  // Load all production data using the API endpoint
+  const {
+    productionOrders,
+    workCenters,
+    products,
+    statusEntities,
+    transactionLines,
+    relationships,
+    loading: dataLoading,
+    refresh
+  } = useProductionData(organizationId || '', !!organizationId)
 
   // Calculate production statistics
   const stats = {
@@ -90,17 +58,15 @@ export default function FurnitureProduction() {
       const status = statusRel ? statusEntities.find(s => s.id === statusRel.to_entity_id) : null
       return status?.entity_code === 'STATUS-IN_PROGRESS' || !status
     }).length,
-    
-    plannedQuantity: productionOrders.reduce((sum, o) => 
-      sum + (o.total_amount || 0), 0
-    ),
-    
+
+    plannedQuantity: productionOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0),
+
     completedToday: productionOrders.filter(o => {
       const completedDate = new Date((o.metadata as any)?.completed_date || '')
       const today = new Date()
       return completedDate.toDateString() === today.toDateString()
     }).length,
-    
+
     workCenterUtilization: workCenters.length > 0 ? 78 : 0 // Would calculate from machine logs
   }
 
@@ -109,15 +75,13 @@ export default function FurnitureProduction() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white">
-              Production Management
-            </h1>
-            <p className="text-gray-400 mt-1">
+            <h1 className="text-3xl font-bold text-foreground">Production Management</h1>
+            <p className="text-muted-foreground mt-1">
               Monitor and manage production orders and work centers
             </p>
             <OrganizationInfo name={organizationName} id={organizationId} />
@@ -129,18 +93,19 @@ export default function FurnitureProduction() {
                 Planning
               </Button>
             </Link>
-            <Link href="/furniture/production/orders/new">
-              <Button className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700">
-                <Plus className="h-4 w-4" />
-                New Production Order
-              </Button>
-            </Link>
+            <Button
+              onClick={() => setShowNewOrderModal(true)}
+              className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+            >
+              <Plus className="h-4 w-4" />
+              New Production Order
+            </Button>
           </div>
         </div>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-blue-500/10 rounded-xl">
                 <Factory className="h-6 w-6 text-blue-500" />
@@ -150,15 +115,13 @@ export default function FurnitureProduction() {
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-1">Active Orders</p>
-              <p className="text-3xl font-bold text-white">{stats.activeOrders}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                In production now
-              </p>
+              <p className="text-sm text-muted-foreground mb-1">Active Orders</p>
+              <p className="text-3xl font-bold text-foreground">{stats.activeOrders}</p>
+              <p className="text-xs text-gray-500 mt-2">In production now</p>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-purple-500/10 rounded-xl">
                 <Package className="h-6 w-6 text-purple-500" />
@@ -166,15 +129,13 @@ export default function FurnitureProduction() {
               <ArrowUp className="h-4 w-4 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-1">Planned Units</p>
-              <p className="text-3xl font-bold text-white">{stats.plannedQuantity}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                Total to produce
-              </p>
+              <p className="text-sm text-muted-foreground mb-1">Planned Units</p>
+              <p className="text-3xl font-bold text-foreground">{stats.plannedQuantity}</p>
+              <p className="text-xs text-gray-500 mt-2">Total to produce</p>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-green-500/10 rounded-xl">
                 <CheckCircle className="h-6 w-6 text-green-500" />
@@ -184,15 +145,13 @@ export default function FurnitureProduction() {
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-1">Completed Today</p>
-              <p className="text-3xl font-bold text-white">{stats.completedToday}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                Units finished
-              </p>
+              <p className="text-sm text-muted-foreground mb-1">Completed Today</p>
+              <p className="text-3xl font-bold text-foreground">{stats.completedToday}</p>
+              <p className="text-xs text-gray-500 mt-2">Units finished</p>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-amber-500/10 rounded-xl">
                 <Gauge className="h-6 w-6 text-amber-500" />
@@ -200,18 +159,16 @@ export default function FurnitureProduction() {
               <Activity className="h-4 w-4 text-amber-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-1">Utilization</p>
-              <p className="text-3xl font-bold text-white">{stats.workCenterUtilization}%</p>
-              <p className="text-xs text-gray-500 mt-2">
-                Work center capacity
-              </p>
+              <p className="text-sm text-muted-foreground mb-1">Utilization</p>
+              <p className="text-3xl font-bold text-foreground">{stats.workCenterUtilization}%</p>
+              <p className="text-xs text-gray-500 mt-2">Work center capacity</p>
             </div>
           </Card>
         </div>
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="orders" className="space-y-4">
-          <TabsList className="bg-gray-800/50 backdrop-blur-sm">
+          <TabsList className="bg-card/50 backdrop-blur-sm">
             <TabsTrigger value="orders">Production Orders</TabsTrigger>
             <TabsTrigger value="workcenters">Work Centers</TabsTrigger>
             <TabsTrigger value="schedule">Schedule</TabsTrigger>
@@ -219,71 +176,100 @@ export default function FurnitureProduction() {
           </TabsList>
 
           <TabsContent value="orders" className="space-y-4">
-            <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Active Production Orders</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  Active Production Orders
+                </h2>
                 <div className="space-y-4">
-                  {ordersLoading ? (
-                    <div className="text-center text-gray-400 py-8">Loading production orders...</div>
+                  {dataLoading ? (
+                    <div className="text-center text-muted-foreground py-8">
+                      Loading production orders...
+                    </div>
                   ) : productionOrders.length === 0 ? (
-                    <div className="text-center text-gray-400 py-8">No production orders found</div>
+                    <div className="text-center text-muted-foreground py-8">
+                      No production orders found
+                    </div>
                   ) : (
-                    productionOrders.map((order) => {
+                    productionOrders.map(order => {
                       const product = products.find(p => p.id === order.source_entity_id)
                       const workCenter = workCenters.find(w => w.id === order.target_entity_id)
                       const orderLines = transactionLines.filter(l => l.transaction_id === order.id)
-                      
+
                       // Calculate progress
-                      const completedQty = orderLines.reduce((sum, line) => 
-                        sum + ((line.metadata as any)?.completed_quantity || 0), 0
+                      const completedQty = orderLines.reduce(
+                        (sum, line) => sum + ((line.metadata as any)?.completed_quantity || 0),
+                        0
                       )
-                      const progress = order.total_amount ? (completedQty / order.total_amount) * 100 : 0
+                      const progress = order.total_amount
+                        ? (completedQty / order.total_amount) * 100
+                        : 0
 
                       // Get status
                       const statusRel = relationships.find(r => r.from_entity_id === order.id)
-                      const status = statusRel ? statusEntities.find(s => s.id === statusRel.to_entity_id) : null
+                      const status = statusRel
+                        ? statusEntities.find(s => s.id === statusRel.to_entity_id)
+                        : null
                       const statusCode = status?.entity_code || 'STATUS-PLANNED'
 
                       return (
-                        <div key={order.id} className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50 hover:bg-gray-900/70 transition-colors">
+                        <div
+                          key={order.id}
+                          className="p-4 bg-background/50 rounded-lg border border-border/50 hover:bg-background/70 transition-colors"
+                        >
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-start justify-between mb-3">
                                 <div>
-                                  <p className="font-semibold text-white">{order.transaction_code}</p>
-                                  <p className="text-sm text-gray-400 mt-1">
-                                    {product?.entity_name || 'Unknown Product'} - {order.total_amount} units
+                                  <p className="font-semibold text-foreground">
+                                    {order.transaction_code}
+                                  </p>
+                                  <p className="text-sm text-muted-foreground mt-1">
+                                    {product?.entity_name || 'Unknown Product'} -{' '}
+                                    {order.total_amount} units
                                   </p>
                                   <p className="text-xs text-gray-500 mt-2">
                                     Work Center: {workCenter?.entity_name || 'Not assigned'}
                                   </p>
                                 </div>
-                                <Badge className={cn(
-                                  "ml-4",
-                                  statusCode === 'STATUS-IN_PROGRESS' ? "bg-blue-500/10 text-blue-400" :
-                                  statusCode === 'STATUS-COMPLETED' ? "bg-green-500/10 text-green-400" :
-                                  "bg-gray-500/10 text-gray-400"
-                                )}>
+                                <Badge
+                                  className={cn(
+                                    'ml-4',
+                                    statusCode === 'STATUS-IN_PROGRESS'
+                                      ? 'bg-blue-500/10 text-blue-400'
+                                      : statusCode === 'STATUS-COMPLETED'
+                                        ? 'bg-green-500/10 text-green-400'
+                                        : 'bg-gray-500/10 text-muted-foreground'
+                                  )}
+                                >
                                   {status?.entity_name || 'Planned'}
                                 </Badge>
                               </div>
 
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between text-xs">
-                                  <span className="text-gray-400">Progress</span>
-                                  <span className="text-gray-300">{completedQty} / {order.total_amount} units</span>
+                                  <span className="text-muted-foreground">Progress</span>
+                                  <span className="text-gray-300">
+                                    {completedQty} / {order.total_amount} units
+                                  </span>
                                 </div>
-                                <Progress value={progress} className="h-2 bg-gray-700" />
+                                <Progress value={progress} className="h-2 bg-muted-foreground/10" />
                               </div>
 
                               <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
-                                  Start: {new Date((order.metadata as any)?.planned_start || order.transaction_date).toLocaleDateString()}
+                                  Start:{' '}
+                                  {new Date(
+                                    (order.metadata as any)?.planned_start || order.transaction_date
+                                  ).toLocaleDateString()}
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
-                                  Due: {new Date((order.metadata as any)?.planned_end || order.transaction_date).toLocaleDateString()}
+                                  Due:{' '}
+                                  {new Date(
+                                    (order.metadata as any)?.planned_end || order.transaction_date
+                                  ).toLocaleDateString()}
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Package className="h-3 w-3" />
@@ -309,39 +295,52 @@ export default function FurnitureProduction() {
 
           <TabsContent value="workcenters" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {centersLoading ? (
-                <div className="col-span-full text-center text-gray-400 py-8">Loading work centers...</div>
+              {dataLoading ? (
+                <div className="col-span-full text-center text-muted-foreground py-8">
+                  Loading work centers...
+                </div>
+              ) : workCenters.length === 0 ? (
+                <div className="col-span-full text-center text-muted-foreground py-8">
+                  No work centers found
+                </div>
               ) : (
-                workCenters.map((center) => {
+                workCenters.map(center => {
                   // Get dynamic data for this work center
                   const capacity = 50 // Would load from dynamic data
                   const efficiency = 85 // Would load from dynamic data
-                  
+
                   return (
-                    <Card key={center.id} className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+                    <Card
+                      key={center.id}
+                      className="p-6 bg-card/50 backdrop-blur-sm border-border/50"
+                    >
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h3 className="font-semibold text-white">{center.entity_name}</h3>
-                          <p className="text-sm text-gray-400">{center.entity_code}</p>
+                          <h3 className="font-semibold text-foreground">{center.entity_name}</h3>
+                          <p className="text-sm text-muted-foreground">{center.entity_code}</p>
                         </div>
-                        <Factory className="h-5 w-5 text-gray-400" />
+                        <Factory className="h-5 w-5 text-muted-foreground" />
                       </div>
 
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-400">Capacity/Shift</span>
-                          <span className="text-sm font-medium text-white">{capacity} units</span>
+                          <span className="text-sm text-muted-foreground">Capacity/Shift</span>
+                          <span className="text-sm font-medium text-foreground">
+                            {capacity} units
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-400">Efficiency</span>
-                          <span className="text-sm font-medium text-white">{efficiency}%</span>
+                          <span className="text-sm text-muted-foreground">Efficiency</span>
+                          <span className="text-sm font-medium text-foreground">{efficiency}%</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-400">Location</span>
-                          <span className="text-sm font-medium text-white">{(center.metadata as any)?.location || 'Shop Floor'}</span>
+                          <span className="text-sm text-muted-foreground">Location</span>
+                          <span className="text-sm font-medium text-foreground">
+                            {(center.metadata as any)?.location || 'Shop Floor'}
+                          </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-400">Status</span>
+                          <span className="text-sm text-muted-foreground">Status</span>
                           <Badge className="bg-green-500/10 text-green-400">Active</Badge>
                         </div>
                       </div>
@@ -357,9 +356,9 @@ export default function FurnitureProduction() {
           </TabsContent>
 
           <TabsContent value="schedule" className="space-y-4">
-            <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Production Schedule</h3>
-              <div className="text-center text-gray-400 py-12">
+            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Production Schedule</h3>
+              <div className="text-center text-muted-foreground py-12">
                 <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p>Production scheduling view coming soon</p>
               </div>
@@ -367,9 +366,9 @@ export default function FurnitureProduction() {
           </TabsContent>
 
           <TabsContent value="performance" className="space-y-4">
-            <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Performance Metrics</h3>
-              <div className="text-center text-gray-400 py-12">
+            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Performance Metrics</h3>
+              <div className="text-center text-muted-foreground py-12">
                 <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p>Performance analytics coming soon</p>
               </div>
@@ -379,35 +378,36 @@ export default function FurnitureProduction() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link href="/furniture/production/orders/new">
-            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30 hover:bg-gray-800/50">
-              <div className="flex flex-col items-center text-center gap-2">
-                <Factory className="h-8 w-8 text-amber-500" />
-                <span className="text-sm font-medium text-gray-300">Create Order</span>
-              </div>
-            </Card>
-          </Link>
-          
+          <Card
+            onClick={() => setShowNewOrderModal(true)}
+            className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30 hover:bg-card/50"
+          >
+            <div className="flex flex-col items-center text-center gap-2">
+              <Factory className="h-8 w-8 text-amber-500" />
+              <span className="text-sm font-medium text-gray-300">Create Order</span>
+            </div>
+          </Card>
+
           <Link href="/furniture/production/planning">
-            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30 hover:bg-gray-800/50">
+            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30 hover:bg-card/50">
               <div className="flex flex-col items-center text-center gap-2">
                 <Calendar className="h-8 w-8 text-blue-500" />
                 <span className="text-sm font-medium text-gray-300">Planning</span>
               </div>
             </Card>
           </Link>
-          
+
           <Link href="/furniture/production/tracking">
-            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30 hover:bg-gray-800/50">
+            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30 hover:bg-card/50">
               <div className="flex flex-col items-center text-center gap-2">
                 <Activity className="h-8 w-8 text-purple-500" />
                 <span className="text-sm font-medium text-gray-300">Tracking</span>
               </div>
             </Card>
           </Link>
-          
+
           <Link href="/furniture/production/maintenance">
-            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30 hover:bg-gray-800/50">
+            <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30 hover:bg-card/50">
               <div className="flex flex-col items-center text-center gap-2">
                 <Wrench className="h-8 w-8 text-green-500" />
                 <span className="text-sm font-medium text-gray-300">Maintenance</span>
@@ -415,6 +415,17 @@ export default function FurnitureProduction() {
             </Card>
           </Link>
         </div>
+
+        {/* New Production Order Modal */}
+        <NewProductionOrderModal
+          open={showNewOrderModal}
+          onClose={() => setShowNewOrderModal(false)}
+          organizationId={organizationId || ''}
+          onSuccess={() => {
+            refresh?.()
+            setShowNewOrderModal(false)
+          }}
+        />
       </div>
     </div>
   )

@@ -32,7 +32,8 @@ export default function SalonLeaveManagementPage() {
 
       // Extract subdomain
       const parts = hostname.split('.')
-      if (parts.length >= 3) { // e.g., acme.app.com or acme.vercel.app
+      if (parts.length >= 3) {
+        // e.g., acme.app.com or acme.vercel.app
         const subdomain = parts[0]
         if (subdomain && subdomain !== 'app' && subdomain !== 'www') {
           try {

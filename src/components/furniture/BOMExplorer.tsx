@@ -8,12 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface BOMComponent {
   id: string
@@ -56,7 +51,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
         table: 'core_entities',
         organizationId
       })
-      
+
       const product = products?.find((p: any) => p.id === productId)
       if (!product) throw new Error('Product not found')
 
@@ -67,8 +62,8 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       })
 
       // Find BOM for this product
-      const productBomRel = relationships?.find((r: any) => 
-        r.from_entity_id === productId && r.relationship_type === 'has_bom'
+      const productBomRel = relationships?.find(
+        (r: any) => r.from_entity_id === productId && r.relationship_type === 'has_bom'
       )
 
       if (!productBomRel) {
@@ -89,23 +84,25 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       if (!bom) throw new Error('BOM not found')
 
       // Get BOM components
-      const bomComponentRels = relationships?.filter((r: any) => 
-        r.from_entity_id === bom.id && r.relationship_type === 'includes_component'
-      ) || []
+      const bomComponentRels =
+        relationships?.filter(
+          (r: any) => r.from_entity_id === bom.id && r.relationship_type === 'includes_component'
+        ) || []
 
       // Build component tree
       const components: BOMComponent[] = []
-      
+
       for (const rel of bomComponentRels) {
         const component = products?.find((e: any) => e.id === rel.to_entity_id)
         if (component) {
           // Get supplier info
-          const supplierRel = relationships?.find((r: any) => 
-            r.to_entity_id === component.id && r.relationship_type === 'sources'
+          const supplierRel = relationships?.find(
+            (r: any) => r.to_entity_id === component.id && r.relationship_type === 'sources'
           )
-          
-          const supplier = supplierRel ? 
-            products?.find((e: any) => e.id === supplierRel.from_entity_id) : null
+
+          const supplier = supplierRel
+            ? products?.find((e: any) => e.id === supplierRel.from_entity_id)
+            : null
 
           components.push({
             id: component.id,
@@ -130,12 +127,12 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
         type: 'product',
         quantity: 1,
         unit: 'EA',
-        totalCost: components.reduce((sum, c) => 
-          sum + ((c.quantity * (c.unitCost || 0)) * (1 + (c.scrapPercentage || 0) / 100)), 0
+        totalCost: components.reduce(
+          (sum, c) => sum + c.quantity * (c.unitCost || 0) * (1 + (c.scrapPercentage || 0) / 100),
+          0
         ),
         children: components
       })
-
     } catch (err) {
       console.error('Error loading BOM data:', err)
       setError(err instanceof Error ? err.message : 'Failed to load BOM data')
@@ -165,7 +162,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       <div key={node.id} className="border-l-2 border-gray-700/50 ml-2">
         <div
           className={cn(
-            "flex items-center gap-3 p-3 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer",
+            'flex items-center gap-3 p-3 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer',
             indentClass
           )}
           onClick={() => hasChildren && toggleNode(node.id)}
@@ -179,14 +176,14 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
               )}
             </Button>
           )}
-          
+
           {!hasChildren && <div className="w-5" />}
 
           <div className="flex items-center gap-2 flex-1">
             {node.type === 'product' && <Package className="h-5 w-5 text-amber-500" />}
             {node.type === 'bom' && <Layers className="h-5 w-5 text-blue-500" />}
             {node.type === 'material' && <Factory className="h-5 w-5 text-green-500" />}
-            
+
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-white">{node.name}</span>
@@ -194,10 +191,12 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
                   {node.code}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
-                <span>{node.quantity} {node.unit}</span>
-                
+                <span>
+                  {node.quantity} {node.unit}
+                </span>
+
                 {node.scrapPercentage && (
                   <TooltipProvider>
                     <Tooltip>
@@ -213,15 +212,15 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
                     </Tooltip>
                   </TooltipProvider>
                 )}
-                
+
                 {node.unitCost && (
-                  <span>₹{node.unitCost.toLocaleString()}/{node.unit}</span>
+                  <span>
+                    ₹{node.unitCost.toLocaleString()}/{node.unit}
+                  </span>
                 )}
-                
-                {node.leadTime && (
-                  <span>{node.leadTime} days lead time</span>
-                )}
-                
+
+                {node.leadTime && <span>{node.leadTime} days lead time</span>}
+
                 {node.supplier && (
                   <Badge variant="secondary" className="text-xs">
                     {node.supplier}
@@ -242,9 +241,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
         </div>
 
         {isExpanded && hasChildren && (
-          <div className="ml-4">
-            {node.children!.map(child => renderBOMNode(child, level + 1))}
-          </div>
+          <div className="ml-4">{node.children!.map(child => renderBOMNode(child, level + 1))}</div>
         )}
       </div>
     )
@@ -252,7 +249,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
   if (loading) {
     return (
-      <Card className={cn("bg-gray-800/50 border-gray-700", className)}>
+      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
@@ -272,7 +269,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
   if (error) {
     return (
-      <Card className={cn("bg-gray-800/50 border-gray-700", className)}>
+      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
@@ -294,7 +291,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
 
   if (!bomData) {
     return (
-      <Card className={cn("bg-gray-800/50 border-gray-700", className)}>
+      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Layers className="h-5 w-5" />
@@ -309,7 +306,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
   }
 
   return (
-    <Card className={cn("bg-gray-800/50 border-gray-700", className)}>
+    <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Layers className="h-5 w-5" />
@@ -318,7 +315,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       </CardHeader>
       <CardContent>
         {renderBOMNode(bomData)}
-        
+
         {bomData.children && bomData.children.length > 0 && (
           <div className="mt-6 pt-4 border-t border-gray-700">
             <div className="flex justify-between items-center text-sm">

@@ -8,13 +8,13 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  MapPin, 
-  Phone, 
-  Mail, 
+import {
+  Calendar,
+  Clock,
+  User,
+  MapPin,
+  Phone,
+  Mail,
   Plus,
   Filter,
   Settings,
@@ -25,7 +25,12 @@ import {
   XCircle,
   Loader2
 } from 'lucide-react'
-import { UniversalAppointmentSystem, APPOINTMENT_SMART_CODES, APPOINTMENT_WORKFLOW, SERVICE_TYPES } from '@/lib/appointments/universal-appointment-system'
+import {
+  UniversalAppointmentSystem,
+  APPOINTMENT_SMART_CODES,
+  APPOINTMENT_WORKFLOW,
+  SERVICE_TYPES
+} from '@/lib/appointments/universal-appointment-system'
 
 // HERA Universal Appointment Calendar with FullCalendar Integration
 // Smart Code: HERA.UNIV.CRM.APT.CAL.v1
@@ -124,18 +129,18 @@ export function UniversalAppointmentCalendar({
   const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
   const [isProcessingAI, setIsProcessingAI] = useState(false)
-  
+
   const calendarRef = useRef<FullCalendar>(null)
   const appointmentSystem = new UniversalAppointmentSystem(organizationId)
   const industryStyle = INDUSTRY_STYLES[industry]
-  
+
   useEffect(() => {
     loadAppointments()
   }, [organizationId, industry, staffFilter, serviceFilter])
-  
+
   const loadAppointments = async () => {
     setIsLoading(true)
-    
+
     try {
       // In production, this would fetch from database
       // For demo, generate sample appointments based on industry
@@ -147,24 +152,27 @@ export function UniversalAppointmentCalendar({
       setIsLoading(false)
     }
   }
-  
+
   const generateSampleAppointments = (): AppointmentEvent[] => {
     const appointments: AppointmentEvent[] = []
     const today = new Date()
-    
+
     // Generate appointments for the next 30 days
     for (let i = 0; i < 30; i++) {
       const appointmentDate = new Date(today)
       appointmentDate.setDate(today.getDate() + i)
-      
+
       // Skip weekends for professional services
-      if (industry === 'professional' && (appointmentDate.getDay() === 0 || appointmentDate.getDay() === 6)) {
+      if (
+        industry === 'professional' &&
+        (appointmentDate.getDay() === 0 || appointmentDate.getDay() === 6)
+      ) {
         continue
       }
-      
+
       // Generate 2-8 appointments per day
       const appointmentsPerDay = Math.floor(Math.random() * 7) + 2
-      
+
       for (let j = 0; j < appointmentsPerDay; j++) {
         const appointment = generateSingleAppointment(appointmentDate, j)
         if (appointment) {
@@ -172,10 +180,10 @@ export function UniversalAppointmentCalendar({
         }
       }
     }
-    
+
     return appointments.slice(0, 100) // Limit to 100 appointments for demo
   }
-  
+
   const generateSingleAppointment = (date: Date, index: number): AppointmentEvent | null => {
     // Business hours based on industry
     const businessHours = {
@@ -184,48 +192,56 @@ export function UniversalAppointmentCalendar({
       restaurant: { start: 11, end: 23 }, // 11 AM - 11 PM
       professional: { start: 9, end: 18 } // 9 AM - 6 PM
     }
-    
+
     const hours = businessHours[industry]
     const startHour = hours.start + Math.floor(Math.random() * (hours.end - hours.start - 2))
     const startMinute = Math.floor(Math.random() * 4) * 15 // 0, 15, 30, 45
-    
+
     const startTime = new Date(date)
     startTime.setHours(startHour, startMinute, 0, 0)
-    
+
     // Get random service for industry
     const serviceTypes = SERVICE_TYPES[industry.toUpperCase() as keyof typeof SERVICE_TYPES]
     const serviceKeys = Object.keys(serviceTypes)
     const randomServiceKey = serviceKeys[Math.floor(Math.random() * serviceKeys.length)]
     const serviceInfo = serviceTypes[randomServiceKey as keyof typeof serviceTypes]
-    
+
     const duration = serviceInfo.duration || 60
     const endTime = new Date(startTime.getTime() + duration * 60000)
-    
+
     // Generate customer info
     const customerNames = {
       jewelry: ['Priya Sharma', 'Rajesh Gupta', 'Anita Singh', 'Vikram Mehta', 'Sunita Joshi'],
       healthcare: ['John Smith', 'Emily Johnson', 'Michael Brown', 'Sarah Davis', 'David Wilson'],
       restaurant: ['Alice Cooper', 'Bob Anderson', 'Carol Martinez', 'Daniel Lee', 'Eva Garcia'],
-      professional: ['James Miller', 'Jennifer Taylor', 'Robert Clark', 'Lisa Rodriguez', 'William Hall']
+      professional: [
+        'James Miller',
+        'Jennifer Taylor',
+        'Robert Clark',
+        'Lisa Rodriguez',
+        'William Hall'
+      ]
     }
-    
+
     const names = customerNames[industry]
     const customerName = names[Math.floor(Math.random() * names.length)]
-    
+
     // Random status
     const statuses = Object.values(APPOINTMENT_WORKFLOW)
     const status = statuses[Math.floor(Math.random() * statuses.length)]
     const statusColors = STATUS_COLORS[status as keyof typeof STATUS_COLORS]
-    
+
     // Generate AI insights if enabled
-    const aiInsights = aiAnalysisEnabled ? {
-      confidence_score: Math.floor(Math.random() * 30) + 70, // 70-100%
-      customer_segment: ['premium', 'standard', 'new'][Math.floor(Math.random() * 3)],
-      predicted_duration: duration + (Math.floor(Math.random() * 21) - 10), // ±10 minutes
-      upsell_opportunity: Math.random() > 0.7,
-      no_show_risk: Math.floor(Math.random() * 30) + 5 // 5-35%
-    } : undefined
-    
+    const aiInsights = aiAnalysisEnabled
+      ? {
+          confidence_score: Math.floor(Math.random() * 30) + 70, // 70-100%
+          customer_segment: ['premium', 'standard', 'new'][Math.floor(Math.random() * 3)],
+          predicted_duration: duration + (Math.floor(Math.random() * 21) - 10), // ±10 minutes
+          upsell_opportunity: Math.random() > 0.7,
+          no_show_risk: Math.floor(Math.random() * 30) + 5 // 5-35%
+        }
+      : undefined
+
     return {
       id: `apt_${Date.now()}_${index}`,
       title: `${customerName} - ${serviceInfo.name}`,
@@ -252,7 +268,7 @@ export function UniversalAppointmentCalendar({
       }
     }
   }
-  
+
   const handleDateSelect = (selectInfo: any) => {
     if (onSlotClick) {
       onSlotClick({
@@ -262,42 +278,44 @@ export function UniversalAppointmentCalendar({
       })
     }
   }
-  
+
   const handleEventClick = (clickInfo: any) => {
     if (onAppointmentClick) {
       onAppointmentClick(clickInfo.event)
     }
   }
-  
+
   const handleEventChange = (changeInfo: any) => {
     if (onAppointmentChange) {
       onAppointmentChange(changeInfo.event)
     }
   }
-  
+
   const runAIOptimization = async () => {
     setIsProcessingAI(true)
-    
+
     // Simulate AI processing
     setTimeout(() => {
       // Update appointments with AI insights
-      setAppointments(prev => prev.map(apt => ({
-        ...apt,
-        extendedProps: {
-          ...apt.extendedProps,
-          aiInsights: {
-            ...apt.extendedProps.aiInsights,
-            optimization_score: Math.floor(Math.random() * 30) + 70,
-            suggested_improvements: ['Optimize time slot', 'Consider staff reallocation'],
-            last_updated: new Date().toISOString()
+      setAppointments(prev =>
+        prev.map(apt => ({
+          ...apt,
+          extendedProps: {
+            ...apt.extendedProps,
+            aiInsights: {
+              ...apt.extendedProps.aiInsights,
+              optimization_score: Math.floor(Math.random() * 30) + 70,
+              suggested_improvements: ['Optimize time slot', 'Consider staff reallocation'],
+              last_updated: new Date().toISOString()
+            }
           }
-        }
-      })))
-      
+        }))
+      )
+
       setIsProcessingAI(false)
     }, 2000)
   }
-  
+
   const getIndustryIcon = () => {
     const icons = {
       jewelry: '💎',
@@ -307,18 +325,14 @@ export function UniversalAppointmentCalendar({
     }
     return icons[industry]
   }
-  
+
   const renderEventContent = (eventInfo: any) => {
     const props = eventInfo.event.extendedProps
-    
+
     return (
       <div className="p-1 text-xs">
-        <div className="font-medium truncate">
-          {props.customerName}
-        </div>
-        <div className="text-xs opacity-75 truncate">
-          {props.serviceName}
-        </div>
+        <div className="font-medium truncate">{props.customerName}</div>
+        <div className="text-xs opacity-75 truncate">{props.serviceName}</div>
         {props.aiInsights && (
           <div className="flex items-center gap-1 mt-1">
             <Brain className="w-3 h-3" />
@@ -328,7 +342,7 @@ export function UniversalAppointmentCalendar({
       </div>
     )
   }
-  
+
   if (isLoading) {
     return (
       <Card className="h-96">
@@ -341,7 +355,7 @@ export function UniversalAppointmentCalendar({
       </Card>
     )
   }
-  
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -349,13 +363,14 @@ export function UniversalAppointmentCalendar({
         <div>
           <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Calendar className="w-8 h-8" style={{ color: industryStyle.primary }} />
-            {getIndustryIcon()} {industry.charAt(0).toUpperCase() + industry.slice(1)} Appointment Calendar
+            {getIndustryIcon()} {industry.charAt(0).toUpperCase() + industry.slice(1)} Appointment
+            Calendar
           </h2>
           <p className="text-sm text-gray-600 mt-1">
             HERA Universal Appointment System • Smart Code: HERA.UNIV.CRM.APT.CAL.v1
           </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           {/* View Controls */}
           <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
@@ -363,7 +378,7 @@ export function UniversalAppointmentCalendar({
               { key: 'dayGridMonth', label: 'Month' },
               { key: 'timeGridWeek', label: 'Week' },
               { key: 'timeGridDay', label: 'Day' }
-            ].map((view) => (
+            ].map(view => (
               <Button
                 key={view.key}
                 variant={selectedView === view.key ? 'default' : 'ghost'}
@@ -378,7 +393,7 @@ export function UniversalAppointmentCalendar({
               </Button>
             ))}
           </div>
-          
+
           {/* AI Controls */}
           <Button
             onClick={runAIOptimization}
@@ -397,18 +412,15 @@ export function UniversalAppointmentCalendar({
               </>
             )}
           </Button>
-          
+
           {/* Filter Button */}
-          <Button
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-          >
+          <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
-          
+
           {/* New Appointment */}
-          <Button 
+          <Button
             onClick={() => onSlotClick?.({})}
             style={{ background: industryStyle.background }}
             className="text-white"
@@ -418,7 +430,7 @@ export function UniversalAppointmentCalendar({
           </Button>
         </div>
       </div>
-      
+
       {/* Filters Panel */}
       {showFilters && (
         <Card>
@@ -433,12 +445,12 @@ export function UniversalAppointmentCalendar({
                   {Object.entries(STATUS_COLORS).map(([status, colors]) => (
                     <label key={status} className="flex items-center gap-2 text-sm">
                       <input type="checkbox" defaultChecked />
-                      <Badge 
+                      <Badge
                         className="text-xs"
-                        style={{ 
-                          backgroundColor: colors.bg, 
+                        style={{
+                          backgroundColor: colors.bg,
                           color: colors.text,
-                          borderColor: colors.border 
+                          borderColor: colors.border
                         }}
                       >
                         {status.replace('_', ' ')}
@@ -447,11 +459,13 @@ export function UniversalAppointmentCalendar({
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium mb-2">Service Filter</label>
                 <div className="space-y-1">
-                  {Object.keys(SERVICE_TYPES[industry.toUpperCase() as keyof typeof SERVICE_TYPES]).map((serviceKey) => (
+                  {Object.keys(
+                    SERVICE_TYPES[industry.toUpperCase() as keyof typeof SERVICE_TYPES]
+                  ).map(serviceKey => (
                     <label key={serviceKey} className="flex items-center gap-2 text-sm">
                       <input type="checkbox" defaultChecked />
                       <span>{serviceKey.replace('_', ' ').toLowerCase()}</span>
@@ -459,15 +473,15 @@ export function UniversalAppointmentCalendar({
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium mb-2">AI Features</label>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={aiAnalysisEnabled}
-                      onChange={(e) => setAiAnalysisEnabled(e.target.checked)}
+                      onChange={e => setAiAnalysisEnabled(e.target.checked)}
                     />
                     <Brain className="w-4 h-4" />
                     AI Analysis
@@ -481,7 +495,7 @@ export function UniversalAppointmentCalendar({
           </CardContent>
         </Card>
       )}
-      
+
       {/* Calendar */}
       <Card className="overflow-hidden">
         <CardContent className="p-0">
@@ -506,8 +520,10 @@ export function UniversalAppointmentCalendar({
             eventChange={handleEventChange}
             businessHours={{
               daysOfWeek: industry === 'professional' ? [1, 2, 3, 4, 5] : [0, 1, 2, 3, 4, 5, 6],
-              startTime: industry === 'healthcare' ? '08:00' : industry === 'restaurant' ? '11:00' : '09:00',
-              endTime: industry === 'restaurant' ? '23:00' : industry === 'jewelry' ? '19:00' : '17:00'
+              startTime:
+                industry === 'healthcare' ? '08:00' : industry === 'restaurant' ? '11:00' : '09:00',
+              endTime:
+                industry === 'restaurant' ? '23:00' : industry === 'jewelry' ? '19:00' : '17:00'
             }}
             slotMinTime="06:00:00"
             slotMaxTime="24:00:00"
@@ -519,7 +535,7 @@ export function UniversalAppointmentCalendar({
           />
         </CardContent>
       </Card>
-      
+
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -533,7 +549,7 @@ export function UniversalAppointmentCalendar({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
@@ -541,16 +557,19 @@ export function UniversalAppointmentCalendar({
               <div>
                 <p className="text-sm text-gray-600">Confirmed Today</p>
                 <p className="text-2xl font-bold">
-                  {appointments.filter(apt => 
-                    apt.extendedProps.status === APPOINTMENT_WORKFLOW.CONFIRMED &&
-                    new Date(apt.start).toDateString() === new Date().toDateString()
-                  ).length}
+                  {
+                    appointments.filter(
+                      apt =>
+                        apt.extendedProps.status === APPOINTMENT_WORKFLOW.CONFIRMED &&
+                        new Date(apt.start).toDateString() === new Date().toDateString()
+                    ).length
+                  }
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
@@ -558,17 +577,23 @@ export function UniversalAppointmentCalendar({
               <div>
                 <p className="text-sm text-gray-600">AI Confidence</p>
                 <p className="text-2xl font-bold">
-                  {Math.round(appointments
-                    .filter(apt => apt.extendedProps.aiInsights?.confidence_score)
-                    .reduce((sum, apt) => sum + (apt.extendedProps.aiInsights?.confidence_score || 0), 0) / 
-                    appointments.filter(apt => apt.extendedProps.aiInsights?.confidence_score).length
-                  ) || 0}%
+                  {Math.round(
+                    appointments
+                      .filter(apt => apt.extendedProps.aiInsights?.confidence_score)
+                      .reduce(
+                        (sum, apt) => sum + (apt.extendedProps.aiInsights?.confidence_score || 0),
+                        0
+                      ) /
+                      appointments.filter(apt => apt.extendedProps.aiInsights?.confidence_score)
+                        .length
+                  ) || 0}
+                  %
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
@@ -576,10 +601,13 @@ export function UniversalAppointmentCalendar({
               <div>
                 <p className="text-sm text-gray-600">High Risk</p>
                 <p className="text-2xl font-bold">
-                  {appointments.filter(apt => 
-                    apt.extendedProps.aiInsights?.no_show_risk && 
-                    apt.extendedProps.aiInsights.no_show_risk > 25
-                  ).length}
+                  {
+                    appointments.filter(
+                      apt =>
+                        apt.extendedProps.aiInsights?.no_show_risk &&
+                        apt.extendedProps.aiInsights.no_show_risk > 25
+                    ).length
+                  }
                 </p>
               </div>
             </div>

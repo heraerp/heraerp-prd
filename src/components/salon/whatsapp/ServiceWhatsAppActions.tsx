@@ -5,11 +5,27 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Sparkles, MessageCircle, Send, AlertCircle, CheckCircle2, Users, Gift, Rocket } from 'lucide-react'
+import {
+  Sparkles,
+  MessageCircle,
+  Send,
+  AlertCircle,
+  CheckCircle2,
+  Users,
+  Gift,
+  Rocket
+} from 'lucide-react'
 import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
 import { formatDate } from '@/lib/date-utils'
 import { addDays } from 'date-fns'
@@ -29,11 +45,15 @@ interface ServiceWhatsAppActionsProps {
   onCampaignSent?: () => void
 }
 
-export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent }: ServiceWhatsAppActionsProps) {
+export function ServiceWhatsAppActions({
+  service,
+  organizationId,
+  onCampaignSent
+}: ServiceWhatsAppActionsProps) {
   const [sending, setSending] = useState(false)
   const [showCampaignDialog, setShowCampaignDialog] = useState(false)
   const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
-  
+
   // Campaign configuration
   const [campaignConfig, setCampaignConfig] = useState({
     launchOffer: '20% off for first 50 customers',
@@ -50,7 +70,7 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
       // 1. Get customer list based on targetAudience
       // 2. Send WhatsApp messages via API
       // 3. Track campaign in universal_transactions
-      
+
       const campaignData = {
         campaignType: 'new_service_launch',
         templateName: 'new_service_launch',
@@ -67,10 +87,10 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
       }
 
       console.log('🚀 Launching new service campaign:', campaignData)
-      
+
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1500))
-      
+
       setResult({
         type: 'success',
         message: `Campaign sent to ${campaignConfig.estimatedRecipients} customers!`
@@ -111,10 +131,9 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
   return (
     <div className="space-y-3">
       {result && (
-        <Alert className={cn(
-          "mb-3",
-          result.type === 'success' ? "border-green-500" : "border-red-500"
-        )}>
+        <Alert
+          className={cn('mb-3', result.type === 'success' ? 'border-green-500' : 'border-red-500')}
+        >
           <AlertDescription className="flex items-center gap-2">
             {result.type === 'success' ? (
               <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -184,9 +203,7 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Launch New Service Campaign</DialogTitle>
-            <DialogDescription>
-              Configure and preview your WhatsApp announcement
-            </DialogDescription>
+            <DialogDescription>Configure and preview your WhatsApp announcement</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
@@ -194,7 +211,9 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
             <div className="space-y-2">
               <Label className="text-sm font-medium">Service Details</Label>
               <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg space-y-1">
-                <p className="text-sm font-semibold !text-gray-900 dark:!text-white">{service.name}</p>
+                <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                  {service.name}
+                </p>
                 <p className="text-xs !text-gray-600 dark:!text-gray-400">
                   Price: AED {service.price} • Duration: {service.duration} minutes
                 </p>
@@ -207,7 +226,9 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
               <Input
                 id="launch-offer"
                 value={campaignConfig.launchOffer}
-                onChange={(e) => setCampaignConfig(prev => ({ ...prev, launchOffer: e.target.value }))}
+                onChange={e =>
+                  setCampaignConfig(prev => ({ ...prev, launchOffer: e.target.value }))
+                }
                 placeholder="e.g., 20% off for first 50 customers"
               />
             </div>
@@ -217,7 +238,7 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
               <Input
                 id="launch-date"
                 value={campaignConfig.launchDate}
-                onChange={(e) => setCampaignConfig(prev => ({ ...prev, launchDate: e.target.value }))}
+                onChange={e => setCampaignConfig(prev => ({ ...prev, launchDate: e.target.value }))}
                 placeholder="September 15, 2025"
               />
             </div>
@@ -225,21 +246,25 @@ export function ServiceWhatsAppActions({ service, organizationId, onCampaignSent
             <div className="space-y-2">
               <Label>Target Audience</Label>
               <div className="grid grid-cols-3 gap-2">
-                {['all', 'vip', 'specific'].map((audience) => (
+                {['all', 'vip', 'specific'].map(audience => (
                   <Button
                     key={audience}
                     variant={campaignConfig.targetAudience === audience ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => {
-                      setCampaignConfig(prev => ({ 
-                        ...prev, 
+                      setCampaignConfig(prev => ({
+                        ...prev,
                         targetAudience: audience as any,
                         estimatedRecipients: estimateRecipients(audience)
                       }))
                     }}
                     className="capitalize"
                   >
-                    {audience === 'all' ? 'All Customers' : audience === 'vip' ? 'VIP Only' : 'Specific Group'}
+                    {audience === 'all'
+                      ? 'All Customers'
+                      : audience === 'vip'
+                        ? 'VIP Only'
+                        : 'Specific Group'}
                   </Button>
                 ))}
               </div>

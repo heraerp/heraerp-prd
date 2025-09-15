@@ -1,11 +1,11 @@
 /**
  * HERA ERP Readiness Questionnaire Template
  * Smart Code: HERA.ERP.READINESS.TEMPLATE.SEED.V1
- * 
+ *
  * Seed template with 12 sections for comprehensive ERP readiness assessment
  */
 
-import { QuestionnaireTemplate, Section, Question } from './types';
+import { QuestionnaireTemplate, Section, Question } from './types'
 
 export const createReadinessTemplate = (organizationId: string): QuestionnaireTemplate => {
   const template: QuestionnaireTemplate = {
@@ -15,7 +15,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
     version: 1,
     smart_code: 'HERA.ERP.Readiness.Template.Questionnaire.V1',
     sections: []
-  };
+  }
 
   // Section 1: Company Profile
   const companyProfile: Section = {
@@ -77,7 +77,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['scale', 'hr_complexity']
       }
     ]
-  };
+  }
 
   // Section 2: Sales
   const sales: Section = {
@@ -141,7 +141,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['international_business', 'currency_management']
       }
     ]
-  };
+  }
 
   // Section 3: Procurement
   const procurement: Section = {
@@ -204,7 +204,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['pain_points', 'improvement_areas']
       }
     ]
-  };
+  }
 
   // Section 4: Production
   const production: Section = {
@@ -267,7 +267,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['quality_control', 'compliance']
       }
     ]
-  };
+  }
 
   // Section 5: Inventory
   const inventory: Section = {
@@ -331,7 +331,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['pain_points', 'optimization_needs']
       }
     ]
-  };
+  }
 
   // Section 6: Projects
   const projects: Section = {
@@ -395,7 +395,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['project_challenges', 'improvement_areas']
       }
     ]
-  };
+  }
 
   // Section 7: Finance
   const finance: Section = {
@@ -458,7 +458,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['reporting_requirements', 'frequency']
       }
     ]
-  };
+  }
 
   // Section 8: HR/Payroll
   const hrPayroll: Section = {
@@ -521,7 +521,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['compliance', 'legal_requirements']
       }
     ]
-  };
+  }
 
   // Section 9: Assets
   const assets: Section = {
@@ -578,7 +578,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['asset_challenges', 'maintenance_issues']
       }
     ]
-  };
+  }
 
   // Section 10: IT Infrastructure
   const itInfrastructure: Section = {
@@ -647,7 +647,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['it_concerns', 'implementation_risks']
       }
     ]
-  };
+  }
 
   // Section 11: AI Agents
   const aiAgents: Section = {
@@ -715,7 +715,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['ai_concerns', 'implementation_barriers']
       }
     ]
-  };
+  }
 
   // Section 12: General Expectations
   const generalExpectations: Section = {
@@ -786,7 +786,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
         kpi_tags: ['success_metrics', 'roi_expectations']
       }
     ]
-  };
+  }
 
   // Add all sections to template
   template.sections = [
@@ -802,7 +802,7 @@ export const createReadinessTemplate = (organizationId: string): QuestionnaireTe
     itInfrastructure,
     aiAgents,
     generalExpectations
-  ];
+  ]
 
-  return template;
-};
+  return template
+}

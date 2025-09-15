@@ -8,9 +8,9 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Activity,
-  Factory, 
+  Factory,
   Package,
   Clock,
   CheckCircle,
@@ -23,8 +23,16 @@ import {
   Gauge
 } from 'lucide-react'
 import Link from 'next/link'
-import { useDemoOrganization, OrganizationInfo, OrganizationLoading } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters, universalSorters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useDemoOrganization,
+  OrganizationInfo,
+  OrganizationLoading
+} from '@/lib/dna/patterns/demo-org-pattern'
+import {
+  useUniversalData,
+  universalFilters,
+  universalSorters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { cn } from '@/lib/utils'
 
 export default function ProductionTracking() {
@@ -33,9 +41,8 @@ export default function ProductionTracking() {
   // Load active production orders
   const { data: productionOrders } = useUniversalData({
     table: 'universal_transactions',
-    filter: (t) => 
-      t.transaction_type === 'production_order' &&
-      t.smart_code?.includes('HERA.MFG.PROD'),
+    filter: t =>
+      t.transaction_type === 'production_order' && t.smart_code?.includes('HERA.MFG.PROD'),
     sort: universalSorters.byCreatedDesc,
     organizationId,
     enabled: !!organizationId
@@ -67,7 +74,7 @@ export default function ProductionTracking() {
   // Load relationships for status
   const { data: relationships } = useUniversalData({
     table: 'core_relationships',
-    filter: (r) => r.relationship_type === 'has_status',
+    filter: r => r.relationship_type === 'has_status',
     organizationId,
     enabled: !!organizationId
   })
@@ -105,12 +112,8 @@ export default function ProductionTracking() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white">
-              Real-Time Production Tracking
-            </h1>
-            <p className="text-gray-400 mt-1">
-              Monitor live production status and performance
-            </p>
+            <h1 className="text-3xl font-bold text-white">Real-Time Production Tracking</h1>
+            <p className="text-gray-400 mt-1">Monitor live production status and performance</p>
             <OrganizationInfo name={organizationName} id={organizationId} />
           </div>
           <div className="flex gap-3">
@@ -166,25 +169,44 @@ export default function ProductionTracking() {
         <div>
           <h2 className="text-xl font-semibold text-white mb-4">Work Center Status</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {workCenters.map((center) => {
+            {workCenters.map(center => {
               // Find active order for this work center
               const activeOrder = activeOrders.find(o => o.target_entity_id === center.id)
-              const product = activeOrder ? products.find(p => p.id === activeOrder.source_entity_id) : null
-              const orderLines = activeOrder ? transactionLines.filter(l => l.transaction_id === activeOrder.id) : []
-              
-              const currentOperation = orderLines.find(l => (l.metadata as any)?.status === 'in_progress')
-              const completedOperations = orderLines.filter(l => (l.metadata as any)?.status === 'completed').length
+              const product = activeOrder
+                ? products.find(p => p.id === activeOrder.source_entity_id)
+                : null
+              const orderLines = activeOrder
+                ? transactionLines.filter(l => l.transaction_id === activeOrder.id)
+                : []
+
+              const currentOperation = orderLines.find(
+                l => (l.metadata as any)?.status === 'in_progress'
+              )
+              const completedOperations = orderLines.filter(
+                l => (l.metadata as any)?.status === 'completed'
+              ).length
               const totalOperations = orderLines.length || 1
               const progress = (completedOperations / totalOperations) * 100
 
               return (
-                <Card key={center.id} className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
+                <Card
+                  key={center.id}
+                  className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50"
+                >
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="font-semibold text-white">{center.entity_name}</h3>
-                      <p className="text-sm text-gray-400">{(center.metadata as any)?.location || 'Shop Floor'}</p>
+                      <p className="text-sm text-gray-400">
+                        {(center.metadata as any)?.location || 'Shop Floor'}
+                      </p>
                     </div>
-                    <Badge className={activeOrder ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}>
+                    <Badge
+                      className={
+                        activeOrder
+                          ? 'bg-green-500/10 text-green-400'
+                          : 'bg-gray-500/10 text-gray-400'
+                      }
+                    >
                       {activeOrder ? 'Running' : 'Idle'}
                     </Badge>
                   </div>
@@ -210,7 +232,9 @@ export default function ProductionTracking() {
 
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-gray-400">Current Operation</span>
-                        <span className="text-white">{currentOperation?.metadata?.operation || 'Setup'}</span>
+                        <span className="text-white">
+                          {currentOperation?.metadata?.operation || 'Setup'}
+                        </span>
                       </div>
 
                       <div className="flex gap-2">
@@ -253,18 +277,24 @@ export default function ProductionTracking() {
                     No active production orders at this time
                   </div>
                 ) : (
-                  activeOrders.map((order) => {
+                  activeOrders.map(order => {
                     const product = products.find(p => p.id === order.source_entity_id)
                     const workCenter = workCenters.find(w => w.id === order.target_entity_id)
                     const orderLines = transactionLines.filter(l => l.transaction_id === order.id)
-                    
-                    const completedQty = orderLines.reduce((sum, line) => 
-                      sum + ((line.metadata as any)?.completed_quantity || 0), 0
+
+                    const completedQty = orderLines.reduce(
+                      (sum, line) => sum + ((line.metadata as any)?.completed_quantity || 0),
+                      0
                     )
-                    const progress = order.total_amount ? (completedQty / order.total_amount) * 100 : 0
+                    const progress = order.total_amount
+                      ? (completedQty / order.total_amount) * 100
+                      : 0
 
                     return (
-                      <div key={order.id} className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
+                      <div
+                        key={order.id}
+                        className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50"
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-4">
@@ -294,9 +324,7 @@ export default function ProductionTracking() {
                               </div>
                               <div>
                                 <p className="text-xs text-gray-400">Time Elapsed</p>
-                                <p className="text-sm font-medium text-white">
-                                  2h 35m
-                                </p>
+                                <p className="text-sm font-medium text-white">2h 35m</p>
                               </div>
                             </div>
 
@@ -334,7 +362,9 @@ export default function ProductionTracking() {
                   </div>
                   <div>
                     <p className="text-white">Operation completed on PRD-FRN-2025-0002</p>
-                    <p className="text-xs text-gray-500">Cutting completed - 15 units • 2 minutes ago</p>
+                    <p className="text-xs text-gray-500">
+                      Cutting completed - 15 units • 2 minutes ago
+                    </p>
                   </div>
                 </div>
 
@@ -344,7 +374,9 @@ export default function ProductionTracking() {
                   </div>
                   <div>
                     <p className="text-white">Production started on Assembly Line 1</p>
-                    <p className="text-xs text-gray-500">Order PRD-FRN-2025-0002 • 15 minutes ago</p>
+                    <p className="text-xs text-gray-500">
+                      Order PRD-FRN-2025-0002 • 15 minutes ago
+                    </p>
                   </div>
                 </div>
 
@@ -354,7 +386,9 @@ export default function ProductionTracking() {
                   </div>
                   <div>
                     <p className="text-white">Quality check required</p>
-                    <p className="text-xs text-gray-500">Batch BATCH-2025-002 ready for inspection • 30 minutes ago</p>
+                    <p className="text-xs text-gray-500">
+                      Batch BATCH-2025-002 ready for inspection • 30 minutes ago
+                    </p>
                   </div>
                 </div>
               </div>

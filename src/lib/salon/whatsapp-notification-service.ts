@@ -1,6 +1,6 @@
 /**
  * HERA WhatsApp Notification Service - Universal Architecture
- * 
+ *
  * Sends WhatsApp notifications for appointment confirmations, reminders, etc.
  * Uses the Sacred 6-Table architecture for storing notification logs
  */
@@ -16,11 +16,11 @@ export const WHATSAPP_SMART_CODES = {
   APPOINTMENT_REMINDER: 'HERA.SALON.WHATSAPP.APPOINTMENT.REMIND.v1',
   APPOINTMENT_CANCELLATION: 'HERA.SALON.WHATSAPP.APPOINTMENT.CANCEL.v1',
   APPOINTMENT_RESCHEDULED: 'HERA.SALON.WHATSAPP.APPOINTMENT.RESCHEDULE.v1',
-  
+
   // Notification status
   NOTIFICATION_SENT: 'HERA.SALON.WHATSAPP.STATUS.SENT.v1',
   NOTIFICATION_DELIVERED: 'HERA.SALON.WHATSAPP.STATUS.DELIVERED.v1',
-  NOTIFICATION_FAILED: 'HERA.SALON.WHATSAPP.STATUS.FAILED.v1',
+  NOTIFICATION_FAILED: 'HERA.SALON.WHATSAPP.STATUS.FAILED.v1'
 } as const
 
 export interface WhatsAppMessageData {
@@ -43,12 +43,15 @@ export class WhatsAppNotificationService {
   ) {
     try {
       // Format appointment details
-      const appointmentDate = formatDate(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
+      const appointmentDate = formatDate(
+        new Date(appointment.metadata.appointment_date),
+        'EEEE, MMMM d, yyyy'
+      )
       const appointmentTime = appointment.metadata.appointment_time
       const serviceName = appointment.metadata.service_name
       const staffName = appointment.metadata.staff_name
       const salonName = 'Hair Talkz Salon' // This would come from organization data
-      
+
       // Prepare WhatsApp message data
       const messageData: WhatsAppMessageData = {
         to: customerPhone,
@@ -67,28 +70,31 @@ export class WhatsAppNotificationService {
 
       // Call WhatsApp API (this would integrate with your WhatsApp Business API)
       const response = await this.sendWhatsAppMessage(messageData)
-      
+
       // Log the notification in universal_transactions
-      await this.api.createTransaction({
-        transaction_type: 'whatsapp_notification',
-        smart_code: WHATSAPP_SMART_CODES.APPOINTMENT_CONFIRMATION,
-        reference_number: `WA-${Date.now()}`,
-        reference_entity_id: appointment.id,
-        transaction_date: new Date().toISOString(),
-        total_amount: 0, // Notifications don't have amounts
-        from_entity_id: appointment.to_entity_id, // From staff/salon
-        to_entity_id: appointment.from_entity_id, // To customer
-        metadata: {
-          notification_type: 'appointment_confirmation',
-          appointment_id: appointment.id,
-          customer_phone: customerPhone,
-          message_id: response.messageId,
-          template_name: messageData.templateName,
-          status: 'sent',
-          sent_at: new Date().toISOString(),
-          message_parameters: messageData.parameters
-        }
-      }, organizationId)
+      await this.api.createTransaction(
+        {
+          transaction_type: 'whatsapp_notification',
+          smart_code: WHATSAPP_SMART_CODES.APPOINTMENT_CONFIRMATION,
+          reference_number: `WA-${Date.now()}`,
+          reference_entity_id: appointment.id,
+          transaction_date: new Date().toISOString(),
+          total_amount: 0, // Notifications don't have amounts
+          from_entity_id: appointment.to_entity_id, // From staff/salon
+          to_entity_id: appointment.from_entity_id, // To customer
+          metadata: {
+            notification_type: 'appointment_confirmation',
+            appointment_id: appointment.id,
+            customer_phone: customerPhone,
+            message_id: response.messageId,
+            template_name: messageData.templateName,
+            status: 'sent',
+            sent_at: new Date().toISOString(),
+            message_parameters: messageData.parameters
+          }
+        },
+        organizationId
+      )
 
       return {
         success: true,
@@ -97,25 +103,30 @@ export class WhatsAppNotificationService {
       }
     } catch (error) {
       console.error('Error sending WhatsApp notification:', error)
-      
+
       // Log failed notification attempt
-      await this.api.createTransaction({
-        transaction_type: 'whatsapp_notification',
-        smart_code: WHATSAPP_SMART_CODES.NOTIFICATION_FAILED,
-        reference_number: `WA-FAILED-${Date.now()}`,
-        reference_entity_id: appointment.id,
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        from_entity_id: appointment.to_entity_id,
-        to_entity_id: appointment.from_entity_id,
-        metadata: {
-          notification_type: 'appointment_confirmation',
-          appointment_id: appointment.id,
-          customer_phone: customerPhone,
-          error: error instanceof Error ? error.message : 'Unknown error',
-          failed_at: new Date().toISOString()
-        }
-      }, organizationId).catch(console.error)
+      await this.api
+        .createTransaction(
+          {
+            transaction_type: 'whatsapp_notification',
+            smart_code: WHATSAPP_SMART_CODES.NOTIFICATION_FAILED,
+            reference_number: `WA-FAILED-${Date.now()}`,
+            reference_entity_id: appointment.id,
+            transaction_date: new Date().toISOString(),
+            total_amount: 0,
+            from_entity_id: appointment.to_entity_id,
+            to_entity_id: appointment.from_entity_id,
+            metadata: {
+              notification_type: 'appointment_confirmation',
+              appointment_id: appointment.id,
+              customer_phone: customerPhone,
+              error: error instanceof Error ? error.message : 'Unknown error',
+              failed_at: new Date().toISOString()
+            }
+          },
+          organizationId
+        )
+        .catch(console.error)
 
       return {
         success: false,
@@ -134,7 +145,10 @@ export class WhatsAppNotificationService {
     hoursBeforeAppointment: number = 24
   ) {
     try {
-      const appointmentDate = formatDate(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
+      const appointmentDate = formatDate(
+        new Date(appointment.metadata.appointment_date),
+        'EEEE, MMMM d, yyyy'
+      )
       const appointmentTime = appointment.metadata.appointment_time
       const serviceName = appointment.metadata.service_name
       const staffName = appointment.metadata.staff_name
@@ -156,28 +170,31 @@ export class WhatsAppNotificationService {
       }
 
       const response = await this.sendWhatsAppMessage(messageData)
-      
-      await this.api.createTransaction({
-        transaction_type: 'whatsapp_notification',
-        smart_code: WHATSAPP_SMART_CODES.APPOINTMENT_REMINDER,
-        reference_number: `WA-REMIND-${Date.now()}`,
-        reference_entity_id: appointment.id,
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        from_entity_id: appointment.to_entity_id,
-        to_entity_id: appointment.from_entity_id,
-        metadata: {
-          notification_type: 'appointment_reminder',
-          appointment_id: appointment.id,
-          customer_phone: customerPhone,
-          message_id: response.messageId,
-          template_name: messageData.templateName,
-          status: 'sent',
-          sent_at: new Date().toISOString(),
-          reminder_hours_before: hoursBeforeAppointment,
-          message_parameters: messageData.parameters
-        }
-      }, organizationId)
+
+      await this.api.createTransaction(
+        {
+          transaction_type: 'whatsapp_notification',
+          smart_code: WHATSAPP_SMART_CODES.APPOINTMENT_REMINDER,
+          reference_number: `WA-REMIND-${Date.now()}`,
+          reference_entity_id: appointment.id,
+          transaction_date: new Date().toISOString(),
+          total_amount: 0,
+          from_entity_id: appointment.to_entity_id,
+          to_entity_id: appointment.from_entity_id,
+          metadata: {
+            notification_type: 'appointment_reminder',
+            appointment_id: appointment.id,
+            customer_phone: customerPhone,
+            message_id: response.messageId,
+            template_name: messageData.templateName,
+            status: 'sent',
+            sent_at: new Date().toISOString(),
+            reminder_hours_before: hoursBeforeAppointment,
+            message_parameters: messageData.parameters
+          }
+        },
+        organizationId
+      )
 
       return {
         success: true,
@@ -203,7 +220,10 @@ export class WhatsAppNotificationService {
     cancellationReason?: string
   ) {
     try {
-      const appointmentDate = formatDate(new Date(appointment.metadata.appointment_date), 'EEEE, MMMM d, yyyy')
+      const appointmentDate = formatDate(
+        new Date(appointment.metadata.appointment_date),
+        'EEEE, MMMM d, yyyy'
+      )
       const appointmentTime = appointment.metadata.appointment_time
       const serviceName = appointment.metadata.service_name
       const salonName = 'Hair Talkz Salon'
@@ -224,28 +244,31 @@ export class WhatsAppNotificationService {
       }
 
       const response = await this.sendWhatsAppMessage(messageData)
-      
-      await this.api.createTransaction({
-        transaction_type: 'whatsapp_notification',
-        smart_code: WHATSAPP_SMART_CODES.APPOINTMENT_CANCELLATION,
-        reference_number: `WA-CANCEL-${Date.now()}`,
-        reference_entity_id: appointment.id,
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        from_entity_id: appointment.to_entity_id,
-        to_entity_id: appointment.from_entity_id,
-        metadata: {
-          notification_type: 'appointment_cancellation',
-          appointment_id: appointment.id,
-          customer_phone: customerPhone,
-          message_id: response.messageId,
-          template_name: messageData.templateName,
-          status: 'sent',
-          sent_at: new Date().toISOString(),
-          cancellation_reason: cancellationReason,
-          message_parameters: messageData.parameters
-        }
-      }, organizationId)
+
+      await this.api.createTransaction(
+        {
+          transaction_type: 'whatsapp_notification',
+          smart_code: WHATSAPP_SMART_CODES.APPOINTMENT_CANCELLATION,
+          reference_number: `WA-CANCEL-${Date.now()}`,
+          reference_entity_id: appointment.id,
+          transaction_date: new Date().toISOString(),
+          total_amount: 0,
+          from_entity_id: appointment.to_entity_id,
+          to_entity_id: appointment.from_entity_id,
+          metadata: {
+            notification_type: 'appointment_cancellation',
+            appointment_id: appointment.id,
+            customer_phone: customerPhone,
+            message_id: response.messageId,
+            template_name: messageData.templateName,
+            status: 'sent',
+            sent_at: new Date().toISOString(),
+            cancellation_reason: cancellationReason,
+            message_parameters: messageData.parameters
+          }
+        },
+        organizationId
+      )
 
       return {
         success: true,
@@ -268,7 +291,7 @@ export class WhatsAppNotificationService {
   private async sendWhatsAppMessage(data: WhatsAppMessageData): Promise<any> {
     // This is a placeholder implementation
     // In production, this would call your WhatsApp Business API endpoint
-    
+
     // For now, we'll simulate the API call
     console.log('Sending WhatsApp message:', {
       to: data.to,
@@ -318,15 +341,16 @@ export class WhatsAppNotificationService {
    */
   async getAppointmentNotifications(appointmentId: string, organizationId: string) {
     const response = await this.api.getTransactions(organizationId)
-    
+
     if (response.success && response.data) {
-      const notifications = response.data.filter((txn: any) => 
-        txn.transaction_type === 'whatsapp_notification' &&
-        (txn.metadata as any)?.appointment_id === appointmentId
+      const notifications = response.data.filter(
+        (txn: any) =>
+          txn.transaction_type === 'whatsapp_notification' &&
+          (txn.metadata as any)?.appointment_id === appointmentId
       )
       return notifications
     }
-    
+
     return []
   }
 
@@ -335,28 +359,28 @@ export class WhatsAppNotificationService {
    */
   async getCustomerPhone(customerId: string, organizationId: string) {
     const customerResponse = await this.api.getEntities('customer', organizationId)
-    
+
     if (customerResponse.success && customerResponse.data) {
       const customer = customerResponse.data.find((c: any) => c.id === customerId)
       if (customer) {
         // Check metadata for phone
         const phone = (customer.metadata as any)?.phone || (customer.metadata as any)?.mobile
-        
+
         // If not in metadata, check dynamic fields
         if (!phone) {
           const dynamicFields = await this.api.getDynamicFields(customerId, organizationId)
           if (dynamicFields.success && dynamicFields.data) {
-            const phoneField = dynamicFields.data.find((f: any) => 
-              f.field_name === 'phone' || f.field_name === 'mobile'
+            const phoneField = dynamicFields.data.find(
+              (f: any) => f.field_name === 'phone' || f.field_name === 'mobile'
             )
             return phoneField?.field_value_text
           }
         }
-        
+
         return phone
       }
     }
-    
+
     return null
   }
 }

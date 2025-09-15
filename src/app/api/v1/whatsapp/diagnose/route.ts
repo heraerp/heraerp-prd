@@ -22,7 +22,8 @@ export async function GET(request: NextRequest) {
     WHATSAPP_ACCESS_TOKEN: !!process.env.WHATSAPP_ACCESS_TOKEN,
     WHATSAPP_PHONE_NUMBER_ID: process.env.WHATSAPP_PHONE_NUMBER_ID || 'NOT SET',
     WHATSAPP_WEBHOOK_TOKEN: !!process.env.WHATSAPP_WEBHOOK_TOKEN,
-    NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID: process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'NOT SET'
+    NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID:
+      process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || 'NOT SET'
   }
 
   // Test database connection
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
       // Check for recent WhatsApp messages
       if (!error) {
         const orgId = process.env.DEFAULT_ORGANIZATION_ID || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-        
+
         const { data: messages, error: msgError } = await supabase
           .from('universal_transactions')
           .select('id, transaction_code, created_at, metadata')
@@ -63,12 +64,14 @@ export async function GET(request: NextRequest) {
           query_success: !msgError,
           error: msgError?.message || null,
           message_count: messages?.length || 0,
-          latest_message: messages?.[0] ? {
-            id: messages[0].id,
-            created_at: messages[0].created_at,
-            text: messages[0].metadata?.text || messages[0].metadata?.content,
-            from: messages[0].metadata?.wa_id
-          } : null
+          latest_message: messages?.[0]
+            ? {
+                id: messages[0].id,
+                created_at: messages[0].created_at,
+                text: messages[0].metadata?.text || messages[0].metadata?.content,
+                from: messages[0].metadata?.wa_id
+              }
+            : null
         }
 
         // Check for messages containing "BOOK"
@@ -85,12 +88,13 @@ export async function GET(request: NextRequest) {
           query_success: !bookError,
           error: bookError?.message || null,
           found: bookMessages?.length || 0,
-          messages: bookMessages?.map(m => ({
-            id: m.id,
-            created_at: m.created_at,
-            text: (m.metadata as any)?.text,
-            from: (m.metadata as any)?.wa_id
-          })) || []
+          messages:
+            bookMessages?.map(m => ({
+              id: m.id,
+              created_at: m.created_at,
+              text: (m.metadata as any)?.text,
+              from: (m.metadata as any)?.wa_id
+            })) || []
         }
       }
     } else {
@@ -113,7 +117,7 @@ export async function GET(request: NextRequest) {
         `https://graph.facebook.com/v18.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}?fields=display_phone_number,verified_name,code_verification_status,quality_rating`,
         {
           headers: {
-            'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`
+            Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`
           }
         }
       )
@@ -179,7 +183,7 @@ export async function GET(request: NextRequest) {
     ]
   }
 
-  return NextResponse.json(diagnostics, { 
+  return NextResponse.json(diagnostics, {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
@@ -192,10 +196,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Simulate what the webhook handler would do
     const orgId = process.env.DEFAULT_ORGANIZATION_ID || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-    
+
     if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
       const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -236,10 +240,13 @@ export async function POST(request: NextRequest) {
       })
     }
   } catch (error: any) {
-    return NextResponse.json({
-      success: false,
-      message: 'Error in diagnostic test',
-      error: error.message || 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Error in diagnostic test',
+        error: error.message || 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

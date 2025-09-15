@@ -1,6 +1,6 @@
 /**
  * 🎓 CA Syllabus Service - Universal Schema Integration
- * 
+ *
  * Reads CA Foundation, Intermediate, and Final syllabus data
  * from HERA's universal 6-table schema
  */
@@ -45,13 +45,13 @@ export class CASyllabusService {
    */
   async getCompleteCASyllabus(): Promise<{
     foundation: CALevel
-    intermediate: CALevel  
+    intermediate: CALevel
     final: CALevel
   }> {
     try {
       const [foundation, intermediate, final] = await Promise.all([
         this.getCALevel('foundation'),
-        this.getCALevel('intermediate'), 
+        this.getCALevel('intermediate'),
         this.getCALevel('final')
       ])
 
@@ -85,7 +85,7 @@ export class CASyllabusService {
       }
 
       const entityData = await entityResponse.json()
-      
+
       if (!entityData.success || !entityData.data?.length) {
         // Return mock data if not found in database
         return this.getMockCALevel(level)
@@ -126,7 +126,6 @@ export class CASyllabusService {
         answer_expectations: dynamicData['answer_expectations'] || {},
         success_patterns: dynamicData['success_patterns'] || null
       }
-
     } catch (error) {
       console.error(`Error fetching CA ${level}:`, error)
       // Return mock data as fallback
@@ -178,7 +177,6 @@ export class CASyllabusService {
         answer_expectations: paper8Expectations,
         success_strategy: paper8Expectations['winning_strategy'] || {}
       }
-
     } catch (error) {
       console.error('Error fetching Paper 8 details:', error)
       return {
@@ -206,7 +204,10 @@ export class CASyllabusService {
   /**
    * Get papers for specific level and group
    */
-  async getPapers(level: 'foundation' | 'intermediate' | 'final', group?: 1 | 2): Promise<CAPaper[]> {
+  async getPapers(
+    level: 'foundation' | 'intermediate' | 'final',
+    group?: 1 | 2
+  ): Promise<CAPaper[]> {
     try {
       const levelData = await this.getCALevel(level)
       const syllabusStructure = levelData.syllabus_structure
@@ -226,7 +227,6 @@ export class CASyllabusService {
           ...(syllabusStructure?.group_2?.papers || [])
         ]
       }
-
     } catch (error) {
       console.error(`Error fetching papers for ${level} group ${group}:`, error)
       return []
@@ -236,12 +236,17 @@ export class CASyllabusService {
   /**
    * Search topics across CA syllabus
    */
-  async searchTopics(searchTerm: string, level?: 'foundation' | 'intermediate' | 'final'): Promise<{
-    level: string
-    paper: string
-    topic: string
-    smart_code: string
-  }[]> {
+  async searchTopics(
+    searchTerm: string,
+    level?: 'foundation' | 'intermediate' | 'final'
+  ): Promise<
+    {
+      level: string
+      paper: string
+      topic: string
+      smart_code: string
+    }[]
+  > {
     try {
       const results = []
       const levels = level ? [level] : ['foundation', 'intermediate', 'final']

@@ -5,12 +5,12 @@
 
 // Polyfill for 'self' which is used by some libraries but not available in Node.js
 if (typeof self === 'undefined') {
-  (global as any).self = global;
+  ;(global as any).self = global
 }
 
 // Polyfill for window (used by some libraries during SSR)
 if (typeof window === 'undefined') {
-  (global as any).window = {
+  ;(global as any).window = {
     location: {
       href: '',
       origin: '',
@@ -23,14 +23,14 @@ if (typeof window === 'undefined') {
       hash: ''
     },
     navigator: {
-      userAgent: 'node',
+      userAgent: 'node'
     },
     document: {
       createElement: () => ({}),
       createTextNode: () => ({}),
-      getElementById: () => null,
-    },
-  };
+      getElementById: () => null
+    }
+  }
 }
 
-export {};
+export {}

@@ -14,14 +14,14 @@ interface LoadingSpinnerProps {
   className?: string
 }
 
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
-  size = 'md', 
-  text, 
-  className = '' 
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = 'md',
+  text,
+  className = ''
 }) => {
   const sizeClasses = {
     sm: 'h-4 w-4',
-    md: 'h-6 w-6', 
+    md: 'h-6 w-6',
     lg: 'h-8 w-8'
   }
 
@@ -41,7 +41,10 @@ export const MenuItemSkeleton: React.FC<MenuItemSkeletonProps> = ({ count = 3 })
   return (
     <div className="space-y-4">
       {Array.from({ length: count }).map((_, index) => (
-        <Card key={index} className="bg-gradient-to-r from-red-50/50 to-orange-50/50 border-red-100">
+        <Card
+          key={index}
+          className="bg-gradient-to-r from-red-50/50 to-orange-50/50 border-red-100"
+        >
           <CardContent className="p-4">
             <div className="flex gap-4">
               <Skeleton className="w-20 h-20 rounded-lg" />
@@ -133,10 +136,7 @@ interface TableSkeletonProps {
   columns?: number
 }
 
-export const TableSkeleton: React.FC<TableSkeletonProps> = ({ 
-  rows = 5, 
-  columns = 4 
-}) => {
+export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, columns = 4 }) => {
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-4 gap-4 p-3 bg-gray-50 rounded-lg">
@@ -216,8 +216,8 @@ interface PageLoadingProps {
 }
 
 export const PageLoading: React.FC<PageLoadingProps> = ({
-  title = "Loading...",
-  description = "Please wait while we load your data"
+  title = 'Loading...',
+  description = 'Please wait while we load your data'
 }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
@@ -240,7 +240,7 @@ interface ButtonLoadingProps {
 export const ButtonLoading: React.FC<ButtonLoadingProps> = ({
   isLoading,
   children,
-  loadingText = "Processing..."
+  loadingText = 'Processing...'
 }) => {
   if (isLoading) {
     return (

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Brain,
   TrendingUp,
   Clock,
@@ -20,9 +20,9 @@ import {
   Target,
   Award
 } from 'lucide-react'
-import { 
-  AIFinanceIntegrator, 
-  AIPostingMetrics, 
+import {
+  AIFinanceIntegrator,
+  AIPostingMetrics,
   SmartCodePerformance,
   formatCurrency,
   calculatePostingAccuracy,
@@ -102,9 +102,9 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
           </p>
         </div>
         <div className="flex items-center space-x-3">
-          <select 
-            value={selectedPeriod} 
-            onChange={(e) => setSelectedPeriod(parseInt(e.target.value))}
+          <select
+            value={selectedPeriod}
+            onChange={e => setSelectedPeriod(parseInt(e.target.value))}
             className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value={7}>Last 7 days</option>
@@ -128,16 +128,21 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
-                <Badge className={`${getMetricColor(metrics.auto_posting_rate, { good: 85, warning: 70 })}`}>
-                  {metrics.auto_posting_rate >= 85 ? 'Excellent' : 
-                   metrics.auto_posting_rate >= 70 ? 'Good' : 'Needs Improvement'}
+                <Badge
+                  className={`${getMetricColor(metrics.auto_posting_rate, { good: 85, warning: 70 })}`}
+                >
+                  {metrics.auto_posting_rate >= 85
+                    ? 'Excellent'
+                    : metrics.auto_posting_rate >= 70
+                      ? 'Good'
+                      : 'Needs Improvement'}
                 </Badge>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-blue-600">Auto-Posting Rate</p>
                 <p className="text-3xl font-bold text-blue-900">{metrics.auto_posting_rate}%</p>
-                <Progress 
-                  value={metrics.auto_posting_rate} 
+                <Progress
+                  value={metrics.auto_posting_rate}
                   className="h-2"
                   style={{ background: getProgressColor(metrics.auto_posting_rate) }}
                 />
@@ -161,8 +166,8 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 <p className="text-3xl font-bold text-emerald-900">
                   {(metrics.average_confidence_score * 100).toFixed(1)}%
                 </p>
-                <Progress 
-                  value={metrics.average_confidence_score * 100} 
+                <Progress
+                  value={metrics.average_confidence_score * 100}
                   className="h-2 bg-emerald-200"
                 />
               </div>
@@ -176,13 +181,13 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
                   <BarChart3 className="w-6 h-6 text-white" />
                 </div>
-                <Badge className="bg-purple-100 text-purple-800">
-                  {selectedPeriod} days
-                </Badge>
+                <Badge className="bg-purple-100 text-purple-800">{selectedPeriod} days</Badge>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-purple-600">Total Transactions</p>
-                <p className="text-3xl font-bold text-purple-900">{metrics.total_transactions.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-purple-900">
+                  {metrics.total_transactions.toLocaleString()}
+                </p>
                 <div className="flex items-center text-sm text-purple-600">
                   <CheckCircle className="w-4 h-4 mr-1" />
                   {metrics.auto_posted_count} auto-posted
@@ -198,7 +203,13 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
                   <Clock className="w-6 h-6 text-white" />
                 </div>
-                <Badge className={pendingReview.length > 10 ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"}>
+                <Badge
+                  className={
+                    pendingReview.length > 10
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-amber-100 text-amber-800'
+                  }
+                >
                   {pendingReview.length > 10 ? 'High' : 'Normal'}
                 </Badge>
               </div>
@@ -227,15 +238,22 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
           <CardContent>
             <div className="space-y-4">
               {smartCodePerformance.slice(0, 5).map((code, index) => (
-                <div key={code.smart_code} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div
+                  key={code.smart_code}
+                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                >
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="font-medium text-slate-900">{code.smart_code}</p>
-                      <Badge className={`ml-2 ${
-                        code.auto_posting_rate >= 85 ? 'bg-emerald-100 text-emerald-800' :
-                        code.auto_posting_rate >= 70 ? 'bg-amber-100 text-amber-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                      <Badge
+                        className={`ml-2 ${
+                          code.auto_posting_rate >= 85
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : code.auto_posting_rate >= 70
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-red-100 text-red-800'
+                        }`}
+                      >
                         {code.auto_posting_rate}%
                       </Badge>
                     </div>
@@ -269,16 +287,17 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 Pending Review
               </div>
               {pendingReview.length > 0 && (
-                <Badge className="bg-amber-100 text-amber-800">
-                  {pendingReview.length} items
-                </Badge>
+                <Badge className="bg-amber-100 text-amber-800">{pendingReview.length} items</Badge>
               )}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {pendingReview.slice(0, 5).map((transaction) => (
-                <div key={transaction.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+              {pendingReview.slice(0, 5).map(transaction => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                >
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="font-medium text-slate-900">{transaction.reference_number}</p>
@@ -363,10 +382,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 <p className="font-medium text-blue-900">Overall AI Effectiveness</p>
                 <p className="text-2xl font-bold text-blue-900">{metrics.ai_effectiveness}%</p>
               </div>
-              <Progress 
-                value={metrics.ai_effectiveness} 
-                className="h-3 bg-blue-200"
-              />
+              <Progress value={metrics.ai_effectiveness} className="h-3 bg-blue-200" />
               <p className="text-sm text-blue-600 mt-2">
                 AI successfully handles {metrics.ai_effectiveness}% of all transactions
               </p>

@@ -1,6 +1,6 @@
 /**
  * Universal API Client
- * 
+ *
  * Based on lessons learned from the restaurant system:
  * - Proper error handling and retry logic
  * - Caching and throttling
@@ -64,7 +64,7 @@ export class UniversalAPIClient {
     maxRetries: 3,
     retryDelay: 1000,
     retryMultiplier: 2,
-    retryCondition: (error) => error.status >= 500 || error.status === 429
+    retryCondition: error => error.status >= 500 || error.status === 429
   }
 
   private defaultCacheConfig: CacheConfig = {
@@ -86,13 +86,13 @@ export class UniversalAPIClient {
    * Generic GET request with caching
    */
   async get<T>(
-    endpoint: string, 
+    endpoint: string,
     params?: Record<string, any>,
     options?: { cache?: boolean; ttl?: number }
   ): Promise<APIResponse<T>> {
     const url = this.buildUrl(endpoint, params)
     const cacheKey = `GET:${url}`
-    
+
     // Check cache first
     if (options?.cache !== false && this.isCacheEnabled()) {
       const cached = this.getFromCache<T>(cacheKey)
@@ -113,7 +113,7 @@ export class UniversalAPIClient {
 
     try {
       const result = await requestPromise
-      
+
       // Cache successful results
       if (result.success && result.data && this.isCacheEnabled()) {
         this.setCache(cacheKey, result.data, options?.ttl)
@@ -152,10 +152,7 @@ export class UniversalAPIClient {
   /**
    * Generic DELETE request
    */
-  async delete<T>(
-    endpoint: string,
-    params?: Record<string, any>
-  ): Promise<APIResponse<T>> {
+  async delete<T>(endpoint: string, params?: Record<string, any>): Promise<APIResponse<T>> {
     const url = this.buildUrl(endpoint, params)
     return this.executeRequest<T>('DELETE', url)
   }
@@ -177,14 +174,13 @@ export class UniversalAPIClient {
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         const result = await this.makeRequest<T>(method, url, data)
-        
+
         // Log successful request
         console.log(`✅ ${method} ${url} - Success (attempt ${attempt})`)
         return result
-
       } catch (error) {
         lastError = error as APIError
-        
+
         // Don't retry on client errors (4xx) except 429 (rate limit)
         if (!retryConfig.retryCondition!(lastError) || attempt === maxAttempts) {
           break
@@ -192,12 +188,15 @@ export class UniversalAPIClient {
 
         // Calculate delay with exponential backoff
         const delay = retryConfig.retryDelay * Math.pow(retryConfig.retryMultiplier, attempt - 1)
-        
-        console.warn(`⚠️ ${method} ${url} - Attempt ${attempt} failed, retrying in ${delay}ms`, lastError)
-        
+
+        console.warn(
+          `⚠️ ${method} ${url} - Attempt ${attempt} failed, retrying in ${delay}ms`,
+          lastError
+        )
+
         // Call retry callback
         this.config.onRetry?.(attempt, lastError)
-        
+
         // Wait before retry
         await this.sleep(delay)
       }
@@ -206,7 +205,7 @@ export class UniversalAPIClient {
     // All retries failed
     console.error(`❌ ${method} ${url} - All ${maxAttempts} attempts failed`, lastError)
     this.config.onError?.(lastError!)
-    
+
     return {
       success: false,
       error: lastError?.message || 'Request failed',
@@ -217,11 +216,7 @@ export class UniversalAPIClient {
   /**
    * Make the actual HTTP request
    */
-  private async makeRequest<T>(
-    method: string,
-    url: string,
-    data?: any
-  ): Promise<APIResponse<T>> {
+  private async makeRequest<T>(method: string, url: string, data?: any): Promise<APIResponse<T>> {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
 
@@ -258,7 +253,6 @@ export class UniversalAPIClient {
 
       // Ensure consistent response format
       return this.normalizeResponse<T>(responseData)
-
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {
         throw {
@@ -293,16 +287,16 @@ export class UniversalAPIClient {
 
     // Handle different response formats
     if (Array.isArray(data)) {
-      return { 
-        success: true, 
-        data: data as T, 
-        count: data.length 
+      return {
+        success: true,
+        data: data as T,
+        count: data.length
       }
     }
 
-    return { 
-      success: true, 
-      data: data as T 
+    return {
+      success: true,
+      data: data as T
     }
   }
 
@@ -351,7 +345,7 @@ export class UniversalAPIClient {
 
   private setCache<T>(key: string, data: T, customTtl?: number): void {
     const cacheConfig = { ...this.defaultCacheConfig, ...this.config.cache }
-    
+
     // Clear old entries if cache is full
     if (this.cache.size >= cacheConfig.maxSize) {
       const oldestKey = this.cache.keys().next().value

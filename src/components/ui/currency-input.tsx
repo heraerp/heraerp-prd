@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input'
 import { useOrganizationCurrency } from '@/hooks/use-organization-currency'
 import { cn } from '@/lib/utils'
 
-interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'prefix'> {
+interface CurrencyInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'prefix'> {
   hideSymbol?: boolean
   symbolPosition?: 'before' | 'after' | 'none'
 }
@@ -16,10 +17,10 @@ interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
 export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
   ({ className, hideSymbol = false, symbolPosition, ...props }, ref) => {
     const { currencySymbol, currencyConfig } = useOrganizationCurrency()
-    
+
     const position = symbolPosition || currencyConfig.symbolPosition
     const showSymbol = !hideSymbol && position !== 'none'
-    
+
     return (
       <div className="relative">
         {showSymbol && position === 'before' && (
@@ -61,17 +62,13 @@ interface CurrencyDisplayProps {
   compact?: boolean
 }
 
-export function CurrencyDisplay({ 
-  value, 
-  className, 
+export function CurrencyDisplay({
+  value,
+  className,
   showCode = false,
-  compact = false 
+  compact = false
 }: CurrencyDisplayProps) {
   const { format } = useOrganizationCurrency()
-  
-  return (
-    <span className={className}>
-      {format(value, { showCode, compact })}
-    </span>
-  )
+
+  return <span className={className}>{format(value, { showCode, compact })}</span>
 }

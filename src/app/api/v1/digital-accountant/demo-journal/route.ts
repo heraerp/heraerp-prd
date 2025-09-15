@@ -1,19 +1,22 @@
 /**
  * HERA Digital Accountant - Demo Journal Entry API
  * Smart Code: HERA.API.DIGITAL.ACCOUNTANT.DEMO.v1
- * 
+ *
  * Demonstrates complete journal entry process from natural language to posted entries
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { DigitalAccountantHelper, salonJournalExamples } from '@/lib/digital-accountant/journal-entry-helper'
+import {
+  DigitalAccountantHelper,
+  salonJournalExamples
+} from '@/lib/digital-accountant/journal-entry-helper'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      utterance, 
-      organizationId, 
+    const {
+      utterance,
+      organizationId,
       demoType = 'custom',
       businessType = 'salon',
       autoPost = false
@@ -33,8 +36,8 @@ export async function POST(request: NextRequest) {
       switch (demoType) {
         case 'cash_sale':
           result = await salonJournalExamples.processCashSale(
-            organizationId, 
-            450, 
+            organizationId,
+            450,
             'haircut and styling'
           )
           break
@@ -66,10 +69,7 @@ export async function POST(request: NextRequest) {
           break
 
         default:
-          return NextResponse.json(
-            { error: `Unknown demo type: ${demoType}` },
-            { status: 400 }
-          )
+          return NextResponse.json({ error: `Unknown demo type: ${demoType}` }, { status: 400 })
       }
     } else {
       // Process custom natural language input
@@ -103,11 +103,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('Demo journal entry error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to process journal entry demo',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -221,7 +220,7 @@ function generateAccountingExplanation(result: any): string {
   const credits = lines.filter((l: any) => l.line_type === 'CREDIT')
 
   let explanation = '📚 Accounting Explanation:\n\n'
-  
+
   explanation += '**Journal Entry:**\n'
   debits.forEach((line: any) => {
     explanation += `DR ${line.description}: ${line.line_amount.toFixed(2)}\n`

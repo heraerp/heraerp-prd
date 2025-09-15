@@ -3,44 +3,43 @@
 // Enhanced user location tracking and analytics
 // ================================================================================
 
-import { NextRequest } from 'next/server';
-import { heraMetrics } from './prometheus-metrics';
+import { NextRequest } from 'next/server'
+import { heraMetrics } from './prometheus-metrics'
 
 interface LocationData {
-  country?: string;
-  city?: string;
-  region?: string;
-  timezone?: string;
-  latitude?: string;
-  longitude?: string;
-  asn?: string;
-  isp?: string;
+  country?: string
+  city?: string
+  region?: string
+  timezone?: string
+  latitude?: string
+  longitude?: string
+  asn?: string
+  isp?: string
 }
 
 interface EnhancedGeoData {
-  country: string;
-  countryCode: string;
-  region: string;
-  city: string;
-  timezone: string;
+  country: string
+  countryCode: string
+  region: string
+  city: string
+  timezone: string
   coordinates: {
-    lat: number;
-    lng: number;
-  };
-  isp: string;
-  continent: string;
-  isEU: boolean;
+    lat: number
+    lng: number
+  }
+  isp: string
+  continent: string
+  isEU: boolean
 }
 
 export class GeoAnalytics {
-  
   /**
    * Extract comprehensive location data from request
    */
   static extractLocationData(req: NextRequest): LocationData {
     // Next.js Edge Runtime provides geo data
-    const geo = req.geo;
-    
+    const geo = req.geo
+
     return {
       country: geo?.country || this.getCountryFromHeaders(req),
       city: geo?.city || 'Unknown',
@@ -51,17 +50,17 @@ export class GeoAnalytics {
       // Additional ISP/ASN data from Cloudflare headers
       asn: req.headers.get('cf-connecting-ip') ? this.getASNFromHeaders(req) : undefined,
       isp: req.headers.get('cf-ipcountry') ? 'Cloudflare' : 'Unknown'
-    };
+    }
   }
 
   /**
    * Track user location with enhanced analytics
    */
   static trackUserLocation(req: NextRequest, page: string, businessType?: string) {
-    const location = this.extractLocationData(req);
-    const userAgent = req.headers.get('user-agent') || 'unknown';
-    const deviceType = this.getDeviceType(userAgent);
-    
+    const location = this.extractLocationData(req)
+    const userAgent = req.headers.get('user-agent') || 'unknown'
+    const deviceType = this.getDeviceType(userAgent)
+
     // Track page views with location
     heraMetrics.counter('hera_page_views_location', {
       page,
@@ -73,7 +72,7 @@ export class GeoAnalytics {
       device_type: deviceType,
       business_type: businessType || 'general',
       continent: this.getContinent(location.country)
-    });
+    })
 
     // Track ISP/Network analytics
     if (location.isp && location.asn) {
@@ -82,27 +81,27 @@ export class GeoAnalytics {
         isp: location.isp,
         asn: location.asn,
         device_type: deviceType
-      });
+      })
     }
 
     // Track timezone distribution for optimal support hours
     heraMetrics.counter('hera_timezone_distribution', {
       timezone: location.timezone || 'unknown',
       business_type: businessType || 'general'
-    });
+    })
   }
 
   /**
    * Track business conversion by geography
    */
   static trackGeoConversion(
-    req: NextRequest, 
+    req: NextRequest,
     conversionType: 'trial_started' | 'trial_completed' | 'production_converted',
     businessType: string,
     success: boolean
   ) {
-    const location = this.extractLocationData(req);
-    
+    const location = this.extractLocationData(req)
+
     heraMetrics.counter('hera_geo_conversions', {
       conversion_type: conversionType,
       business_type: businessType,
@@ -111,7 +110,7 @@ export class GeoAnalytics {
       city: location.city || 'unknown',
       success: success.toString(),
       continent: this.getContinent(location.country)
-    });
+    })
 
     // Track high-value geographic markets
     if (this.isHighValueMarket(location.country)) {
@@ -120,7 +119,7 @@ export class GeoAnalytics {
         business_type: businessType,
         conversion_type: conversionType,
         success: success.toString()
-      });
+      })
     }
   }
 
@@ -129,17 +128,17 @@ export class GeoAnalytics {
    */
   private static getCountryFromHeaders(req: NextRequest): string {
     // Cloudflare country header
-    const cfCountry = req.headers.get('cf-ipcountry');
-    if (cfCountry && cfCountry !== 'XX') return cfCountry;
-    
+    const cfCountry = req.headers.get('cf-ipcountry')
+    if (cfCountry && cfCountry !== 'XX') return cfCountry
+
     // Accept-Language header as fallback
-    const acceptLanguage = req.headers.get('accept-language');
+    const acceptLanguage = req.headers.get('accept-language')
     if (acceptLanguage) {
-      const match = acceptLanguage.match(/[a-z]{2}-([A-Z]{2})/);
-      if (match) return match[1];
+      const match = acceptLanguage.match(/[a-z]{2}-([A-Z]{2})/)
+      if (match) return match[1]
     }
-    
-    return 'Unknown';
+
+    return 'Unknown'
   }
 
   /**
@@ -147,30 +146,30 @@ export class GeoAnalytics {
    */
   private static getTimezoneFromHeaders(req: NextRequest): string {
     // Try to get timezone from Cloudflare
-    const cfTimezone = req.headers.get('cf-timezone');
-    if (cfTimezone) return cfTimezone;
-    
+    const cfTimezone = req.headers.get('cf-timezone')
+    if (cfTimezone) return cfTimezone
+
     // Fallback to geographic estimation
-    const country = req.geo?.country;
-    return this.estimateTimezone(country);
+    const country = req.geo?.country
+    return this.estimateTimezone(country)
   }
 
   /**
    * Get ASN (Autonomous System Number) from headers
    */
   private static getASNFromHeaders(req: NextRequest): string {
-    const cfASN = req.headers.get('cf-connecting-asn');
-    return cfASN || 'unknown';
+    const cfASN = req.headers.get('cf-connecting-asn')
+    return cfASN || 'unknown'
   }
 
   /**
    * Detect device type from user agent
    */
   private static getDeviceType(userAgent: string): string {
-    if (/Mobile|Android|iPhone/.test(userAgent)) return 'mobile';
-    if (/iPad|Tablet/.test(userAgent)) return 'tablet';
-    if (/Smart-TV|SMART-TV/.test(userAgent)) return 'tv';
-    return 'desktop';
+    if (/Mobile|Android|iPhone/.test(userAgent)) return 'mobile'
+    if (/iPad|Tablet/.test(userAgent)) return 'tablet'
+    if (/Smart-TV|SMART-TV/.test(userAgent)) return 'tv'
+    return 'desktop'
   }
 
   /**
@@ -180,22 +179,22 @@ export class GeoAnalytics {
     const countryMap: Record<string, string> = {
       'United States': 'US',
       'United Kingdom': 'GB',
-      'Canada': 'CA',
-      'Germany': 'DE',
-      'France': 'FR',
-      'Australia': 'AU',
-      'Japan': 'JP',
-      'India': 'IN',
-      'Brazil': 'BR',
-      'Mexico': 'MX',
-      'Spain': 'ES',
-      'Italy': 'IT',
-      'Netherlands': 'NL',
-      'Switzerland': 'CH',
-      'Singapore': 'SG'
-    };
-    
-    return countryMap[country || ''] || country?.substring(0, 2).toUpperCase() || 'XX';
+      Canada: 'CA',
+      Germany: 'DE',
+      France: 'FR',
+      Australia: 'AU',
+      Japan: 'JP',
+      India: 'IN',
+      Brazil: 'BR',
+      Mexico: 'MX',
+      Spain: 'ES',
+      Italy: 'IT',
+      Netherlands: 'NL',
+      Switzerland: 'CH',
+      Singapore: 'SG'
+    }
+
+    return countryMap[country || ''] || country?.substring(0, 2).toUpperCase() || 'XX'
   }
 
   /**
@@ -203,16 +202,32 @@ export class GeoAnalytics {
    */
   private static getContinent(country?: string): string {
     const continentMap: Record<string, string> = {
-      'US': 'North America', 'CA': 'North America', 'MX': 'North America',
-      'GB': 'Europe', 'DE': 'Europe', 'FR': 'Europe', 'ES': 'Europe', 'IT': 'Europe', 'NL': 'Europe', 'CH': 'Europe',
-      'JP': 'Asia', 'IN': 'Asia', 'SG': 'Asia', 'CN': 'Asia',
-      'AU': 'Oceania', 'NZ': 'Oceania',
-      'BR': 'South America', 'AR': 'South America', 'CO': 'South America',
-      'ZA': 'Africa', 'NG': 'Africa', 'KE': 'Africa'
-    };
-    
-    const countryCode = this.getCountryCode(country);
-    return continentMap[countryCode] || 'Unknown';
+      US: 'North America',
+      CA: 'North America',
+      MX: 'North America',
+      GB: 'Europe',
+      DE: 'Europe',
+      FR: 'Europe',
+      ES: 'Europe',
+      IT: 'Europe',
+      NL: 'Europe',
+      CH: 'Europe',
+      JP: 'Asia',
+      IN: 'Asia',
+      SG: 'Asia',
+      CN: 'Asia',
+      AU: 'Oceania',
+      NZ: 'Oceania',
+      BR: 'South America',
+      AR: 'South America',
+      CO: 'South America',
+      ZA: 'Africa',
+      NG: 'Africa',
+      KE: 'Africa'
+    }
+
+    const countryCode = this.getCountryCode(country)
+    return continentMap[countryCode] || 'Unknown'
   }
 
   /**
@@ -220,20 +235,20 @@ export class GeoAnalytics {
    */
   private static estimateTimezone(country?: string): string {
     const timezoneMap: Record<string, string> = {
-      'US': 'America/New_York',
-      'CA': 'America/Toronto', 
-      'GB': 'Europe/London',
-      'DE': 'Europe/Berlin',
-      'FR': 'Europe/Paris',
-      'AU': 'Australia/Sydney',
-      'JP': 'Asia/Tokyo',
-      'IN': 'Asia/Kolkata',
-      'BR': 'America/Sao_Paulo',
-      'SG': 'Asia/Singapore'
-    };
-    
-    const countryCode = this.getCountryCode(country);
-    return timezoneMap[countryCode] || 'UTC';
+      US: 'America/New_York',
+      CA: 'America/Toronto',
+      GB: 'Europe/London',
+      DE: 'Europe/Berlin',
+      FR: 'Europe/Paris',
+      AU: 'Australia/Sydney',
+      JP: 'Asia/Tokyo',
+      IN: 'Asia/Kolkata',
+      BR: 'America/Sao_Paulo',
+      SG: 'Asia/Singapore'
+    }
+
+    const countryCode = this.getCountryCode(country)
+    return timezoneMap[countryCode] || 'UTC'
   }
 
   /**
@@ -241,11 +256,23 @@ export class GeoAnalytics {
    */
   private static isHighValueMarket(country?: string): boolean {
     const highValueMarkets = [
-      'US', 'CA', 'GB', 'DE', 'FR', 'AU', 'JP', 'SG', 'CH', 'NL', 'SE', 'NO', 'DK'
-    ];
-    
-    const countryCode = this.getCountryCode(country);
-    return highValueMarkets.includes(countryCode);
+      'US',
+      'CA',
+      'GB',
+      'DE',
+      'FR',
+      'AU',
+      'JP',
+      'SG',
+      'CH',
+      'NL',
+      'SE',
+      'NO',
+      'DK'
+    ]
+
+    const countryCode = this.getCountryCode(country)
+    return highValueMarkets.includes(countryCode)
   }
 
   /**
@@ -255,14 +282,14 @@ export class GeoAnalytics {
     return {
       metrics_collected: [
         'hera_page_views_location',
-        'hera_network_analytics', 
+        'hera_network_analytics',
         'hera_timezone_distribution',
         'hera_geo_conversions',
         'hera_premium_market_activity'
       ],
       data_points: [
         'Country & Country Code',
-        'Region & City', 
+        'Region & City',
         'Timezone',
         'ISP & Network (ASN)',
         'Device Type',
@@ -276,9 +303,9 @@ export class GeoAnalytics {
         'Regional business type preferences',
         'Network performance by ISP'
       ]
-    };
+    }
   }
 }
 
 // Export singleton instance
-export const geoAnalytics = GeoAnalytics;
+export const geoAnalytics = GeoAnalytics

@@ -6,10 +6,10 @@ import iceCreamEnterpriseTheme from './themes/ice-cream-enterprise'
 
 /**
  * HERA DNA Theme Provider
- * 
+ *
  * A universal theme provider that manages theme state, persistence,
  * and CSS variable injection for perfect light/dark mode support.
- * 
+ *
  * Features:
  * - Automatic theme switching based on system preference
  * - Local storage persistence
@@ -31,7 +31,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
 // Available themes registry
 const themes: Record<string, ThemeConfig> = {
-  'ice-cream-enterprise': iceCreamEnterpriseTheme,
+  'ice-cream-enterprise': iceCreamEnterpriseTheme
   // Add more themes here as they're created
   // 'salon-luxury': salonLuxuryTheme,
   // 'healthcare-clinical': healthcareClinicalTheme,
@@ -59,11 +59,11 @@ export function ThemeProviderDNA({
   const [currentTheme, setCurrentTheme] = useState<ThemeConfig>(
     themes[defaultTheme] || iceCreamEnterpriseTheme
   )
-  
+
   // Initialize mode
   const [mode, setModeState] = useState<ThemeMode>(() => {
     if (forceMode) return forceMode
-    
+
     // Check localStorage first
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(`${storageKey}-mode`)
@@ -73,49 +73,49 @@ export function ThemeProviderDNA({
     }
     return defaultMode
   })
-  
+
   // Calculate resolved mode (what actually gets applied)
   const [resolvedMode, setResolvedMode] = useState<'light' | 'dark'>('light')
-  
+
   // Listen for system theme changes
   useEffect(() => {
     if (mode !== 'system') {
       setResolvedMode(mode as 'light' | 'dark')
       return
     }
-    
+
     // Set initial value
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     setResolvedMode(mediaQuery.matches ? 'dark' : 'light')
-    
+
     // Listen for changes
     const handler = (e: MediaQueryListEvent) => {
       setResolvedMode(e.matches ? 'dark' : 'light')
     }
-    
+
     mediaQuery.addEventListener('change', handler)
     return () => mediaQuery.removeEventListener('change', handler)
   }, [mode])
-  
+
   // Apply theme to document
   useEffect(() => {
     const root = document.documentElement
-    
+
     // Remove old theme classes
     root.classList.remove('light', 'dark')
-    
+
     // Add new theme class
     root.classList.add(resolvedMode)
-    
+
     // Apply CSS variables
     const cssVars = getThemeCSSVariables(currentTheme, resolvedMode)
     Object.entries(cssVars).forEach(([key, value]) => {
       root.style.setProperty(key, value)
     })
-    
+
     // Add theme name as data attribute
     root.setAttribute('data-theme', currentTheme.name.toLowerCase().replace(/\s+/g, '-'))
-    
+
     // Handle transitions
     if (enableTransitions) {
       root.classList.add('theme-transition')
@@ -124,28 +124,28 @@ export function ThemeProviderDNA({
       }, 300)
     }
   }, [currentTheme, resolvedMode, enableTransitions])
-  
+
   // Persist mode preference
   useEffect(() => {
     if (typeof window !== 'undefined' && !forceMode) {
       localStorage.setItem(`${storageKey}-mode`, mode)
     }
   }, [mode, storageKey, forceMode])
-  
+
   // Context methods
   const setMode = (newMode: ThemeMode) => {
     if (!forceMode) {
       setModeState(newMode)
     }
   }
-  
+
   const setTheme = (theme: ThemeConfig) => {
     setCurrentTheme(theme)
   }
-  
+
   const toggleMode = () => {
     if (forceMode) return
-    
+
     if (mode === 'light') setModeState('dark')
     else if (mode === 'dark') setModeState('light')
     else {
@@ -153,7 +153,7 @@ export function ThemeProviderDNA({
       setModeState(resolvedMode === 'light' ? 'dark' : 'light')
     }
   }
-  
+
   const value: ThemeContextValue = {
     theme: currentTheme,
     mode,
@@ -162,12 +162,8 @@ export function ThemeProviderDNA({
     setTheme,
     toggleMode
   }
-  
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  )
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
 /**
@@ -192,19 +188,11 @@ export function ThemeToggle({
   showLabel?: boolean
 }) {
   const { mode, resolvedMode, toggleMode } = useTheme()
-  
-  const icon = mode === 'system' 
-    ? '🖥️' 
-    : resolvedMode === 'light' 
-    ? '☀️' 
-    : '🌙'
-    
-  const label = mode === 'system'
-    ? 'System'
-    : mode === 'light'
-    ? 'Light'
-    : 'Dark'
-  
+
+  const icon = mode === 'system' ? '🖥️' : resolvedMode === 'light' ? '☀️' : '🌙'
+
+  const label = mode === 'system' ? 'System' : mode === 'light' ? 'Light' : 'Dark'
+
   return (
     <button
       onClick={toggleMode}
@@ -221,11 +209,7 @@ export function ThemeToggle({
       <span className="text-xl" role="img" aria-hidden="true">
         {icon}
       </span>
-      {showLabel && (
-        <span className="ml-2 text-sm font-medium">
-          {label}
-        </span>
-      )}
+      {showLabel && <span className="ml-2 text-sm font-medium">{label}</span>}
     </button>
   )
 }

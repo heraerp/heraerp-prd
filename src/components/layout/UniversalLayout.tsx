@@ -41,12 +41,10 @@ export function UniversalLayout({
         accentGradient={accentGradient}
         baseUrl={baseUrl}
       />
-      
+
       {/* Main Content Area */}
       <div className="ml-16 min-h-screen relative">
-        <main className="relative">
-          {children}
-        </main>
+        <main className="relative">{children}</main>
       </div>
     </div>
   )

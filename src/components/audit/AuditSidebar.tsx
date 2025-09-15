@@ -249,10 +249,10 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 h-screen bg-white border-r border-gray-200 transition-all duration-300",
-          isExpanded ? "w-64" : "w-16",
-          "lg:relative lg:block",
-          !isExpanded && "hidden lg:block"
+          'fixed left-0 top-0 z-40 h-screen bg-white border-r border-gray-200 transition-all duration-300',
+          isExpanded ? 'w-64' : 'w-16',
+          'lg:relative lg:block',
+          !isExpanded && 'hidden lg:block'
         )}
         onMouseEnter={() => !isExpanded && setIsExpanded(true)}
         onMouseLeave={() => isExpanded && setIsExpanded(false)}
@@ -282,7 +282,11 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">
-                    {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    {user.name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')
+                      .toUpperCase()}
                   </span>
                 </div>
                 <div>
@@ -296,48 +300,50 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
           {/* Main Navigation */}
           <nav className="flex-1 overflow-y-auto py-4">
             <ul className="space-y-1 px-2">
-              {navItems.map((item) => {
+              {navItems.map(item => {
                 const isItemActive = isActive(item.href)
-                
+
                 return (
                   <li key={item.id}>
                     <button
                       onClick={() => handleNavClick(item)}
-                      title={!isExpanded ? `${item.label}${item.badge ? ` (${item.badge})` : ''}` : ''}
+                      title={
+                        !isExpanded ? `${item.label}${item.badge ? ` (${item.badge})` : ''}` : ''
+                      }
                       className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
-                        isItemActive 
-                          ? "bg-gradient-to-r from-emerald-50 to-blue-50 text-emerald-700 shadow-sm" 
-                          : "hover:bg-gray-100 text-gray-700 hover:text-gray-900",
-                        !isExpanded && "justify-center"
+                        'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group',
+                        isItemActive
+                          ? 'bg-gradient-to-r from-emerald-50 to-blue-50 text-emerald-700 shadow-sm'
+                          : 'hover:bg-gray-100 text-gray-700 hover:text-gray-900',
+                        !isExpanded && 'justify-center'
                       )}
                     >
-                      <item.icon className={cn(
-                        "flex-shrink-0 transition-colors",
-                        isItemActive ? "w-5 h-5 text-emerald-600" : "w-5 h-5 text-gray-500 group-hover:text-gray-700"
-                      )} />
-                      
+                      <item.icon
+                        className={cn(
+                          'flex-shrink-0 transition-colors',
+                          isItemActive
+                            ? 'w-5 h-5 text-emerald-600'
+                            : 'w-5 h-5 text-gray-500 group-hover:text-gray-700'
+                        )}
+                      />
+
                       {isExpanded && (
                         <>
-                          <span className="flex-1 text-left text-sm font-medium">
-                            {item.label}
-                          </span>
+                          <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
                           {item.badge && item.badge > 0 && (
-                            <Badge 
-                              variant="secondary" 
+                            <Badge
+                              variant="secondary"
                               className={cn(
-                                "ml-auto",
-                                isItemActive 
-                                  ? "bg-emerald-600 text-white" 
-                                  : "bg-gray-200 text-gray-700"
+                                'ml-auto',
+                                isItemActive
+                                  ? 'bg-emerald-600 text-white'
+                                  : 'bg-gray-200 text-gray-700'
                               )}
                             >
                               {item.badge}
                             </Badge>
                           )}
-                          {item.subItems && (
-                            <ChevronRight className="w-4 h-4 text-gray-400" />
-                          )}
+                          {item.subItems && <ChevronRight className="w-4 h-4 text-gray-400" />}
                         </>
                       )}
                       {!isExpanded && item.badge && item.badge > 0 && (
@@ -355,15 +361,15 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
           {/* Bottom Navigation */}
           <div className="border-t border-gray-200 py-2">
             <ul className="space-y-1 px-2">
-              {bottomNavItems.map((item) => (
+              {bottomNavItems.map(item => (
                 <li key={item.id}>
                   <button
                     onClick={() => handleNavClick(item)}
                     title={!isExpanded ? item.label : ''}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
-                      "hover:bg-gray-100 text-gray-700 hover:text-gray-900",
-                      !isExpanded && "justify-center"
+                      'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group',
+                      'hover:bg-gray-100 text-gray-700 hover:text-gray-900',
+                      !isExpanded && 'justify-center'
                     )}
                   >
                     <div className="relative">
@@ -374,12 +380,10 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                         </span>
                       )}
                     </div>
-                    
+
                     {isExpanded && (
                       <>
-                        <span className="flex-1 text-left text-sm font-medium">
-                          {item.label}
-                        </span>
+                        <span className="flex-1 text-left text-sm font-medium">{item.label}</span>
                         {item.badge && item.badge > 0 && (
                           <Badge variant="destructive" size="sm">
                             {item.badge}
@@ -399,10 +403,7 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
               variant="ghost"
               size="sm"
               onClick={() => setIsExpanded(!isExpanded)}
-              className={cn(
-                "w-full",
-                !isExpanded && "px-0"
-              )}
+              className={cn('w-full', !isExpanded && 'px-0')}
             >
               {isExpanded ? (
                 <>

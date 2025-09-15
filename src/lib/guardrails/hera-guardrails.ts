@@ -5,14 +5,14 @@
 
 export const SACRED_TABLES = [
   'core_organizations',
-  'core_entities', 
+  'core_entities',
   'core_dynamic_data',
   'core_relationships',
   'universal_transactions',
   'universal_transaction_lines'
 ] as const
 
-export type SacredTable = typeof SACRED_TABLES[number]
+export type SacredTable = (typeof SACRED_TABLES)[number]
 
 export const SMART_CODE_PATTERN = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$/
 
@@ -30,13 +30,12 @@ export interface GuardrailResult {
 }
 
 export class HERAGuardrails {
-  
   /**
    * Validate Smart Code format
    */
   static validateSmartCode(code: string): GuardrailResult {
     const violations: GuardrailViolation[] = []
-    
+
     if (!code) {
       violations.push({
         code: 'SMART_CODE_REQUIRED',
@@ -50,19 +49,19 @@ export class HERAGuardrails {
         severity: 'ERROR'
       })
     }
-    
+
     return {
       passed: violations.length === 0,
       violations
     }
   }
-  
+
   /**
    * Validate multi-tenancy requirements
    */
   static validateMultiTenancy(data: any, organizationId?: string): GuardrailResult {
     const violations: GuardrailViolation[] = []
-    
+
     if (!organizationId) {
       violations.push({
         code: 'ORG_ID_REQUIRED',
@@ -70,7 +69,7 @@ export class HERAGuardrails {
         severity: 'ERROR'
       })
     }
-    
+
     if (data && typeof data === 'object') {
       if (!data.organization_id && organizationId) {
         // Auto-fix: add organization_id
@@ -88,20 +87,20 @@ export class HERAGuardrails {
         })
       }
     }
-    
+
     return {
       passed: violations.filter(v => v.severity === 'ERROR').length === 0,
       violations,
       autoFixes: violations.filter(v => v.code === 'ORG_ID_AUTO_ADDED').map(v => v.code)
     }
   }
-  
+
   /**
    * Validate Sacred Six table usage
    */
   static validateSacredTables(tableName: string): GuardrailResult {
     const violations: GuardrailViolation[] = []
-    
+
     if (!SACRED_TABLES.includes(tableName as SacredTable)) {
       violations.push({
         code: 'SACRED_TABLE_VIOLATION',
@@ -109,38 +108,39 @@ export class HERAGuardrails {
         severity: 'ERROR'
       })
     }
-    
+
     return {
       passed: violations.length === 0,
       violations
     }
   }
-  
+
   /**
    * Validate GL balance for journal entries
    */
   static validateGLBalance(lines: any[]): GuardrailResult {
     const violations: GuardrailViolation[] = []
-    
+
     if (!lines || !Array.isArray(lines)) {
       return { passed: true, violations: [] }
     }
-    
+
     // Group by currency and sum amounts
     const balances = new Map<string, number>()
-    
+
     lines.forEach((line, index) => {
       if (line.line_type === 'GL') {
         const currency = line.line_data?.currency || 'USD'
         const amount = line.line_amount || 0
-        
+
         balances.set(currency, (balances.get(currency) || 0) + amount)
       }
     })
-    
+
     // Check each currency balance
     balances.forEach((balance, currency) => {
-      if (Math.abs(balance) >= 0.01) { // Allow for rounding errors
+      if (Math.abs(balance) >= 0.01) {
+        // Allow for rounding errors
         violations.push({
           code: 'GL_UNBALANCED',
           message: `GL entries not balanced for ${currency}: ${balance.toFixed(2)} difference`,
@@ -149,19 +149,19 @@ export class HERAGuardrails {
         })
       }
     })
-    
+
     return {
       passed: violations.length === 0,
       violations
     }
   }
-  
+
   /**
    * Validate transaction structure
    */
   static validateTransaction(transaction: any): GuardrailResult {
     const violations: GuardrailViolation[] = []
-    
+
     // Check required fields
     const requiredFields = ['transaction_type', 'smart_code']
     requiredFields.forEach(field => {
@@ -173,13 +173,13 @@ export class HERAGuardrails {
         })
       }
     })
-    
+
     // Validate smart code
     if (transaction.smart_code) {
       const smartCodeResult = this.validateSmartCode(transaction.smart_code)
       violations.push(...smartCodeResult.violations)
     }
-    
+
     // Validate lines if present
     if (transaction.lines && Array.isArray(transaction.lines)) {
       transaction.lines.forEach((line: any, index: number) => {
@@ -191,12 +191,14 @@ export class HERAGuardrails {
           })
         } else {
           const lineSmartCodeResult = this.validateSmartCode(line.smart_code)
-          violations.push(...lineSmartCodeResult.violations.map(v => ({
-            ...v,
-            message: `Line ${index + 1}: ${v.message}`
-          })))
+          violations.push(
+            ...lineSmartCodeResult.violations.map(v => ({
+              ...v,
+              message: `Line ${index + 1}: ${v.message}`
+            }))
+          )
         }
-        
+
         if (typeof line.line_amount !== 'number') {
           violations.push({
             code: 'LINE_AMOUNT_INVALID',
@@ -205,18 +207,18 @@ export class HERAGuardrails {
           })
         }
       })
-      
+
       // Check GL balance
       const glBalanceResult = this.validateGLBalance(transaction.lines)
       violations.push(...glBalanceResult.violations)
     }
-    
+
     return {
       passed: violations.filter(v => v.severity === 'ERROR').length === 0,
       violations
     }
   }
-  
+
   /**
    * Comprehensive validation for CLI operations
    */
@@ -228,35 +230,35 @@ export class HERAGuardrails {
   }): GuardrailResult {
     const { operation, table, data, organizationId } = params
     const allViolations: GuardrailViolation[] = []
-    
+
     // Validate Sacred Six
     const tableResult = this.validateSacredTables(table)
     allViolations.push(...tableResult.violations)
-    
+
     // Validate multi-tenancy
     if (data || organizationId) {
       const multiTenantResult = this.validateMultiTenancy(data, organizationId)
       allViolations.push(...multiTenantResult.violations)
     }
-    
+
     // Validate transaction structure if applicable
     if (table === 'universal_transactions' && data) {
       const transactionResult = this.validateTransaction(data)
       allViolations.push(...transactionResult.violations)
     }
-    
+
     // Validate entity smart codes
     if (table === 'core_entities' && data?.smart_code) {
       const smartCodeResult = this.validateSmartCode(data.smart_code)
       allViolations.push(...smartCodeResult.violations)
     }
-    
+
     return {
       passed: allViolations.filter(v => v.severity === 'ERROR').length === 0,
       violations: allViolations
     }
   }
-  
+
   /**
    * Generate guardrail report
    */
@@ -264,10 +266,10 @@ export class HERAGuardrails {
     const allViolations = results.flatMap(r => r.violations)
     const errors = allViolations.filter(v => v.severity === 'ERROR')
     const warnings = allViolations.filter(v => v.severity === 'WARNING')
-    
+
     let report = '🛡️ HERA Guardrails Report\n'
     report += '='.repeat(50) + '\n\n'
-    
+
     if (errors.length === 0 && warnings.length === 0) {
       report += '✅ All guardrails passed!\n'
     } else {
@@ -278,7 +280,7 @@ export class HERAGuardrails {
         })
         report += '\n'
       }
-      
+
       if (warnings.length > 0) {
         report += `⚠️  ${warnings.length} WARNINGS:\n`
         warnings.forEach((warning, i) => {
@@ -287,10 +289,10 @@ export class HERAGuardrails {
         report += '\n'
       }
     }
-    
+
     report += `Summary: ${errors.length} errors, ${warnings.length} warnings\n`
     report += `Status: ${errors.length === 0 ? '✅ PASSED' : '❌ FAILED'}\n`
-    
+
     return report
   }
 }
@@ -298,17 +300,17 @@ export class HERAGuardrails {
 // CLI Exit codes
 export const CLI_EXIT_CODES = {
   SUCCESS: 0,
-  
+
   // Init command
   CONNECTION_FAILURE: 10,
   SACRED_TABLES_MISSING: 11,
   ORG_NOT_FOUND: 12,
   GUARDRAILS_UNAVAILABLE: 13,
-  
+
   // Smart code command
   SMART_CODE_INVALID: 20,
   SMART_CODE_DEPRECATED: 21,
-  
+
   // Transaction command
   ORG_ID_MISSING: 30,
   SMART_CODE_VIOLATION: 31,
@@ -316,4 +318,4 @@ export const CLI_EXIT_CODES = {
   SCHEMA_VIOLATION: 33
 } as const
 
-export type CLIExitCode = typeof CLI_EXIT_CODES[keyof typeof CLI_EXIT_CODES]
+export type CLIExitCode = (typeof CLI_EXIT_CODES)[keyof typeof CLI_EXIT_CODES]

@@ -8,8 +8,14 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
   Calendar,
   CheckCircle,
   AlertCircle,
@@ -28,8 +34,15 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { createFiscalYearManager, type ClosingResult, type FiscalPeriod } from '@/lib/dna/fiscal-year/universal-fiscal-year'
-import { createFiscalCloseEngine, type FiscalCloseResult } from '@/lib/dna/fiscal-year/fiscal-close-engine'
+import {
+  createFiscalYearManager,
+  type ClosingResult,
+  type FiscalPeriod
+} from '@/lib/dna/fiscal-year/universal-fiscal-year'
+import {
+  createFiscalCloseEngine,
+  type FiscalCloseResult
+} from '@/lib/dna/fiscal-year/fiscal-close-engine'
 import { formatDate } from '@/lib/date-utils'
 
 interface YearEndClosingWizardProps {
@@ -54,7 +67,9 @@ export function YearEndClosingWizard({
   onComplete
 }: YearEndClosingWizardProps) {
   const { currentOrganization } = useMultiOrgAuth()
-  const [activeStep, setActiveStep] = useState<'review' | 'checklist' | 'closing' | 'complete'>('review')
+  const [activeStep, setActiveStep] = useState<'review' | 'checklist' | 'closing' | 'complete'>(
+    'review'
+  )
   const [loading, setLoading] = useState(false)
   const [periods, setPeriods] = useState<FiscalPeriod[]>([])
   const [checklist, setChecklist] = useState<ChecklistItem[]>([])
@@ -65,7 +80,9 @@ export function YearEndClosingWizard({
   const [currentYearEarningsAccountId, setCurrentYearEarningsAccountId] = useState('')
 
   const fiscalManager = currentOrganization ? createFiscalYearManager(currentOrganization.id) : null
-  const fiscalCloseEngine = currentOrganization ? createFiscalCloseEngine(currentOrganization.id) : null
+  const fiscalCloseEngine = currentOrganization
+    ? createFiscalCloseEngine(currentOrganization.id)
+    : null
 
   // Load fiscal periods
   useEffect(() => {
@@ -87,23 +104,81 @@ export function YearEndClosingWizard({
   const loadChecklist = async () => {
     // In real implementation, this would load from database
     setChecklist([
-      { code: 'YEC-01', name: 'Reconcile all bank accounts', category: 'reconciliation', status: 'completed', required: true },
-      { code: 'YEC-02', name: 'Complete physical inventory count', category: 'inventory', status: 'completed', required: true },
-      { code: 'YEC-03', name: 'Review and adjust prepaid expenses', category: 'adjustments', status: 'pending', required: true },
-      { code: 'YEC-04', name: 'Accrue unpaid expenses', category: 'adjustments', status: 'pending', required: true },
-      { code: 'YEC-05', name: 'Calculate and book depreciation', category: 'adjustments', status: 'pending', required: true },
-      { code: 'YEC-06', name: 'Review accounts receivable aging', category: 'receivables', status: 'pending', required: true },
-      { code: 'YEC-07', name: 'Review accounts payable', category: 'payables', status: 'pending', required: true },
-      { code: 'YEC-08', name: 'Reconcile intercompany accounts', category: 'reconciliation', status: 'pending', required: false },
-      { code: 'YEC-09', name: 'Review tax accounts', category: 'tax', status: 'pending', required: true },
-      { code: 'YEC-10', name: 'Generate trial balance', category: 'reporting', status: 'pending', required: true }
+      {
+        code: 'YEC-01',
+        name: 'Reconcile all bank accounts',
+        category: 'reconciliation',
+        status: 'completed',
+        required: true
+      },
+      {
+        code: 'YEC-02',
+        name: 'Complete physical inventory count',
+        category: 'inventory',
+        status: 'completed',
+        required: true
+      },
+      {
+        code: 'YEC-03',
+        name: 'Review and adjust prepaid expenses',
+        category: 'adjustments',
+        status: 'pending',
+        required: true
+      },
+      {
+        code: 'YEC-04',
+        name: 'Accrue unpaid expenses',
+        category: 'adjustments',
+        status: 'pending',
+        required: true
+      },
+      {
+        code: 'YEC-05',
+        name: 'Calculate and book depreciation',
+        category: 'adjustments',
+        status: 'pending',
+        required: true
+      },
+      {
+        code: 'YEC-06',
+        name: 'Review accounts receivable aging',
+        category: 'receivables',
+        status: 'pending',
+        required: true
+      },
+      {
+        code: 'YEC-07',
+        name: 'Review accounts payable',
+        category: 'payables',
+        status: 'pending',
+        required: true
+      },
+      {
+        code: 'YEC-08',
+        name: 'Reconcile intercompany accounts',
+        category: 'reconciliation',
+        status: 'pending',
+        required: false
+      },
+      {
+        code: 'YEC-09',
+        name: 'Review tax accounts',
+        category: 'tax',
+        status: 'pending',
+        required: true
+      },
+      {
+        code: 'YEC-10',
+        name: 'Generate trial balance',
+        category: 'reporting',
+        status: 'pending',
+        required: true
+      }
     ])
   }
 
   const updateChecklistItem = (code: string, status: ChecklistItem['status']) => {
-    setChecklist(prev => prev.map(item => 
-      item.code === code ? { ...item, status } : item
-    ))
+    setChecklist(prev => prev.map(item => (item.code === code ? { ...item, status } : item)))
   }
 
   const executeClosing = async () => {
@@ -111,7 +186,7 @@ export function YearEndClosingWizard({
 
     setLoading(true)
     setProgress(0)
-    
+
     try {
       // Simulate progress updates
       const progressInterval = setInterval(() => {
@@ -133,7 +208,7 @@ export function YearEndClosingWizard({
       setProgress(100)
       setClosingResult(result)
       setActiveStep('complete')
-      
+
       if (onComplete) {
         onComplete(result)
       }
@@ -152,7 +227,7 @@ export function YearEndClosingWizard({
   const requiredCompleted = requiredItems.filter(item => item.status === 'completed').length
 
   return (
-    <Card className={cn("max-w-6xl", className)}>
+    <Card className={cn('max-w-6xl', className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calendar className="w-6 h-6 text-purple-600" />
@@ -173,7 +248,11 @@ export function YearEndClosingWizard({
               <CheckCircle className="w-4 h-4" />
               Checklist
             </TabsTrigger>
-            <TabsTrigger value="closing" className="gap-2" disabled={requiredCompleted < requiredItems.length}>
+            <TabsTrigger
+              value="closing"
+              className="gap-2"
+              disabled={requiredCompleted < requiredItems.length}
+            >
               <Calculator className="w-4 h-4" />
               Closing
             </TabsTrigger>
@@ -201,7 +280,7 @@ export function YearEndClosingWizard({
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Open Periods</span>
-                      <Badge variant={openPeriods > 0 ? "destructive" : "success"}>
+                      <Badge variant={openPeriods > 0 ? 'destructive' : 'success'}>
                         {openPeriods} periods
                       </Badge>
                     </div>
@@ -215,7 +294,8 @@ export function YearEndClosingWizard({
                     <Alert className="mt-4">
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
-                        {openPeriods} periods are still open. They will be closed during the year-end process.
+                        {openPeriods} periods are still open. They will be closed during the
+                        year-end process.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -229,25 +309,36 @@ export function YearEndClosingWizard({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <Progress value={(completedChecklist / checklist.length) * 100} className="h-2" />
+                    <Progress
+                      value={(completedChecklist / checklist.length) * 100}
+                      className="h-2"
+                    />
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Completed</span>
-                      <span className="font-medium">{completedChecklist} of {checklist.length}</span>
+                      <span className="font-medium">
+                        {completedChecklist} of {checklist.length}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Required Items</span>
-                      <span className="font-medium">{requiredCompleted} of {requiredItems.length}</span>
+                      <span className="font-medium">
+                        {requiredCompleted} of {requiredItems.length}
+                      </span>
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
                     {['reconciliation', 'adjustments', 'reporting'].map(category => {
                       const categoryItems = checklist.filter(item => item.category === category)
-                      const completed = categoryItems.filter(item => item.status === 'completed').length
+                      const completed = categoryItems.filter(
+                        item => item.status === 'completed'
+                      ).length
                       return (
                         <div key={category} className="flex items-center justify-between text-sm">
                           <span className="capitalize text-gray-600">{category}</span>
-                          <Badge variant={completed === categoryItems.length ? "success" : "secondary"}>
+                          <Badge
+                            variant={completed === categoryItems.length ? 'success' : 'secondary'}
+                          >
                             {completed}/{categoryItems.length}
                           </Badge>
                         </div>
@@ -260,17 +351,11 @@ export function YearEndClosingWizard({
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => loadFiscalPeriods()}
-              >
+              <Button variant="outline" onClick={() => loadFiscalPeriods()}>
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Refresh
               </Button>
-              <Button
-                onClick={() => setActiveStep('checklist')}
-                className="gap-2"
-              >
+              <Button onClick={() => setActiveStep('checklist')} className="gap-2">
                 Continue to Checklist
                 <ChevronRight className="w-4 h-4" />
               </Button>
@@ -280,11 +365,14 @@ export function YearEndClosingWizard({
           <TabsContent value="checklist" className="space-y-4 mt-6">
             <div className="space-y-4">
               {Object.entries(
-                checklist.reduce((acc, item) => {
-                  if (!acc[item.category]) acc[item.category] = []
-                  acc[item.category].push(item)
-                  return acc
-                }, {} as Record<string, ChecklistItem[]>)
+                checklist.reduce(
+                  (acc, item) => {
+                    if (!acc[item.category]) acc[item.category] = []
+                    acc[item.category].push(item)
+                    return acc
+                  },
+                  {} as Record<string, ChecklistItem[]>
+                )
               ).map(([category, items]) => (
                 <Card key={category}>
                   <CardHeader>
@@ -296,28 +384,34 @@ export function YearEndClosingWizard({
                         <div key={item.code} className="flex items-center space-x-3">
                           <Checkbox
                             checked={item.status === 'completed'}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={checked => {
                               updateChecklistItem(item.code, checked ? 'completed' : 'pending')
                             }}
                           />
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className={cn(
-                                "text-sm",
-                                item.status === 'completed' && "line-through text-gray-500"
-                              )}>
+                              <span
+                                className={cn(
+                                  'text-sm',
+                                  item.status === 'completed' && 'line-through text-gray-500'
+                                )}
+                              >
                                 {item.name}
                               </span>
                               {item.required && (
-                                <Badge variant="outline" className="text-xs">Required</Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  Required
+                                </Badge>
                               )}
                             </div>
                           </div>
                           <Badge
                             variant={
-                              item.status === 'completed' ? 'success' :
-                              item.status === 'in_progress' ? 'secondary' :
-                              'outline'
+                              item.status === 'completed'
+                                ? 'success'
+                                : item.status === 'in_progress'
+                                  ? 'secondary'
+                                  : 'outline'
                             }
                           >
                             {item.status.replace('_', ' ')}
@@ -332,10 +426,7 @@ export function YearEndClosingWizard({
 
             {/* Action Buttons */}
             <div className="flex justify-between">
-              <Button
-                variant="outline"
-                onClick={() => setActiveStep('review')}
-              >
+              <Button variant="outline" onClick={() => setActiveStep('review')}>
                 Back
               </Button>
               <Button
@@ -381,12 +472,7 @@ export function YearEndClosingWizard({
 
             {!loading && (
               <div className="flex justify-center py-8">
-                <Button
-                  size="lg"
-                  onClick={executeClosing}
-                  className="gap-2"
-                  variant="destructive"
-                >
+                <Button size="lg" onClick={executeClosing} className="gap-2" variant="destructive">
                   <Lock className="w-5 h-5" />
                   Execute Year-End Closing
                 </Button>
@@ -465,9 +551,7 @@ export function YearEndClosingWizard({
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-600">Journal Entry</span>
-                          <Badge variant="outline">
-                            {closingResult.closingEntryId.slice(-8)}
-                          </Badge>
+                          <Badge variant="outline">{closingResult.closingEntryId.slice(-8)}</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-600">Periods Closed</span>

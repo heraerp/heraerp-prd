@@ -20,7 +20,7 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
       setIsMobile(mobile)
       setSidebarOpen(!mobile) // Auto-close on mobile
     }
-    
+
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
     return () => window.removeEventListener('resize', checkScreenSize)
@@ -29,10 +29,12 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
   return (
     <div className="relative min-h-screen bg-gray-900">
       {/* Sidebar */}
-      <div className={cn(
-        "fixed left-0 top-0 h-full z-40 transition-transform duration-300",
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
+      <div
+        className={cn(
+          'fixed left-0 top-0 h-full z-40 transition-transform duration-300',
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
         <SalonDarkSidebar />
       </div>
 
@@ -49,10 +51,10 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
       )}
 
       {/* Main Content */}
-      <div 
+      <div
         className={cn(
-          "transition-all duration-300 min-h-screen",
-          sidebarOpen && !isMobile ? "ml-20" : "ml-0"
+          'transition-all duration-300 min-h-screen',
+          sidebarOpen && !isMobile ? 'ml-20' : 'ml-0'
         )}
       >
         {children}
@@ -60,10 +62,7 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
 
       {/* Mobile Overlay */}
       {sidebarOpen && isMobile && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-30"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className="fixed inset-0 bg-black/50 z-30" onClick={() => setSidebarOpen(false)} />
       )}
     </div>
   )

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -21,7 +21,7 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react'
-import { 
+import {
   LineChart,
   Line,
   BarChart,
@@ -73,7 +73,7 @@ interface Opportunity {
 export default function CRMDashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [selectedPeriod, setSelectedPeriod] = useState('month')
-  
+
   // Key Metrics
   const metrics: MetricCard[] = [
     {
@@ -139,20 +139,95 @@ export default function CRMDashboard() {
 
   // Recent Activities
   const [activities] = useState<Activity[]>([
-    { id: '1', type: 'call', title: 'Follow-up call with Infosys', contact: 'Rajesh Kumar', time: '10:30 AM', status: 'completed' },
-    { id: '2', type: 'email', title: 'Proposal sent to TCS', contact: 'Priya Sharma', time: '11:45 AM', status: 'completed' },
-    { id: '3', type: 'meeting', title: 'Demo meeting with Wipro', contact: 'Amit Patel', time: '2:00 PM', status: 'pending' },
-    { id: '4', type: 'task', title: 'Prepare contract for HCL Tech', contact: 'Neha Singh', time: '3:30 PM', status: 'pending' },
-    { id: '5', type: 'call', title: 'Check-in with Tech Mahindra', contact: 'Vikram Rao', time: 'Yesterday', status: 'overdue' }
+    {
+      id: '1',
+      type: 'call',
+      title: 'Follow-up call with Infosys',
+      contact: 'Rajesh Kumar',
+      time: '10:30 AM',
+      status: 'completed'
+    },
+    {
+      id: '2',
+      type: 'email',
+      title: 'Proposal sent to TCS',
+      contact: 'Priya Sharma',
+      time: '11:45 AM',
+      status: 'completed'
+    },
+    {
+      id: '3',
+      type: 'meeting',
+      title: 'Demo meeting with Wipro',
+      contact: 'Amit Patel',
+      time: '2:00 PM',
+      status: 'pending'
+    },
+    {
+      id: '4',
+      type: 'task',
+      title: 'Prepare contract for HCL Tech',
+      contact: 'Neha Singh',
+      time: '3:30 PM',
+      status: 'pending'
+    },
+    {
+      id: '5',
+      type: 'call',
+      title: 'Check-in with Tech Mahindra',
+      contact: 'Vikram Rao',
+      time: 'Yesterday',
+      status: 'overdue'
+    }
   ])
 
   // Top Opportunities
   const [opportunities] = useState<Opportunity[]>([
-    { id: '1', name: 'Enterprise Broadband - Infosys', account: 'Infosys Ltd', value: 8500000, stage: 'Negotiation', closeDate: '2024-06-30', probability: 80 },
-    { id: '2', name: 'Cloud Connect - TCS', account: 'Tata Consultancy Services', value: 6200000, stage: 'Proposal', closeDate: '2024-07-15', probability: 60 },
-    { id: '3', name: 'SD-WAN Solution - Wipro', account: 'Wipro Limited', value: 5400000, stage: 'Qualification', closeDate: '2024-07-31', probability: 40 },
-    { id: '4', name: 'Managed Services - HCL', account: 'HCL Technologies', value: 4800000, stage: 'Negotiation', closeDate: '2024-06-25', probability: 75 },
-    { id: '5', name: 'Data Center Connect - Tech Mahindra', account: 'Tech Mahindra', value: 3600000, stage: 'Proposal', closeDate: '2024-08-10', probability: 50 }
+    {
+      id: '1',
+      name: 'Enterprise Broadband - Infosys',
+      account: 'Infosys Ltd',
+      value: 8500000,
+      stage: 'Negotiation',
+      closeDate: '2024-06-30',
+      probability: 80
+    },
+    {
+      id: '2',
+      name: 'Cloud Connect - TCS',
+      account: 'Tata Consultancy Services',
+      value: 6200000,
+      stage: 'Proposal',
+      closeDate: '2024-07-15',
+      probability: 60
+    },
+    {
+      id: '3',
+      name: 'SD-WAN Solution - Wipro',
+      account: 'Wipro Limited',
+      value: 5400000,
+      stage: 'Qualification',
+      closeDate: '2024-07-31',
+      probability: 40
+    },
+    {
+      id: '4',
+      name: 'Managed Services - HCL',
+      account: 'HCL Technologies',
+      value: 4800000,
+      stage: 'Negotiation',
+      closeDate: '2024-06-25',
+      probability: 75
+    },
+    {
+      id: '5',
+      name: 'Data Center Connect - Tech Mahindra',
+      account: 'Tech Mahindra',
+      value: 3600000,
+      stage: 'Proposal',
+      closeDate: '2024-08-10',
+      probability: 50
+    }
   ])
 
   const supabase = createClientComponentClient()
@@ -164,42 +239,63 @@ export default function CRMDashboard() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'call': return Phone
-      case 'email': return Mail
-      case 'meeting': return Calendar
-      case 'task': return CheckCircle
-      default: return Activity
+      case 'call':
+        return Phone
+      case 'email':
+        return Mail
+      case 'meeting':
+        return Calendar
+      case 'task':
+        return CheckCircle
+      default:
+        return Activity
     }
   }
 
   const getActivityColor = (type: string) => {
     switch (type) {
-      case 'call': return 'text-[#FF5A09]'
-      case 'email': return 'text-[#ec7f37]'
-      case 'meeting': return 'text-[#be4f0c]'
-      case 'task': return 'text-emerald-500'
-      default: return 'text-gray-500'
+      case 'call':
+        return 'text-[#FF5A09]'
+      case 'email':
+        return 'text-[#ec7f37]'
+      case 'meeting':
+        return 'text-[#be4f0c]'
+      case 'task':
+        return 'text-emerald-500'
+      default:
+        return 'text-gray-500'
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-emerald-500/20 text-emerald-400'
-      case 'pending': return 'bg-[#FF5A09]/20 text-[#FF5A09]'
-      case 'overdue': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+      case 'completed':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'pending':
+        return 'bg-[#FF5A09]/20 text-[#FF5A09]'
+      case 'overdue':
+        return 'bg-red-500/20 text-red-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
     }
   }
 
   const getStageColor = (stage: string) => {
     switch (stage) {
-      case 'Prospecting': return '#be4f0c'
-      case 'Qualification': return '#ec7f37'
-      case 'Proposal': return '#FF5A09'
-      case 'Negotiation': return '#FF5A09'
-      case 'Closed Won': return '#10b981'
-      case 'Closed Lost': return '#ef4444'
-      default: return '#6b7280'
+      case 'Prospecting':
+        return '#be4f0c'
+      case 'Qualification':
+        return '#ec7f37'
+      case 'Proposal':
+        return '#FF5A09'
+      case 'Negotiation':
+        return '#FF5A09'
+      case 'Closed Won':
+        return '#10b981'
+      case 'Closed Lost':
+        return '#ef4444'
+      default:
+        return '#6b7280'
     }
   }
 
@@ -209,12 +305,14 @@ export default function CRMDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">CRM Dashboard</h1>
-          <p className="text-white/60 mt-1">Track your sales performance and customer relationships</p>
+          <p className="text-white/60 mt-1">
+            Track your sales performance and customer relationships
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <select
             value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
+            onChange={e => setSelectedPeriod(e.target.value)}
             className="px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
           >
             <option value="week">This Week</option>
@@ -222,7 +320,7 @@ export default function CRMDashboard() {
             <option value="quarter">This Quarter</option>
             <option value="year">This Year</option>
           </select>
-          <button 
+          <button
             onClick={refreshData}
             className={`p-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${
               isRefreshing ? 'animate-spin' : ''
@@ -245,12 +343,20 @@ export default function CRMDashboard() {
                   <div className={`p-3 rounded-xl bg-gradient-to-br ${metric.color}`}>
                     <Icon className="h-6 w-6 text-white" />
                   </div>
-                  <div className={`flex items-center space-x-1 text-sm font-medium ${
-                    metric.changeType === 'positive' ? 'text-emerald-400' : 
-                    metric.changeType === 'negative' ? 'text-red-400' : 'text-white/60'
-                  }`}>
-                    {metric.changeType === 'positive' ? <TrendingUp className="h-4 w-4" /> : 
-                     metric.changeType === 'negative' ? <TrendingDown className="h-4 w-4" /> : null}
+                  <div
+                    className={`flex items-center space-x-1 text-sm font-medium ${
+                      metric.changeType === 'positive'
+                        ? 'text-emerald-400'
+                        : metric.changeType === 'negative'
+                          ? 'text-red-400'
+                          : 'text-white/60'
+                    }`}
+                  >
+                    {metric.changeType === 'positive' ? (
+                      <TrendingUp className="h-4 w-4" />
+                    ) : metric.changeType === 'negative' ? (
+                      <TrendingDown className="h-4 w-4" />
+                    ) : null}
                     <span>{metric.change}</span>
                   </div>
                 </div>
@@ -275,42 +381,50 @@ export default function CRMDashboard() {
               </button>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={Array.isArray(revenueTrend) ? revenueTrend : (revenueTrend && typeof revenueTrend === 'object' ? Object.values(revenueTrend as any) : [])}>
+              <AreaChart
+                data={
+                  Array.isArray(revenueTrend)
+                    ? revenueTrend
+                    : revenueTrend && typeof revenueTrend === 'object'
+                      ? Object.values(revenueTrend as any)
+                      : []
+                }
+              >
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#FF5A09" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#FF5A09" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#FF5A09" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#FF5A09" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="targetGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ec7f37" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#ec7f37" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#ec7f37" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#ec7f37" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${value}L`} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(57,57,57,0.9)', 
+                <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={value => `₹${value}L`} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(57,57,57,0.9)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
                   formatter={(value: any) => `₹${value} Lakhs`}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stroke="#FF5A09" 
-                  fillOpacity={1} 
-                  fill="url(#revenueGradient)" 
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#FF5A09"
+                  fillOpacity={1}
+                  fill="url(#revenueGradient)"
                   strokeWidth={2}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="target" 
-                  stroke="#ec7f37" 
-                  fillOpacity={1} 
-                  fill="url(#targetGradient)" 
+                <Area
+                  type="monotone"
+                  dataKey="target"
+                  stroke="#ec7f37"
+                  fillOpacity={1}
+                  fill="url(#targetGradient)"
                   strokeWidth={2}
                   strokeDasharray="5 5"
                 />
@@ -339,9 +453,9 @@ export default function CRMDashboard() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(57,57,57,0.9)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(57,57,57,0.9)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
@@ -350,7 +464,7 @@ export default function CRMDashboard() {
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-4 space-y-2">
-              {salesByCategory.map((item) => (
+              {salesByCategory.map(item => (
                 <div key={item.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
@@ -373,23 +487,42 @@ export default function CRMDashboard() {
             <span className="text-sm text-white/60">Total: ₹1.85 Cr</span>
           </div>
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={Array.isArray(pipelineData) ? pipelineData : (pipelineData && typeof pipelineData === 'object' ? Object.values(pipelineData as any) : [])}>
+            <BarChart
+              data={
+                Array.isArray(pipelineData)
+                  ? pipelineData
+                  : pipelineData && typeof pipelineData === 'object'
+                    ? Object.values(pipelineData as any)
+                    : []
+              }
+            >
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="stage" stroke="rgba(255,255,255,0.5)" angle={-45} textAnchor="end" height={60} />
+              <XAxis
+                dataKey="stage"
+                stroke="rgba(255,255,255,0.5)"
+                angle={-45}
+                textAnchor="end"
+                height={60}
+              />
               <YAxis stroke="rgba(255,255,255,0.5)" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'rgba(57,57,57,0.9)', 
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'rgba(57,57,57,0.9)',
                   border: '1px solid rgba(255,255,255,0.2)',
                   borderRadius: '8px'
                 }}
                 formatter={(value: any, name: string) => {
                   if (name === 'value') return [`${value} deals`, 'Count']
-                  return [`₹${(value/100000).toFixed(1)}L`, 'Value']
+                  return [`₹${(value / 100000).toFixed(1)}L`, 'Value']
                 }}
               />
               <Bar dataKey="value" fill="#FF5A09" radius={[8, 8, 0, 0]}>
-                {(Array.isArray(pipelineData) ? pipelineData : (pipelineData && typeof pipelineData === 'object' ? Object.values(pipelineData as any) : [])).map((entry: any, index: number) => (
+                {(Array.isArray(pipelineData)
+                  ? pipelineData
+                  : pipelineData && typeof pipelineData === 'object'
+                    ? Object.values(pipelineData as any)
+                    : []
+                ).map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={getStageColor(entry.stage)} />
                 ))}
               </Bar>
@@ -412,7 +545,7 @@ export default function CRMDashboard() {
               </button>
             </div>
             <div className="space-y-4">
-              {activities.map((activity) => {
+              {activities.map(activity => {
                 const Icon = getActivityIcon(activity.type)
                 return (
                   <div key={activity.id} className="flex items-start space-x-3">
@@ -421,9 +554,13 @@ export default function CRMDashboard() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-white">{activity.title}</p>
-                      <p className="text-xs text-white/60">{activity.contact} • {activity.time}</p>
+                      <p className="text-xs text-white/60">
+                        {activity.contact} • {activity.time}
+                      </p>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(activity.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(activity.status)}`}
+                    >
                       {activity.status}
                     </span>
                   </div>
@@ -445,14 +582,16 @@ export default function CRMDashboard() {
               </button>
             </div>
             <div className="space-y-4">
-              {opportunities.map((opp) => (
+              {opportunities.map(opp => (
                 <div key={opp.id} className="border-b border-white/10 pb-4 last:border-0">
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-sm font-medium text-white">{opp.name}</p>
                       <p className="text-xs text-white/60">{opp.account}</p>
                     </div>
-                    <p className="text-sm font-semibold text-[#FF5A09]">₹{(opp.value/100000).toFixed(1)}L</p>
+                    <p className="text-sm font-semibold text-[#FF5A09]">
+                      ₹{(opp.value / 100000).toFixed(1)}L
+                    </p>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4 text-xs text-white/60">
@@ -467,7 +606,7 @@ export default function CRMDashboard() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-full transition-all duration-500"
                           style={{ width: `${opp.probability}%` }}
                         />

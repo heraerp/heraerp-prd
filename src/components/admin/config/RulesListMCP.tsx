@@ -6,9 +6,9 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
-import { 
-  Scale, 
-  Edit, 
+import {
+  Scale,
+  Edit,
   Copy,
   MoreHorizontal,
   ChevronRight,
@@ -32,7 +32,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu'
 import { formatDate } from '@/lib/date-utils'
 import { useToast } from '@/components/ui/use-toast'
@@ -41,7 +41,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 
 interface RulesListMCPProps {
@@ -50,11 +50,11 @@ interface RulesListMCPProps {
 }
 
 export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps) {
-  const { 
-    loading, 
+  const {
+    loading,
     error,
-    listTemplates, 
-    searchRules, 
+    listTemplates,
+    searchRules,
     cloneTemplate,
     getRule,
     deployRule,
@@ -63,7 +63,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
     getAuditLog
   } = useUCRMCP()
   const { toast } = useToast()
-  
+
   const [rules, setRules] = useState<any[]>([])
   const [templates, setTemplates] = useState<any[]>([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -101,7 +101,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
       const result = await cloneTemplate(template.template_id, smartCode)
       toast({
         title: 'Template Cloned',
-        description: `Created new rule with ID: ${result.rule_id}`,
+        description: `Created new rule with ID: ${result.rule_id}`
       })
       await loadRules()
       setShowTemplates(false)
@@ -140,7 +140,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
       )
       toast({
         title: 'Rule Deployed',
-        description: `Deployment transaction: ${result.deployment_txn_id}`,
+        description: `Deployment transaction: ${result.deployment_txn_id}`
       })
       await loadRules()
     } catch (err: any) {
@@ -156,18 +156,15 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
     const variants: Record<string, string> = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200',
       draft: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200',
-      deprecated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200',
+      deprecated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
     }
-    return (
-      <Badge className={variants[status] || variants.draft}>
-        {status}
-      </Badge>
-    )
+    return <Badge className={variants[status] || variants.draft}>{status}</Badge>
   }
 
-  const filteredRules = rules.filter(rule => 
-    rule.entity_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    rule.smart_code?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRules = rules.filter(
+    rule =>
+      rule.entity_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      rule.smart_code?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -210,15 +207,11 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
               <Input
                 placeholder="Search rules by name or smart code..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Button
-              variant="outline"
-              onClick={loadRules}
-              disabled={loading}
-            >
+            <Button variant="outline" onClick={loadRules} disabled={loading}>
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
@@ -227,7 +220,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
 
       {/* Rules List */}
       <div className="space-y-4">
-        {filteredRules.map((rule) => (
+        {filteredRules.map(rule => (
           <Card key={rule.id} className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
@@ -236,9 +229,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                     <h3 className="text-lg font-semibold">{rule.entity_name}</h3>
                     {getStatusBadge(rule.status)}
                     {(rule.metadata as any)?.rule_version && (
-                      <Badge variant="outline">
-                        v{rule.metadata.rule_version}
-                      </Badge>
+                      <Badge variant="outline">v{rule.metadata.rule_version}</Badge>
                     )}
                   </div>
                   <div className="text-sm text-gray-500">
@@ -260,12 +251,10 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       <Clock className="w-3 h-3" />
                       Created {formatDate(new Date(rule.created_at), 'MMM dd, yyyy')}
                     </span>
-                    {(rule.metadata as any)?.owner && (
-                      <span>Owner: {rule.metadata.owner}</span>
-                    )}
+                    {(rule.metadata as any)?.owner && <span>Owner: {rule.metadata.owner}</span>}
                   </div>
                 </div>
-                
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
@@ -274,7 +263,9 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem
-                      onClick={() => window.location.href = `/salon-data/config/test?rule=${rule.id}`}
+                      onClick={() =>
+                        (window.location.href = `/salon-data/config/test?rule=${rule.id}`)
+                      }
                       className="flex items-center gap-2"
                     >
                       <TestTube className="w-4 h-4" />
@@ -288,7 +279,9 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       View Audit Log
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => window.location.href = `/salon-data/config/deploy?rule=${rule.id}`}
+                      onClick={() =>
+                        (window.location.href = `/salon-data/config/deploy?rule=${rule.id}`)
+                      }
                       disabled={rule.status === 'active'}
                       className="flex items-center gap-2"
                     >
@@ -319,11 +312,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
             <p className="text-gray-500">
               {searchQuery ? 'No rules found matching your search' : 'No rules configured yet'}
             </p>
-            <Button
-              onClick={() => setShowTemplates(true)}
-              className="mt-4"
-              variant="outline"
-            >
+            <Button onClick={() => setShowTemplates(true)} className="mt-4" variant="outline">
               <FileText className="w-4 h-4 mr-2" />
               Browse Templates
             </Button>
@@ -341,7 +330,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 space-y-4">
-            {templates.map((template) => (
+            {templates.map(template => (
               <Card key={template.template_id} className="p-4">
                 <div className="flex items-start justify-between">
                   <div>
@@ -357,10 +346,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
                       {template.smart_code}
                     </code>
                   </div>
-                  <Button
-                    onClick={() => handleCloneTemplate(template)}
-                    size="sm"
-                  >
+                  <Button onClick={() => handleCloneTemplate(template)} size="sm">
                     <Copy className="w-4 h-4 mr-2" />
                     Use Template
                   </Button>

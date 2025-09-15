@@ -2,7 +2,7 @@
 /**
  * HERA POS Daily Cash Close UI Component
  * Smart Code: HERA.POS.DAILY.CASH.CLOSE.UI.v1
- * 
+ *
  * Complete UI for POS daily cash close operations
  */
 
@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   DollarSign,
   CreditCard,
   Receipt,
@@ -104,10 +104,10 @@ export default function DailyCashClose() {
       closeTime: new Date('2025-01-15T14:00:00'),
       status: 'closed',
       salesCount: 42,
-      totalSales: 5250.00,
-      cashExpected: 2480.00,
-      cashCounted: 2500.00,
-      variance: 20.00
+      totalSales: 5250.0,
+      cashExpected: 2480.0,
+      cashCounted: 2500.0,
+      variance: 20.0
     },
     {
       shiftId: 'SHIFT-20250115-002',
@@ -115,23 +115,23 @@ export default function DailyCashClose() {
       openTime: new Date('2025-01-15T14:00:00'),
       status: 'open',
       salesCount: 38,
-      totalSales: 4800.00,
-      cashExpected: 2150.00
+      totalSales: 4800.0,
+      cashExpected: 2150.0
     }
   ]
 
   const paymentSummary: PaymentSummary[] = [
-    { method: 'Cash', count: 45, amount: 3200.00, percentage: 25.6 },
-    { method: 'Visa', count: 28, amount: 5100.00, percentage: 40.8 },
-    { method: 'Mastercard', count: 18, amount: 3600.00, percentage: 28.8 },
-    { method: 'Digital Wallet', count: 8, amount: 600.00, percentage: 4.8 }
+    { method: 'Cash', count: 45, amount: 3200.0, percentage: 25.6 },
+    { method: 'Visa', count: 28, amount: 5100.0, percentage: 40.8 },
+    { method: 'Mastercard', count: 18, amount: 3600.0, percentage: 28.8 },
+    { method: 'Digital Wallet', count: 8, amount: 600.0, percentage: 4.8 }
   ]
 
   const cardBatches: CardBatchSummary[] = [
     {
       acquirer: 'Network International',
       authCount: 46,
-      totalAmount: 8700.00,
+      totalAmount: 8700.0,
       status: 'pending',
       batchId: 'BATCH-NI-20250115-001'
     }
@@ -197,11 +197,11 @@ export default function DailyCashClose() {
             Daily Cash Close
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {new Date().toLocaleDateString('en-AE', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {new Date().toLocaleDateString('en-AE', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
             })}
           </p>
         </div>
@@ -257,9 +257,7 @@ export default function DailyCashClose() {
               <Users className="w-4 h-4 text-green-600" />
             </div>
             <p className="text-2xl font-bold">{openShift ? 1 : 0}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              {closedShifts.length} closed today
-            </p>
+            <p className="text-xs text-gray-500 mt-1">{closedShifts.length} closed today</p>
           </CardContent>
         </Card>
 
@@ -270,9 +268,7 @@ export default function DailyCashClose() {
               <CreditCard className="w-4 h-4 text-orange-600" />
             </div>
             <p className="text-2xl font-bold">{cardBatches.length}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              Ready to submit
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Ready to submit</p>
           </CardContent>
         </Card>
       </div>
@@ -298,10 +294,10 @@ export default function DailyCashClose() {
 
           <div className="space-y-4">
             {shifts.map(shift => (
-              <Card key={shift.shiftId} className={cn(
-                "transition-all",
-                shift.status === 'open' && "border-orange-500"
-              )}>
+              <Card
+                key={shift.shiftId}
+                className={cn('transition-all', shift.status === 'open' && 'border-orange-500')}
+              >
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
@@ -310,9 +306,13 @@ export default function DailyCashClose() {
                     </div>
                     <Badge variant={shift.status === 'open' ? 'default' : 'secondary'}>
                       {shift.status === 'open' ? (
-                        <><Unlock className="w-3 h-3 mr-1" /> Open</>
+                        <>
+                          <Unlock className="w-3 h-3 mr-1" /> Open
+                        </>
                       ) : (
-                        <><Lock className="w-3 h-3 mr-1" /> Closed</>
+                        <>
+                          <Lock className="w-3 h-3 mr-1" /> Closed
+                        </>
                       )}
                     </Badge>
                   </div>
@@ -351,7 +351,9 @@ export default function DailyCashClose() {
                                 type="number"
                                 min="0"
                                 value={denom.count}
-                                onChange={(e) => updateDenomination(index, parseInt(e.target.value) || 0)}
+                                onChange={e =>
+                                  updateDenomination(index, parseInt(e.target.value) || 0)
+                                }
                                 className="h-9"
                               />
                               <p className="text-xs text-gray-500">
@@ -367,18 +369,30 @@ export default function DailyCashClose() {
                           <p className="text-sm text-gray-600 dark:text-gray-400">Total Counted</p>
                           <p className="text-2xl font-bold">{formatCurrency(cashCounted)}</p>
                           {cashCounted !== 0 && (
-                            <p className={cn(
-                              "text-sm mt-1",
-                              cashCounted > shift.cashExpected ? "text-green-600" :
-                              cashCounted < shift.cashExpected ? "text-red-600" :
-                              "text-gray-600"
-                            )}>
+                            <p
+                              className={cn(
+                                'text-sm mt-1',
+                                cashCounted > shift.cashExpected
+                                  ? 'text-green-600'
+                                  : cashCounted < shift.cashExpected
+                                    ? 'text-red-600'
+                                    : 'text-gray-600'
+                              )}
+                            >
                               {cashCounted > shift.cashExpected ? (
-                                <><ArrowUpRight className="w-3 h-3 inline" /> Over by {formatCurrency(cashCounted - shift.cashExpected)}</>
+                                <>
+                                  <ArrowUpRight className="w-3 h-3 inline" /> Over by{' '}
+                                  {formatCurrency(cashCounted - shift.cashExpected)}
+                                </>
                               ) : cashCounted < shift.cashExpected ? (
-                                <><ArrowDownRight className="w-3 h-3 inline" /> Short by {formatCurrency(shift.cashExpected - cashCounted)}</>
+                                <>
+                                  <ArrowDownRight className="w-3 h-3 inline" /> Short by{' '}
+                                  {formatCurrency(shift.cashExpected - cashCounted)}
+                                </>
                               ) : (
-                                <><CheckCircle className="w-3 h-3 inline" /> Balanced</>
+                                <>
+                                  <CheckCircle className="w-3 h-3 inline" /> Balanced
+                                </>
                               )}
                             </p>
                           )}
@@ -389,9 +403,13 @@ export default function DailyCashClose() {
                           className="bg-purple-600 hover:bg-purple-700"
                         >
                           {isProcessing ? (
-                            <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                            <>
+                              <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Processing...
+                            </>
                           ) : (
-                            <><Lock className="w-4 h-4 mr-2" /> Close Shift</>
+                            <>
+                              <Lock className="w-4 h-4 mr-2" /> Close Shift
+                            </>
                           )}
                         </Button>
                       </div>
@@ -401,13 +419,18 @@ export default function DailyCashClose() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm text-gray-600 dark:text-gray-400">Cash Variance</p>
-                          <p className={cn(
-                            "text-lg font-semibold",
-                            shift.variance && shift.variance > 0 ? "text-green-600" :
-                            shift.variance && shift.variance < 0 ? "text-red-600" :
-                            "text-gray-600"
-                          )}>
-                            {shift.variance && shift.variance > 0 ? '+' : ''}{formatCurrency(shift.variance || 0)}
+                          <p
+                            className={cn(
+                              'text-lg font-semibold',
+                              shift.variance && shift.variance > 0
+                                ? 'text-green-600'
+                                : shift.variance && shift.variance < 0
+                                  ? 'text-red-600'
+                                  : 'text-gray-600'
+                            )}
+                          >
+                            {shift.variance && shift.variance > 0 ? '+' : ''}
+                            {formatCurrency(shift.variance || 0)}
                           </p>
                         </div>
                         <div className="text-right">
@@ -435,14 +458,20 @@ export default function DailyCashClose() {
                 {paymentSummary.map(payment => (
                   <div key={payment.method} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-10 h-10 rounded-full flex items-center justify-center",
-                        payment.method === 'Cash' && "bg-green-100 dark:bg-green-900",
-                        payment.method === 'Visa' && "bg-blue-100 dark:bg-blue-900",
-                        payment.method === 'Mastercard' && "bg-orange-100 dark:bg-orange-900",
-                        payment.method === 'Digital Wallet' && "bg-purple-100 dark:bg-purple-900"
-                      )}>
-                        {payment.method === 'Cash' ? <Banknote className="w-5 h-5" /> : <CreditCard className="w-5 h-5" />}
+                      <div
+                        className={cn(
+                          'w-10 h-10 rounded-full flex items-center justify-center',
+                          payment.method === 'Cash' && 'bg-green-100 dark:bg-green-900',
+                          payment.method === 'Visa' && 'bg-blue-100 dark:bg-blue-900',
+                          payment.method === 'Mastercard' && 'bg-orange-100 dark:bg-orange-900',
+                          payment.method === 'Digital Wallet' && 'bg-purple-100 dark:bg-purple-900'
+                        )}
+                      >
+                        {payment.method === 'Cash' ? (
+                          <Banknote className="w-5 h-5" />
+                        ) : (
+                          <CreditCard className="w-5 h-5" />
+                        )}
                       </div>
                       <div>
                         <p className="font-medium">{payment.method}</p>
@@ -456,7 +485,7 @@ export default function DailyCashClose() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-6 pt-6 border-t">
                 <div className="flex items-center justify-between">
                   <p className="text-lg font-semibold">Total Payments</p>
@@ -480,10 +509,15 @@ export default function DailyCashClose() {
                       <CardTitle className="text-lg">{batch.acquirer}</CardTitle>
                       <CardDescription>{batch.batchId}</CardDescription>
                     </div>
-                    <Badge variant={
-                      batch.status === 'pending' ? 'outline' :
-                      batch.status === 'submitted' ? 'default' : 'secondary'
-                    }>
+                    <Badge
+                      variant={
+                        batch.status === 'pending'
+                          ? 'outline'
+                          : batch.status === 'submitted'
+                            ? 'default'
+                            : 'secondary'
+                      }
+                    >
                       {batch.status}
                     </Badge>
                   </div>
@@ -503,7 +537,7 @@ export default function DailyCashClose() {
                       <p className="text-xl font-semibold">Tomorrow</p>
                     </div>
                   </div>
-                  
+
                   {batch.status === 'pending' && (
                     <div className="flex justify-end">
                       <Button
@@ -512,9 +546,13 @@ export default function DailyCashClose() {
                         className="bg-blue-600 hover:bg-blue-700"
                       >
                         {isProcessing ? (
-                          <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Processing...
+                          </>
                         ) : (
-                          <><CreditCard className="w-4 h-4 mr-2" /> Submit Batch</>
+                          <>
+                            <CreditCard className="w-4 h-4 mr-2" /> Submit Batch
+                          </>
                         )}
                       </Button>
                     </div>
@@ -548,9 +586,7 @@ export default function DailyCashClose() {
                   <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">VAT Report</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Tax collection summary
-                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Tax collection summary</p>
               </CardContent>
             </Card>
 
@@ -574,9 +610,7 @@ export default function DailyCashClose() {
                   <ChevronRight className="w-5 h-5 text-gray-400" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">Sales Analytics</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Performance insights
-                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Performance insights</p>
               </CardContent>
             </Card>
           </div>
@@ -646,9 +680,13 @@ export default function DailyCashClose() {
                   className="bg-purple-600 hover:bg-purple-700"
                 >
                   {isProcessing ? (
-                    <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Processing...
+                    </>
                   ) : (
-                    <><Lock className="w-4 h-4 mr-2" /> Run End of Day</>
+                    <>
+                      <Lock className="w-4 h-4 mr-2" /> Run End of Day
+                    </>
                   )}
                 </Button>
               </div>

@@ -1,88 +1,88 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
   BarChart3,
   Globe,
   Zap,
   RefreshCcw
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface MarketQuote {
-  symbol: string;
-  name: string;
-  price: number;
-  change: number;
-  changePercent: number;
-  volume: number;
+  symbol: string
+  name: string
+  price: number
+  change: number
+  changePercent: number
+  volume: number
 }
 
 interface MarketDataWidgetProps {
-  className?: string;
+  className?: string
 }
 
 export function MarketDataWidget({ className }: MarketDataWidgetProps) {
-  const [marketData, setMarketData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [marketData, setMarketData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   const fetchMarketData = async () => {
     try {
-      setLoading(true);
-      const response = await fetch('/api/v1/market-data?action=overview');
-      const result = await response.json();
-      
+      setLoading(true)
+      const response = await fetch('/api/v1/market-data?action=overview')
+      const result = await response.json()
+
       if (result.success) {
-        setMarketData(result.data);
-        setLastUpdated(new Date());
+        setMarketData(result.data)
+        setLastUpdated(new Date())
       }
     } catch (error) {
-      console.error('Error fetching market data:', error);
+      console.error('Error fetching market data:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchMarketData();
-    
+    fetchMarketData()
+
     // Auto-refresh every 60 seconds
-    const interval = setInterval(fetchMarketData, 60000);
-    
-    return () => clearInterval(interval);
-  }, []);
+    const interval = setInterval(fetchMarketData, 60000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2
-    }).format(price);
-  };
+    }).format(price)
+  }
 
   const formatPercent = (percent: number) => {
-    const formatted = Math.abs(percent).toFixed(2);
-    const sign = percent >= 0 ? '+' : '-';
-    return `${sign}${formatted}%`;
-  };
+    const formatted = Math.abs(percent).toFixed(2)
+    const sign = percent >= 0 ? '+' : '-'
+    return `${sign}${formatted}%`
+  }
 
   const getChangeColor = (change: number) => {
-    if (change > 0) return 'text-emerald-400';
-    if (change < 0) return 'text-red-400';
-    return 'text-gray-400';
-  };
+    if (change > 0) return 'text-emerald-400'
+    if (change < 0) return 'text-red-400'
+    return 'text-gray-400'
+  }
 
   const getChangeIcon = (change: number) => {
-    if (change > 0) return <TrendingUp className="h-3 w-3" />;
-    if (change < 0) return <TrendingDown className="h-3 w-3" />;
-    return null;
-  };
+    if (change > 0) return <TrendingUp className="h-3 w-3" />
+    if (change < 0) return <TrendingDown className="h-3 w-3" />
+    return null
+  }
 
   if (loading && !marketData) {
     return (
@@ -105,7 +105,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
           </div>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
@@ -118,9 +118,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
           </CardTitle>
           <div className="flex items-center gap-2">
             {lastUpdated && (
-              <span className="text-xs text-slate-500">
-                {lastUpdated.toLocaleTimeString()}
-              </span>
+              <span className="text-xs text-slate-500">{lastUpdated.toLocaleTimeString()}</span>
             )}
             <button
               onClick={fetchMarketData}
@@ -135,12 +133,20 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
       <CardContent>
         <Tabs defaultValue="indices" className="w-full">
           <TabsList className="grid w-full grid-cols-4 bg-slate-800">
-            <TabsTrigger value="indices" className="text-xs">Indices</TabsTrigger>
-            <TabsTrigger value="stocks" className="text-xs">Stocks</TabsTrigger>
-            <TabsTrigger value="forex" className="text-xs">Forex</TabsTrigger>
-            <TabsTrigger value="commodities" className="text-xs">Commodities</TabsTrigger>
+            <TabsTrigger value="indices" className="text-xs">
+              Indices
+            </TabsTrigger>
+            <TabsTrigger value="stocks" className="text-xs">
+              Stocks
+            </TabsTrigger>
+            <TabsTrigger value="forex" className="text-xs">
+              Forex
+            </TabsTrigger>
+            <TabsTrigger value="commodities" className="text-xs">
+              Commodities
+            </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="indices" className="mt-3">
             <div className="space-y-2">
               {marketData?.indices?.slice(0, 4).map((quote: MarketQuote) => (
@@ -148,7 +154,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
               ))}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="stocks" className="mt-3">
             <div className="space-y-2">
               {marketData?.quotes?.slice(0, 6).map((quote: MarketQuote) => (
@@ -156,7 +162,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
               ))}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="forex" className="mt-3">
             <div className="space-y-2">
               {marketData?.currencies?.slice(0, 4).map((quote: MarketQuote) => (
@@ -164,7 +170,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
               ))}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="commodities" className="mt-3">
             <div className="space-y-2">
               {marketData?.commodities?.slice(0, 4).map((quote: MarketQuote) => (
@@ -175,12 +181,12 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
         </Tabs>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 interface MarketQuoteRowProps {
-  quote: MarketQuote;
-  showCurrency?: boolean;
+  quote: MarketQuote
+  showCurrency?: boolean
 }
 
 function MarketQuoteRow({ quote, showCurrency = true }: MarketQuoteRowProps) {
@@ -190,49 +196,43 @@ function MarketQuoteRow({ quote, showCurrency = true }: MarketQuoteRowProps) {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 2
-      }).format(price);
+      }).format(price)
     }
-    return price.toFixed(4);
-  };
+    return price.toFixed(4)
+  }
 
   const formatPercent = (percent: number) => {
-    const formatted = Math.abs(percent).toFixed(2);
-    const sign = percent >= 0 ? '+' : '-';
-    return `${sign}${formatted}%`;
-  };
+    const formatted = Math.abs(percent).toFixed(2)
+    const sign = percent >= 0 ? '+' : '-'
+    return `${sign}${formatted}%`
+  }
 
   const getChangeColor = (change: number) => {
-    if (change > 0) return 'text-emerald-400';
-    if (change < 0) return 'text-red-400';
-    return 'text-gray-400';
-  };
+    if (change > 0) return 'text-emerald-400'
+    if (change < 0) return 'text-red-400'
+    return 'text-gray-400'
+  }
 
   const getChangeIcon = (change: number) => {
-    if (change > 0) return <TrendingUp className="h-3 w-3" />;
-    if (change < 0) return <TrendingDown className="h-3 w-3" />;
-    return null;
-  };
+    if (change > 0) return <TrendingUp className="h-3 w-3" />
+    if (change < 0) return <TrendingDown className="h-3 w-3" />
+    return null
+  }
 
   return (
     <div className="flex items-center justify-between py-1">
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-slate-200 truncate">
-          {quote.symbol}
-        </div>
-        <div className="text-xs text-slate-500 truncate">
-          {quote.name}
-        </div>
+        <div className="text-sm font-medium text-slate-200 truncate">{quote.symbol}</div>
+        <div className="text-xs text-slate-500 truncate">{quote.name}</div>
       </div>
-      
+
       <div className="text-right">
-        <div className="text-sm font-medium text-slate-200">
-          {formatPrice(quote.price)}
-        </div>
+        <div className="text-sm font-medium text-slate-200">{formatPrice(quote.price)}</div>
         <div className={`text-xs flex items-center gap-1 ${getChangeColor(quote.changePercent)}`}>
           {getChangeIcon(quote.changePercent)}
           {formatPercent(quote.changePercent)}
         </div>
       </div>
     </div>
-  );
+  )
 }

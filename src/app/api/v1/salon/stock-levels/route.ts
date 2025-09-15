@@ -13,10 +13,7 @@ export async function GET(request: NextRequest) {
     const productId = searchParams.get('product_id')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     // Set organization context
@@ -40,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate stock levels
     const stockLevels: Record<string, number> = {}
-    
+
     // Initialize all products with 0 stock
     products?.forEach(product => {
       stockLevels[product.id] = 0
@@ -95,9 +92,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Stock levels error:', error)
-    return NextResponse.json(
-      { error: 'Failed to calculate stock levels' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to calculate stock levels' }, { status: 500 })
   }
 }

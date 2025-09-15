@@ -12,13 +12,19 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
-import { 
-  CheckCircle, 
-  XCircle, 
+import {
+  CheckCircle,
+  XCircle,
   AlertCircle,
-  Search, 
+  Search,
   Filter,
   TrendingUp,
   TrendingDown,
@@ -45,19 +51,39 @@ import { cn } from '@/lib/utils'
 
 // Inspection status configurations
 const inspectionStatuses = {
-  'passed': { label: 'Passed', icon: CheckCircle, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-500/20' },
-  'failed': { label: 'Failed', icon: XCircle, color: 'text-red-600 dark:text-red-400', bgColor: 'bg-red-500/20' },
-  'pending': { label: 'Pending', icon: Clock, color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-500/20' },
-  'in_progress': { label: 'In Progress', icon: Activity, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-500/20' }
+  passed: {
+    label: 'Passed',
+    icon: CheckCircle,
+    color: 'text-green-600 dark:text-green-400',
+    bgColor: 'bg-green-500/20'
+  },
+  failed: {
+    label: 'Failed',
+    icon: XCircle,
+    color: 'text-red-600 dark:text-red-400',
+    bgColor: 'bg-red-500/20'
+  },
+  pending: {
+    label: 'Pending',
+    icon: Clock,
+    color: 'text-amber-600 dark:text-amber-400',
+    bgColor: 'bg-amber-500/20'
+  },
+  in_progress: {
+    label: 'In Progress',
+    icon: Activity,
+    color: 'text-blue-600 dark:text-blue-400',
+    bgColor: 'bg-blue-500/20'
+  }
 }
 
 // Quality issue types
 const issueTypes = {
-  'dimension': { label: 'Dimension Issue', color: 'text-purple-600', icon: Package },
-  'finish': { label: 'Finish Defect', color: 'text-blue-600', icon: Shield },
-  'material': { label: 'Material Defect', color: 'text-red-600', icon: AlertTriangle },
-  'assembly': { label: 'Assembly Issue', color: 'text-amber-600', icon: AlertCircle },
-  'packaging': { label: 'Packaging Issue', color: 'text-green-600', icon: Package }
+  dimension: { label: 'Dimension Issue', color: 'text-purple-600', icon: Package },
+  finish: { label: 'Finish Defect', color: 'text-blue-600', icon: Shield },
+  material: { label: 'Material Defect', color: 'text-red-600', icon: AlertTriangle },
+  assembly: { label: 'Assembly Issue', color: 'text-amber-600', icon: AlertCircle },
+  packaging: { label: 'Packaging Issue', color: 'text-green-600', icon: Package }
 }
 
 // Inspection columns
@@ -67,9 +93,7 @@ const inspectionColumns = [
     label: 'Inspection #',
     sortable: true,
     width: '120px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     key: 'product_name',
@@ -86,9 +110,7 @@ const inspectionColumns = [
     key: 'batch_number',
     label: 'Batch/Order',
     sortable: true,
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     key: 'inspection_type',
@@ -96,10 +118,10 @@ const inspectionColumns = [
     sortable: true,
     render: (value: string) => {
       const types = {
-        'incoming': 'Incoming',
-        'in_process': 'In-Process',
-        'final': 'Final',
-        'random': 'Random Sample'
+        incoming: 'Incoming',
+        in_process: 'In-Process',
+        final: 'Final',
+        random: 'Random Sample'
       }
       return <span>{types[value as keyof typeof types] || value}</span>
     }
@@ -132,12 +154,10 @@ const inspectionColumns = [
     sortable: true,
     align: 'center' as const,
     render: (value: number) => {
-      const color = value >= 95 ? 'text-green-600' : 
-                   value >= 90 ? 'text-amber-600' : 
-                   'text-red-600'
+      const color = value >= 95 ? 'text-green-600' : value >= 90 ? 'text-amber-600' : 'text-red-600'
       return (
         <div className="flex flex-col items-center">
-          <span className={cn("font-mono font-medium", color)}>{value}%</span>
+          <span className={cn('font-mono font-medium', color)}>{value}%</span>
           <Progress value={value} className="w-16 h-1.5 mt-1" />
         </div>
       )
@@ -148,10 +168,11 @@ const inspectionColumns = [
     label: 'Status',
     sortable: true,
     render: (value: string) => {
-      const config = inspectionStatuses[value as keyof typeof inspectionStatuses] || inspectionStatuses.pending
+      const config =
+        inspectionStatuses[value as keyof typeof inspectionStatuses] || inspectionStatuses.pending
       const Icon = config.icon
       return (
-        <Badge variant="outline" className={cn(config.bgColor, config.color, "border-0")}>
+        <Badge variant="outline" className={cn(config.bgColor, config.color, 'border-0')}>
           <Icon className="h-3 w-3 mr-1" />
           {config.label}
         </Badge>
@@ -179,9 +200,7 @@ const issueColumns = [
     label: 'Issue #',
     sortable: true,
     width: '100px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     key: 'product_name',
@@ -199,10 +218,14 @@ const issueColumns = [
     label: 'Type',
     sortable: true,
     render: (value: string) => {
-      const config = issueTypes[value as keyof typeof issueTypes] || { label: value, color: 'text-gray-600', icon: AlertCircle }
+      const config = issueTypes[value as keyof typeof issueTypes] || {
+        label: value,
+        color: 'text-gray-600',
+        icon: AlertCircle
+      }
       const Icon = config.icon
       return (
-        <div className={cn("flex items-center gap-2", config.color)}>
+        <div className={cn('flex items-center gap-2', config.color)}>
           <Icon className="h-4 w-4" />
           <span>{config.label}</span>
         </div>
@@ -215,13 +238,13 @@ const issueColumns = [
     sortable: true,
     render: (value: string) => {
       const severities = {
-        'critical': { color: 'text-red-600 bg-red-500/20', label: 'Critical' },
-        'major': { color: 'text-amber-600 bg-amber-500/20', label: 'Major' },
-        'minor': { color: 'text-yellow-600 bg-yellow-500/20', label: 'Minor' }
+        critical: { color: 'text-red-600 bg-red-500/20', label: 'Critical' },
+        major: { color: 'text-amber-600 bg-amber-500/20', label: 'Major' },
+        minor: { color: 'text-yellow-600 bg-yellow-500/20', label: 'Minor' }
       }
       const severity = severities[value as keyof typeof severities] || severities.minor
       return (
-        <Badge variant="outline" className={cn(severity.color, "border-0")}>
+        <Badge variant="outline" className={cn(severity.color, 'border-0')}>
           {severity.label}
         </Badge>
       )
@@ -241,9 +264,9 @@ const issueColumns = [
     sortable: true,
     render: (value: string) => {
       const statuses = {
-        'open': { color: 'text-red-600', label: 'Open' },
-        'in_progress': { color: 'text-amber-600', label: 'In Progress' },
-        'resolved': { color: 'text-green-600', label: 'Resolved' }
+        open: { color: 'text-red-600', label: 'Open' },
+        in_progress: { color: 'text-amber-600', label: 'In Progress' },
+        resolved: { color: 'text-green-600', label: 'Resolved' }
       }
       const status = statuses[value as keyof typeof statuses] || statuses.open
       return <span className={status.color}>{status.label}</span>
@@ -252,9 +275,7 @@ const issueColumns = [
   {
     key: 'corrective_action',
     label: 'Corrective Action',
-    render: (value: string) => (
-      <span className="text-sm">{value || '-'}</span>
-    )
+    render: (value: string) => <span className="text-sm">{value || '-'}</span>
   }
 ]
 
@@ -268,7 +289,7 @@ export default function FurnitureQuality() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
-  
+
   // Quality metrics
   const [metrics, setMetrics] = useState({
     overallQualityRate: 0,
@@ -287,48 +308,56 @@ export default function FurnitureQuality() {
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       // Load all entities
       const { data: allEntities } = await universalApi.read({ table: 'core_entities' })
-      
+
       // Load all transactions
       const { data: allTransactions } = await universalApi.read({ table: 'universal_transactions' })
-      
+
       // Filter for quality inspections
-      const qualityInspections = allTransactions?.filter((t: any) => 
-        t.smart_code?.includes('QUALITY.INSPECTION') || 
-        t.transaction_type === 'quality_inspection'
-      ) || []
-      
+      const qualityInspections =
+        allTransactions?.filter(
+          (t: any) =>
+            t.smart_code?.includes('QUALITY.INSPECTION') ||
+            t.transaction_type === 'quality_inspection'
+        ) || []
+
       // Filter for quality issues
-      const qualityIssues = allEntities?.filter((e: any) => 
-        e.entity_type === 'quality_issue' ||
-        e.smart_code?.includes('QUALITY.ISSUE')
-      ) || []
-      
+      const qualityIssues =
+        allEntities?.filter(
+          (e: any) => e.entity_type === 'quality_issue' || e.smart_code?.includes('QUALITY.ISSUE')
+        ) || []
+
       // Get products for enrichment
-      const products = allEntities?.filter((e: any) => 
-        e.entity_type === 'product' && 
-        e.smart_code?.startsWith('HERA.FURNITURE.PRODUCT')
-      ) || []
-      
+      const products =
+        allEntities?.filter(
+          (e: any) =>
+            e.entity_type === 'product' && e.smart_code?.startsWith('HERA.FURNITURE.PRODUCT')
+        ) || []
+
       // Get inspectors
-      const inspectors = allEntities?.filter((e: any) => 
-        e.entity_type === 'employee' ||
-        e.smart_code?.includes('QUALITY.INSPECTOR')
-      ) || []
-      
+      const inspectors =
+        allEntities?.filter(
+          (e: any) => e.entity_type === 'employee' || e.smart_code?.includes('QUALITY.INSPECTOR')
+        ) || []
+
       // Build inspection data
       const inspectionData = qualityInspections.map((inspection: any, index: number) => {
         const product = products[index % products.length]
         const inspector = inspectors[index % Math.max(inspectors.length, 1)]
-        
+
         // Generate realistic pass rates
         const passRate = Math.floor(Math.random() * 15) + 85 // 85-100%
-        const status = passRate >= 95 ? 'passed' : 
-                      passRate >= 90 ? 'passed' : 
-                      passRate >= 80 ? 'pending' : 'failed'
-        
+        const status =
+          passRate >= 95
+            ? 'passed'
+            : passRate >= 90
+              ? 'passed'
+              : passRate >= 80
+                ? 'pending'
+                : 'failed'
+
         return {
           ...inspection,
           inspection_code: inspection.transaction_code || `QC-${Date.now()}-${index}`,
@@ -344,14 +373,14 @@ export default function FurnitureQuality() {
           defects_found: Math.floor((100 - passRate) / 10)
         }
       })
-      
+
       // Build issue data
       const issueData = qualityIssues.map((issue: any, index: number) => {
         const product = products[index % products.length]
         const types = Object.keys(issueTypes)
         const severities = ['critical', 'major', 'minor']
         const resolutionStatuses = ['open', 'in_progress', 'resolved']
-        
+
         return {
           ...issue,
           issue_code: issue.entity_code || `QI-${Date.now()}-${index}`,
@@ -361,25 +390,27 @@ export default function FurnitureQuality() {
           severity: severities[index % severities.length],
           reported_date: issue.created_at || new Date().toISOString(),
           resolution_status: resolutionStatuses[index % resolutionStatuses.length],
-          corrective_action: index % 3 === 2 ? 'Rework completed' : 
-                           index % 3 === 1 ? 'Training provided' : null
+          corrective_action:
+            index % 3 === 2 ? 'Rework completed' : index % 3 === 1 ? 'Training provided' : null
         }
       })
-      
+
       // Calculate metrics
       const today = new Date().toDateString()
-      const todayInspections = inspectionData.filter((i: any) => 
-        new Date(i.inspection_date).toDateString() === today
+      const todayInspections = inspectionData.filter(
+        (i: any) => new Date(i.inspection_date).toDateString() === today
       ).length
-      
-      const openIssuesCount = issueData.filter((i: any) => 
-        i.resolution_status === 'open'
-      ).length
-      
-      const avgPassRate = inspectionData.length > 0
-        ? Math.round(inspectionData.reduce((sum: number, i: any) => sum + i.pass_rate, 0) / inspectionData.length)
-        : 0
-      
+
+      const openIssuesCount = issueData.filter((i: any) => i.resolution_status === 'open').length
+
+      const avgPassRate =
+        inspectionData.length > 0
+          ? Math.round(
+              inspectionData.reduce((sum: number, i: any) => sum + i.pass_rate, 0) /
+                inspectionData.length
+            )
+          : 0
+
       setInspections(inspectionData)
       setIssues(issueData)
       setMetrics({
@@ -388,33 +419,34 @@ export default function FurnitureQuality() {
         openIssues: openIssuesCount,
         avgResolutionTime: 2.5 // Days
       })
-      
     } catch (error) {
       console.error('Failed to load quality data:', error)
     } finally {
       setLoading(false)
     }
   }
-  
+
   // Filter inspections
   const filteredInspections = inspections.filter(inspection => {
-    const matchesSearch = !searchTerm || 
+    const matchesSearch =
+      !searchTerm ||
       inspection.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       inspection.inspection_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       inspection.batch_number.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     const matchesType = selectedType === 'all' || inspection.inspection_type === selectedType
     const matchesStatus = selectedStatus === 'all' || inspection.status === selectedStatus
-    
+
     return matchesSearch && matchesType && matchesStatus
   })
-  
+
   // Filter issues
   const filteredIssues = issues.filter(issue => {
-    const matchesSearch = !searchTerm || 
+    const matchesSearch =
+      !searchTerm ||
       issue.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       issue.issue_code.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     return matchesSearch
   })
 
@@ -430,9 +462,7 @@ export default function FurnitureQuality() {
         <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
           <Alert className="max-w-md bg-gray-800/50 border-gray-700">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Please log in to access quality management.
-            </AlertDescription>
+            <AlertDescription>Please log in to access quality management.</AlertDescription>
           </Alert>
         </div>
       )
@@ -456,36 +486,36 @@ export default function FurnitureQuality() {
   }
 
   const statCards = [
-    { 
-      label: 'Quality Rate', 
-      value: `${metrics.overallQualityRate}%`, 
+    {
+      label: 'Quality Rate',
+      value: `${metrics.overallQualityRate}%`,
       icon: Award,
       color: 'text-green-500',
       trend: '+2%',
       trendUp: true,
       description: 'Overall pass rate'
     },
-    { 
-      label: 'Today\'s Inspections', 
-      value: metrics.inspectionsToday, 
+    {
+      label: "Today's Inspections",
+      value: metrics.inspectionsToday,
       icon: ClipboardCheck,
       color: 'text-blue-500',
       trend: '+5',
       trendUp: true,
       description: 'Completed today'
     },
-    { 
-      label: 'Open Issues', 
-      value: metrics.openIssues, 
+    {
+      label: 'Open Issues',
+      value: metrics.openIssues,
       icon: AlertTriangle,
       color: 'text-amber-500',
       trend: '-3',
       trendUp: false,
       description: 'Pending resolution'
     },
-    { 
-      label: 'Avg Resolution Time', 
-      value: `${metrics.avgResolutionTime} days`, 
+    {
+      label: 'Avg Resolution Time',
+      value: `${metrics.avgResolutionTime} days`,
       icon: Clock,
       color: 'text-purple-500',
       trend: '-0.5 days',
@@ -525,21 +555,30 @@ export default function FurnitureQuality() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {statCards.map((stat, index) => (
-            <Card key={index} className="p-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-sm text-gray-400">{stat.label}</p>
                   <p className="text-2xl font-bold text-white">{stat.value}</p>
                   <p className="text-xs text-gray-500">{stat.description}</p>
-                  <div className={cn(
-                    "flex items-center gap-1 text-sm",
-                    stat.trendUp ? "text-green-500" : "text-red-500"
-                  )}>
-                    {stat.trendUp ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                  <div
+                    className={cn(
+                      'flex items-center gap-1 text-sm',
+                      stat.trendUp ? 'text-green-500' : 'text-red-500'
+                    )}
+                  >
+                    {stat.trendUp ? (
+                      <TrendingUp className="h-3 w-3" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3" />
+                    )}
                     {stat.trend}
                   </div>
                 </div>
-                <stat.icon className={cn("h-8 w-8", stat.color)} />
+                <stat.icon className={cn('h-8 w-8', stat.color)} />
               </div>
             </Card>
           ))}
@@ -550,11 +589,16 @@ export default function FurnitureQuality() {
           <h3 className="text-lg font-semibold mb-4 text-white">Quality Certifications</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {qualityStandards.map((cert, index) => (
-              <div key={index} className="flex items-center justify-between p-4 rounded-lg bg-gray-900/50">
+              <div
+                key={index}
+                className="flex items-center justify-between p-4 rounded-lg bg-gray-900/50"
+              >
                 <div>
                   <p className="font-medium text-white">{cert.standard}</p>
                   <p className="text-sm text-gray-400">Status: {cert.status}</p>
-                  <p className="text-xs text-gray-500">Expires: {new Date(cert.expiry).toLocaleDateString()}</p>
+                  <p className="text-xs text-gray-500">
+                    Expires: {new Date(cert.expiry).toLocaleDateString()}
+                  </p>
                 </div>
                 <Shield className="h-8 w-8 text-green-500" />
               </div>
@@ -579,7 +623,7 @@ export default function FurnitureQuality() {
                 Analytics
               </TabsTrigger>
             </TabsList>
-            
+
             {/* Search and Filters */}
             <div className="flex gap-4">
               <div className="relative">
@@ -587,11 +631,11 @@ export default function FurnitureQuality() {
                 <Input
                   placeholder="Search quality records..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10 bg-gray-900/50 border-gray-600 text-white placeholder:text-gray-400 w-64"
                 />
               </div>
-              
+
               {activeTab === 'inspections' && (
                 <>
                   <Select value={selectedType} onValueChange={setSelectedType}>
@@ -606,7 +650,7 @@ export default function FurnitureQuality() {
                       <SelectItem value="random">Random</SelectItem>
                     </SelectContent>
                   </Select>
-                  
+
                   <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                     <SelectTrigger className="w-40 bg-gray-900/50 border-gray-600 text-white">
                       <SelectValue placeholder="Status" />
@@ -635,10 +679,10 @@ export default function FurnitureQuality() {
               pageSize={20}
               emptyState={{
                 icon: ClipboardCheck,
-                title: "No inspections found",
-                description: searchTerm 
-                  ? "Try adjusting your search or filters." 
-                  : "Quality inspections will appear here when products are tested."
+                title: 'No inspections found',
+                description: searchTerm
+                  ? 'Try adjusting your search or filters.'
+                  : 'Quality inspections will appear here when products are tested.'
               }}
               className="bg-gray-800/50 border-gray-700"
             />
@@ -655,8 +699,8 @@ export default function FurnitureQuality() {
               pageSize={20}
               emptyState={{
                 icon: AlertTriangle,
-                title: "No quality issues found",
-                description: "Quality issues will be tracked here when defects are identified."
+                title: 'No quality issues found',
+                description: 'Quality issues will be tracked here when defects are identified.'
               }}
               className="bg-gray-800/50 border-gray-700"
             />
@@ -671,19 +715,20 @@ export default function FurnitureQuality() {
                   <p className="ml-4">Quality trend chart would go here</p>
                 </div>
               </Card>
-              
+
               <Card className="p-6 bg-gray-800/50 border-gray-700">
                 <h3 className="text-lg font-semibold mb-4 text-white">Defect Analysis</h3>
                 <div className="space-y-3">
                   {Object.entries(issueTypes).map(([key, config]) => {
                     const Icon = config.icon
                     const count = issues.filter(i => i.issue_type === key).length
-                    const percentage = issues.length > 0 ? Math.round((count / issues.length) * 100) : 0
-                    
+                    const percentage =
+                      issues.length > 0 ? Math.round((count / issues.length) * 100) : 0
+
                     return (
                       <div key={key} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Icon className={cn("h-4 w-4", config.color)} />
+                          <Icon className={cn('h-4 w-4', config.color)} />
                           <span className="text-sm">{config.label}</span>
                         </div>
                         <div className="flex items-center gap-3">
@@ -702,17 +747,26 @@ export default function FurnitureQuality() {
               <div className="space-y-3">
                 {['Inspector 1', 'Inspector 2', 'Inspector 3'].map((inspector, index) => {
                   const inspectorData = inspections.filter(i => i.inspector_name === inspector)
-                  const avgPassRate = inspectorData.length > 0
-                    ? Math.round(inspectorData.reduce((sum, i) => sum + i.pass_rate, 0) / inspectorData.length)
-                    : 0
-                  
+                  const avgPassRate =
+                    inspectorData.length > 0
+                      ? Math.round(
+                          inspectorData.reduce((sum, i) => sum + i.pass_rate, 0) /
+                            inspectorData.length
+                        )
+                      : 0
+
                   return (
-                    <div key={inspector} className="flex items-center justify-between p-3 rounded-lg bg-gray-900/50">
+                    <div
+                      key={inspector}
+                      className="flex items-center justify-between p-3 rounded-lg bg-gray-900/50"
+                    >
                       <div className="flex items-center gap-3">
                         <User className="h-5 w-5 text-gray-400" />
                         <div>
                           <p className="font-medium">{inspector}</p>
-                          <p className="text-sm text-gray-400">{inspectorData.length} inspections</p>
+                          <p className="text-sm text-gray-400">
+                            {inspectorData.length} inspections
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">

@@ -1,6 +1,6 @@
 /**
  * 🧬 HERA Entity Normalization Service
- * 
+ *
  * Provides convenient wrappers for entity normalization with:
  * - Industry-specific smart code generation
  * - Duplicate detection and prevention
@@ -28,7 +28,7 @@ export interface NormalizedEntity {
 
 export interface EntityNormalizationOptions {
   skipNormalization?: boolean
-  forceCreate?: boolean  // Create even if duplicate detected
+  forceCreate?: boolean // Create even if duplicate detected
   generateCode?: boolean // Auto-generate entity code
   industryPrefix?: string // For smart code generation
 }
@@ -59,9 +59,9 @@ class EntityNormalizationService {
           })
           .select()
           .single()
-          
+
         if (error) throw error
-        
+
         return {
           success: true,
           data: {
@@ -75,40 +75,45 @@ class EntityNormalizationService {
           error: null
         }
       }
-      
+
       // Use normalization by default
       const { data, error } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
         p_org_id: organizationId,
         p_entity_type: entityType,
         p_entity_name: entityName,
-        p_entity_code: options?.entityCode || (options?.generateCode ? this.generateEntityCode(entityType) : null),
+        p_entity_code:
+          options?.entityCode ||
+          (options?.generateCode ? this.generateEntityCode(entityType) : null),
         p_smart_code: smartCode,
         p_metadata: options?.metadata || null
       })
-      
+
       if (error) throw error
-      
+
       // Handle force create if duplicate detected
       if (!data[0].is_new && options?.forceCreate) {
         // Create with modified entity code
         const newCode = `${options?.entityCode || this.generateEntityCode(entityType)}-${Date.now()}`
-        const { data: forcedData, error: forceError } = await supabase.rpc('rpc_entities_resolve_and_upsert', {
-          p_org_id: organizationId,
-          p_entity_type: entityType,
-          p_entity_name: `${entityName} (Duplicate)`,
-          p_entity_code: newCode,
-          p_smart_code: smartCode,
-          p_metadata: options?.metadata || null
-        })
-        
+        const { data: forcedData, error: forceError } = await supabase.rpc(
+          'rpc_entities_resolve_and_upsert',
+          {
+            p_org_id: organizationId,
+            p_entity_type: entityType,
+            p_entity_name: `${entityName} (Duplicate)`,
+            p_entity_code: newCode,
+            p_smart_code: smartCode,
+            p_metadata: options?.metadata || null
+          }
+        )
+
         if (forceError) throw forceError
-        
+
         const { data: fullEntity } = await supabase
           .from('core_entities')
           .select()
           .eq('id', forcedData[0].entity_id)
           .single()
-          
+
         return {
           success: true,
           data: {
@@ -122,16 +127,16 @@ class EntityNormalizationService {
           error: null
         }
       }
-      
+
       // Fetch full entity data
       const { data: fullEntity, error: fetchError } = await supabase
         .from('core_entities')
         .select()
         .eq('id', data[0].entity_id)
         .single()
-        
+
       if (fetchError) throw fetchError
-      
+
       return {
         success: true,
         data: {
@@ -152,7 +157,7 @@ class EntityNormalizationService {
       }
     }
   }
-  
+
   /**
    * Batch create entities with normalization
    */
@@ -170,7 +175,7 @@ class EntityNormalizationService {
     try {
       const results: NormalizedEntity[] = []
       const errors: string[] = []
-      
+
       for (const entity of entities) {
         const result = await this.createOrResolveEntity(
           organizationId,
@@ -183,14 +188,14 @@ class EntityNormalizationService {
             metadata: entity.metadata
           }
         )
-        
+
         if (result.success && result.data) {
           results.push(result.data)
         } else {
           errors.push(`Failed to process ${entity.entityName}: ${result.error}`)
         }
       }
-      
+
       return {
         success: errors.length === 0,
         data: results,
@@ -210,7 +215,7 @@ class EntityNormalizationService {
       }
     }
   }
-  
+
   /**
    * Normalize text using HERA normalization function
    */
@@ -219,7 +224,7 @@ class EntityNormalizationService {
       const { data, error } = await supabase.rpc('hera_normalize_text', {
         input_text: text
       })
-      
+
       if (error) throw error
       return data
     } catch (error) {
@@ -227,7 +232,7 @@ class EntityNormalizationService {
       return null
     }
   }
-  
+
   /**
    * Generate smart code based on industry and entity type
    */
@@ -240,7 +245,7 @@ class EntityNormalizationService {
   ): string {
     return `HERA.${industry.toUpperCase()}.${module.toUpperCase()}.${type.toUpperCase()}.${subtype.toUpperCase()}.v${version}`
   }
-  
+
   /**
    * Generate entity code with timestamp
    */
@@ -248,7 +253,7 @@ class EntityNormalizationService {
     const timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14)
     return `${entityType.toUpperCase()}-${timestamp}`
   }
-  
+
   /**
    * Common entity type smart code mappings
    */
@@ -285,14 +290,14 @@ class EntityNormalizationService {
         UNIVERSAL: 'HERA.UNIVERSAL.FIN.GL.ACCOUNT.v1'
       }
     }
-    
+
     const industryUpper = industry.toUpperCase()
     const typeMapping = commonMappings[entityType.toLowerCase()]
-    
+
     if (typeMapping) {
       return typeMapping[industryUpper] || typeMapping.UNIVERSAL
     }
-    
+
     // Fallback to generic pattern
     return this.generateSmartCode(industryUpper, 'ENTITY', entityType.toUpperCase(), 'MASTER')
   }
@@ -313,10 +318,10 @@ export async function createNormalizedEntity(
     skipNormalization?: boolean
   }
 ): Promise<UniversalResponse<NormalizedEntity>> {
-  const smartCode = options?.industry 
+  const smartCode = options?.industry
     ? entityNormalizationService.getCommonSmartCode(entityType, options.industry)
     : entityNormalizationService.getCommonSmartCode(entityType)
-    
+
   return entityNormalizationService.createOrResolveEntity(
     organizationId,
     entityType,

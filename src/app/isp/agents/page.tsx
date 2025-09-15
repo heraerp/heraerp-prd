@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
-  UserCheck, 
-  Users, 
-  TrendingUp, 
+import {
+  UserCheck,
+  Users,
+  TrendingUp,
   Award,
   Phone,
   Mail,
@@ -26,7 +26,20 @@ import {
   Edit2,
   Trash2
 } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts'
 import { ISPModal } from '@/components/isp/ISPModal'
 import { ISPTable } from '@/components/isp/ISPTable'
 import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
@@ -58,24 +71,34 @@ function AgentCard({ agent }: AgentCardProps) {
     'on-leave': 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
   }
 
-  const performanceColor = agent.performance >= 90 ? 'text-emerald-400' : agent.performance >= 75 ? 'text-yellow-400' : 'text-red-400'
+  const performanceColor =
+    agent.performance >= 90
+      ? 'text-emerald-400'
+      : agent.performance >= 75
+        ? 'text-yellow-400'
+        : 'text-red-400'
 
   return (
     <div className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-    <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:bg-accent/20 transition-all duration-300">
+      <div className="relative bg-slate-900/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6 hover:bg-accent/20 transition-all duration-300">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0099CC] to-[#0049B7] flex items-center justify-center text-white font-bold text-lg">
-              {agent.name.split(' ').map(n => n[0]).join('')}
+              {agent.name
+                .split(' ')
+                .map(n => n[0])
+                .join('')}
             </div>
             <div>
               <h3 className="text-lg font-semibold text-white">{agent.name}</h3>
               <p className="text-sm text-white/60">ID: {agent.id}</p>
             </div>
           </div>
-          <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[agent.status]}`}>
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[agent.status]}`}
+          >
             {agent.status.replace('-', ' ')}
           </span>
         </div>
@@ -87,11 +110,13 @@ function AgentCard({ agent }: AgentCardProps) {
             <span className={`text-lg font-bold ${performanceColor}`}>{agent.performance}%</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
-            <div 
+            <div
               className={`h-full rounded-full transition-all duration-500 ${
-                agent.performance >= 90 ? 'bg-gradient-to-r from-emerald-400 to-green-500' :
-                agent.performance >= 75 ? 'bg-gradient-to-r from-yellow-400 to-amber-500' :
-                'bg-gradient-to-r from-red-400 to-rose-500'
+                agent.performance >= 90
+                  ? 'bg-gradient-to-r from-emerald-400 to-green-500'
+                  : agent.performance >= 75
+                    ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
+                    : 'bg-gradient-to-r from-red-400 to-rose-500'
               }`}
               style={{ width: `${agent.performance}%` }}
             />
@@ -263,7 +288,8 @@ export default function AgentsPage() {
   ])
 
   // Defensive normalization for chart inputs
-  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
+  const toArray = (v: any): any[] =>
+    Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : []
   const safePerformanceData = toArray(performanceData)
   const safeRegionStats = toArray(regionStats)
 
@@ -293,7 +319,7 @@ export default function AgentsPage() {
   const handleAdd = async () => {
     try {
       const agentCode = `AGT-${String((agents.length || 0) + 1).padStart(3, '0')}`
-      
+
       const { data, error } = await supabase
         .from('core_entities')
         .insert({
@@ -396,16 +422,18 @@ export default function AgentsPage() {
 
         if (error) throw error
 
-        setAgents(agents.map(a => 
-          a.id === selectedAgent.id 
-            ? { 
-                ...a, 
-                ...formData,
-                revenue: formData.customers * 850,
-                commission: formData.customers * 85
-              }
-            : a
-        ))
+        setAgents(
+          agents.map(a =>
+            a.id === selectedAgent.id
+              ? {
+                  ...a,
+                  ...formData,
+                  revenue: formData.customers * 850,
+                  commission: formData.customers * 85
+                }
+              : a
+          )
+        )
         setShowEditModal(false)
         setSelectedAgent(null)
         resetForm()
@@ -432,10 +460,7 @@ export default function AgentsPage() {
           throw new Error('Agent not found')
         }
 
-        const { error } = await supabase
-          .from('core_entities')
-          .delete()
-          .eq('id', entities.id)
+        const { error } = await supabase.from('core_entities').delete().eq('id', entities.id)
 
         if (error) throw error
 
@@ -470,7 +495,7 @@ export default function AgentsPage() {
         .eq('entity_type', 'field_agent')
 
       console.log('Fetched agent entities from Supabase:', agentEntities?.length || 0)
-      
+
       if (agentEntities && agentEntities.length > 0) {
         const updatedAgents = agentEntities.map((entity: any, index: number) => ({
           name: entity.entity_name,
@@ -478,13 +503,20 @@ export default function AgentsPage() {
           region: entity.metadata?.region || 'Thiruvananthapuram',
           performance: entity.metadata?.performance_score || 85,
           customers: entity.metadata?.active_customers || 150,
-          revenue: entity.metadata?.monthly_collections || (entity.metadata?.active_customers || 200) * 850,
-          commission: entity.metadata?.commission_earned || entity.metadata?.monthly_collections * 0.1 || 10000,
-          status: entity.metadata?.status || 'active' as const,
+          revenue:
+            entity.metadata?.monthly_collections ||
+            (entity.metadata?.active_customers || 200) * 850,
+          commission:
+            entity.metadata?.commission_earned ||
+            entity.metadata?.monthly_collections * 0.1 ||
+            10000,
+          status: entity.metadata?.status || ('active' as const),
           phone: `+91 98765 ${43210 + index}`,
           email: `${entity.entity_name.toLowerCase().replace(' ', '.')}@keralavision.com`,
-          joinDate: entity.metadata?.join_date ? new Date(entity.metadata.join_date).toISOString().split('T')[0] : '2023-01-01',
-          rating: 4.3 + (entity.metadata?.performance_score || 85) / 100 * 0.7
+          joinDate: entity.metadata?.join_date
+            ? new Date(entity.metadata.join_date).toISOString().split('T')[0]
+            : '2023-01-01',
+          rating: 4.3 + ((entity.metadata?.performance_score || 85) / 100) * 0.7
         }))
         setAgents(updatedAgents)
       }
@@ -496,9 +528,10 @@ export default function AgentsPage() {
 
   // Filter agents based on search and filters
   const filteredAgents = agents.filter(agent => {
-    const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         agent.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         agent.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      agent.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      agent.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesRegion = selectedRegion === 'all' || agent.region === selectedRegion
     const matchesStatus = selectedStatus === 'all' || agent.status === selectedStatus
     return matchesSearch && matchesRegion && matchesStatus
@@ -521,7 +554,7 @@ export default function AgentsPage() {
           </h1>
           <p className="text-white/60 mt-1">Monitor and manage your field agent network</p>
         </div>
-        <button 
+        <button
           onClick={() => setShowAddModal(true)}
           className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300 mt-4 sm:mt-0"
         >
@@ -549,7 +582,9 @@ export default function AgentsPage() {
           <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <CheckCircle className="h-5 w-5 text-emerald-400" />
-              <span className="text-xs text-white/60">{Math.round((activeAgents/totalAgents)*100)}%</span>
+              <span className="text-xs text-white/60">
+                {Math.round((activeAgents / totalAgents) * 100)}%
+              </span>
             </div>
             <p className="text-2xl font-bold text-white">{activeAgents}</p>
             <p className="text-xs text-white/60">Active Agents</p>
@@ -575,7 +610,7 @@ export default function AgentsPage() {
               <IndianRupee className="h-5 w-5 text-[#E91E63]" />
               <span className="text-xs text-emerald-400 font-medium">+8.7%</span>
             </div>
-            <p className="text-2xl font-bold text-white">₹{(totalRevenue/100000).toFixed(1)}L</p>
+            <p className="text-2xl font-bold text-white">₹{(totalRevenue / 100000).toFixed(1)}L</p>
             <p className="text-xs text-white/60">Total Revenue</p>
           </div>
         </div>
@@ -601,14 +636,14 @@ export default function AgentsPage() {
             type="text"
             placeholder="Search agents by name, ID, or email..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#0099CC] transition-colors"
           />
         </div>
-        
+
         <select
           value={selectedRegion}
-          onChange={(e) => setSelectedRegion(e.target.value)}
+          onChange={e => setSelectedRegion(e.target.value)}
           className="px-4 py-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#0099CC] transition-colors"
         >
           <option value="all">All Regions</option>
@@ -619,7 +654,7 @@ export default function AgentsPage() {
 
         <select
           value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          onChange={e => setSelectedStatus(e.target.value)}
           className="px-4 py-3 bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#0099CC] transition-colors"
         >
           <option value="all">All Status</option>
@@ -644,26 +679,26 @@ export default function AgentsPage() {
               <AreaChart data={safePerformanceData}>
                 <defs>
                   <linearGradient id="agentGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#0099CC" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
                 <YAxis stroke="rgba(255,255,255,0.5)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="agents" 
-                  stroke="#0099CC" 
-                  fillOpacity={1} 
-                  fill="url(#agentGradient)" 
+                <Area
+                  type="monotone"
+                  dataKey="agents"
+                  stroke="#0099CC"
+                  fillOpacity={1}
+                  fill="url(#agentGradient)"
                   strokeWidth={2}
                 />
               </AreaChart>
@@ -690,9 +725,9 @@ export default function AgentsPage() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
@@ -703,7 +738,10 @@ export default function AgentsPage() {
               {safeRegionStats.map((region: any) => (
                 <div key={region.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: region.color }} />
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: region.color }}
+                    />
                     <span className="text-sm text-white/80">{region.name}</span>
                   </div>
                   <span className="text-sm font-medium text-white">{region.value}</span>
@@ -723,15 +761,18 @@ export default function AgentsPage() {
             {
               key: 'id',
               label: 'Agent ID',
-              render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+              render: item => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
             },
             {
               key: 'name',
               label: 'Agent Info',
-              render: (item) => (
+              render: item => (
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0099CC] to-[#0049B7] flex items-center justify-center text-white font-bold text-sm">
-                    {item.name.split(' ').map(n => n[0]).join('')}
+                    {item.name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')}
                   </div>
                   <div>
                     <p className="text-sm font-medium text-white">{item.name}</p>
@@ -743,7 +784,7 @@ export default function AgentsPage() {
             {
               key: 'region',
               label: 'Region',
-              render: (item) => (
+              render: item => (
                 <div className="flex items-center space-x-1">
                   <MapPin className="h-4 w-4 text-white/40" />
                   <span className="text-sm text-white">{item.region}</span>
@@ -753,20 +794,27 @@ export default function AgentsPage() {
             {
               key: 'performance',
               label: 'Performance',
-              render: (item) => (
+              render: item => (
                 <div className="space-y-1">
-                  <p className={`text-sm font-medium ${
-                    item.performance >= 90 ? 'text-emerald-400' : 
-                    item.performance >= 75 ? 'text-yellow-400' : 'text-red-400'
-                  }`}>
+                  <p
+                    className={`text-sm font-medium ${
+                      item.performance >= 90
+                        ? 'text-emerald-400'
+                        : item.performance >= 75
+                          ? 'text-yellow-400'
+                          : 'text-red-400'
+                    }`}
+                  >
                     {item.performance}%
                   </p>
                   <div className="w-20 h-2 bg-white/10 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full rounded-full ${
-                        item.performance >= 90 ? 'bg-gradient-to-r from-emerald-400 to-green-500' :
-                        item.performance >= 75 ? 'bg-gradient-to-r from-yellow-400 to-amber-500' :
-                        'bg-gradient-to-r from-red-400 to-rose-500'
+                        item.performance >= 90
+                          ? 'bg-gradient-to-r from-emerald-400 to-green-500'
+                          : item.performance >= 75
+                            ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
+                            : 'bg-gradient-to-r from-red-400 to-rose-500'
                       }`}
                       style={{ width: `${item.performance}%` }}
                     />
@@ -777,7 +825,7 @@ export default function AgentsPage() {
             {
               key: 'customers',
               label: 'Metrics',
-              render: (item) => (
+              render: item => (
                 <div className="space-y-1">
                   <p className="text-sm text-white/80">
                     <span className="font-medium text-white">{item.customers}</span> customers
@@ -795,14 +843,16 @@ export default function AgentsPage() {
             {
               key: 'status',
               label: 'Status',
-              render: (item) => {
+              render: item => {
                 const statusColors = {
                   active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
                   inactive: 'bg-red-500/10 text-red-400 border-red-500/20',
                   'on-leave': 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                 }
                 return (
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[item.status]}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[item.status]}`}
+                  >
                     {item.status.replace('-', ' ')}
                   </span>
                 )
@@ -825,83 +875,86 @@ export default function AgentsPage() {
         title="Add New Agent"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleAdd()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleAdd()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Agent Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter agent name"
             required
           />
-          
+
           <ISPInput
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
             placeholder="agent@indivision.com"
             icon={<Mail className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Phone"
             type="tel"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+91 98765 43210"
             icon={<Phone className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Region"
             value={formData.region}
-            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            onChange={e => setFormData({ ...formData, region: e.target.value })}
             options={[
               { value: 'Thiruvananthapuram', label: 'Thiruvananthapuram' },
               { value: 'Kochi', label: 'Kochi' },
               { value: 'Kozhikode', label: 'Kozhikode' }
             ]}
           />
-          
+
           <ISPSelect
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
             options={[
               { value: 'active', label: 'Active' },
               { value: 'inactive', label: 'Inactive' },
               { value: 'on-leave', label: 'On Leave' }
             ]}
           />
-          
+
           <ISPInput
             label="Performance Score (%)"
             type="number"
             min="0"
             max="100"
             value={formData.performance}
-            onChange={(e) => setFormData({ ...formData, performance: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, performance: parseInt(e.target.value) })}
             placeholder="85"
             icon={<Target className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Active Customers"
             type="number"
             min="0"
             value={formData.customers}
-            onChange={(e) => setFormData({ ...formData, customers: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, customers: parseInt(e.target.value) })}
             placeholder="0"
             icon={<Users className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Rating"
             type="number"
@@ -909,12 +962,12 @@ export default function AgentsPage() {
             max="5"
             step="0.1"
             value={formData.rating}
-            onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
+            onChange={e => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
             placeholder="4.5"
             icon={<Star className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -926,9 +979,7 @@ export default function AgentsPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Add Agent
-            </ISPButton>
+            <ISPButton type="submit">Add Agent</ISPButton>
           </div>
         </form>
       </ISPModal>
@@ -944,83 +995,86 @@ export default function AgentsPage() {
         title="Edit Agent"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleUpdate()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleUpdate()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Agent Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter agent name"
             required
           />
-          
+
           <ISPInput
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
             placeholder="agent@indivision.com"
             icon={<Mail className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Phone"
             type="tel"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+91 98765 43210"
             icon={<Phone className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Region"
             value={formData.region}
-            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            onChange={e => setFormData({ ...formData, region: e.target.value })}
             options={[
               { value: 'Thiruvananthapuram', label: 'Thiruvananthapuram' },
               { value: 'Kochi', label: 'Kochi' },
               { value: 'Kozhikode', label: 'Kozhikode' }
             ]}
           />
-          
+
           <ISPSelect
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
             options={[
               { value: 'active', label: 'Active' },
               { value: 'inactive', label: 'Inactive' },
               { value: 'on-leave', label: 'On Leave' }
             ]}
           />
-          
+
           <ISPInput
             label="Performance Score (%)"
             type="number"
             min="0"
             max="100"
             value={formData.performance}
-            onChange={(e) => setFormData({ ...formData, performance: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, performance: parseInt(e.target.value) })}
             placeholder="85"
             icon={<Target className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Active Customers"
             type="number"
             min="0"
             value={formData.customers}
-            onChange={(e) => setFormData({ ...formData, customers: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, customers: parseInt(e.target.value) })}
             placeholder="0"
             icon={<Users className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Rating"
             type="number"
@@ -1028,12 +1082,12 @@ export default function AgentsPage() {
             max="5"
             step="0.1"
             value={formData.rating}
-            onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
+            onChange={e => setFormData({ ...formData, rating: parseFloat(e.target.value) })}
             placeholder="4.5"
             icon={<Star className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -1046,9 +1100,7 @@ export default function AgentsPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Update Agent
-            </ISPButton>
+            <ISPButton type="submit">Update Agent</ISPButton>
           </div>
         </form>
       </ISPModal>

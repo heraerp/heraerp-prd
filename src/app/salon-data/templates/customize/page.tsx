@@ -65,12 +65,12 @@ function CustomizeTemplateContent() {
     try {
       // Clone the template with customized values
       const result = await cloneTemplate(template.template_id, customizedRule.smart_code)
-      
+
       toast({
         title: 'Rule Created Successfully!',
-        description: `Your customized rule "${customizedRule.title}" has been created`,
+        description: `Your customized rule "${customizedRule.title}" has been created`
       })
-      
+
       // Redirect to rules management page
       router.push('/salon-data/config?tab=rules')
     } catch (err: any) {
@@ -153,7 +153,7 @@ function CustomizeTemplateContent() {
 
 export default function CustomizeTemplatePage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

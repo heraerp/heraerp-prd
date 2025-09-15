@@ -1,7 +1,7 @@
 /**
  * HERA Workflow Engine Types
  * Smart Code: HERA.WORKFLOW.ENGINE.TYPES.v1
- * 
+ *
  * Type definitions for the HERA Workflow Engine
  * Built on the sacred 6-table architecture
  */
@@ -20,7 +20,13 @@ export interface WorkflowDefinition {
 }
 
 export interface WorkflowTrigger {
-  type: 'entity_created' | 'entity_updated' | 'transaction_created' | 'relationship_created' | 'scheduled' | 'manual'
+  type:
+    | 'entity_created'
+    | 'entity_updated'
+    | 'transaction_created'
+    | 'relationship_created'
+    | 'scheduled'
+    | 'manual'
   entity_type?: string
   transaction_type?: string
   relationship_type?: string
@@ -53,7 +59,7 @@ export interface WorkflowStep {
 }
 
 export interface WorkflowAction {
-  type: 
+  type:
     | 'create_entity'
     | 'update_entity'
     | 'create_relationship'
@@ -69,7 +75,7 @@ export interface WorkflowAction {
     | 'call_api'
     | 'execute_script'
     | 'set_variable'
-  
+
   // Action-specific parameters
   [key: string]: any
 }

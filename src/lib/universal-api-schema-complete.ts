@@ -16,41 +16,42 @@ import { UniversalAPISacredSix } from './universal-api-complete-sacred-six'
  */
 export interface EntityDataComplete {
   // System fields (auto-generated)
-  id?: string                          // uuid, NOT NULL, gen_random_uuid()
-  organization_id: string              // uuid, NOT NULL (Sacred boundary)
-  created_at?: string                  // timestamp with time zone, now()
-  updated_at?: string                  // timestamp with time zone, now()
-  created_by?: string                  // uuid, nullable (user who created)
-  updated_by?: string                  // uuid, nullable (user who updated)
-  version?: number                     // integer, default 1 (optimistic locking)
-  
+  id?: string // uuid, NOT NULL, gen_random_uuid()
+  organization_id: string // uuid, NOT NULL (Sacred boundary)
+  created_at?: string // timestamp with time zone, now()
+  updated_at?: string // timestamp with time zone, now()
+  created_by?: string // uuid, nullable (user who created)
+  updated_by?: string // uuid, nullable (user who updated)
+  version?: number // integer, default 1 (optimistic locking)
+
   // Core business fields (required)
-  entity_type: string                  // text, NOT NULL (customer, product, etc.)
-  entity_name: string                  // text, NOT NULL (display name)
-  smart_code: string                   // varchar, NOT NULL (business intelligence)
-  
+  entity_type: string // text, NOT NULL (customer, product, etc.)
+  entity_name: string // text, NOT NULL (display name)
+  smart_code: string // varchar, NOT NULL (business intelligence)
+
   // Optional business fields
-  entity_code?: string                 // text, nullable (business code like CUST-001)
-  entity_description?: string          // text, nullable (detailed description)
-  status?: string                      // text, default 'active'
-  parent_entity_id?: string           // uuid, nullable (hierarchy support)
-  
+  entity_code?: string // text, nullable (business code like CUST-001)
+  entity_description?: string // text, nullable (detailed description)
+  status?: string // text, default 'active'
+  parent_entity_id?: string // uuid, nullable (hierarchy support)
+
   // AI and Intelligence fields
-  ai_confidence?: number              // numeric, default 0.0000 (AI confidence score)
-  ai_insights?: Record<string, any>   // jsonb, default '{}' (AI-generated insights)
-  ai_classification?: string          // text, nullable (AI-determined classification)
-  smart_code_status?: string          // text, default 'DRAFT' (smart code lifecycle)
-  
+  ai_confidence?: number // numeric, default 0.0000 (AI confidence score)
+  ai_insights?: Record<string, any> // jsonb, default '{}' (AI-generated insights)
+  ai_classification?: string // text, nullable (AI-determined classification)
+  smart_code_status?: string // text, default 'DRAFT' (smart code lifecycle)
+
   // Advanced features
   business_rules?: Record<string, any> // jsonb, default '{}' (business rule engine)
-  metadata?: Record<string, any>      // jsonb, default '{}' (flexible metadata)
-  tags?: string[]                     // ARRAY, nullable (tagging system)
+  metadata?: Record<string, any> // jsonb, default '{}' (flexible metadata)
+  tags?: string[] // ARRAY, nullable (tagging system)
 }
 
 /**
  * Entity creation request with validation
  */
-export interface CreateEntityRequest extends Omit<EntityDataComplete, 'id' | 'created_at' | 'updated_at' | 'version'> {
+export interface CreateEntityRequest
+  extends Omit<EntityDataComplete, 'id' | 'created_at' | 'updated_at' | 'version'> {
   // Dynamic data to create alongside entity
   dynamic_fields?: Array<{
     field_name: string
@@ -58,7 +59,7 @@ export interface CreateEntityRequest extends Omit<EntityDataComplete, 'id' | 'cr
     field_value: any
     smart_code?: string
   }>
-  
+
   // Relationships to establish
   relationships?: Array<{
     to_entity_id: string
@@ -66,7 +67,7 @@ export interface CreateEntityRequest extends Omit<EntityDataComplete, 'id' | 'cr
     is_active?: boolean
     metadata?: Record<string, any>
   }>
-  
+
   // AI processing options
   ai_processing?: {
     auto_classify?: boolean
@@ -89,26 +90,26 @@ export interface EntityQueryFilters {
   parent_entity_id?: string
   smart_code?: string
   smart_code_status?: string
-  
+
   // AI filters
   ai_confidence?: { min?: number; max?: number }
   ai_classification?: string | string[]
-  
+
   // Date filters
   created_at?: { from?: string; to?: string }
   updated_at?: { from?: string; to?: string }
   created_by?: string | string[]
   updated_by?: string | string[]
-  
+
   // Advanced filters
   tags?: { contains?: string[]; exact?: string[] }
   version?: number | { min?: number; max?: number }
-  
+
   // Metadata and business rules queries
   metadata_query?: Record<string, any>
   business_rules_query?: Record<string, any>
   ai_insights_query?: Record<string, any>
-  
+
   // Full-text search across all text fields
   full_text?: string
 }
@@ -118,8 +119,8 @@ export interface EntityQueryFilters {
  */
 export interface UpdateEntityRequest {
   id: string
-  version?: number  // For optimistic locking
-  
+  version?: number // For optimistic locking
+
   // Fields that can be updated
   entity_name?: string
   entity_code?: string
@@ -132,11 +133,11 @@ export interface UpdateEntityRequest {
   metadata?: Record<string, any>
   business_rules?: Record<string, any>
   ai_classification?: string
-  
+
   // AI fields (usually system-managed but can be overridden)
   ai_confidence?: number
   ai_insights?: Record<string, any>
-  
+
   // Update tracking
   updated_by?: string
   update_reason?: string
@@ -147,17 +148,16 @@ export interface UpdateEntityRequest {
 // ================================================================================
 
 export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
-  
   // ============================================================================
   // ENHANCED CORE_ENTITIES OPERATIONS - Full Schema Coverage
   // ============================================================================
-  
+
   /**
    * Create entity with complete schema support and AI processing
    */
   async createEntityComplete(request: CreateEntityRequest): Promise<any> {
     const operations: any[] = []
-    
+
     // 1. Create main entity with all schema fields
     const entityData: EntityDataComplete = {
       organization_id: request.organization_id,
@@ -178,7 +178,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       created_by: request.created_by,
       version: 1
     }
-    
+
     operations.push({
       entity: 'core_entities',
       operation: 'create',
@@ -186,7 +186,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       alias: 'main_entity',
       data: entityData
     })
-    
+
     // 2. Create dynamic fields if provided
     if (request.dynamic_fields && request.dynamic_fields.length > 0) {
       const dynamicData = request.dynamic_fields.map(field => ({
@@ -198,7 +198,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         smart_code: field.smart_code || `HERA.DYN.${field.field_name.toUpperCase()}.v1`,
         metadata: {}
       }))
-      
+
       operations.push({
         entity: 'core_dynamic_data',
         operation: 'bulk_create',
@@ -206,7 +206,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         data: { items: dynamicData }
       })
     }
-    
+
     // 3. Create relationships if provided
     if (request.relationships && request.relationships.length > 0) {
       const relationshipData = request.relationships.map(rel => ({
@@ -218,7 +218,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         metadata: rel.metadata || {},
         smart_code: `HERA.REL.${rel.relationship_type.toUpperCase()}.v1`
       }))
-      
+
       operations.push({
         entity: 'core_relationships',
         operation: 'bulk_create',
@@ -226,7 +226,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         data: { items: relationshipData }
       })
     }
-    
+
     // Execute with AI processing
     return this.execute({
       entity: 'core_entities',
@@ -234,83 +234,102 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       smart_code: 'HERA.ENT.CREATE.COMPLETE.WORKFLOW.v1',
       operation: 'transaction',
       operations,
-      ai_requests: request.ai_processing ? {
-        enrich: request.ai_processing.auto_classify ? ['classification', 'insights'] : [],
-        validate: ['business_rules', 'data_consistency'],
-        confidence_threshold: request.ai_processing.confidence_threshold || 0.8
-      } : undefined,
+      ai_requests: request.ai_processing
+        ? {
+            enrich: request.ai_processing.auto_classify ? ['classification', 'insights'] : [],
+            validate: ['business_rules', 'data_consistency'],
+            confidence_threshold: request.ai_processing.confidence_threshold || 0.8
+          }
+        : undefined,
       transaction_control: {
         auto_commit: true,
         isolation_level: 'serializable'
       }
     })
   }
-  
+
   /**
    * Query entities with complete schema field support
    */
-  async queryEntitiesComplete(organizationId: string, filters: EntityQueryFilters = {}): Promise<any> {
+  async queryEntitiesComplete(
+    organizationId: string,
+    filters: EntityQueryFilters = {}
+  ): Promise<any> {
     const queryFilters: any = {}
     const dynamicFilters: any[] = []
-    
+
     // Basic field filters
     if (filters.id) queryFilters.id = Array.isArray(filters.id) ? { in: filters.id } : filters.id
-    if (filters.entity_type) queryFilters.entity_type = Array.isArray(filters.entity_type) ? { in: filters.entity_type } : filters.entity_type
+    if (filters.entity_type)
+      queryFilters.entity_type = Array.isArray(filters.entity_type)
+        ? { in: filters.entity_type }
+        : filters.entity_type
     if (filters.entity_name) queryFilters.entity_name = { contains: filters.entity_name }
     if (filters.entity_code) queryFilters.entity_code = filters.entity_code
-    if (filters.status) queryFilters.status = Array.isArray(filters.status) ? { in: filters.status } : filters.status
+    if (filters.status)
+      queryFilters.status = Array.isArray(filters.status) ? { in: filters.status } : filters.status
     if (filters.from_entity_id) queryFilters.from_entity_id = filters.from_entity_id
     if (filters.smart_code) queryFilters.smart_code = filters.smart_code
     if (filters.smart_code_status) queryFilters.smart_code_status = filters.smart_code_status
-    if (filters.ai_classification) queryFilters.ai_classification = Array.isArray(filters.ai_classification) ? { in: filters.ai_classification } : filters.ai_classification
-    
+    if (filters.ai_classification)
+      queryFilters.ai_classification = Array.isArray(filters.ai_classification)
+        ? { in: filters.ai_classification }
+        : filters.ai_classification
+
     // AI confidence range filter
     if (filters.ai_confidence) {
-      if (filters.ai_confidence.min !== undefined) queryFilters.ai_confidence = { '>=': filters.ai_confidence.min }
-      if (filters.ai_confidence.max !== undefined) queryFilters.ai_confidence = { ...queryFilters.ai_confidence, '<=': filters.ai_confidence.max }
+      if (filters.ai_confidence.min !== undefined)
+        queryFilters.ai_confidence = { '>=': filters.ai_confidence.min }
+      if (filters.ai_confidence.max !== undefined)
+        queryFilters.ai_confidence = {
+          ...queryFilters.ai_confidence,
+          '<=': filters.ai_confidence.max
+        }
     }
-    
+
     // Date range filters
     if (filters.created_at) {
       if (filters.created_at.from) queryFilters.created_at = { '>=': filters.created_at.from }
-      if (filters.created_at.to) queryFilters.created_at = { ...queryFilters.created_at, '<=': filters.created_at.to }
+      if (filters.created_at.to)
+        queryFilters.created_at = { ...queryFilters.created_at, '<=': filters.created_at.to }
     }
-    
+
     // Array field filters (tags)
     if (filters.tags) {
       if (filters.tags.contains) {
-        queryFilters.tags = { 'array_contains': filters.tags.contains }
+        queryFilters.tags = { array_contains: filters.tags.contains }
       } else if (filters.tags.exact) {
         queryFilters.tags = { '=': filters.tags.exact }
       }
     }
-    
+
     // JSONB field queries
     if (filters.metadata_query) {
-      queryFilters.metadata = { 'jsonb_contains': filters.metadata_query }
+      queryFilters.metadata = { jsonb_contains: filters.metadata_query }
     }
     if (filters.business_rules_query) {
-      queryFilters.business_rules = { 'jsonb_contains': filters.business_rules_query }
+      queryFilters.business_rules = { jsonb_contains: filters.business_rules_query }
     }
     if (filters.ai_insights_query) {
-      queryFilters.ai_insights = { 'jsonb_contains': filters.ai_insights_query }
+      queryFilters.ai_insights = { jsonb_contains: filters.ai_insights_query }
     }
-    
+
     // Version filters
     if (filters.version) {
       if (typeof filters.version === 'number') {
         queryFilters.version = filters.version
       } else {
         if (filters.version.min !== undefined) queryFilters.version = { '>=': filters.version.min }
-        if (filters.version.max !== undefined) queryFilters.version = { ...queryFilters.version, '<=': filters.version.max }
+        if (filters.version.max !== undefined)
+          queryFilters.version = { ...queryFilters.version, '<=': filters.version.max }
       }
     }
-    
+
     // Build advanced query
     const advancedQuery: any = {
       filters: queryFilters
     }
-    
+
     // Add full-text search if provided
     if (filters.full_text) {
       advancedQuery.full_text = {
@@ -319,7 +338,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         operator: 'or'
       }
     }
-    
+
     return this.query({
       entity: 'core_entities',
       organization_id: organizationId,
@@ -331,7 +350,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       }
     })
   }
-  
+
   /**
    * Update entity with version control and audit trail
    */
@@ -340,22 +359,25 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       id: request.id,
       updated_by: request.updated_by
     }
-    
+
     // Add updateable fields if provided
     if (request.entity_name !== undefined) updateData.entity_name = request.entity_name
     if (request.entity_code !== undefined) updateData.entity_code = request.entity_code
-    if (request.entity_description !== undefined) updateData.entity_description = request.entity_description
+    if (request.entity_description !== undefined)
+      updateData.entity_description = request.entity_description
     if (request.status !== undefined) updateData.status = request.status
     if (request.from_entity_id !== undefined) updateData.from_entity_id = request.from_entity_id
     if (request.smart_code !== undefined) updateData.smart_code = request.smart_code
-    if (request.smart_code_status !== undefined) updateData.smart_code_status = request.smart_code_status
+    if (request.smart_code_status !== undefined)
+      updateData.smart_code_status = request.smart_code_status
     if (request.tags !== undefined) updateData.tags = request.tags
     if (request.metadata !== undefined) updateData.metadata = request.metadata
     if (request.business_rules !== undefined) updateData.business_rules = request.business_rules
-    if (request.ai_classification !== undefined) updateData.ai_classification = request.ai_classification
+    if (request.ai_classification !== undefined)
+      updateData.ai_classification = request.ai_classification
     if (request.ai_confidence !== undefined) updateData.ai_confidence = request.ai_confidence
     if (request.ai_insights !== undefined) updateData.ai_insights = request.ai_insights
-    
+
     return this.execute({
       entity: 'core_entities',
       organization_id: this.config.organizationId,
@@ -373,7 +395,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       }
     })
   }
-  
+
   /**
    * Advanced entity operations using schema-specific features
    */
@@ -394,9 +416,13 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           }
         })
       },
-      
+
       // Smart code lifecycle management
-      promoteSmartCode: async (organizationId: string, entityId: string, newStatus: string): Promise<any> => {
+      promoteSmartCode: async (
+        organizationId: string,
+        entityId: string,
+        newStatus: string
+      ): Promise<any> => {
         return this.execute({
           entity: 'core_entities',
           organization_id: organizationId,
@@ -411,7 +437,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           }
         })
       },
-      
+
       // Hierarchy operations using parent_entity_id
       getEntityHierarchy: async (organizationId: string, rootEntityId: string): Promise<any> => {
         return this.query({
@@ -431,14 +457,14 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           }
         })
       },
-      
+
       // Tag-based operations
       searchByTags: async (organizationId: string, tags: string[]): Promise<any> => {
         return this.queryEntitiesComplete(organizationId, {
           tags: { contains: tags }
         })
       },
-      
+
       // Business rules engine
       validateBusinessRules: async (organizationId: string, entityId: string): Promise<any> => {
         return this.execute({
@@ -453,7 +479,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           }
         })
       },
-      
+
       // Version control operations
       getEntityVersionHistory: async (organizationId: string, entityId: string): Promise<any> => {
         // Query audit trail from universal_transactions
@@ -470,7 +496,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           }
         })
       },
-      
+
       // AI insights management
       refreshAIInsights: async (organizationId: string, entityId: string): Promise<any> => {
         return this.execute({
@@ -481,18 +507,21 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
           data: { id: entityId },
           ai_requests: {
             enrich: ['comprehensive_insights', 'trend_analysis', 'anomaly_detection'],
-            confidence_threshold: 0.80
+            confidence_threshold: 0.8
           }
         })
       }
     }
   }
-  
+
   // ============================================================================
   // BULK OPERATIONS WITH SCHEMA COMPLETENESS
   // ============================================================================
-  
-  async bulkCreateEntitiesComplete(organizationId: string, entities: CreateEntityRequest[]): Promise<any> {
+
+  async bulkCreateEntitiesComplete(
+    organizationId: string,
+    entities: CreateEntityRequest[]
+  ): Promise<any> {
     const operations = entities.map((entity, index) => ({
       entity: 'core_entities',
       operation: 'create',
@@ -509,7 +538,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         smart_code_status: entity.smart_code_status || 'ACTIVE'
       }
     }))
-    
+
     return this.execute({
       entity: 'core_entities',
       organization_id: organizationId,
@@ -522,21 +551,38 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       }
     })
   }
-  
+
   // ============================================================================
   // SCHEMA VALIDATION AND HEALTH
   // ============================================================================
-  
+
   async validateEntitySchema(organizationId: string): Promise<any> {
     return {
       requiredFields: ['id', 'organization_id', 'entity_type', 'entity_name', 'smart_code'],
-      optionalFields: ['entity_code', 'entity_description', 'status', 'from_entity_id', 'tags', 'metadata', 'business_rules', 'ai_confidence', 'ai_insights', 'ai_classification', 'smart_code_status', 'version', 'created_at', 'updated_at', 'created_by', 'updated_by'],
+      optionalFields: [
+        'entity_code',
+        'entity_description',
+        'status',
+        'from_entity_id',
+        'tags',
+        'metadata',
+        'business_rules',
+        'ai_confidence',
+        'ai_insights',
+        'ai_classification',
+        'smart_code_status',
+        'version',
+        'created_at',
+        'updated_at',
+        'created_by',
+        'updated_by'
+      ],
       aiFields: ['ai_confidence', 'ai_insights', 'ai_classification'],
       auditFields: ['created_at', 'updated_at', 'created_by', 'updated_by', 'version'],
       businessFields: ['metadata', 'business_rules', 'tags'],
       hierarchyFields: ['from_entity_id'],
       smartCodeFields: ['smart_code', 'smart_code_status'],
-      
+
       validation: await this.query({
         entity: 'core_entities',
         organization_id: organizationId,
@@ -570,41 +616,41 @@ export default UniversalAPISchemaComplete
 
 /**
  * SCHEMA-COMPLETE COVERAGE ACHIEVED ✅
- * 
+ *
  * This implementation covers ALL 20 columns in the actual core_entities schema:
- * 
+ *
  * SYSTEM FIELDS (7):
  * ✅ id - UUID primary key with auto-generation
- * ✅ organization_id - Sacred multi-tenant boundary  
+ * ✅ organization_id - Sacred multi-tenant boundary
  * ✅ created_at, updated_at - Automatic timestamping
  * ✅ created_by, updated_by - User audit trail
  * ✅ version - Optimistic locking support
- * 
+ *
  * CORE BUSINESS FIELDS (4):
  * ✅ entity_type - Business object classification (required)
  * ✅ entity_name - Display name (required)
  * ✅ entity_code - Business identifier (optional)
  * ✅ entity_description - Detailed description (optional)
- * 
+ *
  * WORKFLOW FIELDS (3):
  * ✅ status - Entity lifecycle status (default 'active')
  * ✅ smart_code - Business intelligence code (required)
  * ✅ smart_code_status - Smart code lifecycle (default 'DRAFT')
- * 
+ *
  * AI INTELLIGENCE FIELDS (3):
  * ✅ ai_confidence - AI confidence score (default 0.0)
  * ✅ ai_insights - JSONB AI-generated insights
  * ✅ ai_classification - AI-determined classification
- * 
+ *
  * ADVANCED FEATURES (3):
  * ✅ parent_entity_id - Hierarchy support
  * ✅ business_rules - JSONB business rule engine
  * ✅ metadata - JSONB flexible metadata
  * ✅ tags - Array tagging system
- * 
+ *
  * REVOLUTIONARY CAPABILITIES:
  * • Complete CRUD operations respecting all schema constraints
- * • AI-powered classification and insights generation  
+ * • AI-powered classification and insights generation
  * • Version control with optimistic locking
  * • Hierarchical entity relationships
  * • Tag-based searching and organization
@@ -613,7 +659,7 @@ export default UniversalAPISchemaComplete
  * • Audit trail with user tracking
  * • Smart code lifecycle management
  * • Bulk operations with schema validation
- * 
+ *
  * RESULT: 100% coverage of all core_entities scenarios with enterprise-grade
  * features that exceed traditional ERP capabilities.
  */

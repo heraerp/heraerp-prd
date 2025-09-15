@@ -1,21 +1,33 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Plus, 
-  Minus, 
-  ShoppingCart, 
-  User, 
-  Package, 
+import {
+  Plus,
+  Minus,
+  ShoppingCart,
+  User,
+  Package,
   Calendar,
   CreditCard,
   Truck,
@@ -29,11 +41,11 @@ import { universalApi } from '@/lib/universal-api'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
-import { 
-  generateHeraDocumentNumber, 
-  useHeraDocumentNumbering, 
+import {
+  generateHeraDocumentNumber,
+  useHeraDocumentNumbering,
   HERA_DNA_DOCUMENT_TYPES,
-  HeraDocumentNumberDisplay 
+  HeraDocumentNumberDisplay
 } from '@/lib/dna/components/document-numbering-dna'
 
 interface Customer {
@@ -70,24 +82,27 @@ interface NewSalesOrderModalProps {
   organizationName?: string
 }
 
-export default function NewSalesOrderModal({ trigger, onOrderCreated, organizationId: propOrgId, organizationName }: NewSalesOrderModalProps) {
+export default function NewSalesOrderModal({
+  trigger,
+  onOrderCreated,
+  organizationId: propOrgId,
+  organizationName
+}: NewSalesOrderModalProps) {
   const { organizationId: hookOrgId, orgLoading, hasOrganization } = useDemoOrganization()
   const { toast } = useToast()
-  
+
   // Use prop organizationId if provided, otherwise use hook
   const organizationId = propOrgId || hookOrgId
   const hasValidOrganization = !!organizationId
-  
+
   // 🧬 HERA DNA: Document Numbering Hook - only initialize if we have an organization
-  const { generateNumber: generateDocNumber, isGenerating: isGeneratingDoc } = useHeraDocumentNumbering(
-    hasValidOrganization ? organizationId : null, 
-    'furniture'
-  )
-  
+  const { generateNumber: generateDocNumber, isGenerating: isGeneratingDoc } =
+    useHeraDocumentNumbering(hasValidOrganization ? organizationId : null, 'furniture')
+
   const [isOpen, setIsOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
-  
+
   // Form state
   const [customerSearchTerm, setCustomerSearchTerm] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
@@ -101,7 +116,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   const [productSearchTerm, setProductSearchTerm] = useState('')
   const [lineItems, setLineItems] = useState<OrderLineItem[]>([])
-  
+
   const [orderDetails, setOrderDetails] = useState({
     order_date: new Date().toISOString().split('T')[0],
     delivery_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -126,9 +141,10 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   useEffect(() => {
     if (customerSearchTerm) {
-      const filtered = customers.filter(customer => 
-        customer.entity_name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
-        customer.entity_code?.toLowerCase().includes(customerSearchTerm.toLowerCase())
+      const filtered = customers.filter(
+        customer =>
+          customer.entity_name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
+          customer.entity_code?.toLowerCase().includes(customerSearchTerm.toLowerCase())
       )
       setFilteredCustomers(filtered)
     } else {
@@ -138,9 +154,10 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   useEffect(() => {
     if (productSearchTerm) {
-      const filtered = products.filter(product => 
-        product.entity_name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
-        product.entity_code?.toLowerCase().includes(productSearchTerm.toLowerCase())
+      const filtered = products.filter(
+        product =>
+          product.entity_name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+          product.entity_code?.toLowerCase().includes(productSearchTerm.toLowerCase())
       )
       setFilteredProducts(filtered)
     } else {
@@ -154,24 +171,31 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
         console.error('No organization ID available')
         return
       }
-      
+
       universalApi.setOrganizationId(organizationId)
-      
+
       // Load customers
       const customersResponse = await universalApi.read('core_entities', undefined, organizationId)
       if (customersResponse.success) {
-        const customerEntities = customersResponse.data?.filter((e: any) => e.entity_type === 'customer') || []
-        
+        const customerEntities =
+          customersResponse.data?.filter((e: any) => e.entity_type === 'customer') || []
+
         // Load dynamic data for customers
-        const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
+        const dynamicDataResponse = await universalApi.read(
+          'core_dynamic_data',
+          undefined,
+          organizationId
+        )
         const dynamicData = dynamicDataResponse.data || []
-        
+
         const customersWithDetails = customerEntities.map((customer: any) => {
           const customerData = dynamicData.filter((d: any) => d.entity_id === customer.id)
           const phone = customerData.find((d: any) => d.field_name === 'phone')?.field_value_text
           const email = customerData.find((d: any) => d.field_name === 'email')?.field_value_text
-          const address = customerData.find((d: any) => d.field_name === 'address')?.field_value_text
-          
+          const address = customerData.find(
+            (d: any) => d.field_name === 'address'
+          )?.field_value_text
+
           return {
             id: customer.id,
             entity_name: customer.entity_name,
@@ -181,7 +205,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
             address
           }
         })
-        
+
         setCustomers(customersWithDetails)
         setFilteredCustomers(customersWithDetails.slice(0, 10))
       }
@@ -189,19 +213,30 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
       // Load products
       const productsResponse = await universalApi.read('core_entities', undefined, organizationId)
       if (productsResponse.success) {
-        const productEntities = productsResponse.data?.filter((e: any) => e.entity_type === 'product') || []
-        
+        const productEntities =
+          productsResponse.data?.filter((e: any) => e.entity_type === 'product') || []
+
         // Load dynamic data for products
-        const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
+        const dynamicDataResponse = await universalApi.read(
+          'core_dynamic_data',
+          undefined,
+          organizationId
+        )
         const dynamicData = dynamicDataResponse.data || []
-        
+
         const productsWithDetails = productEntities.map((product: any) => {
           const productData = dynamicData.filter((d: any) => d.entity_id === product.id)
           const price = productData.find((d: any) => d.field_name === 'price')?.field_value_number
-          const stock_quantity = productData.find((d: any) => d.field_name === 'stock_quantity')?.field_value_number
-          const category = productData.find((d: any) => d.field_name === 'category')?.field_value_text
-          const description = productData.find((d: any) => d.field_name === 'description')?.field_value_text
-          
+          const stock_quantity = productData.find(
+            (d: any) => d.field_name === 'stock_quantity'
+          )?.field_value_number
+          const category = productData.find(
+            (d: any) => d.field_name === 'category'
+          )?.field_value_text
+          const description = productData.find(
+            (d: any) => d.field_name === 'description'
+          )?.field_value_text
+
           return {
             id: product.id,
             entity_name: product.entity_name,
@@ -212,11 +247,10 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
             description
           }
         })
-        
+
         setProducts(productsWithDetails)
         setFilteredProducts(productsWithDetails.slice(0, 10))
       }
-      
     } catch (error) {
       console.error('Error loading data:', error)
     }
@@ -224,12 +258,12 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   const addLineItem = (product: Product) => {
     const existingItemIndex = lineItems.findIndex(item => item.product.id === product.id)
-    
+
     if (existingItemIndex >= 0) {
       // Increase quantity if product already exists
       const updatedItems = [...lineItems]
       updatedItems[existingItemIndex].quantity += 1
-      updatedItems[existingItemIndex].line_amount = 
+      updatedItems[existingItemIndex].line_amount =
         updatedItems[existingItemIndex].quantity * updatedItems[existingItemIndex].unit_price
       setLineItems(updatedItems)
     } else {
@@ -247,14 +281,15 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   const updateLineItem = (index: number, field: keyof OrderLineItem, value: any) => {
     const updatedItems = [...lineItems]
-    
+
     if (field === 'quantity' || field === 'unit_price') {
       updatedItems[index][field] = parseFloat(value) || 0
-      updatedItems[index].line_amount = updatedItems[index].quantity * updatedItems[index].unit_price
+      updatedItems[index].line_amount =
+        updatedItems[index].quantity * updatedItems[index].unit_price
     } else {
       updatedItems[index][field] = value
     }
-    
+
     setLineItems(updatedItems)
   }
 
@@ -280,13 +315,14 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   const handleCreateCustomer = async () => {
     if (!customerFormData.name.trim()) return
-    
+
     // Check if we have a valid organization ID
     if (!hasValidOrganization || !organizationId) {
       toast({
-        title: "Error",
-        description: "No organization context found. Please ensure you're logged in or in a demo mode.",
-        variant: "destructive"
+        title: 'Error',
+        description:
+          "No organization context found. Please ensure you're logged in or in a demo mode.",
+        variant: 'destructive'
       })
       return
     }
@@ -294,7 +330,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
     try {
       setIsSubmitting(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       // Create customer entity
       const customerResponse = await universalApi.createEntity({
         entity_type: 'customer',
@@ -303,22 +339,25 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
         smart_code: 'HERA.FURNITURE.CUST.ENT.PROF.v1',
         organization_id: organizationId
       })
-      
+
       if (customerResponse.success) {
         const customerId = customerResponse.data.id
-        
+
         // Add dynamic data
         const dynamicFields = []
-        if (customerFormData.phone) dynamicFields.push({ field_name: 'phone', field_value_text: customerFormData.phone })
-        if (customerFormData.email) dynamicFields.push({ field_name: 'email', field_value_text: customerFormData.email })
-        if (customerFormData.address) dynamicFields.push({ field_name: 'address', field_value_text: customerFormData.address })
-        
+        if (customerFormData.phone)
+          dynamicFields.push({ field_name: 'phone', field_value_text: customerFormData.phone })
+        if (customerFormData.email)
+          dynamicFields.push({ field_name: 'email', field_value_text: customerFormData.email })
+        if (customerFormData.address)
+          dynamicFields.push({ field_name: 'address', field_value_text: customerFormData.address })
+
         for (const field of dynamicFields) {
           await universalApi.setDynamicField(customerId, field.field_name, field.field_value_text, {
             smart_code: 'HERA.FURNITURE.CUST.DYN.FIELD.v1'
           })
         }
-        
+
         const newCustomer: Customer = {
           id: customerId,
           entity_name: customerFormData.name,
@@ -327,13 +366,12 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
           email: customerFormData.email,
           address: customerFormData.address
         }
-        
+
         setSelectedCustomer(newCustomer)
         setCustomers([newCustomer, ...customers])
         setNewCustomerMode(false)
         setCustomerFormData({ name: '', phone: '', email: '', address: '' })
       }
-      
     } catch (error) {
       console.error('Error creating customer:', error)
     } finally {
@@ -343,13 +381,14 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
   const handleSubmitOrder = async () => {
     if (!selectedCustomer || lineItems.length === 0) return
-    
+
     // Check if we have a valid organization ID
     if (!hasValidOrganization || !organizationId) {
       toast({
-        title: "Error",
-        description: "No organization context found. Please ensure you're logged in or in a demo mode.",
-        variant: "destructive"
+        title: 'Error',
+        description:
+          "No organization context found. Please ensure you're logged in or in a demo mode.",
+        variant: 'destructive'
       })
       return
     }
@@ -357,13 +396,13 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
     try {
       setIsSubmitting(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       const totals = calculateTotals()
-      
+
       // 🧬 HERA DNA: Generate professional document number
       const documentNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.SALES_ORDER)
       console.log('🧬 HERA DNA Generated document number:', documentNumber)
-      
+
       // Create sales order transaction
       const orderResponse = await universalApi.createTransaction({
         transaction_type: 'sales_order',
@@ -387,10 +426,10 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
         },
         organization_id: organizationId
       })
-      
+
       if (orderResponse.success) {
         const orderId = orderResponse.data.id
-        
+
         // Create order line items
         for (let i = 0; i < lineItems.length; i++) {
           const item = lineItems[i]
@@ -410,7 +449,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
             organization_id: organizationId
           })
         }
-        
+
         // Create status relationship (pending approval)
         const statusResponse = await universalApi.createEntity({
           entity_type: 'workflow_status',
@@ -419,7 +458,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
           smart_code: 'HERA.FURNITURE.STATUS.PENDING.v1',
           organization_id: organizationId
         })
-        
+
         if (statusResponse.success) {
           await universalApi.createRelationship({
             from_entity_id: orderId,
@@ -434,13 +473,13 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
             organization_id: organizationId
           })
         }
-        
+
         // 🧬 UNIVERSAL EVENT CONTRACT & FINANCE DNA INTEGRATION
         // Automatic GL Posting for Furniture Sales Order
         try {
           // 🧬 HERA DNA: Generate professional journal entry number
           const journalNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.JOURNAL_ENTRY)
-          
+
           const financeEvent = await universalApi.createTransaction({
             transaction_type: 'journal_entry',
             transaction_code: journalNumber,
@@ -461,7 +500,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
           if (financeEvent.success) {
             const journalId = financeEvent.data.id
-            
+
             // Create journal entry lines following Universal Event Contract
             const journalLines = [
               {
@@ -511,7 +550,8 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
 
             // Create journal lines
             for (const line of journalLines) {
-              if (line.line_amount > 0) { // Only create lines with amounts
+              if (line.line_amount > 0) {
+                // Only create lines with amounts
                 await universalApi.createTransactionLine({
                   transaction_id: journalId,
                   ...line,
@@ -521,21 +561,21 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
             }
 
             toast({
-              title: "🚀 Finance DNA Integration Success!",
+              title: '🚀 Finance DNA Integration Success!',
               description: `Sales order created and automatically posted to GL. Journal Entry: ${journalNumber}`,
-              duration: 5000,
+              duration: 5000
             })
           }
         } catch (financeError) {
           console.error('Finance DNA Integration error:', financeError)
           toast({
-            title: "⚠️ Finance Integration Notice",
-            description: "Order created successfully, but automatic GL posting needs review.",
-            variant: "destructive",
-            duration: 3000,
+            title: '⚠️ Finance Integration Notice',
+            description: 'Order created successfully, but automatic GL posting needs review.',
+            variant: 'destructive',
+            duration: 3000
           })
         }
-        
+
         // Reset form
         setSelectedCustomer(null)
         setLineItems([])
@@ -549,19 +589,18 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
           tax_percent: 5
         })
         setIsOpen(false)
-        
+
         toast({
-          title: "✅ Sales Order Created",
+          title: '✅ Sales Order Created',
           description: `Order ${documentNumber} created successfully with automatic finance integration.`,
-          duration: 4000,
+          duration: 4000
         })
-        
+
         // Callback
         if (onOrderCreated) {
           onOrderCreated(orderId)
         }
       }
-      
     } catch (error) {
       console.error('Error creating sales order:', error)
     } finally {
@@ -570,7 +609,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
   }
 
   const totals = calculateTotals()
-  
+
   // Debug logging
   console.log('NewSalesOrderModal render state:', {
     organizationId,
@@ -581,18 +620,18 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
   })
 
   const handleOpenChange = (open: boolean) => {
-    console.log('NewSalesOrderModal handleOpenChange:', { 
-      open, 
-      hasValidOrganization, 
-      organizationId, 
-      orgLoading 
+    console.log('NewSalesOrderModal handleOpenChange:', {
+      open,
+      hasValidOrganization,
+      organizationId,
+      orgLoading
     })
-    
+
     if (open && (!hasValidOrganization || !organizationId)) {
       toast({
-        title: "No Organization Context",
-        description: "Please log in or wait for demo organization to load.",
-        variant: "destructive"
+        title: 'No Organization Context',
+        description: 'Please log in or wait for demo organization to load.',
+        variant: 'destructive'
       })
       return
     }
@@ -603,7 +642,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button 
+          <Button
             className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             disabled={orgLoading}
           >
@@ -612,13 +651,11 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
           </Button>
         )}
       </DialogTrigger>
-      
-      <DialogContent 
+
+      <DialogContent
         className={cn(
-          "border-gray-700/50 shadow-2xl overflow-y-auto transition-all duration-300",
-          isExpanded 
-            ? "max-w-[95vw] w-[95vw] max-h-[95vh] h-[95vh]" 
-            : "max-w-4xl max-h-[90vh]"
+          'border-gray-700/50 shadow-2xl overflow-y-auto transition-all duration-300',
+          isExpanded ? 'max-w-[95vw] w-[95vw] max-h-[95vh] h-[95vh]' : 'max-w-4xl max-h-[90vh]'
         )}
         style={{
           background: `
@@ -640,7 +677,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
         <DialogHeader className="border-b border-gray-800/50 bg-gray-900/30 backdrop-blur-xl p-6">
           <DialogTitle className="text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div 
+              <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
                 style={{
                   background: `
@@ -665,11 +702,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-gray-400 hover:text-white hover:bg-gray-700/50"
               >
-                {isExpanded ? (
-                  <Minimize2 className="h-4 w-4" />
-                ) : (
-                  <Maximize2 className="h-4 w-4" />
-                )}
+                {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
               </Button>
               <Button
                 variant="ghost"
@@ -682,7 +715,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
             </div>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Customer & Order Details */}
           <div className="lg:col-span-2 space-y-6">
@@ -692,7 +725,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                 <User className="h-5 w-5 text-blue-400" />
                 <h3 className="text-lg font-semibold text-white">Customer Information</h3>
               </div>
-              
+
               {!selectedCustomer && !newCustomerMode ? (
                 <div className="space-y-3">
                   <div className="relative">
@@ -700,13 +733,13 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                     <Input
                       placeholder="Search customers..."
                       value={customerSearchTerm}
-                      onChange={(e) => setCustomerSearchTerm(e.target.value)}
+                      onChange={e => setCustomerSearchTerm(e.target.value)}
                       className="pl-10 bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                     />
                   </div>
-                  
+
                   <div className="max-h-48 overflow-y-auto space-y-2">
-                    {filteredCustomers.map((customer) => (
+                    {filteredCustomers.map(customer => (
                       <div
                         key={customer.id}
                         onClick={() => setSelectedCustomer(customer)}
@@ -729,9 +762,9 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                       </div>
                     ))}
                   </div>
-                  
-                  <Button 
-                    variant="outline" 
+
+                  <Button
+                    variant="outline"
                     onClick={() => setNewCustomerMode(true)}
                     className="w-full border-purple-500 text-purple-400 hover:bg-purple-500/10"
                   >
@@ -746,7 +779,9 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                       <Label className="text-gray-300">Customer Name *</Label>
                       <Input
                         value={customerFormData.name}
-                        onChange={(e) => setCustomerFormData({...customerFormData, name: e.target.value})}
+                        onChange={e =>
+                          setCustomerFormData({ ...customerFormData, name: e.target.value })
+                        }
                         className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                         placeholder="Enter customer name"
                       />
@@ -755,44 +790,50 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                       <Label className="text-gray-300">Phone</Label>
                       <Input
                         value={customerFormData.phone}
-                        onChange={(e) => setCustomerFormData({...customerFormData, phone: e.target.value})}
+                        onChange={e =>
+                          setCustomerFormData({ ...customerFormData, phone: e.target.value })
+                        }
                         className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                         placeholder="Enter phone number"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label className="text-gray-300">Email</Label>
                     <Input
                       type="email"
                       value={customerFormData.email}
-                      onChange={(e) => setCustomerFormData({...customerFormData, email: e.target.value})}
+                      onChange={e =>
+                        setCustomerFormData({ ...customerFormData, email: e.target.value })
+                      }
                       className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       placeholder="Enter email address"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="text-gray-300">Address</Label>
                     <Textarea
                       value={customerFormData.address}
-                      onChange={(e) => setCustomerFormData({...customerFormData, address: e.target.value})}
+                      onChange={e =>
+                        setCustomerFormData({ ...customerFormData, address: e.target.value })
+                      }
                       className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       placeholder="Enter complete address"
                       rows={2}
                     />
                   </div>
-                  
+
                   <div className="flex gap-2">
-                    <Button 
+                    <Button
                       onClick={handleCreateCustomer}
                       disabled={!customerFormData.name.trim() || isSubmitting}
                       className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                     >
                       Create Customer
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       onClick={() => {
                         setNewCustomerMode(false)
@@ -812,38 +853,34 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                       <p className="text-sm text-gray-300">{selectedCustomer.phone}</p>
                     )}
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => setSelectedCustomer(null)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => setSelectedCustomer(null)}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               )}
             </Card>
-            
+
             {/* Product Selection */}
             <Card className="p-4 bg-gray-700/50 border-gray-600">
               <div className="flex items-center gap-2 mb-4">
                 <Package className="h-5 w-5 text-purple-400" />
                 <h3 className="text-lg font-semibold text-white">Add Products</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder="Search products..."
                     value={productSearchTerm}
-                    onChange={(e) => setProductSearchTerm(e.target.value)}
+                    onChange={e => setProductSearchTerm(e.target.value)}
                     className="pl-10 bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                   />
                 </div>
-                
+
                 {productSearchTerm && (
                   <div className="max-h-48 overflow-y-auto space-y-2">
-                    {filteredProducts.map((product) => (
+                    {filteredProducts.map(product => (
                       <div
                         key={product.id}
                         onClick={() => addLineItem(product)}
@@ -860,8 +897,12 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                             )}
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-white">₹{product.price?.toLocaleString('en-IN') || '0'}</p>
-                            <p className="text-xs text-gray-400">Stock: {product.stock_quantity || 0}</p>
+                            <p className="text-sm font-medium text-white">
+                              ₹{product.price?.toLocaleString('en-IN') || '0'}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              Stock: {product.stock_quantity || 0}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -870,7 +911,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                 )}
               </div>
             </Card>
-            
+
             {/* Line Items */}
             {lineItems.length > 0 && (
               <Card className="p-4 bg-gray-700/50 border-gray-600">
@@ -892,14 +933,14 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
-                      
+
                       <div className="grid grid-cols-3 gap-2">
                         <div>
                           <Label className="text-xs text-gray-400">Quantity</Label>
                           <Input
                             type="number"
                             value={item.quantity}
-                            onChange={(e) => updateLineItem(index, 'quantity', e.target.value)}
+                            onChange={e => updateLineItem(index, 'quantity', e.target.value)}
                             className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                             min="1"
                           />
@@ -909,7 +950,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                           <Input
                             type="number"
                             value={item.unit_price}
-                            onChange={(e) => updateLineItem(index, 'unit_price', e.target.value)}
+                            onChange={e => updateLineItem(index, 'unit_price', e.target.value)}
                             className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                             min="0"
                             step="0.01"
@@ -924,12 +965,12 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                           />
                         </div>
                       </div>
-                      
+
                       <div className="mt-2">
                         <Label className="text-xs text-gray-400">Notes</Label>
                         <Input
                           value={item.notes || ''}
-                          onChange={(e) => updateLineItem(index, 'notes', e.target.value)}
+                          onChange={e => updateLineItem(index, 'notes', e.target.value)}
                           className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                           placeholder="Add notes..."
                         />
@@ -940,45 +981,47 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
               </Card>
             )}
           </div>
-          
+
           {/* Right Column - Order Summary & Details */}
           <div className="space-y-6">
             {/* Order Summary */}
             <Card className="p-4 bg-gray-700/50 border-gray-600">
               <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Items ({totals.itemCount})</span>
                   <span className="text-white">₹{totals.subtotal.toLocaleString('en-IN')}</span>
                 </div>
-                
+
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Discount ({orderDetails.discount_percent}%)</span>
-                  <span className="text-white">-₹{totals.discountAmount.toLocaleString('en-IN')}</span>
+                  <span className="text-white">
+                    -₹{totals.discountAmount.toLocaleString('en-IN')}
+                  </span>
                 </div>
-                
+
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">GST ({orderDetails.tax_percent}%)</span>
                   <span className="text-white">₹{totals.taxAmount.toLocaleString('en-IN')}</span>
                 </div>
-                
+
                 <Separator className="bg-gray-600" />
-                
+
                 <div className="flex justify-between font-semibold">
                   <span className="text-white">Total</span>
                   <span className="text-white">₹{totals.total.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </Card>
-            
+
             {/* Order Details */}
             <Card className="p-4 bg-gray-700/50 border-gray-600">
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="h-5 w-5 text-green-400" />
                 <h3 className="text-lg font-semibold text-white">Order Details</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="grid grid-cols-1 gap-3">
                   <div>
@@ -986,27 +1029,33 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                     <Input
                       type="date"
                       value={orderDetails.order_date}
-                      onChange={(e) => setOrderDetails({...orderDetails, order_date: e.target.value})}
+                      onChange={e =>
+                        setOrderDetails({ ...orderDetails, order_date: e.target.value })
+                      }
                       className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm [color-scheme:dark]"
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="text-gray-300">Delivery Date</Label>
                     <Input
                       type="date"
                       value={orderDetails.delivery_date}
-                      onChange={(e) => setOrderDetails({...orderDetails, delivery_date: e.target.value})}
+                      onChange={e =>
+                        setOrderDetails({ ...orderDetails, delivery_date: e.target.value })
+                      }
                       className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm [color-scheme:dark]"
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <Label className="text-gray-300">Payment Terms</Label>
-                  <Select 
-                    value={orderDetails.payment_terms} 
-                    onValueChange={(value) => setOrderDetails({...orderDetails, payment_terms: value})}
+                  <Select
+                    value={orderDetails.payment_terms}
+                    onValueChange={value =>
+                      setOrderDetails({ ...orderDetails, payment_terms: value })
+                    }
                   >
                     <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm">
                       <SelectValue />
@@ -1019,12 +1068,14 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <Label className="text-gray-300">Delivery Method</Label>
-                  <Select 
-                    value={orderDetails.delivery_method} 
-                    onValueChange={(value) => setOrderDetails({...orderDetails, delivery_method: value})}
+                  <Select
+                    value={orderDetails.delivery_method}
+                    onValueChange={value =>
+                      setOrderDetails({ ...orderDetails, delivery_method: value })
+                    }
                   >
                     <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm">
                       <SelectValue />
@@ -1036,14 +1087,19 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Label className="text-gray-300">Discount %</Label>
                     <Input
                       type="number"
                       value={orderDetails.discount_percent}
-                      onChange={(e) => setOrderDetails({...orderDetails, discount_percent: parseFloat(e.target.value) || 0})}
+                      onChange={e =>
+                        setOrderDetails({
+                          ...orderDetails,
+                          discount_percent: parseFloat(e.target.value) || 0
+                        })
+                      }
                       className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       min="0"
                       max="100"
@@ -1055,7 +1111,12 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                     <Input
                       type="number"
                       value={orderDetails.tax_percent}
-                      onChange={(e) => setOrderDetails({...orderDetails, tax_percent: parseFloat(e.target.value) || 0})}
+                      onChange={e =>
+                        setOrderDetails({
+                          ...orderDetails,
+                          tax_percent: parseFloat(e.target.value) || 0
+                        })
+                      }
                       className="bg-gray-800/50 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                       min="0"
                       max="30"
@@ -1063,12 +1124,12 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <Label className="text-gray-300">Notes</Label>
                   <Textarea
                     value={orderDetails.notes}
-                    onChange={(e) => setOrderDetails({...orderDetails, notes: e.target.value})}
+                    onChange={e => setOrderDetails({ ...orderDetails, notes: e.target.value })}
                     className="bg-gray-800/50 border-gray-600/50 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 backdrop-blur-sm"
                     placeholder="Special instructions..."
                     rows={3}
@@ -1076,7 +1137,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
                 </div>
               </div>
             </Card>
-            
+
             {/* Action Buttons */}
             <div className="space-y-3">
               <Button
@@ -1086,7 +1147,7 @@ export default function NewSalesOrderModal({ trigger, onOrderCreated, organizati
               >
                 {isSubmitting ? 'Creating Order...' : 'Create Sales Order'}
               </Button>
-              
+
               <Button
                 variant="outline"
                 onClick={() => setIsOpen(false)}

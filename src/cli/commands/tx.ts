@@ -13,8 +13,7 @@ import crypto from 'node:crypto'
 export function registerTx(cmd: Command) {
   const tx = cmd.command('tx').description('Universal transaction operations')
 
-  tx
-    .command('create')
+  tx.command('create')
     .description('Create a universal transaction')
     .requiredOption('--type <type>', 'Transaction type')
     .requiredOption('--code <smart_code>', 'Transaction smart code')
@@ -24,7 +23,7 @@ export function registerTx(cmd: Command) {
     .option('--lines <json>', 'Transaction lines JSON array')
     .option('--validate-balance', 'Validate GL balance', true)
     .option('--json', 'Output JSON', false)
-    .action(async (opts) => {
+    .action(async opts => {
       const lines = opts.lines ? JSON.parse(opts.lines) : []
       const parsed = CreateTransactionInputSchema.safeParse({
         org: opts.org,
@@ -72,13 +71,33 @@ export function registerTx(cmd: Command) {
         await client.query(
           `INSERT INTO universal_transactions (id, organization_id, transaction_type, smart_code, occurred_at, ai_confidence, currency, total_amount, metadata)
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-          [txId, input.org, input.type, input.code, date, 0, input.currency, total, { source: 'cli' }]
+          [
+            txId,
+            input.org,
+            input.type,
+            input.code,
+            date,
+            0,
+            input.currency,
+            total,
+            { source: 'cli' }
+          ]
         )
         for (const l of input.lines) {
           await client.query(
             `INSERT INTO universal_transaction_lines (id, transaction_id, organization_id, line_number, line_type, entity_id, line_amount, smart_code, metadata)
              VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-            [crypto.randomUUID(), txId, input.org, l.line_number, l.line_type, l.entity_id ?? null, l.line_amount, l.smart_code, { source: 'cli' }]
+            [
+              crypto.randomUUID(),
+              txId,
+              input.org,
+              l.line_number,
+              l.line_type,
+              l.entity_id ?? null,
+              l.line_amount,
+              l.smart_code,
+              { source: 'cli' }
+            ]
           )
         }
         await client.query('COMMIT')
@@ -124,8 +143,7 @@ export function registerTx(cmd: Command) {
       }
     })
 
-  tx
-    .command('list')
+  tx.command('list')
     .description('List universal transactions')
     .option('--org <uuid>', 'Organization ID')
     .option('--since <date>', 'ISO start date')
@@ -135,7 +153,7 @@ export function registerTx(cmd: Command) {
     .option('--offset <n>', 'Offset')
     .option('--include-lines', 'Include lines', false)
     .option('--json', 'Output JSON', false)
-    .action(async (opts) => {
+    .action(async opts => {
       const parsed = ListTransactionsInputSchema.safeParse({
         org: opts.org,
         since: opts.since,
@@ -156,10 +174,18 @@ export function registerTx(cmd: Command) {
       try {
         const where: string[] = []
         const args: any[] = []
-        if (input.org) { where.push('organization_id = $' + (args.push(input.org))) }
-        if (input.type) { where.push('transaction_type = $' + (args.push(input.type))) }
-        if (input.since) { where.push('occurred_at >= $' + (args.push(input.since))) }
-        if (input.until) { where.push('occurred_at <= $' + (args.push(input.until))) }
+        if (input.org) {
+          where.push('organization_id = $' + args.push(input.org))
+        }
+        if (input.type) {
+          where.push('transaction_type = $' + args.push(input.type))
+        }
+        if (input.since) {
+          where.push('occurred_at >= $' + args.push(input.since))
+        }
+        if (input.until) {
+          where.push('occurred_at <= $' + args.push(input.until))
+        }
         const sql = `SELECT id, transaction_type, occurred_at as transaction_date, total_amount, currency, smart_code
                      FROM universal_transactions
                      ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
@@ -184,7 +210,10 @@ export function registerTx(cmd: Command) {
             has_more: r.rowCount === input.limit
           },
           summary: {
-            total_amount: transactions.reduce((s: number, t: any) => s + Number(t.total_amount || 0), 0),
+            total_amount: transactions.reduce(
+              (s: number, t: any) => s + Number(t.total_amount || 0),
+              0
+            ),
             transaction_count: transactions.length,
             currencies: [...new Set(transactions.map((t: any) => t.currency))]
           }
@@ -201,4 +230,3 @@ export function registerTx(cmd: Command) {
       }
     })
 }
-

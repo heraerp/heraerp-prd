@@ -36,65 +36,66 @@ export async function POST(req: NextRequest) {
       // Employee Management
       case 'create_employee':
         return await createEmployee(data, payload.organization_id)
-      
+
       case 'update_employee':
         return await updateEmployee(employee_id!, data, payload.organization_id)
-      
+
       case 'terminate_employee':
         return await terminateEmployee(employee_id!, data, payload.organization_id)
-      
+
       // Payroll
       case 'run_payroll':
         return await runPayroll(employee_ids || [], data, payload.organization_id)
-      
+
       case 'calculate_payroll':
         return await calculatePayroll(employee_id!, payload.organization_id)
-      
+
       // Time & Attendance
       case 'clock_in_out':
         return await clockInOut(employee_id!, data, payload.organization_id)
-      
+
       case 'request_leave':
         return await requestLeave(employee_id!, data, payload.organization_id)
-      
+
       case 'approve_leave':
         return await approveLeave(data.leave_id, data, payload.organization_id)
-      
+
       // Performance
       case 'create_review':
         return await createPerformanceReview(employee_id!, data, payload.organization_id)
-      
+
       case 'set_goal':
         return await setPerformanceGoal(employee_id!, data, payload.organization_id)
-      
+
       // Analytics
       case 'get_workforce_analytics':
         return await getWorkforceAnalytics(payload.organization_id, data)
-      
+
       case 'detect_anomalies':
         return await detectAnomalies(payload.organization_id)
-      
+
       case 'forecast_headcount':
         return await forecastHeadcount(payload.organization_id, data)
-      
+
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('HCM API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // Employee Management Functions
 async function createEmployee(data: any, organizationId: string) {
-  const { 
-    name, email, department, job_title, 
-    base_salary = 50000, hire_date = new Date().toISOString(),
-    country = 'US' 
+  const {
+    name,
+    email,
+    department,
+    job_title,
+    base_salary = 50000,
+    hire_date = new Date().toISOString(),
+    country = 'US'
   } = data
 
   // Create employee entity
@@ -122,23 +123,21 @@ async function createEmployee(data: any, organizationId: string) {
   if (error) throw error
 
   // Create onboarding transaction
-  await supabase
-    .from('universal_transactions')
-    .insert({
-      organization_id: organizationId,
-      transaction_type: 'employee_onboarding',
-      transaction_code: `ONBOARD-${employee.entity_code}`,
-      smart_code: 'HERA.HCM.EMP.ONBOARD.v1',
-      transaction_date: new Date().toISOString(),
-      from_entity_id: employee.id,
-      metadata: {
-        onboarding_status: 'initiated',
-        tasks_pending: ['documents', 'orientation', 'system_access', 'equipment']
-      }
-    })
+  await supabase.from('universal_transactions').insert({
+    organization_id: organizationId,
+    transaction_type: 'employee_onboarding',
+    transaction_code: `ONBOARD-${employee.entity_code}`,
+    smart_code: 'HERA.HCM.EMP.ONBOARD.v1',
+    transaction_date: new Date().toISOString(),
+    from_entity_id: employee.id,
+    metadata: {
+      onboarding_status: 'initiated',
+      tasks_pending: ['documents', 'orientation', 'system_access', 'equipment']
+    }
+  })
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: employee,
     message: 'Employee created successfully'
   })
@@ -157,8 +156,8 @@ async function updateEmployee(employeeId: string, updates: any, organizationId: 
 
   if (error) throw error
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data,
     message: 'Employee updated successfully'
   })
@@ -180,7 +179,12 @@ async function terminateEmployee(employeeId: string, data: any, organizationId: 
       metadata: {
         termination_reason: reason,
         final_working_day: termination_date,
-        exit_checklist: ['return_equipment', 'knowledge_transfer', 'exit_interview', 'final_settlement']
+        exit_checklist: [
+          'return_equipment',
+          'knowledge_transfer',
+          'exit_interview',
+          'final_settlement'
+        ]
       }
     })
     .select()
@@ -197,8 +201,8 @@ async function terminateEmployee(employeeId: string, data: any, organizationId: 
     .eq('id', employeeId)
     .eq('organization_id', organizationId)
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: termination,
     message: 'Employee termination processed'
   })
@@ -232,7 +236,7 @@ async function runPayroll(employeeIds: string[], data: any, organizationId: stri
     const baseSalary = parseFloat((employee.metadata as any)?.base_salary || 0)
     const country = (employee.metadata as any)?.country || 'US'
     const taxRate = getTaxRate(country)
-    
+
     const gross = baseSalary / 12 // Monthly
     const tax = gross * taxRate
     const net = gross - tax
@@ -269,8 +273,8 @@ async function runPayroll(employeeIds: string[], data: any, organizationId: stri
     })
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: payrollResults,
     summary: {
       total_employees: payrollResults.length,
@@ -352,8 +356,8 @@ async function clockInOut(employeeId: string, data: any, organizationId: string)
     result = data
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: result,
     message: `Clocked ${action} successfully`
   })
@@ -364,7 +368,10 @@ async function requestLeave(employeeId: string, data: any, organizationId: strin
   const { leave_type, start_date, end_date, reason = '' } = data
 
   // Calculate days
-  const days = Math.ceil((new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24)) + 1
+  const days =
+    Math.ceil(
+      (new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24)
+    ) + 1
 
   // Get employee leave balance
   const { data: employee } = await supabase
@@ -378,9 +385,12 @@ async function requestLeave(employeeId: string, data: any, organizationId: strin
   const leaveBalance = leaveEntitlements.find((l: any) => l.type === leave_type)?.days || 0
 
   if (days > leaveBalance) {
-    return NextResponse.json({ 
-      error: `Insufficient leave balance. Available: ${leaveBalance} days, Requested: ${days} days`
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        error: `Insufficient leave balance. Available: ${leaveBalance} days, Requested: ${days} days`
+      },
+      { status: 400 }
+    )
   }
 
   // Create leave request
@@ -409,8 +419,8 @@ async function requestLeave(employeeId: string, data: any, organizationId: strin
 
   if (error) throw error
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: leaveRequest,
     message: 'Leave request submitted successfully'
   })
@@ -467,7 +477,8 @@ async function getWorkforceAnalytics(organizationId: string, filters: any = {}) 
 
     // Compensation
     analytics.compensation.total_annual_cost += salary
-    analytics.compensation.by_department[dept] = (analytics.compensation.by_department[dept] || 0) + salary
+    analytics.compensation.by_department[dept] =
+      (analytics.compensation.by_department[dept] || 0) + salary
 
     // Diversity
     analytics.diversity.by_gender[gender] = (analytics.diversity.by_gender[gender] || 0) + 1
@@ -475,7 +486,8 @@ async function getWorkforceAnalytics(organizationId: string, filters: any = {}) 
 
   // Calculate averages
   if (analytics.headcount.total > 0) {
-    analytics.compensation.average_salary = analytics.compensation.total_annual_cost / analytics.headcount.total
+    analytics.compensation.average_salary =
+      analytics.compensation.total_annual_cost / analytics.headcount.total
   }
 
   // Calculate diversity index (Shannon index)
@@ -489,8 +501,8 @@ async function getWorkforceAnalytics(organizationId: string, filters: any = {}) 
     })
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: analytics
   })
 }
@@ -498,20 +510,20 @@ async function getWorkforceAnalytics(organizationId: string, filters: any = {}) 
 // Helper Functions
 function getDefaultLeaveEntitlements(country: string) {
   const entitlements: Record<string, any[]> = {
-    'US': [
+    US: [
       { type: 'annual', days: 15, accrual_rate: 1.25 },
       { type: 'sick', days: 10, accrual_rate: 0.83 },
       { type: 'personal', days: 3, accrual_rate: 0 }
     ],
-    'UK': [
+    UK: [
       { type: 'annual', days: 28, accrual_rate: 2.33 },
       { type: 'sick', days: 0, accrual_rate: 0 }
     ],
-    'AE': [
+    AE: [
       { type: 'annual', days: 30, accrual_rate: 2.5 },
       { type: 'sick', days: 15, accrual_rate: 0 }
     ],
-    'IN': [
+    IN: [
       { type: 'annual', days: 21, accrual_rate: 1.75 },
       { type: 'sick', days: 12, accrual_rate: 1 },
       { type: 'casual', days: 12, accrual_rate: 1 }
@@ -522,22 +534,22 @@ function getDefaultLeaveEntitlements(country: string) {
 
 function getTaxRate(country: string): number {
   const rates: Record<string, number> = {
-    'US': 0.22,
-    'UK': 0.20,
-    'AE': 0.00,
-    'IN': 0.10,
-    'SG': 0.07
+    US: 0.22,
+    UK: 0.2,
+    AE: 0.0,
+    IN: 0.1,
+    SG: 0.07
   }
   return rates[country] || 0.15
 }
 
 function getCurrency(country: string): string {
   const currencies: Record<string, string> = {
-    'US': 'USD',
-    'UK': 'GBP',
-    'AE': 'AED',
-    'IN': 'INR',
-    'SG': 'SGD'
+    US: 'USD',
+    UK: 'GBP',
+    AE: 'AED',
+    IN: 'INR',
+    SG: 'SGD'
   }
   return currencies[country] || 'USD'
 }

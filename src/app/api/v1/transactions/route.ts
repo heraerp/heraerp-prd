@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
-
 // GET /api/v1/transactions - Universal transaction fetch
 export async function GET(request: NextRequest) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
-    
+
     const { searchParams } = new URL(request.url)
     const transaction_type = searchParams.get('transaction_type')
     const transaction_id = searchParams.get('transaction_id')
     const status = searchParams.get('status')
     const include_lines = searchParams.get('include_lines') !== 'false'
     const limit = parseInt(searchParams.get('limit') || '50')
-    
+
     // Get organization_id from mock context (in production, extract from JWT)
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
 
@@ -50,10 +49,11 @@ export async function GET(request: NextRequest) {
     // If including transaction lines
     if (include_lines && transactions && transactions.length > 0) {
       const transactionIds = transactions.map(t => t.id)
-      
+
       const { data: transactionLines, error: linesError } = await supabaseAdmin
         .from('universal_transaction_lines')
-        .select(`
+        .select(
+          `
           *,
           entity:core_entities!universal_transaction_lines_entity_id_fkey(
             id, 
@@ -62,7 +62,8 @@ export async function GET(request: NextRequest) {
             entity_category,
             entity_subcategory
           )
-        `)
+        `
+        )
         .in('transaction_id', transactionIds)
         .order('line_order', { ascending: true })
 
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
       // Combine transactions with their lines
       const transactionsWithLines = transactions.map(transaction => {
         const lines = transactionLines?.filter(line => line.transaction_id === transaction.id) || []
-        
+
         return {
           ...transaction,
           lines: lines.map(line => ({
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest) {
             line_description: line.line_description,
             quantity: line.quantity || 0,
             unit_price: line.unit_price || 0,
-            line_total: line.line_amount || (line.quantity * line.unit_price) || 0,
+            line_total: line.line_amount || line.quantity * line.unit_price || 0,
             discount_amount: line.discount_amount || 0,
             tax_amount: line.tax_amount || 0,
             line_data: line.metadata || {},
@@ -113,13 +114,9 @@ export async function GET(request: NextRequest) {
       data: transaction_id ? transactions[0] : transactions,
       count: transactions?.length || 0
     })
-
   } catch (error) {
     console.error('Universal transactions API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -130,13 +127,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
 
-    const {
-      id,
-      status,
-      transaction_data,
-      notes,
-      tags
-    } = body
+    const { id, status, transaction_data, notes, tags } = body
 
     if (!id) {
       return NextResponse.json(
@@ -174,13 +165,9 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'Transaction updated successfully'
     })
-
   } catch (error) {
     console.error('Update transaction error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -210,11 +197,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate totals
-    const subtotal = items?.reduce((sum: number, item: any) => sum + (item.quantity * item.unit_price), 0) || 0
+    const subtotal =
+      items?.reduce((sum: number, item: any) => sum + item.quantity * item.unit_price, 0) || 0
     const total_amount = subtotal // TODO: Add tax and discount calculations
 
     // Generate transaction number if not provided
-    const transaction_number = reference_number || `TXN-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`
+    const transaction_number =
+      reference_number || `TXN-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`
 
     // Create transaction
     const { data: transaction, error: transactionError } = await supabaseAdmin
@@ -281,12 +270,8 @@ export async function POST(request: NextRequest) {
         status
       }
     })
-
   } catch (error) {
     console.error('Create transaction error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

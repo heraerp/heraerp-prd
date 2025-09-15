@@ -1,6 +1,6 @@
 /**
  * Customer Key Management for PWM
- * 
+ *
  * Allows customers to optionally manage their own encryption keys
  * while maintaining ease of use for those who prefer automatic management
  */
@@ -47,15 +47,16 @@ export function generateCustomerKeyBundle(
 
   // Generate unique key ID
   const keyId = crypto.randomBytes(16).toString('hex')
-  
+
   // Create fingerprint for verification
-  const fingerprint = crypto
-    .createHash('sha256')
-    .update(publicKey)
-    .digest('hex')
-    .substring(0, 16)
-    .match(/.{1,4}/g)
-    ?.join(':') || ''
+  const fingerprint =
+    crypto
+      .createHash('sha256')
+      .update(publicKey)
+      .digest('hex')
+      .substring(0, 16)
+      .match(/.{1,4}/g)
+      ?.join(':') || ''
 
   return {
     keyId,
@@ -77,30 +78,47 @@ export function generateSimpleCustomerKey(): {
   // Generate 256-bit key
   const keyBuffer = crypto.randomBytes(32)
   const key = keyBuffer.toString('hex')
-  
+
   // Create memorable mnemonic (simplified version)
   const words = [
-    'alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot',
-    'golf', 'hotel', 'india', 'juliet', 'kilo', 'lima',
-    'mike', 'november', 'oscar', 'papa', 'quebec', 'romeo',
-    'sierra', 'tango', 'uniform', 'victor', 'whiskey', 'xray',
-    'yankee', 'zulu'
+    'alpha',
+    'bravo',
+    'charlie',
+    'delta',
+    'echo',
+    'foxtrot',
+    'golf',
+    'hotel',
+    'india',
+    'juliet',
+    'kilo',
+    'lima',
+    'mike',
+    'november',
+    'oscar',
+    'papa',
+    'quebec',
+    'romeo',
+    'sierra',
+    'tango',
+    'uniform',
+    'victor',
+    'whiskey',
+    'xray',
+    'yankee',
+    'zulu'
   ]
-  
+
   const mnemonic: string[] = []
   for (let i = 0; i < 12; i++) {
     const byte = keyBuffer[i]
     const wordIndex = byte % words.length
     mnemonic.push(words[wordIndex])
   }
-  
+
   // Create fingerprint
-  const fingerprint = crypto
-    .createHash('sha256')
-    .update(key)
-    .digest('hex')
-    .substring(0, 8)
-  
+  const fingerprint = crypto.createHash('sha256').update(key).digest('hex').substring(0, 8)
+
   return {
     key,
     mnemonic,
@@ -125,19 +143,19 @@ export function encryptWithCustomerKey(
     const iv = crypto.randomBytes(16)
     const key = crypto.createHash('sha256').update(customerKey).digest()
     const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
-    
+
     let encrypted = cipher.update(data, 'utf8', 'hex')
     encrypted += cipher.final('hex')
-    
+
     // Still use platform encryption as outer layer
     const platformEncrypted = encryptData(
-      JSON.stringify({ 
-        customerEncrypted: encrypted, 
-        iv: iv.toString('hex') 
+      JSON.stringify({
+        customerEncrypted: encrypted,
+        iv: iv.toString('hex')
       }),
       organizationId
     )
-    
+
     return {
       encrypted: JSON.stringify(platformEncrypted),
       keyFingerprint: crypto.createHash('sha256').update(customerKey).digest('hex').substring(0, 8),
@@ -170,11 +188,11 @@ export function setupKeyRecovery(
   recoveryHint: string
 } {
   const recoveryId = crypto.randomBytes(16).toString('hex')
-  
+
   // In production, this would securely store recovery data
   // For now, return recovery setup confirmation
   let recoveryHint = ''
-  
+
   switch (options.method) {
     case 'security-questions':
       recoveryHint = 'Security questions configured'
@@ -186,7 +204,7 @@ export function setupKeyRecovery(
       recoveryHint = 'Multi-signature recovery enabled'
       break
   }
-  
+
   return {
     recoveryId,
     recoveryHint
@@ -208,15 +226,15 @@ export function exportCustomerKeys(
     fingerprint: keys.fingerprint,
     warning: 'Keep this backup secure. Anyone with this file can access your encrypted data.'
   }
-  
+
   switch (format) {
     case 'json':
       return JSON.stringify(exportData, null, 2)
-    
+
     case 'qr':
       // In production, generate QR code
       return Buffer.from(JSON.stringify(exportData))
-    
+
     case 'paper':
       // Generate printable format
       return `
@@ -232,7 +250,7 @@ ${exportData.publicKey}
 ${exportData.warning}
 ==============================
       `.trim()
-    
+
     default:
       return JSON.stringify(exportData)
   }

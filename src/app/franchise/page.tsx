@@ -5,7 +5,8 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'How to Own a Software Company Without Writing Code | HERA',
-  description: 'Own a software company without writing code, spending a fortune, or waiting years to profit. We handle 70% of the work.',
+  description:
+    'Own a software company without writing code, spending a fortune, or waiting years to profit. We handle 70% of the work.'
 }
 
 export default function FranchisePage() {
@@ -15,8 +16,9 @@ export default function FranchisePage() {
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>How to Own a Software Company Without Writing Code</title>
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
             
             * {
@@ -463,56 +465,113 @@ export default function FranchisePage() {
                 }
             }
           `
-        }} />
+          }}
+        />
       </head>
       <body>
         <div className="container">
           <div className="hero">
-            <h1>How to Own a Software Company Without Writing Code, Spending a Fortune, or Waiting Years to Profit</h1>
+            <h1>
+              How to Own a Software Company Without Writing Code, Spending a Fortune, or Waiting
+              Years to Profit
+            </h1>
           </div>
 
           <div className="glass-card story">
             <p>I was at lunch with an old friend.</p>
-            <p>He told me he'd just landed a contract worth thousands — and it would keep paying him <strong>every single month</strong>.</p>
-            
-            <p>It wasn't real estate.<br />
-            It wasn't stocks.<br />
-            <span className="emphasis">It was software.</span></p>
-            
+            <p>
+              He told me he'd just landed a contract worth thousands — and it would keep paying him{' '}
+              <strong>every single month</strong>.
+            </p>
+
+            <p>
+              It wasn't real estate.
+              <br />
+              It wasn't stocks.
+              <br />
+              <span className="emphasis">It was software.</span>
+            </p>
+
             <div className="twist">
-              <p>The twist?<br />
-              He didn't build it.<br />
-              He didn't hire a developer.<br />
-              And he barely knew what "API" meant.</p>
+              <p>
+                The twist?
+                <br />
+                He didn't build it.
+                <br />
+                He didn't hire a developer.
+                <br />
+                And he barely knew what "API" meant.
+              </p>
             </div>
-            
+
             <p>That's when I learned the secret.</p>
-            <p><strong>You don't have to be the tech genius.</strong><br />
-            <strong>You just have to own the relationship.</strong></p>
-            
-            <div className="secret">
-              We do the rest.
-            </div>
+            <p>
+              <strong>You don't have to be the tech genius.</strong>
+              <br />
+              <strong>You just have to own the relationship.</strong>
+            </p>
+
+            <div className="secret">We do the rest.</div>
           </div>
 
           <div className="glass-card">
             <h2 className="section-title">The Partnership in Plain English</h2>
-            <p style={{ textAlign: 'center', marginBottom: '2.5rem', fontSize: '1.125rem', color: '#cbd5e1', fontWeight: '500' }}>We've built a system where:</p>
-            
+            <p
+              style={{
+                textAlign: 'center',
+                marginBottom: '2.5rem',
+                fontSize: '1.125rem',
+                color: '#cbd5e1',
+                fontWeight: '500'
+              }}
+            >
+              We've built a system where:
+            </p>
+
             <ul className="partnership-list">
-              <li><strong>We handle 70% of the work</strong> — all the software development, all the automation, all the tech headaches.</li>
-              <li><strong>Our AI finds and qualifies 70% of your leads</strong> — constantly feeding you warm prospects in your territory.</li>
-              <li><strong>You focus on conversations and closing deals</strong> — using your network and people skills to seal the sale.</li>
+              <li>
+                <strong>We handle 70% of the work</strong> — all the software development, all the
+                automation, all the tech headaches.
+              </li>
+              <li>
+                <strong>Our AI finds and qualifies 70% of your leads</strong> — constantly feeding
+                you warm prospects in your territory.
+              </li>
+              <li>
+                <strong>You focus on conversations and closing deals</strong> — using your network
+                and people skills to seal the sale.
+              </li>
             </ul>
           </div>
 
           <div className="glass-card">
             <h2 className="section-title">Why This Works (Reason Why)</h2>
-            <p style={{ fontSize: '1.125rem', lineHeight: '1.7', marginBottom: '1.5rem', color: '#f1f5f9' }}><strong>Every business runs on software.</strong> Most pay monthly. Many are frustrated with what they use now.</p>
-            <p style={{ fontSize: '1.125rem', lineHeight: '1.7', marginBottom: '2rem', color: '#f1f5f9' }}>When you step in with our proven platform, you offer an immediate, better alternative — without paying to develop it yourself.</p>
-            
+            <p
+              style={{
+                fontSize: '1.125rem',
+                lineHeight: '1.7',
+                marginBottom: '1.5rem',
+                color: '#f1f5f9'
+              }}
+            >
+              <strong>Every business runs on software.</strong> Most pay monthly. Many are
+              frustrated with what they use now.
+            </p>
+            <p
+              style={{
+                fontSize: '1.125rem',
+                lineHeight: '1.7',
+                marginBottom: '2rem',
+                color: '#f1f5f9'
+              }}
+            >
+              When you step in with our proven platform, you offer an immediate, better alternative
+              — without paying to develop it yourself.
+            </p>
+
             <div className="stats-highlight">
-              Our current partners convert about 3 in every 10 leads we send them. That's recurring income you can scale month after month.
+              Our current partners convert about 3 in every 10 leads we send them. That's recurring
+              income you can scale month after month.
             </div>
           </div>
 
@@ -523,28 +582,62 @@ export default function FranchisePage() {
               <li>Be comfortable having real conversations about their needs.</li>
               <li>Commit to growing your territory.</li>
             </ul>
-            <p style={{ marginTop: '2rem', fontSize: '1.125rem', fontStyle: 'italic', color: '#cbd5e1' }}>We guide you through everything else — even the simple legal setup.</p>
+            <p
+              style={{
+                marginTop: '2rem',
+                fontSize: '1.125rem',
+                fontStyle: 'italic',
+                color: '#cbd5e1'
+              }}
+            >
+              We guide you through everything else — even the simple legal setup.
+            </p>
           </div>
 
           <div className="glass-card dark-glass">
             <h2 className="section-title">Low Risk. High Reward.</h2>
             <div className="guarantee-list">
-              <p><strong>No upfront investment.</strong></p>
-              <p><strong>No technical skills required.</strong></p>
-              <p><strong>Exclusive territory</strong> — one partner per market.</p>
+              <p>
+                <strong>No upfront investment.</strong>
+              </p>
+              <p>
+                <strong>No technical skills required.</strong>
+              </p>
+              <p>
+                <strong>Exclusive territory</strong> — one partner per market.
+              </p>
             </div>
-            
+
             <div className="trial-offer">
-              <strong>Try it for 14 days.</strong><br />
+              <strong>Try it for 14 days.</strong>
+              <br />
               If you don't have leads in hand by then, you walk away owing nothing.
             </div>
           </div>
 
           <div className="glass-card urgency-glass">
             <h2 className="section-title">Your Market Won't Wait</h2>
-            <p style={{ fontSize: '1.25rem', lineHeight: '1.6', marginBottom: '1rem', fontWeight: '500' }}><strong>We're only opening a limited number of territories this quarter.</strong></p>
-            <p style={{ fontSize: '1.25rem', lineHeight: '1.6', marginBottom: '2rem', fontWeight: '500' }}>Once your area is taken, it's gone.</p>
-            
+            <p
+              style={{
+                fontSize: '1.25rem',
+                lineHeight: '1.6',
+                marginBottom: '1rem',
+                fontWeight: '500'
+              }}
+            >
+              <strong>We're only opening a limited number of territories this quarter.</strong>
+            </p>
+            <p
+              style={{
+                fontSize: '1.25rem',
+                lineHeight: '1.6',
+                marginBottom: '2rem',
+                fontWeight: '500'
+              }}
+            >
+              Once your area is taken, it's gone.
+            </p>
+
             <a href="#apply" className="cta-button primary">
               📞 Click here to apply now and start your own software company before the month is out
             </a>
@@ -553,50 +646,67 @@ export default function FranchisePage() {
           {/* Application Form */}
           <div id="apply" className="application-form">
             <h2 className="section-title">Apply for Your Exclusive Territory</h2>
-            <p style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1.125rem', color: 'rgba(255, 255, 255, 0.9)', fontWeight: '500' }}>
-              Ready to own your software company? Just tell us who you are and we'll reach out within 24 hours.
+            <p
+              style={{
+                textAlign: 'center',
+                marginBottom: '2rem',
+                fontSize: '1.125rem',
+                color: 'rgba(255, 255, 255, 0.9)',
+                fontWeight: '500'
+              }}
+            >
+              Ready to own your software company? Just tell us who you are and we'll reach out
+              within 24 hours.
             </p>
-            
+
             <form id="franchiseForm">
               <div className="form-group">
-                <label className="form-label" htmlFor="name">Full Name</label>
-                <input 
-                  type="text" 
-                  id="name" 
-                  name="name" 
-                  className="form-input" 
+                <label className="form-label" htmlFor="name">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  className="form-input"
                   placeholder="Your full name"
                   required
                 />
               </div>
-              
+
               <div className="form-group">
-                <label className="form-label" htmlFor="email">Email Address</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  className="form-input" 
+                <label className="form-label" htmlFor="email">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="form-input"
                   placeholder="your@email.com"
                   required
                 />
               </div>
-              
+
               <button type="submit" className="submit-button">
                 ✨ Apply Now - Secure My Territory
               </button>
-              
+
               <div className="form-message">
-                <strong>What happens next?</strong><br />
-                We'll email you within 24 hours with details about available territories and next steps.<br />
+                <strong>What happens next?</strong>
+                <br />
+                We'll email you within 24 hours with details about available territories and next
+                steps.
+                <br />
                 No spam, no pressure - just the information you need to get started.
               </div>
             </form>
           </div>
         </div>
 
-        <script dangerouslySetInnerHTML={{
-          __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
             // Form submission handler
             document.getElementById('franchiseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -631,7 +741,8 @@ export default function FranchisePage() {
             // Smooth scroll behavior
             document.documentElement.style.scrollBehavior = 'smooth';
           `
-        }} />
+          }}
+        />
       </body>
     </html>
   )

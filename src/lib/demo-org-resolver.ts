@@ -20,7 +20,7 @@ const FALLBACK_MAPPINGS: Record<string, string> = {
   '/healthcare': 'a2e5f8d9-7b3c-4f6e-9d1a-8c7e5b4a2f9d', // Dr. Smith's Practice
   '/salon': 'c7d9e4f8-3b2a-4e6d-8f1c-9a7b5c3d2e8f', // Bella Beauty Salon
   '/retail': 'e5f8a9d7-2c3b-4f7e-8d1a-7b6c4e3f2a9d', // TechGear Electronics
-  '/furniture': 'f0af4ced-9d12-4a55-a649-b484368db249', // Kerala Furniture Works (Demo)
+  '/furniture': 'f0af4ced-9d12-4a55-a649-b484368db249' // Kerala Furniture Works (Demo)
 }
 
 /**
@@ -31,7 +31,7 @@ const FALLBACK_MAPPINGS: Record<string, string> = {
 export async function getDemoOrganizationId(pathname: string): Promise<string | null> {
   // Extract the base path (e.g., '/icecream' from '/icecream/production')
   const basePath = '/' + pathname.split('/')[1]
-  
+
   // Check cache first
   if (demoOrgCache.has(basePath)) {
     return demoOrgCache.get(basePath)!
@@ -45,7 +45,7 @@ export async function getDemoOrganizationId(pathname: string): Promise<string | 
       demoOrgCache.set(basePath, fallbackOrgId)
       return fallbackOrgId
     }
-    
+
     // Original query commented out due to !inner syntax issue
     /*
     const { data: mappings, error } = await supabase
@@ -63,7 +63,6 @@ export async function getDemoOrganizationId(pathname: string): Promise<string | 
       .eq('core_dynamic_data.field_name', 'route_path')
       .eq('core_dynamic_data.field_value_text', basePath)
     */
-
 
     return null
   } catch (error) {

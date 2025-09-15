@@ -12,10 +12,9 @@ export default function RefreshPage() {
     // Clear all caches and reload
     const clearAndReload = async () => {
       try {
-
         // Clear local storage
         localStorage.clear()
-        
+
         // Clear session storage
         sessionStorage.clear()
 

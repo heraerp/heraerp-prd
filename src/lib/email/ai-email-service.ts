@@ -11,7 +11,14 @@ interface AIEmailRequest {
     businessContext?: string
     tone?: 'professional' | 'friendly' | 'formal' | 'casual'
     length?: 'short' | 'medium' | 'long'
-    purpose?: 'follow_up' | 'introduction' | 'proposal' | 'thank_you' | 'reminder' | 'apology' | 'announcement'
+    purpose?:
+      | 'follow_up'
+      | 'introduction'
+      | 'proposal'
+      | 'thank_you'
+      | 'reminder'
+      | 'apology'
+      | 'announcement'
   }
   templateId?: string
   organizationId: string
@@ -43,7 +50,7 @@ interface AIEmailTemplate {
  */
 export class AIEmailService {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
     universalApi.setOrganizationId(organizationId)
@@ -80,13 +87,13 @@ export class AIEmailService {
       }
 
       const result = await aiResponse.json()
-      
+
       // Parse AI response and structure email content
       const emailContent = this.parseAIResponse(result.data.content)
-      
+
       // Store generated content for learning
       await this.saveGeneratedContent(request, emailContent)
-      
+
       return {
         success: true,
         data: {
@@ -137,7 +144,7 @@ export class AIEmailService {
       return [
         'Thank you for your email. I will review this and get back to you soon.',
         'I appreciate you reaching out. Let me look into this and respond shortly.',
-        'Thanks for the information. I\'ll follow up with next steps.'
+        "Thanks for the information. I'll follow up with next steps."
       ]
     }
   }
@@ -268,7 +275,7 @@ export class AIEmailService {
       })
 
       const result = await aiResponse.json()
-      
+
       // Create template entity
       const templateEntity = {
         entity_type: 'email_template' as const,
@@ -285,13 +292,17 @@ export class AIEmailService {
       }
 
       const createdTemplate = await universalApi.createEntity(templateEntity)
-      
+
       // Parse and store template content
       const templateContent = this.parseTemplateContent(result.data.content)
-      
+
       await universalApi.setDynamicField(createdTemplate.id, 'subject', templateContent.subject)
       await universalApi.setDynamicField(createdTemplate.id, 'body_html', templateContent.body)
-      await universalApi.setDynamicField(createdTemplate.id, 'variables', JSON.stringify(templateContent.variables))
+      await universalApi.setDynamicField(
+        createdTemplate.id,
+        'variables',
+        JSON.stringify(templateContent.variables)
+      )
       await universalApi.setDynamicField(createdTemplate.id, 'tone', templateContent.tone)
 
       return {
@@ -313,10 +324,10 @@ export class AIEmailService {
    */
   private buildEmailPrompt(request: AIEmailRequest): string {
     const { prompt, context } = request
-    
+
     let fullPrompt = `Generate a professional business email with the following requirements:\n\n`
     fullPrompt += `Main request: ${prompt}\n\n`
-    
+
     if (context) {
       if (context.recipientName) fullPrompt += `Recipient: ${context.recipientName}\n`
       if (context.recipientCompany) fullPrompt += `Company: ${context.recipientCompany}\n`
@@ -330,7 +341,7 @@ export class AIEmailService {
         fullPrompt += `Previous conversation context:\n${context.previousEmails.join('\n---\n')}\n`
       }
     }
-    
+
     fullPrompt += `\nPlease provide:
     1. A compelling subject line
     2. Professional email body in HTML format
@@ -338,7 +349,7 @@ export class AIEmailService {
     4. 2-3 alternative subject line suggestions
     
     Format the response as JSON with keys: subject, body_html, body_text, suggestions`
-    
+
     return fullPrompt
   }
 
@@ -363,8 +374,12 @@ export class AIEmailService {
     } catch {
       // Fallback to text parsing
       const lines = content.split('\n')
-      const subject = lines.find(line => line.toLowerCase().includes('subject:'))?.replace(/subject:/i, '').trim() || 'Generated Email'
-      
+      const subject =
+        lines
+          .find(line => line.toLowerCase().includes('subject:'))
+          ?.replace(/subject:/i, '')
+          .trim() || 'Generated Email'
+
       return {
         subject,
         body_html: this.convertToHTML(content),
@@ -385,7 +400,7 @@ export class AIEmailService {
       return [
         'Thank you for your email. I will review this and get back to you soon.',
         'I appreciate you reaching out. Let me look into this and respond shortly.',
-        'Thanks for the information. I\'ll follow up with next steps.'
+        "Thanks for the information. I'll follow up with next steps."
       ]
     }
   }
@@ -437,7 +452,10 @@ export class AIEmailService {
     }
 
     const lines = content.split('\n')
-    const subjectLine = lines.find(line => line.toLowerCase().includes('subject:'))?.replace(/subject:/i, '').trim()
+    const subjectLine = lines
+      .find(line => line.toLowerCase().includes('subject:'))
+      ?.replace(/subject:/i, '')
+      .trim()
 
     return {
       subject: subjectLine || 'Template Subject',

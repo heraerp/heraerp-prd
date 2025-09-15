@@ -61,7 +61,13 @@ const sidebarItems: SidebarItem[] = [
   { title: 'Inventory', href: '/salon-data/inventory', icon: Package },
   { title: 'POS', href: '/salon-data/pos', icon: CreditCard },
   { title: 'Leave', href: '/salon-data/leave', icon: CalendarCheck },
-  { title: 'Templates', href: '/salon-data/templates', icon: FileText, badge: 'New', badgeColor: 'bg-green-500' },
+  {
+    title: 'Templates',
+    href: '/salon-data/templates',
+    icon: FileText,
+    badge: 'New',
+    badgeColor: 'bg-green-500'
+  }
 ]
 
 // All apps for the modal
@@ -74,14 +80,26 @@ const allApps: SidebarItem[] = [
   { title: 'Inventory', href: '/salon-data/inventory', icon: Package },
   { title: 'POS', href: '/salon-data/pos', icon: CreditCard },
   { title: 'Leave', href: '/salon-data/leave', icon: CalendarCheck },
-  { title: 'Templates', href: '/salon-data/templates', icon: FileText, badge: 'New', badgeColor: 'bg-green-500' },
+  {
+    title: 'Templates',
+    href: '/salon-data/templates',
+    icon: FileText,
+    badge: 'New',
+    badgeColor: 'bg-green-500'
+  },
   { title: 'UCR Rules', href: '/salon-data/config', icon: Scale },
   { title: 'Finance', href: '/salon-data/finance', icon: TrendingDown },
   { title: 'P&L', href: '/salon-data/financials/p&l', icon: BarChart3 },
   { title: 'Balance Sheet', href: '/salon-data/financials/bs', icon: Scale },
   { title: 'Payroll', href: '/salon-data/payroll', icon: DollarSign },
   { title: 'WhatsApp', href: '/salon-data/whatsapp', icon: MessageCircle },
-  { title: 'Smart Accountant', href: '/salon-data/digital-accountant', icon: Brain, badge: 'AI', badgeColor: 'bg-purple-500' },
+  {
+    title: 'Smart Accountant',
+    href: '/salon-data/digital-accountant',
+    icon: Brain,
+    badge: 'AI',
+    badgeColor: 'bg-purple-500'
+  },
   { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart },
   { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
   { title: 'Products', href: '/salon-data/products', icon: ShoppingBag },
@@ -96,16 +114,24 @@ const allApps: SidebarItem[] = [
   { title: 'Training', href: '/salon-data/training', icon: BookOpen },
   { title: 'Gallery', href: '/salon-data/gallery', icon: Camera },
   { title: 'Themes', href: '/salon-data/themes', icon: Palette },
-  { title: 'Automation', href: '/salon-data/automation', icon: Zap },
+  { title: 'Automation', href: '/salon-data/automation', icon: Zap }
 ]
 
 const bottomItems: SidebarItem[] = [
   { title: 'Reports', href: '/salon-data/reports', icon: FileText },
-  { title: 'Settings', href: '/salon-data/settings', icon: Settings },
+  { title: 'Settings', href: '/salon-data/settings', icon: Settings }
 ]
 
 // Apps Modal Component
-function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: () => void; isActive: (href: string) => boolean }) {
+function AppsModal({
+  isOpen,
+  onClose,
+  isActive
+}: {
+  isOpen: boolean
+  onClose: () => void
+  isActive: (href: string) => boolean
+}) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -118,11 +144,8 @@ function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: ()
   return createPortal(
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={onClose} />
+
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-gray-800/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
@@ -139,41 +162,48 @@ function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: ()
               <X className="h-6 w-6" />
             </button>
           </div>
-          
+
           {/* Apps Grid */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {allApps.map((app) => {
+              {allApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
-                
+
                 return (
                   <Link
                     key={app.href}
                     href={app.href}
                     onClick={onClose}
                     className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group",
-                      "bg-gray-700/30 hover:bg-gradient-to-br hover:from-violet-600/20 hover:to-cyan-600/20",
-                      "border border-gray-700/50 hover:border-violet-500/30",
-                      active && "bg-gradient-to-br from-violet-600/20 to-cyan-600/20 border-violet-500/30"
+                      'flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group',
+                      'bg-gray-700/30 hover:bg-gradient-to-br hover:from-violet-600/20 hover:to-cyan-600/20',
+                      'border border-gray-700/50 hover:border-violet-500/30',
+                      active &&
+                        'bg-gradient-to-br from-violet-600/20 to-cyan-600/20 border-violet-500/30'
                     )}
                   >
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center mb-2",
-                      "bg-gradient-to-br from-gray-700 to-gray-800",
-                      "group-hover:from-violet-600 group-hover:to-cyan-600",
-                      active && "from-violet-600 to-cyan-600"
-                    )}>
-                      <Icon className={cn(
-                        "h-6 w-6",
-                        active ? "text-white" : "text-gray-400 group-hover:text-white"
-                      )} />
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center mb-2',
+                        'bg-gradient-to-br from-gray-700 to-gray-800',
+                        'group-hover:from-violet-600 group-hover:to-cyan-600',
+                        active && 'from-violet-600 to-cyan-600'
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          'h-6 w-6',
+                          active ? 'text-white' : 'text-gray-400 group-hover:text-white'
+                        )}
+                      />
                     </div>
-                    <span className={cn(
-                      "text-xs font-medium text-center",
-                      active ? "text-violet-400" : "text-gray-400 group-hover:text-white"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-xs font-medium text-center',
+                        active ? 'text-violet-400' : 'text-gray-400 group-hover:text-white'
+                      )}
+                    >
                       {app.title}
                     </span>
                   </Link>
@@ -211,45 +241,51 @@ export default function SalonDarkSidebar() {
       {/* Navigation Items */}
       <nav className="flex-1 overflow-y-auto py-1">
         <div className="space-y-0">
-          {sidebarItems.map((item) => {
+          {sidebarItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
             // Use full titles now that we have more space
             const displayTitle = item.title
-            
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 transition-all duration-200 group relative",
+                  'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? "bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-gray-700/50"
+                    ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
                 )}
               >
                 <div className="relative">
-                  <Icon className={cn(
-                    "h-5 w-5",
-                    active ? "text-violet-400" : "text-gray-400 group-hover:text-violet-400"
-                  )} />
-                  
+                  <Icon
+                    className={cn(
+                      'h-5 w-5',
+                      active ? 'text-violet-400' : 'text-gray-400 group-hover:text-violet-400'
+                    )}
+                  />
+
                   {/* Badge indicator */}
                   {item.badge && (
-                    <span className={cn(
-                      "absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center",
-                      item.badgeColor || "bg-gray-600"
-                    )}>
+                    <span
+                      className={cn(
+                        'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+                        item.badgeColor || 'bg-gray-600'
+                      )}
+                    >
                       {item.badge}
                     </span>
                   )}
                 </div>
-                
+
                 {/* Text label */}
-                <span className={cn(
-                  "text-[9px] mt-0.5 font-medium text-center leading-tight",
-                  active ? "text-violet-400" : "text-gray-500 group-hover:text-gray-300"
-                )}>
+                <span
+                  className={cn(
+                    'text-[9px] mt-0.5 font-medium text-center leading-tight',
+                    active ? 'text-violet-400' : 'text-gray-500 group-hover:text-gray-300'
+                  )}
+                >
                   {displayTitle}
                 </span>
 
@@ -258,27 +294,32 @@ export default function SalonDarkSidebar() {
                   <p className="font-medium">{item.title}</p>
                   {item.badge && (
                     <p className="text-xs text-gray-400 mt-1">
-                      {item.badge} {item.title === 'Reviews' ? 'rating' : item.title === 'Customers' ? 'total' : 'new'}
+                      {item.badge}{' '}
+                      {item.title === 'Reviews'
+                        ? 'rating'
+                        : item.title === 'Customers'
+                          ? 'total'
+                          : 'new'}
                     </p>
                   )}
                 </div>
               </Link>
             )
           })}
-          
+
           {/* More Apps Button */}
           <button
             onClick={() => setShowAppsModal(true)}
             className={cn(
-              "flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative",
-              "text-gray-400 hover:text-white hover:bg-gray-700/50"
+              'flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative',
+              'text-gray-400 hover:text-white hover:bg-gray-700/50'
             )}
           >
             <Grid3x3 className="h-5 w-5 text-gray-400 group-hover:text-violet-400" />
             <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-gray-500 group-hover:text-gray-300">
               More
             </span>
-            
+
             {/* Tooltip */}
             <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
@@ -291,31 +332,35 @@ export default function SalonDarkSidebar() {
 
         {/* Bottom Items */}
         <div className="space-y-0">
-          {bottomItems.map((item) => {
+          {bottomItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
-            
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 transition-all duration-200 group relative",
+                  'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? "bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-gray-700/50"
+                    ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
                 )}
               >
-                <Icon className={cn(
-                  "h-5 w-5",
-                  active ? "text-violet-400" : "text-gray-400 group-hover:text-violet-400"
-                )} />
-                
+                <Icon
+                  className={cn(
+                    'h-5 w-5',
+                    active ? 'text-violet-400' : 'text-gray-400 group-hover:text-violet-400'
+                  )}
+                />
+
                 {/* Text label */}
-                <span className={cn(
-                  "text-[9px] mt-0.5 font-medium text-center leading-tight",
-                  active ? "text-violet-400" : "text-gray-500 group-hover:text-gray-300"
-                )}>
+                <span
+                  className={cn(
+                    'text-[9px] mt-0.5 font-medium text-center leading-tight',
+                    active ? 'text-violet-400' : 'text-gray-500 group-hover:text-gray-300'
+                  )}
+                >
                   {item.title}
                 </span>
 
@@ -336,7 +381,7 @@ export default function SalonDarkSidebar() {
             <span className="text-white text-sm font-semibold">S</span>
           </div>
           <span className="text-[10px] text-gray-500 mt-1 font-medium">Admin</span>
-          
+
           {/* Tooltip */}
           <div className="absolute left-full ml-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
             <p className="font-medium">Salon Admin</p>
@@ -344,12 +389,12 @@ export default function SalonDarkSidebar() {
           </div>
         </div>
       </div>
-      
+
       {/* Apps Modal Portal */}
-      <AppsModal 
-        isOpen={showAppsModal} 
-        onClose={() => setShowAppsModal(false)} 
-        isActive={isActive} 
+      <AppsModal
+        isOpen={showAppsModal}
+        onClose={() => setShowAppsModal(false)}
+        isActive={isActive}
       />
     </div>
   )

@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 // Using local Kbd component defined below
 
@@ -91,7 +91,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
             Speed up your workflow with these keyboard shortcuts
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="overflow-y-auto pr-4 -mr-4 max-h-[60vh]">
           <div className="space-y-6">
             {shortcutCategories.map((category, categoryIndex) => (
@@ -99,19 +99,14 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
                 <h3 className="font-semibold text-sm mb-3">{category.title}</h3>
                 <div className="space-y-2">
                   {category.shortcuts.map((shortcut, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between py-1.5"
-                    >
+                    <div key={index} className="flex items-center justify-between py-1.5">
                       <span className="text-sm text-gray-600 dark:text-gray-400">
                         {shortcut.description}
                       </span>
                       <div className="flex items-center gap-1">
                         {shortcut.keys.map((key, keyIndex) => (
                           <React.Fragment key={keyIndex}>
-                            {keyIndex > 0 && (
-                              <span className="text-xs text-gray-500">+</span>
-                            )}
+                            {keyIndex > 0 && <span className="text-xs text-gray-500">+</span>}
                             <Kbd>{key}</Kbd>
                           </React.Fragment>
                         ))}
@@ -123,7 +118,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
             ))}
           </div>
         </div>
-        
+
         <div className="mt-4 pt-4 border-t text-sm text-gray-500">
           <p>
             Note: Use <Kbd>Cmd</Kbd> on macOS and <Kbd>Ctrl</Kbd> on Windows/Linux

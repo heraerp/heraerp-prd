@@ -25,30 +25,42 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
   organizationId
 }) => {
   const controlsData = data.postingControls
-  
+
   // Generate sample periods based on fiscal year configuration
   const generateSamplePeriods = () => {
     const currentYear = new Date().getFullYear()
     const startMonth = data.fiscalYear.fiscal_year_start_month
     const periods = []
-    
+
     for (let i = 0; i < data.fiscalYear.number_of_periods; i++) {
       const periodMonth = ((startMonth - 1 + i) % 12) + 1
       const periodYear = currentYear + Math.floor((startMonth - 1 + i) / 12)
-      
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      
+
+      const monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ]
+
       periods.push({
         period_id: `P${(i + 1).toString().padStart(2, '0')}`,
         period_name: `${monthNames[periodMonth - 1]} ${periodYear}`,
-        gl_status: i < 3 ? 'CLOSED' as const : 'OPEN' as const,
-        ap_status: i < 3 ? 'CLOSED' as const : 'OPEN' as const,
-        ar_status: i < 3 ? 'CLOSED' as const : 'OPEN' as const,
-        inventory_status: i < 3 ? 'CLOSED' as const : 'OPEN' as const
+        gl_status: i < 3 ? ('CLOSED' as const) : ('OPEN' as const),
+        ap_status: i < 3 ? ('CLOSED' as const) : ('OPEN' as const),
+        ar_status: i < 3 ? ('CLOSED' as const) : ('OPEN' as const),
+        inventory_status: i < 3 ? ('CLOSED' as const) : ('OPEN' as const)
       })
     }
-    
+
     return periods
   }
 
@@ -64,13 +76,16 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
     }
   }, [])
 
-  const togglePeriodStatus = (periodIndex: number, module: 'gl_status' | 'ap_status' | 'ar_status' | 'inventory_status') => {
+  const togglePeriodStatus = (
+    periodIndex: number,
+    module: 'gl_status' | 'ap_status' | 'ar_status' | 'inventory_status'
+  ) => {
     const updatedControls = [...controlsData.period_controls]
     updatedControls[periodIndex] = {
       ...updatedControls[periodIndex],
       [module]: updatedControls[periodIndex][module] === 'OPEN' ? 'CLOSED' : 'OPEN'
     }
-    
+
     onChange({
       postingControls: {
         period_controls: updatedControls
@@ -78,12 +93,15 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
     })
   }
 
-  const bulkSetStatus = (module: 'gl_status' | 'ap_status' | 'ar_status' | 'inventory_status', status: 'OPEN' | 'CLOSED') => {
+  const bulkSetStatus = (
+    module: 'gl_status' | 'ap_status' | 'ar_status' | 'inventory_status',
+    status: 'OPEN' | 'CLOSED'
+  ) => {
     const updatedControls = controlsData.period_controls.map(period => ({
       ...period,
       [module]: status
     }))
-    
+
     onChange({
       postingControls: {
         period_controls: updatedControls
@@ -98,10 +116,30 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
   }
 
   const modules = [
-    { key: 'gl_status' as const, name: 'General Ledger', icon: '📊', color: 'bg-blue-100 text-blue-800' },
-    { key: 'ap_status' as const, name: 'Accounts Payable', icon: '📄', color: 'bg-red-100 text-red-800' },
-    { key: 'ar_status' as const, name: 'Accounts Receivable', icon: '💰', color: 'bg-green-100 text-green-800' },
-    { key: 'inventory_status' as const, name: 'Inventory', icon: '📦', color: 'bg-purple-100 text-purple-800' }
+    {
+      key: 'gl_status' as const,
+      name: 'General Ledger',
+      icon: '📊',
+      color: 'bg-blue-100 text-blue-800'
+    },
+    {
+      key: 'ap_status' as const,
+      name: 'Accounts Payable',
+      icon: '📄',
+      color: 'bg-red-100 text-red-800'
+    },
+    {
+      key: 'ar_status' as const,
+      name: 'Accounts Receivable',
+      icon: '💰',
+      color: 'bg-green-100 text-green-800'
+    },
+    {
+      key: 'inventory_status' as const,
+      name: 'Inventory',
+      icon: '📦',
+      color: 'bg-purple-100 text-purple-800'
+    }
   ]
 
   return (
@@ -122,10 +160,12 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
 
       {/* Module Controls */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {modules.map((module) => {
-          const openCount = controlsData.period_controls.filter(p => p[module.key] === 'OPEN').length
+        {modules.map(module => {
+          const openCount = controlsData.period_controls.filter(
+            p => p[module.key] === 'OPEN'
+          ).length
           const closedCount = controlsData.period_controls.length - openCount
-          
+
           return (
             <Card key={module.key}>
               <CardHeader className="pb-2">
@@ -145,7 +185,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
                     <span>{closedCount} Closed</span>
                   </span>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Button
                     variant="outline"
@@ -156,7 +196,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
                     Open All
                   </Button>
                   <Button
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                     className="w-full text-xs"
                     onClick={() => bulkSetStatus(module.key, 'CLOSED')}
@@ -177,9 +217,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
             <Calendar className="h-5 w-5" />
             <span>Period Posting Controls</span>
           </CardTitle>
-          <CardDescription>
-            Control which periods allow posting for each module
-          </CardDescription>
+          <CardDescription>Control which periods allow posting for each module</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -187,7 +225,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-3 font-medium">Period</th>
-                  {modules.map((module) => (
+                  {modules.map(module => (
                     <th key={module.key} className="text-center p-3 font-medium">
                       <div className="flex flex-col items-center space-y-1">
                         <span>{module.icon}</span>
@@ -206,7 +244,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
                         <span>{period.period_name}</span>
                       </div>
                     </td>
-                    {modules.map((module) => (
+                    {modules.map(module => (
                       <td key={module.key} className="p-3 text-center">
                         <div className="flex flex-col items-center space-y-2">
                           <Switch
@@ -214,11 +252,11 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
                             onCheckedChange={() => togglePeriodStatus(index, module.key)}
                             size="sm"
                           />
-                          <Badge 
+                          <Badge
                             variant={period[module.key] === 'OPEN' ? 'default' : 'secondary'}
                             className={`text-xs ${
-                              period[module.key] === 'OPEN' 
-                                ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                              period[module.key] === 'OPEN'
+                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
                                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                             }`}
                           >
@@ -247,10 +285,12 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
 
       {/* Summary Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {modules.map((module) => {
-          const openCount = controlsData.period_controls.filter(p => p[module.key] === 'OPEN').length
+        {modules.map(module => {
+          const openCount = controlsData.period_controls.filter(
+            p => p[module.key] === 'OPEN'
+          ).length
           const percentage = Math.round((openCount / controlsData.period_controls.length) * 100)
-          
+
           return (
             <Card key={`${module.key}-summary`}>
               <CardContent className="p-4 text-center">
@@ -272,11 +312,26 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-xs font-mono space-y-1">
-            <div>Period Controls: HERA.{data.organizationBasics.industry_classification}.UCR.CONFIG.POSTING_PERIODS.v1</div>
-            <div>GL Controls: HERA.{data.organizationBasics.industry_classification}.UCR.CONTROL.GL_POSTING.v1</div>
-            <div>AP Controls: HERA.{data.organizationBasics.industry_classification}.UCR.CONTROL.AP_POSTING.v1</div>
-            <div>AR Controls: HERA.{data.organizationBasics.industry_classification}.UCR.CONTROL.AR_POSTING.v1</div>
-            <div>Inventory Controls: HERA.{data.organizationBasics.industry_classification}.UCR.CONTROL.INV_POSTING.v1</div>
+            <div>
+              Period Controls: HERA.{data.organizationBasics.industry_classification}
+              .UCR.CONFIG.POSTING_PERIODS.v1
+            </div>
+            <div>
+              GL Controls: HERA.{data.organizationBasics.industry_classification}
+              .UCR.CONTROL.GL_POSTING.v1
+            </div>
+            <div>
+              AP Controls: HERA.{data.organizationBasics.industry_classification}
+              .UCR.CONTROL.AP_POSTING.v1
+            </div>
+            <div>
+              AR Controls: HERA.{data.organizationBasics.industry_classification}
+              .UCR.CONTROL.AR_POSTING.v1
+            </div>
+            <div>
+              Inventory Controls: HERA.{data.organizationBasics.industry_classification}
+              .UCR.CONTROL.INV_POSTING.v1
+            </div>
           </div>
         </CardContent>
       </Card>

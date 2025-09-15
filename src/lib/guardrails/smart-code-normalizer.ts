@@ -47,7 +47,7 @@ export function parseSmartCode(code: string): {
 } {
   const normalized = normalizeSmartCode(code)
   const parts = normalized.split('.')
-  
+
   return {
     domain: parts[1],
     subdomain: parts[2],
@@ -62,11 +62,9 @@ export function parseSmartCode(code: string): {
  */
 export function matchesSmartCodeFamily(code: string, pattern: string): boolean {
   const normalized = normalizeSmartCode(code)
-  
-  // Convert pattern to regex (e.g., HERA.FIN.* → HERA\.FIN\..*) 
-  const regexPattern = pattern
-    .replace(/\./g, '\\.')
-    .replace(/\*/g, '.*')
-    
+
+  // Convert pattern to regex (e.g., HERA.FIN.* → HERA\.FIN\..*)
+  const regexPattern = pattern.replace(/\./g, '\\.').replace(/\*/g, '.*')
+
   return new RegExp(`^${regexPattern}$`).test(normalized)
 }

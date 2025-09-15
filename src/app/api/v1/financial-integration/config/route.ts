@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
     const organizationId = searchParams.get('organization_id')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
@@ -40,17 +37,22 @@ export async function GET(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Config API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { organization_id, systemType, baseUrl, companyCode, chartOfAccounts, credentials, features } = body
+    const {
+      organization_id,
+      systemType,
+      baseUrl,
+      companyCode,
+      chartOfAccounts,
+      credentials,
+      features
+    } = body
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
@@ -65,18 +67,19 @@ export async function POST(request: NextRequest) {
     ]
 
     for (const field of configFields) {
-      const { error } = await supabase
-        .from('core_dynamic_data')
-        .upsert({
+      const { error } = await supabase.from('core_dynamic_data').upsert(
+        {
           organization_id,
           entity_id: organization_id,
           field_name: field.field_name,
           field_value_text: field.field_value_text,
           field_value_json: field.field_value_json,
           smart_code: 'HERA.ERP.FI.CONFIG.v1'
-        }, {
+        },
+        {
           onConflict: 'organization_id,entity_id,field_name'
-        })
+        }
+      )
 
       if (error) throw error
     }
@@ -87,9 +90,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Config save error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }

@@ -17,7 +17,11 @@ interface SearchPageProps {
   }>
 }
 
-async function SearchResults({ query, docType, section }: {
+async function SearchResults({
+  query,
+  docType,
+  section
+}: {
   query: string
   docType?: 'dev' | 'user'
   section?: string
@@ -41,9 +45,7 @@ async function SearchResults({ query, docType, section }: {
       <div className="text-center py-12">
         <Search className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
         <h2 className="text-xl font-semibold mb-2">No Results Found</h2>
-        <p className="text-muted-foreground mb-4">
-          No documentation pages found for "{query}"
-        </p>
+        <p className="text-muted-foreground mb-4">No documentation pages found for "{query}"</p>
         <div className="text-sm text-muted-foreground">
           <p className="font-medium mb-2">Search Tips:</p>
           <ul className="text-left inline-block space-y-1">
@@ -69,16 +71,12 @@ async function SearchResults({ query, docType, section }: {
               {docType === 'dev' ? 'Developer' : 'User'} Guide
             </Badge>
           )}
-          {section && (
-            <Badge variant="outline">
-              {section}
-            </Badge>
-          )}
+          {section && <Badge variant="outline">{section}</Badge>}
         </div>
       </div>
 
       <div className="space-y-4">
-        {results.map((result) => (
+        {results.map(result => (
           <div key={result.id} className="hera-card p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start gap-4">
               <div className="mt-1">
@@ -104,9 +102,7 @@ async function SearchResults({ query, docType, section }: {
                   </div>
                 )}
 
-                <p className="text-sm text-muted-foreground line-clamp-3">
-                  {result.excerpt}
-                </p>
+                <p className="text-sm text-muted-foreground line-clamp-3">{result.excerpt}</p>
 
                 <div className="mt-3">
                   <Link
@@ -125,7 +121,11 @@ async function SearchResults({ query, docType, section }: {
   )
 }
 
-function SearchFilters({ searchParams }: { searchParams: { q?: string; type?: 'dev' | 'user'; section?: string } }) {
+function SearchFilters({
+  searchParams
+}: {
+  searchParams: { q?: string; type?: 'dev' | 'user'; section?: string }
+}) {
   const currentType = searchParams.type
   const currentQuery = searchParams.q || ''
 
@@ -141,18 +141,18 @@ function SearchFilters({ searchParams }: { searchParams: { q?: string; type?: 'd
     <div className="flex flex-wrap items-center gap-2 mb-6">
       <Filter className="w-4 h-4 text-muted-foreground" />
       <span className="text-sm font-medium">Filter by:</span>
-      
+
       <Link
         href={buildUrl({ type: undefined })}
         className={`px-3 py-1 text-sm rounded-full border transition-colors ${
-          !currentType 
-            ? 'bg-hera-primary text-white border-hera-primary' 
+          !currentType
+            ? 'bg-hera-primary text-white border-hera-primary'
             : 'bg-background hover:bg-accent border-border'
         }`}
       >
         All Docs
       </Link>
-      
+
       <Link
         href={buildUrl({ type: 'dev' })}
         className={`px-3 py-1 text-sm rounded-full border transition-colors ${
@@ -163,7 +163,7 @@ function SearchFilters({ searchParams }: { searchParams: { q?: string; type?: 'd
       >
         Developer
       </Link>
-      
+
       <Link
         href={buildUrl({ type: 'user' })}
         className={`px-3 py-1 text-sm rounded-full border transition-colors ${
@@ -189,7 +189,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Search Documentation</h1>
-          
+
           {/* Search Form */}
           <form action="/docs/search" method="GET" className="mb-6">
             <div className="relative">
@@ -202,9 +202,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 className="pl-10 text-base h-12"
                 autoFocus
               />
-              {docType && (
-                <input type="hidden" name="type" value={docType} />
-              )}
+              {docType && <input type="hidden" name="type" value={docType} />}
             </div>
             <div className="mt-3 flex gap-2">
               <Button type="submit" className="hera-button">
@@ -212,9 +210,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               </Button>
               {query && (
                 <Button asChild variant="outline">
-                  <Link href="/docs/search">
-                    Clear
-                  </Link>
+                  <Link href="/docs/search">Clear</Link>
                 </Button>
               )}
             </div>
@@ -223,14 +219,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           <SearchFilters searchParams={resolvedParams} />
         </div>
 
-        <Suspense fallback={
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <Search className="w-8 h-8 mx-auto text-muted-foreground mb-2 animate-pulse" />
-              <p className="text-muted-foreground">Searching...</p>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Search className="w-8 h-8 mx-auto text-muted-foreground mb-2 animate-pulse" />
+                <p className="text-muted-foreground">Searching...</p>
+              </div>
             </div>
-          </div>
-        }>
+          }
+        >
           <SearchResults query={query} docType={docType} section={section} />
         </Suspense>
 
@@ -248,7 +246,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 'testing',
                 'deployment',
                 'troubleshooting'
-              ].map((term) => (
+              ].map(term => (
                 <Link
                   key={term}
                   href={`/docs/search?q=${encodeURIComponent(term)}`}

@@ -1,19 +1,19 @@
 'use client'
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
-import React from 'react';
-import { GeographicMap } from '@/components/pwm/GeographicMap';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Globe2 } from 'lucide-react';
-import Link from 'next/link';
+import React from 'react'
+import { GeographicMap } from '@/components/pwm/GeographicMap'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft, Globe2 } from 'lucide-react'
+import Link from 'next/link'
 
 export default function GeographicMapPage() {
   // TODO: Get organization ID from auth context
-  const organizationId = 'demo-org-001';
-  
+  const organizationId = 'demo-org-001'
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
@@ -134,5 +134,5 @@ export default function GeographicMapPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

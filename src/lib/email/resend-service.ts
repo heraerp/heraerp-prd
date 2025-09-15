@@ -47,7 +47,7 @@ export class ResendEmailService {
       const response = await fetch(`${this.baseUrl}/emails`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -66,7 +66,9 @@ export class ResendEmailService {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(`Resend API Error: ${response.status} - ${errorData.message || 'Unknown error'}`)
+        throw new Error(
+          `Resend API Error: ${response.status} - ${errorData.message || 'Unknown error'}`
+        )
       }
 
       const result = await response.json()
@@ -85,7 +87,7 @@ export class ResendEmailService {
       const response = await fetch(`${this.baseUrl}/emails/batch`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(emails)
@@ -93,7 +95,9 @@ export class ResendEmailService {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(`Resend Batch API Error: ${response.status} - ${errorData.message || 'Unknown error'}`)
+        throw new Error(
+          `Resend Batch API Error: ${response.status} - ${errorData.message || 'Unknown error'}`
+        )
       }
 
       return await response.json()
@@ -110,7 +114,7 @@ export class ResendEmailService {
     try {
       const response = await fetch(`${this.baseUrl}/emails/${emailId}`, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         }
       })
@@ -133,7 +137,7 @@ export class ResendEmailService {
     try {
       const response = await fetch(`${this.baseUrl}/domains`, {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         }
       })
@@ -149,11 +153,14 @@ export class ResendEmailService {
 /**
  * Factory function to create ResendEmailService with customer's API key
  */
-export async function createResendService(organizationId: string, accountId?: string): Promise<ResendEmailService> {
+export async function createResendService(
+  organizationId: string,
+  accountId?: string
+): Promise<ResendEmailService> {
   universalApi.setOrganizationId(organizationId)
-  
+
   let apiKey: string
-  
+
   if (accountId) {
     // Get API key for specific account
     const dynamicData = await universalApi.getDynamicData(accountId)
@@ -161,20 +168,21 @@ export async function createResendService(organizationId: string, accountId?: st
   } else {
     // Get default account
     const accounts = await universalApi.getEntities('email_account', { status: 'active' })
-    const defaultAccount = accounts.find(account => (account.metadata as any)?.is_default) || accounts[0]
-    
+    const defaultAccount =
+      accounts.find(account => (account.metadata as any)?.is_default) || accounts[0]
+
     if (!defaultAccount) {
       throw new Error('No email account configured. Please set up an email account first.')
     }
-    
+
     const dynamicData = await universalApi.getDynamicData(defaultAccount.id)
     apiKey = dynamicData.resend_api_key
   }
-  
+
   if (!apiKey) {
     throw new Error('No Resend API key found. Please configure your email account.')
   }
-  
+
   return new ResendEmailService(apiKey)
 }
 
@@ -192,10 +200,10 @@ export async function sendUniversalEmail(
 ): Promise<{ success: boolean; emailId?: string; resendId?: string; error?: string }> {
   try {
     universalApi.setOrganizationId(organizationId)
-    
+
     // Create ResendEmailService instance
     const resendService = await createResendService(organizationId, emailData.accountId)
-    
+
     // If template is specified, merge template data
     if (emailData.templateId) {
       const templateData = await universalApi.getDynamicData(emailData.templateId)
@@ -203,10 +211,10 @@ export async function sendUniversalEmail(
       emailData.html = emailData.html || templateData.body_html
       emailData.text = emailData.text || templateData.body_text
     }
-    
+
     // Send via Resend
     const resendResponse = await resendService.sendEmail(emailData)
-    
+
     // Create email entity in HERA
     const emailEntity = {
       entity_type: 'email' as const,
@@ -220,33 +228,49 @@ export async function sendUniversalEmail(
         from_account: emailData.accountId || 'default'
       }
     }
-    
+
     const createdEmail = await universalApi.createEntity(emailEntity)
-    
+
     // Store email details in dynamic data
-    await universalApi.setDynamicField(createdEmail.id, 'to_addresses', JSON.stringify(emailData.to))
+    await universalApi.setDynamicField(
+      createdEmail.id,
+      'to_addresses',
+      JSON.stringify(emailData.to)
+    )
     await universalApi.setDynamicField(createdEmail.id, 'subject', emailData.subject)
-    
+
     if (emailData.html) {
       await universalApi.setDynamicField(createdEmail.id, 'body_html', emailData.html)
     }
-    
+
     if (emailData.text) {
       await universalApi.setDynamicField(createdEmail.id, 'body_text', emailData.text)
     }
-    
+
     if (emailData.cc) {
-      await universalApi.setDynamicField(createdEmail.id, 'cc_addresses', JSON.stringify(emailData.cc))
+      await universalApi.setDynamicField(
+        createdEmail.id,
+        'cc_addresses',
+        JSON.stringify(emailData.cc)
+      )
     }
-    
+
     if (emailData.bcc) {
-      await universalApi.setDynamicField(createdEmail.id, 'bcc_addresses', JSON.stringify(emailData.bcc))
+      await universalApi.setDynamicField(
+        createdEmail.id,
+        'bcc_addresses',
+        JSON.stringify(emailData.bcc)
+      )
     }
-    
+
     if (emailData.attachments) {
-      await universalApi.setDynamicField(createdEmail.id, 'attachments', JSON.stringify(emailData.attachments))
+      await universalApi.setDynamicField(
+        createdEmail.id,
+        'attachments',
+        JSON.stringify(emailData.attachments)
+      )
     }
-    
+
     // Record transaction
     await universalApi.createTransaction({
       transaction_type: 'email_send',
@@ -260,13 +284,12 @@ export async function sendUniversalEmail(
         provider: 'resend'
       }
     })
-    
+
     return {
       success: true,
       emailId: createdEmail.id,
       resendId: resendResponse.id
     }
-    
   } catch (error) {
     console.error('Universal Email Sending Error:', error)
     return {
@@ -279,18 +302,15 @@ export async function sendUniversalEmail(
 /**
  * Email template processing with variable substitution
  */
-export function processEmailTemplate(
-  template: string,
-  variables: Record<string, any>
-): string {
+export function processEmailTemplate(template: string, variables: Record<string, any>): string {
   let processed = template
-  
+
   // Replace {{variable}} placeholders
   Object.keys(variables).forEach(key => {
     const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g')
     processed = processed.replace(regex, String(variables[key] || ''))
   })
-  
+
   return processed
 }
 
@@ -299,18 +319,18 @@ export function processEmailTemplate(
  */
 export class EmailAnalytics {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
     universalApi.setOrganizationId(organizationId)
   }
-  
+
   async getEmailMetrics(timeRange: 'day' | 'week' | 'month' | 'year' = 'month') {
     const transactions = await universalApi.getTransactions('email_send', { limit: 1000 })
-    
+
     const now = new Date()
     const filterDate = new Date()
-    
+
     switch (timeRange) {
       case 'day':
         filterDate.setDate(now.getDate() - 1)
@@ -325,14 +345,14 @@ export class EmailAnalytics {
         filterDate.setFullYear(now.getFullYear() - 1)
         break
     }
-    
-    const filteredTransactions = transactions.filter(t => 
-      new Date(t.created_at || '') >= filterDate
+
+    const filteredTransactions = transactions.filter(
+      t => new Date(t.created_at || '') >= filterDate
     )
-    
+
     const totalSent = filteredTransactions.length
     const uniqueRecipients = new Set()
-    
+
     filteredTransactions.forEach(t => {
       if ((t.metadata as any)?.to_count) {
         for (let i = 0; i < t.metadata.to_count; i++) {
@@ -340,7 +360,7 @@ export class EmailAnalytics {
         }
       }
     })
-    
+
     return {
       total_sent: totalSent,
       unique_recipients: uniqueRecipients.size,

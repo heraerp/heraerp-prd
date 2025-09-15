@@ -8,12 +8,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  CheckCircle2, 
-  Circle, 
+import {
+  CheckCircle2,
+  Circle,
   Clock,
   AlertCircle,
   TrendingUp,
@@ -32,7 +38,12 @@ import {
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { fiscalDashboard } from '@/lib/fiscal/fiscal-dashboard-service'
 import { smartCodeReporting } from '@/lib/financial/smart-code-reporting'
-import type { FiscalPeriod, ClosingStep, FinancialKPIs, BranchConsolidation } from '@/lib/fiscal/fiscal-dashboard-service'
+import type {
+  FiscalPeriod,
+  ClosingStep,
+  FinancialKPIs,
+  BranchConsolidation
+} from '@/lib/fiscal/fiscal-dashboard-service'
 import {
   LineChart,
   Line,
@@ -65,7 +76,10 @@ export default function FiscalDashboardPage() {
   const [periodStatus, setPeriodStatus] = useState<FiscalPeriod | null>(null)
   const [closingSteps, setClosingSteps] = useState<ClosingStep[]>([])
   const [kpis, setKpis] = useState<FinancialKPIs | null>(null)
-  const [branchData, setBranchData] = useState<{ branches: BranchConsolidation[]; consolidated: FinancialKPIs } | null>(null)
+  const [branchData, setBranchData] = useState<{
+    branches: BranchConsolidation[]
+    consolidated: FinancialKPIs
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 
@@ -121,7 +135,7 @@ export default function FiscalDashboardPage() {
     const [year, month] = period.split('-')
     const start = new Date(parseInt(year), parseInt(month) - 1, 1)
     const end = new Date(parseInt(year), parseInt(month), 0)
-    
+
     return {
       start: start.toISOString().split('T')[0],
       end: end.toISOString().split('T')[0]
@@ -141,7 +155,7 @@ export default function FiscalDashboardPage() {
         'current_user_id', // Would come from auth context
         `Updated via fiscal dashboard`
       )
-      
+
       // Reload data
       await loadDashboardData()
     } catch (error) {
@@ -153,10 +167,14 @@ export default function FiscalDashboardPage() {
 
   const getStepIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle2 className="w-5 h-5 text-green-600" />
-      case 'in_progress': return <Clock className="w-5 h-5 text-amber-600" />
-      case 'failed': return <AlertCircle className="w-5 h-5 text-red-600" />
-      default: return <Circle className="w-5 h-5 text-gray-400" />
+      case 'completed':
+        return <CheckCircle2 className="w-5 h-5 text-green-600" />
+      case 'in_progress':
+        return <Clock className="w-5 h-5 text-amber-600" />
+      case 'failed':
+        return <AlertCircle className="w-5 h-5 text-red-600" />
+      default:
+        return <Circle className="w-5 h-5 text-gray-400" />
     }
   }
 
@@ -201,12 +219,7 @@ export default function FiscalDashboardPage() {
               <SelectItem value="2024">Year 2024</SelectItem>
             </SelectContent>
           </Select>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={loadDashboardData}
-            disabled={refreshing}
-          >
+          <Button variant="outline" size="icon" onClick={loadDashboardData} disabled={refreshing}>
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
           </Button>
         </div>
@@ -223,8 +236,12 @@ export default function FiscalDashboardPage() {
                   {periodStatus.start_date} to {periodStatus.end_date}
                 </CardDescription>
               </div>
-              <Badge className={`${statusColors[periodStatus.status].bg} ${statusColors[periodStatus.status].text}`}>
-                {React.createElement(statusColors[periodStatus.status].icon, { className: 'w-4 h-4 mr-1 inline' })}
+              <Badge
+                className={`${statusColors[periodStatus.status].bg} ${statusColors[periodStatus.status].text}`}
+              >
+                {React.createElement(statusColors[periodStatus.status].icon, {
+                  className: 'w-4 h-4 mr-1 inline'
+                })}
                 {periodStatus.status.toUpperCase()}
               </Badge>
             </div>
@@ -239,8 +256,8 @@ export default function FiscalDashboardPage() {
               <Alert className="mt-4">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  This period has ended but the closing process is not complete.
-                  Please complete all steps to close the period.
+                  This period has ended but the closing process is not complete. Please complete all
+                  steps to close the period.
                 </AlertDescription>
               </Alert>
             )}
@@ -304,10 +321,10 @@ export default function FiscalDashboardPage() {
                     <CardTitle className="text-sm font-medium">Retained Earnings</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{formatCurrency(kpis.retained_earnings)}</div>
-                    <div className="text-sm text-gray-600 mt-2">
-                      YTD Accumulation
+                    <div className="text-2xl font-bold">
+                      {formatCurrency(kpis.retained_earnings)}
                     </div>
+                    <div className="text-sm text-gray-600 mt-2">YTD Accumulation</div>
                   </CardContent>
                 </Card>
               </>
@@ -332,7 +349,7 @@ export default function FiscalDashboardPage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip formatter={(value) => formatCurrency(value as number)} />
+                  <Tooltip formatter={value => formatCurrency(value as number)} />
                   <Legend />
                   <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} />
                   <Line type="monotone" dataKey="expenses" stroke="#ef4444" strokeWidth={2} />
@@ -347,9 +364,7 @@ export default function FiscalDashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Closing Checklist</CardTitle>
-              <CardDescription>
-                Complete all steps to close the financial period
-              </CardDescription>
+              <CardDescription>Complete all steps to close the financial period</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -375,15 +390,16 @@ export default function FiscalDashboardPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {step.status === 'pending' && index === closingSteps.findIndex(s => s.status === 'pending') && (
-                        <Button
-                          size="sm"
-                          onClick={() => updateClosingStep(step, 'in_progress')}
-                          disabled={refreshing}
-                        >
-                          Start
-                        </Button>
-                      )}
+                      {step.status === 'pending' &&
+                        index === closingSteps.findIndex(s => s.status === 'pending') && (
+                          <Button
+                            size="sm"
+                            onClick={() => updateClosingStep(step, 'in_progress')}
+                            disabled={refreshing}
+                          >
+                            Start
+                          </Button>
+                        )}
                       {step.status === 'in_progress' && (
                         <Button
                           size="sm"
@@ -423,7 +439,7 @@ export default function FiscalDashboardPage() {
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
                         <YAxis />
-                        <Tooltip formatter={(value) => formatCurrency(value as number)} />
+                        <Tooltip formatter={value => formatCurrency(value as number)} />
                         <Bar dataKey="revenue" fill="#10b981" />
                       </BarChart>
                     </ResponsiveContainer>
@@ -455,7 +471,7 @@ export default function FiscalDashboardPage() {
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(value) => formatCurrency(value as number)} />
+                        <Tooltip formatter={value => formatCurrency(value as number)} />
                       </PieChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -562,8 +578,8 @@ export default function FiscalDashboardPage() {
           <Alert className="mt-6">
             <FileText className="h-4 w-4" />
             <AlertDescription>
-              All reports are generated dynamically based on smart code classifications.
-              No GL account mappings required - the system automatically categorizes transactions.
+              All reports are generated dynamically based on smart code classifications. No GL
+              account mappings required - the system automatically categorizes transactions.
             </AlertDescription>
           </Alert>
         </TabsContent>

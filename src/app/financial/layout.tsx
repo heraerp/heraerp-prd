@@ -1,10 +1,10 @@
 'use client'
 
 import { UniversalLayout } from '@/components/layout/UniversalLayout'
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Receipt, 
+import {
+  DollarSign,
+  TrendingUp,
+  Receipt,
   Calculator,
   PieChart,
   FileText,
@@ -136,11 +136,7 @@ const quickActions = [
   }
 ]
 
-export default function FinancialLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function FinancialLayout({ children }: { children: React.ReactNode }) {
   return (
     <UniversalLayout
       title="Finance Pro"

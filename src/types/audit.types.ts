@@ -56,7 +56,11 @@ export interface DocumentRequisition {
   requisition_date: string
   due_date: string
   status: 'draft' | 'sent' | 'partial' | 'complete' | 'overdue'
-  workflow_state: 'requisition_preparation' | 'client_notification' | 'document_collection' | 'review_complete'
+  workflow_state:
+    | 'requisition_preparation'
+    | 'client_notification'
+    | 'document_collection'
+    | 'review_complete'
   metadata: {
     total_documents: number
     documents_received: number
@@ -77,7 +81,13 @@ export interface DocumentLineItem {
   category: DocumentCategory
   subcategory: string
   priority: 'critical' | 'high' | 'medium' | 'low'
-  status: 'pending' | 'received' | 'under_review' | 'approved' | 'rejected' | 'resubmission_required'
+  status:
+    | 'pending'
+    | 'received'
+    | 'under_review'
+    | 'approved'
+    | 'rejected'
+    | 'resubmission_required'
   due_date: string
   received_date?: string
   reviewed_by?: string
@@ -134,7 +144,7 @@ export interface AuditProcedure {
   review_date?: string
 }
 
-export type AuditArea = 
+export type AuditArea =
   | 'cash_bank'
   | 'accounts_receivable'
   | 'inventory'
@@ -225,7 +235,10 @@ export interface AuditReview {
   id: string
   organization_id: string
   transaction_type: 'audit_review'
-  smart_code: 'HERA.AUD.REV.TXN.MANAGER.v1' | 'HERA.AUD.REV.TXN.PARTNER.v1' | 'HERA.AUD.REV.TXN.EQCR.v1'
+  smart_code:
+    | 'HERA.AUD.REV.TXN.MANAGER.v1'
+    | 'HERA.AUD.REV.TXN.PARTNER.v1'
+    | 'HERA.AUD.REV.TXN.EQCR.v1'
   reference_number: string
   review_level: ReviewLevel
   reviewer_id: string
@@ -264,7 +277,13 @@ export interface ReviewNote {
 
 export interface CriticalIssue {
   id: string
-  issue_type: 'control_deficiency' | 'misstatement' | 'disclosure' | 'going_concern' | 'fraud_risk' | 'compliance'
+  issue_type:
+    | 'control_deficiency'
+    | 'misstatement'
+    | 'disclosure'
+    | 'going_concern'
+    | 'fraud_risk'
+    | 'compliance'
   description: string
   financial_impact?: number
   affected_accounts: string[]
@@ -409,7 +428,11 @@ export const GSPU_AUDIT_PHASES: AuditPhase[] = [
     phase_name: 'Reporting',
     status: 'not_started',
     completion_percentage: 0,
-    key_deliverables: ['Opinion formulation', 'Financial statement review', 'Governance communication'],
+    key_deliverables: [
+      'Opinion formulation',
+      'Financial statement review',
+      'Governance communication'
+    ],
     responsible_team_members: []
   },
   {
@@ -425,68 +448,68 @@ export const GSPU_AUDIT_PHASES: AuditPhase[] = [
 // Document Categories from GSPU Requisition Format
 export const DOCUMENT_CATEGORIES = {
   A: {
-    title: "Company Formation Documents",
+    title: 'Company Formation Documents',
     items: [
-      { code: "A.1", name: "Commercial registration certificate", priority: "high" },
-      { code: "A.2", name: "Memorandum of Association", priority: "high" },
-      { code: "A.3", name: "Shareholders' CPR copy", priority: "medium" },
-      { code: "A.4", name: "Shareholders' Passport copy", priority: "medium" }
+      { code: 'A.1', name: 'Commercial registration certificate', priority: 'high' },
+      { code: 'A.2', name: 'Memorandum of Association', priority: 'high' },
+      { code: 'A.3', name: "Shareholders' CPR copy", priority: 'medium' },
+      { code: 'A.4', name: "Shareholders' Passport copy", priority: 'medium' }
     ]
   },
   B: {
-    title: "Financial Documents",
+    title: 'Financial Documents',
     items: [
-      { code: "B.1", name: "Audited Financial Statements (Prior Year)", priority: "critical" },
-      { code: "B.2", name: "Financial Statements (Current Year)", priority: "critical" },
-      { code: "B.3", name: "Trial Balance (Current Year)", priority: "critical" }
+      { code: 'B.1', name: 'Audited Financial Statements (Prior Year)', priority: 'critical' },
+      { code: 'B.2', name: 'Financial Statements (Current Year)', priority: 'critical' },
+      { code: 'B.3', name: 'Trial Balance (Current Year)', priority: 'critical' }
     ]
   },
   C: {
-    title: "Audit Planning Documents",
+    title: 'Audit Planning Documents',
     items: [
-      { code: "C.1", name: "Audit Materiality Check", priority: "high" },
-      { code: "C.2", name: "Audit Timeline for execution", priority: "high" },
-      { code: "C.3", name: "Sampling percentage based on materiality", priority: "high" },
-      { code: "C.4", name: "Working papers and query documentation", priority: "high" }
+      { code: 'C.1', name: 'Audit Materiality Check', priority: 'high' },
+      { code: 'C.2', name: 'Audit Timeline for execution', priority: 'high' },
+      { code: 'C.3', name: 'Sampling percentage based on materiality', priority: 'high' },
+      { code: 'C.4', name: 'Working papers and query documentation', priority: 'high' }
     ]
   },
   D: {
-    title: "Audit Execution Documents",
+    title: 'Audit Execution Documents',
     items: [
-      { code: "D.1", name: "Revenue documentation", priority: "high" },
-      { code: "D.2", name: "Other income details", priority: "medium" },
-      { code: "D.3", name: "Cost of Revenue", priority: "high" },
-      { code: "D.4", name: "Payroll documentation", priority: "high" },
-      { code: "D.5", name: "Utilities documentation", priority: "medium" },
-      { code: "D.6", name: "General and administrative expenses", priority: "medium" },
-      { code: "D.7", name: "Property, Plant and Equipment", priority: "high" },
-      { code: "D.8", name: "Inventory documentation", priority: "high" },
-      { code: "D.9", name: "Trade receivables", priority: "high" },
-      { code: "D.10", name: "Advances, deposits and prepayments", priority: "medium" },
-      { code: "D.11", name: "Cash and cash equivalent", priority: "high" },
-      { code: "D.12", name: "Trade Payables", priority: "high" },
-      { code: "D.13", name: "Provisions (leave pay, indemnity, air fare)", priority: "medium" },
-      { code: "D.14", name: "Other payables", priority: "medium" },
-      { code: "D.15", name: "Accrued expenses calculation basis", priority: "medium" },
-      { code: "D.16", name: "Facility letters for short-term borrowings", priority: "high" },
-      { code: "D.17", name: "Loan documentation", priority: "high" }
+      { code: 'D.1', name: 'Revenue documentation', priority: 'high' },
+      { code: 'D.2', name: 'Other income details', priority: 'medium' },
+      { code: 'D.3', name: 'Cost of Revenue', priority: 'high' },
+      { code: 'D.4', name: 'Payroll documentation', priority: 'high' },
+      { code: 'D.5', name: 'Utilities documentation', priority: 'medium' },
+      { code: 'D.6', name: 'General and administrative expenses', priority: 'medium' },
+      { code: 'D.7', name: 'Property, Plant and Equipment', priority: 'high' },
+      { code: 'D.8', name: 'Inventory documentation', priority: 'high' },
+      { code: 'D.9', name: 'Trade receivables', priority: 'high' },
+      { code: 'D.10', name: 'Advances, deposits and prepayments', priority: 'medium' },
+      { code: 'D.11', name: 'Cash and cash equivalent', priority: 'high' },
+      { code: 'D.12', name: 'Trade Payables', priority: 'high' },
+      { code: 'D.13', name: 'Provisions (leave pay, indemnity, air fare)', priority: 'medium' },
+      { code: 'D.14', name: 'Other payables', priority: 'medium' },
+      { code: 'D.15', name: 'Accrued expenses calculation basis', priority: 'medium' },
+      { code: 'D.16', name: 'Facility letters for short-term borrowings', priority: 'high' },
+      { code: 'D.17', name: 'Loan documentation', priority: 'high' }
     ]
   },
   E: {
-    title: "VAT Documentation",
+    title: 'VAT Documentation',
     items: [
-      { code: "E.1", name: "VAT registration certificate", priority: "high" },
-      { code: "E.2", name: "Quarterly VAT filings", priority: "high" },
-      { code: "E.3", name: "VAT calculation details", priority: "high" }
+      { code: 'E.1', name: 'VAT registration certificate', priority: 'high' },
+      { code: 'E.2', name: 'Quarterly VAT filings', priority: 'high' },
+      { code: 'E.3', name: 'VAT calculation details', priority: 'high' }
     ]
   },
   F: {
-    title: "Related Parties Documentation",
+    title: 'Related Parties Documentation',
     items: [
-      { code: "F.1", name: "Related party details and relationships", priority: "high" },
-      { code: "F.2", name: "Outstanding balances with related parties", priority: "high" },
-      { code: "F.3", name: "Related party balance confirmations", priority: "high" },
-      { code: "F.4", name: "Transaction details during the year", priority: "high" }
+      { code: 'F.1', name: 'Related party details and relationships', priority: 'high' },
+      { code: 'F.2', name: 'Outstanding balances with related parties', priority: 'high' },
+      { code: 'F.3', name: 'Related party balance confirmations', priority: 'high' },
+      { code: 'F.4', name: 'Transaction details during the year', priority: 'high' }
     ]
   }
 }

@@ -40,15 +40,15 @@ export function NavigationLoadingProvider({ children }: { children: React.ReactN
   }, [pathname, isNavigating, navigationTarget])
 
   return (
-    <NavigationLoadingContext.Provider 
-      value={{ 
-        isNavigating, 
-        setNavigating, 
-        navigationTarget 
+    <NavigationLoadingContext.Provider
+      value={{
+        isNavigating,
+        setNavigating,
+        navigationTarget
       }}
     >
       {children}
-      
+
       {/* Subtle loading indicator at top of page */}
       {isNavigating && (
         <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-pulse" />

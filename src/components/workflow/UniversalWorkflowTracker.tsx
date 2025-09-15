@@ -5,30 +5,30 @@ import { UniversalWorkflow } from '@/lib/universal-workflow'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel
 } from '@/components/ui/dropdown-menu'
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { useToast } from "@/components/ui/use-toast"
-import { 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  AlertCircle, 
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
   MoreHorizontal,
   ArrowRight,
   History
@@ -43,8 +43,8 @@ interface WorkflowTrackerProps {
   compact?: boolean
 }
 
-export function UniversalWorkflowTracker({ 
-  transactionId, 
+export function UniversalWorkflowTracker({
+  transactionId,
   organizationId,
   userId,
   onStatusChange,
@@ -58,14 +58,14 @@ export function UniversalWorkflowTracker({
   const [showTransitionDialog, setShowTransitionDialog] = useState(false)
   const [selectedTransition, setSelectedTransition] = useState<any>(null)
   const [transitionReason, setTransitionReason] = useState('')
-  
+
   const { toast } = useToast()
   const workflow = new UniversalWorkflow(organizationId)
-  
+
   useEffect(() => {
     loadWorkflowData()
   }, [transactionId])
-  
+
   const loadWorkflowData = async () => {
     try {
       setLoading(true)
@@ -74,25 +74,25 @@ export function UniversalWorkflowTracker({
         workflow.getAvailableTransitions(transactionId),
         workflow.getWorkflowHistory(transactionId)
       ])
-      
+
       setCurrentStatus(status)
       setAvailableTransitions(transitions)
       setHistory(workflowHistory)
     } catch (error) {
       console.error('Failed to load workflow data:', error)
       toast({
-        title: "Error",
-        description: "Failed to load workflow status",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to load workflow status',
+        variant: 'destructive'
       })
     } finally {
       setLoading(false)
     }
   }
-  
+
   const handleTransition = async () => {
     if (!selectedTransition) return
-    
+
     try {
       setTransitioning(true)
       await workflow.transitionStatus(transactionId, selectedTransition.id, {
@@ -104,12 +104,12 @@ export function UniversalWorkflowTracker({
           to_status: selectedTransition.code
         }
       })
-      
+
       toast({
-        title: "Status Updated",
+        title: 'Status Updated',
         description: `Changed to ${selectedTransition.name}`
       })
-      
+
       await loadWorkflowData()
       onStatusChange?.(selectedTransition)
       setShowTransitionDialog(false)
@@ -118,15 +118,15 @@ export function UniversalWorkflowTracker({
     } catch (error) {
       console.error('Transition failed:', error)
       toast({
-        title: "Transition Failed",
-        description: error.message || "Failed to update status",
-        variant: "destructive"
+        title: 'Transition Failed',
+        description: error.message || 'Failed to update status',
+        variant: 'destructive'
       })
     } finally {
       setTransitioning(false)
     }
   }
-  
+
   const getStatusIcon = (statusCode: string) => {
     if (statusCode?.includes('COMPLETED') || statusCode?.includes('PAID')) {
       return <CheckCircle className="w-4 h-4" />
@@ -139,7 +139,7 @@ export function UniversalWorkflowTracker({
     }
     return <AlertCircle className="w-4 h-4" />
   }
-  
+
   if (loading) {
     return (
       <div className="space-y-2">
@@ -148,20 +148,20 @@ export function UniversalWorkflowTracker({
       </div>
     )
   }
-  
+
   if (compact) {
     return (
       <div className="flex items-center gap-2">
         {currentStatus && (
           <>
-            <Badge 
+            <Badge
               style={{ backgroundColor: (currentStatus.metadata as any)?.color || '#6B7280' }}
               className="text-white"
             >
               {getStatusIcon(currentStatus.entity_code)}
               <span className="ml-1">{currentStatus.entity_name}</span>
             </Badge>
-            
+
             {availableTransitions.length > 0 && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -192,7 +192,7 @@ export function UniversalWorkflowTracker({
       </div>
     )
   }
-  
+
   return (
     <>
       <Card>
@@ -214,7 +214,7 @@ export function UniversalWorkflowTracker({
               <p className="text-sm text-muted-foreground mb-1">Current Status</p>
               {currentStatus ? (
                 <div className="flex items-center gap-2">
-                  <Badge 
+                  <Badge
                     style={{ backgroundColor: (currentStatus.metadata as any)?.color || '#6B7280' }}
                     className="text-white"
                   >
@@ -222,14 +222,16 @@ export function UniversalWorkflowTracker({
                     <span className="ml-1">{currentStatus.entity_name}</span>
                   </Badge>
                   {(currentStatus.metadata as any)?.is_final && (
-                    <Badge variant="outline" className="text-xs">Final</Badge>
+                    <Badge variant="outline" className="text-xs">
+                      Final
+                    </Badge>
                   )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground italic">No status assigned</p>
               )}
             </div>
-            
+
             {/* Status Actions */}
             {availableTransitions.length > 0 && (
               <DropdownMenu>
@@ -264,20 +266,20 @@ export function UniversalWorkflowTracker({
               </DropdownMenu>
             )}
           </div>
-          
+
           {/* Workflow Timeline */}
           {history.length > 0 && (
             <div className="space-y-2">
               <p className="text-sm font-medium">Status History</p>
               <div className="space-y-2">
                 {history.slice(0, 5).map((item, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={`flex items-start gap-3 text-sm p-2 rounded-lg ${
                       item.isActive ? 'bg-muted' : ''
                     }`}
                   >
-                    <div 
+                    <div
                       className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
                       style={{ backgroundColor: (item.metadata as any)?.color || '#6B7280' }}
                     />
@@ -289,9 +291,7 @@ export function UniversalWorkflowTracker({
                         </span>
                       </div>
                       {item.reason && (
-                        <p className="text-xs text-muted-foreground">
-                          {item.reason}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{item.reason}</p>
                       )}
                     </div>
                   </div>
@@ -306,7 +306,7 @@ export function UniversalWorkflowTracker({
           )}
         </CardContent>
       </Card>
-      
+
       {/* Transition Dialog */}
       <Dialog open={showTransitionDialog} onOpenChange={setShowTransitionDialog}>
         <DialogContent>
@@ -328,7 +328,7 @@ export function UniversalWorkflowTracker({
                 id="reason"
                 placeholder="Enter reason for status change..."
                 value={transitionReason}
-                onChange={(e) => setTransitionReason(e.target.value)}
+                onChange={e => setTransitionReason(e.target.value)}
                 rows={3}
               />
             </div>
@@ -341,8 +341,8 @@ export function UniversalWorkflowTracker({
             )}
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setShowTransitionDialog(false)
                 setSelectedTransition(null)
@@ -352,10 +352,7 @@ export function UniversalWorkflowTracker({
             >
               Cancel
             </Button>
-            <Button 
-              onClick={handleTransition}
-              disabled={transitioning}
-            >
+            <Button onClick={handleTransition} disabled={transitioning}>
               {transitioning ? 'Updating...' : 'Update Status'}
             </Button>
           </DialogFooter>

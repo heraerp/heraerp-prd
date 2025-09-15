@@ -20,7 +20,7 @@ export function useAppointment(organizationId?: string) {
 
   const fetchData = async () => {
     if (!organizationId) return
-    
+
     try {
       setLoading(true)
       setError(null)
@@ -28,10 +28,10 @@ export function useAppointment(organizationId?: string) {
       // 1. Get entities
       const entitiesRes = await universalApi.getEntities('appointment', organizationId)
       if (!entitiesRes.success) throw new Error(entitiesRes.error)
-      
+
       const entities = entitiesRes.data || []
       const entityIds = entities.map(e => e.id)
-      
+
       if (entityIds.length === 0) {
         setItems([])
         setStats({ total: 0, active: 0, inactive: 0 })
@@ -39,33 +39,28 @@ export function useAppointment(organizationId?: string) {
       }
 
       // 2. Get dynamic fields
-      const fieldsPromises = entityIds.map(id => 
-        universalApi.getDynamicFields(id, organizationId)
-      )
+      const fieldsPromises = entityIds.map(id => universalApi.getDynamicFields(id, organizationId))
       const fieldsResults = await Promise.all(fieldsPromises)
-      
+
       // 3. Get relationships
-      const relPromises = entityIds.map(id =>
-        universalApi.getRelationships(id, organizationId)
-      )
+      const relPromises = entityIds.map(id => universalApi.getRelationships(id, organizationId))
       const relResults = await Promise.all(relPromises)
-      
+
       // 4. Transform data
       const transformedItems = entities.map((entity, index) => ({
         entity,
         dynamicFields: fieldsResults[index].data || [],
         relationships: relResults[index].data || []
       }))
-      
+
       setItems(transformedItems)
-      
+
       // Calculate stats
       setStats({
         total: entities.length,
         active: entities.filter(e => e.status === 'active').length,
         inactive: entities.filter(e => e.status === 'inactive').length
       })
-      
     } catch (err) {
       console.error('Error fetching appointment data:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch data')
@@ -81,17 +76,20 @@ export function useAppointment(organizationId?: string) {
   // CRUD operations
   const createAppointment = async (data: any) => {
     if (!organizationId) throw new Error('No organization ID')
-    
-    const result = await universalApi.createEntity({
-      entity_type: 'appointment',
-      entity_name: data.name,
-      entity_code: `APPOINTMENT-${Date.now()}`,
-      smart_code: 'HERA.SALON.APPOINTMENT.v1',
-      status: 'active'
-    }, organizationId)
-    
+
+    const result = await universalApi.createEntity(
+      {
+        entity_type: 'appointment',
+        entity_name: data.name,
+        entity_code: `APPOINTMENT-${Date.now()}`,
+        smart_code: 'HERA.SALON.APPOINTMENT.v1',
+        status: 'active'
+      },
+      organizationId
+    )
+
     if (!result.success) throw new Error(result.error)
-    
+
     // Add dynamic fields
     const fieldPromises = []
     if (data.date) {
@@ -106,7 +104,13 @@ export function useAppointment(organizationId?: string) {
     }
     if (data.duration) {
       fieldPromises.push(
-        universalApi.setDynamicField(result.data.id, 'duration', data.duration, 'text', organizationId)
+        universalApi.setDynamicField(
+          result.data.id,
+          'duration',
+          data.duration,
+          'text',
+          organizationId
+        )
       )
     }
     if (data.notes) {
@@ -119,10 +123,10 @@ export function useAppointment(organizationId?: string) {
         universalApi.setDynamicField(result.data.id, 'status', data.status, 'text', organizationId)
       )
     }
-    
+
     await Promise.all(fieldPromises)
     await fetchData() // Refresh
-    
+
     return result.data
   }
 
@@ -132,10 +136,10 @@ export function useAppointment(organizationId?: string) {
 
   const deleteAppointment = async (id: string) => {
     if (!organizationId) throw new Error('No organization ID')
-    
+
     const result = await universalApi.deleteEntity(id, organizationId)
     if (!result.success) throw new Error(result.error)
-    
+
     await fetchData() // Refresh
   }
 

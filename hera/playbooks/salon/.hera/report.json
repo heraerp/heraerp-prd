@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "warnings": [
+    {
+      "id": "UNKNOWN_CONTRACT",
+      "message": "Could not infer contract type; skipping schema validation",
+      "file": "reports.yml"
+    },
+    {
+      "id": "UNKNOWN_CONTRACT",
+      "message": "Could not infer contract type; skipping schema validation",
+      "file": "read_models.yml"
+    },
+    {
+      "id": "UNKNOWN_CONTRACT",
+      "message": "Could not infer contract type; skipping schema validation",
+      "file": "smart_codes.yml"
+    },
+    {
+      "id": "UNKNOWN_CONTRACT",
+      "message": "Could not infer contract type; skipping schema validation",
+      "file": "tests.uat.yml"
+    }
+  ],
+  "info": [],
+  "artifacts": [
+    {
+      "file": "entities.core.yml",
+      "type": "entities"
+    },
+    {
+      "file": "entities.keydefs.yml",
+      "type": "entities"
+    },
+    {
+      "file": "dynamic_data.seed.yml",
+      "type": "dynamic_data"
+    },
+    {
+      "file": "relationships.seed.yml",
+      "type": "relationships"
+    }
+  ],
+  "summary": {
+    "artifact_count": 4,
+    "errors": 0,
+    "warnings": 4
+  },
+  "compat_mode": false
+}

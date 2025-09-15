@@ -6,7 +6,7 @@ import { getHeraAPI } from '@/lib/hera-api'
 /**
  * HERA Financial Module - Budget Management API
  * Smart Code: HERA.FIN.GL.ENT.BUDGET.v1
- * 
+ *
  * Manages budget accounts, allocations, and variance analysis
  * Integrates with existing Mario demo and COA setup
  */
@@ -19,23 +19,20 @@ export async function GET(request: NextRequest) {
     const budgetType = searchParams.get('budget_type') // operating, capital, cash_flow
     const accountId = searchParams.get('account_id')
     const includeVariance = searchParams.get('include_variance') === 'true'
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const heraApi = getHeraAPI()
-    
+
     // Get budget data using universal patterns
     let budgets = await heraApi.getEntities('budget_account')
 
     // If no budgets found, create from COA template
     if (budgets.length === 0 && fiscalYear) {
       console.log('No budgets found, creating from COA template...')
-      
+
       // Get all GL accounts to create budget structure
       const glAccounts = await heraApi.getEntities('gl_account')
 
@@ -79,8 +76,13 @@ export async function GET(request: NextRequest) {
       budget_amount: parseFloat(budget.budget_amount || 0),
       ytd_actual: parseFloat(budget.ytd_actual || 0),
       variance: parseFloat(budget.budget_amount || 0) - parseFloat(budget.ytd_actual || 0),
-      variance_percent: budget.budget_amount ? 
-        (((parseFloat(budget.budget_amount) - parseFloat(budget.ytd_actual || 0)) / parseFloat(budget.budget_amount)) * 100).toFixed(2) : '0.00',
+      variance_percent: budget.budget_amount
+        ? (
+            ((parseFloat(budget.budget_amount) - parseFloat(budget.ytd_actual || 0)) /
+              parseFloat(budget.budget_amount)) *
+            100
+          ).toFixed(2)
+        : '0.00',
       last_updated: budget.updated_at
     }))
 
@@ -95,8 +97,12 @@ export async function GET(request: NextRequest) {
     }
 
     summary.total_variance = summary.total_budget - summary.total_actual
-    summary.favorable_variance = formattedBudgets.filter(b => b.variance > 0).reduce((sum, b) => sum + b.variance, 0)
-    summary.unfavorable_variance = formattedBudgets.filter(b => b.variance < 0).reduce((sum, b) => sum + Math.abs(b.variance), 0)
+    summary.favorable_variance = formattedBudgets
+      .filter(b => b.variance > 0)
+      .reduce((sum, b) => sum + b.variance, 0)
+    summary.unfavorable_variance = formattedBudgets
+      .filter(b => b.variance < 0)
+      .reduce((sum, b) => sum + Math.abs(b.variance), 0)
 
     // Group by account type
     const accountTypes = ['asset', 'liability', 'equity', 'revenue', 'expense']
@@ -139,19 +145,16 @@ export async function POST(request: NextRequest) {
     const { organization_id, budget_data, setup_type = 'create_budget' } = body
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const heraApi = getHeraAPI()
-    
+
     if (setup_type === 'bulk_update') {
       // Bulk update multiple budget amounts
       const { budgets, fiscal_year } = budget_data
       const updatedBudgets = []
-      
+
       for (const budgetUpdate of budgets) {
         const updated = await heraApi.updateEntity(budgetUpdate.budget_id, {
           organization_id,
@@ -171,17 +174,18 @@ export async function POST(request: NextRequest) {
         fiscal_year
       })
     }
-    
+
     if (setup_type === 'copy_from_previous') {
       // Copy budget from previous fiscal year
       const { source_year, target_year, adjustment_percent = 0 } = budget_data
-      
+
       const sourceBudgets = await heraApi.getEntities('budget_account')
 
       const newBudgets = []
       for (const sourceBudget of sourceBudgets) {
-        const adjustedAmount = parseFloat(sourceBudget.budget_amount || 0) * (1 + adjustment_percent / 100)
-        
+        const adjustedAmount =
+          parseFloat(sourceBudget.budget_amount || 0) * (1 + adjustment_percent / 100)
+
         const newBudget = await heraApi.createEntity({
           organization_id,
           entity_type: 'budget_account',
@@ -212,7 +216,7 @@ export async function POST(request: NextRequest) {
         adjustment_percent
       })
     }
-    
+
     if (setup_type === 'create_budget') {
       // Create individual budget
       const newBudget = await heraApi.createEntity({
@@ -240,10 +244,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { error: 'Invalid setup_type' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid setup_type' }, { status: 400 })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('Budget creation error:', error)
@@ -267,7 +268,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const heraApi = getHeraAPI()
-    
+
     if (action === 'update_actual') {
       // Update YTD actual amount and recalculate variance
       const budget = await heraApi.getEntity(budget_id)
@@ -296,7 +297,7 @@ export async function PUT(request: NextRequest) {
         }
       })
     }
-    
+
     // General budget update
     const updatedBudget = await heraApi.updateEntity(budget_id, {
       organization_id,

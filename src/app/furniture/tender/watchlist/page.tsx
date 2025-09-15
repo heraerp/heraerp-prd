@@ -13,8 +13,8 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  TableRow
+} from '@/components/ui/table'
 import {
   Bell,
   BellOff,
@@ -102,27 +102,25 @@ export default function WatchlistPage() {
   const [showAlertsOnly, setShowAlertsOnly] = useState(false)
 
   const filteredWatchlist = watchlist.filter(item => {
-    const matchesSearch = 
+    const matchesSearch =
       item.tender_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.tender_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.department.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     const matchesFilter = !showAlertsOnly || item.alerts_enabled
-    
+
     return matchesSearch && matchesFilter
   })
 
   const handleToggleAlerts = (tenderId: string) => {
-    setWatchlist(prev => 
-      prev.map(item => 
-        item.tender_id === tenderId 
-          ? { ...item, alerts_enabled: !item.alerts_enabled }
-          : item
+    setWatchlist(prev =>
+      prev.map(item =>
+        item.tender_id === tenderId ? { ...item, alerts_enabled: !item.alerts_enabled } : item
       )
     )
     toast({
       title: 'Alert Settings Updated',
-      description: 'Notification preferences have been saved.',
+      description: 'Notification preferences have been saved.'
     })
   }
 
@@ -130,7 +128,7 @@ export default function WatchlistPage() {
     setWatchlist(prev => prev.filter(item => item.tender_id !== tenderId))
     toast({
       title: 'Removed from Watchlist',
-      description: 'The tender has been removed from your watchlist.',
+      description: 'The tender has been removed from your watchlist.'
     })
   }
 
@@ -194,7 +192,7 @@ export default function WatchlistPage() {
             <Eye className="h-8 w-8 text-muted-foreground" />
           </div>
         </Card>
-        
+
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -206,7 +204,7 @@ export default function WatchlistPage() {
             <Bell className="h-8 w-8 text-blue-500" />
           </div>
         </Card>
-        
+
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -218,13 +216,17 @@ export default function WatchlistPage() {
             <TrendingUp className="h-8 w-8 text-red-500" />
           </div>
         </Card>
-        
+
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Total Value</p>
               <p className="text-2xl font-bold">
-                ₹{(watchlist.reduce((sum, item) => sum + item.estimated_value, 0) / 100000).toFixed(1)}L
+                ₹
+                {(watchlist.reduce((sum, item) => sum + item.estimated_value, 0) / 100000).toFixed(
+                  1
+                )}
+                L
               </p>
             </div>
             <Calendar className="h-8 w-8 text-amber-500" />
@@ -241,7 +243,7 @@ export default function WatchlistPage() {
               <Input
                 placeholder="Search watchlist..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -263,9 +265,7 @@ export default function WatchlistPage() {
         </div>
 
         {filteredWatchlist.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No tenders in watchlist
-          </div>
+          <div className="text-center py-8 text-muted-foreground">No tenders in watchlist</div>
         ) : (
           <Table>
             <TableHeader>
@@ -280,10 +280,10 @@ export default function WatchlistPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredWatchlist.map((item) => {
+              {filteredWatchlist.map(item => {
                 const daysRemaining = getDaysRemaining(item.closing_date)
                 const isUrgent = daysRemaining <= 3
-                
+
                 return (
                   <TableRow key={item.tender_id}>
                     <TableCell>
@@ -294,9 +294,7 @@ export default function WatchlistPage() {
                         >
                           {item.tender_code}
                         </Link>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {item.tender_name}
-                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">{item.tender_name}</p>
                         {item.notes && (
                           <p className="text-sm text-muted-foreground mt-1 italic">
                             Note: {item.notes}
@@ -316,7 +314,9 @@ export default function WatchlistPage() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">₹{(item.estimated_value / 100000).toFixed(1)}L</p>
+                        <p className="font-medium">
+                          ₹{(item.estimated_value / 100000).toFixed(1)}L
+                        </p>
                         <p className="text-sm text-muted-foreground">
                           EMD: ₹{(item.emd_amount / 1000).toFixed(0)}K
                         </p>

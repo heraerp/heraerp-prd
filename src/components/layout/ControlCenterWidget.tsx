@@ -27,7 +27,7 @@ export function ControlCenterWidget() {
     status: 'healthy',
     lastCheck: new Date()
   })
-  
+
   // Check health every 5 minutes
   useEffect(() => {
     const checkHealth = async () => {
@@ -44,12 +44,12 @@ export function ControlCenterWidget() {
         console.error('Health check failed:', error)
       }
     }
-    
+
     checkHealth()
     const interval = setInterval(checkHealth, 5 * 60 * 1000)
     return () => clearInterval(interval)
   }, [])
-  
+
   const getStatusIcon = () => {
     switch (healthStatus.status) {
       case 'healthy':
@@ -60,7 +60,7 @@ export function ControlCenterWidget() {
         return <AlertTriangle className="h-4 w-4 text-red-500" />
     }
   }
-  
+
   const getStatusColor = () => {
     switch (healthStatus.status) {
       case 'healthy':
@@ -71,7 +71,7 @@ export function ControlCenterWidget() {
         return 'border-red-500 bg-red-50 dark:bg-red-950'
     }
   }
-  
+
   if (isMinimized) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
@@ -79,24 +79,23 @@ export function ControlCenterWidget() {
           size="icon"
           variant="outline"
           onClick={() => setIsMinimized(false)}
-          className={cn(
-            "rounded-full shadow-lg",
-            getStatusColor()
-          )}
+          className={cn('rounded-full shadow-lg', getStatusColor())}
         >
           <Command className="h-5 w-5" />
         </Button>
       </div>
     )
   }
-  
+
   return (
     <div className="fixed bottom-4 right-4 z-50 transition-all duration-300">
-      <Card className={cn(
-        "shadow-xl border-2 overflow-hidden",
-        getStatusColor(),
-        isExpanded ? "w-96" : "w-64"
-      )}>
+      <Card
+        className={cn(
+          'shadow-xl border-2 overflow-hidden',
+          getStatusColor(),
+          isExpanded ? 'w-96' : 'w-64'
+        )}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b bg-background/95">
           <div className="flex items-center gap-2">
@@ -122,7 +121,7 @@ export function ControlCenterWidget() {
             </Button>
           </div>
         </div>
-        
+
         {/* Quick Status */}
         <div className="p-3">
           <div className="flex items-center justify-between mb-2">
@@ -132,24 +131,24 @@ export function ControlCenterWidget() {
             </div>
             <Badge variant="outline">{healthStatus.overall}%</Badge>
           </div>
-          
+
           {isExpanded && (
             <>
               {/* Quick Actions */}
               <div className="space-y-2 mt-4">
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+                <Button
+                  size="sm"
+                  variant="outline"
                   className="w-full justify-start"
                   onClick={() => window.open('/control-center', '_blank')}
                 >
                   <Command className="h-4 w-4 mr-2" />
                   Open Dashboard
                 </Button>
-                
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+
+                <Button
+                  size="sm"
+                  variant="outline"
                   className="w-full justify-start"
                   onClick={() => {
                     // Run health check
@@ -159,18 +158,14 @@ export function ControlCenterWidget() {
                   <Activity className="h-4 w-4 mr-2" />
                   Run Health Check
                 </Button>
-                
+
                 <Link href="/control-center" className="block">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="w-full justify-start"
-                  >
+                  <Button size="sm" variant="outline" className="w-full justify-start">
                     View Full Report
                   </Button>
                 </Link>
               </div>
-              
+
               {/* Last Check */}
               <div className="mt-4 text-xs text-muted-foreground">
                 Last check: {healthStatus.lastCheck.toLocaleTimeString()}

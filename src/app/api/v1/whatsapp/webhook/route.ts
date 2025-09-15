@@ -10,38 +10,44 @@ export async function GET(request: NextRequest) {
   const mode = searchParams.get('hub.mode')
   const token = searchParams.get('hub.verify_token')
   const challenge = searchParams.get('hub.challenge')
-  
-  const expectedToken = process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN || process.env.WHATSAPP_WEBHOOK_TOKEN || 'hera-whatsapp-webhook-token-2024'
-  
+
+  const expectedToken =
+    process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN ||
+    process.env.WHATSAPP_WEBHOOK_TOKEN ||
+    'hera-whatsapp-webhook-token-2024'
+
   if (mode === 'subscribe' && token === expectedToken) {
     console.log('WhatsApp webhook verified')
     return new NextResponse(challenge, { status: 200 })
   }
-  
+
   // Return error with debugging info
-  return NextResponse.json({ 
-    error: 'Invalid verification token',
-    expected: expectedToken ? 'Token configured' : 'No token configured',
-    received: token ? 'Token provided' : 'No token provided',
-    mode: mode
-  }, { status: 403 })
+  return NextResponse.json(
+    {
+      error: 'Invalid verification token',
+      expected: expectedToken ? 'Token configured' : 'No token configured',
+      received: token ? 'Token provided' : 'No token provided',
+      mode: mode
+    },
+    { status: 403 }
+  )
 }
 
 // Message handling
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // TODO: In production, validate the webhook signature
     // const signature = request.headers.get('x-hub-signature-256')
     // if (!validateWebhookSignature(body, signature)) {
     //   return new NextResponse('Invalid signature', { status: 403 })
     // }
-    
+
     // Log incoming webhook for debugging
     console.log('🔔 WhatsApp webhook received at:', new Date().toISOString())
     console.log('📦 Webhook body:', JSON.stringify(body, null, 2))
-    
+
     // Extract message from WhatsApp webhook format
     const entry = body.entry?.[0]
     const changes = entry?.changes?.[0]
@@ -49,7 +55,7 @@ export async function POST(request: NextRequest) {
     const messages = value?.messages
     const contacts = value?.contacts
     const statuses = value?.statuses
-    
+
     // Determine organization ID early
     const phoneNumberId = value?.metadata?.phone_number_id
     const phoneToOrgMap: Record<string, string> = {
@@ -57,18 +63,19 @@ export async function POST(request: NextRequest) {
       '971501234567': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Hair Talkz alternate
       '712631301940690': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Hair Talkz phone number ID
       '447515668004': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Your UK number
-      '918883333144': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Your India number
+      '918883333144': 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Your India number
     }
-    
+
     // Check if this is a status update
     if (statuses && statuses.length > 0) {
-      const organizationId = phoneToOrgMap[phoneNumberId] ||
-                            process.env.DEFAULT_ORGANIZATION_ID ||
-                            'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
+      const organizationId =
+        phoneToOrgMap[phoneNumberId] ||
+        process.env.DEFAULT_ORGANIZATION_ID ||
+        'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
       await handleStatusUpdate(body, organizationId)
       return NextResponse.json({ status: 'ok' })
     }
-    
+
     // Log specific message details
     if (messages && messages.length > 0) {
       const message = messages[0]
@@ -78,29 +85,33 @@ export async function POST(request: NextRequest) {
       console.log('   Type:', message.type)
       console.log('   Timestamp:', new Date(parseInt(message.timestamp) * 1000).toLocaleString())
       console.log('   Phone Number ID:', phoneNumberId)
-      console.log('   Organization ID will be:', phoneToOrgMap[message.from] || phoneToOrgMap[phoneNumberId] || 'default')
+      console.log(
+        '   Organization ID will be:',
+        phoneToOrgMap[message.from] || phoneToOrgMap[phoneNumberId] || 'default'
+      )
     }
-    
+
     if (!messages || messages.length === 0) {
       return NextResponse.json({ status: 'ok' })
     }
-    
+
     const message = messages[0]
     const contact = contacts?.[0]
     const from = message.from // WhatsApp ID
     const text = message.text?.body
     const messageId = message.id
     const timestamp = message.timestamp
-    
+
     // Organization already determined above
-    const organizationId = phoneToOrgMap[from] || 
-                          phoneToOrgMap[phoneNumberId] ||
-                          process.env.DEFAULT_ORGANIZATION_ID ||
-                          'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Default to Hair Talkz
-    
+    const organizationId =
+      phoneToOrgMap[from] ||
+      phoneToOrgMap[phoneNumberId] ||
+      process.env.DEFAULT_ORGANIZATION_ID ||
+      'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Default to Hair Talkz
+
     console.log('🏢 Using organization ID:', organizationId)
     console.log('📱 Phone number ID:', phoneNumberId)
-    
+
     // First, store the message in database
     const webhookHandler = new WhatsAppWebhookHandler(organizationId)
     const storeResult = await webhookHandler.handleIncomingMessage(
@@ -108,21 +119,25 @@ export async function POST(request: NextRequest) {
       contact,
       phoneNumberId || ''
     )
-    
+
     if (!storeResult.success) {
       console.error('Failed to store message:', storeResult.error)
       // Continue anyway - we don't want to fail the webhook
     }
-    
+
     // Handle BOOK messages and campaign keywords
     const upperText = text?.toUpperCase() || ''
-    
+
     // Check for booking keywords
-    if (upperText.includes('BOOK') || upperText.includes('HAIR') || 
-        upperText.includes('NAILS') || upperText.includes('APPOINTMENT')) {
+    if (
+      upperText.includes('BOOK') ||
+      upperText.includes('HAIR') ||
+      upperText.includes('NAILS') ||
+      upperText.includes('APPOINTMENT')
+    ) {
       console.log('📚 Booking request detected from:', from)
       console.log('🏷️ Keyword used:', upperText)
-      
+
       try {
         // Send immediate response
         const whatsappService = new WhatsAppService(
@@ -131,22 +146,23 @@ export async function POST(request: NextRequest) {
           process.env.WHATSAPP_WEBHOOK_TOKEN || '',
           organizationId
         )
-        
-        let responseMessage = "Hi! Welcome to Hair Talkz! 💇‍♀️\n\n"
-        
+
+        let responseMessage = 'Hi! Welcome to Hair Talkz! 💇‍♀️\n\n'
+
         // Customize response based on keyword
         if (upperText.includes('HAIR')) {
           responseMessage += "I see you're interested in our hair services! "
         } else if (upperText.includes('NAILS')) {
           responseMessage += "Looking for the perfect manicure? You've come to the right place! "
         }
-        
-        responseMessage += "I'd be happy to help you book an appointment. What service are you interested in?\n\n✂️ Haircut\n💆‍♀️ Hair Treatment\n💅 Manicure/Pedicure\n💄 Makeup\n\nPlease reply with your choice!"
-        
+
+        responseMessage +=
+          "I'd be happy to help you book an appointment. What service are you interested in?\n\n✂️ Haircut\n💆‍♀️ Hair Treatment\n💅 Manicure/Pedicure\n💄 Makeup\n\nPlease reply with your choice!"
+
         const response = await whatsappService.sendTextMessage(from, responseMessage)
-        
+
         console.log('Booking response sent:', response)
-        
+
         // Track campaign source
         if (storeResult.success && storeResult.data) {
           await universalApi.setDynamicField(
@@ -159,7 +175,7 @@ export async function POST(request: NextRequest) {
         console.error('Error handling booking message:', bookError)
       }
     }
-    
+
     // Handle promotional keywords
     if (upperText.includes('PROMO') || upperText.includes('OFFER')) {
       console.log('🎁 Promo request detected from:', from)
@@ -170,26 +186,27 @@ export async function POST(request: NextRequest) {
           process.env.WHATSAPP_WEBHOOK_TOKEN || '',
           organizationId
         )
-        
-        const promoMessage = "🎉 Special Offers at Hair Talkz!\n\n" +
-          "💇‍♀️ 20% off on Hair Treatments this week\n" +
-          "💅 Buy 2 Get 1 Free on Manicures\n" +
-          "💄 Bridal Makeup Package at special rates\n\n" +
-          "Would you like to book any of these services? Just reply with your choice!"
-        
+
+        const promoMessage =
+          '🎉 Special Offers at Hair Talkz!\n\n' +
+          '💇‍♀️ 20% off on Hair Treatments this week\n' +
+          '💅 Buy 2 Get 1 Free on Manicures\n' +
+          '💄 Bridal Makeup Package at special rates\n\n' +
+          'Would you like to book any of these services? Just reply with your choice!'
+
         await whatsappService.sendTextMessage(from, promoMessage)
       } catch (error) {
         console.error('Error sending promo message:', error)
       }
     }
-    
+
     // Route through Universal Handler (configuration-driven processing)
     if (text && storeResult.success) {
       try {
         const { UniversalWhatsAppHandler } = await import('@/lib/whatsapp/universal-handler')
-        
+
         const handler = new UniversalWhatsAppHandler(organizationId)
-        
+
         // Build processing context
         const context = {
           organizationId,
@@ -203,10 +220,10 @@ export async function POST(request: NextRequest) {
           },
           correlationId: `conv-${from}-${Date.now()}`
         }
-        
+
         // Process with universal configuration-driven handler
         const result = await handler.handleIncomingMessage(context)
-        
+
         console.log('🎯 Universal Handler Result:', {
           success: result.success,
           provider: result.providerUsed,
@@ -215,7 +232,7 @@ export async function POST(request: NextRequest) {
           cost: result.cost,
           transactionId: result.transactionId
         })
-        
+
         if (!result.success && result.error) {
           console.error('Universal Handler Error:', result.error)
         }
@@ -224,18 +241,21 @@ export async function POST(request: NextRequest) {
         // Don't fail the webhook - fallback to keyword responses above
       }
     }
-    
+
     // Always return success to WhatsApp
-    return NextResponse.json({ 
+    return NextResponse.json({
       status: 'ok',
       message: 'Webhook processed successfully'
     })
   } catch (error) {
     console.error('Webhook error:', error)
-    return NextResponse.json({ 
-      status: 'error',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -245,11 +265,11 @@ async function handleStatusUpdate(body: any, organizationId: string) {
   const changes = entry?.changes?.[0]
   const value = changes?.value
   const statuses = value?.statuses
-  
+
   if (!statuses || statuses.length === 0) {
     return
   }
-  
+
   const status = statuses[0]
   console.log('📊 WhatsApp status update:', {
     messageId: status.id,
@@ -257,7 +277,7 @@ async function handleStatusUpdate(body: any, organizationId: string) {
     status: status.status,
     timestamp: new Date(parseInt(status.timestamp) * 1000).toISOString()
   })
-  
+
   // Update message status in database
   const webhookHandler = new WhatsAppWebhookHandler(organizationId)
   await webhookHandler.handleStatusUpdate(status)

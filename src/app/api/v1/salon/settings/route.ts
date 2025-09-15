@@ -189,7 +189,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
       .eq('entity_type', 'salon_settings')
       .single()
 
-    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = no rows returned
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      // PGRST116 = no rows returned
       throw fetchError
     }
 
@@ -226,10 +227,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     })
   } catch (error) {
     console.error('Error fetching salon settings:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch settings' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to fetch settings' }, { status: 500 })
   }
 })
 

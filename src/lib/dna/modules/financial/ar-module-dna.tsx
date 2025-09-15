@@ -9,7 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
@@ -169,13 +175,15 @@ export function ARModule({
   onPaymentReceived,
   onCreditMemoCreated
 }: ARModuleProps) {
-  const [activeTab, setActiveTab] = useState<'customers' | 'invoices' | 'payments' | 'collections' | 'returns'>('invoices')
+  const [activeTab, setActiveTab] = useState<
+    'customers' | 'invoices' | 'payments' | 'collections' | 'returns'
+  >('invoices')
   const [customers, setCustomers] = useState<Customer[]>([])
   const [invoices, setInvoices] = useState<SalesInvoice[]>([])
   const [selectedCustomer, setSelectedCustomer] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [selectedChannel, setSelectedChannel] = useState<string>('all')
-  
+
   // Invoice Form State
   const [invoiceForm, setInvoiceForm] = useState<Partial<SalesInvoice>>({
     invoiceDate: new Date(),
@@ -204,19 +212,21 @@ export function ARModule({
           entity_type: 'customer'
         }
       })
-      
+
       if (response.data) {
-        setCustomers(response.data.map((customer: any) => ({
-          id: customer.id,
-          customerCode: customer.entity_code,
-          customerName: customer.entity_name,
-          customerType: (customer.metadata as any)?.customer_type || 'retail',
-          status: customer.status || 'active',
-          creditLimit: (customer.metadata as any)?.credit_limit || 0,
-          currentBalance: (customer.metadata as any)?.current_balance || 0,
-          paymentTerms: (customer.metadata as any)?.payment_terms || 'NET30',
-          metadata: customer.metadata
-        })))
+        setCustomers(
+          response.data.map((customer: any) => ({
+            id: customer.id,
+            customerCode: customer.entity_code,
+            customerName: customer.entity_name,
+            customerType: (customer.metadata as any)?.customer_type || 'retail',
+            status: customer.status || 'active',
+            creditLimit: (customer.metadata as any)?.credit_limit || 0,
+            currentBalance: (customer.metadata as any)?.current_balance || 0,
+            paymentTerms: (customer.metadata as any)?.payment_terms || 'NET30',
+            metadata: customer.metadata
+          }))
+        )
       }
     } catch (error) {
       console.error('Failed to load customers:', error)
@@ -250,12 +260,12 @@ export function ARModule({
     setInvoiceForm(prev => {
       const newLines = [...(prev.lines || [])]
       newLines[index] = { ...newLines[index], [field]: value }
-      
+
       // Calculate amount
       if (field === 'quantity' || field === 'unitPrice') {
         newLines[index].amount = newLines[index].quantity * newLines[index].unitPrice
       }
-      
+
       return { ...prev, lines: newLines }
     })
   }
@@ -263,8 +273,9 @@ export function ARModule({
   // Calculate Total
   const calculateTotal = () => {
     const subtotal = (invoiceForm.lines || []).reduce((sum, line) => sum + line.amount, 0)
-    const gstAmount = (invoiceForm.lines || []).reduce((sum, line) => 
-      sum + (line.amount * line.gstRate / 100), 0
+    const gstAmount = (invoiceForm.lines || []).reduce(
+      (sum, line) => sum + (line.amount * line.gstRate) / 100,
+      0
     )
     return { subtotal, gstAmount, total: subtotal + gstAmount }
   }
@@ -279,7 +290,7 @@ export function ARModule({
     try {
       setLoading(true)
       const totals = calculateTotal()
-      
+
       // Create sales invoice transaction
       const invoice = await universalApi.createTransaction({
         transaction_type: 'sales_invoice',
@@ -331,7 +342,6 @@ export function ARModule({
 
       // Reload data
       loadCustomers()
-      
     } catch (error) {
       console.error('Failed to create invoice:', error)
       alert('Failed to create invoice')
@@ -349,14 +359,14 @@ export function ARModule({
       days90: 0,
       over90: 0
     }
-    
+
     // In real implementation, would calculate from invoice data
     aging.current = 145000
     aging.days30 = 89000
     aging.days60 = 45000
     aging.days90 = 23000
     aging.over90 = 43000
-    
+
     return aging
   }
 
@@ -371,20 +381,21 @@ export function ARModule({
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")}>
-      <Card className={cn(
-        "shadow-lg",
-        isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : "bg-white border-gray-200"
-      )}>
-        <CardHeader className={cn(
-          "border-b",
-          isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-        )}>
+    <div className={cn('min-h-screen', isDarkMode && 'dark')}>
+      <Card
+        className={cn(
+          'shadow-lg',
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+        )}
+      >
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
           <div className="flex items-center justify-between">
-            <CardTitle className={cn(
-              "text-xl flex items-center gap-2",
-              isDarkMode ? "text-white" : "text-gray-900"
-            )}>
+            <CardTitle
+              className={cn(
+                'text-xl flex items-center gap-2',
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              )}
+            >
               <Users className="h-5 w-5" />
               Accounts Receivable Module
             </CardTitle>
@@ -402,13 +413,12 @@ export function ARModule({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-6">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className={cn(
-              "grid w-full grid-cols-5",
-              isDarkMode ? "bg-[#292929]" : "bg-gray-100"
-            )}>
+          <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+            <TabsList
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+            >
               <TabsTrigger value="customers" className="gap-1">
                 <Users className="h-4 w-4" />
                 Customers
@@ -432,7 +442,7 @@ export function ARModule({
                 </TabsTrigger>
               )}
             </TabsList>
-            
+
             {/* Customers Tab */}
             <TabsContent value="customers" className="space-y-4 mt-4">
               <div className="flex justify-between items-center mb-4">
@@ -442,17 +452,19 @@ export function ARModule({
                     <Input
                       placeholder="Search customers..."
                       className={cn(
-                        "pl-10 w-[300px]",
-                        isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
+                        'pl-10 w-[300px]',
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
                       )}
                     />
                   </div>
                   {industrySpecific.multiChannelBilling && (
                     <Select value={selectedChannel} onValueChange={setSelectedChannel}>
-                      <SelectTrigger className={cn(
-                        "w-[200px]",
-                        isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                      )}>
+                      <SelectTrigger
+                        className={cn(
+                          'w-[200px]',
+                          isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                        )}
+                      >
                         <SelectValue placeholder="Filter by channel" />
                       </SelectTrigger>
                       <SelectContent>
@@ -465,40 +477,54 @@ export function ARModule({
                     </Select>
                   )}
                 </div>
-                <Button className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}>
+                <Button className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}>
                   <Plus className="h-4 w-4 mr-1" />
                   Add Customer
                 </Button>
               </div>
-              
+
               {/* Channel Statistics */}
               {industrySpecific.multiChannelBilling && (
                 <div className="grid grid-cols-4 gap-4 mb-4">
                   {Object.entries(getChannelStats()).map(([channel, stats]) => (
-                    <Card key={channel} className={cn(
-                      isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                    )}>
+                    <Card
+                      key={channel}
+                      className={cn(
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                      )}
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-center gap-2 mb-2">
                           {channel === 'retail' && <Store className="h-4 w-4 text-blue-500" />}
                           {channel === 'wholesale' && <Truck className="h-4 w-4 text-green-500" />}
-                          {channel === 'food_service' && <ShoppingBag className="h-4 w-4 text-purple-500" />}
+                          {channel === 'food_service' && (
+                            <ShoppingBag className="h-4 w-4 text-purple-500" />
+                          )}
                           {channel === 'online' && <Package className="h-4 w-4 text-orange-500" />}
-                          <span className="font-medium capitalize">{channel.replace('_', ' ')}</span>
+                          <span className="font-medium capitalize">
+                            {channel.replace('_', ' ')}
+                          </span>
                         </div>
-                        <div className="text-2xl font-bold">₹{(stats.amount / 1000).toFixed(0)}K</div>
-                        <div className="text-sm text-gray-500">{stats.count} customers ({stats.percentage}%)</div>
+                        <div className="text-2xl font-bold">
+                          ₹{(stats.amount / 1000).toFixed(0)}K
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {stats.count} customers ({stats.percentage}%)
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
               )}
-              
+
               <div className="grid grid-cols-1 gap-4">
                 {customers.map(customer => (
-                  <Card key={customer.id} className={cn(
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                  )}>
+                  <Card
+                    key={customer.id}
+                    className={cn(
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                    )}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -534,20 +560,24 @@ export function ARModule({
                               <span className="text-gray-500">Terms:</span> {customer.paymentTerms}
                             </div>
                             <div>
-                              <span className="text-gray-500">Credit Limit:</span> ₹{customer.creditLimit.toLocaleString()}
+                              <span className="text-gray-500">Credit Limit:</span> ₹
+                              {customer.creditLimit.toLocaleString()}
                             </div>
                             <div>
-                              <span className="text-gray-500">Available:</span> ₹{(customer.creditLimit - customer.currentBalance).toLocaleString()}
+                              <span className="text-gray-500">Available:</span> ₹
+                              {(customer.creditLimit - customer.currentBalance).toLocaleString()}
                             </div>
                           </div>
-                          {industrySpecific.freezerDepositTracking && (customer.metadata as any)?.freezerDeposit && (
-                            <div className="mt-2">
-                              <Badge variant="outline" className="text-xs">
-                                <Snowflake className="h-3 w-3 mr-1" />
-                                Freezer Deposit: ₹{customer.metadata.freezerDeposit.toLocaleString()}
-                              </Badge>
-                            </div>
-                          )}
+                          {industrySpecific.freezerDepositTracking &&
+                            (customer.metadata as any)?.freezerDeposit && (
+                              <div className="mt-2">
+                                <Badge variant="outline" className="text-xs">
+                                  <Snowflake className="h-3 w-3 mr-1" />
+                                  Freezer Deposit: ₹
+                                  {customer.metadata.freezerDeposit.toLocaleString()}
+                                </Badge>
+                              </div>
+                            )}
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-semibold">
@@ -567,12 +597,14 @@ export function ARModule({
                 ))}
               </div>
             </TabsContent>
-            
+
             {/* Invoices Tab */}
             <TabsContent value="invoices" className="space-y-4 mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Create Sales Invoice</CardTitle>
                 </CardHeader>
@@ -581,7 +613,9 @@ export function ARModule({
                     <div>
                       <Label>Customer</Label>
                       <Select value={selectedCustomer} onValueChange={setSelectedCustomer}>
-                        <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                        <SelectTrigger
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                        >
                           <SelectValue placeholder="Select customer" />
                         </SelectTrigger>
                         <SelectContent>
@@ -595,11 +629,15 @@ export function ARModule({
                     </div>
                     <div>
                       <Label>Channel</Label>
-                      <Select 
-                        value={invoiceForm.channel} 
-                        onValueChange={(value) => setInvoiceForm(prev => ({ ...prev, channel: value }))}
+                      <Select
+                        value={invoiceForm.channel}
+                        onValueChange={value =>
+                          setInvoiceForm(prev => ({ ...prev, channel: value }))
+                        }
                       >
-                        <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                        <SelectTrigger
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                        >
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -615,12 +653,14 @@ export function ARModule({
                       <Input
                         type="date"
                         value={invoiceForm.dueDate?.toISOString().split('T')[0]}
-                        onChange={(e) => setInvoiceForm(prev => ({ ...prev, dueDate: new Date(e.target.value) }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setInvoiceForm(prev => ({ ...prev, dueDate: new Date(e.target.value) }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   {/* Ice Cream Specific Fields */}
                   {industrySpecific.routeDeliveryReconciliation && (
                     <div className="grid grid-cols-3 gap-4">
@@ -628,11 +668,13 @@ export function ARModule({
                         <Label>Route Code</Label>
                         <Input
                           placeholder="ROUTE-KOC-01"
-                          onChange={(e) => setInvoiceForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, routeCode: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setInvoiceForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, routeCode: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
@@ -640,11 +682,16 @@ export function ARModule({
                         <Input
                           type="number"
                           placeholder="-18"
-                          onChange={(e) => setInvoiceForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, deliveryTemperature: parseFloat(e.target.value) }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setInvoiceForm(prev => ({
+                              ...prev,
+                              metadata: {
+                                ...prev.metadata,
+                                deliveryTemperature: parseFloat(e.target.value)
+                              }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       {industrySpecific.freezerDepositTracking && (
@@ -652,19 +699,24 @@ export function ARModule({
                           <Label>Freezer Serial Numbers</Label>
                           <Input
                             placeholder="FRZ-001, FRZ-002"
-                            onChange={(e) => setInvoiceForm(prev => ({
-                              ...prev,
-                              metadata: { ...prev.metadata, freezerSerialNumbers: e.target.value.split(',').map(s => s.trim()) }
-                            }))}
-                            className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                            onChange={e =>
+                              setInvoiceForm(prev => ({
+                                ...prev,
+                                metadata: {
+                                  ...prev.metadata,
+                                  freezerSerialNumbers: e.target.value.split(',').map(s => s.trim())
+                                }
+                              }))
+                            }
+                            className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                           />
                         </div>
                       )}
                     </div>
                   )}
-                  
+
                   <Separator />
-                  
+
                   {/* Invoice Lines */}
                   <div>
                     <div className="flex justify-between items-center mb-2">
@@ -672,19 +724,21 @@ export function ARModule({
                       <Button
                         size="sm"
                         onClick={addInvoiceLine}
-                        className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                        className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                       >
                         Add Line
                       </Button>
                     </div>
-                    
+
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className={cn(
-                            "border-b",
-                            isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                          )}>
+                          <tr
+                            className={cn(
+                              'border-b',
+                              isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                            )}
+                          >
                             <th className="text-left py-2">Product</th>
                             <th className="text-left py-2">Description</th>
                             <th className="text-right py-2 w-20">Qty</th>
@@ -695,18 +749,23 @@ export function ARModule({
                         </thead>
                         <tbody>
                           {(invoiceForm.lines || []).map((line, index) => (
-                            <tr key={line.id} className={cn(
-                              "border-b",
-                              isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                            )}>
+                            <tr
+                              key={line.id}
+                              className={cn(
+                                'border-b',
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              )}
+                            >
                               <td className="py-2 pr-2">
                                 <Input
                                   placeholder="ICE-001"
                                   value={line.productCode}
-                                  onChange={(e) => updateInvoiceLine(index, 'productCode', e.target.value)}
+                                  onChange={e =>
+                                    updateInvoiceLine(index, 'productCode', e.target.value)
+                                  }
                                   className={cn(
-                                    "h-8",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -714,10 +773,12 @@ export function ARModule({
                                 <Input
                                   placeholder="Vanilla 500ml"
                                   value={line.description}
-                                  onChange={(e) => updateInvoiceLine(index, 'description', e.target.value)}
+                                  onChange={e =>
+                                    updateInvoiceLine(index, 'description', e.target.value)
+                                  }
                                   className={cn(
-                                    "h-8",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -725,10 +786,16 @@ export function ARModule({
                                 <Input
                                   type="number"
                                   value={line.quantity}
-                                  onChange={(e) => updateInvoiceLine(index, 'quantity', parseFloat(e.target.value) || 0)}
+                                  onChange={e =>
+                                    updateInvoiceLine(
+                                      index,
+                                      'quantity',
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className={cn(
-                                    "h-8 text-right",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8 text-right',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -736,22 +803,32 @@ export function ARModule({
                                 <Input
                                   type="number"
                                   value={line.unitPrice}
-                                  onChange={(e) => updateInvoiceLine(index, 'unitPrice', parseFloat(e.target.value) || 0)}
+                                  onChange={e =>
+                                    updateInvoiceLine(
+                                      index,
+                                      'unitPrice',
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className={cn(
-                                    "h-8 text-right",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8 text-right',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
                               <td className="py-2 px-2">
                                 <Select
                                   value={line.gstRate.toString()}
-                                  onValueChange={(value) => updateInvoiceLine(index, 'gstRate', parseFloat(value))}
+                                  onValueChange={value =>
+                                    updateInvoiceLine(index, 'gstRate', parseFloat(value))
+                                  }
                                 >
-                                  <SelectTrigger className={cn(
-                                    "h-8",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
-                                  )}>
+                                  <SelectTrigger
+                                    className={cn(
+                                      'h-8',
+                                      isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
+                                    )}
+                                  >
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -761,27 +838,31 @@ export function ARModule({
                                   </SelectContent>
                                 </Select>
                               </td>
-                              <td className="py-2 pl-2 text-right">
-                                {line.amount.toFixed(2)}
-                              </td>
+                              <td className="py-2 pl-2 text-right">{line.amount.toFixed(2)}</td>
                             </tr>
                           ))}
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td colSpan={5} className="py-2 text-right font-medium">Subtotal:</td>
+                            <td colSpan={5} className="py-2 text-right font-medium">
+                              Subtotal:
+                            </td>
                             <td className="py-2 pl-2 text-right font-medium">
                               ₹{calculateTotal().subtotal.toFixed(2)}
                             </td>
                           </tr>
                           <tr>
-                            <td colSpan={5} className="py-2 text-right font-medium">GST:</td>
+                            <td colSpan={5} className="py-2 text-right font-medium">
+                              GST:
+                            </td>
                             <td className="py-2 pl-2 text-right font-medium">
                               ₹{calculateTotal().gstAmount.toFixed(2)}
                             </td>
                           </tr>
                           <tr className="font-semibold">
-                            <td colSpan={5} className="py-2 text-right">Total:</td>
+                            <td colSpan={5} className="py-2 text-right">
+                              Total:
+                            </td>
                             <td className="py-2 pl-2 text-right">
                               ₹{calculateTotal().total.toFixed(2)}
                             </td>
@@ -789,7 +870,7 @@ export function ARModule({
                         </tfoot>
                       </table>
                     </div>
-                    
+
                     {/* Action Buttons */}
                     <div className="flex justify-end gap-2 mt-4">
                       <Button
@@ -809,7 +890,7 @@ export function ARModule({
                       <Button
                         onClick={createInvoice}
                         disabled={loading || !selectedCustomer || !invoiceForm.lines?.length}
-                        className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                        className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                       >
                         Create Invoice
                       </Button>
@@ -818,16 +899,18 @@ export function ARModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Payments Tab */}
             <TabsContent value="payments" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg">Payment Processing</CardTitle>
-                    <Button className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}>
+                    <Button className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}>
                       <Coins className="h-4 w-4 mr-1" />
                       Record Payment
                     </Button>
@@ -837,27 +920,36 @@ export function ARModule({
                   <Alert>
                     <DollarSign className="h-4 w-4" />
                     <AlertDescription>
-                      Total Outstanding: <strong>₹{Object.values(calculateAging()).reduce((a, b) => a + b, 0).toLocaleString()}</strong>
+                      Total Outstanding:{' '}
+                      <strong>
+                        ₹
+                        {Object.values(calculateAging())
+                          .reduce((a, b) => a + b, 0)
+                          .toLocaleString()}
+                      </strong>
                     </AlertDescription>
                   </Alert>
-                  
+
                   {industrySpecific.seasonalCreditTerms && (
                     <Alert className="mt-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
                       <Calendar className="h-4 w-4 text-blue-600" />
                       <AlertDescription className="text-blue-700 dark:text-blue-400">
-                        Summer season credit terms active: Extended 45-day terms for wholesale customers
+                        Summer season credit terms active: Extended 45-day terms for wholesale
+                        customers
                       </AlertDescription>
                     </Alert>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Collections Tab */}
             <TabsContent value="collections" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Collections Management</CardTitle>
                 </CardHeader>
@@ -868,12 +960,18 @@ export function ARModule({
                       <h3 className="font-medium mb-3">Accounts Receivable Aging</h3>
                       <div className="space-y-3">
                         {Object.entries(calculateAging()).map(([period, amount]) => {
-                          const percentage = (amount / Object.values(calculateAging()).reduce((a, b) => a + b, 0)) * 100
+                          const percentage =
+                            (amount / Object.values(calculateAging()).reduce((a, b) => a + b, 0)) *
+                            100
                           return (
                             <div key={period}>
                               <div className="flex justify-between text-sm mb-1">
                                 <span className="capitalize">
-                                  {period === 'over90' ? 'Over 90 days' : period === 'current' ? 'Current' : `${period.slice(4)} days`}
+                                  {period === 'over90'
+                                    ? 'Over 90 days'
+                                    : period === 'current'
+                                      ? 'Current'
+                                      : `${period.slice(4)} days`}
                                 </span>
                                 <span className="font-semibold">₹{amount.toLocaleString()}</span>
                               </div>
@@ -883,9 +981,9 @@ export function ARModule({
                         })}
                       </div>
                     </div>
-                    
+
                     <Separator />
-                    
+
                     {/* Overdue Accounts */}
                     <div>
                       <h3 className="font-medium mb-3">Priority Collections</h3>
@@ -899,8 +997,7 @@ export function ARModule({
                                 <Badge variant="destructive">High Priority</Badge>
                                 {industrySpecific.freezerDepositTracking && (
                                   <Badge variant="outline">
-                                    <Snowflake className="h-3 w-3 mr-1" />
-                                    2 Freezers
+                                    <Snowflake className="h-3 w-3 mr-1" />2 Freezers
                                   </Badge>
                                 )}
                               </div>
@@ -928,17 +1025,19 @@ export function ARModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Returns Tab */}
             {industrySpecific.returnGoodsHandling && (
               <TabsContent value="returns" className="mt-4">
-                <Card className={cn(
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                )}>
+                <Card
+                  className={cn(
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  )}
+                >
                   <CardHeader>
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-lg">Returns & Credit Memos</CardTitle>
-                      <Button className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}>
+                      <Button className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}>
                         <RefreshCw className="h-4 w-4 mr-1" />
                         New Return
                       </Button>
@@ -950,7 +1049,9 @@ export function ARModule({
                         <div>
                           <Label>Customer</Label>
                           <Select>
-                            <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                            <SelectTrigger
+                              className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                            >
                               <SelectValue placeholder="Select customer" />
                             </SelectTrigger>
                             <SelectContent>
@@ -966,19 +1067,23 @@ export function ARModule({
                           <Label>Original Invoice</Label>
                           <Input
                             placeholder="INV-2024-001"
-                            className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                            className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                           />
                         </div>
                         <div>
                           <Label>Return Reason</Label>
                           <Select
                             value={creditMemoForm.reason}
-                            onValueChange={(value) => setCreditMemoForm(prev => ({ 
-                              ...prev, 
-                              reason: value as any 
-                            }))}
+                            onValueChange={value =>
+                              setCreditMemoForm(prev => ({
+                                ...prev,
+                                reason: value as any
+                              }))
+                            }
                           >
-                            <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                            <SelectTrigger
+                              className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                            >
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -991,24 +1096,25 @@ export function ARModule({
                           </Select>
                         </div>
                       </div>
-                      
-                      {industrySpecific.coldChainCompensation && creditMemoForm.reason === 'melted' && (
-                        <Alert className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
-                          <ThermometerSnowflake className="h-4 w-4 text-red-600" />
-                          <AlertDescription className="text-red-700 dark:text-red-400">
-                            Temperature excursion claim - Requires temperature log and photos
-                          </AlertDescription>
-                        </Alert>
-                      )}
-                      
+
+                      {industrySpecific.coldChainCompensation &&
+                        creditMemoForm.reason === 'melted' && (
+                          <Alert className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+                            <ThermometerSnowflake className="h-4 w-4 text-red-600" />
+                            <AlertDescription className="text-red-700 dark:text-red-400">
+                              Temperature excursion claim - Requires temperature log and photos
+                            </AlertDescription>
+                          </Alert>
+                        )}
+
                       <div>
                         <Label>Notes</Label>
                         <Textarea
                           placeholder="Describe the return reason..."
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
-                      
+
                       <div className="flex justify-end">
                         <Button
                           onClick={() => {
@@ -1016,7 +1122,7 @@ export function ARModule({
                               onCreditMemoCreated('CM-' + Date.now())
                             }
                           }}
-                          className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                          className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                         >
                           Create Credit Memo
                         </Button>
@@ -1037,7 +1143,8 @@ export function ARModule({
 export const AR_MODULE_DNA = {
   id: 'HERA.FIN.AR.MODULE.v1',
   name: 'Accounts Receivable Module',
-  description: 'Complete AR management with customer management, invoicing, payments, collections, and returns',
+  description:
+    'Complete AR management with customer management, invoicing, payments, collections, and returns',
   component: ARModule,
   category: 'financial',
   subcategory: 'accounts_receivable',

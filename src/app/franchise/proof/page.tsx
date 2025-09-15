@@ -7,7 +7,7 @@ import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { TestimonialCard } from '@/components/franchise/TestimonialCard'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   Download,
   ArrowRight,
   Clock,
@@ -28,8 +28,10 @@ import {
 
 export const metadata: Metadata = {
   title: 'Proof - HERA Success Stories',
-  description: 'Real transformation stories and case studies. Download detailed case studies showing how HERA delivered results in 24 hours.',
-  keywords: 'HERA case studies, success stories, ERP transformation, client testimonials, proof of concept',
+  description:
+    'Real transformation stories and case studies. Download detailed case studies showing how HERA delivered results in 24 hours.',
+  keywords:
+    'HERA case studies, success stories, ERP transformation, client testimonials, proof of concept'
 }
 
 const caseStudies = [
@@ -48,7 +50,8 @@ const caseStudies = [
       efficiency: '+40%',
       inventory: '-35% waste'
     },
-    testimonial: 'HERA delivered what SAP promised but never could. We went live in 24 hours and saw immediate results.',
+    testimonial:
+      'HERA delivered what SAP promised but never could. We went live in 24 hours and saw immediate results.',
     contact: 'Maria Rodriguez, Operations Director',
     downloadable: true
   },
@@ -67,7 +70,8 @@ const caseStudies = [
       efficiency: '+60%',
       compliance: '100% HIPAA'
     },
-    testimonial: 'After a failed Epic implementation that took 3 years, HERA solved everything in one day.',
+    testimonial:
+      'After a failed Epic implementation that took 3 years, HERA solved everything in one day.',
     contact: 'Dr. James Patterson, CIO',
     downloadable: true
   },
@@ -86,7 +90,8 @@ const caseStudies = [
       efficiency: '+45%',
       inventory: '+25% turnover'
     },
-    testimonial: 'Oracle Retail took 2 years and never worked properly. HERA fixed everything overnight.',
+    testimonial:
+      'Oracle Retail took 2 years and never worked properly. HERA fixed everything overnight.',
     contact: 'Sarah Kim, VP Operations',
     downloadable: true
   },
@@ -105,7 +110,8 @@ const caseStudies = [
       efficiency: '+50%',
       fuel: '-30% costs'
     },
-    testimonial: 'SAP Transportation Management was a nightmare. HERA made logistics simple and profitable.',
+    testimonial:
+      'SAP Transportation Management was a nightmare. HERA made logistics simple and profitable.',
     contact: 'Michael Chen, Fleet Director',
     downloadable: true
   }
@@ -152,14 +158,16 @@ const partnerTestimonials = [
     name: 'Jennifer Walsh',
     title: 'HERA Partner',
     company: 'Pacific Northwest Territory',
-    testimonial: 'My first client was a manufacturer stuck with a failing SAP system. HERA replaced it in 24 hours, and they saved $1.2M in the first year. Word spread fast, and now I have a waiting list.',
+    testimonial:
+      'My first client was a manufacturer stuck with a failing SAP system. HERA replaced it in 24 hours, and they saved $1.2M in the first year. Word spread fast, and now I have a waiting list.',
     rating: 5
   },
   {
     name: 'Carlos Mendez',
     title: 'HERA Partner',
     company: 'Southwest Territory',
-    testimonial: 'The case studies sell themselves. When I show prospects how HERA delivered results while their competitors struggled with Oracle implementations, deals close themselves.',
+    testimonial:
+      'The case studies sell themselves. When I show prospects how HERA delivered results while their competitors struggled with Oracle implementations, deals close themselves.',
     rating: 5
   }
 ]
@@ -192,23 +200,24 @@ export default function ProofPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {transformationMetrics.map((item, index) => (
-              <div key={index} className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center">
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
-                  {item.metric}
-                </h3>
+              <div
+                key={index}
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center"
+              >
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-4">{item.metric}</h3>
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-red-600">Before:</span>
-                    <span className="font-medium text-slate-700 dark:text-slate-300">{item.before}</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-300">
+                      {item.before}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-green-600">After:</span>
                     <span className="font-medium text-slate-900 dark:text-white">{item.after}</span>
                   </div>
                 </div>
-                <div className="text-xl font-bold text-green-600">
-                  {item.improvement}
-                </div>
+                <div className="text-xl font-bold text-green-600">{item.improvement}</div>
               </div>
             ))}
           </div>
@@ -229,7 +238,10 @@ export default function ProofPage() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {caseStudies.map((study, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
                 {/* Header */}
                 <div className="flex items-center mb-6">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-4">
@@ -255,7 +267,9 @@ export default function ProofPage() {
 
                 {/* Solution */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-slate-900 dark:text-white mb-2">HERA Solution</h4>
+                  <h4 className="font-semibold text-slate-900 dark:text-white mb-2">
+                    HERA Solution
+                  </h4>
                   <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                     {study.solution}
                   </p>
@@ -288,9 +302,7 @@ export default function ProofPage() {
 
                 {/* Download */}
                 {study.downloadable && (
-                  <Button 
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                  >
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                     <Download className="h-4 w-4 mr-2" />
                     Download Full Case Study
                   </Button>
@@ -319,29 +331,44 @@ export default function ProofPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Industry</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Clients</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Avg Savings</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Satisfaction</th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Industry
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Clients
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Avg Savings
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Satisfaction
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {industrySuccess.map((row, index) => (
-                      <tr key={index} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
+                      <tr
+                        key={index}
+                        className="border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+                      >
                         <td className="py-4 px-4 font-medium text-slate-900 dark:text-white">
                           {row.industry}
                         </td>
-                        <td className="py-4 px-4 text-slate-700 dark:text-slate-300">{row.clients}</td>
+                        <td className="py-4 px-4 text-slate-700 dark:text-slate-300">
+                          {row.clients}
+                        </td>
                         <td className="py-4 px-4 text-green-600 font-semibold">{row.avgSavings}</td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <div className="w-16 bg-slate-200 dark:bg-slate-700 rounded-full h-2 mr-2">
-                              <div 
-                                className="bg-green-500 h-2 rounded-full" 
+                              <div
+                                className="bg-green-500 h-2 rounded-full"
                                 style={{ width: row.satisfaction }}
                               />
                             </div>
-                            <span className="text-slate-700 dark:text-slate-300 text-sm">{row.satisfaction}</span>
+                            <span className="text-slate-700 dark:text-slate-300 text-sm">
+                              {row.satisfaction}
+                            </span>
                           </div>
                         </td>
                       </tr>
@@ -368,11 +395,7 @@ export default function ProofPage() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {partnerTestimonials.map((testimonial, index) => (
-              <TestimonialCard 
-                key={index}
-                variant="featured"
-                {...testimonial}
-              />
+              <TestimonialCard key={index} variant="featured" {...testimonial} />
             ))}
           </div>
         </div>
@@ -388,13 +411,13 @@ export default function ProofPage() {
             <p className="text-xl text-blue-100 mb-8">
               Video testimonials from CEOs and decision makers
             </p>
-            
+
             {/* Video Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="relative">
                 <div className="aspect-video bg-slate-900 rounded-xl shadow-2xl overflow-hidden">
                   <div className="flex items-center justify-center h-full bg-gradient-to-br from-slate-800 to-slate-900">
-                    <Button 
+                    <Button
                       size="lg"
                       variant="secondary"
                       className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
@@ -404,15 +427,13 @@ export default function ProofPage() {
                     </Button>
                   </div>
                 </div>
-                <p className="text-sm text-blue-100 mt-2">
-                  "HERA saved us $2.3M compared to SAP"
-                </p>
+                <p className="text-sm text-blue-100 mt-2">"HERA saved us $2.3M compared to SAP"</p>
               </div>
-              
+
               <div className="relative">
                 <div className="aspect-video bg-slate-900 rounded-xl shadow-2xl overflow-hidden">
                   <div className="flex items-center justify-center h-full bg-gradient-to-br from-slate-800 to-slate-900">
-                    <Button 
+                    <Button
                       size="lg"
                       variant="secondary"
                       className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
@@ -422,13 +443,11 @@ export default function ProofPage() {
                     </Button>
                   </div>
                 </div>
-                <p className="text-sm text-blue-100 mt-2">
-                  "24 hours vs 3 years with Epic"
-                </p>
+                <p className="text-sm text-blue-100 mt-2">"24 hours vs 3 years with Epic"</p>
               </div>
             </div>
 
-            <Button 
+            <Button
               asChild
               size="lg"
               className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
@@ -457,7 +476,9 @@ export default function ProofPage() {
               <div className="grid md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
                   <BarChart3 className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Average Savings</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
+                    Average Savings
+                  </h3>
                   <p className="text-3xl font-bold text-green-600">$2.8M</p>
                   <p className="text-sm text-slate-600 dark:text-slate-400">per implementation</p>
                 </div>
@@ -475,7 +496,7 @@ export default function ProofPage() {
                 </div>
               </div>
 
-              <Button 
+              <Button
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4"
               >
@@ -495,12 +516,12 @@ export default function ProofPage() {
               Ready to Create Your Own Success Stories?
             </h2>
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-              These case studies become your sales tools. Show prospects how HERA delivers results 
+              These case studies become your sales tools. Show prospects how HERA delivers results
               while competitors fail, and deals will close themselves.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
@@ -510,16 +531,9 @@ export default function ProofPage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button 
-                asChild
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg"
-              >
-                <Link href="/franchise/faq">
-                  Have Questions?
-                </Link>
+
+              <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg">
+                <Link href="/franchise/faq">Have Questions?</Link>
               </Button>
             </div>
           </div>

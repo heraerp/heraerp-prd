@@ -13,23 +13,12 @@ interface GenerateDocumentationRequest {
 export async function POST(request: NextRequest) {
   try {
     const body: GenerateDocumentationRequest = await request.json()
-    
-    const {
-      area,
-      section,
-      contentType,
-      title,
-      description,
-      content,
-      metadata = {}
-    } = body
+
+    const { area, section, contentType, title, description, content, metadata = {} } = body
 
     // Validate required fields
     if (!area || !section || !contentType || !title || !content) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Generate unique page code
@@ -41,12 +30,9 @@ export async function POST(request: NextRequest) {
 
     // Get organization ID (in real implementation, this would come from auth context)
     const organizationId = await getDocumentationOrganizationId()
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Documentation organization not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Documentation organization not found' }, { status: 404 })
     }
 
     // Create documentation page entity
@@ -124,13 +110,9 @@ export async function POST(request: NextRequest) {
         createdAt: new Date().toISOString()
       }
     })
-
   } catch (error) {
     console.error('Error generating documentation page:', error)
-    return NextResponse.json(
-      { error: 'Failed to generate documentation page' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to generate documentation page' }, { status: 500 })
   }
 }
 
@@ -139,12 +121,12 @@ async function getDocumentationOrganizationId(): Promise<string | null> {
   try {
     // In a real implementation, this would query the database
     // For now, we'll simulate finding the HERA Developer Documentation organization
-    
+
     // This would be replaced with actual database query:
     // const org = await db.organizations.findFirst({
     //   where: { organization_name: 'HERA Developer Documentation' }
     // })
-    
+
     // Simulate organization lookup
     return 'doc-org-id-placeholder'
   } catch (error) {
@@ -177,7 +159,7 @@ async function createDocumentationPage(params: {
   //     ai_confidence: 0.95
   //   }
   // })
-  
+
   // Simulate entity creation
   return {
     id: `entity-${Date.now()}`,
@@ -212,23 +194,27 @@ async function createDynamicDataField(params: {
   //     validation_status: 'valid'
   //   }
   // })
-  
+
   // Simulate dynamic data creation
   console.log(`Created dynamic data field: ${params.fieldName} for entity ${params.entityId}`)
 }
 
 // Helper function to enhance content with AI
-async function enhanceContentWithAI(content: string, contentType: string, _area: string): Promise<string> {
+async function enhanceContentWithAI(
+  content: string,
+  contentType: string,
+  _area: string
+): Promise<string> {
   // This would integrate with an AI service to enhance the content
   // For now, return the original content with some enhancements
-  
+
   const enhancements = {
     guide: 'Step-by-step guide with clear instructions and examples',
     reference: 'Comprehensive reference documentation with technical details',
     tutorial: 'Interactive tutorial with hands-on exercises',
     troubleshooting: 'Problem-solving guide with common issues and solutions'
   }
-  
+
   return `${content}\n\n<!-- AI Enhancement: ${enhancements[contentType as keyof typeof enhancements] || 'Enhanced documentation content'} -->`
 }
 
@@ -239,7 +225,11 @@ async function enhanceDescriptionWithAI(description: string, contentType: string
 }
 
 // Helper function to create navigation relationships
-async function createNavigationRelationships(organizationId: string, entityId: string, section: string) {
+async function createNavigationRelationships(
+  organizationId: string,
+  entityId: string,
+  section: string
+) {
   // This would create relationships between pages in the same section
   // For now, we'll just log the action
   console.log(`Creating navigation relationships for entity ${entityId} in section ${section}`)
@@ -267,7 +257,7 @@ async function createDocumentationTransaction(params: {
   //     metadata: params.metadata
   //   }
   // })
-  
+
   // Simulate transaction creation
   console.log(`Created documentation transaction: ${params.referenceNumber}`)
 }
@@ -280,6 +270,6 @@ async function createDocumentationTransaction(params: {
 //     tutorial: 'tutorial_documentation',
 //     troubleshooting: 'troubleshooting_documentation'
 //   }
-//   
+//
 //   return classifications[contentType as keyof typeof classifications] || 'general_documentation'
 // }

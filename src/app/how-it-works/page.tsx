@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA How It Works - Zero-Friction Demo to Signup Journey
  * Smart Code: HERA.MARKETING.HOW_IT_WORKS.v1
- * 
+ *
  * Don't Make Me Think approach:
  * 1. Show live demos immediately
  * 2. One-click demo access
@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 // Removed framer-motion import - not needed
-import { 
+import {
   Scissors,
   Coffee,
   Stethoscope,
@@ -152,13 +152,13 @@ export default function HowItWorksPage() {
 
   const handleDemoRequest = async () => {
     if (!requestedDemo || !email) return
-    
+
     setIsSubmitting(true)
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000))
     setShowSuccess(true)
     setIsSubmitting(false)
-    
+
     // Auto redirect to signup after 2 seconds
     setTimeout(() => {
       router.push(`/auth/signup?demo=${requestedDemo}&email=${email}`)
@@ -170,7 +170,7 @@ export default function HowItWorksPage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-800 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-        
+
         <div className="relative px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <div className="text-center max-w-4xl mx-auto">
             <div className="animate-fadeIn">
@@ -178,16 +178,17 @@ export default function HowItWorksPage() {
                 <Zap className="w-3 h-3 mr-1" />
                 See it in action right now
               </Badge>
-              
+
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
                 Experience HERA in
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                   3 Simple Steps
                 </span>
               </h1>
-              
+
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                No signup needed. Just click a demo and see how HERA transforms your business in seconds.
+                No signup needed. Just click a demo and see how HERA transforms your business in
+                seconds.
               </p>
             </div>
 
@@ -243,31 +244,34 @@ export default function HowItWorksPage() {
               <div
                 key={demo.id}
                 className={cn(
-                  "relative animate-fadeIn transform hover:scale-[1.02] transition-transform",
-                  demo.disabled && "opacity-60"
+                  'relative animate-fadeIn transform hover:scale-[1.02] transition-transform',
+                  demo.disabled && 'opacity-60'
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <Card className="h-full bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-gray-200 dark:border-gray-700 overflow-hidden group hover:shadow-xl transition-all">
-                  <div className={cn(
-                    "absolute inset-0 opacity-10 bg-gradient-to-br",
-                    demo.gradient
-                  )} />
-                  
+                  <div
+                    className={cn('absolute inset-0 opacity-10 bg-gradient-to-br', demo.gradient)}
+                  />
+
                   <CardHeader className="relative">
                     <div className="flex items-start justify-between mb-4">
-                      <div className={cn(
-                        "w-12 h-12 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg",
-                        demo.gradient
-                      )}>
-                        {React.createElement(demo.icon, { className: "w-6 h-6 text-white" })}
+                      <div
+                        className={cn(
+                          'w-12 h-12 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg',
+                          demo.gradient
+                        )}
+                      >
+                        {React.createElement(demo.icon, { className: 'w-6 h-6 text-white' })}
                       </div>
                       {demo.tag && (
-                        <Badge 
-                          variant={demo.disabled ? "secondary" : "default"}
+                        <Badge
+                          variant={demo.disabled ? 'secondary' : 'default'}
                           className={cn(
-                            demo.tag === 'Most Popular' && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-                            demo.tag === 'New' && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                            demo.tag === 'Most Popular' &&
+                              'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+                            demo.tag === 'New' &&
+                              'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                           )}
                         >
                           {demo.tag}
@@ -275,16 +279,17 @@ export default function HowItWorksPage() {
                       )}
                     </div>
                     <CardTitle className="text-xl mb-2">{demo.name}</CardTitle>
-                    <CardDescription className="text-sm">
-                      {demo.description}
-                    </CardDescription>
+                    <CardDescription className="text-sm">{demo.description}</CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent className="relative space-y-4">
                     {/* Features */}
                     <div className="space-y-2">
                       {demo.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+                        >
                           <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                           {feature}
                         </div>
@@ -296,8 +301,12 @@ export default function HowItWorksPage() {
                       <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                         {Object.entries(demo.stats).map(([key, value]) => (
                           <div key={key} className="text-center">
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{value}</p>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 capitalize">{key}</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                              {value}
+                            </p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 capitalize">
+                              {key}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -310,10 +319,12 @@ export default function HowItWorksPage() {
                       </Button>
                     ) : (
                       <Link href={demo.path} className="block">
-                        <Button className={cn(
-                          "w-full bg-gradient-to-r text-white group-hover:shadow-md transition-all",
-                          demo.gradient
-                        )}>
+                        <Button
+                          className={cn(
+                            'w-full bg-gradient-to-r text-white group-hover:shadow-md transition-all',
+                            demo.gradient
+                          )}
+                        >
                           <Play className="w-4 h-4 mr-2" />
                           Try Demo Now
                           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -336,25 +347,23 @@ export default function HowItWorksPage() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-8 h-8" />
               </div>
-              <CardTitle className="text-2xl mb-2">
-                Don't see your business type?
-              </CardTitle>
+              <CardTitle className="text-2xl mb-2">Don't see your business type?</CardTitle>
               <CardDescription className="text-base">
                 Request a custom demo and we'll build it for you in 24 hours!
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent className="space-y-6">
               {/* Quick Options */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {MORE_DEMOS.map((demo) => (
+                {MORE_DEMOS.map(demo => (
                   <Button
                     key={demo.name}
-                    variant={requestedDemo === demo.name ? "default" : "outline"}
+                    variant={requestedDemo === demo.name ? 'default' : 'outline'}
                     className="h-auto py-3"
                     onClick={() => setRequestedDemo(demo.name)}
                   >
-                    {React.createElement(demo.icon, { className: "w-5 h-5 mb-1" })}
+                    {React.createElement(demo.icon, { className: 'w-5 h-5 mb-1' })}
                     <span className="block text-xs">{demo.name}</span>
                   </Button>
                 ))}
@@ -366,7 +375,7 @@ export default function HowItWorksPage() {
                   type="email"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   className="text-center text-lg h-12"
                   disabled={showSuccess}
                 />
@@ -374,9 +383,7 @@ export default function HowItWorksPage() {
 
               {/* Submit Button */}
               {showSuccess ? (
-                <div
-                  className="text-center space-y-3 animate-fadeIn"
-                >
+                <div className="text-center space-y-3 animate-fadeIn">
                   <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto">
                     <CheckCheck className="w-10 h-10 text-green-600 dark:text-green-400" />
                   </div>
@@ -414,13 +421,9 @@ export default function HowItWorksPage() {
       {/* Final CTA Section */}
       <div className="px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Ready to transform your business?
-          </h2>
-          <p className="text-xl mb-8 text-blue-100">
-            Join 10,000+ businesses already using HERA
-          </p>
-          
+          <h2 className="text-3xl font-bold mb-4">Ready to transform your business?</h2>
+          <p className="text-xl mb-8 text-blue-100">Join 10,000+ businesses already using HERA</p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/signup">
               <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
@@ -429,7 +432,11 @@ export default function HowItWorksPage() {
               </Button>
             </Link>
             <Link href="/salon-data">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white/10"
+              >
                 <Play className="w-5 h-5 mr-2" />
                 Try Salon Demo First
               </Button>

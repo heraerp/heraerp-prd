@@ -6,7 +6,14 @@
 
 import React, { useState, useEffect } from 'react'
 import { useVibe } from './VibeProvider'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -92,19 +99,27 @@ export function VibeDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-green-500'
-      case 'warning': return 'text-yellow-500'
-      case 'error': return 'text-red-500'
-      default: return 'text-gray-500'
+      case 'healthy':
+        return 'text-green-500'
+      case 'warning':
+        return 'text-yellow-500'
+      case 'error':
+        return 'text-red-500'
+      default:
+        return 'text-gray-500'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'healthy': return <CheckCircle className="h-4 w-4" />
-      case 'warning': return <AlertTriangle className="h-4 w-4" />
-      case 'error': return <XCircle className="h-4 w-4" />
-      default: return <Activity className="h-4 w-4" />
+      case 'healthy':
+        return <CheckCircle className="h-4 w-4" />
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4" />
+      case 'error':
+        return <XCircle className="h-4 w-4" />
+      default:
+        return <Activity className="h-4 w-4" />
     }
   }
 
@@ -289,19 +304,27 @@ export function VibeDashboard() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Context Preservation</span>
-                  <Badge variant="default" className="bg-green-500">Healthy</Badge>
+                  <Badge variant="default" className="bg-green-500">
+                    Healthy
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Integration Weaving</span>
-                  <Badge variant="default" className="bg-green-500">Active</Badge>
+                  <Badge variant="default" className="bg-green-500">
+                    Active
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Quality Monitoring</span>
-                  <Badge variant="default" className="bg-green-500">Monitoring</Badge>
+                  <Badge variant="default" className="bg-green-500">
+                    Monitoring
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Amnesia Prevention</span>
-                  <Badge variant="default" className="bg-green-500">100%</Badge>
+                  <Badge variant="default" className="bg-green-500">
+                    100%
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
@@ -388,14 +411,14 @@ export function VibeDashboard() {
                 <Input
                   placeholder="Search contexts..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="flex-1"
                 />
                 <Button variant="outline">
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               <div className="text-center py-8 text-muted-foreground">
                 <Database className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Context preservation is active</p>
@@ -422,7 +445,7 @@ export function VibeDashboard() {
                 <Plus className="h-4 w-4 mr-2" />
                 Create Test Integration
               </Button>
-              
+
               <div className="text-center py-8 text-muted-foreground">
                 <Network className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Integration weaving is ready</p>
@@ -449,7 +472,7 @@ export function VibeDashboard() {
                 <Target className="h-4 w-4 mr-2" />
                 Run Quality Test
               </Button>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 border rounded">
                   <div className="text-2xl font-bold text-green-500">100%</div>
@@ -485,12 +508,12 @@ export function VibeDashboard() {
                 <Label>Auto-Save Interval (seconds)</Label>
                 <Input type="number" defaultValue="30" />
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Quality Threshold (%)</Label>
                 <Input type="number" defaultValue="95" />
               </div>
-              
+
               <div className="flex items-center justify-between p-4 border rounded">
                 <div>
                   <div className="font-medium">Context Preservation</div>
@@ -498,9 +521,11 @@ export function VibeDashboard() {
                     Automatically preserve contexts for continuity
                   </div>
                 </div>
-                <Badge variant="default" className="bg-green-500">Enabled</Badge>
+                <Badge variant="default" className="bg-green-500">
+                  Enabled
+                </Badge>
               </div>
-              
+
               <div className="flex items-center justify-between p-4 border rounded">
                 <div>
                   <div className="font-medium">Integration Weaving</div>
@@ -508,7 +533,9 @@ export function VibeDashboard() {
                     Seamless component integration
                   </div>
                 </div>
-                <Badge variant="default" className="bg-green-500">Active</Badge>
+                <Badge variant="default" className="bg-green-500">
+                  Active
+                </Badge>
               </div>
             </CardContent>
           </Card>

@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action') || 'list'
     const organizationId = searchParams.get('organization_id')
-    
+
     if (!organizationId) {
       return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         if (!entityId) {
           return NextResponse.json({ error: 'Entity ID is required' }, { status: 400 })
         }
-        
+
         const entity = await universalApi.getEntity(entityId)
         return NextResponse.json({ success: true, data: entity })
 
@@ -107,7 +107,10 @@ export async function PUT(request: NextRequest) {
     const { id, data, organizationId } = body
 
     if (!id || !data || !organizationId) {
-      return NextResponse.json({ error: 'ID, data, and organization ID are required' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'ID, data, and organization ID are required' },
+        { status: 400 }
+      )
     }
 
     universalApi.setOrganizationId(organizationId)
@@ -166,7 +169,7 @@ export async function DELETE(request: NextRequest) {
 async function calculateStats(organizationId: string) {
   try {
     universalApi.setOrganizationId(organizationId)
-    
+
     const entities = await universalApi.getEntities({
       entity_type: 'banks',
       limit: 1000
@@ -192,11 +195,11 @@ async function calculateStats(organizationId: string) {
 
 async function validateData(data: any) {
   const errors: string[] = []
-  
+
   if (!data.name && !data.title) {
     errors.push('Name or title is required')
   }
-  
+
   return {
     valid: errors.length === 0,
     errors

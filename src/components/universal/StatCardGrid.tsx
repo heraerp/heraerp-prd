@@ -34,26 +34,26 @@ interface StatCardGridProps {
   loading?: boolean
 }
 
-export function StatCardGrid({ 
-  stats, 
+export function StatCardGrid({
+  stats,
   columns = { default: 1, sm: 2, md: 2, lg: 3, xl: 6 },
-  loading = false 
+  loading = false
 }: StatCardGridProps) {
   const getGridClasses = () => {
     const classes = ['grid', 'gap-4']
-    
+
     if (columns.default) classes.push(`grid-cols-${columns.default}`)
     if (columns.sm) classes.push(`sm:grid-cols-${columns.sm}`)
     if (columns.md) classes.push(`md:grid-cols-${columns.md}`)
     if (columns.lg) classes.push(`lg:grid-cols-${columns.lg}`)
     if (columns.xl) classes.push(`xl:grid-cols-${columns.xl}`)
-    
+
     return classes.join(' ')
   }
-  
+
   const formatValue = (stat: StatCardData): string => {
     if (typeof stat.value === 'string') return stat.value
-    
+
     switch (stat.format) {
       case 'currency':
         return formatCurrency(stat.value)
@@ -64,7 +64,7 @@ export function StatCardGrid({
         return stat.value.toLocaleString()
     }
   }
-  
+
   const getVariantClasses = (variant?: string) => {
     switch (variant) {
       case 'success':
@@ -77,7 +77,7 @@ export function StatCardGrid({
         return ''
     }
   }
-  
+
   if (loading) {
     return (
       <div className={getGridClasses()}>
@@ -95,16 +95,13 @@ export function StatCardGrid({
       </div>
     )
   }
-  
+
   return (
     <div className={getGridClasses()}>
-      {stats.map((stat) => {
+      {stats.map(stat => {
         const Icon = stat.icon
         return (
-          <Card 
-            key={stat.key} 
-            className={getVariantClasses(stat.variant)}
-          >
+          <Card key={stat.key} className={getVariantClasses(stat.variant)}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
                 <Icon className="h-4 w-4" />
@@ -115,11 +112,13 @@ export function StatCardGrid({
               <div className="flex items-baseline justify-between">
                 <p className="text-2xl font-bold">{formatValue(stat)}</p>
                 {stat.trend && (
-                  <span className={`text-sm ${
-                    stat.trend.direction === 'up' 
-                      ? 'text-green-600 dark:text-green-400' 
-                      : 'text-red-600 dark:text-red-400'
-                  }`}>
+                  <span
+                    className={`text-sm ${
+                      stat.trend.direction === 'up'
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-red-600 dark:text-red-400'
+                    }`}
+                  >
                     {stat.trend.direction === 'up' ? '↑' : '↓'} {stat.trend.value}%
                   </span>
                 )}

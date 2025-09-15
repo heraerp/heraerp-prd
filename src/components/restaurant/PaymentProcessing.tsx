@@ -9,9 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { universalApi } from '@/lib/universal-api'
-import { 
-  CreditCard, 
-  DollarSign, 
+import {
+  CreditCard,
+  DollarSign,
   Smartphone,
   Banknote,
   Receipt,
@@ -57,10 +57,10 @@ interface Transaction {
   }
 }
 
-export function PaymentProcessing({ 
-  organizationId, 
+export function PaymentProcessing({
+  organizationId,
   smartCodes,
-  isDemoMode = false 
+  isDemoMode = false
 }: PaymentProcessingProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -75,65 +75,65 @@ export function PaymentProcessing({
     tips: 0,
     refunds: 0
   })
-  
+
   // Payment form state
   const [paymentAmount, setPaymentAmount] = useState('')
   const [tipAmount, setTipAmount] = useState('')
   const [selectedMethod, setSelectedMethod] = useState<string>('')
   const [processing, setProcessing] = useState(false)
-  
+
   useEffect(() => {
     if (!isDemoMode) {
       universalApi.setOrganizationId(organizationId)
       loadData()
     }
   }, [organizationId, isDemoMode])
-  
+
   const loadData = async () => {
     try {
       setLoading(true)
-      
+
       // Load all entities
       const entitiesResponse = await universalApi.getEntities()
-      const entities = Array.isArray(entitiesResponse) 
-        ? entitiesResponse 
+      const entities = Array.isArray(entitiesResponse)
+        ? entitiesResponse
         : entitiesResponse.data || []
-      
+
       // Filter for payment methods
       const methods = entities.filter(e => e.entity_type === 'payment_method')
-      
+
       // If no payment methods exist, create defaults
       if (methods.length === 0) {
         await createDefaultPaymentMethods()
         const newEntitiesResponse = await universalApi.getEntities()
-        const newEntities = Array.isArray(newEntitiesResponse) 
-          ? newEntitiesResponse 
+        const newEntities = Array.isArray(newEntitiesResponse)
+          ? newEntitiesResponse
           : newEntitiesResponse.data || []
         const newMethods = newEntities.filter(e => e.entity_type === 'payment_method')
         setPaymentMethods(newMethods)
       } else {
         setPaymentMethods(methods)
       }
-      
+
       // Load all transactions
       const today = new Date().toISOString().split('T')[0]
       const transactionsResponse = await universalApi.getTransactions()
-      const transactions = Array.isArray(transactionsResponse) 
-        ? transactionsResponse 
+      const transactions = Array.isArray(transactionsResponse)
+        ? transactionsResponse
         : transactionsResponse.data || []
-      
+
       // Filter for today's payments
-      const payments = transactions.filter(t => 
-        t.transaction_type === 'payment' && 
-        t.transaction_date &&
-        t.transaction_date.startsWith(today)
+      const payments = transactions.filter(
+        t =>
+          t.transaction_type === 'payment' &&
+          t.transaction_date &&
+          t.transaction_date.startsWith(today)
       )
-      
+
       setRecentPayments(payments.slice(0, 10)) // Last 10 payments
-      
+
       // Calculate today's stats
       calculateTodayStats(payments)
-      
     } catch (err) {
       console.error('Error loading payment data:', err)
       setError('Failed to load payment data')
@@ -141,7 +141,7 @@ export function PaymentProcessing({
       setLoading(false)
     }
   }
-  
+
   const createDefaultPaymentMethods = async () => {
     const defaultMethods = [
       {
@@ -166,12 +166,12 @@ export function PaymentProcessing({
         metadata: { type: 'digital', fees: 1.5, enabled: true }
       }
     ]
-    
+
     for (const method of defaultMethods) {
       await universalApi.createEntity(method)
     }
   }
-  
+
   const calculateTodayStats = (payments: Transaction[]) => {
     let stats = {
       total: 0,
@@ -181,41 +181,41 @@ export function PaymentProcessing({
       tips: 0,
       refunds: 0
     }
-    
+
     payments.forEach(payment => {
       const amount = payment.total_amount || 0
       const method = (payment.metadata as any)?.payment_method || 'cash'
       const tip = (payment.metadata as any)?.tip_amount || 0
-      
+
       if (payment.transaction_type === 'refund') {
         stats.refunds += amount
       } else {
         stats.total += amount
         stats.tips += tip
-        
+
         if (method === 'cash') stats.cash += amount
         else if (method === 'card') stats.card += amount
         else if (method === 'digital') stats.digital += amount
       }
     })
-    
+
     setTodayStats(stats)
   }
-  
+
   const processPayment = async () => {
     if (!paymentAmount || !selectedMethod) {
       setError('Please enter amount and select payment method')
       return
     }
-    
+
     setProcessing(true)
     setError(null)
-    
+
     try {
       const amount = parseFloat(paymentAmount)
       const tip = parseFloat(tipAmount) || 0
       const total = amount + tip
-      
+
       // Create payment transaction
       const paymentResponse = await universalApi.createTransaction({
         transaction_type: 'payment',
@@ -229,13 +229,13 @@ export function PaymentProcessing({
           processed_at: new Date().toISOString()
         }
       })
-      
+
       if (!paymentResponse.success || !paymentResponse.data) {
         throw new Error('Failed to create payment transaction')
       }
-      
+
       const payment = paymentResponse.data
-      
+
       // Create transaction lines
       if (amount > 0) {
         await universalApi.createTransactionLine({
@@ -248,7 +248,7 @@ export function PaymentProcessing({
           }
         })
       }
-      
+
       if (tip > 0) {
         await universalApi.createTransactionLine({
           transaction_id: payment.id,
@@ -260,15 +260,14 @@ export function PaymentProcessing({
           }
         })
       }
-      
+
       // Reset form
       setPaymentAmount('')
       setTipAmount('')
       setSelectedMethod('')
-      
+
       // Reload data
       await loadData()
-      
     } catch (err) {
       console.error('Error processing payment:', err)
       setError('Failed to process payment')
@@ -276,7 +275,7 @@ export function PaymentProcessing({
       setProcessing(false)
     }
   }
-  
+
   const processRefund = async (transactionId: string, amount: number) => {
     try {
       await universalApi.createTransaction({
@@ -290,23 +289,27 @@ export function PaymentProcessing({
           processed_at: new Date().toISOString()
         }
       })
-      
+
       await loadData()
     } catch (err) {
       console.error('Error processing refund:', err)
       setError('Failed to process refund')
     }
   }
-  
+
   const getMethodIcon = (type: string) => {
     switch (type) {
-      case 'cash': return <Banknote className="h-4 w-4" />
-      case 'card': return <CreditCard className="h-4 w-4" />
-      case 'digital': return <Smartphone className="h-4 w-4" />
-      default: return <DollarSign className="h-4 w-4" />
+      case 'cash':
+        return <Banknote className="h-4 w-4" />
+      case 'card':
+        return <CreditCard className="h-4 w-4" />
+      case 'digital':
+        return <Smartphone className="h-4 w-4" />
+      default:
+        return <DollarSign className="h-4 w-4" />
     }
   }
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -314,7 +317,7 @@ export function PaymentProcessing({
       </div>
     )
   }
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
@@ -330,7 +333,7 @@ export function PaymentProcessing({
           Refresh
         </Button>
       </div>
-      
+
       {/* Today's Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <Card>
@@ -344,7 +347,7 @@ export function PaymentProcessing({
             <p className="text-2xl font-bold">${todayStats.total.toFixed(2)}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -356,7 +359,7 @@ export function PaymentProcessing({
             <p className="text-2xl font-bold">${todayStats.cash.toFixed(2)}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -368,7 +371,7 @@ export function PaymentProcessing({
             <p className="text-2xl font-bold">${todayStats.card.toFixed(2)}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -380,7 +383,7 @@ export function PaymentProcessing({
             <p className="text-2xl font-bold">${todayStats.digital.toFixed(2)}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -392,7 +395,7 @@ export function PaymentProcessing({
             <p className="text-2xl font-bold">${todayStats.tips.toFixed(2)}</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -405,7 +408,7 @@ export function PaymentProcessing({
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid grid-cols-3 w-full">
@@ -413,7 +416,7 @@ export function PaymentProcessing({
           <TabsTrigger value="recent">Recent Payments</TabsTrigger>
           <TabsTrigger value="methods">Payment Methods</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="process">
           <Card>
             <CardHeader>
@@ -428,7 +431,7 @@ export function PaymentProcessing({
                     type="number"
                     placeholder="0.00"
                     value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(e.target.value)}
+                    onChange={e => setPaymentAmount(e.target.value)}
                     step="0.01"
                   />
                 </div>
@@ -439,19 +442,19 @@ export function PaymentProcessing({
                     type="number"
                     placeholder="0.00"
                     value={tipAmount}
-                    onChange={(e) => setTipAmount(e.target.value)}
+                    onChange={e => setTipAmount(e.target.value)}
                     step="0.01"
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Payment Method</Label>
                 <div className="grid grid-cols-3 gap-3">
-                  {paymentMethods.map((method) => (
+                  {paymentMethods.map(method => (
                     <Button
                       key={method.id}
-                      variant={selectedMethod === method.entity_code ? "default" : "outline"}
+                      variant={selectedMethod === method.entity_code ? 'default' : 'outline'}
                       onClick={() => setSelectedMethod(method.entity_code)}
                       className="flex items-center gap-2"
                     >
@@ -461,7 +464,7 @@ export function PaymentProcessing({
                   ))}
                 </div>
               </div>
-              
+
               {(paymentAmount || tipAmount) && (
                 <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                   <div className="space-y-2 text-sm">
@@ -477,28 +480,37 @@ export function PaymentProcessing({
                     )}
                     <div className="flex justify-between font-bold text-lg pt-2 border-t">
                       <span>Total:</span>
-                      <span>${((parseFloat(paymentAmount || '0') + parseFloat(tipAmount || '0'))).toFixed(2)}</span>
+                      <span>
+                        $
+                        {(parseFloat(paymentAmount || '0') + parseFloat(tipAmount || '0')).toFixed(
+                          2
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
-              
-              <Button 
-                className="w-full" 
+
+              <Button
+                className="w-full"
                 size="lg"
                 onClick={processPayment}
                 disabled={processing || !paymentAmount || !selectedMethod}
               >
                 {processing ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</>
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
+                  </>
                 ) : (
-                  <><Check className="mr-2 h-4 w-4" /> Process Payment</>
+                  <>
+                    <Check className="mr-2 h-4 w-4" /> Process Payment
+                  </>
                 )}
               </Button>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="recent">
           <Card>
             <CardHeader>
@@ -511,31 +523,28 @@ export function PaymentProcessing({
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {recentPayments.map((payment) => (
-                    <div 
-                      key={payment.id} 
+                  {recentPayments.map(payment => (
+                    <div
+                      key={payment.id}
                       className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       <div className="flex items-center gap-3">
                         {getMethodIcon((payment.metadata as any)?.payment_method || 'cash')}
                         <div>
-                          <p className="font-medium">
-                            {payment.transaction_code}
-                          </p>
+                          <p className="font-medium">{payment.transaction_code}</p>
                           <p className="text-sm text-muted-foreground">
                             {formatDate(new Date(payment.transaction_date), 'MMM d, h:mm a')}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold">
-                          ${payment.total_amount.toFixed(2)}
-                        </p>
-                        {(payment.metadata as any)?.tip_amount && payment.metadata.tip_amount > 0 && (
-                          <p className="text-sm text-green-600">
-                            +${payment.metadata.tip_amount.toFixed(2)} tip
-                          </p>
-                        )}
+                        <p className="font-bold">${payment.total_amount.toFixed(2)}</p>
+                        {(payment.metadata as any)?.tip_amount &&
+                          payment.metadata.tip_amount > 0 && (
+                            <p className="text-sm text-green-600">
+                              +${payment.metadata.tip_amount.toFixed(2)} tip
+                            </p>
+                          )}
                       </div>
                       <Button
                         variant="ghost"
@@ -551,7 +560,7 @@ export function PaymentProcessing({
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="methods">
           <Card>
             <CardHeader>
@@ -559,28 +568,24 @@ export function PaymentProcessing({
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {paymentMethods.map((method) => (
-                  <div 
-                    key={method.id} 
+                {paymentMethods.map(method => (
+                  <div
+                    key={method.id}
                     className="flex items-center justify-between p-4 border rounded-lg"
                   >
                     <div className="flex items-center gap-3">
                       {getMethodIcon((method.metadata as any)?.type || 'cash')}
                       <div>
                         <p className="font-medium">{method.entity_name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Code: {method.entity_code}
-                        </p>
+                        <p className="text-sm text-muted-foreground">Code: {method.entity_code}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       {(method.metadata as any)?.fees !== undefined && method.metadata.fees > 0 && (
-                        <Badge variant="outline">
-                          {method.metadata.fees}% fee
-                        </Badge>
+                        <Badge variant="outline">{method.metadata.fees}% fee</Badge>
                       )}
-                      <Badge variant={(method.metadata as any)?.enabled ? "default" : "secondary"}>
-                        {(method.metadata as any)?.enabled ? "Active" : "Inactive"}
+                      <Badge variant={(method.metadata as any)?.enabled ? 'default' : 'secondary'}>
+                        {(method.metadata as any)?.enabled ? 'Active' : 'Inactive'}
                       </Badge>
                     </div>
                   </div>
@@ -590,7 +595,7 @@ export function PaymentProcessing({
           </Card>
         </TabsContent>
       </Tabs>
-      
+
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />

@@ -5,17 +5,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  DollarSign, 
-  TrendingUp, 
-  TrendingDown, 
-  FileText, 
-  Calculator, 
+import {
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  FileText,
+  Calculator,
   Calendar,
   BarChart3,
   PieChart,
@@ -97,9 +110,7 @@ export default function FINDashboard() {
     return (
       <Alert className="m-8">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Please log in to access the financial dashboard.
-        </AlertDescription>
+        <AlertDescription>Please log in to access the financial dashboard.</AlertDescription>
       </Alert>
     )
   }
@@ -133,15 +144,21 @@ export default function FINDashboard() {
     setLoading(true)
     try {
       // Get financial summary
-      const summaryRes = await fetch(`/api/v1/fin?action=cash_position&organizationId=${currentOrganization.id}`)
+      const summaryRes = await fetch(
+        `/api/v1/fin?action=cash_position&organizationId=${currentOrganization.id}`
+      )
       const summaryData = await summaryRes.json()
 
       // Get account balances
-      const balancesRes = await fetch(`/api/v1/fin?action=list_accounts&includeBalances=true&organizationId=${currentOrganization.id}`)
+      const balancesRes = await fetch(
+        `/api/v1/fin?action=list_accounts&includeBalances=true&organizationId=${currentOrganization.id}`
+      )
       const balancesData = await balancesRes.json()
 
       // Get current period
-      const periodRes = await fetch(`/api/v1/fin?action=period_status&organizationId=${currentOrganization.id}`)
+      const periodRes = await fetch(
+        `/api/v1/fin?action=period_status&organizationId=${currentOrganization.id}`
+      )
       const periodData = await periodRes.json()
 
       // Calculate summary metrics
@@ -165,7 +182,6 @@ export default function FINDashboard() {
 
       // Get recent journals
       await loadRecentJournals()
-
     } catch (error) {
       console.error('Error loading financial data:', error)
     } finally {
@@ -273,9 +289,7 @@ export default function FINDashboard() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Financial Management</h1>
-          <p className="text-muted-foreground mt-1">
-            Real-time financial insights and reporting
-          </p>
+          <p className="text-muted-foreground mt-1">Real-time financial insights and reporting</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="px-3 py-1">
@@ -299,9 +313,7 @@ export default function FINDashboard() {
             <div className="text-2xl font-bold">
               ${financialSummary?.cash_position.toLocaleString() || '0'}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Current cash and equivalents
-            </p>
+            <p className="text-xs text-muted-foreground mt-1">Current cash and equivalents</p>
           </CardContent>
         </Card>
 
@@ -374,7 +386,9 @@ export default function FINDashboard() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium">Current Ratio</span>
-                  <Badge variant={financialSummary?.current_ratio! > 1.5 ? 'default' : 'destructive'}>
+                  <Badge
+                    variant={financialSummary?.current_ratio! > 1.5 ? 'default' : 'destructive'}
+                  >
                     {financialSummary?.current_ratio.toFixed(2)}
                   </Badge>
                 </div>
@@ -386,9 +400,7 @@ export default function FINDashboard() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium">Return on Assets</span>
-                  <Badge variant="outline">
-                    {financialSummary?.return_on_assets.toFixed(1)}%
-                  </Badge>
+                  <Badge variant="outline">{financialSummary?.return_on_assets.toFixed(1)}%</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -401,7 +413,7 @@ export default function FINDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {recentJournals.slice(0, 3).map((journal) => (
+                  {recentJournals.slice(0, 3).map(journal => (
                     <div key={journal.id} className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <FileText className="h-4 w-4 text-muted-foreground" />
@@ -411,7 +423,9 @@ export default function FINDashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium">${journal.total_amount.toLocaleString()}</p>
+                        <p className="text-sm font-medium">
+                          ${journal.total_amount.toLocaleString()}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {formatDate(new Date(journal.transaction_date), 'MMM d')}
                         </p>
@@ -431,14 +445,12 @@ export default function FINDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {['asset', 'liability', 'equity', 'revenue', 'expense'].map((type) => {
+                {['asset', 'liability', 'equity', 'revenue', 'expense'].map(type => {
                   const total = calculateTotalByType(accountBalances, type)
                   return (
                     <div key={type} className="text-center">
                       <p className="text-sm font-medium capitalize">{type}s</p>
-                      <p className="text-lg font-bold mt-1">
-                        ${total.toLocaleString()}
-                      </p>
+                      <p className="text-lg font-bold mt-1">${total.toLocaleString()}</p>
                     </div>
                   )
                 })}
@@ -475,10 +487,10 @@ export default function FINDashboard() {
                   </thead>
                   <tbody>
                     {accountBalances.map((account, idx) => (
-                      <tr key={account.account_code} className={cn(
-                        "border-b",
-                        idx % 2 === 0 ? "bg-muted/20" : ""
-                      )}>
+                      <tr
+                        key={account.account_code}
+                        className={cn('border-b', idx % 2 === 0 ? 'bg-muted/20' : '')}
+                      >
                         <td className="p-3 text-sm">{account.account_code}</td>
                         <td className="p-3 text-sm font-medium">{account.account_name}</td>
                         <td className="p-3 text-sm">
@@ -527,10 +539,12 @@ export default function FINDashboard() {
                         <Label>Description</Label>
                         <Textarea
                           value={journalForm.description}
-                          onChange={(e) => setJournalForm({
-                            ...journalForm,
-                            description: e.target.value
-                          })}
+                          onChange={e =>
+                            setJournalForm({
+                              ...journalForm,
+                              description: e.target.value
+                            })
+                          }
                           placeholder="Journal entry description"
                         />
                       </div>
@@ -541,7 +555,7 @@ export default function FINDashboard() {
                             <Input
                               placeholder="Account Code"
                               value={line.accountCode}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const lines = [...journalForm.lines]
                                 lines[idx].accountCode = e.target.value
                                 setJournalForm({ ...journalForm, lines })
@@ -551,7 +565,7 @@ export default function FINDashboard() {
                               type="number"
                               placeholder="Debit"
                               value={line.debit || ''}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const lines = [...journalForm.lines]
                                 lines[idx].debit = parseFloat(e.target.value) || 0
                                 setJournalForm({ ...journalForm, lines })
@@ -561,7 +575,7 @@ export default function FINDashboard() {
                               type="number"
                               placeholder="Credit"
                               value={line.credit || ''}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const lines = [...journalForm.lines]
                                 lines[idx].credit = parseFloat(e.target.value) || 0
                                 setJournalForm({ ...journalForm, lines })
@@ -570,7 +584,7 @@ export default function FINDashboard() {
                             <Input
                               placeholder="Line Description"
                               value={line.description}
-                              onChange={(e) => {
+                              onChange={e => {
                                 const lines = [...journalForm.lines]
                                 lines[idx].description = e.target.value
                                 setJournalForm({ ...journalForm, lines })
@@ -583,21 +597,24 @@ export default function FINDashboard() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setJournalForm({
-                            ...journalForm,
-                            lines: [...journalForm.lines, {
-                              accountCode: '',
-                              debit: 0,
-                              credit: 0,
-                              description: ''
-                            }]
-                          })}
+                          onClick={() =>
+                            setJournalForm({
+                              ...journalForm,
+                              lines: [
+                                ...journalForm.lines,
+                                {
+                                  accountCode: '',
+                                  debit: 0,
+                                  credit: 0,
+                                  description: ''
+                                }
+                              ]
+                            })
+                          }
                         >
                           Add Line
                         </Button>
-                        <Button onClick={handleCreateJournal}>
-                          Create Journal
-                        </Button>
+                        <Button onClick={handleCreateJournal}>Create Journal</Button>
                       </div>
                     </div>
                   </DialogContent>
@@ -619,10 +636,10 @@ export default function FINDashboard() {
                   </thead>
                   <tbody>
                     {recentJournals.map((journal, idx) => (
-                      <tr key={journal.id} className={cn(
-                        "border-b",
-                        idx % 2 === 0 ? "bg-muted/20" : ""
-                      )}>
+                      <tr
+                        key={journal.id}
+                        className={cn('border-b', idx % 2 === 0 ? 'bg-muted/20' : '')}
+                      >
                         <td className="p-3 text-sm font-medium">{journal.transaction_code}</td>
                         <td className="p-3 text-sm">
                           {formatDate(new Date(journal.transaction_date), 'MMM d, yyyy')}
@@ -632,7 +649,9 @@ export default function FINDashboard() {
                           ${journal.total_amount.toLocaleString()}
                         </td>
                         <td className="p-3 text-center">
-                          <Badge variant={journal.posting_status === 'posted' ? 'default' : 'secondary'}>
+                          <Badge
+                            variant={journal.posting_status === 'posted' ? 'default' : 'secondary'}
+                          >
                             {journal.posting_status}
                           </Badge>
                         </td>
@@ -659,8 +678,10 @@ export default function FINDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card className="cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => generateReport('balance_sheet')}>
+                <Card
+                  className="cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => generateReport('balance_sheet')}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <BarChart3 className="h-8 w-8 text-blue-600" />
@@ -677,8 +698,10 @@ export default function FINDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => generateReport('income_statement')}>
+                <Card
+                  className="cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => generateReport('income_statement')}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <TrendingUp className="h-8 w-8 text-green-600" />
@@ -695,8 +718,10 @@ export default function FINDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => generateReport('cash_flow')}>
+                <Card
+                  className="cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => generateReport('cash_flow')}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <Activity className="h-8 w-8 text-purple-600" />
@@ -713,8 +738,10 @@ export default function FINDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => generateReport('trial_balance')}>
+                <Card
+                  className="cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => generateReport('trial_balance')}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <Calculator className="h-8 w-8 text-orange-600" />
@@ -897,7 +924,7 @@ export default function FINDashboard() {
                 <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Last consolidation: December 31, 2023. 
+                    Last consolidation: December 31, 2023.
                     <Button variant="link" size="sm" className="px-2">
                       View Report
                     </Button>
@@ -916,31 +943,29 @@ export default function FINDashboard() {
             <Zap className="h-5 w-5 text-yellow-600" />
             <CardTitle>AI-Powered Financial Insights</CardTitle>
           </div>
-          <CardDescription>
-            Intelligent analysis and recommendations
-          </CardDescription>
+          <CardDescription>Intelligent analysis and recommendations</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <Alert>
               <TrendingUp className="h-4 w-4" />
               <AlertDescription>
-                <strong>Revenue Opportunity:</strong> Sales trend analysis shows potential for 15% growth 
-                in Q2 based on seasonal patterns. Consider increasing inventory levels.
+                <strong>Revenue Opportunity:</strong> Sales trend analysis shows potential for 15%
+                growth in Q2 based on seasonal patterns. Consider increasing inventory levels.
               </AlertDescription>
             </Alert>
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Cost Optimization:</strong> Operating expenses are 12% above industry average. 
-                Review vendor contracts for potential savings of $45,000 annually.
+                <strong>Cost Optimization:</strong> Operating expenses are 12% above industry
+                average. Review vendor contracts for potential savings of $45,000 annually.
               </AlertDescription>
             </Alert>
             <Alert>
               <Activity className="h-4 w-4" />
               <AlertDescription>
-                <strong>Cash Flow Alert:</strong> Projected cash shortage in 45 days. 
-                Accelerate receivables collection or arrange short-term financing.
+                <strong>Cash Flow Alert:</strong> Projected cash shortage in 45 days. Accelerate
+                receivables collection or arrange short-term financing.
               </AlertDescription>
             </Alert>
           </div>

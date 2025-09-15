@@ -120,23 +120,23 @@ export function KitchenDisplaySystem() {
       orderType: 'dine-in',
       tableNumber: '12',
       items: [
-        { 
-          id: '1-1', 
-          name: 'Grilled Salmon', 
-          quantity: 2, 
-          modifiers: ['No butter'], 
-          station: 'grill', 
+        {
+          id: '1-1',
+          name: 'Grilled Salmon',
+          quantity: 2,
+          modifiers: ['No butter'],
+          station: 'grill',
           prepTime: 12,
           status: 'preparing',
           startedAt: new Date(Date.now() - 5 * 60000),
           allergens: ['fish']
         },
-        { 
-          id: '1-2', 
-          name: 'Caesar Salad', 
-          quantity: 2, 
-          modifiers: ['Extra dressing'], 
-          station: 'salad', 
+        {
+          id: '1-2',
+          name: 'Caesar Salad',
+          quantity: 2,
+          modifiers: ['Extra dressing'],
+          station: 'salad',
           prepTime: 5,
           status: 'ready'
         }
@@ -160,22 +160,22 @@ export function KitchenDisplaySystem() {
       customerName: 'John Smith',
       customerPhone: '555-0123',
       items: [
-        { 
-          id: '2-1', 
-          name: 'Truffle Pasta', 
-          quantity: 1, 
-          modifiers: [], 
-          station: 'grill', 
+        {
+          id: '2-1',
+          name: 'Truffle Pasta',
+          quantity: 1,
+          modifiers: [],
+          station: 'grill',
           prepTime: 15,
           status: 'pending',
           specialInstructions: 'Extra truffle oil'
         },
-        { 
-          id: '2-2', 
-          name: 'Tiramisu', 
-          quantity: 1, 
-          modifiers: [], 
-          station: 'dessert', 
+        {
+          id: '2-2',
+          name: 'Tiramisu',
+          quantity: 1,
+          modifiers: [],
+          station: 'dessert',
           prepTime: 2,
           status: 'pending'
         }
@@ -197,12 +197,12 @@ export function KitchenDisplaySystem() {
       customerName: 'Lisa Wang',
       customerPhone: '555-0456',
       items: [
-        { 
-          id: '3-1', 
-          name: 'Vegetarian Bowl', 
-          quantity: 1, 
-          modifiers: ['Gluten free'], 
-          station: 'salad', 
+        {
+          id: '3-1',
+          name: 'Vegetarian Bowl',
+          quantity: 1,
+          modifiers: ['Gluten free'],
+          station: 'salad',
           prepTime: 8,
           status: 'pending',
           allergens: ['nuts']
@@ -222,12 +222,12 @@ export function KitchenDisplaySystem() {
 
   useEffect(() => {
     setOrders(sampleOrders)
-    
+
     // Update clock every second
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
-    
+
     return () => clearInterval(timer)
   }, [])
 
@@ -238,7 +238,7 @@ export function KitchenDisplaySystem() {
     const created = order.createdAt.getTime()
     const elapsed = Math.floor((now - created) / 60000) // minutes
     const remaining = Math.floor((target - now) / 60000) // minutes
-    
+
     return { elapsed, remaining }
   }
 
@@ -253,33 +253,35 @@ export function KitchenDisplaySystem() {
 
   // Update order status
   const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
-    setOrders(prev => prev.map(order => {
-      if (order.id === orderId) {
-        const updatedOrder = { ...order, status: newStatus }
-        
-        // Set timestamps
-        if (newStatus === 'acknowledged') updatedOrder.acknowledgedAt = new Date()
-        if (newStatus === 'preparing') updatedOrder.startedAt = new Date()
-        if (newStatus === 'ready') updatedOrder.readyAt = new Date()
-        if (newStatus === 'served') updatedOrder.servedAt = new Date()
-        
-        // Update HERA transaction status via Universal API
-        if (order.heraOrderId) {
-          universalApi.update('universal_transactions', order.heraOrderId, {
-            workflow_state: newStatus,
-            metadata: {
-              ...order,
-              kitchen_status: newStatus,
-              last_updated: new Date().toISOString()
-            }
-          })
+    setOrders(prev =>
+      prev.map(order => {
+        if (order.id === orderId) {
+          const updatedOrder = { ...order, status: newStatus }
+
+          // Set timestamps
+          if (newStatus === 'acknowledged') updatedOrder.acknowledgedAt = new Date()
+          if (newStatus === 'preparing') updatedOrder.startedAt = new Date()
+          if (newStatus === 'ready') updatedOrder.readyAt = new Date()
+          if (newStatus === 'served') updatedOrder.servedAt = new Date()
+
+          // Update HERA transaction status via Universal API
+          if (order.heraOrderId) {
+            universalApi.update('universal_transactions', order.heraOrderId, {
+              workflow_state: newStatus,
+              metadata: {
+                ...order,
+                kitchen_status: newStatus,
+                last_updated: new Date().toISOString()
+              }
+            })
+          }
+
+          return updatedOrder
         }
-        
-        return updatedOrder
-      }
-      return order
-    }))
-    
+        return order
+      })
+    )
+
     // Play sound for new orders
     if (audioEnabled && newStatus === 'new') {
       playNotificationSound()
@@ -287,30 +289,36 @@ export function KitchenDisplaySystem() {
   }
 
   // Update item status
-  const updateItemStatus = (orderId: string, itemId: string, status: 'pending' | 'preparing' | 'ready') => {
-    setOrders(prev => prev.map(order => {
-      if (order.id === orderId) {
-        const updatedItems = order.items.map(item => {
-          if (item.id === itemId) {
-            const updatedItem = { ...item, status }
-            if (status === 'preparing') updatedItem.startedAt = new Date()
-            return updatedItem
+  const updateItemStatus = (
+    orderId: string,
+    itemId: string,
+    status: 'pending' | 'preparing' | 'ready'
+  ) => {
+    setOrders(prev =>
+      prev.map(order => {
+        if (order.id === orderId) {
+          const updatedItems = order.items.map(item => {
+            if (item.id === itemId) {
+              const updatedItem = { ...item, status }
+              if (status === 'preparing') updatedItem.startedAt = new Date()
+              return updatedItem
+            }
+            return item
+          })
+
+          const itemsReady = updatedItems.filter(i => i.status === 'ready').length
+          const allReady = itemsReady === updatedItems.length
+
+          return {
+            ...order,
+            items: updatedItems,
+            itemsReady,
+            status: allReady ? 'ready' : order.status === 'new' ? 'acknowledged' : order.status
           }
-          return item
-        })
-        
-        const itemsReady = updatedItems.filter(i => i.status === 'ready').length
-        const allReady = itemsReady === updatedItems.length
-        
-        return {
-          ...order,
-          items: updatedItems,
-          itemsReady,
-          status: allReady ? 'ready' : order.status === 'new' ? 'acknowledged' : order.status
         }
-      }
-      return order
-    }))
+        return order
+      })
+    )
   }
 
   // Play notification sound
@@ -320,26 +328,26 @@ export function KitchenDisplaySystem() {
   }
 
   // Filter orders by station
-  const filteredOrders = orders.filter(order => {
-    if (selectedStation === 'all') return true
-    if (selectedStation === 'expo') return order.status === 'ready'
-    return order.items.some(item => item.station === selectedStation && item.status !== 'ready')
-  }).filter(order => {
-    if (showUrgentOnly) {
-      const { remaining } = getTimeDisplay(order)
-      return remaining <= 10 || order.priority !== 'normal'
-    }
-    return true
-  })
+  const filteredOrders = orders
+    .filter(order => {
+      if (selectedStation === 'all') return true
+      if (selectedStation === 'expo') return order.status === 'ready'
+      return order.items.some(item => item.station === selectedStation && item.status !== 'ready')
+    })
+    .filter(order => {
+      if (showUrgentOnly) {
+        const { remaining } = getTimeDisplay(order)
+        return remaining <= 10 || order.priority !== 'normal'
+      }
+      return true
+    })
 
   // Calculate station metrics
   const getStationMetrics = (station: Station): StationMetrics => {
-    const stationOrders = orders.filter(o => 
-      o.items.some(i => i.station === station)
-    )
-    
+    const stationOrders = orders.filter(o => o.items.some(i => i.station === station))
+
     const stationItems = orders.flatMap(o => o.items).filter(i => i.station === station)
-    
+
     return {
       ordersInQueue: stationOrders.filter(o => o.status !== 'completed').length,
       avgPrepTime: 12, // Would calculate from historical data
@@ -353,13 +361,13 @@ export function KitchenDisplaySystem() {
   const OrderCard = ({ order }: { order: KitchenOrder }) => {
     const { elapsed, remaining } = getTimeDisplay(order)
     const urgencyColor = getUrgencyColor(remaining, order.priority)
-    
+
     return (
-      <Card 
+      <Card
         className={cn(
-          "cursor-pointer transition-all hover:shadow-lg",
-          selectedOrder?.id === order.id && "ring-2 ring-orange-500",
-          order.status === 'ready' && "bg-green-50 border-green-300"
+          'cursor-pointer transition-all hover:shadow-lg',
+          selectedOrder?.id === order.id && 'ring-2 ring-orange-500',
+          order.status === 'ready' && 'bg-green-50 border-green-300'
         )}
         onClick={() => setSelectedOrder(order)}
       >
@@ -386,17 +394,23 @@ export function KitchenDisplaySystem() {
                 </Badge>
               )}
             </div>
-            <Badge className={cn(urgencyColor, "text-white")}>
+            <Badge className={cn(urgencyColor, 'text-white')}>
               {remaining < 0 ? `${Math.abs(remaining)}m LATE` : `${remaining}m`}
             </Badge>
           </div>
-          
+
           {order.priority !== 'normal' && (
-            <Badge className={order.priority === 'vip' ? 'bg-purple-100 text-purple-700' : 'bg-orange-100 text-orange-700'}>
+            <Badge
+              className={
+                order.priority === 'vip'
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'bg-orange-100 text-orange-700'
+              }
+            >
               {order.priority.toUpperCase()}
             </Badge>
           )}
-          
+
           {order.allergenAlert && (
             <Alert className="mt-2 p-2 border-red-200 bg-red-50">
               <AlertTriangle className="h-3 w-3 text-red-600" />
@@ -406,7 +420,7 @@ export function KitchenDisplaySystem() {
             </Alert>
           )}
         </CardHeader>
-        
+
         <CardContent className="space-y-3">
           {/* Items list */}
           <div className="space-y-2">
@@ -414,15 +428,21 @@ export function KitchenDisplaySystem() {
               <div key={item.id} className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{item.quantity}x {item.name}</span>
+                    <span className="font-medium">
+                      {item.quantity}x {item.name}
+                    </span>
                     {item.status === 'ready' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                    {item.status === 'preparing' && <Clock className="w-4 h-4 text-orange-500 animate-pulse" />}
+                    {item.status === 'preparing' && (
+                      <Clock className="w-4 h-4 text-orange-500 animate-pulse" />
+                    )}
                   </div>
                   {item.modifiers.length > 0 && (
                     <p className="text-xs text-gray-600">{item.modifiers.join(', ')}</p>
                   )}
                   {item.specialInstructions && (
-                    <p className="text-xs text-red-600 font-medium">⚠ {item.specialInstructions}</p>
+                    <p className="text-xs text-red-600 font-medium">
+                      ⚠ {item.specialInstructions}
+                    </p>
                   )}
                 </div>
                 <div className="flex gap-1">
@@ -430,7 +450,7 @@ export function KitchenDisplaySystem() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation()
                         updateItemStatus(order.id, item.id, 'preparing')
                       }}
@@ -443,7 +463,7 @@ export function KitchenDisplaySystem() {
                       size="sm"
                       variant="outline"
                       className="bg-green-50"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation()
                         updateItemStatus(order.id, item.id, 'ready')
                       }}
@@ -455,16 +475,18 @@ export function KitchenDisplaySystem() {
               </div>
             ))}
           </div>
-          
+
           {/* Progress bar */}
           <div className="space-y-1">
             <div className="flex justify-between text-xs text-gray-600">
-              <span>{order.itemsReady} of {order.totalItems} ready</span>
+              <span>
+                {order.itemsReady} of {order.totalItems} ready
+              </span>
               <span>{elapsed}m elapsed</span>
             </div>
             <Progress value={(order.itemsReady / order.totalItems) * 100} className="h-2" />
           </div>
-          
+
           {/* Customer info for takeout/delivery */}
           {(order.orderType === 'takeout' || order.orderType === 'delivery') && (
             <div className="pt-2 border-t text-xs space-y-1">
@@ -482,14 +504,14 @@ export function KitchenDisplaySystem() {
               )}
             </div>
           )}
-          
+
           {/* Action buttons */}
           <div className="flex gap-2 pt-2">
             {order.status === 'new' && (
               <Button
                 size="sm"
                 className="flex-1 bg-blue-500 hover:bg-blue-600"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation()
                   updateOrderStatus(order.id, 'acknowledged')
                 }}
@@ -501,7 +523,7 @@ export function KitchenDisplaySystem() {
               <Button
                 size="sm"
                 className="flex-1 bg-orange-500 hover:bg-orange-600"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation()
                   updateOrderStatus(order.id, 'preparing')
                 }}
@@ -513,7 +535,7 @@ export function KitchenDisplaySystem() {
               <Button
                 size="sm"
                 className="flex-1 bg-green-500 hover:bg-green-600"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation()
                   updateOrderStatus(order.id, 'ready')
                 }}
@@ -525,7 +547,7 @@ export function KitchenDisplaySystem() {
               <Button
                 size="sm"
                 className="flex-1 bg-purple-500 hover:bg-purple-600"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation()
                   updateOrderStatus(order.id, 'served')
                 }}
@@ -553,23 +575,23 @@ export function KitchenDisplaySystem() {
               {currentTime.toLocaleTimeString()}
             </Badge>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button
-              variant={showUrgentOnly ? "default" : "outline"}
+              variant={showUrgentOnly ? 'default' : 'outline'}
               size="sm"
               onClick={() => setShowUrgentOnly(!showUrgentOnly)}
-              className={showUrgentOnly ? "bg-red-500" : ""}
+              className={showUrgentOnly ? 'bg-red-500' : ''}
             >
               <AlertCircle className="w-4 h-4 mr-1" />
               Urgent Only
             </Button>
             <Button
-              variant={audioEnabled ? "default" : "outline"}
+              variant={audioEnabled ? 'default' : 'outline'}
               size="sm"
               onClick={() => setAudioEnabled(!audioEnabled)}
             >
-              <Bell className={cn("w-4 h-4", !audioEnabled && "line-through")} />
+              <Bell className={cn('w-4 h-4', !audioEnabled && 'line-through')} />
             </Button>
           </div>
         </div>
@@ -583,20 +605,19 @@ export function KitchenDisplaySystem() {
             return (
               <Button
                 key={station.id}
-                variant={selectedStation === station.id ? "default" : "outline"}
+                variant={selectedStation === station.id ? 'default' : 'outline'}
                 onClick={() => setSelectedStation(station.id)}
                 className={cn(
-                  "min-w-[120px]",
-                  selectedStation === station.id && `bg-${station.color}-500 hover:bg-${station.color}-600`
+                  'min-w-[120px]',
+                  selectedStation === station.id &&
+                    `bg-${station.color}-500 hover:bg-${station.color}-600`
                 )}
               >
                 <div className="flex items-center gap-2">
                   {station.icon}
                   <span>{station.name}</span>
                   {metrics && metrics.itemsPending > 0 && (
-                    <Badge className="bg-red-500 text-white text-xs">
-                      {metrics.itemsPending}
-                    </Badge>
+                    <Badge className="bg-red-500 text-white text-xs">{metrics.itemsPending}</Badge>
                   )}
                 </div>
               </Button>
@@ -617,9 +638,7 @@ export function KitchenDisplaySystem() {
                 <p className="text-sm mt-2">Orders will appear here when placed</p>
               </div>
             ) : (
-              filteredOrders.map(order => (
-                <OrderCard key={order.id} order={order} />
-              ))
+              filteredOrders.map(order => <OrderCard key={order.id} order={order} />)
             )}
           </div>
         </ScrollArea>
@@ -630,7 +649,7 @@ export function KitchenDisplaySystem() {
             <h2 className="text-lg font-bold mb-4">
               {stations.find(s => s.id === selectedStation)?.name} Station
             </h2>
-            
+
             <div className="space-y-4">
               <Card className="bg-gray-700 border-gray-600">
                 <CardContent className="pt-4">
@@ -659,8 +678,8 @@ export function KitchenDisplaySystem() {
                       {getStationMetrics(selectedStation as Station).efficiency}%
                     </Badge>
                   </div>
-                  <Progress 
-                    value={getStationMetrics(selectedStation as Station).efficiency} 
+                  <Progress
+                    value={getStationMetrics(selectedStation as Station).efficiency}
                     className="h-2"
                   />
                 </CardContent>
@@ -705,15 +724,11 @@ export function KitchenDisplaySystem() {
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-400">Avg Wait</p>
-            <p className="text-xl font-bold text-purple-500">
-              15m
-            </p>
+            <p className="text-xl font-bold text-purple-500">15m</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-400">Efficiency</p>
-            <p className="text-xl font-bold text-cyan-500">
-              92%
-            </p>
+            <p className="text-xl font-bold text-cyan-500">92%</p>
           </div>
         </div>
       </div>

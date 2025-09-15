@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     // Simple organization ID for demo
     const organizationId = 'f0af4ced-9d12-4a55-a649-b484368db249'
-    
+
     // Set organization context
     universalApi.setOrganizationId(organizationId)
 
@@ -17,35 +17,36 @@ export async function POST(request: NextRequest) {
     try {
       console.log('🔍 Fetching tender:', tenderId)
       const { data: entities, error } = await universalApi.read('core_entities')
-      
+
       if (error) {
         console.error('Universal API error:', error)
         throw new Error(error)
       }
-      
+
       // Filter in JavaScript since Universal API read doesn't support filters
-      tender = entities?.find(e => 
-        e.id === tenderId && 
-        e.organization_id === organizationId &&
-        e.entity_type === 'HERA.FURNITURE.TENDER.NOTICE.v1'
+      tender = entities?.find(
+        e =>
+          e.id === tenderId &&
+          e.organization_id === organizationId &&
+          e.entity_type === 'HERA.FURNITURE.TENDER.NOTICE.v1'
       )
-      
+
       if (!tender) {
         return NextResponse.json(
-          { 
-            success: false, 
+          {
+            success: false,
             error: 'Tender not found'
           },
           { status: 404 }
         )
       }
-      
+
       console.log('✅ Found tender:', tender.entity_code)
     } catch (error) {
       console.error('Error fetching tender:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to fetch tender data'
         },
         { status: 500 }
@@ -53,14 +54,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate bid based on margin preference
-    const baseMargin = marginPreference === 'aggressive' ? 0.08 : 
-                      marginPreference === 'conservative' ? 0.15 : 0.125
-    
+    const baseMargin =
+      marginPreference === 'aggressive' ? 0.08 : marginPreference === 'conservative' ? 0.15 : 0.125
+
     const transportCost = costs?.transport_mt || 3200
     const handlingCost = costs?.handling_mt || 900
     const totalCost = estimatedAmount * 0.85 // Assume 85% is base cost
     const overheads = transportCost + handlingCost
-    const bidAmount = totalCost + overheads + (totalCost * baseMargin)
+    const bidAmount = totalCost + overheads + totalCost * baseMargin
 
     // Create draft bid transaction
     const draftBid = {
@@ -83,14 +84,22 @@ export async function POST(request: NextRequest) {
         overheads: overheads
       },
       ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.v1',
-      ai_confidence: marginPreference === 'aggressive' ? 65 : 
-                     marginPreference === 'conservative' ? 85 : 78,
+      ai_confidence:
+        marginPreference === 'aggressive' ? 65 : marginPreference === 'conservative' ? 85 : 78,
       ai_insights: {
         recommendation: `${marginPreference || 'Moderate'} bid strategy with ${(baseMargin * 100).toFixed(1)}% margin`,
-        risk_level: marginPreference === 'aggressive' ? 'high' : 
-                   marginPreference === 'conservative' ? 'low' : 'medium',
-        win_probability: marginPreference === 'aggressive' ? 0.35 : 
-                        marginPreference === 'conservative' ? 0.65 : 0.45,
+        risk_level:
+          marginPreference === 'aggressive'
+            ? 'high'
+            : marginPreference === 'conservative'
+              ? 'low'
+              : 'medium',
+        win_probability:
+          marginPreference === 'aggressive'
+            ? 0.35
+            : marginPreference === 'conservative'
+              ? 0.65
+              : 0.45,
         competitor_analysis: 'Based on historical data, 3-5 competitors expected',
         cost_breakdown: {
           base_cost: totalCost,
@@ -118,18 +127,18 @@ export async function POST(request: NextRequest) {
         ai_confidence: draftBid.ai_confidence,
         ai_insights: draftBid.ai_insights
       })
-      
+
       if (!result.success || !result.data) {
         throw new Error('Failed to create transaction')
       }
-      
+
       bidTransaction = result.data
       console.log('✅ Created draft bid:', bidTransaction.id)
     } catch (error) {
       console.error('Error creating bid transaction:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to create draft bid'
         },
         { status: 500 }
@@ -149,8 +158,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error calculating bid:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to calculate bid'
       },
       { status: 500 }

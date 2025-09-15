@@ -1,13 +1,10 @@
 'use client'
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
-import React from 'react';
-import { 
-  HeraNavigation, 
-  HeraBreadcrumb 
-} from '@/components/universal/ui/HeraNavigation';
+import React from 'react'
+import { HeraNavigation, HeraBreadcrumb } from '@/components/universal/ui/HeraNavigation'
 import {
   HeraLayout,
   HeraGrid,
@@ -21,11 +18,11 @@ import {
   HeraWealthMetric,
   HeraProgress,
   HeraThemeToggle
-} from '@/components/universal/ui';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Users, 
+} from '@/components/universal/ui'
+import {
+  DollarSign,
+  TrendingUp,
+  Users,
   BarChart3,
   Zap,
   Building2,
@@ -33,24 +30,22 @@ import {
   Palette,
   Code,
   Database
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-background">
       <HeraNavigation />
-      
+
       <HeraLayout variant="full-width" padding="lg">
         <div className="max-w-7xl mx-auto space-y-12">
-          
           {/* Breadcrumb */}
-          <HeraBreadcrumb items={[
-            { name: 'Investor', href: '/investor' },
-            { name: 'How It Works' }
-          ]} />
-          
+          <HeraBreadcrumb
+            items={[{ name: 'Investor', href: '/investor' }, { name: 'How It Works' }]}
+          />
+
           {/* Hero Section */}
           <HeraPageHeader
             title="HERA Universal ERP"
@@ -83,7 +78,8 @@ export default function HowItWorks() {
                     <h3 className="text-lg font-semibold">Core Tables</h3>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Organizations, Entities, and Dynamic Data provide the foundation for any business model
+                    Organizations, Entities, and Dynamic Data provide the foundation for any
+                    business model
                   </p>
                   <div className="text-xs text-muted-foreground space-y-1">
                     <div>• Multi-tenant organizations</div>
@@ -146,7 +142,7 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Complete wealth management system with $250M Johnson Family Office demo data. 
+                    Complete wealth management system with $250M Johnson Family Office demo data.
                     Showcases portfolio tracking, risk analysis, and performance reporting.
                   </p>
                   <div className="flex gap-2 pt-2">
@@ -170,8 +166,8 @@ export default function HowItWorks() {
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Full restaurant POS system with inventory management, staff scheduling, 
-                    and analytics. Demonstrates HERA's flexibility for service industries.
+                    Full restaurant POS system with inventory management, staff scheduling, and
+                    analytics. Demonstrates HERA's flexibility for service industries.
                   </p>
                   <div className="flex gap-2 pt-2">
                     <Button variant="outline" size="sm" asChild>
@@ -196,7 +192,7 @@ export default function HowItWorks() {
                 animation="slide-up"
                 animationDelay={100}
               />
-              
+
               <HeraMetric
                 title="Animations"
                 value={12}
@@ -204,7 +200,7 @@ export default function HowItWorks() {
                 animation="slide-up"
                 animationDelay={200}
               />
-              
+
               <HeraMetric
                 title="Themes"
                 value={2}
@@ -214,7 +210,7 @@ export default function HowItWorks() {
                 animation="slide-up"
                 animationDelay={300}
               />
-              
+
               <HeraMetric
                 title="Ready to Use"
                 value={100}
@@ -312,5 +308,5 @@ export default function HowItWorks() {
         </div>
       </HeraLayout>
     </div>
-  );
+  )
 }

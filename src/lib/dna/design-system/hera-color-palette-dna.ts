@@ -20,7 +20,7 @@ export interface ColorTokens {
       surface: ColorToken
       surfaceAlt: ColorToken
       border: ColorToken
-      
+
       // Brand colors
       primary: ColorToken
       primaryFg: ColorToken
@@ -28,18 +28,18 @@ export interface ColorTokens {
       secondaryFg: ColorToken
       accent: ColorToken
       accentFg: ColorToken
-      
+
       // Extended palette
       purple: ColorToken
       amber: ColorToken
       red: ColorToken
       gold: ColorToken
-      
+
       // Status colors
       success: ColorToken
       warning: ColorToken
       danger: ColorToken
-      
+
       // Typography
       text: ColorToken
       textMuted: ColorToken
@@ -74,65 +74,65 @@ export interface ColorTokens {
  * Based on your provided design tokens specification
  */
 export const HERA_COLOR_TOKENS: ColorTokens = {
-  version: "1.0",
-  brand: "HERA",
-  modes: ["light", "dark"],
+  version: '1.0',
+  brand: 'HERA',
+  modes: ['light', 'dark'],
   tokens: {
     color: {
       // Base colors
-      bg: { light: "#FFFFFF", dark: "#0B0F17" },
-      surface: { light: "#F8FAFC", dark: "#111725" },
-      surfaceAlt: { light: "#EEF2F7", dark: "#161D2D" },
-      border: { light: "#E5E7EB", dark: "#27303B" },
+      bg: { light: '#FFFFFF', dark: '#0B0F17' },
+      surface: { light: '#F8FAFC', dark: '#111725' },
+      surfaceAlt: { light: '#EEF2F7', dark: '#161D2D' },
+      border: { light: '#E5E7EB', dark: '#27303B' },
 
       // Brand colors - HERA Primary Blue
-      primary: { light: "#3B82F6", dark: "#60A5FA" },
-      primaryFg: { light: "#FFFFFF", dark: "#0A0E14" },
+      primary: { light: '#3B82F6', dark: '#60A5FA' },
+      primaryFg: { light: '#FFFFFF', dark: '#0A0E14' },
 
       // HERA Secondary Cyan
-      secondary: { light: "#06B6D4", dark: "#22D3EE" },
-      secondaryFg: { light: "#0A0E14", dark: "#0A0E14" },
+      secondary: { light: '#06B6D4', dark: '#22D3EE' },
+      secondaryFg: { light: '#0A0E14', dark: '#0A0E14' },
 
       // HERA Accent Green
-      accent: { light: "#10B981", dark: "#34D399" },
-      accentFg: { light: "#0A0E14", dark: "#0A0E14" },
+      accent: { light: '#10B981', dark: '#34D399' },
+      accentFg: { light: '#0A0E14', dark: '#0A0E14' },
 
       // Extended palette
-      purple: { light: "#8B5CF6", dark: "#A78BFA" },
-      amber: { light: "#F59E0B", dark: "#FBBF24" },
-      red: { light: "#EF4444", dark: "#F87171" },
-      gold: { light: "#FBBF24", dark: "#FCD34D" },
+      purple: { light: '#8B5CF6', dark: '#A78BFA' },
+      amber: { light: '#F59E0B', dark: '#FBBF24' },
+      red: { light: '#EF4444', dark: '#F87171' },
+      gold: { light: '#FBBF24', dark: '#FCD34D' },
 
       // Status colors
-      success: { light: "#22C55E", dark: "#4ADE80" },
-      warning: { light: "#F59E0B", dark: "#FBBF24" },
-      danger: { light: "#EF4444", dark: "#F87171" },
+      success: { light: '#22C55E', dark: '#4ADE80' },
+      warning: { light: '#F59E0B', dark: '#FBBF24' },
+      danger: { light: '#EF4444', dark: '#F87171' },
 
       // Typography
-      text: { light: "#0A0E14", dark: "#E8EDF5" },
-      textMuted: { light: "#64748B", dark: "#94A3B8" },
-      focusRing: { light: "#3B82F6", dark: "#60A5FA" }
+      text: { light: '#0A0E14', dark: '#E8EDF5' },
+      textMuted: { light: '#64748B', dark: '#94A3B8' },
+      focusRing: { light: '#3B82F6', dark: '#60A5FA' }
     },
     state: {
-      primaryHover: { light: "#316FDB", dark: "#4B91F3" },
-      primaryActive: { light: "#285DBE", dark: "#3C7EE0" },
-      secondaryHover: { light: "#0893AE", dark: "#1ABBD3" },
-      secondaryActive: { light: "#077C93", dark: "#159FB4" },
-      accentHover: { light: "#0FA171", dark: "#2FC08A" },
-      accentActive: { light: "#0C8C62", dark: "#29A878" }
+      primaryHover: { light: '#316FDB', dark: '#4B91F3' },
+      primaryActive: { light: '#285DBE', dark: '#3C7EE0' },
+      secondaryHover: { light: '#0893AE', dark: '#1ABBD3' },
+      secondaryActive: { light: '#077C93', dark: '#159FB4' },
+      accentHover: { light: '#0FA171', dark: '#2FC08A' },
+      accentActive: { light: '#0C8C62', dark: '#29A878' }
     },
     elevation: {
-      shadow1: "0 1px 2px rgba(0,0,0,.06)",
-      shadow2: "0 4px 10px rgba(0,0,0,.08)"
+      shadow1: '0 1px 2px rgba(0,0,0,.06)',
+      shadow2: '0 4px 10px rgba(0,0,0,.08)'
     },
     radius: {
-      sm: "8px",
-      md: "12px", 
-      lg: "16px",
-      xl: "20px"
+      sm: '8px',
+      md: '12px',
+      lg: '16px',
+      xl: '20px'
     },
     gradient: {
-      brand: "linear-gradient(45deg, #3B82F6, #06B6D4, #10B981)"
+      brand: 'linear-gradient(45deg, #3B82F6, #06B6D4, #10B981)'
     }
   }
 }
@@ -144,7 +144,7 @@ export const HERA_COLOR_TOKENS: ColorTokens = {
 export class HeraCSSVariableGenerator {
   static generateLightMode(): string {
     const { tokens } = HERA_COLOR_TOKENS
-    
+
     return `
 :root {
   /* Base colors */
@@ -202,7 +202,7 @@ export class HeraCSSVariableGenerator {
 
   static generateDarkMode(): string {
     const { tokens } = HERA_COLOR_TOKENS
-    
+
     return `
 :root.dark {
   /* Base colors */
@@ -251,7 +251,7 @@ export class HeraCSSVariableGenerator {
 
   static generateMinifiedCSSVars(): string {
     const { tokens } = HERA_COLOR_TOKENS
-    
+
     return `:root{
 --color-bg:${tokens.color.bg.light}; --color-surface:${tokens.color.surface.light}; --color-surfaceAlt:${tokens.color.surfaceAlt.light}; --color-border:${tokens.color.border.light};
 --color-primary:${tokens.color.primary.light}; --color-primary-fg:${tokens.color.primaryFg.light};
@@ -373,11 +373,11 @@ export class HeraThemeManager {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       const storedTheme = localStorage.getItem('hera-theme') as 'light' | 'dark' | null
       const desired = storedTheme ?? (prefersDark ? 'dark' : 'light')
-      
+
       this.setTheme(desired)
-      
+
       // Listen for system theme changes
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         if (!localStorage.getItem('hera-theme')) {
           this.setTheme(e.matches ? 'dark' : 'light')
         }
@@ -387,12 +387,12 @@ export class HeraThemeManager {
 
   setTheme(theme: 'light' | 'dark'): void {
     this.currentTheme = theme
-    
+
     if (typeof window !== 'undefined') {
       document.documentElement.classList.toggle('dark', theme === 'dark')
       localStorage.setItem('hera-theme', theme)
     }
-    
+
     // Notify listeners
     this.listeners.forEach(listener => listener(theme))
   }
@@ -407,7 +407,7 @@ export class HeraThemeManager {
 
   subscribe(listener: (theme: 'light' | 'dark') => void): () => void {
     this.listeners.push(listener)
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.listeners.indexOf(listener)
@@ -428,16 +428,16 @@ export class HeraColorUtils {
   static getTokenValue(tokenPath: string, mode?: 'light' | 'dark'): string {
     const currentMode = mode || HeraThemeManager.getInstance().getTheme()
     const paths = tokenPath.split('.')
-    
+
     let current: any = HERA_COLOR_TOKENS.tokens
     for (const path of paths) {
       current = current?.[path]
     }
-    
+
     if (current && typeof current === 'object' && current.light && current.dark) {
       return current[currentMode]
     }
-    
+
     return current || ''
   }
 
@@ -454,11 +454,11 @@ export class HeraColorUtils {
   static getAllColors(mode?: 'light' | 'dark'): Record<string, string> {
     const currentMode = mode || HeraThemeManager.getInstance().getTheme()
     const colors: Record<string, string> = {}
-    
+
     const flattenTokens = (obj: any, prefix: string = '') => {
       for (const [key, value] of Object.entries(obj)) {
         const tokenPath = prefix ? `${prefix}.${key}` : key
-        
+
         if (value && typeof value === 'object' && 'light' in value && 'dark' in value) {
           colors[tokenPath] = (value as ColorToken)[currentMode]
         } else if (value && typeof value === 'object') {
@@ -468,7 +468,7 @@ export class HeraColorUtils {
         }
       }
     }
-    
+
     flattenTokens(HERA_COLOR_TOKENS.tokens)
     return colors
   }
@@ -479,23 +479,23 @@ export class HeraColorUtils {
  */
 export function useHeraTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
-  
+
   useEffect(() => {
     const themeManager = HeraThemeManager.getInstance()
     setTheme(themeManager.getTheme())
-    
+
     const unsubscribe = themeManager.subscribe(setTheme)
     return unsubscribe
   }, [])
-  
+
   const toggleTheme = useCallback(() => {
     HeraThemeManager.getInstance().toggleTheme()
   }, [])
-  
+
   const setThemeMode = useCallback((mode: 'light' | 'dark') => {
     HeraThemeManager.getInstance().setTheme(mode)
   }, [])
-  
+
   return {
     theme,
     toggleTheme,
@@ -522,20 +522,20 @@ export {
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * 1. Generate CSS Variables:
  * const cssVars = HeraCSSVariableGenerator.generateCompleteCSSVars()
- * 
+ *
  * 2. Get Tailwind Config:
  * const tailwindConfig = HeraTailwindConfigGenerator.generateTailwindConfig()
- * 
+ *
  * 3. Theme Management:
  * const themeManager = HeraThemeManager.getInstance()
  * themeManager.setTheme('dark')
- * 
+ *
  * 4. Use in React:
  * const { theme, toggleTheme } = useHeraTheme()
- * 
+ *
  * 5. Get color values:
  * const primaryColor = HeraColorUtils.getTokenValue('color.primary')
  */

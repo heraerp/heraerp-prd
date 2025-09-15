@@ -14,18 +14,17 @@ export class SmartCodeRegistry {
   async initialize(organizationId?: string): Promise<void> {
     try {
       this.organizationId = organizationId || ''
-      
+
       // Load existing registry from universal tables
       await this.loadExistingRegistry()
-      
+
       // Register core vibe patterns
       await this.registerCorePatterns()
-      
+
       this.isInitialized = true
       console.log('🗂️ Smart Code Registry initialized')
       console.log(`   Organization: ${this.organizationId}`)
       console.log(`   Registered codes: ${this.registry.size}`)
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
       throw new VibeError(
@@ -52,11 +51,11 @@ export class SmartCodeRegistry {
     if (this.registry.has(component.smart_code)) {
       const existing = this.registry.get(component.smart_code)!
       console.warn(`⚠️ Smart code already registered: ${component.smart_code}`)
-      
+
       // Update usage count for existing code
       existing.usage_count++
       existing.integration_count++
-      
+
       await this.persistRegistryEntry(existing)
       return
     }
@@ -101,7 +100,7 @@ export class SmartCodeRegistry {
         entry.usage_count++
         await this.persistRegistryEntry(entry)
       }
-      
+
       return this.components.get(smartCode)!
     }
 
@@ -141,7 +140,7 @@ export class SmartCodeRegistry {
   // Get registry statistics
   getRegistryStatistics(): RegistryStatistics {
     const entries = Array.from(this.registry.values())
-    
+
     return {
       total_components: entries.length,
       active_components: entries.filter(e => e.status === 'active').length,
@@ -176,7 +175,7 @@ export class SmartCodeRegistry {
   private validateSmartCode(smartCode: string): void {
     const heraVibePattern = /^HERA\.VIBE\.[A-Z]+\.[A-Z]+\.[A-Z]+\.v\d+$/
     const heraGeneralPattern = /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.v\d+$/
-    
+
     if (!heraVibePattern.test(smartCode) && !heraGeneralPattern.test(smartCode)) {
       throw new VibeError(
         `Invalid smart code format: ${smartCode}. Expected: HERA.MODULE.FUNCTION.TYPE.CONTEXT.v1`,
@@ -194,7 +193,7 @@ export class SmartCodeRegistry {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         }
       })
 
@@ -259,7 +258,7 @@ export class SmartCodeRegistry {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',
@@ -299,7 +298,7 @@ export class SmartCodeRegistry {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',

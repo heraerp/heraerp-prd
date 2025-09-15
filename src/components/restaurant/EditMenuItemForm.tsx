@@ -2,17 +2,7 @@
 
 import React, { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { 
-  X,
-  Check,
-  DollarSign,
-  Clock,
-  Tag,
-  FileText,
-  Plus,
-  Minus,
-  Save
-} from 'lucide-react'
+import { X, Check, DollarSign, Clock, Tag, FileText, Plus, Minus, Save } from 'lucide-react'
 
 interface MenuItem {
   id: string
@@ -45,21 +35,36 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
     prep_time: item.prep_time.toString(),
     ingredients: item.ingredients
   })
-  
+
   const [dietaryTags, setDietaryTags] = useState<string[]>(item.dietary_tags || [])
   const [customCategory, setCustomCategory] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Predefined categories
   const predefinedCategories = [
-    'Pizza', 'Pasta', 'Salads', 'Appetizers', 'Seafood', 
-    'Meat & Poultry', 'Desserts', 'Beverages', 'Soups', 'Sandwiches'
+    'Pizza',
+    'Pasta',
+    'Salads',
+    'Appetizers',
+    'Seafood',
+    'Meat & Poultry',
+    'Desserts',
+    'Beverages',
+    'Soups',
+    'Sandwiches'
   ]
 
   // Predefined dietary tags
   const availableDietaryTags = [
-    'vegetarian', 'vegan', 'gluten_free', 'gluten_free_option', 
-    'keto_friendly', 'dairy_free', 'nut_free', 'healthy', 'spicy'
+    'vegetarian',
+    'vegan',
+    'gluten_free',
+    'gluten_free_option',
+    'keto_friendly',
+    'dairy_free',
+    'nut_free',
+    'healthy',
+    'spicy'
   ]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -68,11 +73,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
   }
 
   const toggleDietaryTag = (tag: string) => {
-    setDietaryTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
-    )
+    setDietaryTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]))
   }
 
   const formatDietaryTag = (tag: string) => {
@@ -81,7 +82,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.entity_name || !formData.price || !formData.category) {
       alert('Please fill in all required fields')
       return
@@ -134,10 +135,15 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             {/* Basic Information */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Basic Information</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="entity_name" className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
+                  <label
+                    htmlFor="entity_name"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Item Name *
+                  </label>
                   <input
                     id="entity_name"
                     name="entity_name"
@@ -149,9 +155,14 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="entity_code" className="block text-sm font-medium text-gray-700 mb-1">Item Code</label>
+                  <label
+                    htmlFor="entity_code"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Item Code
+                  </label>
                   <input
                     id="entity_code"
                     name="entity_code"
@@ -165,7 +176,12 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
               </div>
 
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Description
+                </label>
                 <textarea
                   id="description"
                   name="description"
@@ -181,10 +197,12 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             {/* Pricing & Preparation */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Pricing & Preparation</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                    Price *
+                  </label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <input
@@ -200,9 +218,14 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="prep_time" className="block text-sm font-medium text-gray-700 mb-1">Prep Time (minutes)</label>
+                  <label
+                    htmlFor="prep_time"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Prep Time (minutes)
+                  </label>
                   <div className="relative">
                     <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <input
@@ -222,7 +245,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             {/* Category */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Category *</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2">
                   {predefinedCategories.map(cat => (
@@ -236,21 +259,21 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                     </Badge>
                   ))}
                 </div>
-                
+
                 {!predefinedCategories.includes(formData.category) && formData.category && (
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">Custom:</span>
                     <Badge variant="default">{formData.category}</Badge>
                   </div>
                 )}
-                
+
                 <div className="flex gap-2">
                   <input
                     type="text"
                     placeholder="Or enter custom category"
                     value={customCategory}
-                    onChange={(e) => setCustomCategory(e.target.value)}
-                    onKeyPress={(e) => {
+                    onChange={e => setCustomCategory(e.target.value)}
+                    onKeyPress={e => {
                       if (e.key === 'Enter' && customCategory) {
                         e.preventDefault()
                         setFormData(prev => ({ ...prev, category: customCategory }))
@@ -278,7 +301,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             {/* Dietary Tags */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Dietary Information</h3>
-              
+
               <div className="flex flex-wrap gap-2">
                 {availableDietaryTags.map(tag => (
                   <Badge
@@ -297,7 +320,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
             {/* Ingredients */}
             <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800">Ingredients</h3>
-              
+
               <textarea
                 id="ingredients"
                 name="ingredients"
@@ -328,7 +351,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                   </>
                 )}
               </button>
-              
+
               <button
                 type="button"
                 onClick={onClose}

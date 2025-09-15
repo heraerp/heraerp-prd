@@ -49,7 +49,7 @@ const CRM_ERROR_CODES = {
   INSUFFICIENT_PERMISSIONS: {
     code: 'INSUFFICIENT_PERMISSIONS',
     message: 'User lacks required permissions',
-    userMessage: 'You don\'t have permission to perform this action.',
+    userMessage: "You don't have permission to perform this action.",
     severity: 'medium' as const,
     category: 'permission' as const
   },
@@ -72,7 +72,8 @@ const CRM_ERROR_CODES = {
   DUPLICATE_CONTACT: {
     code: 'DUPLICATE_CONTACT',
     message: 'Contact with this email already exists',
-    userMessage: 'A contact with this email already exists. Would you like to update the existing contact?',
+    userMessage:
+      'A contact with this email already exists. Would you like to update the existing contact?',
     severity: 'medium' as const,
     category: 'validation' as const
   },
@@ -210,7 +211,8 @@ const CRM_ERROR_CODES = {
   IMPORT_DATA_CORRUPT: {
     code: 'IMPORT_DATA_CORRUPT',
     message: 'Import data contains errors',
-    userMessage: 'Some data in your file has errors. Please check the error report and fix the issues.',
+    userMessage:
+      'Some data in your file has errors. Please check the error report and fix the issues.',
     severity: 'medium' as const,
     category: 'data' as const
   },
@@ -272,8 +274,9 @@ export class CRMErrorHandler {
     details?: any,
     context?: CRMError['context']
   ): ErrorHandlerResult {
-    const errorTemplate = CRM_ERROR_CODES[errorCode as keyof typeof CRM_ERROR_CODES] || CRM_ERROR_CODES.UNKNOWN_ERROR
-    
+    const errorTemplate =
+      CRM_ERROR_CODES[errorCode as keyof typeof CRM_ERROR_CODES] || CRM_ERROR_CODES.UNKNOWN_ERROR
+
     const error: CRMError = {
       ...errorTemplate,
       details,
@@ -309,7 +312,7 @@ export class CRMErrorHandler {
     maxRetries: number = 3
   ): Promise<ErrorHandlerResult> {
     let errorCode = 'UNKNOWN_ERROR'
-    
+
     // Map common HTTP errors
     if (error.response) {
       switch (error.response.status) {
@@ -347,7 +350,10 @@ export class CRMErrorHandler {
   /**
    * Validate CRM data with comprehensive checks
    */
-  validateCRMData(data: any, type: 'contact' | 'deal' | 'task' | 'organization'): ErrorHandlerResult {
+  validateCRMData(
+    data: any,
+    type: 'contact' | 'deal' | 'task' | 'organization'
+  ): ErrorHandlerResult {
     const errors: string[] = []
 
     switch (type) {
@@ -449,12 +455,7 @@ export class CRMErrorHandler {
    * Determine if error is retryable
    */
   private isRetryable(error: CRMError): boolean {
-    const retryableCodes = [
-      'NETWORK_ERROR',
-      'API_TIMEOUT', 
-      'SERVER_ERROR',
-      'RATE_LIMITED'
-    ]
+    const retryableCodes = ['NETWORK_ERROR', 'API_TIMEOUT', 'SERVER_ERROR', 'RATE_LIMITED']
     return retryableCodes.includes(error.code)
   }
 
@@ -481,12 +482,12 @@ export class CRMErrorHandler {
    */
   private getNotFoundErrorCode(context?: CRMError['context']): string {
     if (!context?.component) return 'UNKNOWN_ERROR'
-    
+
     if (context.component.includes('contact')) return 'CONTACT_NOT_FOUND'
     if (context.component.includes('deal')) return 'DEAL_NOT_FOUND'
     if (context.component.includes('task')) return 'TASK_NOT_FOUND'
     if (context.component.includes('org')) return 'ORG_NOT_FOUND'
-    
+
     return 'UNKNOWN_ERROR'
   }
 
@@ -550,7 +551,7 @@ export class CRMErrorHandler {
   private logError(error: CRMError): void {
     // Add to in-memory log (could be sent to external service)
     this.errorLog.push(error)
-    
+
     // Console log in development
     if (process.env.NODE_ENV === 'development') {
       console.error('CRM Error:', error)
@@ -571,20 +572,26 @@ export class CRMErrorHandler {
     errorsBySeverity: Record<string, number>
     recentErrors: CRMError[]
   } {
-    const recentTime = Date.now() - (24 * 60 * 60 * 1000) // Last 24 hours
+    const recentTime = Date.now() - 24 * 60 * 60 * 1000 // Last 24 hours
     const recentErrors = this.errorLog.filter(
       error => new Date(error.timestamp).getTime() > recentTime
     )
 
-    const errorsByCategory = recentErrors.reduce((acc, error) => {
-      acc[error.category] = (acc[error.category] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const errorsByCategory = recentErrors.reduce(
+      (acc, error) => {
+        acc[error.category] = (acc[error.category] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
-    const errorsBySeverity = recentErrors.reduce((acc, error) => {
-      acc[error.severity] = (acc[error.severity] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const errorsBySeverity = recentErrors.reduce(
+      (acc, error) => {
+        acc[error.severity] = (acc[error.severity] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     return {
       totalErrors: recentErrors.length,
@@ -599,7 +606,7 @@ export class CRMErrorHandler {
 export const crmErrorHandler = CRMErrorHandler.getInstance()
 
 // Export helper functions
-export const handleCRMError = (errorCode: string, details?: any, context?: CRMError['context']) => 
+export const handleCRMError = (errorCode: string, details?: any, context?: CRMError['context']) =>
   crmErrorHandler.handleError(errorCode, details, context)
 
 export const validateCRMData = (data: any, type: 'contact' | 'deal' | 'task' | 'organization') =>

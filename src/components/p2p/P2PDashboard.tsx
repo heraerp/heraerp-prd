@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  ShoppingCart, 
-  FileText, 
-  CreditCard, 
-  BarChart3, 
+import {
+  ShoppingCart,
+  FileText,
+  CreditCard,
+  BarChart3,
   AlertCircle,
   CheckCircle2,
   Clock,
@@ -68,7 +68,7 @@ export function P2PDashboard() {
 
   const loadP2PMetrics = async () => {
     if (!currentOrganization) return
-    
+
     try {
       setLoading(true)
       universalApi.setOrganizationId(currentOrganization.id)
@@ -82,7 +82,7 @@ export function P2PDashboard() {
       // Load purchase requisitions
       const prs = await universalApi.queryUniversal({
         table: 'universal_transactions',
-        filters: { 
+        filters: {
           smart_code: { like: 'HERA.P2P.PR.%' }
         }
       })
@@ -90,7 +90,7 @@ export function P2PDashboard() {
       // Load purchase orders
       const pos = await universalApi.queryUniversal({
         table: 'universal_transactions',
-        filters: { 
+        filters: {
           smart_code: { like: 'HERA.P2P.PO.%' }
         }
       })
@@ -98,31 +98,27 @@ export function P2PDashboard() {
       // Load invoices
       const invoices = await universalApi.queryUniversal({
         table: 'universal_transactions',
-        filters: { 
+        filters: {
           smart_code: { like: 'HERA.P2P.INV.%' }
         }
       })
 
       // Calculate metrics
-      const activeSuppliers = suppliers.data?.filter(s => 
-        (s.metadata as any)?.status === 'active'
-      ).length || 0
+      const activeSuppliers =
+        suppliers.data?.filter(s => (s.metadata as any)?.status === 'active').length || 0
 
-      const pendingPRs = prs.data?.filter(pr => 
-        (pr.metadata as any)?.status === 'pending_approval'
-      ).length || 0
+      const pendingPRs =
+        prs.data?.filter(pr => (pr.metadata as any)?.status === 'pending_approval').length || 0
 
-      const openPOs = pos.data?.filter(po => 
-        ['draft', 'sent', 'partial'].includes((po.metadata as any)?.status)
-      ).length || 0
+      const openPOs =
+        pos.data?.filter(po => ['draft', 'sent', 'partial'].includes((po.metadata as any)?.status))
+          .length || 0
 
-      const pendingInvoices = invoices.data?.filter(inv => 
-        (inv.metadata as any)?.status === 'pending_approval'
-      ).length || 0
+      const pendingInvoices =
+        invoices.data?.filter(inv => (inv.metadata as any)?.status === 'pending_approval').length ||
+        0
 
-      const totalSpend = pos.data?.reduce((sum, po) => 
-        sum + (po.total_amount || 0), 0
-      ) || 0
+      const totalSpend = pos.data?.reduce((sum, po) => sum + (po.total_amount || 0), 0) || 0
 
       setMetrics({
         activeSuppliers,
@@ -134,7 +130,6 @@ export function P2PDashboard() {
         avgCycleTime: 48, // Would calculate from timestamps
         savingsOpportunity: totalSpend * 0.03 // 3% savings opportunity
       })
-
     } catch (error) {
       console.error('Error loading P2P metrics:', error)
     } finally {
@@ -142,12 +137,12 @@ export function P2PDashboard() {
     }
   }
 
-  const MetricCard = ({ 
-    title, 
-    value, 
-    icon: Icon, 
-    trend, 
-    color = 'text-blue-600' 
+  const MetricCard = ({
+    title,
+    value,
+    icon: Icon,
+    trend,
+    color = 'text-blue-600'
   }: {
     title: string
     value: string | number
@@ -159,9 +154,7 @@ export function P2PDashboard() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-              {title}
-            </p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
             <p className="text-2xl font-bold mt-1">{value}</p>
             {trend && (
               <p className="text-xs text-green-600 mt-1 flex items-center">
@@ -298,15 +291,15 @@ export function P2PDashboard() {
               <Alert className="border-green-200 bg-green-50 dark:bg-green-900/20">
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
                 <AlertDescription>
-                  <strong>Savings Opportunity:</strong> Consolidate orders from 3 suppliers 
-                  to save {formatCurrency(metrics.savingsOpportunity)} this month
+                  <strong>Savings Opportunity:</strong> Consolidate orders from 3 suppliers to save{' '}
+                  {formatCurrency(metrics.savingsOpportunity)} this month
                 </AlertDescription>
               </Alert>
               <Alert className="border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20">
                 <AlertCircle className="w-4 h-4 text-yellow-600" />
                 <AlertDescription>
-                  <strong>Process Optimization:</strong> Average cycle time is {metrics.avgCycleTime} hours. 
-                  Automate approval workflow to reduce by 60%
+                  <strong>Process Optimization:</strong> Average cycle time is{' '}
+                  {metrics.avgCycleTime} hours. Automate approval workflow to reduce by 60%
                 </AlertDescription>
               </Alert>
             </CardContent>

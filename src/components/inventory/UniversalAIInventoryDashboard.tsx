@@ -5,13 +5,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Brain, Sparkles, TrendingUp, AlertTriangle, 
-  Package, DollarSign, Activity, BarChart3,
-  Gem, Crown, Star, Zap, Bot, Eye,
-  ArrowRight, RefreshCw, Settings
+import {
+  Brain,
+  Sparkles,
+  TrendingUp,
+  AlertTriangle,
+  Package,
+  DollarSign,
+  Activity,
+  BarChart3,
+  Gem,
+  Crown,
+  Star,
+  Zap,
+  Bot,
+  Eye,
+  ArrowRight,
+  RefreshCw,
+  Settings
 } from 'lucide-react'
-import { UniversalAIInventory, InventoryAIEngine, INVENTORY_SMART_CODES } from '@/lib/inventory/universal-ai-inventory'
+import {
+  UniversalAIInventory,
+  InventoryAIEngine,
+  INVENTORY_SMART_CODES
+} from '@/lib/inventory/universal-ai-inventory'
 
 // HERA Universal AI Inventory Dashboard
 // Smart Code: HERA.INV.AI.DASHBOARD.v1
@@ -45,17 +62,19 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
   const [metrics, setMetrics] = useState<AIMetrics | null>(null)
   const [alerts, setAlerts] = useState<InventoryAlert[]>([])
   const [isAIProcessing, setIsAIProcessing] = useState(false)
-  const [selectedView, setSelectedView] = useState<'overview' | 'ai-insights' | 'predictions'>('overview')
-  
+  const [selectedView, setSelectedView] = useState<'overview' | 'ai-insights' | 'predictions'>(
+    'overview'
+  )
+
   // Initialize AI Engine
   const aiInventory = new UniversalAIInventory(organizationId)
   const aiEngine = new InventoryAIEngine(organizationId)
-  
+
   useEffect(() => {
     loadAIMetrics()
     loadAlerts()
   }, [organizationId])
-  
+
   const loadAIMetrics = async () => {
     // Simulate loading AI-enhanced metrics
     setMetrics({
@@ -74,7 +93,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       aiConfidence: 92
     })
   }
-  
+
   const loadAlerts = async () => {
     // Simulate AI-generated alerts
     setAlerts([
@@ -104,10 +123,10 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       }
     ])
   }
-  
+
   const runAIPredictions = async () => {
     setIsAIProcessing(true)
-    
+
     // Simulate AI processing
     setTimeout(() => {
       setIsAIProcessing(false)
@@ -123,7 +142,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       }
     }, 2000)
   }
-  
+
   const getAlertIcon = (type: string) => {
     const icons = {
       stock_low: <Package className="w-4 h-4" />,
@@ -133,7 +152,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
     }
     return icons[type as keyof typeof icons] || <AlertTriangle className="w-4 h-4" />
   }
-  
+
   const getUrgencyColor = (urgency: string) => {
     const colors = {
       critical: 'bg-red-100 text-red-800',
@@ -143,7 +162,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
     }
     return colors[urgency as keyof typeof colors] || 'bg-gray-100 text-gray-800'
   }
-  
+
   if (!metrics) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -154,7 +173,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
       </div>
     )
   }
-  
+
   return (
     <div className="space-y-6">
       {/* Header with AI Status */}
@@ -168,7 +187,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
             Powered by HERA's 6-Table Universal Architecture • Smart Code: HERA.INV.AI.SYSTEM.v1
           </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="text-right">
             <p className="text-sm text-gray-600">AI Confidence</p>
@@ -177,7 +196,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               <span className="text-sm font-semibold">{metrics.aiConfidence}%</span>
             </div>
           </div>
-          
+
           <Button
             onClick={runAIPredictions}
             disabled={isAIProcessing}
@@ -197,10 +216,10 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
           </Button>
         </div>
       </div>
-      
+
       {/* View Selector */}
       <div className="flex gap-2 p-1 bg-gray-100 rounded-lg w-fit">
-        {(['overview', 'ai-insights', 'predictions'] as const).map((view) => (
+        {(['overview', 'ai-insights', 'predictions'] as const).map(view => (
           <Button
             key={view}
             variant={selectedView === view ? 'default' : 'ghost'}
@@ -212,7 +231,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
           </Button>
         ))}
       </div>
-      
+
       {/* Overview View */}
       {selectedView === 'overview' && (
         <>
@@ -225,12 +244,10 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{metrics.totalItems}</div>
-                <p className="text-xs text-gray-600 mt-1">
-                  AI-classified items
-                </p>
+                <p className="text-xs text-gray-600 mt-1">AI-classified items</p>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Value</CardTitle>
@@ -238,12 +255,10 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">${metrics.totalValue.toLocaleString()}</div>
-                <p className="text-xs text-gray-600 mt-1">
-                  AI-optimized pricing
-                </p>
+                <p className="text-xs text-gray-600 mt-1">AI-optimized pricing</p>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Demand Score</CardTitle>
@@ -254,7 +269,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <Progress value={metrics.aiPredictions.demandScore} className="mt-2 h-2" />
               </CardContent>
             </Card>
-            
+
             <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">AI Alerts</CardTitle>
@@ -262,13 +277,11 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{alerts.length}</div>
-                <p className="text-xs text-gray-600 mt-1">
-                  Active recommendations
-                </p>
+                <p className="text-xs text-gray-600 mt-1">Active recommendations</p>
               </CardContent>
             </Card>
           </div>
-          
+
           {/* Stock Health */}
           <Card>
             <CardHeader>
@@ -286,7 +299,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                   </div>
                   <Progress value={metrics.stockHealth.optimal} className="h-2 bg-green-100" />
                 </div>
-                
+
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Warning Level</span>
@@ -294,7 +307,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                   </div>
                   <Progress value={metrics.stockHealth.warning} className="h-2 bg-yellow-100" />
                 </div>
-                
+
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Critical Level</span>
@@ -305,7 +318,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </div>
             </CardContent>
           </Card>
-          
+
           {/* AI Alerts */}
           <Card>
             <CardHeader>
@@ -316,27 +329,23 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {alerts.map((alert) => (
+                {alerts.map(alert => (
                   <div
                     key={alert.id}
                     className="flex items-start justify-between p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2 rounded-lg bg-white">
-                        {getAlertIcon(alert.alertType)}
-                      </div>
+                      <div className="p-2 rounded-lg bg-white">{getAlertIcon(alert.alertType)}</div>
                       <div>
                         <h4 className="font-medium text-gray-900">{alert.itemName}</h4>
                         <p className="text-sm text-gray-600 mt-1">{alert.aiRecommendation}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          <Badge className={getUrgencyColor(alert.urgency)}>
-                            {alert.urgency}
-                          </Badge>
+                          <Badge className={getUrgencyColor(alert.urgency)}>{alert.urgency}</Badge>
                           <span className="text-xs text-gray-500">{alert.smartCode}</span>
                         </div>
                       </div>
                     </div>
-                    
+
                     <Button size="sm" variant="outline">
                       <Eye className="w-4 h-4 mr-1" />
                       View
@@ -348,7 +357,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
           </Card>
         </>
       )}
-      
+
       {/* AI Insights View */}
       {selectedView === 'ai-insights' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -371,7 +380,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                     <span className="text-sm font-medium text-green-600">High Confidence</span>
                   </div>
                 </div>
-                
+
                 <div className="p-4 bg-white rounded-lg">
                   <h4 className="font-medium mb-2">Precious Metal Trends</h4>
                   <p className="text-sm text-gray-600">
@@ -385,7 +394,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-blue-50 to-cyan-50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -402,10 +411,12 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                   </p>
                   <div className="mt-2 flex items-center gap-2">
                     <DollarSign className="w-4 h-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-600">$45K potential revenue</span>
+                    <span className="text-sm font-medium text-green-600">
+                      $45K potential revenue
+                    </span>
                   </div>
                 </div>
-                
+
                 <div className="p-4 bg-white rounded-lg">
                   <h4 className="font-medium mb-2">Competitive Positioning</h4>
                   <p className="text-sm text-gray-600">
@@ -419,7 +430,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -445,7 +456,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
           </Card>
         </div>
       )}
-      
+
       {/* Predictions View */}
       {selectedView === 'predictions' && (
         <div className="space-y-6">
@@ -476,7 +487,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Next 30 Days</h4>
                     <div className="space-y-2">
@@ -494,7 +505,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-medium mb-2">Seasonal Trends</h4>
                     <div className="space-y-2">
@@ -516,17 +527,16 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-r from-purple-50 to-pink-50">
             <CardContent className="p-6">
               <div className="text-center">
                 <Brain className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  AI-Powered Inventory Intelligence
-                </h3>
+                <h3 className="text-lg font-semibold mb-2">AI-Powered Inventory Intelligence</h3>
                 <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
-                  HERA's Universal AI system continuously learns from your inventory patterns, 
-                  market trends, and customer behavior to provide actionable insights and predictions.
+                  HERA's Universal AI system continuously learns from your inventory patterns,
+                  market trends, and customer behavior to provide actionable insights and
+                  predictions.
                 </p>
                 <div className="flex items-center justify-center gap-4">
                   <Button variant="outline">

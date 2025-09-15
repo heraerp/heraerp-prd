@@ -10,13 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { 
-  Building2, 
-  ChevronDown, 
-  LogOut, 
-  Settings, 
+import {
+  Building2,
+  ChevronDown,
+  LogOut,
+  Settings,
   Users,
   Package,
   Home,
@@ -25,14 +25,11 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-export default function OrganizationLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function OrganizationLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading } = useMultiOrgAuth()
+  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading } =
+    useMultiOrgAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
 
@@ -44,7 +41,7 @@ export default function OrganizationLayout({
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname
       const pathname = window.location.pathname
-      
+
       // Development: check for /~subdomain pattern on localhost
       if (hostname === 'localhost' && pathname.startsWith('/~')) {
         const match = pathname.match(/^\/~([^\/]+)/)
@@ -73,13 +70,14 @@ export default function OrganizationLayout({
   useEffect(() => {
     if (!isLoading && currentOrganization && !isRedirecting) {
       // Check if we're at the root org path
-      const isOrgRoot = pathname === '/org' || 
-                       pathname === `/~${currentOrganization.subdomain}` ||
-                       pathname === `/~${currentOrganization.subdomain}/`
-      
+      const isOrgRoot =
+        pathname === '/org' ||
+        pathname === `/~${currentOrganization.subdomain}` ||
+        pathname === `/~${currentOrganization.subdomain}/`
+
       if (isOrgRoot) {
         setIsRedirecting(true)
-        
+
         // For salons, go directly to salon app
         if (currentOrganization.type === 'salon') {
           if (subdomain) {
@@ -116,7 +114,7 @@ export default function OrganizationLayout({
     { href: '/', label: 'Dashboard', icon: Home },
     { href: '/apps', label: 'Apps', icon: Package },
     { href: '/users', label: 'Users', icon: Users },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/settings', label: 'Settings', icon: Settings }
   ]
 
   return (
@@ -133,7 +131,7 @@ export default function OrganizationLayout({
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
-              
+
               <div className="flex items-center ml-4 md:ml-0">
                 <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center mr-3">
                   <span className="text-sm font-bold text-white">H</span>
@@ -151,19 +149,17 @@ export default function OrganizationLayout({
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              {navItems.map((item) => {
+              {navItems.map(item => {
                 const Icon = item.icon
                 const href = subdomain ? `/~${subdomain}${item.href}` : `/org${item.href}`
                 const isActive = pathname === href
-                
+
                 return (
                   <Link
                     key={item.href}
                     href={href}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'text-blue-600'
-                        : 'text-gray-700 hover:text-gray-900'
+                      isActive ? 'text-blue-600' : 'text-gray-700 hover:text-gray-900'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -188,7 +184,7 @@ export default function OrganizationLayout({
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuLabel>Organizations</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    {organizations.map((org) => (
+                    {organizations.map(org => (
                       <DropdownMenuItem
                         key={org.id}
                         onClick={() => switchOrganization(org.id)}
@@ -243,11 +239,11 @@ export default function OrganizationLayout({
         {mobileMenuOpen && (
           <div className="md:hidden border-t">
             <nav className="px-2 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => {
+              {navItems.map(item => {
                 const Icon = item.icon
                 const href = subdomain ? `/~${subdomain}${item.href}` : `/org${item.href}`
                 const isActive = pathname === href
-                
+
                 return (
                   <Link
                     key={item.href}
@@ -270,9 +266,7 @@ export default function OrganizationLayout({
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
     </div>
   )
 }

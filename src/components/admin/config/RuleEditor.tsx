@@ -1,22 +1,28 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { 
-  Save, 
-  X, 
-  Code2, 
-  TestTube, 
-  AlertTriangle, 
-  Info, 
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Switch } from '@/components/ui/switch'
+import {
+  Save,
+  X,
+  Code2,
+  TestTube,
+  AlertTriangle,
+  Info,
   Settings,
   Zap,
   Target,
@@ -24,48 +30,48 @@ import {
   Database,
   Workflow,
   Plus
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface ConfigRule {
-  id?: string;
-  name: string;
-  category: string;
-  type: 'validation' | 'transformation' | 'business_logic' | 'integration';
-  scope: 'global' | 'organization' | 'entity_type' | 'specific';
-  status: 'active' | 'inactive' | 'draft' | 'deprecated';
-  priority: number;
-  description: string;
-  smart_code: string;
+  id?: string
+  name: string
+  category: string
+  type: 'validation' | 'transformation' | 'business_logic' | 'integration'
+  scope: 'global' | 'organization' | 'entity_type' | 'specific'
+  status: 'active' | 'inactive' | 'draft' | 'deprecated'
+  priority: number
+  description: string
+  smart_code: string
   conditions: Array<{
-    field: string;
-    operator: string;
-    value: string;
-    logic?: 'AND' | 'OR';
-  }>;
+    field: string
+    operator: string
+    value: string
+    logic?: 'AND' | 'OR'
+  }>
   actions: Array<{
-    type: string;
-    target: string;
-    value: string;
-    parameters?: Record<string, any>;
-  }>;
+    type: string
+    target: string
+    value: string
+    parameters?: Record<string, any>
+  }>
   configuration: {
-    timeout_ms?: number;
-    retry_count?: number;
-    failure_action?: 'stop' | 'continue' | 'rollback';
-    notification_enabled?: boolean;
-    logging_level?: 'none' | 'basic' | 'detailed';
-  };
-  validation_schema?: Record<string, any>;
-  organization_id?: string;
+    timeout_ms?: number
+    retry_count?: number
+    failure_action?: 'stop' | 'continue' | 'rollback'
+    notification_enabled?: boolean
+    logging_level?: 'none' | 'basic' | 'detailed'
+  }
+  validation_schema?: Record<string, any>
+  organization_id?: string
 }
 
 interface RuleEditorProps {
-  rule?: ConfigRule;
-  onSave: (rule: ConfigRule) => void;
-  onCancel: () => void;
-  className?: string;
+  rule?: ConfigRule
+  onSave: (rule: ConfigRule) => void
+  onCancel: () => void
+  className?: string
 }
 
 export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProps) {
@@ -88,11 +94,11 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
       logging_level: 'basic'
     },
     ...rule
-  }));
+  }))
 
-  const [activeTab, setActiveTab] = useState('basic');
-  const [isValidating, setIsValidating] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState('basic')
+  const [isValidating, setIsValidating] = useState(false)
+  const [validationErrors, setValidationErrors] = useState<string[]>([])
 
   // Available operators for conditions
   const operators = [
@@ -108,7 +114,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
     { value: 'regex', label: 'Regex Match' },
     { value: 'in', label: 'In List' },
     { value: 'not_in', label: 'Not In List' }
-  ];
+  ]
 
   // Available action types
   const actionTypes = [
@@ -118,7 +124,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
     { value: 'notify', label: 'Notify', icon: AlertTriangle },
     { value: 'log', label: 'Log', icon: Database },
     { value: 'execute', label: 'Execute', icon: Zap }
-  ];
+  ]
 
   useEffect(() => {
     // Generate smart code automatically based on form data
@@ -126,129 +132,134 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
       const nameCode = formData.name
         .toUpperCase()
         .replace(/[^A-Z0-9\s]/g, '')
-        .replace(/\s+/g, '.');
-      const typeCode = formData.type.toUpperCase().replace('_', '.');
+        .replace(/\s+/g, '.')
+      const typeCode = formData.type.toUpperCase().replace('_', '.')
       const categoryCode = formData.category
         .toUpperCase()
         .replace(/[^A-Z0-9\s]/g, '')
-        .replace(/\s+/g, '.');
+        .replace(/\s+/g, '.')
 
-      const smartCode = `HERA.${categoryCode}.${typeCode}.${nameCode}.v1`;
-      
+      const smartCode = `HERA.${categoryCode}.${typeCode}.${nameCode}.v1`
+
       if (smartCode !== formData.smart_code) {
-        setFormData(prev => ({ ...prev, smart_code: smartCode }));
+        setFormData(prev => ({ ...prev, smart_code: smartCode }))
       }
     }
-  }, [formData.name, formData.type, formData.category]);
+  }, [formData.name, formData.type, formData.category])
 
   const handleInputChange = (field: keyof ConfigRule, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
 
   const handleConditionChange = (index: number, field: string, value: any) => {
-    const newConditions = [...formData.conditions];
-    newConditions[index] = { ...newConditions[index], [field]: value };
-    setFormData(prev => ({ ...prev, conditions: newConditions }));
-  };
+    const newConditions = [...formData.conditions]
+    newConditions[index] = { ...newConditions[index], [field]: value }
+    setFormData(prev => ({ ...prev, conditions: newConditions }))
+  }
 
   const addCondition = () => {
     setFormData(prev => ({
       ...prev,
       conditions: [...prev.conditions, { field: '', operator: '==', value: '', logic: 'AND' }]
-    }));
-  };
+    }))
+  }
 
   const removeCondition = (index: number) => {
     if (formData.conditions.length > 1) {
-      const newConditions = formData.conditions.filter((_, i) => i !== index);
-      setFormData(prev => ({ ...prev, conditions: newConditions }));
+      const newConditions = formData.conditions.filter((_, i) => i !== index)
+      setFormData(prev => ({ ...prev, conditions: newConditions }))
     }
-  };
+  }
 
   const handleActionChange = (index: number, field: string, value: any) => {
-    const newActions = [...formData.actions];
-    newActions[index] = { ...newActions[index], [field]: value };
-    setFormData(prev => ({ ...prev, actions: newActions }));
-  };
+    const newActions = [...formData.actions]
+    newActions[index] = { ...newActions[index], [field]: value }
+    setFormData(prev => ({ ...prev, actions: newActions }))
+  }
 
   const addAction = () => {
     setFormData(prev => ({
       ...prev,
       actions: [...prev.actions, { type: 'validate', target: '', value: '' }]
-    }));
-  };
+    }))
+  }
 
   const removeAction = (index: number) => {
     if (formData.actions.length > 1) {
-      const newActions = formData.actions.filter((_, i) => i !== index);
-      setFormData(prev => ({ ...prev, actions: newActions }));
+      const newActions = formData.actions.filter((_, i) => i !== index)
+      setFormData(prev => ({ ...prev, actions: newActions }))
     }
-  };
+  }
 
   const handleConfigurationChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
       configuration: { ...prev.configuration, [field]: value }
-    }));
-  };
+    }))
+  }
 
   const validateForm = () => {
-    const errors: string[] = [];
+    const errors: string[] = []
 
-    if (!formData.name.trim()) errors.push('Rule name is required');
-    if (!formData.category.trim()) errors.push('Category is required');
-    if (!formData.description.trim()) errors.push('Description is required');
-    if (!formData.smart_code.trim()) errors.push('Smart code is required');
+    if (!formData.name.trim()) errors.push('Rule name is required')
+    if (!formData.category.trim()) errors.push('Category is required')
+    if (!formData.description.trim()) errors.push('Description is required')
+    if (!formData.smart_code.trim()) errors.push('Smart code is required')
     if (formData.priority < 1 || formData.priority > 10) {
-      errors.push('Priority must be between 1 and 10');
+      errors.push('Priority must be between 1 and 10')
     }
 
     // Validate conditions
     formData.conditions.forEach((condition, index) => {
       if (!condition.field.trim()) {
-        errors.push(`Condition ${index + 1}: Field is required`);
+        errors.push(`Condition ${index + 1}: Field is required`)
       }
       if (!condition.value.trim()) {
-        errors.push(`Condition ${index + 1}: Value is required`);
+        errors.push(`Condition ${index + 1}: Value is required`)
       }
-    });
+    })
 
     // Validate actions
     formData.actions.forEach((action, index) => {
       if (!action.target.trim()) {
-        errors.push(`Action ${index + 1}: Target is required`);
+        errors.push(`Action ${index + 1}: Target is required`)
       }
-    });
+    })
 
-    setValidationErrors(errors);
-    return errors.length === 0;
-  };
+    setValidationErrors(errors)
+    return errors.length === 0
+  }
 
   const handleSave = async () => {
     if (!validateForm()) {
-      setActiveTab('basic'); // Switch to basic tab to show errors
-      return;
+      setActiveTab('basic') // Switch to basic tab to show errors
+      return
     }
 
-    setIsValidating(true);
+    setIsValidating(true)
     try {
       // Simulate validation delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      onSave(formData);
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      onSave(formData)
     } finally {
-      setIsValidating(false);
+      setIsValidating(false)
     }
-  };
+  }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'validation': return <Shield className="w-4 h-4" />;
-      case 'transformation': return <Workflow className="w-4 h-4" />;
-      case 'business_logic': return <Target className="w-4 h-4" />;
-      case 'integration': return <Zap className="w-4 h-4" />;
-      default: return <Settings className="w-4 h-4" />;
+      case 'validation':
+        return <Shield className="w-4 h-4" />
+      case 'transformation':
+        return <Workflow className="w-4 h-4" />
+      case 'business_logic':
+        return <Target className="w-4 h-4" />
+      case 'integration':
+        return <Zap className="w-4 h-4" />
+      default:
+        return <Settings className="w-4 h-4" />
     }
-  };
+  }
 
   return (
     <div className={cn('max-w-6xl mx-auto space-y-6', className)}>
@@ -270,7 +281,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                 <X className="w-4 h-4 mr-2" />
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleSave}
                 disabled={isValidating}
                 className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
@@ -300,7 +311,9 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
             <div className="font-semibold mb-2">Please fix the following errors:</div>
             <ul className="space-y-1">
               {validationErrors.map((error, index) => (
-                <li key={index} className="text-sm">• {error}</li>
+                <li key={index} className="text-sm">
+                  • {error}
+                </li>
               ))}
             </ul>
           </AlertDescription>
@@ -310,25 +323,25 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
       {/* Main Form */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl">
-          <TabsTrigger 
+          <TabsTrigger
             value="basic"
             className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
           >
             Basic Info
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="conditions"
             className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
           >
             Conditions
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="actions"
             className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
           >
             Actions
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="config"
             className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400"
           >
@@ -344,26 +357,32 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                 {/* Left Column */}
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label
+                      htmlFor="name"
+                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                    >
                       Rule Name *
                     </Label>
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      onChange={e => handleInputChange('name', e.target.value)}
                       placeholder="e.g., Customer Credit Limit Validation"
                       className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="category" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label
+                      htmlFor="category"
+                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                    >
                       Category *
                     </Label>
                     <Input
                       id="category"
                       value={formData.category}
-                      onChange={(e) => handleInputChange('category', e.target.value)}
+                      onChange={e => handleInputChange('category', e.target.value)}
                       placeholder="e.g., Customer Management"
                       className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                     />
@@ -371,10 +390,16 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="type" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label
+                        htmlFor="type"
+                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      >
                         Rule Type *
                       </Label>
-                      <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)}>
+                      <Select
+                        value={formData.type}
+                        onValueChange={value => handleInputChange('type', value)}
+                      >
                         <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                           <SelectValue />
                         </SelectTrigger>
@@ -408,10 +433,16 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label htmlFor="scope" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label
+                        htmlFor="scope"
+                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      >
                         Scope *
                       </Label>
-                      <Select value={formData.scope} onValueChange={(value) => handleInputChange('scope', value)}>
+                      <Select
+                        value={formData.scope}
+                        onValueChange={value => handleInputChange('scope', value)}
+                      >
                         <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                           <SelectValue />
                         </SelectTrigger>
@@ -427,10 +458,16 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="status" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label
+                        htmlFor="status"
+                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      >
                         Status
                       </Label>
-                      <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
+                      <Select
+                        value={formData.status}
+                        onValueChange={value => handleInputChange('status', value)}
+                      >
                         <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                           <SelectValue />
                         </SelectTrigger>
@@ -455,7 +492,10 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label htmlFor="priority" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                      <Label
+                        htmlFor="priority"
+                        className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                      >
                         Priority (1-10)
                       </Label>
                       <Input
@@ -464,7 +504,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                         min="1"
                         max="10"
                         value={formData.priority}
-                        onChange={(e) => handleInputChange('priority', parseInt(e.target.value) || 1)}
+                        onChange={e => handleInputChange('priority', parseInt(e.target.value) || 1)}
                         className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                       />
                     </div>
@@ -474,26 +514,32 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                 {/* Right Column */}
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="description" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label
+                      htmlFor="description"
+                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                    >
                       Description *
                     </Label>
                     <Textarea
                       id="description"
                       value={formData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      onChange={e => handleInputChange('description', e.target.value)}
                       placeholder="Describe what this rule does and when it should be applied..."
                       className="min-h-[100px] bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="smart_code" className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                    <Label
+                      htmlFor="smart_code"
+                      className="text-sm font-medium !text-gray-900 dark:!text-gray-100"
+                    >
                       Smart Code
                     </Label>
                     <Input
                       id="smart_code"
                       value={formData.smart_code}
-                      onChange={(e) => handleInputChange('smart_code', e.target.value)}
+                      onChange={e => handleInputChange('smart_code', e.target.value)}
                       placeholder="HERA.CATEGORY.TYPE.NAME.v1"
                       className="font-mono text-sm bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                     />
@@ -509,9 +555,8 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       <div className="text-sm mt-1">
                         • Priority 1-3: Critical system rules
                         <br />
-                        • Priority 4-6: Business logic rules  
-                        <br />
-                        • Priority 7-10: Optional enhancement rules
+                        • Priority 4-6: Business logic rules
+                        <br />• Priority 7-10: Optional enhancement rules
                       </div>
                     </AlertDescription>
                   </Alert>
@@ -535,7 +580,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
             </CardHeader>
             <CardContent className="space-y-4">
               {formData.conditions.map((condition, index) => (
-                <div 
+                <div
                   key={index}
                   className="p-4 border border-white/30 dark:border-gray-600/30 rounded-lg bg-white/30 dark:bg-gray-800/30"
                 >
@@ -557,26 +602,30 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Field</Label>
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Field
+                      </Label>
                       <Input
                         value={condition.field}
-                        onChange={(e) => handleConditionChange(index, 'field', e.target.value)}
+                        onChange={e => handleConditionChange(index, 'field', e.target.value)}
                         placeholder="entity.field_name"
                         className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                       />
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Operator</Label>
-                      <Select 
-                        value={condition.operator} 
-                        onValueChange={(value) => handleConditionChange(index, 'operator', value)}
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Operator
+                      </Label>
+                      <Select
+                        value={condition.operator}
+                        onValueChange={value => handleConditionChange(index, 'operator', value)}
                       >
                         <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {operators.map((op) => (
+                          {operators.map(op => (
                             <SelectItem key={op.value} value={op.value}>
                               {op.label}
                             </SelectItem>
@@ -586,20 +635,24 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Value</Label>
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Value
+                      </Label>
                       <Input
                         value={condition.value}
-                        onChange={(e) => handleConditionChange(index, 'value', e.target.value)}
+                        onChange={e => handleConditionChange(index, 'value', e.target.value)}
                         placeholder="comparison value"
                         className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                       />
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Logic</Label>
-                      <Select 
-                        value={condition.logic} 
-                        onValueChange={(value) => handleConditionChange(index, 'logic', value)}
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Logic
+                      </Label>
+                      <Select
+                        value={condition.logic}
+                        onValueChange={value => handleConditionChange(index, 'logic', value)}
                       >
                         <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                           <SelectValue />
@@ -640,7 +693,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
             </CardHeader>
             <CardContent className="space-y-4">
               {formData.actions.map((action, index) => (
-                <div 
+                <div
                   key={index}
                   className="p-4 border border-white/30 dark:border-gray-600/30 rounded-lg bg-white/30 dark:bg-gray-800/30"
                 >
@@ -662,16 +715,18 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Action Type</Label>
-                      <Select 
-                        value={action.type} 
-                        onValueChange={(value) => handleActionChange(index, 'type', value)}
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Action Type
+                      </Label>
+                      <Select
+                        value={action.type}
+                        onValueChange={value => handleActionChange(index, 'type', value)}
                       >
                         <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {actionTypes.map((type) => (
+                          {actionTypes.map(type => (
                             <SelectItem key={type.value} value={type.value}>
                               <div className="flex items-center gap-2">
                                 <type.icon className="w-4 h-4" />
@@ -684,20 +739,24 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Target</Label>
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Target
+                      </Label>
                       <Input
                         value={action.target}
-                        onChange={(e) => handleActionChange(index, 'target', e.target.value)}
+                        onChange={e => handleActionChange(index, 'target', e.target.value)}
                         placeholder="field or method to target"
                         className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                       />
                     </div>
 
                     <div>
-                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">Value</Label>
+                      <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
+                        Value
+                      </Label>
                       <Input
                         value={action.value}
-                        onChange={(e) => handleActionChange(index, 'value', e.target.value)}
+                        onChange={e => handleActionChange(index, 'value', e.target.value)}
                         placeholder="action value or expression"
                         className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                       />
@@ -734,8 +793,10 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Execution Settings */}
                 <div className="space-y-4">
-                  <h3 className="font-medium !text-gray-900 dark:!text-gray-100">Execution Settings</h3>
-                  
+                  <h3 className="font-medium !text-gray-900 dark:!text-gray-100">
+                    Execution Settings
+                  </h3>
+
                   <div>
                     <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
                       Timeout (ms)
@@ -743,7 +804,9 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <Input
                       type="number"
                       value={formData.configuration.timeout_ms || 5000}
-                      onChange={(e) => handleConfigurationChange('timeout_ms', parseInt(e.target.value))}
+                      onChange={e =>
+                        handleConfigurationChange('timeout_ms', parseInt(e.target.value))
+                      }
                       className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                     />
                   </div>
@@ -757,7 +820,9 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       min="0"
                       max="10"
                       value={formData.configuration.retry_count || 3}
-                      onChange={(e) => handleConfigurationChange('retry_count', parseInt(e.target.value))}
+                      onChange={e =>
+                        handleConfigurationChange('retry_count', parseInt(e.target.value))
+                      }
                       className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30"
                     />
                   </div>
@@ -766,9 +831,9 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
                       Failure Action
                     </Label>
-                    <Select 
-                      value={formData.configuration.failure_action} 
-                      onValueChange={(value) => handleConfigurationChange('failure_action', value)}
+                    <Select
+                      value={formData.configuration.failure_action}
+                      onValueChange={value => handleConfigurationChange('failure_action', value)}
                     >
                       <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                         <SelectValue />
@@ -784,8 +849,10 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
 
                 {/* Monitoring Settings */}
                 <div className="space-y-4">
-                  <h3 className="font-medium !text-gray-900 dark:!text-gray-100">Monitoring & Logging</h3>
-                  
+                  <h3 className="font-medium !text-gray-900 dark:!text-gray-100">
+                    Monitoring & Logging
+                  </h3>
+
                   <div className="flex items-center justify-between">
                     <div>
                       <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
@@ -797,7 +864,9 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     </div>
                     <Switch
                       checked={formData.configuration.notification_enabled}
-                      onCheckedChange={(checked) => handleConfigurationChange('notification_enabled', checked)}
+                      onCheckedChange={checked =>
+                        handleConfigurationChange('notification_enabled', checked)
+                      }
                     />
                   </div>
 
@@ -805,9 +874,9 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <Label className="text-sm font-medium !text-gray-900 dark:!text-gray-100">
                       Logging Level
                     </Label>
-                    <Select 
-                      value={formData.configuration.logging_level} 
-                      onValueChange={(value) => handleConfigurationChange('logging_level', value)}
+                    <Select
+                      value={formData.configuration.logging_level}
+                      onValueChange={value => handleConfigurationChange('logging_level', value)}
                     >
                       <SelectTrigger className="bg-white/70 dark:bg-gray-800/70 border-white/30 dark:border-gray-600/30">
                         <SelectValue />
@@ -824,10 +893,12 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                     <div className="flex items-start gap-3">
                       <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <h4 className="font-medium text-blue-800 dark:text-blue-300">Performance Impact</h4>
+                        <h4 className="font-medium text-blue-800 dark:text-blue-300">
+                          Performance Impact
+                        </h4>
                         <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
-                          Detailed logging may impact performance. Use basic logging for production environments
-                          unless troubleshooting specific issues.
+                          Detailed logging may impact performance. Use basic logging for production
+                          environments unless troubleshooting specific issues.
                         </p>
                       </div>
                     </div>
@@ -839,5 +910,5 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

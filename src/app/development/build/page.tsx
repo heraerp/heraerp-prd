@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Building2,
   Rocket,
   Palette,
@@ -72,7 +72,8 @@ const BuildManagement = () => {
       icon: Rocket,
       progress: 100,
       status: 'complete',
-      description: 'Enterprise-grade REST API with JWT auth, multi-tenant security, and production observability.',
+      description:
+        'Enterprise-grade REST API with JWT auth, multi-tenant security, and production observability.',
       items: [
         'JWT Authentication & RBAC',
         'Multi-tenant Isolation',
@@ -87,7 +88,8 @@ const BuildManagement = () => {
       icon: Palette,
       progress: 100,
       status: 'complete',
-      description: 'Complete component library with dark/light themes, responsive design, and accessibility compliance.',
+      description:
+        'Complete component library with dark/light themes, responsive design, and accessibility compliance.',
       items: [
         'Enterprise Tables & Forms',
         'Navigation & Layout Components',
@@ -102,7 +104,8 @@ const BuildManagement = () => {
       icon: Puzzle,
       progress: 90,
       status: 'progress',
-      description: 'AI-powered smart coding with validation, generation, and business rule management.',
+      description:
+        'AI-powered smart coding with validation, generation, and business rule management.',
       items: [
         'Smart Code Pattern Engine',
         '4-Level Validation System',
@@ -190,17 +193,20 @@ const BuildManagement = () => {
     {
       step: 1,
       title: 'Template Migration',
-      description: "Move all templates from Mario's Restaurant ID to HERA System Organization (719dfed1-09b4-4ca8-bfda-f682460de945)"
+      description:
+        "Move all templates from Mario's Restaurant ID to HERA System Organization (719dfed1-09b4-4ca8-bfda-f682460de945)"
     },
     {
       step: 2,
       title: 'Module API Endpoints',
-      description: 'Each module needs 3-5 API endpoints using Universal API patterns (already built)'
+      description:
+        'Each module needs 3-5 API endpoints using Universal API patterns (already built)'
     },
     {
       step: 3,
       title: 'UI Configuration',
-      description: 'Configure Universal Table and Forms for each business module (components already built)'
+      description:
+        'Configure Universal Table and Forms for each business module (components already built)'
     },
     {
       step: 4,
@@ -238,7 +244,8 @@ const BuildManagement = () => {
     {
       status: 'complete',
       title: 'Template System',
-      description: 'All templates created in HERA System Organization (719dfed1-09b4-4ca8-bfda-f682460de945)'
+      description:
+        'All templates created in HERA System Organization (719dfed1-09b4-4ca8-bfda-f682460de945)'
     },
     {
       status: 'complete',
@@ -248,16 +255,20 @@ const BuildManagement = () => {
   ]
 
   const getStatusBadge = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'Universal':
       case 'REST API':
       case 'Components':
       case 'Charts':
-        return <Badge className="bg-green-500/20 text-green-400 border-green-500">✅ {status}</Badge>
+        return (
+          <Badge className="bg-green-500/20 text-green-400 border-green-500">✅ {status}</Badge>
+        )
       case 'In Progress':
       case 'Partial':
       case 'Basic':
-        return <Badge className="bg-orange-500/20 text-orange-400 border-orange-500">🔄 {status}</Badge>
+        return (
+          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500">🔄 {status}</Badge>
+        )
       case 'TODO':
       case 'Needed':
       case 'Design':
@@ -294,7 +305,10 @@ const BuildManagement = () => {
           {buildComponents.map((component, index) => {
             const IconComponent = component.icon
             return (
-              <Card key={index} className="border-border/50 hover:border-primary/50 transition-all hover:shadow-lg">
+              <Card
+                key={index}
+                className="border-border/50 hover:border-primary/50 transition-all hover:shadow-lg"
+              >
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3 text-xl">
                     <div className="p-2 rounded-lg bg-primary/10">
@@ -306,15 +320,23 @@ const BuildManagement = () => {
                 <CardContent>
                   <Progress value={component.progress} className="h-3 mb-4" />
                   <p className="font-semibold mb-4">
-                    <span className={`${component.status === 'complete' ? 'text-green-400' : component.status === 'progress' ? 'text-orange-400' : 'text-blue-400'}`}>
+                    <span
+                      className={`${component.status === 'complete' ? 'text-green-400' : component.status === 'progress' ? 'text-orange-400' : 'text-blue-400'}`}
+                    >
                       {component.progress}% Complete
-                    </span> - {component.description}
+                    </span>{' '}
+                    - {component.description}
                   </p>
                   <ul className="space-y-2 text-sm text-muted-foreground">
                     {component.items.map((item, itemIndex) => (
                       <li key={itemIndex} className="flex items-start gap-2">
-                        <span className={`mt-1 ${component.status === 'complete' ? 'text-green-400' : component.status === 'progress' && itemIndex < 3 ? 'text-green-400' : 'text-muted-foreground'}`}>
-                          {component.status === 'complete' || (component.status === 'progress' && itemIndex < 3) ? '✅' : '🔄'}
+                        <span
+                          className={`mt-1 ${component.status === 'complete' ? 'text-green-400' : component.status === 'progress' && itemIndex < 3 ? 'text-green-400' : 'text-muted-foreground'}`}
+                        >
+                          {component.status === 'complete' ||
+                          (component.status === 'progress' && itemIndex < 3)
+                            ? '✅'
+                            : '🔄'}
                         </span>
                         {item}
                       </li>
@@ -333,11 +355,15 @@ const BuildManagement = () => {
           </CardHeader>
           <CardContent className="text-center">
             <div className="bg-background/50 rounded-2xl p-8 mb-6 font-mono text-xl">
-              Foundation (✅) + Universal API (✅) + Universal UI (✅) + Business Modules = Complete ERP
+              Foundation (✅) + Universal API (✅) + Universal UI (✅) + Business Modules = Complete
+              ERP
             </div>
             <p className="text-lg text-muted-foreground">
-              <strong className="text-foreground">Current Status:</strong> We have the Universal Foundation (100% Complete)<br />
-              <strong className="text-foreground">Next Phase:</strong> Build Business Modules using Universal Components
+              <strong className="text-foreground">Current Status:</strong> We have the Universal
+              Foundation (100% Complete)
+              <br />
+              <strong className="text-foreground">Next Phase:</strong> Build Business Modules using
+              Universal Components
             </p>
           </CardContent>
         </Card>
@@ -346,7 +372,9 @@ const BuildManagement = () => {
         <Card className="mb-12 border-primary/30">
           <CardHeader className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20">
             <CardTitle className="text-2xl text-center">🧩 Module Implementation Status</CardTitle>
-            <p className="text-center text-muted-foreground">Building on Universal Foundation - Each Module Uses Same Core Components</p>
+            <p className="text-center text-muted-foreground">
+              Building on Universal Foundation - Each Module Uses Same Core Components
+            </p>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
@@ -366,7 +394,10 @@ const BuildManagement = () => {
                   {moduleStatuses.map((module, index) => {
                     const IconComponent = module.icon
                     return (
-                      <tr key={index} className="border-b border-border/50 hover:bg-muted/20 transition-colors">
+                      <tr
+                        key={index}
+                        className="border-b border-border/50 hover:bg-muted/20 transition-colors"
+                      >
                         <td className="p-4">
                           <div className="flex items-center gap-2 font-semibold">
                             <IconComponent className="w-4 h-4 text-primary" />
@@ -430,9 +461,14 @@ const BuildManagement = () => {
           <CardContent>
             <div className="space-y-4">
               {verificationChecklist.map((item, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 rounded-lg border border-border/50 hover:bg-muted/20 transition-colors">
+                <div
+                  key={index}
+                  className="flex items-start gap-4 p-4 rounded-lg border border-border/50 hover:bg-muted/20 transition-colors"
+                >
                   <div className="mt-1">
-                    {item.status === 'complete' && <CheckCircle className="w-5 h-5 text-green-400" />}
+                    {item.status === 'complete' && (
+                      <CheckCircle className="w-5 h-5 text-green-400" />
+                    )}
                     {item.status === 'progress' && <Clock className="w-5 h-5 text-orange-400" />}
                     {item.status === 'todo' && <AlertCircle className="w-5 h-5 text-blue-400" />}
                   </div>
@@ -451,8 +487,9 @@ const BuildManagement = () => {
           <Target className="w-16 h-16 mx-auto mb-4 text-primary" />
           <h2 className="text-3xl font-bold mb-4">Ready for Rapid Module Development</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            With our Universal Foundation 100% complete, we can build each business module in days, not months. 
-            The same 6 tables, APIs, and UI components power every module - from Financial to CRM to Supply Chain.
+            With our Universal Foundation 100% complete, we can build each business module in days,
+            not months. The same 6 tables, APIs, and UI components power every module - from
+            Financial to CRM to Supply Chain.
           </p>
           <div className="mt-6">
             <Badge className="text-lg px-6 py-2 bg-primary/20 text-primary border-primary">

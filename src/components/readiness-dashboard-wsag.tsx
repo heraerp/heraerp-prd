@@ -26,14 +26,14 @@ export const WSAGImprovements = {
 
   // Screen reader announcements
   announceUpdate: (message: string) => {
-    const announcement = document.createElement('div');
-    announcement.setAttribute('role', 'status');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = message;
-    document.body.appendChild(announcement);
-    setTimeout(() => document.body.removeChild(announcement), 1000);
+    const announcement = document.createElement('div')
+    announcement.setAttribute('role', 'status')
+    announcement.setAttribute('aria-live', 'polite')
+    announcement.setAttribute('aria-atomic', 'true')
+    announcement.className = 'sr-only'
+    announcement.textContent = message
+    document.body.appendChild(announcement)
+    setTimeout(() => document.body.removeChild(announcement), 1000)
   },
 
   // Focus management
@@ -41,21 +41,21 @@ export const WSAGImprovements = {
     trapFocus: (container: HTMLElement) => {
       const focusableElements = container.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      const firstFocusable = focusableElements[0] as HTMLElement;
-      const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+      )
+      const firstFocusable = focusableElements[0] as HTMLElement
+      const lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement
 
-      container.addEventListener('keydown', (e) => {
+      container.addEventListener('keydown', e => {
         if (e.key === 'Tab') {
           if (e.shiftKey && document.activeElement === firstFocusable) {
-            e.preventDefault();
-            lastFocusable.focus();
+            e.preventDefault()
+            lastFocusable.focus()
           } else if (!e.shiftKey && document.activeElement === lastFocusable) {
-            e.preventDefault();
-            firstFocusable.focus();
+            e.preventDefault()
+            firstFocusable.focus()
           }
         }
-      });
+      })
     }
   },
 
@@ -78,7 +78,7 @@ export const WSAGImprovements = {
     categoryScores: 'Assessment scores by category',
     overallScore: 'Overall readiness score'
   }
-};
+}
 
 // WSAG compliant color palette with proper contrast ratios
 export const WSAGColors = {
@@ -89,7 +89,7 @@ export const WSAGColors = {
     secondary: '#374151', // Gray-700 on white: 11.94:1
     secondaryDark: '#D1D5DB', // Gray-300 on dark: 8.59:1
     disabled: '#9CA3AF', // Gray-400 on white: 3.03:1 (AA for large text)
-    disabledDark: '#6B7280', // Gray-500 on dark: 4.96:1
+    disabledDark: '#6B7280' // Gray-500 on dark: 4.96:1
   },
 
   // Status colors with proper contrast
@@ -120,7 +120,7 @@ export const WSAGColors = {
     outlineOffset: '2px',
     darkOutline: '3px solid #60A5FA' // Blue-400
   }
-};
+}
 
 // WSAG compliant component patterns
 export const WSAGPatterns = {
@@ -155,4 +155,4 @@ export const WSAGPatterns = {
     tabIndex: 0,
     role: 'button'
   })
-};
+}

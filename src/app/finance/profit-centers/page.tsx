@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   TrendingUp,
   Search,
   Filter,
@@ -28,15 +28,15 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react'
-import { 
+import {
   AreaChart,
   Area,
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   PieChart as RePieChart,
   Pie,
@@ -176,19 +176,27 @@ export default function ProfitCentersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'excellent': return 'bg-emerald-500/20 text-emerald-400'
-      case 'good': return 'bg-[#00DDFF]/20 text-[#00DDFF]'
-      case 'average': return 'bg-yellow-500/20 text-yellow-400'
-      case 'poor': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+      case 'excellent':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'good':
+        return 'bg-[#00DDFF]/20 text-[#00DDFF]'
+      case 'average':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'poor':
+        return 'bg-red-500/20 text-red-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
     }
   }
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <ArrowUpRight className="h-4 w-4 text-emerald-400" />
-      case 'down': return <ArrowDownRight className="h-4 w-4 text-red-400" />
-      default: return <Activity className="h-4 w-4 text-yellow-400" />
+      case 'up':
+        return <ArrowUpRight className="h-4 w-4 text-emerald-400" />
+      case 'down':
+        return <ArrowDownRight className="h-4 w-4 text-red-400" />
+      default:
+        return <Activity className="h-4 w-4 text-yellow-400" />
     }
   }
 
@@ -203,7 +211,7 @@ export default function ProfitCentersPage() {
           <p className="text-white/60 mt-1">Monitor regional performance and profitability</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -265,7 +273,9 @@ export default function ProfitCentersPage() {
                   <TrendingUp className="h-4 w-4 text-emerald-400" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Total Revenue</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.totalRevenue / 10000000).toFixed(0)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.totalRevenue / 10000000).toFixed(0)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">+15.2% YoY</p>
               </div>
             </div>
@@ -277,10 +287,14 @@ export default function ProfitCentersPage() {
                   <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600">
                     <TrendingUp className="h-6 w-6 text-white" />
                   </div>
-                  <span className="text-xs text-emerald-400 font-medium">{overviewMetrics.totalCenters} centers</span>
+                  <span className="text-xs text-emerald-400 font-medium">
+                    {overviewMetrics.totalCenters} centers
+                  </span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Total Profit</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.totalProfit / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.totalProfit / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">{overviewMetrics.avgMargin}% margin</p>
               </div>
             </div>
@@ -312,10 +326,10 @@ export default function ProfitCentersPage() {
                   <ComposedChart data={monthlyPerformance}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${value}Cr`} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={value => `₹${value}Cr`} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
@@ -334,7 +348,9 @@ export default function ProfitCentersPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Regional Revenue Distribution</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">
+                  Regional Revenue Distribution
+                </h2>
                 <ResponsiveContainer width="100%" height={200}>
                   <RePieChart>
                     <Pie
@@ -350,9 +366,9 @@ export default function ProfitCentersPage() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
@@ -361,15 +377,16 @@ export default function ProfitCentersPage() {
                   </RePieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
-                  {regionalData.map((item) => (
+                  {regionalData.map(item => (
                     <div key={item.name} className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
                         <span className="text-sm text-white/80">{item.name} Region</span>
                       </div>
-                      <span className="text-sm font-medium text-white">
-                        ₹{item.value} Cr
-                      </span>
+                      <span className="text-sm font-medium text-white">₹{item.value} Cr</span>
                     </div>
                   ))}
                 </div>
@@ -389,14 +406,14 @@ export default function ProfitCentersPage() {
                 type="text"
                 placeholder="Search profit centers..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
               />
             </div>
-            
+
             <select
               value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
+              onChange={e => setSelectedRegion(e.target.value)}
               className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#00DDFF] transition-colors"
             >
               <option value="all">All Regions</option>
@@ -413,7 +430,7 @@ export default function ProfitCentersPage() {
 
           {/* Profit Centers Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {profitCenters.map((center) => (
+            {profitCenters.map(center => (
               <div key={center.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -422,7 +439,9 @@ export default function ProfitCentersPage() {
                       <div className="flex items-center space-x-3 mb-2">
                         <Building2 className="h-5 w-5 text-[#00DDFF]" />
                         <h3 className="text-lg font-semibold text-white">{center.name}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(center.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(center.status)}`}
+                        >
                           {center.status}
                         </span>
                         {getTrendIcon(center.trend)}
@@ -472,15 +491,15 @@ export default function ProfitCentersPage() {
                       <span className="font-medium text-white">{center.margin}%</span>
                     </div>
                     <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div 
+                      <div
                         className={`h-full rounded-full transition-all duration-500 ${
-                          center.margin >= 25 
-                            ? 'bg-gradient-to-r from-emerald-400 to-green-500' 
+                          center.margin >= 25
+                            ? 'bg-gradient-to-r from-emerald-400 to-green-500'
                             : center.margin >= 20
-                            ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7]'
-                            : center.margin >= 15
-                            ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
-                            : 'bg-gradient-to-r from-red-400 to-rose-500'
+                              ? 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7]'
+                              : center.margin >= 15
+                                ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
+                                : 'bg-gradient-to-r from-red-400 to-rose-500'
                         }`}
                         style={{ width: `${Math.min(center.margin * 2, 100)}%` }}
                       />
@@ -512,7 +531,7 @@ export default function ProfitCentersPage() {
         <>
           {/* Performance Metrics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {performanceMetrics.map((metric) => (
+            {performanceMetrics.map(metric => (
               <div key={metric.metric} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -524,41 +543,45 @@ export default function ProfitCentersPage() {
                       <AlertTriangle className="h-5 w-5 text-yellow-400" />
                     )}
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
                       <p className="text-xs text-white/60 mb-1">Actual</p>
                       <p className="text-lg font-semibold text-white">
-                        {metric.metric.includes('%') || metric.metric.includes('Margin') || metric.metric.includes('Efficiency')
+                        {metric.metric.includes('%') ||
+                        metric.metric.includes('Margin') ||
+                        metric.metric.includes('Efficiency')
                           ? `${metric.value}%`
-                          : metric.value
-                        }
+                          : metric.value}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-white/60 mb-1">Target</p>
                       <p className="text-lg font-semibold text-white/60">
-                        {metric.metric.includes('%') || metric.metric.includes('Margin') || metric.metric.includes('Efficiency')
+                        {metric.metric.includes('%') ||
+                        metric.metric.includes('Margin') ||
+                        metric.metric.includes('Efficiency')
                           ? `${metric.target}%`
-                          : metric.target
-                        }
+                          : metric.target}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-white/60 mb-1">Achievement</p>
-                      <p className={`text-lg font-semibold ${
-                        metric.achievement >= 100 ? 'text-emerald-400' : 'text-yellow-400'
-                      }`}>
+                      <p
+                        className={`text-lg font-semibold ${
+                          metric.achievement >= 100 ? 'text-emerald-400' : 'text-yellow-400'
+                        }`}
+                      >
                         {metric.achievement.toFixed(1)}%
                       </p>
                     </div>
                   </div>
 
                   <div className="h-3 rounded-full bg-white/10 overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        metric.achievement >= 100 
-                          ? 'bg-gradient-to-r from-emerald-400 to-green-500' 
+                        metric.achievement >= 100
+                          ? 'bg-gradient-to-r from-emerald-400 to-green-500'
                           : 'bg-gradient-to-r from-yellow-400 to-amber-500'
                       }`}
                       style={{ width: `${Math.min(metric.achievement, 100)}%` }}
@@ -573,21 +596,23 @@ export default function ProfitCentersPage() {
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Regional Performance Comparison</h2>
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Regional Performance Comparison
+              </h2>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={profitCenters}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                   <XAxis dataKey="region" stroke="rgba(255,255,255,0.5)" />
                   <YAxis stroke="rgba(255,255,255,0.5)" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       borderRadius: '8px'
                     }}
                     formatter={(value: any, name: string) => {
                       if (name === 'margin') return `${value}%`
-                      return `₹${(value/10000000).toFixed(0)} Cr`
+                      return `₹${(value / 10000000).toFixed(0)} Cr`
                     }}
                   />
                   <Legend />

@@ -10,8 +10,24 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import {
   Send,
   Loader2,
@@ -74,7 +90,7 @@ export interface HeraChatInterfaceProps {
   subtitle: string
   apiEndpoint: string
   organizationId: string
-  
+
   // Optional customization
   icon?: React.ComponentType<{ className?: string }>
   iconGradient?: string
@@ -83,18 +99,18 @@ export interface HeraChatInterfaceProps {
   examplePrompts?: string[]
   welcomeMessage?: string
   placeholder?: string
-  
+
   // Feature flags
   enableHistory?: boolean
   enableAnalytics?: boolean
   enableProduction?: boolean
   enableDarkMode?: boolean
   defaultDarkMode?: boolean
-  
+
   // Colors
   userMessageColorDark?: string
   userMessageColorLight?: string
-  
+
   // Callbacks
   onMessageSent?: (message: string) => void
   onActionClicked?: (action: ActionButton) => void
@@ -132,14 +148,14 @@ export function HeraChatInterface({
       timestamp: new Date()
     }
   ])
-  
+
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<string>('chat')
   const [confidence, setConfidence] = useState<number>(0)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const [isUserScrolling, setIsUserScrolling] = useState(false)
-  
+
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -148,10 +164,10 @@ export function HeraChatInterface({
   // Check if user is at bottom of scroll
   const checkIfAtBottom = useCallback(() => {
     if (!scrollAreaRef.current) return false
-    
+
     const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 50
-    
+
     setShowScrollButton(!isAtBottom)
     return isAtBottom
   }, [])
@@ -160,17 +176,17 @@ export function HeraChatInterface({
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [])
-  
+
   // Attach scroll listener
   useEffect(() => {
     const scrollElement = scrollAreaRef.current
     if (!scrollElement) return
-    
+
     let scrollTimeout: NodeJS.Timeout
-    
+
     const handleScroll = () => {
       checkIfAtBottom()
-      
+
       if (!checkIfAtBottom()) {
         setIsUserScrolling(true)
         clearTimeout(scrollTimeout)
@@ -181,7 +197,7 @@ export function HeraChatInterface({
         setIsUserScrolling(false)
       }
     }
-    
+
     scrollElement.addEventListener('scroll', handleScroll)
     return () => {
       scrollElement.removeEventListener('scroll', handleScroll)
@@ -200,11 +216,11 @@ export function HeraChatInterface({
   useEffect(() => {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1]
-      const shouldAutoScroll = 
-        messages.length === 1 || 
-        lastMessage?.role === 'user' || 
+      const shouldAutoScroll =
+        messages.length === 1 ||
+        lastMessage?.role === 'user' ||
         (!isUserScrolling && checkIfAtBottom())
-      
+
       if (shouldAutoScroll) {
         setTimeout(scrollToBottom, 100)
       }
@@ -214,10 +230,10 @@ export function HeraChatInterface({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const trimmedInput = input.trim()
     if (!trimmedInput || loading) return
-    
+
     const userMessage: HeraChatMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -229,7 +245,7 @@ export function HeraChatInterface({
     setInput('')
     setLoading(true)
     setConfidence(0)
-    
+
     if (onMessageSent) {
       onMessageSent(trimmedInput)
     }
@@ -249,12 +265,12 @@ export function HeraChatInterface({
           context: {
             mode: activeTab
           }
-        }),
+        })
       })
 
       clearInterval(confidenceInterval)
       const data = await response.json()
-      
+
       if (data.error) {
         throw new Error(data.error)
       }
@@ -273,7 +289,6 @@ export function HeraChatInterface({
 
       setMessages(prev => [...prev, assistantMessage])
       setConfidence(data.confidence || 90)
-      
     } catch (error) {
       const errorMessage: HeraChatMessage = {
         id: Date.now().toString() + '-error',
@@ -313,25 +328,41 @@ export function HeraChatInterface({
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")} style={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#f3f4f6' }}>
+    <div
+      className={cn('min-h-screen', isDarkMode && 'dark')}
+      style={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#f3f4f6' }}
+    >
       <div className="flex flex-col h-screen">
         {/* Header */}
-        <div className={cn(
-          "flex items-center justify-between p-4 border-b",
-          isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : "bg-white border-gray-200"
-        )}>
+        <div
+          className={cn(
+            'flex items-center justify-between p-4 border-b',
+            isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+          )}
+        >
           <div className="flex items-center gap-3">
             {Icon && (
-              <div className={cn("w-10 h-10 rounded-full bg-gradient-to-br flex items-center justify-center", iconGradient)}>
+              <div
+                className={cn(
+                  'w-10 h-10 rounded-full bg-gradient-to-br flex items-center justify-center',
+                  iconGradient
+                )}
+              >
                 <Icon className="h-6 w-6 text-white" />
               </div>
             )}
             <div>
-              <h1 className={cn("text-xl font-semibold", isDarkMode ? "text-white" : "text-gray-900")}>{title}</h1>
-              <p className={cn("text-sm", isDarkMode ? "text-gray-400" : "text-gray-600")}>{subtitle}</p>
+              <h1
+                className={cn('text-xl font-semibold', isDarkMode ? 'text-white' : 'text-gray-900')}
+              >
+                {title}
+              </h1>
+              <p className={cn('text-sm', isDarkMode ? 'text-gray-400' : 'text-gray-600')}>
+                {subtitle}
+              </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="gap-1">
               <Shield className="h-3 w-3" />
@@ -348,22 +379,31 @@ export function HeraChatInterface({
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Sidebar */}
-          <div className="w-[280px] border-r flex flex-col" style={{ backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff' }}>
+          <div
+            className="w-[280px] border-r flex flex-col"
+            style={{ backgroundColor: isDarkMode ? '#1f1f1f' : '#ffffff' }}
+          >
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
               {/* Quick Actions */}
               {quickActions.length > 0 && (
-                <Card className={cn(
-                  "shadow-sm",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
-                )}>
-                  <CardHeader className={cn(
-                    "p-2 border-b",
-                    isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                  )}>
-                    <CardTitle className={cn(
-                      "text-xs flex items-center gap-1.5",
-                      isDarkMode ? "text-white" : "text-gray-900"
-                    )}>
+                <Card
+                  className={cn(
+                    'shadow-sm',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-white border-gray-200'
+                  )}
+                >
+                  <CardHeader
+                    className={cn(
+                      'p-2 border-b',
+                      isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                    )}
+                  >
+                    <CardTitle
+                      className={cn(
+                        'text-xs flex items-center gap-1.5',
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      )}
+                    >
                       Quick Actions
                     </CardTitle>
                   </CardHeader>
@@ -374,27 +414,32 @@ export function HeraChatInterface({
                           key={idx}
                           variant="ghost"
                           className={cn(
-                            "w-full justify-start gap-2 h-auto py-1.5 px-2 group transition-all",
-                            isDarkMode 
-                              ? "hover:bg-[#3a3a3a] text-gray-300" 
-                              : "hover:bg-gray-100 text-gray-700"
+                            'w-full justify-start gap-2 h-auto py-1.5 px-2 group transition-all',
+                            isDarkMode
+                              ? 'hover:bg-[#3a3a3a] text-gray-300'
+                              : 'hover:bg-gray-100 text-gray-700'
                           )}
                           onClick={() => handleQuickAction(action)}
                         >
-                          <div className={cn(
-                            "w-6 h-6 rounded bg-gradient-to-br flex items-center justify-center shadow-sm",
-                            isDarkMode ? action.color : getLightGradient(action.color)
-                          )}>
-                            <action.icon className={cn(
-                              "h-3 w-3",
-                              isDarkMode ? "text-white" : "text-gray-700"
-                            )} />
+                          <div
+                            className={cn(
+                              'w-6 h-6 rounded bg-gradient-to-br flex items-center justify-center shadow-sm',
+                              isDarkMode ? action.color : getLightGradient(action.color)
+                            )}
+                          >
+                            <action.icon
+                              className={cn('h-3 w-3', isDarkMode ? 'text-white' : 'text-gray-700')}
+                            />
                           </div>
                           <div className="text-left">
-                            <div className={cn(
-                              "font-medium text-xs",
-                              isDarkMode ? "text-white" : "text-gray-900"
-                            )}>{action.label}</div>
+                            <div
+                              className={cn(
+                                'font-medium text-xs',
+                                isDarkMode ? 'text-white' : 'text-gray-900'
+                              )}
+                            >
+                              {action.label}
+                            </div>
                             <div className="text-[10px] text-gray-400">{action.description}</div>
                           </div>
                         </Button>
@@ -406,18 +451,24 @@ export function HeraChatInterface({
 
               {/* Today's Metrics */}
               {quickMetrics.length > 0 && (
-                <Card className={cn(
-                  "shadow-sm",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
-                )}>
-                  <CardHeader className={cn(
-                    "p-2 border-b",
-                    isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                  )}>
-                    <CardTitle className={cn(
-                      "text-xs flex items-center gap-1.5",
-                      isDarkMode ? "text-white" : "text-gray-900"
-                    )}>
+                <Card
+                  className={cn(
+                    'shadow-sm',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-white border-gray-200'
+                  )}
+                >
+                  <CardHeader
+                    className={cn(
+                      'p-2 border-b',
+                      isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                    )}
+                  >
+                    <CardTitle
+                      className={cn(
+                        'text-xs flex items-center gap-1.5',
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      )}
+                    >
                       <TrendingUp className="h-3 w-3 text-gray-400" />
                       Today's Metrics
                     </CardTitle>
@@ -425,28 +476,39 @@ export function HeraChatInterface({
                   <CardContent className="p-2">
                     <div className="grid grid-cols-2 gap-1.5">
                       {quickMetrics.map((metric, idx) => (
-                        <div key={idx} className={cn(
-                          "p-2 rounded border",
-                          isDarkMode 
-                            ? "bg-[#323232] border-[#3a3a3a]" 
-                            : "bg-gray-50 border-gray-200"
-                        )}>
+                        <div
+                          key={idx}
+                          className={cn(
+                            'p-2 rounded border',
+                            isDarkMode
+                              ? 'bg-[#323232] border-[#3a3a3a]'
+                              : 'bg-gray-50 border-gray-200'
+                          )}
+                        >
                           <div className="flex items-center gap-1.5">
-                            <div className={cn(
-                              "w-5 h-5 rounded bg-gradient-to-br flex items-center justify-center shadow-sm",
-                              isDarkMode ? metric.color : getLightGradient(metric.color)
-                            )}>
-                              <metric.icon className={cn(
-                                "h-2.5 w-2.5",
-                                isDarkMode ? "text-white" : "text-gray-700"
-                              )} />
+                            <div
+                              className={cn(
+                                'w-5 h-5 rounded bg-gradient-to-br flex items-center justify-center shadow-sm',
+                                isDarkMode ? metric.color : getLightGradient(metric.color)
+                              )}
+                            >
+                              <metric.icon
+                                className={cn(
+                                  'h-2.5 w-2.5',
+                                  isDarkMode ? 'text-white' : 'text-gray-700'
+                                )}
+                              />
                             </div>
                             <div>
                               <p className="text-[10px] text-gray-400">{metric.label}</p>
-                              <p className={cn(
-                                "font-semibold text-xs",
-                                isDarkMode ? "text-white" : "text-gray-900"
-                              )}>{metric.value}</p>
+                              <p
+                                className={cn(
+                                  'font-semibold text-xs',
+                                  isDarkMode ? 'text-white' : 'text-gray-900'
+                                )}
+                              >
+                                {metric.value}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -459,74 +521,97 @@ export function HeraChatInterface({
           </div>
 
           {/* Chat Interface */}
-          <Card className={cn(
-            "flex-1 flex flex-col border-0 rounded-none",
-            isDarkMode 
-              ? "bg-[#292929]"
-              : "bg-white"
-          )}>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col h-full">
-              <CardHeader className={cn(
-                "border-b p-3",
-                isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-              )}>
-                <TabsList className={cn(
-                  "grid w-full max-w-[400px] grid-cols-3 p-1",
-                  isDarkMode ? "bg-[#1f1f1f]" : "bg-gray-100"
-                )}>
-                  <TabsTrigger value="chat" className={cn(
-                    "gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm",
-                    isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
-                  )}>
+          <Card
+            className={cn(
+              'flex-1 flex flex-col border-0 rounded-none',
+              isDarkMode ? 'bg-[#292929]' : 'bg-white'
+            )}
+          >
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="flex-1 flex flex-col h-full"
+            >
+              <CardHeader
+                className={cn('border-b p-3', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}
+              >
+                <TabsList
+                  className={cn(
+                    'grid w-full max-w-[400px] grid-cols-3 p-1',
+                    isDarkMode ? 'bg-[#1f1f1f]' : 'bg-gray-100'
+                  )}
+                >
+                  <TabsTrigger
+                    value="chat"
+                    className={cn(
+                      'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm',
+                      isDarkMode
+                        ? 'text-gray-300 hover:text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    )}
+                  >
                     Chat
                   </TabsTrigger>
                   {enableProduction && (
-                    <TabsTrigger value="production" className={cn(
-                      "gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm",
-                      isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
-                    )}>
+                    <TabsTrigger
+                      value="production"
+                      className={cn(
+                        'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm',
+                        isDarkMode
+                          ? 'text-gray-300 hover:text-white'
+                          : 'text-gray-600 hover:text-gray-900'
+                      )}
+                    >
                       Production
                     </TabsTrigger>
                   )}
                   {enableAnalytics && (
-                    <TabsTrigger value="analytics" className={cn(
-                      "gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm",
-                      isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
-                    )}>
+                    <TabsTrigger
+                      value="analytics"
+                      className={cn(
+                        'gap-1 sm:gap-2 data-[state=active]:bg-[#0078d4] data-[state=active]:text-white text-xs sm:text-sm',
+                        isDarkMode
+                          ? 'text-gray-300 hover:text-white'
+                          : 'text-gray-600 hover:text-gray-900'
+                      )}
+                    >
                       Analytics
                     </TabsTrigger>
                   )}
                 </TabsList>
               </CardHeader>
-              
+
               <TabsContent value="chat" className="flex-1 flex flex-col overflow-hidden">
                 {/* Current Question Header */}
-                {loading && messages.length > 0 && messages[messages.length - 1]?.role === 'user' && (
-                  <div className={cn(
-                    "flex-shrink-0 px-4 py-3 border-b",
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-100 border-gray-200"
-                  )}>
-                    <div className="flex items-center gap-2">
-                      <div className="animate-pulse">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                {loading &&
+                  messages.length > 0 &&
+                  messages[messages.length - 1]?.role === 'user' && (
+                    <div
+                      className={cn(
+                        'flex-shrink-0 px-4 py-3 border-b',
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-100 border-gray-200'
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="animate-pulse">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        </div>
+                        <p
+                          className={cn(
+                            'text-sm font-medium',
+                            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                          )}
+                        >
+                          {messages[messages.length - 1].content}
+                        </p>
                       </div>
-                      <p className={cn(
-                        "text-sm font-medium",
-                        isDarkMode ? "text-gray-300" : "text-gray-700"
-                      )}>
-                        {messages[messages.length - 1].content}
-                      </p>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Messages Area */}
-                <ScrollArea 
-                  className="flex-1" 
-                  ref={scrollAreaRef}
-                >
+                <ScrollArea className="flex-1" ref={scrollAreaRef}>
                   <div className="px-4 py-4 space-y-4">
-                    {messages.map((message) => (
+                    {messages.map(message => (
                       <div
                         key={message.id}
                         className={cn(
@@ -535,46 +620,65 @@ export function HeraChatInterface({
                         )}
                       >
                         {message.role !== 'user' && (
-                          <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                            message.role === 'error' 
-                              ? "bg-red-500/20" 
-                              : isDarkMode ? "bg-[#323232]" : "bg-gray-100"
-                          )}>
+                          <div
+                            className={cn(
+                              'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+                              message.role === 'error'
+                                ? 'bg-red-500/20'
+                                : isDarkMode
+                                  ? 'bg-[#323232]'
+                                  : 'bg-gray-100'
+                            )}
+                          >
                             {Icon ? (
-                              <Icon className={cn(
-                                "h-4 w-4",
-                                message.role === 'error' ? "text-red-500" : isDarkMode ? "text-gray-400" : "text-gray-600"
-                              )} />
+                              <Icon
+                                className={cn(
+                                  'h-4 w-4',
+                                  message.role === 'error'
+                                    ? 'text-red-500'
+                                    : isDarkMode
+                                      ? 'text-gray-400'
+                                      : 'text-gray-600'
+                                )}
+                              />
                             ) : (
                               <div className="w-4 h-4 bg-gray-400 rounded" />
                             )}
                           </div>
                         )}
-                        
-                        <div className={cn(
-                          'flex-1',
-                          message.role === 'user' && 'max-w-[80%]'
-                        )}>
+
+                        <div className={cn('flex-1', message.role === 'user' && 'max-w-[80%]')}>
                           <div
                             className={cn(
                               'rounded-lg px-4 py-3 relative overflow-hidden',
-                              message.role === 'user' 
+                              message.role === 'user'
                                 ? '' // No background class, will use gradient
                                 : message.role === 'error'
-                                ? isDarkMode ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-600'
-                                : isDarkMode ? 'bg-[#323232] text-gray-100' : 'bg-gray-100 text-gray-900'
+                                  ? isDarkMode
+                                    ? 'bg-red-900/20 text-red-400'
+                                    : 'bg-red-50 text-red-600'
+                                  : isDarkMode
+                                    ? 'bg-[#323232] text-gray-100'
+                                    : 'bg-gray-100 text-gray-900'
                             )}
-                            style={message.role === 'user' ? {
-                              background: `linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to))`,
-                              backgroundImage: `linear-gradient(135deg, ${isDarkMode ? userMessageColorDark : userMessageColorLight})`
-                            } : {}}
+                            style={
+                              message.role === 'user'
+                                ? {
+                                    background: `linear-gradient(135deg, var(--tw-gradient-from), var(--tw-gradient-to))`,
+                                    backgroundImage: `linear-gradient(135deg, ${isDarkMode ? userMessageColorDark : userMessageColorLight})`
+                                  }
+                                : {}
+                            }
                           >
-                            <p className={cn(
-                              "text-sm whitespace-pre-wrap relative z-10",
-                              message.role === 'user' && "text-white"
-                            )}>{message.content}</p>
-                            
+                            <p
+                              className={cn(
+                                'text-sm whitespace-pre-wrap relative z-10',
+                                message.role === 'user' && 'text-white'
+                              )}
+                            >
+                              {message.content}
+                            </p>
+
                             {/* Actions */}
                             {message.actions && message.actions.length > 0 && (
                               <div className="mt-3 flex flex-wrap gap-2">
@@ -592,35 +696,52 @@ export function HeraChatInterface({
                               </div>
                             )}
                           </div>
-                          
-                          <div className={cn(
-                            "text-xs mt-1",
-                            isDarkMode ? "text-gray-500" : "text-gray-400"
-                          )}>
+
+                          <div
+                            className={cn(
+                              'text-xs mt-1',
+                              isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                            )}
+                          >
                             {message.timestamp.toLocaleTimeString()}
                           </div>
                         </div>
                       </div>
                     ))}
-                    
+
                     {loading && (
                       <div className="flex gap-3">
-                        <div className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center animate-pulse",
-                          isDarkMode ? "bg-[#323232]" : "bg-gray-100"
-                        )}>
-                          {Icon && <Icon className={cn("h-4 w-4", isDarkMode ? "text-gray-400" : "text-gray-600")} />}
+                        <div
+                          className={cn(
+                            'w-8 h-8 rounded-full flex items-center justify-center animate-pulse',
+                            isDarkMode ? 'bg-[#323232]' : 'bg-gray-100'
+                          )}
+                        >
+                          {Icon && (
+                            <Icon
+                              className={cn(
+                                'h-4 w-4',
+                                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                              )}
+                            />
+                          )}
                         </div>
-                        <div className={cn(
-                          "rounded-lg px-4 py-3",
-                          isDarkMode ? "bg-[#323232]" : "bg-gray-100"
-                        )}>
+                        <div
+                          className={cn(
+                            'rounded-lg px-4 py-3',
+                            isDarkMode ? 'bg-[#323232]' : 'bg-gray-100'
+                          )}
+                        >
                           <div className="flex items-center gap-2">
                             <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-                            <p className={cn(
-                              "text-sm",
-                              isDarkMode ? "text-gray-300" : "text-gray-700"
-                            )}>Processing...</p>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                              )}
+                            >
+                              Processing...
+                            </p>
                           </div>
                           {confidence > 0 && (
                             <div className="mt-2">
@@ -630,21 +751,24 @@ export function HeraChatInterface({
                         </div>
                       </div>
                     )}
-                    
+
                     <div ref={messagesEndRef} />
                   </div>
                 </ScrollArea>
-                
+
                 {/* Example Prompts */}
                 {messages.length === 1 && examplePrompts.length > 0 && (
-                  <div className={cn(
-                    "flex-shrink-0 px-4 pb-4",
-                    isDarkMode ? "bg-[#292929]" : "bg-white"
-                  )}>
-                    <p className={cn(
-                      "text-xs mb-2",
-                      isDarkMode ? "text-gray-500" : "text-gray-400"
-                    )}>Try these examples:</p>
+                  <div
+                    className={cn(
+                      'flex-shrink-0 px-4 pb-4',
+                      isDarkMode ? 'bg-[#292929]' : 'bg-white'
+                    )}
+                  >
+                    <p
+                      className={cn('text-xs mb-2', isDarkMode ? 'text-gray-500' : 'text-gray-400')}
+                    >
+                      Try these examples:
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {examplePrompts.slice(0, 3).map((prompt, idx) => (
                         <Button
@@ -656,10 +780,10 @@ export function HeraChatInterface({
                             inputRef.current?.focus()
                           }}
                           className={cn(
-                            "text-xs",
-                            isDarkMode 
-                              ? "border-[#484848] hover:bg-[#3a3a3a] text-gray-300"
-                              : "border-gray-300 hover:bg-gray-100 text-gray-700"
+                            'text-xs',
+                            isDarkMode
+                              ? 'border-[#484848] hover:bg-[#3a3a3a] text-gray-300'
+                              : 'border-gray-300 hover:bg-gray-100 text-gray-700'
                           )}
                         >
                           {prompt}
@@ -668,28 +792,32 @@ export function HeraChatInterface({
                     </div>
                   </div>
                 )}
-                
+
                 {/* Input Form */}
-                <form ref={formRef} onSubmit={handleSubmit} className={cn(
-                  "flex-shrink-0 p-4 border-t",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-white border-gray-200"
-                )}>
+                <form
+                  ref={formRef}
+                  onSubmit={handleSubmit}
+                  className={cn(
+                    'flex-shrink-0 p-4 border-t',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-white border-gray-200'
+                  )}
+                >
                   <div className="flex gap-2">
                     <Input
                       ref={inputRef}
                       value={input}
-                      onChange={(e) => setInput(e.target.value)}
+                      onChange={e => setInput(e.target.value)}
                       placeholder={placeholder}
                       className={cn(
-                        "flex-1",
-                        isDarkMode 
-                          ? "bg-[#1f1f1f] border-[#3a3a3a] text-white placeholder:text-gray-500"
-                          : "bg-white border-gray-300 text-gray-900 placeholder:text-gray-400"
+                        'flex-1',
+                        isDarkMode
+                          ? 'bg-[#1f1f1f] border-[#3a3a3a] text-white placeholder:text-gray-500'
+                          : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-400'
                       )}
                       disabled={loading}
                     />
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={loading || !input.trim()}
                       className="min-w-[60px] bg-blue-600 hover:bg-blue-700 text-white"
                     >
@@ -701,40 +829,36 @@ export function HeraChatInterface({
                     </Button>
                   </div>
                 </form>
-                
+
                 {/* Scroll to Bottom Button */}
                 {showScrollButton && (
                   <Button
                     size="icon"
                     onClick={scrollToBottom}
                     className={cn(
-                      "absolute bottom-20 right-6 rounded-full shadow-lg",
+                      'absolute bottom-20 right-6 rounded-full shadow-lg',
                       isDarkMode
-                        ? "bg-[#0078d4] hover:bg-[#106ebe] text-white"
-                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                        ? 'bg-[#0078d4] hover:bg-[#106ebe] text-white'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
                     )}
                   >
                     <ArrowDown className="h-4 w-4" />
                   </Button>
                 )}
               </TabsContent>
-              
+
               {enableProduction && (
                 <TabsContent value="production" className="flex-1 p-6">
                   <Alert>
-                    <AlertDescription>
-                      Production interface coming soon.
-                    </AlertDescription>
+                    <AlertDescription>Production interface coming soon.</AlertDescription>
                   </Alert>
                 </TabsContent>
               )}
-              
+
               {enableAnalytics && (
                 <TabsContent value="analytics" className="flex-1 p-6">
                   <Alert>
-                    <AlertDescription>
-                      Analytics dashboard coming soon.
-                    </AlertDescription>
+                    <AlertDescription>Analytics dashboard coming soon.</AlertDescription>
                   </Alert>
                 </TabsContent>
               )}
@@ -750,7 +874,8 @@ export function HeraChatInterface({
 export const HERA_CHAT_INTERFACE_DNA = {
   id: 'HERA.UI.CHAT.INTERFACE.v1',
   name: 'HERA Chat Interface',
-  description: 'Enterprise-grade chat interface with dark/light themes, auto-scroll, metrics, and quick actions',
+  description:
+    'Enterprise-grade chat interface with dark/light themes, auto-scroll, metrics, and quick actions',
   component: HeraChatInterface,
   category: 'ui',
   tags: ['chat', 'ai', 'interface', 'dark-mode', 'auto-scroll', 'enterprise'],
@@ -763,7 +888,7 @@ export const HERA_CHAT_INTERFACE_DNA = {
     'Current question header during AI processing',
     'WhatsApp-style fixed input with scrollable messages',
     'Quick actions sidebar with gradient icons',
-    'Today\'s metrics dashboard with conditional styling',
+    "Today's metrics dashboard with conditional styling",
     'Chat history management (optional)',
     'Multi-tab support (chat, production, analytics)',
     'Responsive design with mobile support',

@@ -85,9 +85,7 @@ function TestRuleContent() {
               </Button>
             </Link>
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                Test Rule
-              </h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Test Rule</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Validate your rule with real-world scenarios
               </p>
@@ -110,7 +108,7 @@ function TestRuleContent() {
 
 export default function TestRulePage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

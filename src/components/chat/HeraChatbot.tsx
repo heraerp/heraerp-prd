@@ -6,16 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { 
-  MessageCircle, 
-  Send, 
-  Bot, 
-  User, 
-  Loader2, 
-  X,
-  Sparkles,
-  AlertCircle 
-} from 'lucide-react'
+import { MessageCircle, Send, Bot, User, Loader2, X, Sparkles, AlertCircle } from 'lucide-react'
 
 interface Message {
   id: string
@@ -32,7 +23,7 @@ interface HeraChatbotProps {
   theme?: 'light' | 'dark'
 }
 
-export function HeraChatbot({ 
+export function HeraChatbot({
   apiUrl = process.env.NEXT_PUBLIC_MCP_API_URL || 'http://localhost:3000',
   position = 'bottom-right',
   theme = 'light'
@@ -46,7 +37,8 @@ export function HeraChatbot({
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Default organization for testing
-  const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+  const DEFAULT_ORG_ID =
+    process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
 
   // Position classes
@@ -67,12 +59,15 @@ export function HeraChatbot({
   // Welcome message
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([{
-        id: '1',
-        role: 'assistant',
-        content: 'Hello! I\'m your HERA AI assistant. I can help you with:\n\n• Creating customers, appointments, and transactions\n• Checking your business data\n• Generating reports and insights\n• Managing your operations\n\nWhat would you like to do today?',
-        timestamp: new Date()
-      }])
+      setMessages([
+        {
+          id: '1',
+          role: 'assistant',
+          content:
+            "Hello! I'm your HERA AI assistant. I can help you with:\n\n• Creating customers, appointments, and transactions\n• Checking your business data\n• Generating reports and insights\n• Managing your operations\n\nWhat would you like to do today?",
+          timestamp: new Date()
+        }
+      ])
     }
   }, [isOpen, messages.length])
 
@@ -94,7 +89,7 @@ export function HeraChatbot({
       const response = await fetch(`${apiUrl}/api/chat`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           message: input,
@@ -115,7 +110,7 @@ export function HeraChatbot({
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: data.response || 'I\'ve completed that action.',
+        content: data.response || "I've completed that action.",
         timestamp: new Date(),
         interpretation: data.interpretation,
         result: data.result
@@ -157,7 +152,9 @@ export function HeraChatbot({
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className={`fixed ${positionClasses[position]} z-50 w-96 h-[600px] flex flex-col shadow-2xl ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white'}`}>
+        <Card
+          className={`fixed ${positionClasses[position]} z-50 w-96 h-[600px] flex flex-col shadow-2xl ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white'}`}
+        >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
             <div className="flex items-center gap-2">
@@ -182,15 +179,17 @@ export function HeraChatbot({
           {/* Messages */}
           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
             <div className="space-y-4">
-              {messages.map((message) => (
+              {messages.map(message => (
                 <div
                   key={message.id}
                   className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {message.role !== 'user' && (
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.role === 'error' ? 'bg-red-100' : 'bg-purple-100'
-                    }`}>
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.role === 'error' ? 'bg-red-100' : 'bg-purple-100'
+                      }`}
+                    >
                       {message.role === 'error' ? (
                         <AlertCircle className="w-5 h-5 text-red-600" />
                       ) : (
@@ -198,20 +197,24 @@ export function HeraChatbot({
                       )}
                     </div>
                   )}
-                  
+
                   <div className={`max-w-[80%] ${message.role === 'user' ? 'order-1' : 'order-2'}`}>
-                    <div className={`rounded-lg px-4 py-2 ${
-                      message.role === 'user' 
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white' 
-                        : message.role === 'error'
-                        ? 'bg-red-50 text-red-900 border border-red-200'
-                        : theme === 'dark' 
-                        ? 'bg-gray-800 text-gray-100' 
-                        : 'bg-gray-100 text-gray-900'
-                    }`}>
+                    <div
+                      className={`rounded-lg px-4 py-2 ${
+                        message.role === 'user'
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                          : message.role === 'error'
+                            ? 'bg-red-50 text-red-900 border border-red-200'
+                            : theme === 'dark'
+                              ? 'bg-gray-800 text-gray-100'
+                              : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
                       <p className="whitespace-pre-wrap text-sm">{message.content}</p>
                     </div>
-                    <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <p
+                      className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}
+                    >
                       {message.timestamp.toLocaleTimeString()}
                     </p>
                   </div>
@@ -223,13 +226,15 @@ export function HeraChatbot({
                   )}
                 </div>
               ))}
-              
+
               {isLoading && (
                 <div className="flex gap-2 justify-start">
                   <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                     <Bot className="w-5 h-5 text-purple-600" />
                   </div>
-                  <div className={`rounded-lg px-4 py-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                  <div
+                    className={`rounded-lg px-4 py-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+                  >
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
                 </div>
@@ -243,7 +248,7 @@ export function HeraChatbot({
               <Input
                 ref={inputRef}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={e => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
                 disabled={isLoading}
@@ -262,7 +267,8 @@ export function HeraChatbot({
               </Button>
             </div>
             <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-              Powered by HERA Universal Architecture • {organizationId === DEFAULT_ORG_ID ? 'Test Mode' : currentOrganization?.name}
+              Powered by HERA Universal Architecture •{' '}
+              {organizationId === DEFAULT_ORG_ID ? 'Test Mode' : currentOrganization?.name}
             </p>
           </div>
         </Card>

@@ -8,14 +8,33 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { universalApi } from '@/lib/universal-api'
 import { extractData, ensureDefaultEntities, formatCurrency } from '@/lib/universal-helpers'
 import { useEntities } from '@/hooks/useUniversalData'
 import { StatCardGrid, StatCardData } from '@/components/universal/StatCardGrid'
-import { 
+import {
   Package,
   Truck,
   AlertTriangle,
@@ -78,10 +97,10 @@ interface StockMovement {
   }>
 }
 
-export function InventoryManagement({ 
-  organizationId, 
+export function InventoryManagement({
+  organizationId,
   smartCodes,
-  isDemoMode = false 
+  isDemoMode = false
 }: InventoryManagementProps) {
   const [activeTab, setActiveTab] = useState('overview')
   const [loading, setLoading] = useState(true)
@@ -94,7 +113,7 @@ export function InventoryManagement({
   const [showAddItem, setShowAddItem] = useState(false)
   const [showAdjustment, setShowAdjustment] = useState(false)
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null)
-  
+
   // Stats
   const [stats, setStats] = useState({
     totalItems: 0,
@@ -102,7 +121,7 @@ export function InventoryManagement({
     totalValue: 0,
     pendingOrders: 0
   })
-  
+
   // Form states
   const [newItem, setNewItem] = useState({
     entity_name: '',
@@ -114,7 +133,7 @@ export function InventoryManagement({
     reorder_point: 0,
     unit_cost: 0
   })
-  
+
   const [adjustment, setAdjustment] = useState({
     item_id: '',
     adjustment_type: 'add',
@@ -122,39 +141,39 @@ export function InventoryManagement({
     reason: '',
     unit_cost: 0
   })
-  
+
   useEffect(() => {
     if (!isDemoMode) {
       universalApi.setOrganizationId(organizationId)
       loadData()
     }
   }, [organizationId, isDemoMode])
-  
+
   const loadData = async () => {
     try {
       setLoading(true)
-      
+
       // Ensure default suppliers exist
       const defaultSuppliers = await ensureDefaultEntities(
         'supplier',
         [
-          { 
-            entity_name: 'Fresh Produce Co', 
+          {
+            entity_name: 'Fresh Produce Co',
             entity_code: 'SUP-001',
             metadata: { category: 'produce', payment_terms: 'NET30' }
           },
-          { 
-            entity_name: 'Meat & Seafood Distributors', 
+          {
+            entity_name: 'Meat & Seafood Distributors',
             entity_code: 'SUP-002',
             metadata: { category: 'proteins', payment_terms: 'NET15' }
           },
-          { 
-            entity_name: 'Dry Goods Wholesale', 
+          {
+            entity_name: 'Dry Goods Wholesale',
             entity_code: 'SUP-003',
             metadata: { category: 'dry_goods', payment_terms: 'NET30' }
           },
-          { 
-            entity_name: 'Beverage Suppliers Inc', 
+          {
+            entity_name: 'Beverage Suppliers Inc',
             entity_code: 'SUP-004',
             metadata: { category: 'beverages', payment_terms: 'NET45' }
           }
@@ -162,14 +181,14 @@ export function InventoryManagement({
         smartCodes.SUPPLIER,
         organizationId
       )
-      
+
       setSuppliers(defaultSuppliers)
-      
+
       // Load inventory items
       const entitiesResponse = await universalApi.getEntities()
       const entities = extractData(entitiesResponse)
       const items = entities.filter(e => e.entity_type === 'inventory_item')
-      
+
       // Create default items if none exist
       if (items.length === 0) {
         await createDefaultInventoryItems()
@@ -179,23 +198,28 @@ export function InventoryManagement({
       } else {
         setInventoryItems(items)
       }
-      
+
       // Load recent movements (inventory transactions)
       const transactionsResponse = await universalApi.getTransactions()
       const transactions = extractData(transactionsResponse)
       const movements = transactions
-        .filter(t => 
-          ['goods_receipt', 'inventory_adjustment', 'inventory_count', 'inventory_transfer']
-            .includes(t.transaction_type)
+        .filter(t =>
+          [
+            'goods_receipt',
+            'inventory_adjustment',
+            'inventory_count',
+            'inventory_transfer'
+          ].includes(t.transaction_type)
         )
-        .sort((a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime())
+        .sort(
+          (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+        )
         .slice(0, 20)
-      
+
       setRecentMovements(movements)
-      
+
       // Calculate stats
       calculateStats(items, movements)
-      
     } catch (err) {
       console.error('Error loading inventory data:', err)
       setError('Failed to load inventory data')
@@ -203,19 +227,83 @@ export function InventoryManagement({
       setLoading(false)
     }
   }
-  
+
   const createDefaultInventoryItems = async () => {
     const defaultItems = [
-      { name: 'Tomatoes', code: 'INV-001', category: 'produce', unit: 'kg', stock: 50, min: 20, cost: 3.50 },
-      { name: 'Mozzarella Cheese', code: 'INV-002', category: 'dairy', unit: 'kg', stock: 30, min: 15, cost: 12.00 },
-      { name: 'Pizza Flour', code: 'INV-003', category: 'dry_goods', unit: 'kg', stock: 100, min: 50, cost: 2.00 },
-      { name: 'Olive Oil', code: 'INV-004', category: 'oils', unit: 'liters', stock: 20, min: 10, cost: 15.00 },
-      { name: 'Ground Beef', code: 'INV-005', category: 'proteins', unit: 'kg', stock: 40, min: 20, cost: 18.00 },
-      { name: 'Pasta', code: 'INV-006', category: 'dry_goods', unit: 'kg', stock: 60, min: 30, cost: 4.00 },
-      { name: 'Red Wine', code: 'INV-007', category: 'beverages', unit: 'bottles', stock: 48, min: 24, cost: 25.00 },
-      { name: 'Basil', code: 'INV-008', category: 'produce', unit: 'bunches', stock: 15, min: 10, cost: 2.50 }
+      {
+        name: 'Tomatoes',
+        code: 'INV-001',
+        category: 'produce',
+        unit: 'kg',
+        stock: 50,
+        min: 20,
+        cost: 3.5
+      },
+      {
+        name: 'Mozzarella Cheese',
+        code: 'INV-002',
+        category: 'dairy',
+        unit: 'kg',
+        stock: 30,
+        min: 15,
+        cost: 12.0
+      },
+      {
+        name: 'Pizza Flour',
+        code: 'INV-003',
+        category: 'dry_goods',
+        unit: 'kg',
+        stock: 100,
+        min: 50,
+        cost: 2.0
+      },
+      {
+        name: 'Olive Oil',
+        code: 'INV-004',
+        category: 'oils',
+        unit: 'liters',
+        stock: 20,
+        min: 10,
+        cost: 15.0
+      },
+      {
+        name: 'Ground Beef',
+        code: 'INV-005',
+        category: 'proteins',
+        unit: 'kg',
+        stock: 40,
+        min: 20,
+        cost: 18.0
+      },
+      {
+        name: 'Pasta',
+        code: 'INV-006',
+        category: 'dry_goods',
+        unit: 'kg',
+        stock: 60,
+        min: 30,
+        cost: 4.0
+      },
+      {
+        name: 'Red Wine',
+        code: 'INV-007',
+        category: 'beverages',
+        unit: 'bottles',
+        stock: 48,
+        min: 24,
+        cost: 25.0
+      },
+      {
+        name: 'Basil',
+        code: 'INV-008',
+        category: 'produce',
+        unit: 'bunches',
+        stock: 15,
+        min: 10,
+        cost: 2.5
+      }
     ]
-    
+
     for (const item of defaultItems) {
       await universalApi.createEntity({
         entity_type: 'inventory_item',
@@ -235,7 +323,7 @@ export function InventoryManagement({
       })
     }
   }
-  
+
   const calculateStats = (items: InventoryItem[], movements: StockMovement[]) => {
     const totalItems = items.length
     const lowStockItems = items.filter(item => {
@@ -243,21 +331,20 @@ export function InventoryManagement({
       const min = (item.metadata as any)?.min_stock || 0
       return current <= min
     }).length
-    
+
     const totalValue = items.reduce((sum, item) => {
       const stock = (item.metadata as any)?.current_stock || 0
       const cost = (item.metadata as any)?.unit_cost || 0
-      return sum + (stock * cost)
+      return sum + stock * cost
     }, 0)
-    
-    const pendingOrders = movements.filter(m => 
-      m.transaction_type === 'purchase_order' && 
-      (m.metadata as any)?.status === 'pending'
+
+    const pendingOrders = movements.filter(
+      m => m.transaction_type === 'purchase_order' && (m.metadata as any)?.status === 'pending'
     ).length
-    
+
     setStats({ totalItems, lowStockItems, totalValue, pendingOrders })
   }
-  
+
   const handleCreateItem = async () => {
     try {
       const response = await universalApi.createEntity({
@@ -276,7 +363,7 @@ export function InventoryManagement({
           last_counted: new Date().toISOString()
         }
       })
-      
+
       if (response.success) {
         setShowAddItem(false)
         setNewItem({
@@ -296,18 +383,17 @@ export function InventoryManagement({
       setError('Failed to create inventory item')
     }
   }
-  
+
   const handleAdjustment = async () => {
     try {
       const item = inventoryItems.find(i => i.id === adjustment.item_id)
       if (!item) return
-      
+
       const currentStock = (item.metadata as any)?.current_stock || 0
-      const adjustmentQty = adjustment.adjustment_type === 'add' 
-        ? adjustment.quantity 
-        : -adjustment.quantity
+      const adjustmentQty =
+        adjustment.adjustment_type === 'add' ? adjustment.quantity : -adjustment.quantity
       const newStock = currentStock + adjustmentQty
-      
+
       // Create adjustment transaction
       const txResponse = await universalApi.createTransaction({
         transaction_type: 'inventory_adjustment',
@@ -324,7 +410,7 @@ export function InventoryManagement({
           new_stock: newStock
         }
       })
-      
+
       // Update item stock
       if (txResponse.success) {
         await universalApi.update('core_entities', item.id, {
@@ -334,7 +420,7 @@ export function InventoryManagement({
             last_updated: new Date().toISOString()
           }
         })
-        
+
         setShowAdjustment(false)
         setAdjustment({
           item_id: '',
@@ -350,25 +436,27 @@ export function InventoryManagement({
       setError('Failed to adjust inventory')
     }
   }
-  
+
   const getStockStatus = (item: InventoryItem) => {
     const current = (item.metadata as any)?.current_stock || 0
     const min = (item.metadata as any)?.min_stock || 0
     const reorder = (item.metadata as any)?.reorder_point || 0
-    
+
     if (current === 0) return { color: 'destructive', text: 'Out of Stock' }
     if (current <= min) return { color: 'destructive', text: 'Low Stock' }
     if (current <= reorder) return { color: 'warning', text: 'Reorder Soon' }
     return { color: 'success', text: 'In Stock' }
   }
-  
+
   const filteredItems = inventoryItems.filter(item => {
-    const matchesSearch = item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.entity_code.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
+    const matchesSearch =
+      item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.entity_code.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory =
+      selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
     return matchesSearch && matchesCategory
   })
-  
+
   // Stats for the grid
   const statCards: StatCardData[] = [
     {
@@ -405,7 +493,7 @@ export function InventoryManagement({
       format: 'number'
     }
   ]
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -413,7 +501,7 @@ export function InventoryManagement({
       </div>
     )
   }
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
@@ -435,10 +523,10 @@ export function InventoryManagement({
           </Button>
         </div>
       </div>
-      
+
       {/* Stats Grid */}
       <StatCardGrid stats={statCards} columns={{ default: 1, sm: 2, md: 4 }} />
-      
+
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-4">
@@ -447,7 +535,7 @@ export function InventoryManagement({
           <TabsTrigger value="suppliers">Suppliers</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="overview" className="space-y-4">
           {/* Search and Filters */}
           <Card>
@@ -459,7 +547,7 @@ export function InventoryManagement({
                     <Input
                       placeholder="Search items..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className="pl-8"
                     />
                   </div>
@@ -481,7 +569,7 @@ export function InventoryManagement({
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Inventory Table */}
           <Card>
             <CardHeader>
@@ -503,12 +591,12 @@ export function InventoryManagement({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredItems.map((item) => {
+                  {filteredItems.map(item => {
                     const status = getStockStatus(item)
                     const currentStock = (item.metadata as any)?.current_stock || 0
                     const unitCost = (item.metadata as any)?.unit_cost || 0
                     const totalValue = currentStock * unitCost
-                    
+
                     return (
                       <TableRow key={item.id}>
                         <TableCell className="font-mono text-sm">{item.entity_code}</TableCell>
@@ -524,16 +612,12 @@ export function InventoryManagement({
                         <TableCell className="text-right">
                           {(item.metadata as any)?.min_stock || 0} {(item.metadata as any)?.unit}
                         </TableCell>
-                        <TableCell className="text-right">
-                          {formatCurrency(unitCost)}
-                        </TableCell>
+                        <TableCell className="text-right">{formatCurrency(unitCost)}</TableCell>
                         <TableCell className="text-right font-medium">
                           {formatCurrency(totalValue)}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={status.color as any}>
-                            {status.text}
-                          </Badge>
+                          <Badge variant={status.color as any}>{status.text}</Badge>
                         </TableCell>
                         <TableCell>
                           <Button
@@ -560,7 +644,7 @@ export function InventoryManagement({
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="movements">
           <Card>
             <CardHeader>
@@ -569,12 +653,13 @@ export function InventoryManagement({
             <CardContent>
               <div className="space-y-4">
                 {recentMovements.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-8">
-                    No recent movements
-                  </p>
+                  <p className="text-center text-muted-foreground py-8">No recent movements</p>
                 ) : (
-                  recentMovements.map((movement) => (
-                    <div key={movement.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  recentMovements.map(movement => (
+                    <div
+                      key={movement.id}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div>
                         <p className="font-medium">
                           {movement.transaction_type.replace(/_/g, ' ').toUpperCase()}
@@ -602,7 +687,7 @@ export function InventoryManagement({
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="suppliers">
           <Card>
             <CardHeader>
@@ -620,7 +705,7 @@ export function InventoryManagement({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {suppliers.map((supplier) => (
+                  {suppliers.map(supplier => (
                     <TableRow key={supplier.id}>
                       <TableCell className="font-mono text-sm">{supplier.entity_code}</TableCell>
                       <TableCell className="font-medium">{supplier.entity_name}</TableCell>
@@ -642,7 +727,7 @@ export function InventoryManagement({
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="reports">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
@@ -654,14 +739,23 @@ export function InventoryManagement({
                   {inventoryItems
                     .filter(item => getStockStatus(item).color === 'destructive')
                     .map(item => (
-                      <div key={item.id} className="flex justify-between items-center p-2 border rounded">
+                      <div
+                        key={item.id}
+                        className="flex justify-between items-center p-2 border rounded"
+                      >
                         <span className="font-medium">{item.entity_name}</span>
                         <div className="text-right">
                           <p className="text-sm">
-                            {(item.metadata as any)?.current_stock || 0} / {(item.metadata as any)?.min_stock || 0} {(item.metadata as any)?.unit}
+                            {(item.metadata as any)?.current_stock || 0} /{' '}
+                            {(item.metadata as any)?.min_stock || 0} {(item.metadata as any)?.unit}
                           </p>
                           <Badge variant="destructive" className="text-xs">
-                            {(((item.metadata as any)?.current_stock || 0) / ((item.metadata as any)?.min_stock || 1) * 100).toFixed(0)}% of min
+                            {(
+                              (((item.metadata as any)?.current_stock || 0) /
+                                ((item.metadata as any)?.min_stock || 1)) *
+                              100
+                            ).toFixed(0)}
+                            % of min
                           </Badge>
                         </div>
                       </div>
@@ -669,7 +763,7 @@ export function InventoryManagement({
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Top Value Items</CardTitle>
@@ -678,15 +772,24 @@ export function InventoryManagement({
                 <div className="space-y-2">
                   {inventoryItems
                     .sort((a, b) => {
-                      const aValue = ((a.metadata as any)?.current_stock || 0) * ((a.metadata as any)?.unit_cost || 0)
-                      const bValue = ((b.metadata as any)?.current_stock || 0) * ((b.metadata as any)?.unit_cost || 0)
+                      const aValue =
+                        ((a.metadata as any)?.current_stock || 0) *
+                        ((a.metadata as any)?.unit_cost || 0)
+                      const bValue =
+                        ((b.metadata as any)?.current_stock || 0) *
+                        ((b.metadata as any)?.unit_cost || 0)
                       return bValue - aValue
                     })
                     .slice(0, 5)
                     .map(item => {
-                      const value = ((item.metadata as any)?.current_stock || 0) * ((item.metadata as any)?.unit_cost || 0)
+                      const value =
+                        ((item.metadata as any)?.current_stock || 0) *
+                        ((item.metadata as any)?.unit_cost || 0)
                       return (
-                        <div key={item.id} className="flex justify-between items-center p-2 border rounded">
+                        <div
+                          key={item.id}
+                          className="flex justify-between items-center p-2 border rounded"
+                        >
                           <span className="font-medium">{item.entity_name}</span>
                           <span className="font-bold">{formatCurrency(value)}</span>
                         </div>
@@ -698,7 +801,7 @@ export function InventoryManagement({
           </div>
         </TabsContent>
       </Tabs>
-      
+
       {/* Add Item Dialog */}
       <Dialog open={showAddItem} onOpenChange={setShowAddItem}>
         <DialogContent>
@@ -711,7 +814,7 @@ export function InventoryManagement({
               <Input
                 id="name"
                 value={newItem.entity_name}
-                onChange={(e) => setNewItem({ ...newItem, entity_name: e.target.value })}
+                onChange={e => setNewItem({ ...newItem, entity_name: e.target.value })}
                 placeholder="e.g., Tomatoes"
               />
             </div>
@@ -721,7 +824,7 @@ export function InventoryManagement({
                 <Input
                   id="code"
                   value={newItem.entity_code}
-                  onChange={(e) => setNewItem({ ...newItem, entity_code: e.target.value })}
+                  onChange={e => setNewItem({ ...newItem, entity_code: e.target.value })}
                   placeholder="e.g., INV-001"
                 />
               </div>
@@ -729,7 +832,7 @@ export function InventoryManagement({
                 <Label htmlFor="category">Category</Label>
                 <Select
                   value={newItem.category}
-                  onValueChange={(value) => setNewItem({ ...newItem, category: value })}
+                  onValueChange={value => setNewItem({ ...newItem, category: value })}
                 >
                   <SelectTrigger id="category">
                     <SelectValue />
@@ -750,7 +853,7 @@ export function InventoryManagement({
                 <Label htmlFor="unit">Unit</Label>
                 <Select
                   value={newItem.unit}
-                  onValueChange={(value) => setNewItem({ ...newItem, unit: value })}
+                  onValueChange={value => setNewItem({ ...newItem, unit: value })}
                 >
                   <SelectTrigger id="unit">
                     <SelectValue />
@@ -773,7 +876,9 @@ export function InventoryManagement({
                   type="number"
                   step="0.01"
                   value={newItem.unit_cost}
-                  onChange={(e) => setNewItem({ ...newItem, unit_cost: parseFloat(e.target.value) || 0 })}
+                  onChange={e =>
+                    setNewItem({ ...newItem, unit_cost: parseFloat(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -784,7 +889,9 @@ export function InventoryManagement({
                   id="stock"
                   type="number"
                   value={newItem.current_stock}
-                  onChange={(e) => setNewItem({ ...newItem, current_stock: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setNewItem({ ...newItem, current_stock: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
               <div>
@@ -793,7 +900,9 @@ export function InventoryManagement({
                   id="min"
                   type="number"
                   value={newItem.min_stock}
-                  onChange={(e) => setNewItem({ ...newItem, min_stock: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setNewItem({ ...newItem, min_stock: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
               <div>
@@ -802,7 +911,9 @@ export function InventoryManagement({
                   id="reorder"
                   type="number"
                   value={newItem.reorder_point}
-                  onChange={(e) => setNewItem({ ...newItem, reorder_point: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setNewItem({ ...newItem, reorder_point: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
             </div>
@@ -810,14 +921,12 @@ export function InventoryManagement({
               <Button variant="outline" onClick={() => setShowAddItem(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateItem}>
-                Add Item
-              </Button>
+              <Button onClick={handleCreateItem}>Add Item</Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
-      
+
       {/* Adjustment Dialog */}
       <Dialog open={showAdjustment} onOpenChange={setShowAdjustment}>
         <DialogContent>
@@ -829,14 +938,15 @@ export function InventoryManagement({
               <div className="p-3 bg-muted rounded-lg">
                 <p className="font-medium">{selectedItem.entity_name}</p>
                 <p className="text-sm text-muted-foreground">
-                  Current Stock: {(selectedItem.metadata as any)?.current_stock || 0} {(selectedItem.metadata as any)?.unit}
+                  Current Stock: {(selectedItem.metadata as any)?.current_stock || 0}{' '}
+                  {(selectedItem.metadata as any)?.unit}
                 </p>
               </div>
               <div>
                 <Label>Adjustment Type</Label>
                 <Select
                   value={adjustment.adjustment_type}
-                  onValueChange={(value) => setAdjustment({ ...adjustment, adjustment_type: value })}
+                  onValueChange={value => setAdjustment({ ...adjustment, adjustment_type: value })}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -853,7 +963,9 @@ export function InventoryManagement({
                   id="qty"
                   type="number"
                   value={adjustment.quantity}
-                  onChange={(e) => setAdjustment({ ...adjustment, quantity: parseInt(e.target.value) || 0 })}
+                  onChange={e =>
+                    setAdjustment({ ...adjustment, quantity: parseInt(e.target.value) || 0 })
+                  }
                 />
               </div>
               <div>
@@ -861,7 +973,7 @@ export function InventoryManagement({
                 <Input
                   id="reason"
                   value={adjustment.reason}
-                  onChange={(e) => setAdjustment({ ...adjustment, reason: e.target.value })}
+                  onChange={e => setAdjustment({ ...adjustment, reason: e.target.value })}
                   placeholder="e.g., Physical count correction, Damaged goods"
                 />
               </div>
@@ -869,15 +981,13 @@ export function InventoryManagement({
                 <Button variant="outline" onClick={() => setShowAdjustment(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleAdjustment}>
-                  Apply Adjustment
-                </Button>
+                <Button onClick={handleAdjustment}>Apply Adjustment</Button>
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
-      
+
       {error && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />

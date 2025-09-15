@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
-  Search, 
+import {
+  Search,
   Filter,
   Download,
   Plus,
@@ -99,7 +99,7 @@ const mockSubscribers: Subscriber[] = [
     billAmount: 799,
     dataUsage: 0,
     paymentStatus: 'overdue'
-  },
+  }
 ]
 
 export default function SubscribersPage() {
@@ -171,19 +171,20 @@ export default function SubscribersPage() {
   }, [])
 
   const filteredSubscribers = subscribers.filter(subscriber => {
-    const matchesSearch = subscriber.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         subscriber.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         subscriber.id.toLowerCase().includes(searchTerm.toLowerCase())
-    
+    const matchesSearch =
+      subscriber.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      subscriber.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      subscriber.id.toLowerCase().includes(searchTerm.toLowerCase())
+
     const matchesFilter = selectedFilter === 'all' || subscriber.status === selectedFilter
-    
+
     return matchesSearch && matchesFilter
   })
 
   const handleAdd = async () => {
     try {
       const subscriberCode = `CUST-${String((subscribers.length || 0) + 100001).padStart(6, '0')}`
-      
+
       const { data, error } = await supabase
         .from('core_entities')
         .insert({
@@ -288,11 +289,9 @@ export default function SubscribersPage() {
           if (updateError) throw updateError
 
           // Update local state
-          setSubscribers(subscribers.map(s => 
-            s.id === selectedSubscriber.id 
-              ? { ...s, ...formData }
-              : s
-          ))
+          setSubscribers(
+            subscribers.map(s => (s.id === selectedSubscriber.id ? { ...s, ...formData } : s))
+          )
           setShowEditModal(false)
           setSelectedSubscriber(null)
           resetForm()
@@ -403,7 +402,7 @@ export default function SubscribersPage() {
           </h1>
           <p className="text-white/60 mt-1">Manage your broadband and cable TV subscribers</p>
         </div>
-        
+
         <button
           onClick={() => setShowAddModal(true)}
           className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
@@ -518,7 +517,7 @@ export default function SubscribersPage() {
               type="text"
               placeholder="Search subscribers..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#0099CC]/50 focus:bg-white/10 transition-all duration-200"
             />
           </div>
@@ -539,89 +538,89 @@ export default function SubscribersPage() {
       ) : (
         <ISPTable
           data={filteredSubscribers}
-        columns={[
-          {
-            key: 'id',
-            label: 'Subscriber ID',
-            render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
-          },
-          {
-            key: 'name',
-            label: 'Customer Info',
-            render: (item) => (
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-white">{item.name}</p>
-                <div className="flex items-center space-x-3 text-xs text-white/60">
-                  <div className="flex items-center space-x-1">
-                    <Mail className="h-3 w-3" />
-                    <span>{item.email}</span>
+          columns={[
+            {
+              key: 'id',
+              label: 'Subscriber ID',
+              render: item => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+            },
+            {
+              key: 'name',
+              label: 'Customer Info',
+              render: item => (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-white">{item.name}</p>
+                  <div className="flex items-center space-x-3 text-xs text-white/60">
+                    <div className="flex items-center space-x-1">
+                      <Mail className="h-3 w-3" />
+                      <span>{item.email}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Phone className="h-3 w-3" />
+                      <span>{item.phone}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Phone className="h-3 w-3" />
-                    <span>{item.phone}</span>
+                  <div className="flex items-center space-x-1 text-xs text-white/60">
+                    <MapPin className="h-3 w-3" />
+                    <span>{item.location}</span>
                   </div>
                 </div>
-                <div className="flex items-center space-x-1 text-xs text-white/60">
-                  <MapPin className="h-3 w-3" />
-                  <span>{item.location}</span>
+              )
+            },
+            {
+              key: 'planType',
+              label: 'Plan Details',
+              render: item => (
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <Wifi className="h-4 w-4 text-[#0099CC]" />
+                    <span className="text-sm font-medium text-white">{item.planType}</span>
+                  </div>
+                  <p className="text-xs text-white/60">{item.speed}</p>
+                  <div className="flex items-center space-x-1 text-xs text-white/60">
+                    <Calendar className="h-3 w-3" />
+                    <span>Since {item.joinDate}</span>
+                  </div>
                 </div>
-              </div>
-            )
-          },
-          {
-            key: 'planType',
-            label: 'Plan Details',
-            render: (item) => (
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <Wifi className="h-4 w-4 text-[#0099CC]" />
-                  <span className="text-sm font-medium text-white">{item.planType}</span>
+              )
+            },
+            {
+              key: 'status',
+              label: 'Status',
+              render: item => getStatusBadge(item.status)
+            },
+            {
+              key: 'dataUsage',
+              label: 'Usage',
+              render: item => (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-white">{item.dataUsage} GB</p>
+                  <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
+                      style={{ width: `${(item.dataUsage / 1000) * 100}%` }}
+                    />
+                  </div>
                 </div>
-                <p className="text-xs text-white/60">{item.speed}</p>
-                <div className="flex items-center space-x-1 text-xs text-white/60">
-                  <Calendar className="h-3 w-3" />
-                  <span>Since {item.joinDate}</span>
+              )
+            },
+            {
+              key: 'billAmount',
+              label: 'Billing',
+              render: item => (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-white">₹{item.billAmount}</p>
+                  <div className="flex items-center space-x-1">
+                    <CreditCard className="h-3 w-3 text-white/60" />
+                    {getPaymentBadge(item.paymentStatus)}
+                  </div>
                 </div>
-              </div>
-            )
-          },
-          {
-            key: 'status',
-            label: 'Status',
-            render: (item) => getStatusBadge(item.status)
-          },
-          {
-            key: 'dataUsage',
-            label: 'Usage',
-            render: (item) => (
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-white">{item.dataUsage} GB</p>
-                <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full"
-                    style={{ width: `${(item.dataUsage / 1000) * 100}%` }}
-                  />
-                </div>
-              </div>
-            )
-          },
-          {
-            key: 'billAmount',
-            label: 'Billing',
-            render: (item) => (
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-white">₹{item.billAmount}</p>
-                <div className="flex items-center space-x-1">
-                  <CreditCard className="h-3 w-3 text-white/60" />
-                  {getPaymentBadge(item.paymentStatus)}
-                </div>
-              </div>
-            )
-          }
-        ]}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        searchPlaceholder="Search by ID, name, or email..."
+              )
+            }
+          ]}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          searchPlaceholder="Search by ID, name, or email..."
         />
       )}
 
@@ -635,53 +634,56 @@ export default function SubscribersPage() {
         title="Add New Subscriber"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleAdd()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleAdd()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Customer Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter customer name"
             required
           />
-          
+
           <ISPInput
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
             placeholder="customer@example.com"
             icon={<Mail className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Phone"
             type="tel"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+91 9876543210"
             icon={<Phone className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Plan Type"
             value={formData.planType}
-            onChange={(e) => setFormData({ ...formData, planType: e.target.value })}
+            onChange={e => setFormData({ ...formData, planType: e.target.value })}
             options={[
               { value: 'Home', label: 'Home' },
               { value: 'Business', label: 'Business' },
               { value: 'Enterprise', label: 'Enterprise' }
             ]}
           />
-          
+
           <ISPSelect
             label="Speed"
             value={formData.speed}
-            onChange={(e) => setFormData({ ...formData, speed: e.target.value })}
+            onChange={e => setFormData({ ...formData, speed: e.target.value })}
             options={[
               { value: '50 Mbps', label: '50 Mbps' },
               { value: '100 Mbps', label: '100 Mbps' },
@@ -690,26 +692,26 @@ export default function SubscribersPage() {
               { value: '1 Gbps', label: '1 Gbps' }
             ]}
           />
-          
+
           <ISPInput
             label="Location"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location"
             icon={<MapPin className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Monthly Bill Amount"
             type="number"
             value={formData.billAmount}
-            onChange={(e) => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
             placeholder="Enter amount"
             icon={<CreditCard className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -721,9 +723,7 @@ export default function SubscribersPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Add Subscriber
-            </ISPButton>
+            <ISPButton type="submit">Add Subscriber</ISPButton>
           </div>
         </form>
       </ISPModal>
@@ -739,53 +739,56 @@ export default function SubscribersPage() {
         title="Edit Subscriber"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleUpdate()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleUpdate()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Customer Name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter customer name"
             required
           />
-          
+
           <ISPInput
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
             placeholder="customer@example.com"
             icon={<Mail className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Phone"
             type="tel"
             value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+91 9876543210"
             icon={<Phone className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Plan Type"
             value={formData.planType}
-            onChange={(e) => setFormData({ ...formData, planType: e.target.value })}
+            onChange={e => setFormData({ ...formData, planType: e.target.value })}
             options={[
               { value: 'Home', label: 'Home' },
               { value: 'Business', label: 'Business' },
               { value: 'Enterprise', label: 'Enterprise' }
             ]}
           />
-          
+
           <ISPSelect
             label="Speed"
             value={formData.speed}
-            onChange={(e) => setFormData({ ...formData, speed: e.target.value })}
+            onChange={e => setFormData({ ...formData, speed: e.target.value })}
             options={[
               { value: '50 Mbps', label: '50 Mbps' },
               { value: '100 Mbps', label: '100 Mbps' },
@@ -794,21 +797,21 @@ export default function SubscribersPage() {
               { value: '1 Gbps', label: '1 Gbps' }
             ]}
           />
-          
+
           <ISPInput
             label="Location"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={e => setFormData({ ...formData, location: e.target.value })}
             placeholder="Enter location"
             icon={<MapPin className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Monthly Bill Amount"
             type="number"
             value={formData.billAmount}
-            onChange={(e) => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, billAmount: parseInt(e.target.value) })}
             placeholder="Enter amount"
             icon={<CreditCard className="h-4 w-4 text-white/40" />}
             required
@@ -817,14 +820,14 @@ export default function SubscribersPage() {
           <ISPSelect
             label="Payment Status"
             value={formData.paymentStatus}
-            onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, paymentStatus: e.target.value as any })}
             options={[
               { value: 'paid', label: 'Paid' },
               { value: 'pending', label: 'Pending' },
               { value: 'overdue', label: 'Overdue' }
             ]}
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -837,9 +840,7 @@ export default function SubscribersPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Update Subscriber
-            </ISPButton>
+            <ISPButton type="submit">Update Subscriber</ISPButton>
           </div>
         </form>
       </ISPModal>

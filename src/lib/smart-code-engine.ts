@@ -1,9 +1,9 @@
 /**
  * HERA Smart Code Engine
- * 
+ *
  * Revolutionary automatic business logic generation system
  * Transforms business processes into executable code using Universal 7-Table Schema
- * 
+ *
  * Pattern: HERA.{DOMAIN}.{ENTITY}.{ACTION}.v{VERSION}
  */
 
@@ -83,7 +83,7 @@ export class SmartCodeEngine {
   async executeSmartCode(execution: SmartCodeExecution): Promise<SmartCodeResult> {
     try {
       const definition = this.registry.get(execution.smartCode)
-      
+
       if (!definition) {
         return {
           success: false,
@@ -102,7 +102,6 @@ export class SmartCodeEngine {
 
       // Execute business logic
       return await this.executeBusinessLogic(definition, execution)
-
     } catch (error) {
       return {
         success: false,
@@ -114,9 +113,14 @@ export class SmartCodeEngine {
   /**
    * Generate Smart Code for a business process
    */
-  generateSmartCode(domain: string, entity: string, action: string, businessLogic: BusinessLogic): SmartCodeDefinition {
+  generateSmartCode(
+    domain: string,
+    entity: string,
+    action: string,
+    businessLogic: BusinessLogic
+  ): SmartCodeDefinition {
     const code = `HERA.${domain.toUpperCase()}.${entity.toUpperCase()}.${action.toUpperCase()}.v1`
-    
+
     const definition: SmartCodeDefinition = {
       code,
       domain,
@@ -148,8 +152,8 @@ export class SmartCodeEngine {
    */
   searchSmartCodes(pattern: string): SmartCodeDefinition[] {
     const regex = new RegExp(pattern, 'i')
-    return Array.from(this.registry.values()).filter(code => 
-      regex.test(code.code) || regex.test(code.description)
+    return Array.from(this.registry.values()).filter(
+      code => regex.test(code.code) || regex.test(code.description)
     )
   }
 
@@ -157,8 +161,8 @@ export class SmartCodeEngine {
    * Get Smart Codes by domain
    */
   getSmartCodesByDomain(domain: string): SmartCodeDefinition[] {
-    return Array.from(this.registry.values()).filter(code => 
-      code.domain.toLowerCase() === domain.toLowerCase()
+    return Array.from(this.registry.values()).filter(
+      code => code.domain.toLowerCase() === domain.toLowerCase()
     )
   }
 
@@ -168,19 +172,19 @@ export class SmartCodeEngine {
   private initializeBuiltInSmartCodes(): void {
     // CRM Smart Codes
     this.registerBuiltInCRMSmartCodes()
-    
+
     // Financial Smart Codes
     this.registerBuiltInFinancialSmartCodes()
-    
+
     // Healthcare Smart Codes
     this.registerBuiltInHealthcareSmartCodes()
-    
+
     // Education Smart Codes
     this.registerBuiltInEducationSmartCodes()
-    
+
     // Manufacturing Smart Codes
     this.registerBuiltInManufacturingSmartCodes()
-    
+
     // Retail Smart Codes
     this.registerBuiltInRetailSmartCodes()
   }
@@ -227,7 +231,14 @@ export class SmartCodeEngine {
         approval: true
       },
       validationRules: ['valid_amount', 'future_close_date', 'account_exists'],
-      workflowStates: ['prospecting', 'qualification', 'proposal', 'negotiation', 'closed_won', 'closed_lost'],
+      workflowStates: [
+        'prospecting',
+        'qualification',
+        'proposal',
+        'negotiation',
+        'closed_won',
+        'closed_lost'
+      ],
       entityType: 'opportunity',
       transactionType: 'opportunity_creation',
       apiEndpoint: '/api/v1/universal'
@@ -331,7 +342,12 @@ export class SmartCodeEngine {
         aiInsights: true,
         autoGenerate: ['enrollment_id']
       },
-      validationRules: ['student_exists', 'course_available', 'prerequisites_met', 'capacity_available'],
+      validationRules: [
+        'student_exists',
+        'course_available',
+        'prerequisites_met',
+        'capacity_available'
+      ],
       workflowStates: ['enrolled', 'active', 'completed', 'withdrawn'],
       entityType: 'enrollment',
       transactionType: 'course_enrollment',
@@ -355,7 +371,12 @@ export class SmartCodeEngine {
         aiInsights: true,
         autoGenerate: ['work_order_number', 'material_requirements']
       },
-      validationRules: ['product_exists', 'positive_quantity', 'future_due_date', 'materials_available'],
+      validationRules: [
+        'product_exists',
+        'positive_quantity',
+        'future_due_date',
+        'materials_available'
+      ],
       workflowStates: ['planned', 'released', 'in_progress', 'completed', 'cancelled'],
       entityType: 'work_order',
       transactionType: 'work_order_creation',
@@ -421,7 +442,11 @@ export class SmartCodeEngine {
   /**
    * Apply individual validation rule
    */
-  private applyValidationRule(rule: string, data: any, definition: SmartCodeDefinition): { valid: boolean, message: string } {
+  private applyValidationRule(
+    rule: string,
+    data: any,
+    definition: SmartCodeDefinition
+  ): { valid: boolean; message: string } {
     switch (rule) {
       case 'valid_email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -429,7 +454,7 @@ export class SmartCodeEngine {
           valid: !data.email || emailRegex.test(data.email),
           message: 'Invalid email format'
         }
-      
+
       case 'positive_amount':
       case 'positive_amounts':
         const amount = data.amount || data.total_amount
@@ -437,7 +462,7 @@ export class SmartCodeEngine {
           valid: !amount || amount > 0,
           message: 'Amount must be positive'
         }
-      
+
       case 'future_close_date':
       case 'future_due_date':
         const date = data.close_date || data.due_date
@@ -445,7 +470,7 @@ export class SmartCodeEngine {
           valid: !date || new Date(date) > new Date(),
           message: 'Date must be in the future'
         }
-      
+
       default:
         return { valid: true, message: '' }
     }
@@ -454,7 +479,10 @@ export class SmartCodeEngine {
   /**
    * Execute business logic for Smart Code
    */
-  private async executeBusinessLogic(definition: SmartCodeDefinition, execution: SmartCodeExecution): Promise<SmartCodeResult> {
+  private async executeBusinessLogic(
+    definition: SmartCodeDefinition,
+    execution: SmartCodeExecution
+  ): Promise<SmartCodeResult> {
     const results: any[] = []
     const businessRules: any = {}
 
@@ -465,7 +493,11 @@ export class SmartCodeEngine {
 
       // 2. Auto-generate fields
       if (definition.businessLogic.autoGenerate) {
-        const generatedData = this.generateAutoFields(definition.businessLogic.autoGenerate, execution.data, definition)
+        const generatedData = this.generateAutoFields(
+          definition.businessLogic.autoGenerate,
+          execution.data,
+          definition
+        )
         entity.generated_fields = generatedData
       }
 
@@ -497,7 +529,6 @@ export class SmartCodeEngine {
         businessRules,
         nextActions
       }
-
     } catch (error) {
       return {
         success: false,
@@ -509,7 +540,10 @@ export class SmartCodeEngine {
   /**
    * Create entity using Universal API
    */
-  private async createEntity(definition: SmartCodeDefinition, execution: SmartCodeExecution): Promise<any> {
+  private async createEntity(
+    definition: SmartCodeDefinition,
+    execution: SmartCodeExecution
+  ): Promise<any> {
     const entityData = {
       id: uuidv4(),
       organization_id: execution.organizationId,
@@ -534,7 +568,11 @@ export class SmartCodeEngine {
   /**
    * Create transaction for workflow
    */
-  private async createTransaction(definition: SmartCodeDefinition, execution: SmartCodeExecution, entityId: string): Promise<any> {
+  private async createTransaction(
+    definition: SmartCodeDefinition,
+    execution: SmartCodeExecution,
+    entityId: string
+  ): Promise<any> {
     const transactionData = {
       id: uuidv4(),
       organization_id: execution.organizationId,
@@ -563,7 +601,10 @@ export class SmartCodeEngine {
     const rules: string[] = []
 
     // Add common validation rules based on entity type
-    if (businessLogic.entityType.includes('customer') || businessLogic.entityType.includes('lead')) {
+    if (
+      businessLogic.entityType.includes('customer') ||
+      businessLogic.entityType.includes('lead')
+    ) {
       rules.push('valid_email')
     }
 
@@ -571,7 +612,10 @@ export class SmartCodeEngine {
       rules.push('positive_amount')
     }
 
-    if (businessLogic.requiredFields.includes('close_date') || businessLogic.requiredFields.includes('due_date')) {
+    if (
+      businessLogic.requiredFields.includes('close_date') ||
+      businessLogic.requiredFields.includes('due_date')
+    ) {
       rules.push('future_date')
     }
 
@@ -583,11 +627,11 @@ export class SmartCodeEngine {
    */
   private generateWorkflowStates(action: string): string[] {
     const commonStates = {
-      'create': ['draft', 'active', 'completed'],
-      'process': ['processing', 'completed', 'failed'],
-      'approve': ['pending', 'approved', 'rejected'],
-      'register': ['registered', 'active', 'inactive'],
-      'enroll': ['enrolled', 'active', 'completed', 'withdrawn']
+      create: ['draft', 'active', 'completed'],
+      process: ['processing', 'completed', 'failed'],
+      approve: ['pending', 'approved', 'rejected'],
+      register: ['registered', 'active', 'inactive'],
+      enroll: ['enrolled', 'active', 'completed', 'withdrawn']
     }
 
     return commonStates[action.toLowerCase()] || ['created', 'active', 'completed']
@@ -606,15 +650,15 @@ export class SmartCodeEngine {
         case 'customer_code':
           generated[field] = this.generateEntityCode(definition, data)
           break
-        
+
         case 'lead_score':
           generated[field] = this.calculateLeadScore(data)
           break
-        
+
         case 'probability':
           generated[field] = this.calculateOpportunityProbability(data)
           break
-        
+
         default:
           generated[field] = `AUTO_${field.toUpperCase()}_${Date.now()}`
       }
@@ -631,13 +675,13 @@ export class SmartCodeEngine {
     if (data.name) return data.name
     if (data.company_name) return data.company_name
     if (data.title) return data.title
-    
+
     return `${definition.entity} - ${new Date().toISOString().slice(0, 10)}`
   }
 
   private generateEntityCode(definition: SmartCodeDefinition, data: any): string {
     if (data.entity_code) return data.entity_code
-    
+
     const prefix = definition.entity.substring(0, 3).toUpperCase()
     const timestamp = Date.now().toString().slice(-6)
     return `${prefix}${timestamp}`
@@ -651,30 +695,34 @@ export class SmartCodeEngine {
 
   private calculateLeadScore(data: any): number {
     let score = 50 // Base score
-    
+
     if (data.company_size && data.company_size > 100) score += 20
     if (data.budget && data.budget > 50000) score += 15
     if (data.timeline && data.timeline <= 90) score += 10
     if (data.authority && data.authority === 'high') score += 15
-    
+
     return Math.min(100, score)
   }
 
   private calculateOpportunityProbability(data: any): number {
     const stage = data.stage?.toLowerCase()
     const stageProbabilities = {
-      'prospecting': 10,
-      'qualification': 25,
-      'proposal': 50,
-      'negotiation': 75,
-      'closed_won': 100,
-      'closed_lost': 0
+      prospecting: 10,
+      qualification: 25,
+      proposal: 50,
+      negotiation: 75,
+      closed_won: 100,
+      closed_lost: 0
     }
-    
+
     return stageProbabilities[stage || 'qualification'] || 25
   }
 
-  private async createGLEntries(definition: SmartCodeDefinition, execution: SmartCodeExecution, entity: any): Promise<any[]> {
+  private async createGLEntries(
+    definition: SmartCodeDefinition,
+    execution: SmartCodeExecution,
+    entity: any
+  ): Promise<any[]> {
     // Mock GL entry creation - implement actual GL logic
     return []
   }
@@ -692,19 +740,19 @@ export class SmartCodeEngine {
 
   private determineNextActions(definition: SmartCodeDefinition, data: any): string[] {
     const actions: string[] = []
-    
+
     if (definition.businessLogic.approval) {
       actions.push('Send for approval')
     }
-    
+
     if (definition.businessLogic.notifications) {
       actions.push('Send notification to stakeholders')
     }
-    
+
     if (definition.businessLogic.workflow) {
       actions.push('Advance to next workflow stage')
     }
-    
+
     return actions
   }
 }

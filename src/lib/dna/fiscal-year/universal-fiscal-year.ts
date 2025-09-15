@@ -92,7 +92,11 @@ export class UniversalFiscalYear {
       { field: 'start_month', value: finalConfig.startMonth, type: 'number' },
       { field: 'periods_per_year', value: finalConfig.periodsPerYear, type: 'number' },
       { field: 'current_year', value: finalConfig.currentYear, type: 'number' },
-      { field: 'retained_earnings_account', value: finalConfig.retainedEarningsAccount, type: 'text' },
+      {
+        field: 'retained_earnings_account',
+        value: finalConfig.retainedEarningsAccount,
+        type: 'text'
+      },
       { field: 'current_earnings_account', value: finalConfig.currentEarningsAccount, type: 'text' }
     ]
 
@@ -106,10 +110,7 @@ export class UniversalFiscalYear {
     }
 
     // Create fiscal periods
-    const periods = await this.createFiscalPeriods(
-      fiscalConfigEntity.id,
-      finalConfig
-    )
+    const periods = await this.createFiscalPeriods(fiscalConfigEntity.id, finalConfig)
 
     // Create closing configuration
     await this.createClosingConfiguration(finalConfig)
@@ -132,8 +133,18 @@ export class UniversalFiscalYear {
   ): Promise<FiscalPeriod[]> {
     const periods: FiscalPeriod[] = []
     const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ]
 
     for (let i = 0; i < (config.periodsPerYear || 12); i++) {
@@ -148,7 +159,7 @@ export class UniversalFiscalYear {
         periodName = `${monthNames[i]} ${config.currentYear}`
       } else if (config.fiscalType === 'fiscal') {
         // Fiscal year starting from specified month
-        const monthIndex = ((config.startMonth! - 1 + i) % 12)
+        const monthIndex = (config.startMonth! - 1 + i) % 12
         const year = config.currentYear! + Math.floor((config.startMonth! - 1 + i) / 12)
         periodStart = new Date(year, monthIndex, 1)
         periodEnd = new Date(year, monthIndex + 1, 0)
@@ -156,7 +167,7 @@ export class UniversalFiscalYear {
       } else {
         // Custom periods (simplified - real implementation would be more complex)
         const daysPerPeriod = Math.floor(365 / (config.periodsPerYear || 12))
-        periodStart = new Date(config.currentYear!, 0, 1 + (i * daysPerPeriod))
+        periodStart = new Date(config.currentYear!, 0, 1 + i * daysPerPeriod)
         periodEnd = new Date(config.currentYear!, 0, (i + 1) * daysPerPeriod)
         periodName = `Period ${i + 1} FY${config.currentYear}`
       }
@@ -173,9 +184,21 @@ export class UniversalFiscalYear {
 
       // Add period details
       await universalApi.setDynamicField(periodEntity.id, 'period_number', i + 1)
-      await universalApi.setDynamicField(periodEntity.id, 'period_status', i === 11 ? 'current' : 'open')
-      await universalApi.setDynamicField(periodEntity.id, 'start_date', periodStart.toISOString().split('T')[0])
-      await universalApi.setDynamicField(periodEntity.id, 'end_date', periodEnd.toISOString().split('T')[0])
+      await universalApi.setDynamicField(
+        periodEntity.id,
+        'period_status',
+        i === 11 ? 'current' : 'open'
+      )
+      await universalApi.setDynamicField(
+        periodEntity.id,
+        'start_date',
+        periodStart.toISOString().split('T')[0]
+      )
+      await universalApi.setDynamicField(
+        periodEntity.id,
+        'end_date',
+        periodEnd.toISOString().split('T')[0]
+      )
 
       // Create relationship to fiscal config
       await universalApi.createRelationship({
@@ -223,11 +246,7 @@ export class UniversalFiscalYear {
     ]
 
     for (const step of steps) {
-      await universalApi.setDynamicField(
-        closingConfig.id,
-        step.field,
-        step.value
-      )
+      await universalApi.setDynamicField(closingConfig.id, step.field, step.value)
     }
 
     // Create universal closing checklist
@@ -297,19 +316,15 @@ export class UniversalFiscalYear {
    * Get fiscal periods for a year
    */
   async getFiscalPeriods(fiscalYear: number): Promise<FiscalPeriod[]> {
-    const periods = await universalApi.getEntities(
-      this.organizationId,
-      'fiscal_period',
-      {
-        filter: { entity_code: { $like: `FY${fiscalYear}%` } }
-      }
-    )
+    const periods = await universalApi.getEntities(this.organizationId, 'fiscal_period', {
+      filter: { entity_code: { $like: `FY${fiscalYear}%` } }
+    })
 
     // Enrich with dynamic data
     const enrichedPeriods: FiscalPeriod[] = []
     for (const period of periods) {
       const dynamicData = await universalApi.getDynamicData(period.id)
-      
+
       enrichedPeriods.push({
         id: period.id,
         code: period.entity_code,
@@ -339,7 +354,7 @@ export class UniversalFiscalYear {
    */
   async canPostToDate(transactionDate: Date): Promise<boolean> {
     const periods = await this.getFiscalPeriods(transactionDate.getFullYear())
-    
+
     const period = periods.find(p => {
       const start = new Date(p.startDate)
       const end = new Date(p.endDate)

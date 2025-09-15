@@ -12,16 +12,16 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  TableRow
+} from '@/components/ui/table'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   FileText,
   Search,
@@ -69,15 +69,40 @@ interface Bid {
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'draft':
-      return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Draft</Badge>
+      return (
+        <Badge variant="secondary">
+          <Clock className="h-3 w-3 mr-1" />
+          Draft
+        </Badge>
+      )
     case 'submitted':
-      return <Badge variant="default"><CheckCircle className="h-3 w-3 mr-1" />Submitted</Badge>
+      return (
+        <Badge variant="default">
+          <CheckCircle className="h-3 w-3 mr-1" />
+          Submitted
+        </Badge>
+      )
     case 'won':
-      return <Badge className="bg-green-500"><Trophy className="h-3 w-3 mr-1" />Won</Badge>
+      return (
+        <Badge className="bg-green-500">
+          <Trophy className="h-3 w-3 mr-1" />
+          Won
+        </Badge>
+      )
     case 'lost':
-      return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Lost</Badge>
+      return (
+        <Badge variant="destructive">
+          <XCircle className="h-3 w-3 mr-1" />
+          Lost
+        </Badge>
+      )
     case 'withdrawn':
-      return <Badge variant="outline"><AlertCircle className="h-3 w-3 mr-1" />Withdrawn</Badge>
+      return (
+        <Badge variant="outline">
+          <AlertCircle className="h-3 w-3 mr-1" />
+          Withdrawn
+        </Badge>
+      )
     default:
       return <Badge variant="outline">{status}</Badge>
   }
@@ -101,12 +126,12 @@ export default function BidsPage() {
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       const response = await universalApi.read({
         table: 'core_entities',
         filter: `entity_type=HERA.FURNITURE.TENDER.BID.v1`
       })
-      
+
       if (response.data) {
         setBids(response.data as Bid[])
       }
@@ -123,17 +148,17 @@ export default function BidsPage() {
   }
 
   const filteredBids = bids.filter(bid => {
-    const matchesSearch = 
+    const matchesSearch =
       bid.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bid.metadata.tender_code?.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesTab = 
+
+    const matchesTab =
       activeTab === 'all' ||
       (activeTab === 'draft' && bid.metadata.status === 'draft') ||
       (activeTab === 'submitted' && bid.metadata.status === 'submitted') ||
       (activeTab === 'won' && bid.metadata.status === 'won') ||
       (activeTab === 'lost' && bid.metadata.status === 'lost')
-    
+
     return matchesSearch && matchesTab
   })
 
@@ -150,14 +175,14 @@ export default function BidsPage() {
           original_bid_id: bid.id
         }
       }
-      
+
       await universalApi.createEntity(newBid)
-      
+
       toast({
         title: 'Bid Duplicated',
-        description: 'A copy of the bid has been created as draft.',
+        description: 'A copy of the bid has been created as draft.'
       })
-      
+
       loadBids()
     } catch (error) {
       console.error('Error duplicating bid:', error)
@@ -175,12 +200,12 @@ export default function BidsPage() {
         table: 'core_entities',
         id: bidId
       })
-      
+
       toast({
         title: 'Bid Deleted',
-        description: 'The bid has been deleted.',
+        description: 'The bid has been deleted.'
       })
-      
+
       loadBids()
     } catch (error) {
       console.error('Error deleting bid:', error)
@@ -199,9 +224,14 @@ export default function BidsPage() {
     won: bids.filter(b => b.metadata.status === 'won').length,
     lost: bids.filter(b => b.metadata.status === 'lost').length,
     totalValue: bids.reduce((sum, b) => sum + (b.metadata.bid_amount || 0), 0),
-    winRate: bids.length > 0 ? 
-      (bids.filter(b => b.metadata.status === 'won').length / 
-       bids.filter(b => ['won', 'lost'].includes(b.metadata.status)).length * 100).toFixed(0) : 0
+    winRate:
+      bids.length > 0
+        ? (
+            (bids.filter(b => b.metadata.status === 'won').length /
+              bids.filter(b => ['won', 'lost'].includes(b.metadata.status)).length) *
+            100
+          ).toFixed(0)
+        : 0
   }
 
   if (orgLoading) {
@@ -226,7 +256,7 @@ export default function BidsPage() {
             <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
         </Card>
-        
+
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -236,7 +266,7 @@ export default function BidsPage() {
             <Clock className="h-8 w-8 text-blue-500" />
           </div>
         </Card>
-        
+
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -246,7 +276,7 @@ export default function BidsPage() {
             <Trophy className="h-8 w-8 text-green-500" />
           </div>
         </Card>
-        
+
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -267,7 +297,7 @@ export default function BidsPage() {
               <Input
                 placeholder="Search by bid code or tender code..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -310,7 +340,7 @@ export default function BidsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredBids.map((bid) => (
+                  {filteredBids.map(bid => (
                     <TableRow key={bid.id}>
                       <TableCell className="font-medium">{bid.entity_code}</TableCell>
                       <TableCell>
@@ -322,7 +352,9 @@ export default function BidsPage() {
                         </Link>
                       </TableCell>
                       <TableCell>₹{bid.metadata.bid_amount?.toLocaleString('en-IN')}</TableCell>
-                      <TableCell className="capitalize">{bid.metadata.bid_strategy || 'N/A'}</TableCell>
+                      <TableCell className="capitalize">
+                        {bid.metadata.bid_strategy || 'N/A'}
+                      </TableCell>
                       <TableCell>{getStatusBadge(bid.metadata.status)}</TableCell>
                       <TableCell>
                         {bid.metadata.submission_time
@@ -340,7 +372,9 @@ export default function BidsPage() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
-                              <Link href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}`}>
+                              <Link
+                                href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}`}
+                              >
                                 <Eye className="h-4 w-4 mr-2" />
                                 View Details
                               </Link>
@@ -348,7 +382,9 @@ export default function BidsPage() {
                             {bid.metadata.status === 'draft' && (
                               <>
                                 <DropdownMenuItem asChild>
-                                  <Link href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}/edit`}>
+                                  <Link
+                                    href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}/edit`}
+                                  >
                                     <Edit className="h-4 w-4 mr-2" />
                                     Edit
                                   </Link>

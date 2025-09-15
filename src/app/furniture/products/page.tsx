@@ -7,13 +7,7 @@ import React, { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { 
-  Package, 
-  ClipboardList, 
-  Ruler, 
-  Calculator,
-  Plus
-} from 'lucide-react'
+import { Package, ClipboardList, Ruler, Calculator, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
@@ -23,10 +17,12 @@ export default function FurnitureProducts() {
   const pathname = usePathname()
   const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
-  
+
   // Use authenticated org if available, otherwise use demo org, fallback to Kerala Furniture Works
-  const organizationId = currentOrganization?.id || demoOrg?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-  const organizationName = currentOrganization?.organization_name || demoOrg?.name || 'Furniture Enterprise (Demo)'
+  const organizationId =
+    currentOrganization?.id || demoOrg?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
+  const organizationName =
+    currentOrganization?.organization_name || demoOrg?.name || 'Furniture Enterprise (Demo)'
   const orgLoading = isAuthenticated ? isLoadingOrgs : false
 
   // Load demo organization if not authenticated
@@ -87,7 +83,7 @@ export default function FurnitureProducts() {
               <p className="text-sm text-muted-foreground">Manage furniture products</p>
             </Card>
           </Link>
-          
+
           <Link href="/furniture/products/bom">
             <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
               <ClipboardList className="h-10 w-10 text-purple-500 mb-3" />
@@ -95,7 +91,7 @@ export default function FurnitureProducts() {
               <p className="text-sm text-muted-foreground">Define product components</p>
             </Card>
           </Link>
-          
+
           <Link href="/furniture/products/routing">
             <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
               <Ruler className="h-10 w-10 text-amber-500 mb-3" />
@@ -103,7 +99,7 @@ export default function FurnitureProducts() {
               <p className="text-sm text-muted-foreground">Define manufacturing steps</p>
             </Card>
           </Link>
-          
+
           <Link href="/furniture/products/costing">
             <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
               <Calculator className="h-10 w-10 text-green-500 mb-3" />

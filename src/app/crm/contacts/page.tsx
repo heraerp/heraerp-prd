@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Users,
   Plus,
   Search,
@@ -60,7 +60,7 @@ export default function ContactsPage() {
   const [contactDynamicData, setContactDynamicData] = useState<Record<string, DynamicData[]>>({})
   const [contactRelations, setContactRelations] = useState<Record<string, ContactRelation>>({})
   const [isLoading, setIsLoading] = useState(true)
-  
+
   const supabase = createClientComponentClient()
 
   useEffect(() => {
@@ -100,11 +100,13 @@ export default function ContactsPage() {
       // Load relationships to get company info
       const { data: relationships, error: relError } = await supabase
         .from('core_relationships')
-        .select(`
+        .select(
+          `
           *,
           from_entity:core_entities!from_entity_id(entity_name, entity_type),
           to_entity:core_entities!to_entity_id(entity_name, entity_type)
-        `)
+        `
+        )
         .eq('relationship_type', 'ACCOUNT_HAS_CONTACT')
         .eq('organization_id', KERALA_VISION_ORG_ID)
         .in('to_entity_id', contactIds)
@@ -141,7 +143,9 @@ export default function ContactsPage() {
   const getContactType = (contact: Contact): string => {
     if (contact.metadata?.decision_maker === true) {
       return contact.metadata?.title?.toLowerCase().includes('cio') ||
-             contact.metadata?.title?.toLowerCase().includes('cto') ? 'champion' : 'decision_maker'
+        contact.metadata?.title?.toLowerCase().includes('cto')
+        ? 'champion'
+        : 'decision_maker'
     }
     return 'influencer'
   }
@@ -154,29 +158,42 @@ export default function ContactsPage() {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'decision_maker': return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'influencer': return 'from-[#ec7f37] to-[#be4f0c]'
-      case 'champion': return 'from-emerald-500 to-green-600'
-      case 'user': return 'from-blue-500 to-blue-600'
-      default: return 'from-gray-500 to-gray-600'
+      case 'decision_maker':
+        return 'from-[#FF5A09] to-[#ec7f37]'
+      case 'influencer':
+        return 'from-[#ec7f37] to-[#be4f0c]'
+      case 'champion':
+        return 'from-emerald-500 to-green-600'
+      case 'user':
+        return 'from-blue-500 to-blue-600'
+      default:
+        return 'from-gray-500 to-gray-600'
     }
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'decision_maker': return Shield
-      case 'influencer': return Users
-      case 'champion': return Star
-      case 'user': return UserCheck
-      default: return Users
+      case 'decision_maker':
+        return Shield
+      case 'influencer':
+        return Users
+      case 'champion':
+        return Star
+      case 'user':
+        return UserCheck
+      default:
+        return Users
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'inactive': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'active':
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      case 'inactive':
+        return 'bg-red-500/20 text-red-400 border-red-500/30'
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
     }
   }
 
@@ -185,20 +202,41 @@ export default function ContactsPage() {
     const relation = contactRelations[contact.id] || {}
     const type = getContactType(contact)
     const status = getContactStatus(contact)
-    
-    const matchesSearch = contact.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         relation.company?.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesSearch =
+      contact.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      relation.company?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesType = selectedType === 'all' || type === selectedType
     const matchesStatus = selectedStatus === 'all' || status === selectedStatus
     return matchesSearch && matchesType && matchesStatus
   })
 
   const stats = [
-    { label: 'Total Contacts', value: contacts.length, icon: Users, color: 'from-[#FF5A09] to-[#ec7f37]' },
-    { label: 'Decision Makers', value: contacts.filter(c => getContactType(c) === 'decision_maker').length, icon: Shield, color: 'from-[#ec7f37] to-[#be4f0c]' },
-    { label: 'Active Contacts', value: contacts.filter(c => getContactStatus(c) === 'active').length, icon: UserCheck, color: 'from-emerald-500 to-green-600' },
-    { label: 'Engagement Rate', value: '82%', icon: ArrowRight, color: 'from-[#be4f0c] to-[#FF5A09]' }
+    {
+      label: 'Total Contacts',
+      value: contacts.length,
+      icon: Users,
+      color: 'from-[#FF5A09] to-[#ec7f37]'
+    },
+    {
+      label: 'Decision Makers',
+      value: contacts.filter(c => getContactType(c) === 'decision_maker').length,
+      icon: Shield,
+      color: 'from-[#ec7f37] to-[#be4f0c]'
+    },
+    {
+      label: 'Active Contacts',
+      value: contacts.filter(c => getContactStatus(c) === 'active').length,
+      icon: UserCheck,
+      color: 'from-emerald-500 to-green-600'
+    },
+    {
+      label: 'Engagement Rate',
+      value: '82%',
+      icon: ArrowRight,
+      color: 'from-[#be4f0c] to-[#FF5A09]'
+    }
   ]
 
   if (isLoading) {
@@ -218,14 +256,14 @@ export default function ContactsPage() {
           <p className="text-white/60 mt-1">Manage your business contacts and relationships</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={() => setIsImporting(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300"
           >
             <Upload className="h-5 w-5" />
             <span>Import</span>
           </button>
-          <button 
+          <button
             onClick={() => setIsCreating(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
           >
@@ -265,14 +303,14 @@ export default function ContactsPage() {
             type="text"
             placeholder="Search contacts..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
-        
+
         <select
           value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
+          onChange={e => setSelectedType(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Types</option>
@@ -284,7 +322,7 @@ export default function ContactsPage() {
 
         <select
           value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          onChange={e => setSelectedStatus(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Status</option>
@@ -303,24 +341,36 @@ export default function ContactsPage() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/10">
-              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Contact</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Company</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Type</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Contact Info</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Activity</th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">
+                Contact
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">
+                Company
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">
+                Type
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">
+                Contact Info
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">
+                Activity
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider">
+                Status
+              </th>
               <th className="px-6 py-4 text-left text-xs font-medium text-white/60 uppercase tracking-wider"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
-            {filteredContacts.map((contact) => {
+            {filteredContacts.map(contact => {
               const type = getContactType(contact)
               const status = getContactStatus(contact)
               const TypeIcon = getTypeIcon(type)
               const email = getDynamicValue(contact.id, 'email')
               const phone = getDynamicValue(contact.id, 'phone')
               const relation = contactRelations[contact.id] || {}
-              
+
               return (
                 <tr key={contact.id} className="hover:bg-white/5 transition-colors">
                   <td className="px-6 py-4">
@@ -374,19 +424,17 @@ export default function ContactsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
-                      <div className="text-sm text-white">
-                        2 opportunities
-                      </div>
-                      <div className="text-xs text-white/60">
-                        5 activities
-                      </div>
+                      <div className="text-sm text-white">2 opportunities</div>
+                      <div className="text-xs text-white/60">5 activities</div>
                       <div className="text-xs text-white/60">
                         Last: {new Date(contact.updated_at).toLocaleDateString()}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(status)}`}
+                    >
                       {status}
                     </span>
                   </td>

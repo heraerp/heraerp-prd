@@ -5,6 +5,7 @@
 The HERA Furniture Manufacturing module provides complete end-to-end business process management for furniture manufacturers in India, built on HERA's Sacred Six tables architecture with zero schema changes.
 
 ## Module Details
+
 - **Namespace**: `HERA.MANUFACTURING.FURNITURE`
 - **Version**: v1
 - **Region**: Cochin, India
@@ -13,9 +14,11 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 ## Sacred Six Tables Usage
 
 ### 1. **core_organizations**
+
 - Multi-tenant isolation for furniture manufacturers
 
 ### 2. **core_entities**
+
 - Products (FG/RM/WIP)
 - Bill of Materials (BOM)
 - Production Routing
@@ -25,6 +28,7 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 - Chart of Accounts
 
 ### 3. **core_dynamic_data**
+
 - Product specifications (dimensions, materials, finishes)
 - Employee compliance data (PF/ESI numbers)
 - GST registration details
@@ -32,6 +36,7 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 - Quality parameters
 
 ### 4. **core_relationships**
+
 - Product → BOM components
 - Product → Routing operations
 - Routing → Work Center assignments
@@ -39,12 +44,14 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 - GL Account parent-child relationships
 
 ### 5. **universal_transactions**
+
 - Sales Orders, Invoices, Dispatch notes
 - Production Orders
 - Payroll Runs
 - Journal Entries (auto-generated)
 
 ### 6. **universal_transaction_lines**
+
 - Order line items
 - Material requirements
 - Operation details
@@ -54,6 +61,7 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 ## Business Process Flows
 
 ### Sales Flow
+
 1. **Proforma** → Customer quotation
 2. **Sales Order** → Confirmed order with advance
 3. **Production Trigger** → Auto-create production orders
@@ -62,6 +70,7 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 6. **GL Posting** → Automatic journal entries
 
 ### Manufacturing Flow
+
 1. **Production Order** → From sales order
 2. **Material Planning** → BOM explosion
 3. **Material Issue** → RM to WIP movement
@@ -70,7 +79,9 @@ The HERA Furniture Manufacturing module provides complete end-to-end business pr
 6. **Costing** → Material + Labor + Overhead
 
 ### Finance Integration
+
 Every business event generates balanced GL postings:
+
 - Material Issue: Dr WIP / Cr RM Inventory
 - Labor Applied: Dr WIP / Cr Wages Payable
 - FG Receipt: Dr FG / Cr WIP
@@ -78,6 +89,7 @@ Every business event generates balanced GL postings:
 - GST: Split CGST/SGST postings
 
 ### HR/Payroll Flow
+
 1. **Monthly Payroll Run** → Calculate earnings
 2. **Statutory Deductions** → PF (12% EE, 12% ER), ESI (0.75% EE, 3.25% ER)
 3. **Bank Disbursement** → Net salary payments
@@ -88,6 +100,7 @@ Every business event generates balanced GL postings:
 Format: `HERA.MANUFACTURING.FURNITURE.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}`
 
 Examples:
+
 - Master: `HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1`
 - Transaction: `HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1`
 - GL Line: `HERA.MANUFACTURING.FURNITURE.FINANCE.COST.MATERIAL_ISSUE.GL.LINE.v1`
@@ -95,6 +108,7 @@ Examples:
 ## Configuration
 
 ### GST Setup
+
 ```json
 {
   "gst_rates": {
@@ -105,6 +119,7 @@ Examples:
 ```
 
 ### PF/ESI Rates
+
 ```json
 {
   "pf_rates": {
@@ -121,23 +136,25 @@ Examples:
 ## Data Loading Instructions
 
 ### 1. Load Masters
+
 ```sql
 -- Products
 INSERT INTO core_entities (organization_id, entity_type, entity_name, entity_code, smart_code)
-VALUES ('your-org-id', 'product', 'Standard Classroom Desk', 'DESK-STD-001', 
+VALUES ('your-org-id', 'product', 'Standard Classroom Desk', 'DESK-STD-001',
         'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1');
 
 -- Add specifications
 INSERT INTO core_dynamic_data (entity_id, field_name, field_value_text, smart_code)
-VALUES ('product-id', 'product_type', 'FINISHED_GOOD', 
+VALUES ('product-id', 'product_type', 'FINISHED_GOOD',
         'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1');
 ```
 
 ### 2. Create Transactions
+
 ```sql
 -- Sales Order
 INSERT INTO universal_transactions (
-  organization_id, transaction_type, transaction_code, 
+  organization_id, transaction_type, transaction_code,
   transaction_date, smart_code, total_amount, metadata
 ) VALUES (
   'your-org-id', 'sales_order', 'SO-2025-001234',
@@ -147,11 +164,13 @@ INSERT INTO universal_transactions (
 ```
 
 ### 3. Finance DNA Integration
+
 The Finance DNA engine automatically generates GL postings based on smart codes. No manual journal entries required.
 
 ## CI/CD Checks
 
 ### Smart Code Validation
+
 ```bash
 # Regex pattern check
 grep -E "HERA\.[A-Z0-9]{3,15}(\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$" event_samples.json
@@ -161,6 +180,7 @@ grep -E "HERA\.[A-Z0-9]{3,15}(\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$" event_samples.j
 ```
 
 ### Organization Filter Check
+
 ```bash
 # Ensure all queries include organization_id
 grep -c "organization_id" api_calls.log
@@ -170,6 +190,7 @@ SELECT COUNT(*) FROM core_entities WHERE organization_id IS NULL; -- Must be 0
 ```
 
 ### GL Balance Check
+
 ```bash
 # For each transaction with GL lines (debit positive, credit negative)
 SELECT transaction_id,
@@ -182,22 +203,26 @@ HAVING debits != credits; -- Must return 0 rows
 ```
 
 ### Schema naming note (live vs docs)
+
 - Live environments often use `transaction_code` for the transaction header identifier; some documentation references `transaction_number`. Prefer `transaction_code` in queries and UIs; ensure compatibility by selecting all columns when in doubt.
 - For lines, use `line_number` and `line_amount` (there is no `gl_type`/`amount`). Determine debit/credit using the sign of `line_amount`.
 
 ## Deployment Steps
 
 1. **Load Configuration**
+
    ```bash
    psql -f posting_rules.json
    ```
 
 2. **Initialize Masters**
+
    ```bash
    ./scripts/load-furniture-masters.sh
    ```
 
 3. **Start Services**
+
    ```bash
    npm run furniture:api
    ```
@@ -210,6 +235,7 @@ HAVING debits != credits; -- Must return 0 rows
 ## Support
 
 For issues or questions:
+
 - Check smart code registry
 - Validate against Sacred Six tables
 - Ensure organization_id on all operations

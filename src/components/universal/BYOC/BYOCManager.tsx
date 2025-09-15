@@ -3,7 +3,7 @@
 /**
  * HERA Universal BYOC (Bring Your Own Cloud) Manager
  * A reusable component for managing cloud storage configurations across any HERA application
- * 
+ *
  * Features:
  * - Multi-provider support (AWS, Azure, GCP, Custom)
  * - Secure secret management with encryption
@@ -19,15 +19,43 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Database, Shield, Key, Download, Upload, Eye, EyeOff,
-  CheckCircle, AlertTriangle, Zap, Settings, Copy, Trash2,
-  Plus, Edit3, Save, RefreshCw, Lock, Unlock, Globe,
-  Cloud, Server, HardDrive, Activity, Users, Crown
+import {
+  Database,
+  Shield,
+  Key,
+  Download,
+  Upload,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  AlertTriangle,
+  Zap,
+  Settings,
+  Copy,
+  Trash2,
+  Plus,
+  Edit3,
+  Save,
+  RefreshCw,
+  Lock,
+  Unlock,
+  Globe,
+  Cloud,
+  Server,
+  HardDrive,
+  Activity,
+  Users,
+  Crown
 } from 'lucide-react'
 
 export interface BYOCConfig {
@@ -70,9 +98,9 @@ interface BYOCManagerProps {
   theme?: 'light' | 'dark' | 'auto'
 }
 
-export function BYOCManager({ 
+export function BYOCManager({
   applicationId,
-  organizationId, 
+  organizationId,
   userId,
   userRole,
   onConfigChange,
@@ -86,7 +114,9 @@ export function BYOCManager({
   const [isEditing, setIsEditing] = useState(false)
   const [showSecrets, setShowSecrets] = useState(false)
   const [activeTab, setActiveTab] = useState<'configs' | 'secrets' | 'testing' | 'audit'>('configs')
-  const [connectionStatus, setConnectionStatus] = useState<Record<string, { connected: boolean; latency?: number; error?: string }>>({})
+  const [connectionStatus, setConnectionStatus] = useState<
+    Record<string, { connected: boolean; latency?: number; error?: string }>
+  >({})
   const [isLoading, setIsLoading] = useState(false)
 
   // New configuration state
@@ -167,9 +197,11 @@ export function BYOCManager({
   const loadConfigurations = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch(`/api/v1/universal/byoc?applicationId=${applicationId}&organizationId=${organizationId}`)
+      const response = await fetch(
+        `/api/v1/universal/byoc?applicationId=${applicationId}&organizationId=${organizationId}`
+      )
       const result = await response.json()
-      
+
       if (result.success) {
         setConfigs(result.data || [])
       }
@@ -201,7 +233,7 @@ export function BYOCManager({
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         await loadConfigurations()
         setIsEditing(false)
@@ -225,7 +257,7 @@ export function BYOCManager({
             tags: []
           }
         })
-        
+
         if (onConfigChange) {
           onConfigChange(result.data)
         }
@@ -254,7 +286,7 @@ export function BYOCManager({
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         setConnectionStatus(prev => ({
           ...prev,
@@ -281,10 +313,18 @@ export function BYOCManager({
   const exportConfiguration = async (config: BYOCConfig) => {
     const exportData = {
       ...config,
-      config: showSecrets ? config.config : Object.keys(config.config).reduce((acc, key) => {
-        acc[key] = key.toLowerCase().includes('key') || key.toLowerCase().includes('secret') ? '***HIDDEN***' : config.config[key]
-        return acc
-      }, {} as Record<string, any>),
+      config: showSecrets
+        ? config.config
+        : Object.keys(config.config).reduce(
+            (acc, key) => {
+              acc[key] =
+                key.toLowerCase().includes('key') || key.toLowerCase().includes('secret')
+                  ? '***HIDDEN***'
+                  : config.config[key]
+              return acc
+            },
+            {} as Record<string, any>
+          ),
       exportedAt: new Date().toISOString(),
       exportedBy: userId
     }
@@ -304,13 +344,13 @@ export function BYOCManager({
     try {
       // Deactivate all configs first
       setConfigs(prev => prev.map(c => ({ ...c, metadata: { ...c.metadata, isActive: false } })))
-      
+
       // Activate selected config
-      setConfigs(prev => prev.map(c => 
-        c.id === configId 
-          ? { ...c, metadata: { ...c.metadata, isActive: true } }
-          : c
-      ))
+      setConfigs(prev =>
+        prev.map(c =>
+          c.id === configId ? { ...c, metadata: { ...c.metadata, isActive: true } } : c
+        )
+      )
 
       // API call to persist
       await fetch('/api/v1/universal/byoc/activate', {
@@ -327,7 +367,11 @@ export function BYOCManager({
     }
   }
 
-  const renderProviderConfig = (provider: string, config: Record<string, any>, onChange: (newConfig: Record<string, any>) => void) => {
+  const renderProviderConfig = (
+    provider: string,
+    config: Record<string, any>,
+    onChange: (newConfig: Record<string, any>) => void
+  ) => {
     const providerInfo = providers.find(p => p.id === provider)
     if (!providerInfo || providerInfo.fields.length === 0) return null
 
@@ -342,8 +386,9 @@ export function BYOCManager({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {providerInfo.fields.map((field) => {
-            const isSecret = field.toLowerCase().includes('key') || field.toLowerCase().includes('secret')
+          {providerInfo.fields.map(field => {
+            const isSecret =
+              field.toLowerCase().includes('key') || field.toLowerCase().includes('secret')
             const isBoolean = field === 'ssl'
             const isTextarea = field === 'keyFile'
 
@@ -353,7 +398,7 @@ export function BYOCManager({
                   <Label className="capitalize">{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
                   <Switch
                     checked={config[field] || false}
-                    onCheckedChange={(checked) => onChange({ ...config, [field]: checked })}
+                    onCheckedChange={checked => onChange({ ...config, [field]: checked })}
                     disabled={!canEdit}
                   />
                 </div>
@@ -366,7 +411,7 @@ export function BYOCManager({
                   <Label className="capitalize">{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
                   <Textarea
                     value={config[field] || ''}
-                    onChange={(e) => onChange({ ...config, [field]: e.target.value })}
+                    onChange={e => onChange({ ...config, [field]: e.target.value })}
                     placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
                     rows={3}
                     className="font-mono text-xs"
@@ -395,7 +440,7 @@ export function BYOCManager({
                 <Input
                   type={isSecret && !showSecrets ? 'password' : 'text'}
                   value={config[field] || ''}
-                  onChange={(e) => onChange({ ...config, [field]: e.target.value })}
+                  onChange={e => onChange({ ...config, [field]: e.target.value })}
                   placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
                   disabled={!canEdit}
                 />
@@ -420,9 +465,11 @@ export function BYOCManager({
               Enterprise
             </Badge>
           </h1>
-          <p className="text-gray-600 mt-1">Bring Your Own Cloud storage configuration for {applicationId}</p>
+          <p className="text-gray-600 mt-1">
+            Bring Your Own Cloud storage configuration for {applicationId}
+          </p>
         </div>
-        
+
         {canEdit && (
           <div className="flex gap-2">
             <Button
@@ -433,11 +480,7 @@ export function BYOCManager({
               <Plus className="w-4 h-4 mr-2" />
               Add Configuration
             </Button>
-            <Button
-              variant="outline"
-              onClick={loadConfigurations}
-              disabled={isLoading}
-            >
+            <Button variant="outline" onClick={loadConfigurations} disabled={isLoading}>
               <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
@@ -457,12 +500,15 @@ export function BYOCManager({
         <TabsContent value="configs" className="space-y-6">
           {/* Existing Configurations */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {configs.map((config) => {
+            {configs.map(config => {
               const provider = providers.find(p => p.id === config.provider)
               const status = connectionStatus[config.id!]
-              
+
               return (
-                <Card key={config.id} className={`relative ${config.metadata.isActive ? 'ring-2 ring-green-500' : ''}`}>
+                <Card
+                  key={config.id}
+                  className={`relative ${config.metadata.isActive ? 'ring-2 ring-green-500' : ''}`}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -472,7 +518,7 @@ export function BYOCManager({
                           <p className="text-sm text-gray-600">{provider?.name}</p>
                         </div>
                       </div>
-                      
+
                       {config.metadata.isActive && (
                         <Badge className="bg-green-100 text-green-700">Active</Badge>
                       )}
@@ -486,21 +532,26 @@ export function BYOCManager({
 
                     {/* Status Indicator */}
                     {status && (
-                      <div className={`flex items-center gap-2 text-sm ${
-                        status.connected ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {status.connected ? <CheckCircle className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
-                        {status.connected 
+                      <div
+                        className={`flex items-center gap-2 text-sm ${
+                          status.connected ? 'text-green-600' : 'text-red-600'
+                        }`}
+                      >
+                        {status.connected ? (
+                          <CheckCircle className="w-4 h-4" />
+                        ) : (
+                          <AlertTriangle className="w-4 h-4" />
+                        )}
+                        {status.connected
                           ? `Connected (${status.latency}ms)`
-                          : status.error || 'Connection failed'
-                        }
+                          : status.error || 'Connection failed'}
                       </div>
                     )}
 
                     {/* Permissions */}
                     <div className="flex flex-wrap gap-2">
                       {Object.entries(config.permissions).map(([perm, enabled]) => (
-                        <Badge 
+                        <Badge
                           key={perm}
                           className={`text-xs ${
                             enabled ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'
@@ -522,7 +573,7 @@ export function BYOCManager({
                         <Zap className="w-3 h-3 mr-1" />
                         Test
                       </Button>
-                      
+
                       {!config.metadata.isActive && canEdit && (
                         <Button
                           size="sm"
@@ -532,7 +583,7 @@ export function BYOCManager({
                           Activate
                         </Button>
                       )}
-                      
+
                       {canView && (
                         <Button
                           size="sm"
@@ -563,23 +614,29 @@ export function BYOCManager({
                     <Label>Configuration Name</Label>
                     <Input
                       value={newConfig.name || ''}
-                      onChange={(e) => setNewConfig({ ...newConfig, name: e.target.value })}
+                      onChange={e => setNewConfig({ ...newConfig, name: e.target.value })}
                       placeholder="Enter configuration name"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Provider</Label>
-                    <Select 
-                      value={newConfig.provider} 
-                      onValueChange={(value) => setNewConfig({ ...newConfig, provider: value as any })}
+                    <Select
+                      value={newConfig.provider}
+                      onValueChange={value =>
+                        setNewConfig({ ...newConfig, provider: value as any })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="hera-select-content">
-                        {providers.map((provider) => (
-                          <SelectItem key={provider.id} className="hera-select-item" value={provider.id}>
+                        {providers.map(provider => (
+                          <SelectItem
+                            key={provider.id}
+                            className="hera-select-item"
+                            value={provider.id}
+                          >
                             <div className="flex items-center gap-2">
                               {provider.icon}
                               <div>
@@ -597,28 +654,23 @@ export function BYOCManager({
                     <Label>Description (Optional)</Label>
                     <Input
                       value={newConfig.description || ''}
-                      onChange={(e) => setNewConfig({ ...newConfig, description: e.target.value })}
+                      onChange={e => setNewConfig({ ...newConfig, description: e.target.value })}
                       placeholder="Enter configuration description"
                     />
                   </div>
                 </div>
 
                 {/* Provider-specific configuration */}
-                {renderProviderConfig(
-                  newConfig.provider!,
-                  newConfig.config || {},
-                  (config) => setNewConfig({ ...newConfig, config })
+                {renderProviderConfig(newConfig.provider!, newConfig.config || {}, config =>
+                  setNewConfig({ ...newConfig, config })
                 )}
 
                 {/* Actions */}
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsEditing(false)}
-                  >
+                  <Button variant="outline" onClick={() => setIsEditing(false)}>
                     Cancel
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => saveConfiguration(newConfig)}
                     disabled={!newConfig.name || isLoading}
                   >
@@ -664,9 +716,11 @@ export function BYOCManager({
                       Rotate Keys
                     </Button>
                   </div>
-                  
+
                   {/* Secret management interface would go here */}
-                  <p className="text-gray-600">Secret management interface would be implemented here</p>
+                  <p className="text-gray-600">
+                    Secret management interface would be implemented here
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -683,7 +737,9 @@ export function BYOCManager({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">Connection testing interface would be implemented here</p>
+              <p className="text-gray-600">
+                Connection testing interface would be implemented here
+              </p>
             </CardContent>
           </Card>
         </TabsContent>

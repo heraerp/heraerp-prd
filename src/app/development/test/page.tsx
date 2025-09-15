@@ -8,14 +8,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  TestTube, Play, CheckCircle, XCircle, AlertTriangle, ExternalLink,
-  Database, Globe, Zap, Clock, RefreshCw, Eye, Settings
+import {
+  TestTube,
+  Play,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  ExternalLink,
+  Database,
+  Globe,
+  Zap,
+  Clock,
+  RefreshCw,
+  Eye,
+  Settings
 } from 'lucide-react'
 
 /**
  * HERA Module Testing Interface
- * 
+ *
  * Test generated modules to ensure they work correctly
  * Verify CRUD operations, API endpoints, and UI functionality
  */
@@ -35,7 +46,7 @@ export default function ModuleTestPage() {
     try {
       const response = await fetch('/api/v1/development/modules')
       const result = await response.json()
-      
+
       if (result.success) {
         setModules(result.data || [])
       }
@@ -46,7 +57,7 @@ export default function ModuleTestPage() {
   }
 
   // Test module functionality
-  const testModule = async (module) => {
+  const testModule = async module => {
     setActiveTest(module.id)
     const moduleTestResults = {
       moduleName: module.name,
@@ -57,21 +68,24 @@ export default function ModuleTestPage() {
     try {
       // Test 1: UI Page Accessibility
       moduleTestResults.tests.push(await testUIPages(module))
-      
+
       // Test 2: API Endpoints
       moduleTestResults.tests.push(await testAPIEndpoints(module))
-      
+
       // Test 3: CRUD Operations
       moduleTestResults.tests.push(await testCRUDOperations(module))
-      
+
       // Test 4: Database Integration
       moduleTestResults.tests.push(await testDatabaseIntegration(module))
 
       moduleTestResults.endTime = new Date().toISOString()
-      moduleTestResults.duration = new Date(moduleTestResults.endTime) - new Date(moduleTestResults.startTime)
+      moduleTestResults.duration =
+        new Date(moduleTestResults.endTime) - new Date(moduleTestResults.startTime)
       moduleTestResults.success = moduleTestResults.tests.every(test => test.success)
-      moduleTestResults.overallScore = (moduleTestResults.tests.filter(test => test.success).length / moduleTestResults.tests.length) * 100
-
+      moduleTestResults.overallScore =
+        (moduleTestResults.tests.filter(test => test.success).length /
+          moduleTestResults.tests.length) *
+        100
     } catch (error) {
       moduleTestResults.error = error.message
       moduleTestResults.success = false
@@ -85,7 +99,7 @@ export default function ModuleTestPage() {
   }
 
   // Test UI pages are accessible
-  const testUIPages = async (module) => {
+  const testUIPages = async module => {
     const test = {
       name: 'UI Page Accessibility',
       type: 'ui',
@@ -94,7 +108,7 @@ export default function ModuleTestPage() {
 
     try {
       const pagesToTest = ['dashboard', 'form', 'list', 'reports']
-      
+
       for (const page of pagesToTest) {
         if (module.features[`has${page.charAt(0).toUpperCase() + page.slice(1)}`]) {
           try {
@@ -116,9 +130,9 @@ export default function ModuleTestPage() {
         }
       }
 
-      test.success = test.details.length > 0 && test.details.every(detail => detail.status === 'accessible')
+      test.success =
+        test.details.length > 0 && test.details.every(detail => detail.status === 'accessible')
       test.message = test.success ? 'All UI pages are accessible' : 'Some UI pages have issues'
-      
     } catch (error) {
       test.success = false
       test.message = error.message
@@ -128,7 +142,7 @@ export default function ModuleTestPage() {
   }
 
   // Test API endpoints
-  const testAPIEndpoints = async (module) => {
+  const testAPIEndpoints = async module => {
     const test = {
       name: 'API Endpoints',
       type: 'api',
@@ -137,12 +151,12 @@ export default function ModuleTestPage() {
 
     try {
       const endpointsToTest = ['entities', 'transactions', 'reports', 'validations']
-      
+
       for (const endpoint of endpointsToTest) {
         try {
           const apiUrl = `${module.paths.api}/${endpoint}?organization_id=550e8400-e29b-41d4-a716-446655440000`
           const response = await fetch(apiUrl)
-          
+
           test.details.push({
             endpoint,
             url: apiUrl,
@@ -159,9 +173,11 @@ export default function ModuleTestPage() {
         }
       }
 
-      test.success = test.details.length > 0 && test.details.every(detail => detail.status === 'working')
-      test.message = test.success ? 'All API endpoints are working' : 'Some API endpoints have issues'
-      
+      test.success =
+        test.details.length > 0 && test.details.every(detail => detail.status === 'working')
+      test.message = test.success
+        ? 'All API endpoints are working'
+        : 'Some API endpoints have issues'
     } catch (error) {
       test.success = false
       test.message = error.message
@@ -171,7 +187,7 @@ export default function ModuleTestPage() {
   }
 
   // Test CRUD operations
-  const testCRUDOperations = async (module) => {
+  const testCRUDOperations = async module => {
     const test = {
       name: 'CRUD Operations',
       type: 'crud',
@@ -180,7 +196,7 @@ export default function ModuleTestPage() {
 
     try {
       const organizationId = '550e8400-e29b-41d4-a716-446655440000'
-      
+
       // Test CREATE
       const testData = {
         organization_id: organizationId,
@@ -199,9 +215,9 @@ export default function ModuleTestPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(testData)
         })
-        
+
         const createResult = await createResponse.json()
-        
+
         test.details.push({
           operation: 'CREATE',
           status: createResult.success ? 'success' : 'error',
@@ -210,16 +226,19 @@ export default function ModuleTestPage() {
 
         // Test READ if create was successful
         if (createResult.success) {
-          const readResponse = await fetch(`${module.paths.api}/entities?organization_id=${organizationId}&entity_type=${testData.entity_type}`)
+          const readResponse = await fetch(
+            `${module.paths.api}/entities?organization_id=${organizationId}&entity_type=${testData.entity_type}`
+          )
           const readResult = await readResponse.json()
-          
+
           test.details.push({
             operation: 'READ',
             status: readResult.success && readResult.data.length > 0 ? 'success' : 'error',
-            message: readResult.success ? `Retrieved ${readResult.data.length} items` : readResult.message
+            message: readResult.success
+              ? `Retrieved ${readResult.data.length} items`
+              : readResult.message
           })
         }
-
       } catch (error) {
         test.details.push({
           operation: 'CREATE/READ',
@@ -228,9 +247,11 @@ export default function ModuleTestPage() {
         })
       }
 
-      test.success = test.details.length > 0 && test.details.every(detail => detail.status === 'success')
-      test.message = test.success ? 'CRUD operations working correctly' : 'Some CRUD operations have issues'
-      
+      test.success =
+        test.details.length > 0 && test.details.every(detail => detail.status === 'success')
+      test.message = test.success
+        ? 'CRUD operations working correctly'
+        : 'Some CRUD operations have issues'
     } catch (error) {
       test.success = false
       test.message = error.message
@@ -240,7 +261,7 @@ export default function ModuleTestPage() {
   }
 
   // Test database integration
-  const testDatabaseIntegration = async (module) => {
+  const testDatabaseIntegration = async module => {
     const test = {
       name: 'Database Integration',
       type: 'database',
@@ -269,7 +290,6 @@ export default function ModuleTestPage() {
 
       test.success = true
       test.message = 'Database integration is properly configured'
-      
     } catch (error) {
       test.success = false
       test.message = error.message
@@ -278,35 +298,48 @@ export default function ModuleTestPage() {
     return test
   }
 
-  const getTestIcon = (testType) => {
+  const getTestIcon = testType => {
     switch (testType) {
-      case 'ui': return Globe
-      case 'api': return Zap
-      case 'crud': return Database
-      case 'database': return Settings
-      default: return TestTube
+      case 'ui':
+        return Globe
+      case 'api':
+        return Zap
+      case 'crud':
+        return Database
+      case 'database':
+        return Settings
+      default:
+        return TestTube
     }
   }
 
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'success':
       case 'working':
-      case 'accessible': return 'text-green-500'
-      case 'error': return 'text-red-500'
-      case 'warning': return 'text-yellow-500'
-      default: return 'text-gray-500'
+      case 'accessible':
+        return 'text-green-500'
+      case 'error':
+        return 'text-red-500'
+      case 'warning':
+        return 'text-yellow-500'
+      default:
+        return 'text-gray-500'
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = status => {
     switch (status) {
       case 'success':
       case 'working':
-      case 'accessible': return CheckCircle
-      case 'error': return XCircle
-      case 'warning': return AlertTriangle
-      default: return Clock
+      case 'accessible':
+        return CheckCircle
+      case 'error':
+        return XCircle
+      case 'warning':
+        return AlertTriangle
+      default:
+        return Clock
     }
   }
 
@@ -376,8 +409,12 @@ export default function ModuleTestPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       {testResult && (
-                        <Badge 
-                          className={testResult.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+                        <Badge
+                          className={
+                            testResult.success
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }
                         >
                           {testResult.success ? 'Passed' : 'Failed'}
                         </Badge>
@@ -407,23 +444,30 @@ export default function ModuleTestPage() {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span>Test Score:</span>
-                          <span className={`font-bold ${testResult.success ? 'text-green-600' : 'text-red-600'}`}>
+                          <span
+                            className={`font-bold ${testResult.success ? 'text-green-600' : 'text-red-600'}`}
+                          >
                             {Math.round(testResult.overallScore)}%
                           </span>
                         </div>
-                        
+
                         <div className="space-y-1">
                           {testResult.tests.map((test, index) => {
                             const IconComponent = getTestIcon(test.type)
                             const StatusIcon = getStatusIcon(test.success ? 'success' : 'error')
-                            
+
                             return (
-                              <div key={index} className="flex items-center justify-between text-xs">
+                              <div
+                                key={index}
+                                className="flex items-center justify-between text-xs"
+                              >
                                 <div className="flex items-center gap-1">
                                   <IconComponent className="w-3 h-3" />
                                   <span>{test.name}</span>
                                 </div>
-                                <StatusIcon className={`w-3 h-3 ${getStatusColor(test.success ? 'success' : 'error')}`} />
+                                <StatusIcon
+                                  className={`w-3 h-3 ${getStatusColor(test.success ? 'success' : 'error')}`}
+                                />
                               </div>
                             )
                           })}
@@ -450,7 +494,7 @@ export default function ModuleTestPage() {
                           </>
                         )}
                       </Button>
-                      
+
                       <Button
                         variant="outline"
                         onClick={() => window.open(module.paths.dashboard, '_blank')}
@@ -458,7 +502,7 @@ export default function ModuleTestPage() {
                       >
                         <ExternalLink className="w-4 h-4" />
                       </Button>
-                      
+
                       <Button
                         variant="outline"
                         onClick={() => window.open(module.paths.form, '_blank')}
@@ -483,8 +527,8 @@ export default function ModuleTestPage() {
               <p className="text-gray-500 mb-6">
                 Generate some modules first using the Module Generator
               </p>
-              <Button 
-                onClick={() => window.location.href = '/development/generator'}
+              <Button
+                onClick={() => (window.location.href = '/development/generator')}
                 className="bg-gradient-to-r from-purple-500 to-blue-600"
               >
                 Go to Generator

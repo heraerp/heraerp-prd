@@ -79,12 +79,12 @@ export class GuardrailAutoFixService {
         confidence: 0.9
       })
       corrected.entity_type = 'account'
-      
+
       // Also inject business rules for ledger type
       if (!corrected.metadata) corrected.metadata = {}
       if (!corrected.metadata.business_rules) corrected.metadata.business_rules = {}
       corrected.metadata.business_rules.ledger_type = 'GL'
-      
+
       fixes.push({
         field: 'metadata.business_rules.ledger_type',
         issue: 'Missing ledger type for GL account',
@@ -198,7 +198,7 @@ export class GuardrailAutoFixService {
         let subtype = 'STANDARD'
         if ((payload.metadata as any)?.vip_level) subtype = 'VIP'
         if ((payload.metadata as any)?.category) subtype = payload.metadata.category.toUpperCase()
-        
+
         return pattern.replace('[SUBTYPE]', subtype)
       }
     }
@@ -208,7 +208,7 @@ export class GuardrailAutoFixService {
       if (pattern) {
         let subtype = 'STANDARD'
         if ((payload.metadata as any)?.channel) subtype = payload.metadata.channel.toUpperCase()
-        
+
         return pattern.replace('[SUBTYPE]', subtype)
       }
     }
@@ -221,19 +221,19 @@ export class GuardrailAutoFixService {
    */
   private normalizeTransactionType(type: string): string {
     const normalizations: Record<string, string> = {
-      'sales': 'sale',
-      'order': 'sale',
-      'invoice': 'sale',
-      'purchases': 'purchase',
-      'bill': 'purchase',
-      'receipt': 'payment',
-      'pay': 'payment',
-      'je': 'journal_entry',
-      'journal': 'journal_entry',
-      'booking': 'appointment',
-      'reservation': 'appointment',
-      'close': 'GL.CLOSE',
-      'period_close': 'GL.CLOSE'
+      sales: 'sale',
+      order: 'sale',
+      invoice: 'sale',
+      purchases: 'purchase',
+      bill: 'purchase',
+      receipt: 'payment',
+      pay: 'payment',
+      je: 'journal_entry',
+      journal: 'journal_entry',
+      booking: 'appointment',
+      reservation: 'appointment',
+      close: 'GL.CLOSE',
+      period_close: 'GL.CLOSE'
     }
 
     return normalizations[type.toLowerCase()] || type
@@ -273,25 +273,23 @@ export class GuardrailAutoFixService {
   ): Promise<void> {
     const supabase = getSupabase()
 
-    const { error } = await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'guardrail_autofix',
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        smart_code: `HERA.GUARDRAIL.AUTOFIX.${table.toUpperCase()}.v1`,
-        organization_id: corrected.organization_id || this.currentOrganizationId || 'SYSTEM',
-        metadata: {
-          table_name: table,
-          fixes_applied: fixes.length,
-          fix_details: fixes,
-          original_payload: original,
-          corrected_payload: corrected,
-          context,
-          confidence_score: fixes.reduce((sum, f) => sum + f.confidence, 0) / fixes.length
-        }
-      })
+    const { error } = await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'guardrail_autofix',
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      smart_code: `HERA.GUARDRAIL.AUTOFIX.${table.toUpperCase()}.v1`,
+      organization_id: corrected.organization_id || this.currentOrganizationId || 'SYSTEM',
+      metadata: {
+        table_name: table,
+        fixes_applied: fixes.length,
+        fix_details: fixes,
+        original_payload: original,
+        corrected_payload: corrected,
+        context,
+        confidence_score: fixes.reduce((sum, f) => sum + f.confidence, 0) / fixes.length
+      }
+    })
 
     if (error) {
       console.error('Failed to log auto-fixes:', error)
@@ -360,7 +358,7 @@ export class GuardrailAutoFixService {
 
     history.forEach(record => {
       const metadata = record.metadata
-      
+
       // Count by table
       stats.by_table[metadata.table_name] = (stats.by_table[metadata.table_name] || 0) + 1
 
@@ -372,9 +370,10 @@ export class GuardrailAutoFixService {
       })
     })
 
-    stats.average_confidence = history.length > 0 
-      ? totalConfidence / history.reduce((sum, r) => sum + r.metadata.fix_details.length, 0)
-      : 0
+    stats.average_confidence =
+      history.length > 0
+        ? totalConfidence / history.reduce((sum, r) => sum + r.metadata.fix_details.length, 0)
+        : 0
 
     return stats
   }

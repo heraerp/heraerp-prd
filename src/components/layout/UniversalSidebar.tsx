@@ -2,10 +2,18 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { 
-  Home, Calendar, Users, CreditCard, 
-  BarChart3, Settings, Bell, Plus,
-  Sparkles, X, LucideIcon
+import {
+  Home,
+  Calendar,
+  Users,
+  CreditCard,
+  BarChart3,
+  Settings,
+  Bell,
+  Plus,
+  Sparkles,
+  X,
+  LucideIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -65,7 +73,7 @@ export function UniversalSidebar({
   const isActive = (href: string) => {
     // Extract subdomain from current path
     const subdomain = pathname.match(/^\/~([^\/]+)/)?.[1]
-    
+
     if (subdomain) {
       // Convert href to subdomain path for comparison
       const adjustedHref = baseUrl ? href.replace(baseUrl, `/~${subdomain}${baseUrl}`) : href
@@ -78,16 +86,18 @@ export function UniversalSidebar({
       if (href === baseUrl || href === `${baseUrl}/`) {
         return pathname === baseUrl || pathname === `/org${baseUrl}`
       }
-      return pathname.startsWith(href) || pathname.startsWith(href.replace(baseUrl, `/org${baseUrl}`))
+      return (
+        pathname.startsWith(href) || pathname.startsWith(href.replace(baseUrl, `/org${baseUrl}`))
+      )
     }
   }
 
   const handleNavigation = (href: string) => {
     setShowQuickActionsModal(false)
-    
+
     // Extract subdomain from current path
     const subdomain = pathname.match(/^\/~([^\/]+)/)?.[1]
-    
+
     // Convert relative paths to proper subdomain paths
     if (subdomain && baseUrl && href.startsWith(baseUrl)) {
       const adjustedHref = href.replace(baseUrl, `/~${subdomain}${baseUrl}`)
@@ -102,14 +112,12 @@ export function UniversalSidebar({
   }
 
   if (!mounted) {
-    return (
-      <div className={`w-16 bg-gradient-to-b ${accentGradient} border-r`} />
-    )
+    return <div className={`w-16 bg-gradient-to-b ${accentGradient} border-r`} />
   }
 
   return (
     <TooltipProvider>
-      <div 
+      <div
         className={`
           ${isExpanded ? 'w-64' : 'w-16'}
           bg-gradient-to-b ${accentGradient}
@@ -136,12 +144,16 @@ export function UniversalSidebar({
         <div className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <div className={`flex items-center ${!isExpanded && 'justify-center'}`}>
-              <div className={`w-8 h-8 bg-gradient-to-br ${brandGradient} rounded-lg flex items-center justify-center`}>
+              <div
+                className={`w-8 h-8 bg-gradient-to-br ${brandGradient} rounded-lg flex items-center justify-center`}
+              >
                 <Icon className="w-5 h-5 text-white" />
               </div>
               {isExpanded && (
                 <div className="ml-3">
-                  <h1 className={`text-lg font-bold bg-gradient-to-r ${brandGradient} bg-clip-text text-transparent`}>
+                  <h1
+                    className={`text-lg font-bold bg-gradient-to-r ${brandGradient} bg-clip-text text-transparent`}
+                  >
                     {title}
                   </h1>
                   <p className="text-xs text-gray-600">{subtitle}</p>
@@ -186,7 +198,7 @@ export function UniversalSidebar({
         {/* Navigation Items */}
         <nav className="flex-1 px-3 pb-20 overflow-y-auto scrollbar-hide">
           <div className="space-y-1">
-            {sidebarItems.map((item) => {
+            {sidebarItems.map(item => {
               const active = isActive(item.href)
               const ItemButton = (
                 <Button
@@ -195,9 +207,10 @@ export function UniversalSidebar({
                   className={`
                     w-full 
                     ${!isExpanded ? 'justify-center p-0 h-10' : 'justify-start'}
-                    ${active 
-                      ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50' 
-                      : 'bg-white/50 hover:bg-white/80 text-gray-700'
+                    ${
+                      active
+                        ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50'
+                        : 'bg-white/50 hover:bg-white/80 text-gray-700'
                     }
                     ${item.color}
                     transition-all 
@@ -207,16 +220,18 @@ export function UniversalSidebar({
                     backdrop-blur-sm
                   `}
                   variant="ghost"
-                  size={isExpanded ? "sm" : "icon"}
+                  size={isExpanded ? 'sm' : 'icon'}
                 >
-                  <div className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-gray-600'}`}>
+                  <div
+                    className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-gray-600'}`}
+                  >
                     {item.icon}
                   </div>
                   {isExpanded && (
                     <>
                       <span className="font-medium">{item.label}</span>
                       {item.badge && (
-                        <Badge 
+                        <Badge
                           className={`ml-auto bg-gradient-to-r ${brandGradient} text-white border-0`}
                           variant="secondary"
                         >
@@ -226,7 +241,9 @@ export function UniversalSidebar({
                     </>
                   )}
                   {active && (
-                    <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${brandGradient} rounded-r-full`} />
+                    <div
+                      className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${brandGradient} rounded-r-full`}
+                    />
                   )}
                 </Button>
               )
@@ -235,9 +252,7 @@ export function UniversalSidebar({
                 ItemButton
               ) : (
                 <Tooltip key={item.id} delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    {ItemButton}
-                  </TooltipTrigger>
+                  <TooltipTrigger asChild>{ItemButton}</TooltipTrigger>
                   <TooltipContent side="right">
                     <p>{item.label}</p>
                     {item.badge && (
@@ -251,7 +266,9 @@ export function UniversalSidebar({
         </nav>
 
         {/* Footer Actions */}
-        <div className={`absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t ${accentGradient} to-transparent backdrop-blur-sm`}>
+        <div
+          className={`absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t ${accentGradient} to-transparent backdrop-blur-sm`}
+        >
           <div className={`${isExpanded ? 'space-y-2' : 'space-y-1'}`}>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
@@ -270,20 +287,20 @@ export function UniversalSidebar({
           </div>
 
           <div className="mt-2">
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                className="w-10 h-10 p-0 bg-white/20 hover:bg-white/40 text-slate-600 hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
-                onClick={() => handleNavigation(`${baseUrl}/settings`)}
-              >
-                <Settings className="w-5 h-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              <p>Settings</p>
-            </TooltipContent>
-          </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  className="w-10 h-10 p-0 bg-white/20 hover:bg-white/40 text-slate-600 hover:text-slate-800 border-none hover:shadow-lg hover:scale-105 transition-all duration-200 backdrop-blur-sm"
+                  onClick={() => handleNavigation(`${baseUrl}/settings`)}
+                >
+                  <Settings className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>Settings</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>
@@ -291,14 +308,18 @@ export function UniversalSidebar({
       {/* Quick Actions Modal */}
       {quickActions.length > 0 && (
         <Dialog open={showQuickActionsModal} onOpenChange={setShowQuickActionsModal}>
-          <DialogContent className={`max-w-3xl bg-gradient-to-br ${accentGradient} border-purple-200`}>
+          <DialogContent
+            className={`max-w-3xl bg-gradient-to-br ${accentGradient} border-purple-200`}
+          >
             <DialogHeader>
-              <DialogTitle className={`text-2xl font-bold bg-gradient-to-r ${brandGradient} bg-clip-text text-transparent`}>
+              <DialogTitle
+                className={`text-2xl font-bold bg-gradient-to-r ${brandGradient} bg-clip-text text-transparent`}
+              >
                 Quick Actions
               </DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-              {quickActions.map((item) => (
+              {quickActions.map(item => (
                 <Button
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}

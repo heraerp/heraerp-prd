@@ -14,28 +14,32 @@ interface VibeContextType {
   isVibeInitialized: boolean
   isInitializing: boolean
   currentSession: VibeSession | null
-  
+
   // Context Management
   preserveContext: (context: Partial<VibeContext>) => Promise<string>
   restoreContext: (contextId: string) => Promise<VibeContext>
   searchContexts: (query: string) => Promise<VibeContext[]>
-  
+
   // Component Management
   registerComponent: (component: VibeComponent) => Promise<void>
   getComponent: (smartCode: string) => Promise<VibeComponent | null>
   searchComponents: (pattern: string) => Promise<VibeComponent[]>
-  
+
   // Integration Management
-  createIntegration: (sourceSmartCode: string, targetSmartCode: string, pattern: string) => Promise<IntegrationWeave>
+  createIntegration: (
+    sourceSmartCode: string,
+    targetSmartCode: string,
+    pattern: string
+  ) => Promise<IntegrationWeave>
   validateIntegration: (integrationId: string) => Promise<any>
-  
+
   // Quality Management
   validateQuality: (componentSmartCode: string) => Promise<any>
-  
+
   // Session Management
   initializeVibe: () => Promise<void>
   destroyVibe: () => void
-  
+
   // Error Handling
   lastError: string | null
   clearError: () => void
@@ -57,10 +61,22 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
 
   // Initialize vibe engine when user is authenticated
   useEffect(() => {
-    if (isAuthenticated && user?.user_metadata?.organization_id && autoInitialize && !isVibeInitialized && !isInitializing) {
+    if (
+      isAuthenticated &&
+      user?.user_metadata?.organization_id &&
+      autoInitialize &&
+      !isVibeInitialized &&
+      !isInitializing
+    ) {
       initializeVibe()
     }
-  }, [isAuthenticated, user?.user_metadata?.organization_id, autoInitialize, isVibeInitialized, isInitializing])
+  }, [
+    isAuthenticated,
+    user?.user_metadata?.organization_id,
+    autoInitialize,
+    isVibeInitialized,
+    isInitializing
+  ])
 
   const initializeVibe = async (): Promise<void> => {
     if (!user?.user_metadata?.organization_id) {
@@ -73,14 +89,14 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
 
     try {
       console.log('🧬 Initializing HERA Vibe Coding System...')
-      
+
       // Initialize the vibe engine
       await vibeEngine.initialize(user.user_metadata.organization_id)
-      
+
       // Get current session information
       const session = vibeEngine.getCurrentSession()
       setCurrentSession(session)
-      
+
       // Preserve initialization context
       await preserveContext({
         smart_code: 'HERA.VIBE.FRONTEND.INIT.SUCCESS.v1',
@@ -102,7 +118,6 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       console.log('✅ HERA Vibe Coding System initialized successfully')
       console.log('   Session ID:', session.session_id)
       console.log('   Organization:', user.user_metadata.organization_id)
-      
     } catch (error) {
       console.error('❌ Failed to initialize HERA Vibe Coding System:', error)
       setLastError(error instanceof Error ? error.message : 'Initialization failed')
@@ -116,11 +131,10 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       const contextId = await vibeEngine.preserveContext(context)
       console.log('💾 Context preserved:', contextId)
       return contextId
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Context preservation failed'
       setLastError(errorMessage)
@@ -133,11 +147,10 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       const context = await vibeEngine.restoreContext(contextId)
       console.log('🔄 Context restored:', contextId)
       return context
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Context restoration failed'
       setLastError(errorMessage)
@@ -150,11 +163,10 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       // This would be implemented by the context manager
       // For now, return empty array
       return []
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Context search failed'
       setLastError(errorMessage)
@@ -167,10 +179,9 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       await vibeEngine.registerComponent(component)
       console.log('🔗 Component registered:', component.smart_code)
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Component registration failed'
       setLastError(errorMessage)
@@ -183,11 +194,10 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       // This would use the smart code registry
       // For now, return null
       return null
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Component retrieval failed'
       setLastError(errorMessage)
@@ -200,11 +210,10 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       // This would use the smart code registry
       // For now, return empty array
       return []
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Component search failed'
       setLastError(errorMessage)
@@ -221,11 +230,14 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
-      const integration = await vibeEngine.createIntegration(sourceSmartCode, targetSmartCode, pattern)
+
+      const integration = await vibeEngine.createIntegration(
+        sourceSmartCode,
+        targetSmartCode,
+        pattern
+      )
       console.log('🔀 Integration created:', sourceSmartCode, '→', targetSmartCode)
       return integration
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Integration creation failed'
       setLastError(errorMessage)
@@ -238,7 +250,7 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       // This would use the integration weaver
       // For now, return mock validation
       return {
@@ -247,7 +259,6 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
         performance_score: 95,
         recommendations: []
       }
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Integration validation failed'
       setLastError(errorMessage)
@@ -260,11 +271,15 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
       if (!isVibeInitialized) {
         throw new Error('Vibe system not initialized')
       }
-      
+
       const qualityReport = await vibeEngine.validateQuality(componentSmartCode)
-      console.log('📊 Quality validation:', componentSmartCode, '- Score:', qualityReport.quality_score)
+      console.log(
+        '📊 Quality validation:',
+        componentSmartCode,
+        '- Score:',
+        qualityReport.quality_score
+      )
       return qualityReport
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Quality validation failed'
       setLastError(errorMessage)
@@ -294,38 +309,34 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
     isVibeInitialized,
     isInitializing,
     currentSession,
-    
+
     // Context Management
     preserveContext,
     restoreContext,
     searchContexts,
-    
+
     // Component Management
     registerComponent,
     getComponent,
     searchComponents,
-    
+
     // Integration Management
     createIntegration,
     validateIntegration,
-    
+
     // Quality Management
     validateQuality,
-    
+
     // Session Management
     initializeVibe,
     destroyVibe,
-    
+
     // Error Handling
     lastError,
     clearError
   }
 
-  return (
-    <VibeContext.Provider value={contextValue}>
-      {children}
-    </VibeContext.Provider>
-  )
+  return <VibeContext.Provider value={contextValue}>{children}</VibeContext.Provider>
 }
 
 export function useVibe(): VibeContextType {
@@ -345,7 +356,8 @@ export function useVibeComponent(smartCode: string) {
   useEffect(() => {
     if (vibe.isVibeInitialized && smartCode) {
       setIsLoading(true)
-      vibe.getComponent(smartCode)
+      vibe
+        .getComponent(smartCode)
         .then(setComponent)
         .catch(error => console.warn('Failed to load vibe component:', error))
         .finally(() => setIsLoading(false))

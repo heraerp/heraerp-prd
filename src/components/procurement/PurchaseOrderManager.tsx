@@ -52,13 +52,13 @@ interface PurchaseOrder {
   updated_at: string
   expected_delivery: string | null
   notes: string
-  
+
   supplier: {
     id: string
     name: string
     code: string
   } | null
-  
+
   lines?: PurchaseOrderLine[]
   total_items?: number
 }
@@ -103,18 +103,18 @@ export function PurchaseOrderManager() {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Search and Filter State
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [supplierFilter, setSupplierFilter] = useState<string>('')
-  
+
   // Modal States
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
   const [viewingPO, setViewingPO] = useState<PurchaseOrder | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   // Form State
   const [formData, setFormData] = useState<POFormData>({
     supplier_id: '',
@@ -141,11 +141,11 @@ export function PurchaseOrderManager() {
     try {
       setIsLoading(true)
       setError(null)
-      
+
       console.log('📋 PO Manager: Loading purchase orders...')
       const response = await fetch('/api/v1/procurement/purchase-orders?include_lines=true')
       const result = await response.json()
-      
+
       if (result.success) {
         setPurchaseOrders(result.data)
         setFilteredPOs(result.data)
@@ -189,10 +189,11 @@ export function PurchaseOrderManager() {
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(po =>
-        po.po_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        po.supplier?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        po.supplier?.code.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        po =>
+          po.po_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          po.supplier?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          po.supplier?.code.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -216,7 +217,9 @@ export function PurchaseOrderManager() {
   }, [])
 
   // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -228,15 +231,18 @@ export function PurchaseOrderManager() {
   const addLineItem = () => {
     setFormData(prev => ({
       ...prev,
-      lines: [...prev.lines, {
-        product_id: '',
-        product_name: '',
-        product_code: '',
-        quantity: 1,
-        unit_price: 0,
-        unit_of_measure: 'each',
-        notes: ''
-      }]
+      lines: [
+        ...prev.lines,
+        {
+          product_id: '',
+          product_name: '',
+          product_code: '',
+          quantity: 1,
+          unit_price: 0,
+          unit_of_measure: 'each',
+          notes: ''
+        }
+      ]
     }))
   }
 
@@ -255,7 +261,7 @@ export function PurchaseOrderManager() {
       lines: prev.lines.map((line, i) => {
         if (i === index) {
           const updatedLine = { ...line, [field]: value }
-          
+
           // Auto-populate product details when product is selected
           if (field === 'product_id' && value) {
             const product = products.find(p => p.id === value)
@@ -266,7 +272,7 @@ export function PurchaseOrderManager() {
               updatedLine.unit_of_measure = product.unit_of_measure
             }
           }
-          
+
           return updatedLine
         }
         return line
@@ -289,7 +295,7 @@ export function PurchaseOrderManager() {
   // Handle create purchase order
   const handleCreatePO = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.supplier_id || formData.lines.length === 0) {
       alert('Please select a supplier and add at least one line item')
       return
@@ -402,7 +408,7 @@ export function PurchaseOrderManager() {
               type="text"
               placeholder="Search by PO number or supplier..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -410,7 +416,7 @@ export function PurchaseOrderManager() {
           {/* Status Filter */}
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={e => setStatusFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Status</option>
@@ -426,7 +432,7 @@ export function PurchaseOrderManager() {
           {/* Supplier Filter */}
           <select
             value={supplierFilter}
-            onChange={(e) => setSupplierFilter(e.target.value)}
+            onChange={e => setSupplierFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">All Suppliers</option>
@@ -462,7 +468,7 @@ export function PurchaseOrderManager() {
 
       {/* Purchase Orders List */}
       <div className="space-y-4">
-        {filteredPOs.map((po) => {
+        {filteredPOs.map(po => {
           const StatusIcon = statusConfig[po.status]?.icon || FileText
           return (
             <Card key={po.id} className="p-6 hover:shadow-lg transition-shadow">
@@ -497,7 +503,7 @@ export function PurchaseOrderManager() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
                     <p className="text-lg font-semibold text-gray-900">
@@ -509,7 +515,7 @@ export function PurchaseOrderManager() {
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => viewPODetails(po)}
@@ -518,7 +524,7 @@ export function PurchaseOrderManager() {
                       <Eye className="w-4 h-4 mr-1 inline" />
                       View
                     </button>
-                    
+
                     {/* Status Action Buttons */}
                     {po.status === 'draft' && (
                       <button
@@ -529,7 +535,7 @@ export function PurchaseOrderManager() {
                         Submit
                       </button>
                     )}
-                    
+
                     {po.status === 'submitted' && (
                       <>
                         <button
@@ -583,12 +589,15 @@ export function PurchaseOrderManager() {
               <h2 className="text-xl font-semibold text-gray-900">Create Purchase Order</h2>
               <p className="text-gray-600 mt-1">Create a new purchase order for your supplier</p>
             </div>
-            
+
             <form onSubmit={handleCreatePO} className="p-6 space-y-6">
               {/* Header Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="supplier_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="supplier_id"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Supplier *
                   </label>
                   <select
@@ -607,9 +616,12 @@ export function PurchaseOrderManager() {
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="expected_delivery" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="expected_delivery"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Expected Delivery
                   </label>
                   <input
@@ -626,9 +638,7 @@ export function PurchaseOrderManager() {
               {/* Line Items */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Line Items *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700">Line Items *</label>
                   <button
                     type="button"
                     onClick={addLineItem}
@@ -638,13 +648,16 @@ export function PurchaseOrderManager() {
                     <span>Add Item</span>
                   </button>
                 </div>
-                
+
                 <div className="space-y-3">
                   {formData.lines.map((line, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+                    >
                       <select
                         value={line.product_id}
-                        onChange={(e) => updateLineItem(index, 'product_id', e.target.value)}
+                        onChange={e => updateLineItem(index, 'product_id', e.target.value)}
                         className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                       >
                         <option value="">Select Product</option>
@@ -654,30 +667,34 @@ export function PurchaseOrderManager() {
                           </option>
                         ))}
                       </select>
-                      
+
                       <input
                         type="number"
                         placeholder="Qty"
                         min="1"
                         value={line.quantity}
-                        onChange={(e) => updateLineItem(index, 'quantity', parseInt(e.target.value) || 0)}
+                        onChange={e =>
+                          updateLineItem(index, 'quantity', parseInt(e.target.value) || 0)
+                        }
                         className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                       />
-                      
+
                       <input
                         type="number"
                         placeholder="Price"
                         step="0.01"
                         min="0"
                         value={line.unit_price}
-                        onChange={(e) => updateLineItem(index, 'unit_price', parseFloat(e.target.value) || 0)}
+                        onChange={e =>
+                          updateLineItem(index, 'unit_price', parseFloat(e.target.value) || 0)
+                        }
                         className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                       />
-                      
+
                       <span className="w-20 text-sm font-medium text-gray-900">
                         {formatCurrency(line.quantity * line.unit_price)}
                       </span>
-                      
+
                       <button
                         type="button"
                         onClick={() => removeLineItem(index)}
@@ -687,7 +704,7 @@ export function PurchaseOrderManager() {
                       </button>
                     </div>
                   ))}
-                  
+
                   {formData.lines.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <Package className="w-12 h-12 mx-auto mb-2" />
@@ -695,14 +712,19 @@ export function PurchaseOrderManager() {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Total */}
                 {formData.lines.length > 0 && (
                   <div className="flex justify-end pt-4 border-t border-gray-200 mt-4">
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Total Amount</p>
                       <p className="text-xl font-semibold text-gray-900">
-                        {formatCurrency(formData.lines.reduce((sum, line) => sum + (line.quantity * line.unit_price), 0))}
+                        {formatCurrency(
+                          formData.lines.reduce(
+                            (sum, line) => sum + line.quantity * line.unit_price,
+                            0
+                          )
+                        )}
                       </p>
                     </div>
                   </div>
@@ -769,12 +791,10 @@ export function PurchaseOrderManager() {
                   <h2 className="text-xl font-semibold text-gray-900">{viewingPO.po_number}</h2>
                   <p className="text-gray-600 mt-1">Purchase Order Details</p>
                 </div>
-                <Badge className={statusConfig[viewingPO.status]?.color}>
-                  {viewingPO.status}
-                </Badge>
+                <Badge className={statusConfig[viewingPO.status]?.color}>{viewingPO.status}</Badge>
               </div>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {/* PO Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -803,7 +823,7 @@ export function PurchaseOrderManager() {
                     )}
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3">Supplier</h3>
                   {viewingPO.supplier ? (
@@ -826,10 +846,15 @@ export function PurchaseOrderManager() {
               {/* Line Items */}
               {viewingPO.lines && viewingPO.lines.length > 0 && (
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Line Items ({viewingPO.lines.length})</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Line Items ({viewingPO.lines.length})
+                  </h3>
                   <div className="space-y-2">
-                    {viewingPO.lines.map((line) => (
-                      <div key={line.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    {viewingPO.lines.map(line => (
+                      <div
+                        key={line.id}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      >
                         <div className="flex-1">
                           <p className="font-medium text-gray-900">{line.product_name}</p>
                           <p className="text-sm text-gray-600">{line.product_code}</p>
@@ -889,20 +914,24 @@ export function PurchaseOrderManager() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-purple-700">
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>universal_transactions</strong><br />
+              <strong>universal_transactions</strong>
+              <br />
               Purchase orders stored as standardized business transactions
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>universal_transaction_lines</strong><br />
+              <strong>universal_transaction_lines</strong>
+              <br />
               Line items with product relationships and flexible metadata
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>core_relationships</strong><br />
+              <strong>core_relationships</strong>
+              <br />
               Supplier-PO and Product-PO relationships with smart workflows
             </div>
           </div>
           <p className="text-xs text-purple-600 mt-4">
-            Same architecture supports sales orders, service requests, manufacturing orders, and healthcare billing
+            Same architecture supports sales orders, service requests, manufacturing orders, and
+            healthcare billing
           </p>
         </div>
       </Card>

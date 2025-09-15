@@ -1,10 +1,6 @@
 import { ReactNode } from 'react'
 
-export default function OrgSalonDataLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function OrgSalonDataLayout({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 

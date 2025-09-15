@@ -9,11 +9,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Plus, 
-  Trash2, 
-  Calculator, 
-  Save, 
+import {
+  Plus,
+  Trash2,
+  Calculator,
+  Save,
   Send,
   AlertCircle,
   CheckCircle2,
@@ -29,7 +29,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import {
   Command,
@@ -37,13 +37,9 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
+  CommandList
 } from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { formatDate } from '@/lib/date-utils'
 
 interface JournalLine {
@@ -73,23 +69,85 @@ interface JournalEntryFormProps {
 
 // Mock GL accounts for demo - replace with actual API call
 const MOCK_GL_ACCOUNTS: GLAccount[] = [
-  { id: '1', accountCode: '1000', accountName: 'Cash and Cash Equivalents', accountType: 'Asset', normalBalance: 'debit' },
-  { id: '2', accountCode: '1100', accountName: 'Accounts Receivable', accountType: 'Asset', normalBalance: 'debit' },
-  { id: '3', accountCode: '1200', accountName: 'Inventory', accountType: 'Asset', normalBalance: 'debit' },
-  { id: '4', accountCode: '2000', accountName: 'Accounts Payable', accountType: 'Liability', normalBalance: 'credit' },
-  { id: '5', accountCode: '3000', accountName: 'Share Capital', accountType: 'Equity', normalBalance: 'credit' },
-  { id: '6', accountCode: '4000', accountName: 'Sales Revenue', accountType: 'Revenue', normalBalance: 'credit' },
-  { id: '7', accountCode: '5000', accountName: 'Cost of Goods Sold', accountType: 'Expense', normalBalance: 'debit' },
-  { id: '8', accountCode: '6100', accountName: 'Marketing Expenses', accountType: 'Expense', normalBalance: 'debit' },
-  { id: '9', accountCode: '6200', accountName: 'Administrative Expenses', accountType: 'Expense', normalBalance: 'debit' },
-  { id: '10', accountCode: '6300', accountName: 'Depreciation Expense', accountType: 'Expense', normalBalance: 'debit' },
+  {
+    id: '1',
+    accountCode: '1000',
+    accountName: 'Cash and Cash Equivalents',
+    accountType: 'Asset',
+    normalBalance: 'debit'
+  },
+  {
+    id: '2',
+    accountCode: '1100',
+    accountName: 'Accounts Receivable',
+    accountType: 'Asset',
+    normalBalance: 'debit'
+  },
+  {
+    id: '3',
+    accountCode: '1200',
+    accountName: 'Inventory',
+    accountType: 'Asset',
+    normalBalance: 'debit'
+  },
+  {
+    id: '4',
+    accountCode: '2000',
+    accountName: 'Accounts Payable',
+    accountType: 'Liability',
+    normalBalance: 'credit'
+  },
+  {
+    id: '5',
+    accountCode: '3000',
+    accountName: 'Share Capital',
+    accountType: 'Equity',
+    normalBalance: 'credit'
+  },
+  {
+    id: '6',
+    accountCode: '4000',
+    accountName: 'Sales Revenue',
+    accountType: 'Revenue',
+    normalBalance: 'credit'
+  },
+  {
+    id: '7',
+    accountCode: '5000',
+    accountName: 'Cost of Goods Sold',
+    accountType: 'Expense',
+    normalBalance: 'debit'
+  },
+  {
+    id: '8',
+    accountCode: '6100',
+    accountName: 'Marketing Expenses',
+    accountType: 'Expense',
+    normalBalance: 'debit'
+  },
+  {
+    id: '9',
+    accountCode: '6200',
+    accountName: 'Administrative Expenses',
+    accountType: 'Expense',
+    normalBalance: 'debit'
+  },
+  {
+    id: '10',
+    accountCode: '6300',
+    accountName: 'Depreciation Expense',
+    accountType: 'Expense',
+    normalBalance: 'debit'
+  }
 ]
 
 export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: JournalEntryFormProps) {
   const [journalDate, setJournalDate] = useState(formatDate(new Date(), 'yyyy-MM-dd'))
   const [reference, setReference] = useState('')
   const [description, setDescription] = useState('')
-  const [journalType, setJournalType] = useState<'standard' | 'adjusting' | 'closing' | 'reversing'>('standard')
+  const [journalType, setJournalType] = useState<
+    'standard' | 'adjusting' | 'closing' | 'reversing'
+  >('standard')
   const [lines, setLines] = useState<JournalLine[]>([
     { id: '1', accountCode: '', accountName: '', description: '', debit: 0, credit: 0 },
     { id: '2', accountCode: '', accountName: '', description: '', debit: 0, credit: 0 }
@@ -108,9 +166,11 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
   useEffect(() => {
     const fetchGLAccounts = async () => {
       try {
-        const response = await fetch(`/api/v1/entities?type=gl_account&organizationId=${organizationId}`)
+        const response = await fetch(
+          `/api/v1/entities?type=gl_account&organizationId=${organizationId}`
+        )
         const data = await response.json()
-        
+
         if (data.entities) {
           const accounts: GLAccount[] = data.entities.map((entity: any) => ({
             id: entity.id,
@@ -126,7 +186,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
         // Keep using mock accounts as fallback
       }
     }
-    
+
     if (organizationId) {
       fetchGLAccounts()
     }
@@ -154,29 +214,31 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
 
   // Update line
   const updateLine = (id: string, field: keyof JournalLine, value: any) => {
-    setLines(lines.map(line => {
-      if (line.id === id) {
-        const updated = { ...line, [field]: value }
-        
-        // Auto-fill account name when code is selected
-        if (field === 'accountCode') {
-          const account = glAccounts.find(acc => acc.accountCode === value)
-          if (account) {
-            updated.accountName = account.accountName
+    setLines(
+      lines.map(line => {
+        if (line.id === id) {
+          const updated = { ...line, [field]: value }
+
+          // Auto-fill account name when code is selected
+          if (field === 'accountCode') {
+            const account = glAccounts.find(acc => acc.accountCode === value)
+            if (account) {
+              updated.accountName = account.accountName
+            }
           }
+
+          // Clear opposite amount when entering debit/credit
+          if (field === 'debit' && value > 0) {
+            updated.credit = 0
+          } else if (field === 'credit' && value > 0) {
+            updated.debit = 0
+          }
+
+          return updated
         }
-        
-        // Clear opposite amount when entering debit/credit
-        if (field === 'debit' && value > 0) {
-          updated.credit = 0
-        } else if (field === 'credit' && value > 0) {
-          updated.debit = 0
-        }
-        
-        return updated
-      }
-      return line
-    }))
+        return line
+      })
+    )
   }
 
   // Validate journal entry
@@ -185,23 +247,23 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
       setValidationError('Journal date is required')
       return false
     }
-    
+
     if (!description) {
       setValidationError('Journal description is required')
       return false
     }
-    
+
     const validLines = lines.filter(line => line.accountCode && (line.debit > 0 || line.credit > 0))
     if (validLines.length < 2) {
       setValidationError('At least 2 valid journal lines are required')
       return false
     }
-    
+
     if (!isBalanced) {
       setValidationError('Journal entry must be balanced (Total Debit = Total Credit)')
       return false
     }
-    
+
     setValidationError('')
     return true
   }
@@ -209,7 +271,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
   // Save as draft
   const handleSaveDraft = async () => {
     if (!validateJournal()) return
-    
+
     setLoading(true)
     try {
       const response = await fetch('/api/v1/digital-accountant/journal', {
@@ -225,10 +287,10 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
           lines: lines.filter(line => line.accountCode && (line.debit > 0 || line.credit > 0))
         })
       })
-      
+
       const data = await response.json()
       if (data.error) throw new Error(data.error)
-      
+
       onSuccess?.(data.journalId)
     } catch (error) {
       setValidationError(error instanceof Error ? error.message : 'Failed to save journal entry')
@@ -240,7 +302,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
   // Post journal
   const handlePost = async () => {
     if (!validateJournal()) return
-    
+
     setLoading(true)
     try {
       const response = await fetch('/api/v1/digital-accountant/journal', {
@@ -256,10 +318,10 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
           lines: lines.filter(line => line.accountCode && (line.debit > 0 || line.credit > 0))
         })
       })
-      
+
       const data = await response.json()
       if (data.error) throw new Error(data.error)
-      
+
       onSuccess?.(data.journalId)
     } catch (error) {
       setValidationError(error instanceof Error ? error.message : 'Failed to post journal entry')
@@ -274,7 +336,9 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
       <Card>
         <CardHeader>
           <CardTitle>Journal Entry Information</CardTitle>
-          <CardDescription>Create manual journal entries for adjustments and corrections</CardDescription>
+          <CardDescription>
+            Create manual journal entries for adjustments and corrections
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -284,21 +348,21 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                 id="journal-date"
                 type="date"
                 value={journalDate}
-                onChange={(e) => setJournalDate(e.target.value)}
+                onChange={e => setJournalDate(e.target.value)}
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="reference">Reference Number</Label>
               <Input
                 id="reference"
                 placeholder="JE-2025-001"
                 value={reference}
-                onChange={(e) => setReference(e.target.value)}
+                onChange={e => setReference(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="journal-type">Journal Type</Label>
               <Select value={journalType} onValueChange={(value: any) => setJournalType(value)}>
@@ -313,7 +377,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Status</Label>
               <div className="flex items-center h-10">
@@ -324,32 +388,27 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="description">Description *</Label>
             <Textarea
               id="description"
               placeholder="Enter journal entry description..."
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
               rows={2}
               required
             />
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Journal Lines */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Journal Lines</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={addLine}
-              className="gap-2"
-            >
+            <Button variant="outline" size="sm" onClick={addLine} className="gap-2">
               <Plus className="h-4 w-4" />
               Add Line
             </Button>
@@ -373,7 +432,9 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                     <td className="py-2 px-2">
                       <Popover
                         open={accountSearchOpen[line.id] || false}
-                        onOpenChange={(open) => setAccountSearchOpen({ ...accountSearchOpen, [line.id]: open })}
+                        onOpenChange={open =>
+                          setAccountSearchOpen({ ...accountSearchOpen, [line.id]: open })
+                        }
                       >
                         <PopoverTrigger asChild>
                           <Button
@@ -382,7 +443,9 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                             aria-expanded={accountSearchOpen[line.id] || false}
                             className="w-full justify-between text-left font-normal"
                           >
-                            {line.accountCode ? `${line.accountCode} - ${line.accountName}` : 'Select account...'}
+                            {line.accountCode
+                              ? `${line.accountCode} - ${line.accountName}`
+                              : 'Select account...'}
                             <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
@@ -392,18 +455,25 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                             <CommandList>
                               <CommandEmpty>No account found.</CommandEmpty>
                               <CommandGroup>
-                                {glAccounts.map((account) => (
+                                {glAccounts.map(account => (
                                   <CommandItem
                                     key={account.id}
                                     value={account.accountCode}
-                                    onSelect={(value) => {
+                                    onSelect={value => {
                                       updateLine(line.id, 'accountCode', value)
-                                      setAccountSearchOpen({ ...accountSearchOpen, [line.id]: false })
+                                      setAccountSearchOpen({
+                                        ...accountSearchOpen,
+                                        [line.id]: false
+                                      })
                                     }}
                                   >
                                     <div className="flex-1">
-                                      <div className="font-medium">{account.accountCode} - {account.accountName}</div>
-                                      <div className="text-xs text-muted-foreground">{account.accountType}</div>
+                                      <div className="font-medium">
+                                        {account.accountCode} - {account.accountName}
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        {account.accountType}
+                                      </div>
                                     </div>
                                   </CommandItem>
                                 ))}
@@ -417,7 +487,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                       <Input
                         placeholder="Line description"
                         value={line.description}
-                        onChange={(e) => updateLine(line.id, 'description', e.target.value)}
+                        onChange={e => updateLine(line.id, 'description', e.target.value)}
                       />
                     </td>
                     <td className="py-2 px-2">
@@ -425,7 +495,9 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                         type="number"
                         placeholder="0.00"
                         value={line.debit || ''}
-                        onChange={(e) => updateLine(line.id, 'debit', parseFloat(e.target.value) || 0)}
+                        onChange={e =>
+                          updateLine(line.id, 'debit', parseFloat(e.target.value) || 0)
+                        }
                         className="text-right"
                         step="0.01"
                       />
@@ -435,7 +507,9 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                         type="number"
                         placeholder="0.00"
                         value={line.credit || ''}
-                        onChange={(e) => updateLine(line.id, 'credit', parseFloat(e.target.value) || 0)}
+                        onChange={e =>
+                          updateLine(line.id, 'credit', parseFloat(e.target.value) || 0)
+                        }
                         className="text-right"
                         step="0.01"
                       />
@@ -458,18 +532,14 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                   <td colSpan={2} className="py-2 px-2 text-right font-medium">
                     Total
                   </td>
-                  <td className="py-2 px-2 text-right font-medium">
-                    {totalDebit.toFixed(2)}
-                  </td>
-                  <td className="py-2 px-2 text-right font-medium">
-                    {totalCredit.toFixed(2)}
-                  </td>
+                  <td className="py-2 px-2 text-right font-medium">{totalDebit.toFixed(2)}</td>
+                  <td className="py-2 px-2 text-right font-medium">{totalCredit.toFixed(2)}</td>
                   <td></td>
                 </tr>
               </tfoot>
             </table>
           </div>
-          
+
           {/* Balance Status */}
           <div className="mt-4">
             {isBalanced ? (
@@ -483,11 +553,12 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Journal entry is not balanced. Difference: {Math.abs(totalDebit - totalCredit).toFixed(2)}
+                  Journal entry is not balanced. Difference:{' '}
+                  {Math.abs(totalDebit - totalCredit).toFixed(2)}
                 </AlertDescription>
               </Alert>
             )}
-            
+
             {validationError && (
               <Alert variant="destructive" className="mt-2">
                 <AlertCircle className="h-4 w-4" />
@@ -497,14 +568,10 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Actions */}
       <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={handleSaveDraft}
-          disabled={loading}
-        >
+        <Button variant="outline" onClick={handleSaveDraft} disabled={loading}>
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
           ) : (
@@ -512,10 +579,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
           )}
           Save as Draft
         </Button>
-        <Button
-          onClick={handlePost}
-          disabled={loading || !isBalanced}
-        >
+        <Button onClick={handlePost} disabled={loading || !isBalanced}>
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
           ) : (

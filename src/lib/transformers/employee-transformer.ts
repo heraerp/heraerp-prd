@@ -20,13 +20,13 @@ export function transformToUIEmployee(data: {
   relationships: any[]
 }): UIEmployee {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -44,15 +44,16 @@ export function transformToUIEmployee(data: {
 
 export function filterEmployee(items: UIEmployee[], searchTerm: string): UIEmployee[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.email?.toLowerCase().includes(term) ||
-    item.phone?.toLowerCase().includes(term) ||
-    item.role?.toLowerCase().includes(term) ||
-    item.specialties?.toLowerCase().includes(term) ||
-    item.hourly_rate?.toLowerCase().includes(term) ||
-    item.commission_rate?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.email?.toLowerCase().includes(term) ||
+      item.phone?.toLowerCase().includes(term) ||
+      item.role?.toLowerCase().includes(term) ||
+      item.specialties?.toLowerCase().includes(term) ||
+      item.hourly_rate?.toLowerCase().includes(term) ||
+      item.commission_rate?.toLowerCase().includes(term)
   )
 }

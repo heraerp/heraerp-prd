@@ -18,8 +18,11 @@ class OptimizedJWTService {
   async validateAndRefreshSession(token?: string): Promise<OptimizedSession> {
     try {
       // Get current session from Supabase
-      const { data: { session }, error } = await supabase.auth.getSession()
-      
+      const {
+        data: { session },
+        error
+      } = await supabase.auth.getSession()
+
       if (error || !session) {
         return { valid: false }
       }
@@ -32,8 +35,11 @@ class OptimizedJWTService {
       let currentSession = session
 
       if (needsRefresh) {
-        const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession()
-        
+        const {
+          data: { session: refreshedSession },
+          error: refreshError
+        } = await supabase.auth.refreshSession()
+
         if (!refreshError && refreshedSession) {
           currentSession = refreshedSession
           refreshed = true
@@ -44,14 +50,16 @@ class OptimizedJWTService {
         valid: true,
         token: currentSession.access_token,
         user: currentSession.user,
-        expiresAt: currentSession.expires_at ? currentSession.expires_at * 1000 : Date.now() + 3600000,
+        expiresAt: currentSession.expires_at
+          ? currentSession.expires_at * 1000
+          : Date.now() + 3600000,
         refreshed
       }
 
       // Cache the session
       if (currentSession.access_token) {
         this.sessionCache.set(currentSession.access_token, optimizedSession)
-        
+
         // Clear cache after duration
         setTimeout(() => {
           this.sessionCache.delete(currentSession.access_token!)
@@ -59,7 +67,6 @@ class OptimizedJWTService {
       }
 
       return optimizedSession
-
     } catch (error) {
       console.error('Session validation failed:', error)
       return { valid: false }
@@ -79,7 +86,11 @@ class OptimizedJWTService {
     }
 
     // For demo purposes, accept demo tokens
-    if (token.startsWith('demo-token') || token.startsWith('anon_token_') || token.startsWith('auth_token_')) {
+    if (
+      token.startsWith('demo-token') ||
+      token.startsWith('anon_token_') ||
+      token.startsWith('auth_token_')
+    ) {
       return {
         valid: true,
         token,

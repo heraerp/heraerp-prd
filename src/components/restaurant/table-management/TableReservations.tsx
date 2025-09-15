@@ -14,7 +14,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import {
@@ -82,7 +82,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterTable, setFilterTable] = useState<string>('all')
-  
+
   // Form state
   const [formData, setFormData] = useState({
     table_id: '',
@@ -102,7 +102,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
     try {
       const response = await fetch('/api/v1/restaurant/reservations')
       const result = await response.json()
-      
+
       if (result.success) {
         setReservations(result.data || [])
       } else {
@@ -120,16 +120,20 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
 
   // Filter reservations
   const filteredReservations = reservations.filter(reservation => {
-    const matchesSearch = reservation.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         reservation.customer_phone.includes(searchQuery) ||
-                         reservation.table_number.includes(searchQuery)
+    const matchesSearch =
+      reservation.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reservation.customer_phone.includes(searchQuery) ||
+      reservation.table_number.includes(searchQuery)
     const matchesStatus = filterStatus === 'all' || reservation.status === filterStatus
     const matchesTable = filterTable === 'all' || reservation.table_id === filterTable
-    const matchesDate = viewMode === 'day' ? isSameDay(parseISO(reservation.reservation_date), selectedDate) :
-                       viewMode === 'week' ? reservation.reservation_date >= formatDate(startOfWeek(selectedDate), 'yyyy-MM-dd') &&
-                                            reservation.reservation_date <= formatDate(endOfWeek(selectedDate), 'yyyy-MM-dd') :
-                       true // For month view, show all
-    
+    const matchesDate =
+      viewMode === 'day'
+        ? isSameDay(parseISO(reservation.reservation_date), selectedDate)
+        : viewMode === 'week'
+          ? reservation.reservation_date >= formatDate(startOfWeek(selectedDate), 'yyyy-MM-dd') &&
+            reservation.reservation_date <= formatDate(endOfWeek(selectedDate), 'yyyy-MM-dd')
+          : true // For month view, show all
+
     return matchesSearch && matchesStatus && matchesTable && matchesDate
   })
 
@@ -141,7 +145,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Reservation created successfully')
@@ -164,7 +168,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success(`Reservation ${status}`)
@@ -183,12 +187,12 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
       const response = await fetch(`/api/v1/restaurant/reservations/${reservationId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           status: 'cancelled',
-          cancellation_reason: reason 
+          cancellation_reason: reason
         })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Reservation cancelled')
@@ -236,16 +240,18 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
       const conflictingReservation = reservations.find(res => {
         if (res.table_id !== table.id || res.status === 'cancelled') return false
         if (res.reservation_date !== date) return false
-        
+
         // Check time overlap
-        const resStart = parseInt(res.reservation_time.split(':')[0]) * 60 + parseInt(res.reservation_time.split(':')[1])
+        const resStart =
+          parseInt(res.reservation_time.split(':')[0]) * 60 +
+          parseInt(res.reservation_time.split(':')[1])
         const resEnd = resStart + res.duration_minutes
         const newStart = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1])
         const newEnd = newStart + duration
-        
-        return (newStart < resEnd && newEnd > resStart)
+
+        return newStart < resEnd && newEnd > resStart
       })
-      
+
       return !conflictingReservation
     })
   }
@@ -258,9 +264,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
           {/* Time slots */}
           {Array.from({ length: 14 }, (_, i) => i + 9).map(hour => (
             <div key={hour} className="flex items-start space-x-4">
-              <div className="w-16 text-sm text-gray-500 pt-2">
-                {hour}:00
-              </div>
+              <div className="w-16 text-sm text-gray-500 pt-2">{hour}:00</div>
               <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
                 {filteredReservations
                   .filter(res => parseInt(res.reservation_time.split(':')[0]) === hour)
@@ -268,10 +272,13 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                     <div
                       key={reservation.id}
                       className={`p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md ${
-                        reservation.status === 'confirmed' ? 'bg-blue-50 border-blue-200' :
-                        reservation.status === 'seated' ? 'bg-green-50 border-green-200' :
-                        reservation.status === 'cancelled' ? 'bg-red-50 border-red-200' :
-                        'bg-gray-50 border-gray-200'
+                        reservation.status === 'confirmed'
+                          ? 'bg-blue-50 border-blue-200'
+                          : reservation.status === 'seated'
+                            ? 'bg-green-50 border-green-200'
+                            : reservation.status === 'cancelled'
+                              ? 'bg-red-50 border-red-200'
+                              : 'bg-gray-50 border-gray-200'
                       }`}
                       onClick={() => {
                         setSelectedReservation(reservation)
@@ -279,7 +286,9 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                       }}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-sm">Table {reservation.table_number}</span>
+                        <span className="font-semibold text-sm">
+                          Table {reservation.table_number}
+                        </span>
                         <Badge className={getStatusBadge(reservation.status)} variant="secondary">
                           {reservation.status}
                         </Badge>
@@ -291,9 +300,13 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         </div>
                         <div className="flex items-center space-x-1 text-xs text-gray-600">
                           <Clock className="w-3 h-3" />
-                          <span>{reservation.reservation_time} ({reservation.duration_minutes}min)</span>
+                          <span>
+                            {reservation.reservation_time} ({reservation.duration_minutes}min)
+                          </span>
                         </div>
-                        <div className="text-xs font-medium truncate">{reservation.customer_name}</div>
+                        <div className="text-xs font-medium truncate">
+                          {reservation.customer_name}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -303,7 +316,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
         </div>
       )
     }
-    
+
     return null // Week and month views would be implemented similarly
   }
 
@@ -316,18 +329,30 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
             <h3 className="text-lg font-semibold text-gray-900">Reservations</h3>
             <p className="text-sm text-gray-600 mt-1">Manage table reservations and bookings</p>
           </div>
-          
+
           <div className="flex items-center space-x-3">
-            <Button variant="outline" onClick={() => setViewMode('day')} className={viewMode === 'day' ? 'bg-gray-100' : ''}>
+            <Button
+              variant="outline"
+              onClick={() => setViewMode('day')}
+              className={viewMode === 'day' ? 'bg-gray-100' : ''}
+            >
               Day
             </Button>
-            <Button variant="outline" onClick={() => setViewMode('week')} className={viewMode === 'week' ? 'bg-gray-100' : ''}>
+            <Button
+              variant="outline"
+              onClick={() => setViewMode('week')}
+              className={viewMode === 'week' ? 'bg-gray-100' : ''}
+            >
               Week
             </Button>
-            <Button variant="outline" onClick={() => setViewMode('month')} className={viewMode === 'month' ? 'bg-gray-100' : ''}>
+            <Button
+              variant="outline"
+              onClick={() => setViewMode('month')}
+              className={viewMode === 'month' ? 'bg-gray-100' : ''}
+            >
               Month
             </Button>
-            
+
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={resetForm}>
@@ -338,11 +363,9 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
               <DialogContent className="max-w-lg">
                 <DialogHeader>
                   <DialogTitle>New Reservation</DialogTitle>
-                  <DialogDescription>
-                    Create a new table reservation
-                  </DialogDescription>
+                  <DialogDescription>Create a new table reservation</DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -351,7 +374,9 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         id="reservation_date"
                         type="date"
                         value={formData.reservation_date}
-                        onChange={(e) => setFormData({ ...formData, reservation_date: e.target.value })}
+                        onChange={e =>
+                          setFormData({ ...formData, reservation_date: e.target.value })
+                        }
                       />
                     </div>
                     <div>
@@ -360,11 +385,13 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         id="reservation_time"
                         type="time"
                         value={formData.reservation_time}
-                        onChange={(e) => setFormData({ ...formData, reservation_time: e.target.value })}
+                        onChange={e =>
+                          setFormData({ ...formData, reservation_time: e.target.value })
+                        }
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="party_size">Party Size</Label>
@@ -372,7 +399,9 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         id="party_size"
                         type="number"
                         value={formData.party_size}
-                        onChange={(e) => setFormData({ ...formData, party_size: parseInt(e.target.value) })}
+                        onChange={e =>
+                          setFormData({ ...formData, party_size: parseInt(e.target.value) })
+                        }
                         min="1"
                         max="20"
                       />
@@ -383,48 +412,54 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         id="duration_minutes"
                         type="number"
                         value={formData.duration_minutes}
-                        onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
+                        onChange={e =>
+                          setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })
+                        }
                         min="30"
                         max="480"
                         step="30"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="table_id">Table</Label>
                     <select
                       id="table_id"
                       value={formData.table_id}
-                      onChange={(e) => setFormData({ ...formData, table_id: e.target.value })}
+                      onChange={e => setFormData({ ...formData, table_id: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select a table</option>
-                      {getAvailableTables(formData.reservation_date, formData.reservation_time, formData.duration_minutes).map(table => (
+                      {getAvailableTables(
+                        formData.reservation_date,
+                        formData.reservation_time,
+                        formData.duration_minutes
+                      ).map(table => (
                         <option key={table.id} value={table.id}>
                           Table {table.table_number} (Capacity: {table.capacity})
                         </option>
                       ))}
                     </select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="customer_name">Customer Name</Label>
                     <Input
                       id="customer_name"
                       value={formData.customer_name}
-                      onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                      onChange={e => setFormData({ ...formData, customer_name: e.target.value })}
                       placeholder="John Doe"
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="customer_phone">Phone</Label>
                       <Input
                         id="customer_phone"
                         value={formData.customer_phone}
-                        onChange={(e) => setFormData({ ...formData, customer_phone: e.target.value })}
+                        onChange={e => setFormData({ ...formData, customer_phone: e.target.value })}
                         placeholder="+1 234 567 8900"
                       />
                     </div>
@@ -434,48 +469,48 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                         id="customer_email"
                         type="email"
                         value={formData.customer_email}
-                        onChange={(e) => setFormData({ ...formData, customer_email: e.target.value })}
+                        onChange={e => setFormData({ ...formData, customer_email: e.target.value })}
                         placeholder="john@example.com"
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="special_requests">Special Requests</Label>
                     <Input
                       id="special_requests"
                       value={formData.special_requests}
-                      onChange={(e) => setFormData({ ...formData, special_requests: e.target.value })}
+                      onChange={e => setFormData({ ...formData, special_requests: e.target.value })}
                       placeholder="Allergies, celebrations, preferences..."
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="deposit_amount">Deposit Amount (optional)</Label>
                     <Input
                       id="deposit_amount"
                       type="number"
                       value={formData.deposit_amount}
-                      onChange={(e) => setFormData({ ...formData, deposit_amount: parseFloat(e.target.value) })}
+                      onChange={e =>
+                        setFormData({ ...formData, deposit_amount: parseFloat(e.target.value) })
+                      }
                       min="0"
                       step="0.01"
                     />
                   </div>
                 </div>
-                
+
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={createReservation}>
-                    Create Reservation
-                  </Button>
+                  <Button onClick={createReservation}>Create Reservation</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
         </div>
-        
+
         {/* Date Navigation */}
         <div className="flex items-center justify-between mt-6">
           <div className="flex items-center space-x-4">
@@ -497,26 +532,22 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
               <ChevronRight className="w-4 h-4" />
             </Button>
             {!isTodaySafe(selectedDate) && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedDate(new Date())}
-              >
+              <Button variant="outline" size="sm" onClick={() => setSelectedDate(new Date())}>
                 Today
               </Button>
             )}
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Input
               placeholder="Search reservations..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-64"
             />
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={e => setFilterStatus(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Status</option>
@@ -530,12 +561,10 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
           </div>
         </div>
       </Card>
-      
+
       {/* Calendar View */}
-      <Card className="p-6">
-        {renderCalendarView()}
-      </Card>
-      
+      <Card className="p-6">{renderCalendarView()}</Card>
+
       {/* Reservation Details Dialog */}
       {selectedReservation && (
         <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
@@ -543,10 +572,12 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
             <DialogHeader>
               <DialogTitle>Reservation Details</DialogTitle>
               <DialogDescription>
-                Table {selectedReservation.table_number} • {formatDate(parseISO(selectedReservation.reservation_date), 'MMM d, yyyy')} at {selectedReservation.reservation_time}
+                Table {selectedReservation.table_number} •{' '}
+                {formatDate(parseISO(selectedReservation.reservation_date), 'MMM d, yyyy')} at{' '}
+                {selectedReservation.reservation_time}
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4 py-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Status</span>
@@ -554,7 +585,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                   {selectedReservation.status}
                 </Badge>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <Users className="w-4 h-4 text-gray-400" />
@@ -563,31 +594,31 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                     <p className="text-sm text-gray-600">{selectedReservation.party_size} guests</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-3">
                   <Phone className="w-4 h-4 text-gray-400" />
                   <p className="text-sm">{selectedReservation.customer_phone}</p>
                 </div>
-                
+
                 {selectedReservation.customer_email && (
                   <div className="flex items-center space-x-3">
                     <Mail className="w-4 h-4 text-gray-400" />
                     <p className="text-sm">{selectedReservation.customer_email}</p>
                   </div>
                 )}
-                
+
                 <div className="flex items-center space-x-3">
                   <Timer className="w-4 h-4 text-gray-400" />
                   <p className="text-sm">{selectedReservation.duration_minutes} minutes</p>
                 </div>
-                
+
                 {selectedReservation.special_requests && (
                   <div className="flex items-start space-x-3">
                     <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5" />
                     <p className="text-sm">{selectedReservation.special_requests}</p>
                   </div>
                 )}
-                
+
                 {(selectedReservation.deposit_amount || 0) > 0 && (
                   <div className="flex items-center space-x-3">
                     <DollarSign className="w-4 h-4 text-gray-400" />
@@ -600,7 +631,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                   </div>
                 )}
               </div>
-              
+
               <div className="pt-4 border-t space-y-2">
                 {selectedReservation.status === 'pending' && (
                   <>
@@ -627,7 +658,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                     </Button>
                   </>
                 )}
-                
+
                 {selectedReservation.status === 'confirmed' && (
                   <>
                     <Button
@@ -653,7 +684,7 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                     </Button>
                   </>
                 )}
-                
+
                 {selectedReservation.status === 'seated' && (
                   <Button
                     className="w-full"

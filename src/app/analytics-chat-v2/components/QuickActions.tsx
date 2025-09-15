@@ -3,7 +3,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   Zap,
   TrendingUp,
   FileText,
@@ -60,7 +60,7 @@ export function QuickActions({ className }: QuickActionsProps) {
   ]
 
   return (
-    <Card className={cn("border-purple-200 dark:border-purple-800 shadow-sm", className)}>
+    <Card className={cn('border-purple-200 dark:border-purple-800 shadow-sm', className)}>
       <CardHeader className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
         <CardTitle className="text-sm flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center">
@@ -79,7 +79,12 @@ export function QuickActions({ className }: QuickActionsProps) {
               className="h-auto flex flex-col items-center justify-center py-3 px-3 hover:scale-105 transition-all hover:shadow-md border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600"
               onClick={action.onClick}
             >
-              <div className={cn("w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center mb-2", action.color)}>
+              <div
+                className={cn(
+                  'w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center mb-2',
+                  action.color
+                )}
+              >
                 <Icon className="h-4 w-4 text-white" />
               </div>
               <span className="text-sm font-medium">{action.label}</span>

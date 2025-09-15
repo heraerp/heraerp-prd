@@ -1,6 +1,6 @@
 /**
  * HERA Appointment Management Hook
- * 
+ *
  * React hook for appointment functionality
  */
 
@@ -46,7 +46,7 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
   const { currentOrganization, user } = useMultiOrgAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  
+
   // State for appointment data
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [stats, setStats] = useState<AppointmentStats>({
@@ -64,149 +64,161 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
   const organizationId = options.organizationId || currentOrganization?.id
 
   // Create a new appointment
-  const createAppointment = useCallback(async (data: {
-    customerId: string
-    serviceId: string
-    staffId: string
-    appointmentDate: string
-    appointmentTime: string
-    duration: number
-    notes?: string
-  }) => {
-    if (!organizationId) {
-      toast({
-        title: 'Error',
-        description: 'No organization context found',
-        variant: 'destructive'
-      })
-      return null
-    }
+  const createAppointment = useCallback(
+    async (data: {
+      customerId: string
+      serviceId: string
+      staffId: string
+      appointmentDate: string
+      appointmentTime: string
+      duration: number
+      notes?: string
+    }) => {
+      if (!organizationId) {
+        toast({
+          title: 'Error',
+          description: 'No organization context found',
+          variant: 'destructive'
+        })
+        return null
+      }
 
-    setLoading(true)
-    setError(null)
+      setLoading(true)
+      setError(null)
 
-    try {
-      const result = await appointmentApi.createAppointment(data, organizationId)
-      
-      toast({
-        title: 'Success',
-        description: 'Appointment created successfully',
-      })
+      try {
+        const result = await appointmentApi.createAppointment(data, organizationId)
 
-      // Refresh data
-      await refreshAppointments()
+        toast({
+          title: 'Success',
+          description: 'Appointment created successfully'
+        })
 
-      return result
-    } catch (err) {
-      const error = err as Error
-      setError(error)
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive'
-      })
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [organizationId])
+        // Refresh data
+        await refreshAppointments()
+
+        return result
+      } catch (err) {
+        const error = err as Error
+        setError(error)
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive'
+        })
+        return null
+      } finally {
+        setLoading(false)
+      }
+    },
+    [organizationId]
+  )
 
   // Confirm an appointment
-  const confirmAppointment = useCallback(async (appointmentId: string) => {
-    if (!organizationId) return null
+  const confirmAppointment = useCallback(
+    async (appointmentId: string) => {
+      if (!organizationId) return null
 
-    setLoading(true)
-    try {
-      const result = await appointmentApi.updateAppointmentStatus(
-        appointmentId,
-        'confirmed',
-        organizationId
-      )
+      setLoading(true)
+      try {
+        const result = await appointmentApi.updateAppointmentStatus(
+          appointmentId,
+          'confirmed',
+          organizationId
+        )
 
-      toast({
-        title: 'Success',
-        description: 'Appointment confirmed',
-      })
+        toast({
+          title: 'Success',
+          description: 'Appointment confirmed'
+        })
 
-      await refreshAppointments()
-      return result
-    } catch (err) {
-      const error = err as Error
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive'
-      })
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [organizationId])
+        await refreshAppointments()
+        return result
+      } catch (err) {
+        const error = err as Error
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive'
+        })
+        return null
+      } finally {
+        setLoading(false)
+      }
+    },
+    [organizationId]
+  )
 
   // Cancel an appointment
-  const cancelAppointment = useCallback(async (appointmentId: string, reason?: string) => {
-    if (!organizationId) return null
+  const cancelAppointment = useCallback(
+    async (appointmentId: string, reason?: string) => {
+      if (!organizationId) return null
 
-    setLoading(true)
-    try {
-      const result = await appointmentApi.updateAppointmentStatus(
-        appointmentId,
-        'cancelled',
-        organizationId,
-        reason
-      )
+      setLoading(true)
+      try {
+        const result = await appointmentApi.updateAppointmentStatus(
+          appointmentId,
+          'cancelled',
+          organizationId,
+          reason
+        )
 
-      toast({
-        title: 'Success',
-        description: 'Appointment cancelled',
-      })
+        toast({
+          title: 'Success',
+          description: 'Appointment cancelled'
+        })
 
-      await refreshAppointments()
-      return result
-    } catch (err) {
-      const error = err as Error
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive'
-      })
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [organizationId])
+        await refreshAppointments()
+        return result
+      } catch (err) {
+        const error = err as Error
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive'
+        })
+        return null
+      } finally {
+        setLoading(false)
+      }
+    },
+    [organizationId]
+  )
 
   // Complete an appointment
-  const completeAppointment = useCallback(async (appointmentId: string) => {
-    if (!organizationId) return null
+  const completeAppointment = useCallback(
+    async (appointmentId: string) => {
+      if (!organizationId) return null
 
-    setLoading(true)
-    try {
-      const result = await appointmentApi.updateAppointmentStatus(
-        appointmentId,
-        'completed',
-        organizationId
-      )
+      setLoading(true)
+      try {
+        const result = await appointmentApi.updateAppointmentStatus(
+          appointmentId,
+          'completed',
+          organizationId
+        )
 
-      toast({
-        title: 'Success',
-        description: 'Appointment marked as completed',
-      })
+        toast({
+          title: 'Success',
+          description: 'Appointment marked as completed'
+        })
 
-      await refreshAppointments()
-      return result
-    } catch (err) {
-      const error = err as Error
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive'
-      })
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [organizationId])
+        await refreshAppointments()
+        return result
+      } catch (err) {
+        const error = err as Error
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive'
+        })
+        return null
+      } finally {
+        setLoading(false)
+      }
+    },
+    [organizationId]
+  )
 
   // Refresh all appointment data
   const refreshAppointments = useCallback(async () => {
@@ -216,7 +228,7 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
     try {
       // Fetch all appointments for this organization
       const appointmentsData = await appointmentApi.getAppointments(organizationId)
-      
+
       // Transform the data to our Appointment interface
       const transformedAppointments = appointmentsData.map((apt: any) => ({
         id: apt.id,
@@ -245,12 +257,12 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
 
       const todayAppointments = transformedAppointments.filter(
-        apt => apt.appointmentDate >= today && apt.appointmentDate < new Date(today.getTime() + 24 * 60 * 60 * 1000)
+        apt =>
+          apt.appointmentDate >= today &&
+          apt.appointmentDate < new Date(today.getTime() + 24 * 60 * 60 * 1000)
       )
 
-      const weekAppointments = transformedAppointments.filter(
-        apt => apt.appointmentDate >= weekAgo
-      )
+      const weekAppointments = transformedAppointments.filter(apt => apt.appointmentDate >= weekAgo)
 
       const monthAppointments = transformedAppointments.filter(
         apt => apt.appointmentDate >= monthStart
@@ -297,14 +309,14 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
     error,
     appointments,
     stats,
-    
+
     // Actions
     createAppointment,
     confirmAppointment,
     cancelAppointment,
     completeAppointment,
     refreshAppointments,
-    
+
     // Context
     organizationId,
     userId: user?.id

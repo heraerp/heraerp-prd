@@ -5,10 +5,7 @@ interface RouteParams {
   params: Promise<{ fileId: string }>
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: RouteParams
-) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { fileId } = await params
     const { searchParams } = new URL(request.url)
@@ -16,28 +13,37 @@ export async function DELETE(
     const organizationId = searchParams.get('organizationId')
 
     if (!documentId || !organizationId) {
-      return NextResponse.json({
-        success: false,
-        message: 'Missing required parameters: documentId, organizationId'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Missing required parameters: documentId, organizationId'
+        },
+        { status: 400 }
+      )
     }
 
     // Get current document
     const document = await enhancedAuditDocumentService.getDocument(documentId, organizationId)
     if (!document) {
-      return NextResponse.json({
-        success: false,
-        message: 'Document not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Document not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Find the file to delete
     const fileToDelete = document.files.find(f => f.id === fileId)
     if (!fileToDelete) {
-      return NextResponse.json({
-        success: false,
-        message: 'File not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'File not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Delete file from Supabase storage
@@ -52,7 +58,7 @@ export async function DELETE(
 
     // Remove file from document files array
     const updatedFiles = document.files.filter(f => f.id !== fileId)
-    
+
     // Update document with new file list and possibly change status
     const updates = {
       files: updatedFiles,
@@ -80,21 +86,20 @@ export async function DELETE(
         remaining_files: updatedFiles.length
       }
     })
-
   } catch (error) {
     console.error('File delete error:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to delete file',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to delete file',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: RouteParams
-) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { fileId } = await params
     const { searchParams } = new URL(request.url)
@@ -102,27 +107,36 @@ export async function GET(
     const organizationId = searchParams.get('organizationId')
 
     if (!documentId || !organizationId) {
-      return NextResponse.json({
-        success: false,
-        message: 'Missing required parameters: documentId, organizationId'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Missing required parameters: documentId, organizationId'
+        },
+        { status: 400 }
+      )
     }
 
     // Get document and find specific file
     const document = await enhancedAuditDocumentService.getDocument(documentId, organizationId)
     if (!document) {
-      return NextResponse.json({
-        success: false,
-        message: 'Document not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Document not found'
+        },
+        { status: 404 }
+      )
     }
 
     const file = document.files.find(f => f.id === fileId)
     if (!file) {
-      return NextResponse.json({
-        success: false,
-        message: 'File not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'File not found'
+        },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({
@@ -133,13 +147,15 @@ export async function GET(
         organization_id: organizationId
       }
     })
-
   } catch (error) {
     console.error('Error fetching file:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch file'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Failed to fetch file'
+      },
+      { status: 500 }
+    )
   }
 }
 

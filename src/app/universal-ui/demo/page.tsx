@@ -5,11 +5,32 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Info, Package, List, BarChart3, FileText, Workflow, Heart, Utensils, Briefcase, ShoppingCart, Sparkles } from 'lucide-react'
-import { industryConfigurations, getIndustryViews } from '@/lib/universal-ui/industry-configurations'
+import {
+  Info,
+  Package,
+  List,
+  BarChart3,
+  FileText,
+  Workflow,
+  Heart,
+  Utensils,
+  Briefcase,
+  ShoppingCart,
+  Sparkles
+} from 'lucide-react'
+import {
+  industryConfigurations,
+  getIndustryViews
+} from '@/lib/universal-ui/industry-configurations'
 import { ViewMetaService } from '@/lib/universal-ui/view-meta-service'
 
 // Demo configurations showing SAME widgets used across ALL industries
@@ -24,7 +45,12 @@ const DEMO_CONFIGS = [
         viewKey: 'patientDetail',
         viewType: 'detail',
         description: 'Complete patient medical history and vitals',
-        highlights: ['Stats Widget for vitals', 'Form Widget for patient info', 'Grid Widget for appointments', 'Timeline Widget for medical history']
+        highlights: [
+          'Stats Widget for vitals',
+          'Form Widget for patient info',
+          'Grid Widget for appointments',
+          'Timeline Widget for medical history'
+        ]
       },
       {
         name: 'Patient Registry',
@@ -45,7 +71,12 @@ const DEMO_CONFIGS = [
         viewKey: 'orderEntry',
         viewType: 'form',
         description: 'Restaurant point of sale system',
-        highlights: ['Stats Widget for totals', 'Form Widget for table/server', 'Grid Widget for menu items', 'Grid Widget for order items']
+        highlights: [
+          'Stats Widget for totals',
+          'Form Widget for table/server',
+          'Grid Widget for menu items',
+          'Grid Widget for order items'
+        ]
       },
       {
         name: 'Kitchen Display',
@@ -66,14 +97,24 @@ const DEMO_CONFIGS = [
         viewKey: 'timeEntry',
         viewType: 'form',
         description: 'Track billable hours and projects',
-        highlights: ['Form Widget for time details', 'Stats Widget for weekly summary', 'Grid Widget for recent entries', 'Same widgets as other industries']
+        highlights: [
+          'Form Widget for time details',
+          'Stats Widget for weekly summary',
+          'Grid Widget for recent entries',
+          'Same widgets as other industries'
+        ]
       },
       {
         name: 'Project Dashboard',
         viewKey: 'projectDashboard',
         viewType: 'dashboard',
         description: 'Project health and burn down',
-        highlights: ['Stats Widget for KPIs', 'Chart Widget for burn down', 'Tree Widget for WBS', 'Universal components']
+        highlights: [
+          'Stats Widget for KPIs',
+          'Chart Widget for burn down',
+          'Tree Widget for WBS',
+          'Universal components'
+        ]
       }
     ]
   },
@@ -87,14 +128,24 @@ const DEMO_CONFIGS = [
         viewKey: 'inventoryManagement',
         viewType: 'detail',
         description: 'Stock levels and reorder management',
-        highlights: ['Stats Widget for inventory KPIs', 'Grid Widget with progress bars', 'Chart Widget for movements', 'Related Widget for transactions']
+        highlights: [
+          'Stats Widget for inventory KPIs',
+          'Grid Widget with progress bars',
+          'Chart Widget for movements',
+          'Related Widget for transactions'
+        ]
       },
       {
         name: 'Sales Dashboard',
         viewKey: 'salesDashboard',
         viewType: 'dashboard',
         description: 'Real-time sales analytics',
-        highlights: ['Stats Widget for daily KPIs', 'Chart Widget for hourly sales', 'Chart Widget for top products', 'Same components everywhere']
+        highlights: [
+          'Stats Widget for daily KPIs',
+          'Chart Widget for hourly sales',
+          'Chart Widget for top products',
+          'Same components everywhere'
+        ]
       }
     ]
   },
@@ -139,11 +190,14 @@ export default function UniversalUIDemo() {
   useEffect(() => {
     if (currentOrganization && selectedConfig) {
       const metaService = new ViewMetaService(currentOrganization.id)
-      
+
       // For industry examples, use the pre-configured metadata
       if (selectedConfig.viewKey && selectedCategory !== 'Furniture BOM') {
         const industryKey = selectedCategory.toLowerCase().replace(' ', '')
-        const metadata = industryConfigurations[industryKey as keyof typeof industryConfigurations]?.[selectedConfig.viewKey]
+        const metadata =
+          industryConfigurations[industryKey as keyof typeof industryConfigurations]?.[
+            selectedConfig.viewKey
+          ]
         setViewMetadata(metadata)
       } else {
         // For furniture BOM, use the dynamic generation
@@ -183,12 +237,12 @@ export default function UniversalUIDemo() {
 
   const handleAction = (action: any) => {
     console.log('Action triggered:', action)
-    
+
     // Handle navigation actions
     if (action.type === 'navigate' && action.target) {
       console.log('Navigating to:', action.target)
     }
-    
+
     // In a real implementation, this would call the API
     // For demo, just log the action
   }
@@ -216,7 +270,8 @@ export default function UniversalUIDemo() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Universal UI Demo</h1>
         <p className="text-muted-foreground mt-2">
-          Experience the SAME UI components rendering different business applications without code changes
+          Experience the SAME UI components rendering different business applications without code
+          changes
         </p>
       </div>
 
@@ -235,16 +290,29 @@ export default function UniversalUIDemo() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <h4 className="font-semibold text-purple-700 dark:text-purple-300">Universal Widgets</h4>
+                <h4 className="font-semibold text-purple-700 dark:text-purple-300">
+                  Universal Widgets
+                </h4>
                 <ul className="text-sm space-y-1">
-                  <li>• <strong>Grid Widget</strong> - Shows patients, menu items, time entries, inventory</li>
-                  <li>• <strong>Form Widget</strong> - Handles medical records, orders, time tracking</li>
-                  <li>• <strong>Stats Widget</strong> - Displays vitals, sales, project KPIs</li>
-                  <li>• <strong>Chart Widget</strong> - Visualizes any business metric</li>
+                  <li>
+                    • <strong>Grid Widget</strong> - Shows patients, menu items, time entries,
+                    inventory
+                  </li>
+                  <li>
+                    • <strong>Form Widget</strong> - Handles medical records, orders, time tracking
+                  </li>
+                  <li>
+                    • <strong>Stats Widget</strong> - Displays vitals, sales, project KPIs
+                  </li>
+                  <li>
+                    • <strong>Chart Widget</strong> - Visualizes any business metric
+                  </li>
                 </ul>
               </div>
               <div className="space-y-2">
-                <h4 className="font-semibold text-purple-700 dark:text-purple-300">Zero Code Changes</h4>
+                <h4 className="font-semibold text-purple-700 dark:text-purple-300">
+                  Zero Code Changes
+                </h4>
                 <ul className="text-sm space-y-1">
                   <li>• Same components across ALL industries</li>
                   <li>• Only ViewMeta configuration differs</li>
@@ -254,7 +322,7 @@ export default function UniversalUIDemo() {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <h3 className="font-semibold">1. Smart Code Driven</h3>
@@ -296,7 +364,7 @@ export default function UniversalUIDemo() {
                 </TabsTrigger>
               ))}
             </TabsList>
-            
+
             {DEMO_CONFIGS.map(config => (
               <TabsContent key={config.category} value={config.category} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -314,12 +382,12 @@ export default function UniversalUIDemo() {
                         <CardTitle className="text-base flex items-center gap-2">
                           {item.name}
                           {selectedConfig.name === item.name && (
-                            <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">Active</span>
+                            <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                              Active
+                            </span>
                           )}
                         </CardTitle>
-                        <CardDescription className="text-sm">
-                          {item.description}
-                        </CardDescription>
+                        <CardDescription className="text-sm">{item.description}</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">
@@ -366,7 +434,8 @@ export default function UniversalUIDemo() {
         <CardHeader>
           <CardTitle>View Metadata Configuration</CardTitle>
           <CardDescription>
-            The JSON metadata that drives the UI above - notice how only the configuration changes, not the components
+            The JSON metadata that drives the UI above - notice how only the configuration changes,
+            not the components
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -374,11 +443,12 @@ export default function UniversalUIDemo() {
             <Alert>
               <Sparkles className="h-4 w-4" />
               <AlertDescription>
-                <strong>Key Insight:</strong> The Grid, Form, Stats, Chart, and other widgets are EXACTLY the same across all industries.
-                Only this metadata configuration changes. This is the power of Universal UI!
+                <strong>Key Insight:</strong> The Grid, Form, Stats, Chart, and other widgets are
+                EXACTLY the same across all industries. Only this metadata configuration changes.
+                This is the power of Universal UI!
               </AlertDescription>
             </Alert>
-            
+
             <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-xs">
               {JSON.stringify(
                 viewMetadata || {
@@ -400,9 +470,7 @@ export default function UniversalUIDemo() {
       <Card>
         <CardHeader>
           <CardTitle>Universal Widget Reusability Matrix</CardTitle>
-          <CardDescription>
-            See how the SAME widgets are used across ALL industries
-          </CardDescription>
+          <CardDescription>See how the SAME widgets are used across ALL industries</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -457,7 +525,8 @@ export default function UniversalUIDemo() {
           </div>
           <div className="mt-4 text-center">
             <p className="text-sm text-muted-foreground">
-              <strong>100% Code Reuse</strong> - The exact same widget components power every industry
+              <strong>100% Code Reuse</strong> - The exact same widget components power every
+              industry
             </p>
           </div>
         </CardContent>

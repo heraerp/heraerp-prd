@@ -1,6 +1,6 @@
 /**
  * HERA WhatsApp Campaign Service - Comprehensive Salon Notifications
- * 
+ *
  * Handles all WhatsApp marketing, promotional, and customer lifecycle notifications
  * Uses the Sacred 6-Table architecture for campaign tracking and analytics
  */
@@ -16,26 +16,26 @@ export const WHATSAPP_CAMPAIGN_SMART_CODES = {
   PROMOTION_CAMPAIGN: 'HERA.SALON.WHATSAPP.MARKETING.PROMOTION.v1',
   LOYALTY_CAMPAIGN: 'HERA.SALON.WHATSAPP.MARKETING.LOYALTY.v1',
   NEW_SERVICE_CAMPAIGN: 'HERA.SALON.WHATSAPP.MARKETING.NEW_SERVICE.v1',
-  
+
   // Customer lifecycle
   WELCOME_NEW_CUSTOMER: 'HERA.SALON.WHATSAPP.LIFECYCLE.WELCOME.v1',
   POST_SERVICE_FOLLOWUP: 'HERA.SALON.WHATSAPP.LIFECYCLE.FOLLOWUP.v1',
   WINBACK_INACTIVE: 'HERA.SALON.WHATSAPP.LIFECYCLE.WINBACK.v1',
   MILESTONE_CELEBRATION: 'HERA.SALON.WHATSAPP.LIFECYCLE.MILESTONE.v1',
-  
+
   // Operational notifications
   PAYMENT_CONFIRMATION: 'HERA.SALON.WHATSAPP.PAYMENT.CONFIRM.v1',
   RECEIPT_DELIVERY: 'HERA.SALON.WHATSAPP.PAYMENT.RECEIPT.v1',
   OUTSTANDING_PAYMENT: 'HERA.SALON.WHATSAPP.PAYMENT.REMINDER.v1',
-  
-  // Product notifications  
+
+  // Product notifications
   PRODUCT_RECOMMENDATION: 'HERA.SALON.WHATSAPP.PRODUCT.RECOMMEND.v1',
   PRODUCT_RESTOCK: 'HERA.SALON.WHATSAPP.PRODUCT.RESTOCK.v1',
   PRODUCT_CARE_TIPS: 'HERA.SALON.WHATSAPP.PRODUCT.CARE.v1',
-  
+
   // Emergency/urgent
   EMERGENCY_CLOSURE: 'HERA.SALON.WHATSAPP.EMERGENCY.CLOSURE.v1',
-  STAFF_UNAVAILABLE: 'HERA.SALON.WHATSAPP.EMERGENCY.STAFF.v1',
+  STAFF_UNAVAILABLE: 'HERA.SALON.WHATSAPP.EMERGENCY.STAFF.v1'
 } as const
 
 export interface CampaignData {
@@ -58,12 +58,12 @@ export class WhatsAppCampaignService {
     try {
       // Get customers with birthdays in the next 7 days
       const customers = await this.getBirthdayCustomers(organizationId)
-      
+
       const campaignResults = []
-      
+
       for (const customer of customers) {
         if (!customer.phone) continue
-        
+
         const messageData = {
           to: customer.phone,
           templateName: 'birthday_special',
@@ -82,7 +82,7 @@ export class WhatsAppCampaignService {
           customer.id,
           organizationId
         )
-        
+
         campaignResults.push(result)
       }
 
@@ -163,13 +163,16 @@ export class WhatsAppCampaignService {
   async sendPromotionalCampaign(campaignData: CampaignData, organizationId: string) {
     try {
       // Get target customers based on audience criteria
-      const targetCustomers = await this.getTargetCustomers(campaignData.targetAudience, organizationId)
-      
+      const targetCustomers = await this.getTargetCustomers(
+        campaignData.targetAudience,
+        organizationId
+      )
+
       const campaignResults = []
-      
+
       for (const customer of targetCustomers) {
         if (!customer.phone) continue
-        
+
         const messageData = {
           to: customer.phone,
           templateName: campaignData.templateName,
@@ -186,7 +189,7 @@ export class WhatsAppCampaignService {
           customer.id,
           organizationId
         )
-        
+
         campaignResults.push(result)
       }
 
@@ -218,14 +221,14 @@ export class WhatsAppCampaignService {
     try {
       // Get customers who haven't visited in X days
       const inactiveCustomers = await this.getInactiveCustomers(organizationId, inactiveDays)
-      
+
       const campaignResults = []
-      
+
       for (const customer of inactiveCustomers) {
         if (!customer.phone) continue
-        
+
         const lastVisitDays = differenceInDays(new Date(), new Date(customer.lastVisit))
-        
+
         const messageData = {
           to: customer.phone,
           templateName: 'winback_offer',
@@ -245,7 +248,7 @@ export class WhatsAppCampaignService {
           customer.id,
           organizationId
         )
-        
+
         campaignResults.push(result)
       }
 
@@ -271,10 +274,7 @@ export class WhatsAppCampaignService {
   /**
    * Send payment confirmation and digital receipt
    */
-  async sendPaymentConfirmation(
-    paymentId: string,
-    organizationId: string
-  ) {
+  async sendPaymentConfirmation(paymentId: string, organizationId: string) {
     try {
       // Get payment details from universal_transactions
       const payment = await this.getPaymentById(paymentId, organizationId)
@@ -319,11 +319,7 @@ export class WhatsAppCampaignService {
   /**
    * Send emergency closure notification to all customers with appointments
    */
-  async sendEmergencyClosure(
-    closureDate: Date,
-    reason: string,
-    organizationId: string
-  ) {
+  async sendEmergencyClosure(closureDate: Date, reason: string, organizationId: string) {
     try {
       // Get all appointments for the closure date
       const affectedAppointments = await this.getAppointmentsByDate(
@@ -334,7 +330,10 @@ export class WhatsAppCampaignService {
       const notificationResults = []
 
       for (const appointment of affectedAppointments) {
-        const customerPhone = await this.getCustomerPhone(appointment.from_entity_id, organizationId)
+        const customerPhone = await this.getCustomerPhone(
+          appointment.from_entity_id,
+          organizationId
+        )
         if (!customerPhone) continue
 
         const messageData = {
@@ -412,22 +411,25 @@ export class WhatsAppCampaignService {
     organizationId: string
   ) {
     // Log campaign results in universal_transactions
-    await this.api.createTransaction({
-      transaction_type: 'whatsapp_campaign_summary',
-      smart_code: 'HERA.SALON.WHATSAPP.CAMPAIGN.SUMMARY.v1',
-      reference_number: `CAMPAIGN-${Date.now()}`,
-      transaction_date: new Date().toISOString(),
-      total_amount: 0,
-      organization_id: organizationId,
-      metadata: {
-        campaign_type: campaignType,
-        total_targets: totalTargets,
-        total_sent: totalSent,
-        total_failed: totalTargets - totalSent,
-        success_rate: ((totalSent / totalTargets) * 100).toFixed(2),
-        executed_at: new Date().toISOString()
-      }
-    }, organizationId)
+    await this.api.createTransaction(
+      {
+        transaction_type: 'whatsapp_campaign_summary',
+        smart_code: 'HERA.SALON.WHATSAPP.CAMPAIGN.SUMMARY.v1',
+        reference_number: `CAMPAIGN-${Date.now()}`,
+        transaction_date: new Date().toISOString(),
+        total_amount: 0,
+        organization_id: organizationId,
+        metadata: {
+          campaign_type: campaignType,
+          total_targets: totalTargets,
+          total_sent: totalSent,
+          total_failed: totalTargets - totalSent,
+          success_rate: ((totalSent / totalTargets) * 100).toFixed(2),
+          executed_at: new Date().toISOString()
+        }
+      },
+      organizationId
+    )
   }
 
   private generateCareTips(serviceName: string): string {
@@ -437,8 +439,8 @@ export class WhatsAppCampaignService {
       'Hair Treatment': 'Maintain with weekly hair masks and avoid heat styling',
       'Keratin Treatment': 'No washing for 72 hours, use keratin-safe products'
     }
-    
-    return careTipsMap[serviceName] || 'Follow your stylist\'s care instructions'
+
+    return careTipsMap[serviceName] || "Follow your stylist's care instructions"
   }
 
   private async getCustomerPhone(customerId: string, organizationId: string) {

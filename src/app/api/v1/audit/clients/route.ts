@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * HERA Audit Client Management API
- * 
+ *
  * Manages audit clients using universal architecture:
  * - Each client is a separate organization for perfect isolation
  * - Client data stored as core_entities with entity_type='audit_client'
@@ -15,13 +15,13 @@ const getAuditFirmFromAuth = (authHeader: string | null): string => {
   // In production, this would parse JWT claims to get the audit firm
   // For demo, we'll use a mapping based on organization ID
   if (!authHeader) return 'unknown_audit_firm'
-  
+
   const orgMapping: Record<string, string> = {
-    'gspu_audit_partners_org': 'GSPU_AUDIT_PARTNERS',
-    'abc_auditors_org': 'ABC_ASSOCIATES',
-    'unknown': 'UNKNOWN_FIRM'
+    gspu_audit_partners_org: 'GSPU_AUDIT_PARTNERS',
+    abc_auditors_org: 'ABC_ASSOCIATES',
+    unknown: 'UNKNOWN_FIRM'
   }
-  
+
   // Extract org ID from bearer token (simplified for demo)
   const orgId = authHeader.replace('Bearer ', '')
   return orgMapping[orgId] || 'UNKNOWN_FIRM'
@@ -197,7 +197,7 @@ const mockTeamAssignments = [
     start_date: '2025-01-01'
   },
   {
-    client_id: 'client_002', 
+    client_id: 'client_002',
     partner_id: 'auditor_michael_brown',
     manager_id: 'auditor_emily_davis',
     eqcr_partner_id: 'auditor_david_lee', // Required for PIE and high risk
@@ -205,7 +205,7 @@ const mockTeamAssignments = [
     start_date: '2024-12-15'
   },
   {
-    client_id: 'client_003', 
+    client_id: 'client_003',
     partner_id: 'auditor_john_smith',
     manager_id: 'auditor_sarah_johnson',
     eqcr_partner_id: null,
@@ -221,11 +221,11 @@ export async function GET(request: NextRequest) {
     const clientId = searchParams.get('client_id')
     const riskRating = searchParams.get('risk_rating')
     const status = searchParams.get('status')
-    
+
     // Get audit firm dynamically from authorization header
     const authHeader = request.headers.get('authorization')
     const currentAuditFirm = getAuditFirmFromAuth(authHeader)
-    
+
     console.log(`🔍 API Request: Current audit firm determined as: ${currentAuditFirm}`)
     console.log(`📋 Auth header: ${authHeader}`)
     console.log(`🎯 Requested action: ${action || 'list_clients'}`)
@@ -234,15 +234,12 @@ export async function GET(request: NextRequest) {
     if (clientId) {
       const client = mockClients.find(c => c.id === clientId)
       if (!client) {
-        return NextResponse.json(
-          { success: false, message: 'Client not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ success: false, message: 'Client not found' }, { status: 404 })
       }
 
       // Add team assignment
       const teamAssignment = mockTeamAssignments.find(t => t.client_id === clientId)
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -252,17 +249,20 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Get client statistics 
+    // Get client statistics
     if (action === 'stats') {
       const stats = {
         total_clients: mockClients.length,
         active_engagements: mockClients.filter(c => c.status === 'active').length,
-        high_risk_clients: mockClients.filter(c => c.metadata.risk_rating === 'high' || c.metadata.risk_rating === 'very_high').length,
+        high_risk_clients: mockClients.filter(
+          c => c.metadata.risk_rating === 'high' || c.metadata.risk_rating === 'very_high'
+        ).length,
         pie_clients: mockClients.filter(c => c.metadata.public_interest_entity).length,
-        eqcr_required: mockClients.filter(c => 
-          c.metadata.public_interest_entity || 
-          c.metadata.risk_rating === 'high' || 
-          c.metadata.risk_rating === 'very_high'
+        eqcr_required: mockClients.filter(
+          c =>
+            c.metadata.public_interest_entity ||
+            c.metadata.risk_rating === 'high' ||
+            c.metadata.risk_rating === 'very_high'
         ).length,
         by_risk_rating: {
           low: mockClients.filter(c => c.metadata.risk_rating === 'low').length,
@@ -295,7 +295,9 @@ export async function GET(request: NextRequest) {
         },
         aml_assessments: {
           high_risk: mockClients.filter(c => c.metadata.aml_risk_score > 5).length,
-          medium_risk: mockClients.filter(c => c.metadata.aml_risk_score >= 3 && c.metadata.aml_risk_score <= 5).length,
+          medium_risk: mockClients.filter(
+            c => c.metadata.aml_risk_score >= 3 && c.metadata.aml_risk_score <= 5
+          ).length,
           low_risk: mockClients.filter(c => c.metadata.aml_risk_score < 3).length
         },
         quality_control: {
@@ -313,11 +315,11 @@ export async function GET(request: NextRequest) {
 
     // Filter clients
     let filteredClients = [...mockClients]
-    
+
     if (riskRating) {
       filteredClients = filteredClients.filter(c => c.metadata.risk_rating === riskRating)
     }
-    
+
     if (status) {
       filteredClients = filteredClients.filter(c => c.status === status)
     }
@@ -339,7 +341,6 @@ export async function GET(request: NextRequest) {
         filtered: filteredClients.length !== mockClients.length
       }
     })
-
   } catch (error) {
     console.error('Audit clients API error:', error)
     return NextResponse.json(
@@ -397,7 +398,7 @@ export async function POST(request: NextRequest) {
     // Update client information
     if (action === 'update_client') {
       const { client_id, updates } = data
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -412,7 +413,7 @@ export async function POST(request: NextRequest) {
     // Assign audit team
     if (action === 'assign_team') {
       const { client_id, partner_id, manager_id, eqcr_partner_id, engagement_type } = data
-      
+
       const teamAssignment = {
         client_id,
         partner_id,
@@ -432,7 +433,7 @@ export async function POST(request: NextRequest) {
     // Perform independence check
     if (action === 'independence_check') {
       const { client_id } = data
-      
+
       const independenceResult = {
         client_id,
         check_date: new Date().toISOString(),
@@ -454,11 +455,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid action' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
   } catch (error) {
     console.error('Audit clients API error:', error)
     return NextResponse.json(

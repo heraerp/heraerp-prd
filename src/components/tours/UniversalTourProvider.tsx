@@ -1,7 +1,12 @@
 'use client'
 
 import React, { useEffect, useState, createContext, useContext, ReactNode } from 'react'
-import { UniversalTourManager, useUniversalTour, checkAutoStartTour, markTourCompleted } from '@/lib/guided-tours/universal-tour'
+import {
+  UniversalTourManager,
+  useUniversalTour,
+  checkAutoStartTour,
+  markTourCompleted
+} from '@/lib/guided-tours/universal-tour'
 import { Button } from '@/components/ui/button'
 import { HelpCircle, X, Play } from 'lucide-react'
 
@@ -19,10 +24,10 @@ interface UniversalTourProviderProps {
   autoStart?: boolean
 }
 
-export function UniversalTourProvider({ 
-  children, 
-  industryKey, 
-  autoStart = false 
+export function UniversalTourProvider({
+  children,
+  industryKey,
+  autoStart = false
 }: UniversalTourProviderProps) {
   const [isClient, setIsClient] = useState(false)
   const [shouldShowAutoStart, setShouldShowAutoStart] = useState(false)
@@ -30,7 +35,7 @@ export function UniversalTourProvider({
 
   useEffect(() => {
     setIsClient(true)
-    
+
     if (autoStart) {
       const shouldStart = checkAutoStartTour(industryKey)
       if (shouldStart) {
@@ -54,7 +59,7 @@ export function UniversalTourProvider({
   return (
     <TourContext.Provider value={contextValue}>
       {children}
-      
+
       {/* Auto-start Tour Modal */}
       {shouldShowAutoStart && isClient && (
         <AutoStartTourModal
@@ -66,12 +71,10 @@ export function UniversalTourProvider({
           }}
         />
       )}
-      
+
       {/* Floating Tour Button */}
       {isClient && !shouldShowAutoStart && (
-        <FloatingTourButton
-          onClick={() => handleStartTour(industryKey)}
-        />
+        <FloatingTourButton onClick={() => handleStartTour(industryKey)} />
       )}
     </TourContext.Provider>
   )
@@ -92,7 +95,8 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
     'real-estate': 'Real Estate Management'
   }
 
-  const industryName = industryNames[industryKey as keyof typeof industryNames] || 'Business Management'
+  const industryName =
+    industryNames[industryKey as keyof typeof industryNames] || 'Business Management'
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -115,10 +119,10 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
             Discover Your {industryName} System
           </h3>
-          
+
           <p className="text-gray-600 mb-4">
-            Take a 2-minute guided tour to learn the key features and get started quickly. 
-            You'll discover how to navigate, use modules, and maximize your productivity.
+            Take a 2-minute guided tour to learn the key features and get started quickly. You'll
+            discover how to navigate, use modules, and maximize your productivity.
           </p>
 
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
@@ -137,18 +141,14 @@ function AutoStartTourModal({ industryKey, onStart, onSkip }: AutoStartTourModal
           </div>
 
           <div className="flex gap-3">
-            <Button 
+            <Button
               onClick={onStart}
               className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg transition-all duration-300"
             >
               <Play className="w-4 h-4 mr-2" />
               Start Tour (2 min)
             </Button>
-            <Button 
-              onClick={onSkip}
-              variant="outline"
-              className="px-4"
-            >
+            <Button onClick={onSkip} variant="outline" className="px-4">
               Skip
             </Button>
           </div>
@@ -203,11 +203,11 @@ interface TourTriggerProps {
   className?: string
 }
 
-export function TourTrigger({ 
-  industryKey, 
-  variant = 'outline', 
+export function TourTrigger({
+  industryKey,
+  variant = 'outline',
   size = 'sm',
-  className = '' 
+  className = ''
 }: TourTriggerProps) {
   const tourContext = useTourContext()
   const industry = industryKey || tourContext.currentIndustry
@@ -238,11 +238,7 @@ interface TourElementProps {
 
 export function TourElement({ tourId, moduleId, children, className = '' }: TourElementProps) {
   return (
-    <div 
-      data-tour={tourId}
-      data-module={moduleId}
-      className={className}
-    >
+    <div data-tour={tourId} data-module={moduleId} className={className}>
       {children}
     </div>
   )

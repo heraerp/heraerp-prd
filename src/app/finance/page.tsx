@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Finance Dashboard
  * Smart Code: HERA.FIN.DASHBOARD.v1
- * 
+ *
  * Central hub for all financial operations
  */
 
@@ -17,11 +17,17 @@ import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { LoadingSpinner } from '@/components/ui/loading-states'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ChartOfAccountsStep } from '@/components/wizard/steps/ChartOfAccountsStep'
 import { FiscalYearStep } from '@/components/wizard/steps/FiscalYearStep'
-import { 
+import {
   FileText,
   DollarSign,
   TrendingUp,
@@ -238,49 +244,65 @@ export default function FinanceDashboard() {
 
   const loadFinanceData = async () => {
     if (!currentOrganization?.id) return
-    
+
     setIsLoading(true)
     setError(null)
-    
+
     try {
       universalApi.setOrganizationId(currentOrganization.id)
-      
+
       // Load all entities
       const entitiesResponse = await universalApi.read('core_entities')
-      const entities = Array.isArray(entitiesResponse) ? entitiesResponse : entitiesResponse?.data || []
-      
+      const entities = Array.isArray(entitiesResponse)
+        ? entitiesResponse
+        : entitiesResponse?.data || []
+
       // Filter financial entities
       const glAccounts = entities.filter((e: any) => e.entity_type === 'gl_account')
       const vendors = entities.filter((e: any) => e.entity_type === 'vendor')
       const customers = entities.filter((e: any) => e.entity_type === 'customer')
       const expenseCategories = entities.filter((e: any) => e.entity_type === 'expense_category')
       const budgets = entities.filter((e: any) => e.entity_type === 'budget')
-      
+
       // Load transactions
       const transactionsResponse = await universalApi.read('universal_transactions')
-      const transactions = Array.isArray(transactionsResponse) ? transactionsResponse : transactionsResponse?.data || []
-      const finTransactions = transactions.filter((t: any) => 
-        t.smart_code?.includes('.FIN.') && t.status === 'active'
+      const transactions = Array.isArray(transactionsResponse)
+        ? transactionsResponse
+        : transactionsResponse?.data || []
+      const finTransactions = transactions.filter(
+        (t: any) => t.smart_code?.includes('.FIN.') && t.status === 'active'
       )
-      
+
       // Calculate financial metrics based on actual data
       const revenue = finTransactions
-        .filter((t: any) => t.transaction_type === 'sale' || (t.metadata as any)?.gl_account_type === 'revenue')
+        .filter(
+          (t: any) =>
+            t.transaction_type === 'sale' || (t.metadata as any)?.gl_account_type === 'revenue'
+        )
         .reduce((sum: number, t: any) => sum + (Number(t.total_amount) || 0), 0)
-      
+
       const expenses = finTransactions
-        .filter((t: any) => t.transaction_type === 'expense' || (t.metadata as any)?.gl_account_type === 'expense')
+        .filter(
+          (t: any) =>
+            t.transaction_type === 'expense' || (t.metadata as any)?.gl_account_type === 'expense'
+        )
         .reduce((sum: number, t: any) => sum + (Number(t.total_amount) || 0), 0)
-      
+
       const cashBalance = finTransactions
-        .filter((t: any) => (t.metadata as any)?.gl_account_type === 'cash' || (t.metadata as any)?.is_cash_transaction)
+        .filter(
+          (t: any) =>
+            (t.metadata as any)?.gl_account_type === 'cash' ||
+            (t.metadata as any)?.is_cash_transaction
+        )
         .reduce((sum: number, t: any) => {
           const amount = Number(t.total_amount) || 0
-          return t.transaction_type === 'payment' || t.transaction_type === 'sale' ? sum + amount : sum - amount
+          return t.transaction_type === 'payment' || t.transaction_type === 'sale'
+            ? sum + amount
+            : sum - amount
         }, 0)
-      
+
       const netProfit = revenue - expenses
-      
+
       setFinanceData({
         totalRevenue: revenue,
         totalExpenses: expenses,
@@ -293,7 +315,6 @@ export default function FinanceDashboard() {
         budgetsCount: budgets.length,
         transactionsCount: finTransactions.length
       })
-      
     } catch (error: any) {
       console.error('Error loading finance data:', error)
       setError(error.message || 'Failed to load finance data')
@@ -335,7 +356,7 @@ export default function FinanceDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Animated background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      
+
       {/* Glassmorphic orbs for depth */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
@@ -356,7 +377,7 @@ export default function FinanceDashboard() {
               Comprehensive financial management and reporting
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
@@ -397,8 +418,12 @@ export default function FinanceDashboard() {
                   <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">Current Organization</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{currentOrganization.organization_name}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Current Organization
+                  </p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    {currentOrganization.organization_name}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-8 text-sm">
@@ -416,12 +441,16 @@ export default function FinanceDashboard() {
                     {financeData?.glAccountsCount > 0 ? (
                       <>
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <p className="text-sm font-semibold text-green-600 dark:text-green-400">Active</p>
+                        <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                          Active
+                        </p>
                       </>
                     ) : (
                       <>
                         <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                        <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">Setup Required</p>
+                        <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">
+                          Setup Required
+                        </p>
                       </>
                     )}
                   </div>
@@ -441,9 +470,12 @@ export default function FinanceDashboard() {
                     <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Finance Setup Required</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Finance Setup Required
+                    </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Set up your Chart of Accounts and Fiscal Year to start using financial features
+                      Set up your Chart of Accounts and Fiscal Year to start using financial
+                      features
                     </p>
                   </div>
                 </div>
@@ -472,8 +504,12 @@ export default function FinanceDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">Total Revenue</p>
-                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">AED {(financeData?.totalRevenue || 0).toLocaleString()}</p>
+                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">
+                      Total Revenue
+                    </p>
+                    <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                      AED {(financeData?.totalRevenue || 0).toLocaleString()}
+                    </p>
                     <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1 mt-2 font-medium">
                       <ArrowUpRight className="w-4 h-4" />
                       {financeData?.transactionsCount || 0} transactions
@@ -490,8 +526,12 @@ export default function FinanceDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">Total Expenses</p>
-                    <p className="text-3xl font-bold text-red-600 dark:text-red-400">AED {(financeData?.totalExpenses || 0).toLocaleString()}</p>
+                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">
+                      Total Expenses
+                    </p>
+                    <p className="text-3xl font-bold text-red-600 dark:text-red-400">
+                      AED {(financeData?.totalExpenses || 0).toLocaleString()}
+                    </p>
                     <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1 mt-2 font-medium">
                       <Receipt className="w-4 h-4" />
                       {financeData?.expenseCategoriesCount || 0} categories
@@ -508,13 +548,23 @@ export default function FinanceDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">Net Profit</p>
-                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">AED {(financeData?.netProfit || 0).toLocaleString()}</p>
+                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">
+                      Net Profit
+                    </p>
+                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                      AED {(financeData?.netProfit || 0).toLocaleString()}
+                    </p>
                     <p className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-1 mt-2 font-medium">
                       {financeData?.netProfit >= 0 ? (
-                        <><ArrowUpRight className="w-4 h-4" />Profitable</>
+                        <>
+                          <ArrowUpRight className="w-4 h-4" />
+                          Profitable
+                        </>
                       ) : (
-                        <><ArrowDownRight className="w-4 h-4" />Loss</>
+                        <>
+                          <ArrowDownRight className="w-4 h-4" />
+                          Loss
+                        </>
                       )}
                     </p>
                   </div>
@@ -529,8 +579,12 @@ export default function FinanceDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">Cash Balance</p>
-                    <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">AED {(financeData?.cashBalance || 0).toLocaleString()}</p>
+                    <p className="text-base text-gray-700 dark:text-gray-300 font-medium mb-2">
+                      Cash Balance
+                    </p>
+                    <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                      AED {(financeData?.cashBalance || 0).toLocaleString()}
+                    </p>
                     <p className="text-sm text-purple-600 dark:text-purple-400 flex items-center gap-1 mt-2 font-medium">
                       <Activity className="w-4 h-4" />
                       {financeData?.glAccountsCount || 0} GL accounts
@@ -547,11 +601,11 @@ export default function FinanceDashboard() {
 
         {/* Finance Modules Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {financeModules.map((module) => {
+          {financeModules.map(module => {
             // Update module stats based on financeData
-            const updatedModule = {...module}
+            const updatedModule = { ...module }
             if (financeData) {
-              switch(module.id) {
+              switch (module.id) {
                 case 'general-ledger':
                   updatedModule.stats = {
                     value: `${financeData.glAccountsCount || 0} Accounts`,
@@ -604,63 +658,81 @@ export default function FinanceDashboard() {
               }
             }
             return (
-            <Card 
-              key={module.id}
-              className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 cursor-pointer hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 group"
-              onClick={() => router.push(module.href)}
-            >
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-white/80 to-gray-50/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-white/40 dark:border-gray-700/40">
-                    <updatedModule.icon className={cn("w-8 h-8", updatedModule.color)} />
+              <Card
+                key={module.id}
+                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50 cursor-pointer hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 group"
+                onClick={() => router.push(module.href)}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-white/80 to-gray-50/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 border border-white/40 dark:border-gray-700/40">
+                      <updatedModule.icon className={cn('w-8 h-8', updatedModule.color)} />
+                    </div>
+                    {updatedModule.badge && (
+                      <Badge
+                        variant="secondary"
+                        className="bg-blue-100/80 dark:bg-blue-900/30 backdrop-blur-sm text-blue-700 dark:text-blue-300 border-blue-200/50 dark:border-blue-700/50 px-3 py-1 text-sm font-semibold"
+                      >
+                        {updatedModule.badge}
+                      </Badge>
+                    )}
                   </div>
-                  {updatedModule.badge && (
-                    <Badge variant="secondary" className="bg-blue-100/80 dark:bg-blue-900/30 backdrop-blur-sm text-blue-700 dark:text-blue-300 border-blue-200/50 dark:border-blue-700/50 px-3 py-1 text-sm font-semibold">
-                      {updatedModule.badge}
-                    </Badge>
+                  <CardTitle className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    {updatedModule.title}
+                  </CardTitle>
+                  <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
+                    {updatedModule.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-0 pb-6">
+                  {updatedModule.stats && (
+                    <div className="flex items-center justify-between mb-4 p-4 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-200/30 dark:border-gray-700/30">
+                      <div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                          Current
+                        </p>
+                        <p className="text-lg font-bold text-gray-900 dark:text-white">
+                          {updatedModule.stats.value}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        {updatedModule.stats.trend === 'up' && (
+                          <ArrowUpRight className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        )}
+                        {updatedModule.stats.trend === 'down' && (
+                          <ArrowDownRight className="w-5 h-5 text-red-600 dark:text-red-400" />
+                        )}
+                        {updatedModule.stats.trend === 'neutral' && (
+                          <Activity className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                        )}
+                        <span
+                          className={cn(
+                            'font-semibold',
+                            updatedModule.stats.trend === 'up' &&
+                              'text-green-600 dark:text-green-400',
+                            updatedModule.stats.trend === 'down' &&
+                              'text-red-600 dark:text-red-400',
+                            updatedModule.stats.trend === 'neutral' &&
+                              'text-gray-600 dark:text-gray-400'
+                          )}
+                        >
+                          {updatedModule.stats.change}
+                        </span>
+                      </div>
+                    </div>
                   )}
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white mb-2">{updatedModule.title}</CardTitle>
-                <CardDescription className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
-                  {updatedModule.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0 pb-6">
-                {updatedModule.stats && (
-                  <div className="flex items-center justify-between mb-4 p-4 bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-200/30 dark:border-gray-700/30">
-                    <div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">Current</p>
-                      <p className="text-lg font-bold text-gray-900 dark:text-white">{updatedModule.stats.value}</p>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      {updatedModule.stats.trend === 'up' && (
-                        <ArrowUpRight className="w-5 h-5 text-green-600 dark:text-green-400" />
-                      )}
-                      {updatedModule.stats.trend === 'down' && (
-                        <ArrowDownRight className="w-5 h-5 text-red-600 dark:text-red-400" />
-                      )}
-                      {updatedModule.stats.trend === 'neutral' && (
-                        <Activity className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                      )}
-                      <span className={cn(
-                        "font-semibold",
-                        updatedModule.stats.trend === 'up' && 'text-green-600 dark:text-green-400',
-                        updatedModule.stats.trend === 'down' && 'text-red-600 dark:text-red-400',
-                        updatedModule.stats.trend === 'neutral' && 'text-gray-600 dark:text-gray-400'
-                      )}>
-                        {updatedModule.stats.change}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-end">
+                    <Button
+                      variant="ghost"
+                      size="lg"
+                      className="gap-3 text-blue-600 dark:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 font-semibold"
+                    >
+                      Open Module
+                      <ChevronRight className="w-5 h-5" />
+                    </Button>
                   </div>
-                )}
-                <div className="flex items-center justify-end">
-                  <Button variant="ghost" size="lg" className="gap-3 text-blue-600 dark:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 font-semibold">
-                    Open Module
-                    <ChevronRight className="w-5 h-5" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
             )
           })}
         </div>
@@ -668,52 +740,54 @@ export default function FinanceDashboard() {
         {/* Quick Actions */}
         <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-xl border border-white/20 dark:border-gray-700/50">
           <CardHeader className="pb-6">
-            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Quick Actions</CardTitle>
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+              Quick Actions
+            </CardTitle>
             <CardDescription className="text-gray-700 dark:text-gray-300 text-base">
               Fast access to frequently used financial tools and reports
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4">
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => router.push('/finance/document-viewer')}
                 className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <FileText className="w-5 h-5 mr-3" />
                 View Documents
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => router.push('/digital-accountant')}
                 className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <Calculator className="w-5 h-5 mr-3" />
                 Digital Accountant
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => router.push('/financial-integration')}
                 className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <FileSpreadsheet className="w-5 h-5 mr-3" />
                 GL Integration
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => router.push('/cashflow')}
                 className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
                 <DollarSign className="w-5 h-5 mr-3" />
                 Cash Flow Analysis
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
+              <Button
+                variant="outline"
+                size="lg"
                 onClick={() => router.push('/trial-balance')}
                 className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-gray-200/60 dark:border-gray-700/60 hover:bg-blue-50/70 dark:hover:bg-blue-900/30 h-14 px-6"
               >
@@ -737,7 +811,7 @@ export default function FinanceDashboard() {
               Configure your Chart of Accounts and Fiscal Year settings
             </DialogDescription>
           </DialogHeader>
-          
+
           <Tabs defaultValue="coa" className="mt-6">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="coa" className="flex items-center gap-2">
@@ -749,7 +823,7 @@ export default function FinanceDashboard() {
                 Fiscal Year
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="coa" className="mt-6">
               <ChartOfAccountsStep
                 data={wizardData as any}
@@ -759,7 +833,7 @@ export default function FinanceDashboard() {
                 organizationId={currentOrganization?.id || ''}
               />
             </TabsContent>
-            
+
             <TabsContent value="fiscal" className="mt-6">
               <FiscalYearStep
                 data={wizardData as any}
@@ -770,12 +844,9 @@ export default function FinanceDashboard() {
               />
             </TabsContent>
           </Tabs>
-          
+
           <div className="flex justify-end gap-3 mt-6 pt-6 border-t">
-            <Button
-              variant="outline"
-              onClick={() => setShowFinanceSettings(false)}
-            >
+            <Button variant="outline" onClick={() => setShowFinanceSettings(false)}>
               Cancel
             </Button>
             <Button

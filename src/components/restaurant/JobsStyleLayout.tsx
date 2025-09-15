@@ -41,8 +41,8 @@ interface JobsStyleLayoutProps {
   headerActions?: React.ReactNode
 }
 
-export function JobsStyleLayout({ 
-  children, 
+export function JobsStyleLayout({
+  children,
   currentSection = 'overview',
   showSidebar = true,
   headerActions
@@ -55,7 +55,9 @@ export function JobsStyleLayout({
   const [searchQuery, setSearchQuery] = useState('')
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('connected')
+  const [connectionStatus, setConnectionStatus] = useState<
+    'connected' | 'connecting' | 'disconnected'
+  >('connected')
   const [isClient, setIsClient] = useState(false)
 
   // Client-side hydration check
@@ -85,7 +87,7 @@ export function JobsStyleLayout({
         setMobileMenuOpen(false)
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [sidebarCollapsed])
@@ -93,12 +95,13 @@ export function JobsStyleLayout({
   // Simulate connection status changes
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Math.random() < 0.05) { // 5% chance to simulate connection issue
+      if (Math.random() < 0.05) {
+        // 5% chance to simulate connection issue
         setConnectionStatus('connecting')
         setTimeout(() => setConnectionStatus('connected'), 2000)
       }
     }, 10000)
-    
+
     return () => clearInterval(interval)
   }, [])
 
@@ -116,9 +119,11 @@ export function JobsStyleLayout({
   }
 
   return (
-    <div className={`min-h-screen flex transition-all duration-300 ${
-      darkMode ? 'bg-gray-900' : 'bg-gray-50'
-    }`}>
+    <div
+      className={`min-h-screen flex transition-all duration-300 ${
+        darkMode ? 'bg-gray-900' : 'bg-gray-50'
+      }`}
+    >
       {/* Sidebar */}
       {showSidebar && (
         <>
@@ -137,18 +142,11 @@ export function JobsStyleLayout({
               <div className="w-80 h-full bg-white shadow-2xl">
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h2 className="font-semibold text-gray-900">Menu</h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(false)}>
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
-                <ContextualSidebar
-                  currentSection={currentSection}
-                  isCollapsed={false}
-                />
+                <ContextualSidebar currentSection={currentSection} isCollapsed={false} />
               </div>
             </div>
           )}
@@ -158,11 +156,11 @@ export function JobsStyleLayout({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-all ${
-          darkMode 
-            ? 'bg-gray-900/95 border-gray-800' 
-            : 'bg-white/95 border-gray-200'
-        }`}>
+        <header
+          className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-all ${
+            darkMode ? 'bg-gray-900/95 border-gray-800' : 'bg-white/95 border-gray-200'
+          }`}
+        >
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               {/* Left: Page title and mobile menu */}
@@ -177,21 +175,22 @@ export function JobsStyleLayout({
                     <Menu className="w-5 h-5" />
                   </Button>
                 )}
-                
+
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
                     <ChefHat className="w-4 h-4 text-white" />
                   </div>
                   <div>
-                    <h1 className={`text-xl font-semibold ${
-                      darkMode ? 'text-white' : 'text-gray-900'
-                    }`}>
+                    <h1
+                      className={`text-xl font-semibold ${
+                        darkMode ? 'text-white' : 'text-gray-900'
+                      }`}
+                    >
                       {getPageTitle()}
                     </h1>
-                    <p className={`text-sm ${
-                      darkMode ? 'text-gray-400' : 'text-gray-500'
-                    }`}>
-                      {organization?.organization_name} • {isClient ? formatDate(currentTime, 'MMM d, h:mm a') : '...'}
+                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {organization?.organization_name} •{' '}
+                      {isClient ? formatDate(currentTime, 'MMM d, h:mm a') : '...'}
                     </p>
                   </div>
                 </div>
@@ -200,16 +199,18 @@ export function JobsStyleLayout({
               {/* Center: Search */}
               <div className="hidden md:block flex-1 max-w-md mx-8">
                 <div className="relative">
-                  <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-                    darkMode ? 'text-gray-400' : 'text-gray-500'
-                  }`} />
+                  <Search
+                    className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
+                      darkMode ? 'text-gray-400' : 'text-gray-500'
+                    }`}
+                  />
                   <Input
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Search everything... ⌘K"
                     className={`pl-10 rounded-full border-0 transition-all ${
-                      darkMode 
-                        ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700' 
+                      darkMode
+                        ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700'
                         : 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-white focus:shadow-md'
                     }`}
                     onFocus={() => setIsCommandPaletteOpen(true)}
@@ -224,17 +225,25 @@ export function JobsStyleLayout({
 
                 {/* Connection Status */}
                 <div className="hidden md:flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${
-                    connectionStatus === 'connected' ? 'bg-green-500 animate-pulse' :
-                    connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' :
-                    'bg-red-500'
-                  }`} />
-                  <span className={`text-xs font-medium ${
-                    darkMode ? 'text-gray-300' : 'text-gray-600'
-                  }`}>
-                    {connectionStatus === 'connected' ? 'Live' :
-                     connectionStatus === 'connecting' ? 'Connecting...' :
-                     'Offline'}
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      connectionStatus === 'connected'
+                        ? 'bg-green-500 animate-pulse'
+                        : connectionStatus === 'connecting'
+                          ? 'bg-yellow-500 animate-pulse'
+                          : 'bg-red-500'
+                    }`}
+                  />
+                  <span
+                    className={`text-xs font-medium ${
+                      darkMode ? 'text-gray-300' : 'text-gray-600'
+                    }`}
+                  >
+                    {connectionStatus === 'connected'
+                      ? 'Live'
+                      : connectionStatus === 'connecting'
+                        ? 'Connecting...'
+                        : 'Offline'}
                   </span>
                 </div>
 
@@ -247,11 +256,7 @@ export function JobsStyleLayout({
                 </Button>
 
                 {/* Theme Toggle */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setDarkMode(!darkMode)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setDarkMode(!darkMode)}>
                   {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
 
@@ -276,23 +281,23 @@ export function JobsStyleLayout({
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto">
-          <div className="h-full">
-            {children}
-          </div>
+          <div className="h-full">{children}</div>
         </main>
 
         {/* Status Bar */}
-        <div className={`border-t px-6 py-2 ${
-          darkMode 
-            ? 'bg-gray-900 border-gray-800' 
-            : 'bg-white border-gray-200'
-        }`}>
+        <div
+          className={`border-t px-6 py-2 ${
+            darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'
+          }`}
+        >
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <Wifi className={`w-3 h-3 ${
-                  connectionStatus === 'connected' ? 'text-green-500' : 'text-red-500'
-                }`} />
+                <Wifi
+                  className={`w-3 h-3 ${
+                    connectionStatus === 'connected' ? 'text-green-500' : 'text-red-500'
+                  }`}
+                />
                 <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
                   {connectionStatus === 'connected' ? 'Connected' : 'Connection issues'}
                 </span>
@@ -310,16 +315,14 @@ export function JobsStyleLayout({
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <span className={darkMode ? 'text-gray-500' : 'text-gray-400'}>
                 Press ⌘K to search • ⌘B to toggle sidebar
               </span>
               <div className="flex items-center space-x-1">
                 <Zap className="w-3 h-3 text-yellow-500" />
-                <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                  HERA Platform
-                </span>
+                <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>HERA Platform</span>
               </div>
             </div>
           </div>
@@ -335,7 +338,7 @@ export function JobsStyleLayout({
                 <Command className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search or jump to..."
                   className="pl-10 border-0 focus:ring-0 text-lg"
                   autoFocus
@@ -348,8 +351,16 @@ export function JobsStyleLayout({
                   Quick Actions
                 </div>
                 <CommandItem icon={<Zap className="w-4 h-4" />} label="New Order" hotkey="⌘N" />
-                <CommandItem icon={<Users className="w-4 h-4" />} label="Table Management" hotkey="⌘2" />
-                <CommandItem icon={<Calendar className="w-4 h-4" />} label="Reservations" hotkey="⌘4" />
+                <CommandItem
+                  icon={<Users className="w-4 h-4" />}
+                  label="Table Management"
+                  hotkey="⌘2"
+                />
+                <CommandItem
+                  icon={<Calendar className="w-4 h-4" />}
+                  label="Reservations"
+                  hotkey="⌘4"
+                />
                 <CommandItem icon={<Settings className="w-4 h-4" />} label="Settings" hotkey="⌘," />
                 <CommandItem icon={<HelpCircle className="w-4 h-4" />} label="Help" hotkey="⌘?" />
               </div>
@@ -362,12 +373,12 @@ export function JobsStyleLayout({
 }
 
 // Command palette item component
-function CommandItem({ 
-  icon, 
-  label, 
-  hotkey, 
-  onClick 
-}: { 
+function CommandItem({
+  icon,
+  label,
+  hotkey,
+  onClick
+}: {
   icon: React.ReactNode
   label: string
   hotkey?: string
@@ -383,9 +394,7 @@ function CommandItem({
         <span className="text-sm">{label}</span>
       </div>
       {hotkey && (
-        <span className="text-xs text-gray-400 font-mono group-hover:text-gray-600">
-          {hotkey}
-        </span>
+        <span className="text-xs text-gray-400 font-mono group-hover:text-gray-600">{hotkey}</span>
       )}
     </div>
   )

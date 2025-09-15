@@ -1,21 +1,33 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from 'sonner'
-import { 
-  Briefcase, 
-  Building2, 
-  Users, 
-  Shield, 
+import {
+  Briefcase,
+  Building2,
+  Users,
+  Shield,
   AlertTriangle,
   CheckCircle2,
   DollarSign,
@@ -47,7 +59,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
     total_assets: '',
     public_interest_entity: false,
     previous_auditor: '',
-    
+
     // Engagement Details
     engagement_type: 'statutory',
     audit_year: new Date().getFullYear().toString(),
@@ -56,19 +68,19 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
     target_completion_date: '',
     estimated_hours: '',
     estimated_fees: '',
-    
+
     // Risk Assessment
     risk_rating: 'moderate',
     risk_factors: '',
     materiality_planning: '',
     materiality_performance: '',
-    
+
     // Team Assignment
     engagement_partner: '',
     audit_manager: '',
     eqcr_partner: '',
     additional_team_members: [],
-    
+
     // Compliance
     independence_confirmed: false,
     conflict_check_completed: false,
@@ -83,27 +95,35 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
   const calculateMateriality = () => {
     const revenue = parseFloat(engagementData.annual_revenue) || 0
     const assets = parseFloat(engagementData.total_assets) || 0
-    
+
     // Simple materiality calculation (5% of revenue or 0.5% of assets)
     const planningMateriality = Math.max(revenue * 0.05, assets * 0.005)
     const performanceMateriality = planningMateriality * 0.75
-    
+
     updateField('materiality_planning', planningMateriality.toString())
     updateField('materiality_performance', performanceMateriality.toString())
   }
 
   const isEQCRRequired = () => {
-    return engagementData.public_interest_entity || 
-           engagementData.risk_rating === 'high' || 
-           engagementData.risk_rating === 'very_high'
+    return (
+      engagementData.public_interest_entity ||
+      engagementData.risk_rating === 'high' ||
+      engagementData.risk_rating === 'very_high'
+    )
   }
 
   const getStepValidation = (step: number) => {
     switch (step) {
       case 1:
-        return engagementData.client_name && engagementData.client_code && engagementData.client_type
+        return (
+          engagementData.client_name && engagementData.client_code && engagementData.client_type
+        )
       case 2:
-        return engagementData.engagement_type && engagementData.audit_year && engagementData.year_end_date
+        return (
+          engagementData.engagement_type &&
+          engagementData.audit_year &&
+          engagementData.year_end_date
+        )
       case 3:
         return engagementData.risk_rating
       case 4:
@@ -129,27 +149,27 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
   const handleSubmit = async () => {
     console.log('Starting engagement creation with data:', engagementData)
     setIsSubmitting(true)
-    
+
     try {
       // Create the engagement
       const requestData = {
         action: 'create_engagement',
         data: engagementData
       }
-      
+
       console.log('Sending request:', requestData)
-      
+
       const response = await fetch('/api/v1/audit/engagements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
       })
-      
+
       console.log('Response status:', response.status)
 
       const result = await response.json()
       console.log('API response:', result)
-      
+
       if (result.success) {
         toast.success('✅ Audit Engagement Created', {
           description: `${engagementData.client_name} (${engagementData.client_code}) is now active and ready for planning. Partner: ${engagementData.engagement_partner}`,
@@ -218,7 +238,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
   const stepTitles = [
     'Client Information',
-    'Engagement Details', 
+    'Engagement Details',
     'Risk Assessment',
     'Team Assignment',
     'Compliance & Review'
@@ -226,9 +246,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
@@ -246,21 +264,23 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
         {/* Progress Indicator */}
         <div className="flex items-center gap-2 mb-6">
-          {[1, 2, 3, 4, 5].map((step) => (
+          {[1, 2, 3, 4, 5].map(step => (
             <div key={step} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                step < currentStep 
-                  ? 'bg-green-500 text-white' 
-                  : step === currentStep
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-600'
-              }`}>
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step < currentStep
+                    ? 'bg-green-500 text-white'
+                    : step === currentStep
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-600'
+                }`}
+              >
                 {step < currentStep ? <CheckCircle2 className="w-4 h-4" /> : step}
               </div>
               {step < 5 && (
-                <div className={`w-8 h-1 mx-1 ${
-                  step < currentStep ? 'bg-green-500' : 'bg-gray-200'
-                }`} />
+                <div
+                  className={`w-8 h-1 mx-1 ${step < currentStep ? 'bg-green-500' : 'bg-gray-200'}`}
+                />
               )}
             </div>
           ))}
@@ -283,17 +303,17 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Input
                       id="client_name"
                       value={engagementData.client_name}
-                      onChange={(e) => updateField('client_name', e.target.value)}
+                      onChange={e => updateField('client_name', e.target.value)}
                       placeholder="Enter client company name"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="client_code">Client Code *</Label>
                     <Input
                       id="client_code"
                       value={engagementData.client_code}
-                      onChange={(e) => updateField('client_code', e.target.value)}
+                      onChange={e => updateField('client_code', e.target.value)}
                       placeholder="e.g., CLI-2025-001"
                     />
                   </div>
@@ -302,7 +322,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Label htmlFor="client_type">Client Type *</Label>
                     <Select
                       value={engagementData.client_type}
-                      onValueChange={(value) => updateField('client_type', value)}
+                      onValueChange={value => updateField('client_type', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -321,7 +341,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Input
                       id="industry"
                       value={engagementData.industry}
-                      onChange={(e) => updateField('industry', e.target.value)}
+                      onChange={e => updateField('industry', e.target.value)}
                       placeholder="e.g., Manufacturing"
                     />
                   </div>
@@ -334,7 +354,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         id="annual_revenue"
                         type="number"
                         value={engagementData.annual_revenue}
-                        onChange={(e) => updateField('annual_revenue', e.target.value)}
+                        onChange={e => updateField('annual_revenue', e.target.value)}
                         className="pl-10"
                         placeholder="0"
                       />
@@ -349,7 +369,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         id="total_assets"
                         type="number"
                         value={engagementData.total_assets}
-                        onChange={(e) => updateField('total_assets', e.target.value)}
+                        onChange={e => updateField('total_assets', e.target.value)}
                         className="pl-10"
                         placeholder="0"
                       />
@@ -363,7 +383,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Input
                       id="previous_auditor"
                       value={engagementData.previous_auditor}
-                      onChange={(e) => updateField('previous_auditor', e.target.value)}
+                      onChange={e => updateField('previous_auditor', e.target.value)}
                       placeholder="Name of previous audit firm (if any)"
                     />
                   </div>
@@ -373,7 +393,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       type="checkbox"
                       id="pie"
                       checked={engagementData.public_interest_entity}
-                      onChange={(e) => updateField('public_interest_entity', e.target.checked)}
+                      onChange={e => updateField('public_interest_entity', e.target.checked)}
                       className="rounded border-gray-300"
                     />
                     <Label htmlFor="pie" className="text-sm">
@@ -400,7 +420,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Label htmlFor="engagement_type">Engagement Type *</Label>
                     <Select
                       value={engagementData.engagement_type}
-                      onValueChange={(value) => updateField('engagement_type', value)}
+                      onValueChange={value => updateField('engagement_type', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -419,7 +439,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Input
                       id="audit_year"
                       value={engagementData.audit_year}
-                      onChange={(e) => updateField('audit_year', e.target.value)}
+                      onChange={e => updateField('audit_year', e.target.value)}
                       placeholder="2025"
                     />
                   </div>
@@ -430,7 +450,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       id="year_end_date"
                       type="date"
                       value={engagementData.year_end_date}
-                      onChange={(e) => updateField('year_end_date', e.target.value)}
+                      onChange={e => updateField('year_end_date', e.target.value)}
                     />
                   </div>
 
@@ -440,7 +460,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       id="planned_start_date"
                       type="date"
                       value={engagementData.planned_start_date}
-                      onChange={(e) => updateField('planned_start_date', e.target.value)}
+                      onChange={e => updateField('planned_start_date', e.target.value)}
                     />
                   </div>
 
@@ -450,7 +470,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       id="target_completion_date"
                       type="date"
                       value={engagementData.target_completion_date}
-                      onChange={(e) => updateField('target_completion_date', e.target.value)}
+                      onChange={e => updateField('target_completion_date', e.target.value)}
                     />
                   </div>
 
@@ -460,7 +480,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       id="estimated_hours"
                       type="number"
                       value={engagementData.estimated_hours}
-                      onChange={(e) => updateField('estimated_hours', e.target.value)}
+                      onChange={e => updateField('estimated_hours', e.target.value)}
                       placeholder="0"
                     />
                   </div>
@@ -473,7 +493,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         id="estimated_fees"
                         type="number"
                         value={engagementData.estimated_fees}
-                        onChange={(e) => updateField('estimated_fees', e.target.value)}
+                        onChange={e => updateField('estimated_fees', e.target.value)}
                         className="pl-10"
                         placeholder="0"
                       />
@@ -499,7 +519,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Label htmlFor="risk_rating">Overall Risk Rating *</Label>
                     <Select
                       value={engagementData.risk_rating}
-                      onValueChange={(value) => updateField('risk_rating', value)}
+                      onValueChange={value => updateField('risk_rating', value)}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -515,20 +535,24 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
 
                   <div className="space-y-2">
                     <Label>EQCR Required</Label>
-                    <div className={`p-3 rounded-lg border ${isEQCRRequired() 
-                      ? 'bg-orange-50 border-orange-200' 
-                      : 'bg-green-50 border-green-200'
-                    }`}>
+                    <div
+                      className={`p-3 rounded-lg border ${
+                        isEQCRRequired()
+                          ? 'bg-orange-50 border-orange-200'
+                          : 'bg-green-50 border-green-200'
+                      }`}
+                    >
                       <div className="flex items-center gap-2">
                         {isEQCRRequired() ? (
                           <AlertTriangle className="w-4 h-4 text-orange-600" />
                         ) : (
                           <CheckCircle2 className="w-4 h-4 text-green-600" />
                         )}
-                        <span className={`text-sm font-medium ${isEQCRRequired() 
-                          ? 'text-orange-800' 
-                          : 'text-green-800'
-                        }`}>
+                        <span
+                          className={`text-sm font-medium ${
+                            isEQCRRequired() ? 'text-orange-800' : 'text-green-800'
+                          }`}
+                        >
                           {isEQCRRequired() ? 'Required' : 'Not Required'}
                         </span>
                       </div>
@@ -546,7 +570,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         id="materiality_planning"
                         type="number"
                         value={engagementData.materiality_planning}
-                        onChange={(e) => updateField('materiality_planning', e.target.value)}
+                        onChange={e => updateField('materiality_planning', e.target.value)}
                         className="pl-10"
                         placeholder="Auto-calculated"
                       />
@@ -561,7 +585,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         id="materiality_performance"
                         type="number"
                         value={engagementData.materiality_performance}
-                        onChange={(e) => updateField('materiality_performance', e.target.value)}
+                        onChange={e => updateField('materiality_performance', e.target.value)}
                         className="pl-10"
                         placeholder="Auto-calculated"
                       />
@@ -574,7 +598,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <Textarea
                     id="risk_factors"
                     value={engagementData.risk_factors}
-                    onChange={(e) => updateField('risk_factors', e.target.value)}
+                    onChange={e => updateField('risk_factors', e.target.value)}
                     placeholder="Document specific risk factors for this engagement..."
                     rows={3}
                   />
@@ -598,7 +622,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Label htmlFor="engagement_partner">Engagement Partner *</Label>
                     <Select
                       value={engagementData.engagement_partner}
-                      onValueChange={(value) => updateField('engagement_partner', value)}
+                      onValueChange={value => updateField('engagement_partner', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select partner" />
@@ -615,7 +639,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                     <Label htmlFor="audit_manager">Audit Manager *</Label>
                     <Select
                       value={engagementData.audit_manager}
-                      onValueChange={(value) => updateField('audit_manager', value)}
+                      onValueChange={value => updateField('audit_manager', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select manager" />
@@ -633,7 +657,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       <Label htmlFor="eqcr_partner">EQCR Partner *</Label>
                       <Select
                         value={engagementData.eqcr_partner}
-                        onValueChange={(value) => updateField('eqcr_partner', value)}
+                        onValueChange={value => updateField('eqcr_partner', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select EQCR partner" />
@@ -670,7 +694,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       <input
                         type="checkbox"
                         checked={engagementData.independence_confirmed}
-                        onChange={(e) => updateField('independence_confirmed', e.target.checked)}
+                        onChange={e => updateField('independence_confirmed', e.target.checked)}
                         className="rounded border-gray-300"
                       />
                       <span className="text-sm text-gray-700">Independence Confirmed</span>
@@ -687,7 +711,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       <input
                         type="checkbox"
                         checked={engagementData.conflict_check_completed}
-                        onChange={(e) => updateField('conflict_check_completed', e.target.checked)}
+                        onChange={e => updateField('conflict_check_completed', e.target.checked)}
                         className="rounded border-gray-300"
                       />
                       <span className="text-sm text-gray-700">Conflict Check Completed</span>
@@ -704,7 +728,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       <input
                         type="checkbox"
                         checked={engagementData.aml_assessment_done}
-                        onChange={(e) => updateField('aml_assessment_done', e.target.checked)}
+                        onChange={e => updateField('aml_assessment_done', e.target.checked)}
                         className="rounded border-gray-300"
                       />
                       <span className="text-sm text-gray-700">AML Assessment Completed</span>
@@ -721,7 +745,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                       <input
                         type="checkbox"
                         checked={engagementData.compliance_approval}
-                        onChange={(e) => updateField('compliance_approval', e.target.checked)}
+                        onChange={e => updateField('compliance_approval', e.target.checked)}
                         className="rounded border-gray-300"
                       />
                       <span className="text-sm text-gray-700">Compliance Officer Approval</span>
@@ -739,22 +763,30 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <h4 className="font-medium text-blue-900 mb-2">Engagement Summary</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-blue-700 font-medium">Client:</span> <span className="text-gray-900">{engagementData.client_name}</span>
+                      <span className="text-blue-700 font-medium">Client:</span>{' '}
+                      <span className="text-gray-900">{engagementData.client_name}</span>
                     </div>
                     <div>
-                      <span className="text-blue-700 font-medium">Type:</span> <span className="text-gray-900">{engagementData.engagement_type}</span>
+                      <span className="text-blue-700 font-medium">Type:</span>{' '}
+                      <span className="text-gray-900">{engagementData.engagement_type}</span>
                     </div>
                     <div>
-                      <span className="text-blue-700 font-medium">Year:</span> <span className="text-gray-900">{engagementData.audit_year}</span>
+                      <span className="text-blue-700 font-medium">Year:</span>{' '}
+                      <span className="text-gray-900">{engagementData.audit_year}</span>
                     </div>
                     <div>
-                      <span className="text-blue-700 font-medium">Risk:</span> <span className="text-gray-900">{engagementData.risk_rating}</span>
+                      <span className="text-blue-700 font-medium">Risk:</span>{' '}
+                      <span className="text-gray-900">{engagementData.risk_rating}</span>
                     </div>
                     <div>
-                      <span className="text-blue-700 font-medium">Partner:</span> <span className="text-gray-900">{engagementData.engagement_partner}</span>
+                      <span className="text-blue-700 font-medium">Partner:</span>{' '}
+                      <span className="text-gray-900">{engagementData.engagement_partner}</span>
                     </div>
                     <div>
-                      <span className="text-blue-700 font-medium">EQCR:</span> <span className="text-gray-900">{isEQCRRequired() ? 'Required' : 'Not Required'}</span>
+                      <span className="text-blue-700 font-medium">EQCR:</span>{' '}
+                      <span className="text-gray-900">
+                        {isEQCRRequired() ? 'Required' : 'Not Required'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -772,15 +804,15 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
               </Button>
             )}
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => setOpen(false)}>
               <X className="w-4 h-4 mr-1" />
               Cancel
             </Button>
-            
+
             {currentStep < 5 ? (
-              <Button 
+              <Button
                 onClick={handleNext}
                 disabled={!getStepValidation(currentStep)}
                 className="bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700"
@@ -788,7 +820,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                 Next
               </Button>
             ) : (
-              <Button 
+              <Button
                 onClick={() => {
                   console.log('Create Engagement button clicked')
                   console.log('Step 5 validation:', getStepValidation(5))

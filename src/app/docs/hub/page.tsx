@@ -30,7 +30,7 @@ import { Button } from '@/components/ui/button'
 
 export default function DocsHub() {
   const router = useRouter()
-  
+
   return (
     <div className="min-h-screen bg-white">
       {/* GitHub-style Header */}
@@ -70,9 +70,10 @@ export default function DocsHub() {
           </h2>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
             <p className="text-gray-700 leading-relaxed">
-              HERA is a revolutionary ERP platform built on a universal architecture that handles infinite business 
-              complexity without schema changes. With AI-powered automation, multi-tenant SaaS capabilities, and 
-              enterprise-grade financial features, HERA delivers in 30 seconds what traditional ERPs take months to achieve.
+              HERA is a revolutionary ERP platform built on a universal architecture that handles
+              infinite business complexity without schema changes. With AI-powered automation,
+              multi-tenant SaaS capabilities, and enterprise-grade financial features, HERA delivers
+              in 30 seconds what traditional ERPs take months to achieve.
             </p>
           </div>
         </div>
@@ -84,7 +85,7 @@ export default function DocsHub() {
             Quick Start
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/quickstart')}
             >
@@ -101,7 +102,7 @@ export default function DocsHub() {
               </CardContent>
             </Card>
 
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/architecture')}
             >
@@ -120,15 +121,13 @@ export default function DocsHub() {
               </CardContent>
             </Card>
 
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/api/rest')}
             >
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">API Reference</CardTitle>
-                <CardDescription className="text-sm">
-                  Complete API documentation
-                </CardDescription>
+                <CardDescription className="text-sm">Complete API documentation</CardDescription>
               </CardHeader>
               <CardContent>
                 <code className="text-xs bg-gray-100 px-2 py-1 rounded">
@@ -157,7 +156,9 @@ export default function DocsHub() {
                 <p className="text-sm text-gray-600 mb-2">
                   Revolutionary architecture with infinite scalability
                 </p>
-                <Badge variant="outline" className="text-xs">CORE</Badge>
+                <Badge variant="outline" className="text-xs">
+                  CORE
+                </Badge>
               </CardContent>
             </Card>
 
@@ -172,7 +173,9 @@ export default function DocsHub() {
                 <p className="text-sm text-gray-600 mb-2">
                   Enterprise-grade security with perfect isolation
                 </p>
-                <Badge variant="outline" className="text-xs">PRODUCTION</Badge>
+                <Badge variant="outline" className="text-xs">
+                  PRODUCTION
+                </Badge>
               </CardContent>
             </Card>
 
@@ -187,7 +190,9 @@ export default function DocsHub() {
                 <p className="text-sm text-gray-600 mb-2">
                   Multi-provider AI with intelligent routing
                 </p>
-                <Badge variant="outline" className="text-xs">HERA DNA</Badge>
+                <Badge variant="outline" className="text-xs">
+                  HERA DNA
+                </Badge>
               </CardContent>
             </Card>
           </div>
@@ -200,7 +205,7 @@ export default function DocsHub() {
             Financial Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/features/chart-of-accounts')}
             >
@@ -209,19 +214,21 @@ export default function DocsHub() {
                   <FileText className="h-5 w-5 text-blue-600" />
                   Chart of Accounts
                 </CardTitle>
-                <CardDescription>
-                  Universal COA system with 132 industry templates
-                </CardDescription>
+                <CardDescription>Universal COA system with 132 industry templates</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="text-xs">IFRS</Badge>
-                  <Badge variant="outline" className="text-xs">PRODUCTION</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    IFRS
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    PRODUCTION
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
 
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/features/auto-journal')}
             >
@@ -230,19 +237,21 @@ export default function DocsHub() {
                   <Calculator className="h-5 w-5 text-purple-600" />
                   Auto-Journal Engine
                 </CardTitle>
-                <CardDescription>
-                  85% automation rate for journal entries
-                </CardDescription>
+                <CardDescription>85% automation rate for journal entries</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="text-xs">AI-POWERED</Badge>
-                  <Badge variant="outline" className="text-xs">CORE DNA</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    AI-POWERED
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    CORE DNA
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
 
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/features/ifrs-compliance')}
             >
@@ -256,11 +265,13 @@ export default function DocsHub() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Badge variant="outline" className="text-xs">STANDARD</Badge>
+                <Badge variant="outline" className="text-xs">
+                  STANDARD
+                </Badge>
               </CardContent>
             </Card>
 
-            <Card 
+            <Card
               className="border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
               onClick={() => router.push('/docs/universal-coa-dna')}
             >
@@ -269,14 +280,16 @@ export default function DocsHub() {
                   <Cpu className="h-5 w-5 text-purple-600" />
                   Universal COA DNA
                 </CardTitle>
-                <CardDescription>
-                  Industry & country-specific COA via HERA DNA
-                </CardDescription>
+                <CardDescription>Industry & country-specific COA via HERA DNA</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="text-xs">HERA DNA</Badge>
-                  <Badge variant="outline" className="text-xs">30-SEC</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    HERA DNA
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    30-SEC
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
@@ -291,19 +304,31 @@ export default function DocsHub() {
           </h2>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Link href="/docs/industries/restaurant" className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors">
+              <Link
+                href="/docs/industries/restaurant"
+                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+              >
                 <span className="text-sm font-medium">Restaurant</span>
                 <ArrowRight className="h-4 w-4 text-gray-400" />
               </Link>
-              <Link href="/docs/industries/healthcare" className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors">
+              <Link
+                href="/docs/industries/healthcare"
+                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+              >
                 <span className="text-sm font-medium">Healthcare</span>
                 <ArrowRight className="h-4 w-4 text-gray-400" />
               </Link>
-              <Link href="/docs/industries/retail" className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors">
+              <Link
+                href="/docs/industries/retail"
+                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+              >
                 <span className="text-sm font-medium">Retail</span>
                 <ArrowRight className="h-4 w-4 text-gray-400" />
               </Link>
-              <Link href="/docs/industries/manufacturing" className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors">
+              <Link
+                href="/docs/industries/manufacturing"
+                className="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-blue-300 transition-colors"
+              >
                 <span className="text-sm font-medium">Manufacturing</span>
                 <ArrowRight className="h-4 w-4 text-gray-400" />
               </Link>
@@ -330,7 +355,10 @@ export default function DocsHub() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/api/typescript-client" className="text-blue-600 hover:underline">
+                    <Link
+                      href="/docs/api/typescript-client"
+                      className="text-blue-600 hover:underline"
+                    >
                       TypeScript Client →
                     </Link>
                   </li>
@@ -350,17 +378,26 @@ export default function DocsHub() {
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link href="/docs/integrations/mcp-server" className="text-blue-600 hover:underline">
+                    <Link
+                      href="/docs/integrations/mcp-server"
+                      className="text-blue-600 hover:underline"
+                    >
                       MCP Server →
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/integrations/progressive-pwa" className="text-blue-600 hover:underline">
+                    <Link
+                      href="/docs/integrations/progressive-pwa"
+                      className="text-blue-600 hover:underline"
+                    >
                       Progressive PWA →
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/integrations/whatsapp" className="text-blue-600 hover:underline">
+                    <Link
+                      href="/docs/integrations/whatsapp"
+                      className="text-blue-600 hover:underline"
+                    >
                       WhatsApp Business →
                     </Link>
                   </li>
@@ -405,7 +442,10 @@ export default function DocsHub() {
             <div className="text-right">
               <p>Version 1.0.0</p>
               <p className="mt-1">
-                <a href="https://github.com/anthropics/claude-code/issues" className="text-blue-600 hover:underline">
+                <a
+                  href="https://github.com/anthropics/claude-code/issues"
+                  className="text-blue-600 hover:underline"
+                >
                   Report Issues
                 </a>
               </p>

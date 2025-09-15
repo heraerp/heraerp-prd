@@ -8,9 +8,9 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  Zap, 
-  Clock, 
+import {
+  Zap,
+  Clock,
   Calendar,
   MessageSquare,
   TrendingUp,
@@ -28,12 +28,12 @@ import {
   Star
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { 
-  BookingScenario, 
+import {
+  BookingScenario,
   ConversationFlow,
   SmartSuggestion,
   BookingAutomationService,
-  BOOKING_PATTERNS 
+  BOOKING_PATTERNS
 } from '@/lib/whatsapp/booking-automation'
 
 interface BookingAutomationPanelProps {
@@ -42,12 +42,15 @@ interface BookingAutomationPanelProps {
   onFlowStart?: (flow: ConversationFlow) => void
 }
 
-export default function BookingAutomationPanel({ 
+export default function BookingAutomationPanel({
   organizationId,
   onScenarioSelect,
-  onFlowStart 
+  onFlowStart
 }: BookingAutomationPanelProps) {
-  const [activeScenarios, setActiveScenarios] = useState<string[]>(['quick_booking', 'smart_rebooking'])
+  const [activeScenarios, setActiveScenarios] = useState<string[]>([
+    'quick_booking',
+    'smart_rebooking'
+  ])
   const [selectedTab, setSelectedTab] = useState('scenarios')
   const [automationStats, setAutomationStats] = useState({
     totalAutomated: 145,
@@ -57,10 +60,8 @@ export default function BookingAutomationPanel({
   })
 
   const toggleScenario = (scenarioId: string) => {
-    setActiveScenarios(prev => 
-      prev.includes(scenarioId) 
-        ? prev.filter(id => id !== scenarioId)
-        : [...prev, scenarioId]
+    setActiveScenarios(prev =>
+      prev.includes(scenarioId) ? prev.filter(id => id !== scenarioId) : [...prev, scenarioId]
     )
   }
 
@@ -82,7 +83,9 @@ export default function BookingAutomationPanel({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[#8696a0] text-sm">Automated</p>
-              <p className="text-2xl font-semibold text-[#e9edef]">{automationStats.totalAutomated}</p>
+              <p className="text-2xl font-semibold text-[#e9edef]">
+                {automationStats.totalAutomated}
+              </p>
             </div>
             <Bot className="w-8 h-8 text-[#00a884]" />
           </div>
@@ -92,7 +95,9 @@ export default function BookingAutomationPanel({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[#8696a0] text-sm">Success Rate</p>
-              <p className="text-2xl font-semibold text-[#e9edef]">{automationStats.successRate}%</p>
+              <p className="text-2xl font-semibold text-[#e9edef]">
+                {automationStats.successRate}%
+              </p>
             </div>
             <Target className="w-8 h-8 text-[#00a884]" />
           </div>
@@ -124,19 +129,31 @@ export default function BookingAutomationPanel({
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
           <div className="border-b border-[#2a3942]">
             <TabsList className="grid grid-cols-4 w-full rounded-none bg-[#202c33]">
-              <TabsTrigger value="scenarios" className="text-[#8696a0] data-[state=active]:text-[#00a884]">
+              <TabsTrigger
+                value="scenarios"
+                className="text-[#8696a0] data-[state=active]:text-[#00a884]"
+              >
                 <Zap className="w-4 h-4 mr-2" />
                 Scenarios
               </TabsTrigger>
-              <TabsTrigger value="flows" className="text-[#8696a0] data-[state=active]:text-[#00a884]">
+              <TabsTrigger
+                value="flows"
+                className="text-[#8696a0] data-[state=active]:text-[#00a884]"
+              >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Flows
               </TabsTrigger>
-              <TabsTrigger value="suggestions" className="text-[#8696a0] data-[state=active]:text-[#00a884]">
+              <TabsTrigger
+                value="suggestions"
+                className="text-[#8696a0] data-[state=active]:text-[#00a884]"
+              >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Smart Suggestions
               </TabsTrigger>
-              <TabsTrigger value="patterns" className="text-[#8696a0] data-[state=active]:text-[#00a884]">
+              <TabsTrigger
+                value="patterns"
+                className="text-[#8696a0] data-[state=active]:text-[#00a884]"
+              >
                 <BarChart className="w-4 h-4 mr-2" />
                 Patterns
               </TabsTrigger>
@@ -149,44 +166,54 @@ export default function BookingAutomationPanel({
               {BookingAutomationService.SCENARIOS.map(scenario => {
                 const Icon = getScenarioIcon(scenario.id)
                 const isActive = activeScenarios.includes(scenario.id)
-                
+
                 return (
-                  <Card 
-                    key={scenario.id} 
+                  <Card
+                    key={scenario.id}
                     className={cn(
-                      "bg-[#202c33] border-[#2a3942] p-4 transition-all",
-                      isActive && "border-[#00a884]"
+                      'bg-[#202c33] border-[#2a3942] p-4 transition-all',
+                      isActive && 'border-[#00a884]'
                     )}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
-                        <div className={cn(
-                          "p-2 rounded-lg",
-                          isActive ? "bg-[#00a884]/20" : "bg-[#2a3942]"
-                        )}>
-                          <Icon className={cn(
-                            "w-5 h-5",
-                            isActive ? "text-[#00a884]" : "text-[#8696a0]"
-                          )} />
+                        <div
+                          className={cn(
+                            'p-2 rounded-lg',
+                            isActive ? 'bg-[#00a884]/20' : 'bg-[#2a3942]'
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              'w-5 h-5',
+                              isActive ? 'text-[#00a884]' : 'text-[#8696a0]'
+                            )}
+                          />
                         </div>
                         <div>
                           <h4 className="font-medium text-[#e9edef]">{scenario.name}</h4>
                           <p className="text-sm text-[#8696a0] mt-1">{scenario.description}</p>
                           <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline" className="text-xs bg-[#2a3942] text-[#8696a0] border-[#2a3942]">
+                            <Badge
+                              variant="outline"
+                              className="text-xs bg-[#2a3942] text-[#8696a0] border-[#2a3942]"
+                            >
                               {scenario.actions.length} actions
                             </Badge>
                             {scenario.followUp && (
-                              <Badge variant="outline" className="text-xs bg-[#2a3942] text-[#8696a0] border-[#2a3942]">
+                              <Badge
+                                variant="outline"
+                                className="text-xs bg-[#2a3942] text-[#8696a0] border-[#2a3942]"
+                              >
                                 {scenario.followUp.steps.length} follow-ups
                               </Badge>
                             )}
                           </div>
                           <div className="flex flex-wrap gap-1 mt-2">
                             {scenario.triggers.map(trigger => (
-                              <Badge 
+                              <Badge
                                 key={trigger}
-                                variant="secondary" 
+                                variant="secondary"
                                 className="text-xs bg-[#00a884]/10 text-[#00a884] border-0"
                               >
                                 "{trigger}"
@@ -209,8 +236,8 @@ export default function BookingAutomationPanel({
                           size="icon"
                           onClick={() => toggleScenario(scenario.id)}
                           className={cn(
-                            "hover:bg-[#2a3942]",
-                            isActive ? "text-[#00a884]" : "text-[#8696a0]"
+                            'hover:bg-[#2a3942]',
+                            isActive ? 'text-[#00a884]' : 'text-[#8696a0]'
                           )}
                         >
                           {isActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -247,13 +274,18 @@ export default function BookingAutomationPanel({
                         {flow.nodes.slice(0, 4).map((node, index) => (
                           <React.Fragment key={node.id}>
                             <div className="flex items-center gap-1">
-                              <div className={cn(
-                                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium",
-                                node.type === 'message' ? "bg-[#00a884]/20 text-[#00a884]" :
-                                node.type === 'question' ? "bg-[#f9b82f]/20 text-[#f9b82f]" :
-                                node.type === 'action' ? "bg-[#00a884]/20 text-[#00a884]" :
-                                "bg-[#2a3942] text-[#8696a0]"
-                              )}>
+                              <div
+                                className={cn(
+                                  'w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium',
+                                  node.type === 'message'
+                                    ? 'bg-[#00a884]/20 text-[#00a884]'
+                                    : node.type === 'question'
+                                      ? 'bg-[#f9b82f]/20 text-[#f9b82f]'
+                                      : node.type === 'action'
+                                        ? 'bg-[#00a884]/20 text-[#00a884]'
+                                        : 'bg-[#2a3942] text-[#8696a0]'
+                                )}
+                              >
                                 {index + 1}
                               </div>
                             </div>
@@ -263,7 +295,9 @@ export default function BookingAutomationPanel({
                           </React.Fragment>
                         ))}
                         {flow.nodes.length > 4 && (
-                          <span className="text-xs text-[#8696a0]">+{flow.nodes.length - 4} more</span>
+                          <span className="text-xs text-[#8696a0]">
+                            +{flow.nodes.length - 4} more
+                          </span>
                         )}
                       </div>
                     </div>
@@ -288,7 +322,8 @@ export default function BookingAutomationPanel({
               <AlertDescription className="text-[#e9edef]">
                 <strong>AI-Powered Suggestions</strong>
                 <p className="text-sm text-[#8696a0] mt-1">
-                  Smart appointment suggestions based on customer history, preferences, and real-time availability.
+                  Smart appointment suggestions based on customer history, preferences, and
+                  real-time availability.
                 </p>
               </AlertDescription>
             </Alert>
@@ -307,7 +342,9 @@ export default function BookingAutomationPanel({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-lg bg-[#00a884]/10 flex items-center justify-center">
-                            <span className="text-lg font-semibold text-[#00a884]">{service.match}%</span>
+                            <span className="text-lg font-semibold text-[#00a884]">
+                              {service.match}%
+                            </span>
                           </div>
                           <div>
                             <p className="font-medium text-[#e9edef]">{service.name}</p>
@@ -334,8 +371,8 @@ export default function BookingAutomationPanel({
                     <Card key={slot.time} className="bg-[#202c33] border-[#2a3942] p-3">
                       <div className="flex items-center justify-between mb-2">
                         <Clock className="w-4 h-4 text-[#00a884]" />
-                        <Badge 
-                          variant="secondary" 
+                        <Badge
+                          variant="secondary"
                           className="text-xs bg-[#00a884]/10 text-[#00a884] border-0"
                         >
                           {slot.label}
@@ -363,12 +400,18 @@ export default function BookingAutomationPanel({
                       )}
                       <div className="flex items-center gap-3 mt-2">
                         {pattern.discount && (
-                          <Badge variant="secondary" className="bg-[#00a884]/10 text-[#00a884] border-0">
+                          <Badge
+                            variant="secondary"
+                            className="bg-[#00a884]/10 text-[#00a884] border-0"
+                          >
                             {pattern.discount}% off
                           </Badge>
                         )}
                         {pattern.surcharge && (
-                          <Badge variant="secondary" className="bg-[#f9b82f]/10 text-[#f9b82f] border-0">
+                          <Badge
+                            variant="secondary"
+                            className="bg-[#f9b82f]/10 text-[#f9b82f] border-0"
+                          >
                             +{pattern.surcharge}% peak
                           </Badge>
                         )}

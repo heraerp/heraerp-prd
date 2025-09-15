@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id')
-    
+
     if (!organizationId) {
       return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
     }
@@ -63,44 +63,45 @@ export async function GET(request: NextRequest) {
     if (dynamicError) throw dynamicError
 
     // Merge dynamic data with services
-    const enrichedServices = services?.map(service => {
-      const serviceDynamicData = dynamicData?.filter(d => d.entity_id === service.id) || []
-      const dynamicFields: any = {}
-      
-      serviceDynamicData.forEach(field => {
-        if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
-        if (field.field_value_number !== null) dynamicFields[field.field_name] = field.field_value_number
-        if (field.field_value_boolean !== null) dynamicFields[field.field_name] = field.field_value_boolean
-        if (field.field_value_date) dynamicFields[field.field_name] = field.field_value_date
-        if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
-      })
-      
-      return {
-        ...service,
-        ...dynamicFields
-      }
-    }) || []
+    const enrichedServices =
+      services?.map(service => {
+        const serviceDynamicData = dynamicData?.filter(d => d.entity_id === service.id) || []
+        const dynamicFields: any = {}
+
+        serviceDynamicData.forEach(field => {
+          if (field.field_value_text) dynamicFields[field.field_name] = field.field_value_text
+          if (field.field_value_number !== null)
+            dynamicFields[field.field_name] = field.field_value_number
+          if (field.field_value_boolean !== null)
+            dynamicFields[field.field_name] = field.field_value_boolean
+          if (field.field_value_date) dynamicFields[field.field_name] = field.field_value_date
+          if (field.field_value_json) dynamicFields[field.field_name] = field.field_value_json
+        })
+
+        return {
+          ...service,
+          ...dynamicFields
+        }
+      }) || []
 
     // Calculate analytics
     const activeServices = enrichedServices.filter(s => s.is_active !== false)
-    const pricesArray = enrichedServices
-      .map(s => s.price || 0)
-      .filter(p => p > 0)
-    
-    const averagePrice = pricesArray.length > 0 
-      ? pricesArray.reduce((a, b) => a + b, 0) / pricesArray.length 
-      : 0
+    const pricesArray = enrichedServices.map(s => s.price || 0).filter(p => p > 0)
+
+    const averagePrice =
+      pricesArray.length > 0 ? pricesArray.reduce((a, b) => a + b, 0) / pricesArray.length : 0
 
     // Category breakdown
-    const categoryBreakdown = categories?.map(cat => {
-      const categoryServices = enrichedServices.filter(s => s.category === cat.entity_code)
-      return {
-        category: cat.entity_name,
-        category_code: cat.entity_code,
-        count: categoryServices.length,
-        revenue: categoryServices.reduce((sum, s) => sum + (s.price || 0), 0)
-      }
-    }) || []
+    const categoryBreakdown =
+      categories?.map(cat => {
+        const categoryServices = enrichedServices.filter(s => s.category === cat.entity_code)
+        return {
+          category: cat.entity_name,
+          category_code: cat.entity_code,
+          count: categoryServices.length,
+          revenue: categoryServices.reduce((sum, s) => sum + (s.price || 0), 0)
+        }
+      }) || []
 
     const analytics = {
       total_services: enrichedServices.length,
@@ -118,10 +119,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching services:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch services', details: error },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch services', details: error }, { status: 500 })
   }
 }
 
@@ -183,14 +181,17 @@ export async function POST(request: NextRequest) {
       { field_name: 'duration', field_value_number: parseInt(duration) || 60 },
       { field_name: 'commission_rate', field_value_number: parseFloat(commission_rate) || 0 },
       { field_name: 'max_daily_bookings', field_value_number: parseInt(max_daily_bookings) || 10 },
-      { field_name: 'booking_buffer_minutes', field_value_number: parseInt(booking_buffer_minutes) || 0 }
+      {
+        field_name: 'booking_buffer_minutes',
+        field_value_number: parseInt(booking_buffer_minutes) || 0
+      }
     ]
 
     if (description) {
-      dynamicFields.push({ 
-        field_name: 'description', 
+      dynamicFields.push({
+        field_name: 'description',
         field_value_text: description,
-        field_value_number: null 
+        field_value_number: null
       })
     }
 
@@ -209,9 +210,7 @@ export async function POST(request: NextRequest) {
       smart_code: `${smartCode}.${field.field_name.toUpperCase()}`
     }))
 
-    const { error: dynamicError } = await supabase
-      .from('core_dynamic_data')
-      .insert(dynamicInserts)
+    const { error: dynamicError } = await supabase.from('core_dynamic_data').insert(dynamicInserts)
 
     if (dynamicError) throw dynamicError
 
@@ -224,18 +223,12 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error creating service:', error)
-    return NextResponse.json(
-      { error: 'Failed to create service', details: error },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create service', details: error }, { status: 500 })
   }
 }
 
 // PUT: Update service
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const body = await request.json()
     const { id: serviceId } = await params
@@ -277,22 +270,26 @@ export async function PUT(
       { field_name: 'duration', field_value_number: parseInt(duration) || 60 },
       { field_name: 'commission_rate', field_value_number: parseFloat(commission_rate) || 0 },
       { field_name: 'max_daily_bookings', field_value_number: parseInt(max_daily_bookings) || 10 },
-      { field_name: 'booking_buffer_minutes', field_value_number: parseInt(booking_buffer_minutes) || 0 },
+      {
+        field_name: 'booking_buffer_minutes',
+        field_value_number: parseInt(booking_buffer_minutes) || 0
+      },
       { field_name: 'description', field_value_text: description || '', field_value_number: null },
       { field_name: 'category', field_value_text: category || '', field_value_number: null }
     ]
 
     for (const field of fieldsToUpdate) {
-      const { error: upsertError } = await supabase
-        .from('core_dynamic_data')
-        .upsert({
+      const { error: upsertError } = await supabase.from('core_dynamic_data').upsert(
+        {
           entity_id: serviceId,
           field_name: field.field_name,
           ...field,
           updated_at: new Date().toISOString()
-        }, {
+        },
+        {
           onConflict: 'entity_id,field_name'
-        })
+        }
+      )
 
       if (upsertError) throw upsertError
     }
@@ -302,10 +299,7 @@ export async function PUT(
     })
   } catch (error) {
     console.error('Error updating service:', error)
-    return NextResponse.json(
-      { error: 'Failed to update service', details: error },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update service', details: error }, { status: 500 })
   }
 }
 
@@ -333,9 +327,6 @@ export async function DELETE(
     })
   } catch (error) {
     console.error('Error deleting service:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete service', details: error },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete service', details: error }, { status: 500 })
   }
 }

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { 
+import {
   Calculator,
   FileText,
   BarChart3,
@@ -109,12 +109,8 @@ export default function FinancialDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Financial Management
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Enterprise financial accounting and reporting
-              </p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Financial Management</h1>
+              <p className="text-gray-600 text-lg">Enterprise financial accounting and reporting</p>
             </div>
             <div className="flex items-center gap-2">
               <Building2 className="w-5 h-5 text-gray-500" />
@@ -129,9 +125,11 @@ export default function FinancialDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <stat.icon className="w-8 h-8 text-gray-400" />
-                    <span className={`text-sm font-medium ${
-                      stat.trend.startsWith('+') ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <span
+                      className={`text-sm font-medium ${
+                        stat.trend.startsWith('+') ? 'text-green-600' : 'text-red-600'
+                      }`}
+                    >
                       {stat.trend}
                     </span>
                   </div>
@@ -146,19 +144,19 @@ export default function FinancialDashboard() {
         {/* Financial Modules Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {financialModules.map((module, index) => (
-            <Card 
+            <Card
               key={index}
               className="hover:shadow-lg transition-shadow cursor-pointer"
               onClick={() => router.push(module.path)}
             >
               <CardHeader>
-                <div className={`w-12 h-12 rounded-lg ${module.bgColor} flex items-center justify-center mb-4`}>
+                <div
+                  className={`w-12 h-12 rounded-lg ${module.bgColor} flex items-center justify-center mb-4`}
+                >
                   <module.icon className={`w-6 h-6 ${module.color}`} />
                 </div>
                 <CardTitle className="text-lg">{module.title}</CardTitle>
-                <CardDescription className="text-sm">
-                  {module.description}
-                </CardDescription>
+                <CardDescription className="text-sm">{module.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Button variant="ghost" className="w-full justify-between">

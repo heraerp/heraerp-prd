@@ -20,7 +20,7 @@ export interface ColorTokens {
       surface: ColorToken
       surfaceAlt: ColorToken
       border: ColorToken
-      
+
       // Brand colors
       primary: ColorToken
       primaryFg: ColorToken
@@ -28,13 +28,13 @@ export interface ColorTokens {
       secondaryFg: ColorToken
       accent: ColorToken
       accentFg: ColorToken
-      
+
       // Extended palette
       purple: ColorToken
       amber: ColorToken
       red: ColorToken
       gold: ColorToken
-      
+
       // Status colors
       success: ColorToken
       successFg: ColorToken
@@ -42,7 +42,7 @@ export interface ColorTokens {
       warningFg: ColorToken
       danger: ColorToken
       dangerFg: ColorToken
-      
+
       // Typography
       text: ColorToken
       textMuted: ColorToken
@@ -77,69 +77,69 @@ export interface ColorTokens {
  * Fixed all accessibility issues identified by contrast validation
  */
 export const HERA_COLOR_TOKENS_V2: ColorTokens = {
-  version: "2.0",
-  brand: "HERA",
-  modes: ["light", "dark"],
+  version: '2.0',
+  brand: 'HERA',
+  modes: ['light', 'dark'],
   tokens: {
     color: {
       // Base colors - Perfect contrast
-      bg: { light: "#FFFFFF", dark: "#0B0F17" },
-      surface: { light: "#F8FAFC", dark: "#111725" },
-      surfaceAlt: { light: "#EEF2F7", dark: "#161D2D" },
-      border: { light: "#CBD5E1", dark: "#3A4A5C" }, // Fixed: Better contrast
+      bg: { light: '#FFFFFF', dark: '#0B0F17' },
+      surface: { light: '#F8FAFC', dark: '#111725' },
+      surfaceAlt: { light: '#EEF2F7', dark: '#161D2D' },
+      border: { light: '#CBD5E1', dark: '#3A4A5C' }, // Fixed: Better contrast
 
       // Brand colors - HERA Primary Blue (Fixed contrast)
-      primary: { light: "#2563EB", dark: "#60A5FA" }, // Fixed: Darker for better contrast
-      primaryFg: { light: "#FFFFFF", dark: "#0A0E14" },
+      primary: { light: '#2563EB', dark: '#60A5FA' }, // Fixed: Darker for better contrast
+      primaryFg: { light: '#FFFFFF', dark: '#0A0E14' },
 
       // HERA Secondary Cyan - Excellent contrast maintained
-      secondary: { light: "#06B6D4", dark: "#22D3EE" },
-      secondaryFg: { light: "#0A0E14", dark: "#0A0E14" },
+      secondary: { light: '#06B6D4', dark: '#22D3EE' },
+      secondaryFg: { light: '#0A0E14', dark: '#0A0E14' },
 
       // HERA Accent Green - Excellent contrast maintained
-      accent: { light: "#10B981", dark: "#34D399" },
-      accentFg: { light: "#0A0E14", dark: "#0A0E14" },
+      accent: { light: '#10B981', dark: '#34D399' },
+      accentFg: { light: '#0A0E14', dark: '#0A0E14' },
 
       // Extended palette
-      purple: { light: "#8B5CF6", dark: "#A78BFA" },
-      amber: { light: "#F59E0B", dark: "#FBBF24" },
-      red: { light: "#EF4444", dark: "#F87171" },
-      gold: { light: "#FBBF24", dark: "#FCD34D" },
+      purple: { light: '#8B5CF6', dark: '#A78BFA' },
+      amber: { light: '#F59E0B', dark: '#FBBF24' },
+      red: { light: '#EF4444', dark: '#F87171' },
+      gold: { light: '#FBBF24', dark: '#FCD34D' },
 
       // Status colors - Fixed for accessibility
-      success: { light: "#16A34A", dark: "#22C55E" }, // Fixed: Darker green
-      successFg: { light: "#FFFFFF", dark: "#0A0E14" }, // NEW: Proper foreground
-      warning: { light: "#CA8A04", dark: "#EAB308" }, // Fixed: Darker yellow
-      warningFg: { light: "#FFFFFF", dark: "#0A0E14" }, // NEW: Proper foreground
-      danger: { light: "#DC2626", dark: "#EF4444" }, // Fixed: Darker red
-      dangerFg: { light: "#FFFFFF", dark: "#0A0E14" }, // NEW: Proper foreground
+      success: { light: '#16A34A', dark: '#22C55E' }, // Fixed: Darker green
+      successFg: { light: '#FFFFFF', dark: '#0A0E14' }, // NEW: Proper foreground
+      warning: { light: '#CA8A04', dark: '#EAB308' }, // Fixed: Darker yellow
+      warningFg: { light: '#FFFFFF', dark: '#0A0E14' }, // NEW: Proper foreground
+      danger: { light: '#DC2626', dark: '#EF4444' }, // Fixed: Darker red
+      dangerFg: { light: '#FFFFFF', dark: '#0A0E14' }, // NEW: Proper foreground
 
       // Typography - Excellent contrast maintained
-      text: { light: "#0A0E14", dark: "#E8EDF5" },
-      textMuted: { light: "#64748B", dark: "#94A3B8" },
-      focusRing: { light: "#2563EB", dark: "#60A5FA" }
+      text: { light: '#0A0E14', dark: '#E8EDF5' },
+      textMuted: { light: '#64748B', dark: '#94A3B8' },
+      focusRing: { light: '#2563EB', dark: '#60A5FA' }
     },
     state: {
       // Updated to match new primary color
-      primaryHover: { light: "#1D4ED8", dark: "#4B91F3" },
-      primaryActive: { light: "#1E40AF", dark: "#3C7EE0" },
-      secondaryHover: { light: "#0893AE", dark: "#1ABBD3" },
-      secondaryActive: { light: "#077C93", dark: "#159FB4" },
-      accentHover: { light: "#0FA171", dark: "#2FC08A" },
-      accentActive: { light: "#0C8C62", dark: "#29A878" }
+      primaryHover: { light: '#1D4ED8', dark: '#4B91F3' },
+      primaryActive: { light: '#1E40AF', dark: '#3C7EE0' },
+      secondaryHover: { light: '#0893AE', dark: '#1ABBD3' },
+      secondaryActive: { light: '#077C93', dark: '#159FB4' },
+      accentHover: { light: '#0FA171', dark: '#2FC08A' },
+      accentActive: { light: '#0C8C62', dark: '#29A878' }
     },
     elevation: {
-      shadow1: "0 1px 2px rgba(0,0,0,.06)",
-      shadow2: "0 4px 10px rgba(0,0,0,.08)"
+      shadow1: '0 1px 2px rgba(0,0,0,.06)',
+      shadow2: '0 4px 10px rgba(0,0,0,.08)'
     },
     radius: {
-      sm: "8px",
-      md: "12px", 
-      lg: "16px",
-      xl: "20px"
+      sm: '8px',
+      md: '12px',
+      lg: '16px',
+      xl: '20px'
     },
     gradient: {
-      brand: "linear-gradient(45deg, #2563EB, #06B6D4, #10B981)"
+      brand: 'linear-gradient(45deg, #2563EB, #06B6D4, #10B981)'
     }
   }
 }
@@ -180,7 +180,7 @@ export const VALIDATED_CONTRAST_PAIRS = [
 
   // Borders - FIXED
   ['#CBD5E1', '#FFFFFF', 'Border on background (light)', '2.13:1'], // IMPROVED
-  ['#3A4A5C', '#0B0F17', 'Border on background (dark)', '2.87:1']   // IMPROVED
+  ['#3A4A5C', '#0B0F17', 'Border on background (dark)', '2.87:1'] // IMPROVED
 ]
 
 /**
@@ -189,7 +189,7 @@ export const VALIDATED_CONTRAST_PAIRS = [
 export class HeraCSSVariableGeneratorV2 {
   static generateLightMode(): string {
     const { tokens } = HERA_COLOR_TOKENS_V2
-    
+
     return `
 :root {
   /* Base colors */
@@ -250,7 +250,7 @@ export class HeraCSSVariableGeneratorV2 {
 
   static generateDarkMode(): string {
     const { tokens } = HERA_COLOR_TOKENS_V2
-    
+
     return `
 :root.dark {
   /* Base colors */
@@ -386,7 +386,7 @@ export const V2_CRITICAL_PAIRS = [
   ['#FFFFFF', '#2563EB', 'Primary button text (light mode)'], // Should now pass
   ['#0A0E14', '#60A5FA', 'Primary button text (dark mode)'],
 
-  // Status color combinations - FIXED  
+  // Status color combinations - FIXED
   ['#FFFFFF', '#16A34A', 'Success message text (light mode)'], // Fixed
   ['#0A0E14', '#22C55E', 'Success message text (dark mode)'], // Fixed
   ['#FFFFFF', '#DC2626', 'Error message text (light mode)'], // Fixed
@@ -410,14 +410,14 @@ export class HeraColorMigrationV2 {
     return {
       // Colors that changed
       '--color-primary': '#2563EB', // Was #3B82F6
-      '--color-border': '#CBD5E1', // Was #E5E7EB  
+      '--color-border': '#CBD5E1', // Was #E5E7EB
       '--color-success': '#16A34A', // Was #22C55E
       '--color-warning': '#CA8A04', // Was #F59E0B
       '--color-danger': '#DC2626', // Was #EF4444
-      
+
       // New colors added
       '--color-success-fg': '#FFFFFF',
-      '--color-warning-fg': '#FFFFFF', 
+      '--color-warning-fg': '#FFFFFF',
       '--color-danger-fg': '#FFFFFF'
     }
   }
@@ -455,16 +455,16 @@ export class HeraColorMigrationV2 {
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * 1. Use v2 tokens:
  * import HERA_COLOR_TOKENS_V2 from './hera-color-palette-dna-v2'
- * 
+ *
  * 2. Generate v2 CSS:
  * const cssVars = HeraCSSVariableGeneratorV2.generateCompleteCSSVars()
- * 
+ *
  * 3. Migration from v1:
  * const migrationCSS = HeraColorMigrationV2.generateMigrationCSS()
- * 
+ *
  * 4. Accessible status components:
  * <div className="status-success-v2">All validations passed!</div>
  */

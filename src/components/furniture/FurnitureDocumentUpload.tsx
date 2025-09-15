@@ -7,13 +7,13 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  Upload, 
-  FileText, 
-  Image, 
-  File, 
-  X, 
-  Check, 
+import {
+  Upload,
+  FileText,
+  Image,
+  File,
+  X,
+  Check,
   AlertCircle,
   Download,
   Eye,
@@ -135,14 +135,12 @@ export function FurnitureDocumentUpload({
       })
 
       const result = await response.json()
-      
+
       if (result.success && result.data.analysis) {
         // Update file with analysis
-        setFiles(prev => prev.map(f => 
-          f.id === file.id 
-            ? { ...f, analysis: result.data.analysis }
-            : f
-        ))
+        setFiles(prev =>
+          prev.map(f => (f.id === file.id ? { ...f, analysis: result.data.analysis } : f))
+        )
 
         // Notify parent component
         if (onDocumentAnalyzed && result.data.journalEntry) {
@@ -171,10 +169,10 @@ export function FurnitureDocumentUpload({
     try {
       const newFiles: DocumentFile[] = []
       const totalFiles = files.length
-      
+
       for (let i = 0; i < totalFiles; i++) {
         const file = files[i]
-        
+
         // Validate file
         const validationError = validateFile(file)
         if (validationError) {
@@ -209,7 +207,7 @@ export function FurnitureDocumentUpload({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
-    
+
     if (e.dataTransfer.files.length > 0) {
       handleFileSelect(e.dataTransfer.files)
     }
@@ -237,9 +235,7 @@ export function FurnitureDocumentUpload({
   }
 
   return (
-    <Card className={cn(
-      isDarkMode ? "bg-gray-800/50 border-gray-700" : "bg-white"
-    )}>
+    <Card className={cn(isDarkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white')}>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <Receipt className="h-4 w-4" />
@@ -250,15 +246,15 @@ export function FurnitureDocumentUpload({
         {/* Upload Area */}
         <div
           className={cn(
-            "border-2 border-dashed rounded-lg p-4 text-center transition-colors",
+            'border-2 border-dashed rounded-lg p-4 text-center transition-colors',
             dragOver
-              ? "border-blue-500 bg-blue-500/10"
+              ? 'border-blue-500 bg-blue-500/10'
               : uploading
-              ? "border-gray-600 bg-gray-700/50"
-              : "border-gray-600 hover:border-gray-500"
+                ? 'border-gray-600 bg-gray-700/50'
+                : 'border-gray-600 hover:border-gray-500'
           )}
           onDrop={handleDrop}
-          onDragOver={(e) => {
+          onDragOver={e => {
             e.preventDefault()
             setDragOver(true)
           }}
@@ -281,12 +277,8 @@ export function FurnitureDocumentUpload({
                 <Upload className="h-8 w-8 text-gray-400" />
                 <Camera className="h-8 w-8 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-400">
-                Drop invoices here or click to browse
-              </p>
-              <p className="text-xs text-gray-500">
-                PDF, JPG, PNG accepted (Max 50MB)
-              </p>
+              <p className="text-sm text-gray-400">Drop invoices here or click to browse</p>
+              <p className="text-xs text-gray-500">PDF, JPG, PNG accepted (Max 50MB)</p>
               <Button
                 type="button"
                 variant="outline"
@@ -329,12 +321,12 @@ export function FurnitureDocumentUpload({
         {files.length > 0 && (
           <ScrollArea className="h-[200px]">
             <div className="space-y-2">
-              {files.map((file) => (
+              {files.map(file => (
                 <div
                   key={file.id}
                   className={cn(
-                    "flex items-center justify-between p-3 rounded-lg",
-                    isDarkMode ? "bg-gray-700/50" : "bg-gray-100"
+                    'flex items-center justify-between p-3 rounded-lg',
+                    isDarkMode ? 'bg-gray-700/50' : 'bg-gray-100'
                   )}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -345,13 +337,14 @@ export function FurnitureDocumentUpload({
                         {formatFileSize(file.size)}
                         {file.analysis && (
                           <span className="ml-2">
-                            • {file.analysis.vendor_name} - ₹{file.analysis.amount?.toLocaleString('en-IN')}
+                            • {file.analysis.vendor_name} - ₹
+                            {file.analysis.amount?.toLocaleString('en-IN')}
                           </span>
                         )}
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-1">
                     {file.analysis ? (
                       <Badge variant="secondary" className="text-xs bg-green-500/20">

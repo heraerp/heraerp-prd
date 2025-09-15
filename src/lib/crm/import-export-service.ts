@@ -1,7 +1,7 @@
 /**
  * HERA CRM Import/Export Service
  * Enables customer data migration from other CRM systems
- * 
+ *
  * Project Manager Priority #5: Data Import/Export
  */
 
@@ -56,7 +56,7 @@ export interface ExportOptions {
  */
 export class CRMImportExportService {
   private organizationId: string
-  
+
   // Pre-built import templates for common CRM systems
   private static readonly IMPORT_TEMPLATES: ImportTemplate[] = [
     {
@@ -69,9 +69,17 @@ export class CRMImportExportService {
         { sourceField: 'Company', targetField: 'company' },
         { sourceField: 'Email', targetField: 'email' },
         { sourceField: 'Phone', targetField: 'phone' },
-        { sourceField: 'Lead Status', targetField: 'status', transformer: (v) => v?.toLowerCase() || 'lead' },
+        {
+          sourceField: 'Lead Status',
+          targetField: 'status',
+          transformer: v => v?.toLowerCase() || 'lead'
+        },
         { sourceField: 'Industry', targetField: 'industry' },
-        { sourceField: 'Annual Revenue', targetField: 'value', transformer: (v) => parseFloat(v) || 0 },
+        {
+          sourceField: 'Annual Revenue',
+          targetField: 'value',
+          transformer: v => parseFloat(v) || 0
+        },
         { sourceField: 'Lead Source', targetField: 'source' },
         { sourceField: 'Description', targetField: 'notes' }
       ]
@@ -82,13 +90,21 @@ export class CRMImportExportService {
       sourceSystem: 'hubspot',
       entityType: 'contact',
       fieldMappings: [
-        { sourceField: 'firstname lastname', targetField: 'name', transformer: (v, row) => `${row.firstname || ''} ${row.lastname || ''}`.trim() },
+        {
+          sourceField: 'firstname lastname',
+          targetField: 'name',
+          transformer: (v, row) => `${row.firstname || ''} ${row.lastname || ''}`.trim()
+        },
         { sourceField: 'company', targetField: 'company' },
         { sourceField: 'email', targetField: 'email' },
         { sourceField: 'phone', targetField: 'phone' },
         { sourceField: 'lifecyclestage', targetField: 'status' },
         { sourceField: 'industry', targetField: 'industry' },
-        { sourceField: 'annualrevenue', targetField: 'value', transformer: (v) => parseFloat(v) || 0 },
+        {
+          sourceField: 'annualrevenue',
+          targetField: 'value',
+          transformer: v => parseFloat(v) || 0
+        },
         { sourceField: 'hs_lead_status', targetField: 'source' },
         { sourceField: 'note', targetField: 'notes' }
       ]
@@ -138,26 +154,23 @@ export class CRMImportExportService {
 
     try {
       // Get existing contacts for duplicate checking
-      const existingContacts = options?.skipDuplicates 
-        ? await this.getExistingContacts()
-        : []
+      const existingContacts = options?.skipDuplicates ? await this.getExistingContacts() : []
 
       for (let i = 0; i < data.length; i++) {
         const row = data[i]
-        
+
         try {
           // Apply field mappings if template provided
-          const mappedData = template 
-            ? this.applyFieldMappings(row, template.fieldMappings)
-            : row
+          const mappedData = template ? this.applyFieldMappings(row, template.fieldMappings) : row
 
           // Check for duplicates
           if (options?.skipDuplicates) {
-            const isDuplicate = existingContacts.some(c => 
-              c.email === mappedData.email || 
-              (c.name === mappedData.name && c.company === mappedData.company)
+            const isDuplicate = existingContacts.some(
+              c =>
+                c.email === mappedData.email ||
+                (c.name === mappedData.name && c.company === mappedData.company)
             )
-            
+
             if (isDuplicate) {
               result.errors.push({
                 row: i + 1,
@@ -232,26 +245,21 @@ export class CRMImportExportService {
 
     try {
       // Get existing contacts for linking
-      const contacts = options?.linkToContacts 
-        ? await this.getExistingContacts()
-        : []
+      const contacts = options?.linkToContacts ? await this.getExistingContacts() : []
 
       for (let i = 0; i < data.length; i++) {
         const row = data[i]
-        
+
         try {
           // Apply field mappings
-          const mappedData = template 
-            ? this.applyFieldMappings(row, template.fieldMappings)
-            : row
+          const mappedData = template ? this.applyFieldMappings(row, template.fieldMappings) : row
 
           // Try to link to existing contact
           if (options?.linkToContacts && mappedData.contact) {
-            const linkedContact = contacts.find(c => 
-              c.name === mappedData.contact || 
-              c.email === mappedData.contact
+            const linkedContact = contacts.find(
+              c => c.name === mappedData.contact || c.email === mappedData.contact
             )
-            
+
             if (linkedContact) {
               mappedData.contactId = linkedContact.id
             }
@@ -353,16 +361,16 @@ export class CRMImportExportService {
           exportData = this.convertToCSV(allData)
           filename = `hera-crm-export-${Date.now()}.csv`
           break
-        
+
         case 'json':
           exportData = JSON.stringify(allData, null, 2)
           filename = `hera-crm-export-${Date.now()}.json`
           break
-        
+
         case 'excel':
           // TODO: Implement Excel export
           throw new Error('Excel export not yet implemented')
-        
+
         default:
           throw new Error('Invalid export format')
       }
@@ -422,7 +430,7 @@ export class CRMImportExportService {
 
     for (let i = 0; i < line.length; i++) {
       const char = line[i]
-      
+
       if (char === '"') {
         inQuotes = !inQuotes
       } else if (char === ',' && !inQuotes) {
@@ -432,7 +440,7 @@ export class CRMImportExportService {
         current += char
       }
     }
-    
+
     result.push(current.trim())
     return result
   }
@@ -467,11 +475,11 @@ export class CRMImportExportService {
 
   private applyFieldMappings(row: any, mappings: ImportMapping[]): any {
     const mapped: any = {}
-    
+
     mappings.forEach(mapping => {
       const sourceValue = row[mapping.sourceField]
       if (sourceValue !== undefined) {
-        mapped[mapping.targetField] = mapping.transformer 
+        mapped[mapping.targetField] = mapping.transformer
           ? mapping.transformer(sourceValue, row)
           : sourceValue
       }
@@ -484,7 +492,7 @@ export class CRMImportExportService {
     if (!data.name || !data.name.trim()) {
       return { valid: false, field: 'name', error: 'Name is required' }
     }
-    
+
     if (!data.email || !this.isValidEmail(data.email)) {
       return { valid: false, field: 'email', error: 'Valid email is required' }
     }
@@ -496,7 +504,7 @@ export class CRMImportExportService {
     if (!data.name || !data.name.trim()) {
       return { valid: false, field: 'name', error: 'Opportunity name is required' }
     }
-    
+
     if (!data.value || isNaN(parseFloat(data.value))) {
       return { valid: false, field: 'value', error: 'Valid value is required' }
     }
@@ -515,7 +523,7 @@ export class CRMImportExportService {
     if (filters.dateRange) {
       const startDate = new Date(filters.dateRange.start)
       const endDate = new Date(filters.dateRange.end)
-      
+
       filtered = filtered.filter(item => {
         const itemDate = new Date(item.createdAt || item.created_at)
         return itemDate >= startDate && itemDate <= endDate
@@ -523,16 +531,12 @@ export class CRMImportExportService {
     }
 
     if (filters.status && filters.status.length > 0) {
-      filtered = filtered.filter(item => 
-        filters.status.includes(item.status)
-      )
+      filtered = filtered.filter(item => filters.status.includes(item.status))
     }
 
     if (filters.tags && filters.tags.length > 0) {
-      filtered = filtered.filter(item => 
-        item.tags && filters.tags.some((tag: string) => 
-          item.tags.includes(tag)
-        )
+      filtered = filtered.filter(
+        item => item.tags && filters.tags.some((tag: string) => item.tags.includes(tag))
       )
     }
 
@@ -545,25 +549,28 @@ export class CRMImportExportService {
       organization_id: this.organizationId
     })
 
-    return contacts.map(contact => ({
-      id: contact.entity_id,
-      name: contact.entity_name,
-      company: contact.dynamic_data?.company || '',
-      email: contact.dynamic_data?.email || '',
-      phone: contact.dynamic_data?.phone || '',
-      status: contact.dynamic_data?.status || 'lead',
-      industry: contact.dynamic_data?.industry || '',
-      lastContact: contact.dynamic_data?.last_contact || contact.updated_at,
-      value: parseInt(contact.dynamic_data?.value || '0'),
-      probability: parseInt(contact.dynamic_data?.probability || '0'),
-      tags: JSON.parse(contact.dynamic_data?.tags || '[]'),
-      assignedTo: contact.dynamic_data?.assigned_to || '',
-      source: contact.dynamic_data?.source || '',
-      notes: contact.dynamic_data?.notes || '',
-      organizationId: contact.organization_id,
-      createdAt: contact.created_at,
-      updatedAt: contact.updated_at
-    } as CRMContact))
+    return contacts.map(
+      contact =>
+        ({
+          id: contact.entity_id,
+          name: contact.entity_name,
+          company: contact.dynamic_data?.company || '',
+          email: contact.dynamic_data?.email || '',
+          phone: contact.dynamic_data?.phone || '',
+          status: contact.dynamic_data?.status || 'lead',
+          industry: contact.dynamic_data?.industry || '',
+          lastContact: contact.dynamic_data?.last_contact || contact.updated_at,
+          value: parseInt(contact.dynamic_data?.value || '0'),
+          probability: parseInt(contact.dynamic_data?.probability || '0'),
+          tags: JSON.parse(contact.dynamic_data?.tags || '[]'),
+          assignedTo: contact.dynamic_data?.assigned_to || '',
+          source: contact.dynamic_data?.source || '',
+          notes: contact.dynamic_data?.notes || '',
+          organizationId: contact.organization_id,
+          createdAt: contact.created_at,
+          updatedAt: contact.updated_at
+        }) as CRMContact
+    )
   }
 
   private async getExistingOpportunities(): Promise<CRMOpportunity[]> {
@@ -571,23 +578,26 @@ export class CRMImportExportService {
       organization_id: this.organizationId
     })
 
-    return opportunities.map(opp => ({
-      id: opp.entity_id,
-      name: opp.entity_name,
-      contact: opp.dynamic_data?.contact || '',
-      contactId: opp.dynamic_data?.contact_id || '',
-      company: opp.dynamic_data?.company || '',
-      stage: opp.dynamic_data?.stage || 'discovery',
-      value: parseInt(opp.dynamic_data?.value || '0'),
-      closeDate: opp.dynamic_data?.close_date || '',
-      probability: parseInt(opp.dynamic_data?.probability || '0'),
-      assignedTo: opp.dynamic_data?.assigned_to || '',
-      source: opp.dynamic_data?.source || '',
-      description: opp.dynamic_data?.description || '',
-      organizationId: opp.organization_id,
-      createdAt: opp.created_at,
-      updatedAt: opp.updated_at
-    } as CRMOpportunity))
+    return opportunities.map(
+      opp =>
+        ({
+          id: opp.entity_id,
+          name: opp.entity_name,
+          contact: opp.dynamic_data?.contact || '',
+          contactId: opp.dynamic_data?.contact_id || '',
+          company: opp.dynamic_data?.company || '',
+          stage: opp.dynamic_data?.stage || 'discovery',
+          value: parseInt(opp.dynamic_data?.value || '0'),
+          closeDate: opp.dynamic_data?.close_date || '',
+          probability: parseInt(opp.dynamic_data?.probability || '0'),
+          assignedTo: opp.dynamic_data?.assigned_to || '',
+          source: opp.dynamic_data?.source || '',
+          description: opp.dynamic_data?.description || '',
+          organizationId: opp.organization_id,
+          createdAt: opp.created_at,
+          updatedAt: opp.updated_at
+        }) as CRMOpportunity
+    )
   }
 
   private async getExistingTasks(): Promise<CRMTask[]> {
@@ -595,20 +605,23 @@ export class CRMImportExportService {
       organization_id: this.organizationId
     })
 
-    return tasks.map(task => ({
-      id: task.entity_id,
-      title: task.entity_name,
-      type: task.dynamic_data?.type || 'call',
-      priority: task.dynamic_data?.priority || 'medium',
-      dueDate: task.dynamic_data?.due_date || '',
-      status: task.dynamic_data?.status || 'pending',
-      contactId: task.dynamic_data?.contact_id || '',
-      assignedTo: task.dynamic_data?.assigned_to || '',
-      notes: task.dynamic_data?.notes || '',
-      organizationId: task.organization_id,
-      createdAt: task.created_at,
-      updatedAt: task.updated_at
-    } as CRMTask))
+    return tasks.map(
+      task =>
+        ({
+          id: task.entity_id,
+          title: task.entity_name,
+          type: task.dynamic_data?.type || 'call',
+          priority: task.dynamic_data?.priority || 'medium',
+          dueDate: task.dynamic_data?.due_date || '',
+          status: task.dynamic_data?.status || 'pending',
+          contactId: task.dynamic_data?.contact_id || '',
+          assignedTo: task.dynamic_data?.assigned_to || '',
+          notes: task.dynamic_data?.notes || '',
+          organizationId: task.organization_id,
+          createdAt: task.created_at,
+          updatedAt: task.updated_at
+        }) as CRMTask
+    )
   }
 
   private async createContact(data: Partial<CRMContact>): Promise<CRMContact> {
@@ -633,7 +646,7 @@ export class CRMImportExportService {
     }
 
     const newContact = await heraApi.createEntity(entityData)
-    
+
     return {
       id: newContact.entity_id,
       name: newContact.entity_name,
@@ -676,7 +689,7 @@ export class CRMImportExportService {
     }
 
     const newOpp = await heraApi.createEntity(entityData)
-    
+
     return {
       id: newOpp.entity_id,
       name: newOpp.entity_name,

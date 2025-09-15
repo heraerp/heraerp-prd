@@ -1,24 +1,19 @@
 /**
  * HERA DNA Pattern: Dark Sidebar Layout
- * 
+ *
  * LEARNINGS FROM FURNITURE MODULE:
  * 1. Compact 80px sidebar works better than full navigation
  * 2. Icon-only navigation with tooltips is cleaner
  * 3. Industry-specific theme colors (amber/orange for furniture)
  * 4. Responsive sidebar that hides on mobile
  * 5. Consistent dark theme throughout
- * 
+ *
  * This pattern accelerates industry-specific module development
  */
 
 import React from 'react'
 import { cn } from '@/lib/utils'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -38,15 +33,15 @@ export interface DarkSidebarConfig {
   baseUrl: string // e.g., '/furniture'
 }
 
-export function DarkSidebarLayout({ 
-  children, 
-  config 
-}: { 
+export function DarkSidebarLayout({
+  children,
+  config
+}: {
   children: React.ReactNode
-  config: DarkSidebarConfig 
+  config: DarkSidebarConfig
 }) {
   const pathname = usePathname()
-  
+
   const getColorClasses = (color: string) => {
     const colorMap: Record<string, { bg: string; hover: string; text: string }> = {
       amber: {
@@ -56,7 +51,7 @@ export function DarkSidebarLayout({
       },
       blue: {
         bg: 'bg-blue-600',
-        hover: 'hover:bg-blue-700', 
+        hover: 'hover:bg-blue-700',
         text: 'text-blue-600'
       },
       green: {
@@ -81,16 +76,14 @@ export function DarkSidebarLayout({
       <div className="w-20 bg-gray-950 border-r border-gray-800">
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-4 flex items-center justify-center">
-            {config.logo}
-          </div>
+          <div className="p-4 flex items-center justify-center">{config.logo}</div>
 
           {/* Navigation */}
           <nav className="flex-1 px-2 py-4 space-y-1">
             <TooltipProvider>
-              {config.items.map((item) => {
+              {config.items.map(item => {
                 const isActive = pathname === item.href
-                
+
                 return (
                   <Tooltip key={item.href}>
                     <TooltipTrigger asChild>
@@ -99,21 +92,22 @@ export function DarkSidebarLayout({
                           variant="ghost"
                           size="icon"
                           className={cn(
-                            "w-full h-12 relative",
+                            'w-full h-12 relative',
                             isActive && `${colors.bg} ${colors.text} hover:${colors.bg}`,
-                            !isActive && "hover:bg-gray-800"
+                            !isActive && 'hover:bg-gray-800'
                           )}
                         >
-                          <item.icon className={cn(
-                            "h-5 w-5",
-                            isActive ? "text-white" : "text-gray-400"
-                          )} />
+                          <item.icon
+                            className={cn('h-5 w-5', isActive ? 'text-white' : 'text-gray-400')}
+                          />
                           {item.badge && (
-                            <span className={cn(
-                              "absolute top-1 right-1 h-5 w-5 text-xs rounded-full flex items-center justify-center",
-                              colors.bg,
-                              "text-white"
-                            )}>
+                            <span
+                              className={cn(
+                                'absolute top-1 right-1 h-5 w-5 text-xs rounded-full flex items-center justify-center',
+                                colors.bg,
+                                'text-white'
+                              )}
+                            >
                               {item.badge}
                             </span>
                           )}
@@ -132,29 +126,21 @@ export function DarkSidebarLayout({
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <main className="flex-1 overflow-auto">{children}</main>
 
       {/* Mobile Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-gray-950 border-t border-gray-800 px-4 py-2 flex justify-around md:hidden">
-        {config.items.slice(0, 5).map((item) => {
+        {config.items.slice(0, 5).map(item => {
           const isActive = pathname === item.href
-          
+
           return (
             <Link key={item.href} href={item.href}>
               <Button
                 variant="ghost"
                 size="icon"
-                className={cn(
-                  "relative",
-                  isActive && `${colors.text}`
-                )}
+                className={cn('relative', isActive && `${colors.text}`)}
               >
-                <item.icon className={cn(
-                  "h-5 w-5",
-                  isActive ? colors.text : "text-gray-400"
-                )} />
+                <item.icon className={cn('h-5 w-5', isActive ? colors.text : 'text-gray-400')} />
               </Button>
             </Link>
           )

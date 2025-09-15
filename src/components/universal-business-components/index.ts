@@ -7,7 +7,7 @@ export * from './appointments'
 
 // Future universal components (to be added):
 // export * from './crm'           // Universal CRM components
-// export * from './inventory'     // Universal inventory management  
+// export * from './inventory'     // Universal inventory management
 // export * from './pos'           // Universal point of sale
 // export * from './reports'       // Universal reporting system
 // export * from './analytics'     // Universal analytics dashboard

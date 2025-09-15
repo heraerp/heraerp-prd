@@ -2270,3 +2270,41 @@ html {
 /* ===============================================
    END ANALYTICS CHAT ENTERPRISE ANIMATIONS
    =============================================== */
+
+/* HERA Select Dropdown in Dark Modals - Enhanced Visibility */
+[role="dialog"] [data-radix-ui-select-content] {
+  background-color: rgb(31, 41, 55) !important; /* bg-gray-800 */
+  border: 1px solid rgb(75, 85, 99) !important; /* border-gray-600 */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  z-index: 99999 !important;
+}
+
+[role="dialog"] [role="option"] {
+  color: rgb(229, 231, 235) !important; /* text-gray-200 */
+  cursor: pointer !important;
+  padding: 8px 12px !important;
+}
+
+[role="dialog"] [role="option"]:hover,
+[role="dialog"] [role="option"][data-highlighted] {
+  background-color: rgb(55, 65, 81) !important; /* bg-gray-700 */
+  color: white !important;
+  outline: none !important;
+}
+
+[role="dialog"] [role="option"][data-state="checked"] {
+  background-color: rgb(55, 65, 81) !important; /* bg-gray-700 */
+  color: white !important;
+}
+
+/* Ensure select trigger in modals has proper contrast */
+[role="dialog"] [data-radix-ui-select-trigger] {
+  background-color: rgb(31, 41, 55) !important;
+  border-color: rgb(75, 85, 99) !important;
+  color: white !important;
+}
+
+[role="dialog"] [data-radix-ui-select-trigger]:hover {
+  background-color: rgb(55, 65, 81) !important;
+  border-color: rgb(107, 114, 128) !important;
+}

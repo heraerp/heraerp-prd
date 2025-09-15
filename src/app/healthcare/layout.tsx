@@ -1,7 +1,7 @@
 'use client'
 
 import { UniversalLayout } from '@/components/layout/UniversalLayout'
-import { 
+import {
   Heart,
   Calendar,
   Users,
@@ -137,11 +137,7 @@ const quickActions = [
   }
 ]
 
-export default function HealthcareLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function HealthcareLayout({ children }: { children: React.ReactNode }) {
   return (
     <UniversalLayout
       title="Health Pro"

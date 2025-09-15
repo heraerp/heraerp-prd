@@ -1,7 +1,7 @@
 /**
  * HERA ERP Readiness Questionnaire API Service
  * Smart Code: HERA.ERP.READINESS.API.SERVICE.V1
- * 
+ *
  * Integration layer for Sacred Six Tables architecture
  */
 
@@ -19,7 +19,7 @@ import type {
 
 /**
  * Sacred Six Tables Mapping:
- * 
+ *
  * core_organizations: Multi-tenant isolation
  * core_entities: Questionnaire sessions, templates, questions as entities
  * core_dynamic_data: Question properties, AI insights, custom configurations
@@ -46,7 +46,7 @@ export class ReadinessQuestionnaireService {
     // 1. Create session entity in core_entities with entity_type='questionnaire_session'
     // 2. Create transaction header in universal_transactions
     // 3. Link session to template via core_relationships
-    
+
     const response = await fetch(`${this.baseUrl}/readiness/sessions`, {
       method: 'POST',
       headers: {
@@ -72,7 +72,7 @@ export class ReadinessQuestionnaireService {
     // 1. Create/update transaction line in universal_transaction_lines
     // 2. Store response_value, response_text, and smart_code
     // 3. Update session progress in core_dynamic_data
-    
+
     const response = await fetch(`${this.baseUrl}/readiness/sessions/${sessionId}/answers`, {
       method: 'POST',
       headers: {
@@ -94,7 +94,10 @@ export class ReadinessQuestionnaireService {
    * Update session navigation (next/prev)
    * Updates current_index in core_dynamic_data
    */
-  async updateSessionProgress(sessionId: string, currentIndex: number): Promise<QuestionnaireSession> {
+  async updateSessionProgress(
+    sessionId: string,
+    currentIndex: number
+  ): Promise<QuestionnaireSession> {
     const response = await fetch(`${this.baseUrl}/readiness/sessions/${sessionId}/progress`, {
       method: 'PUT',
       headers: {
@@ -248,7 +251,7 @@ export class ReadinessAIService {
     // 4. Store results in core_dynamic_data with smart codes
 
     const analysisPrompt = this.buildAnalysisPrompt(answers)
-    
+
     const response = await fetch('/api/v1/ai/universal', {
       method: 'POST',
       headers: {
@@ -286,9 +289,9 @@ export class ReadinessAIService {
       5. Integration suggestions based on responses
 
       Assessment Responses:
-      ${answers.map(answer => 
-        `Question ${answer.question_id}: ${JSON.stringify(answer.response_value)}`
-      ).join('\n')}
+      ${answers
+        .map(answer => `Question ${answer.question_id}: ${JSON.stringify(answer.response_value)}`)
+        .join('\n')}
 
       Provide analysis in structured JSON format following the AIInsights interface.
     `
@@ -319,7 +322,7 @@ export class ReadinessValidationService {
       if (value === undefined || value === null || value === '') {
         errors.push('This field is required')
       }
-      
+
       if (Array.isArray(value) && value.length === 0) {
         errors.push('Please select at least one option')
       }

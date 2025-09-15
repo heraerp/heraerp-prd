@@ -12,16 +12,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
-  Play, 
-  Zap, 
-  Cpu, 
-  Database, 
-  Settings, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Play,
+  Zap,
+  Cpu,
+  Database,
+  Settings,
+  CheckCircle,
+  XCircle,
+  Clock,
   Sparkles,
   Code,
   Layers,
@@ -66,7 +72,7 @@ export default function APITestingPage() {
               <h1 className="text-2xl font-light text-white mb-2">HERA API Laboratory</h1>
               <p className="text-gray-300 text-sm">Developer Access Portal</p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="password" className="text-white/80 text-sm font-medium">
@@ -76,13 +82,13 @@ export default function APITestingPage() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                  onChange={e => setPassword(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleLogin()}
                   className="mt-2 bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20 transition-all duration-300"
                   placeholder="Enter developer access code"
                 />
               </div>
-              
+
               <Button
                 onClick={handleLogin}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02]"
@@ -90,7 +96,7 @@ export default function APITestingPage() {
                 Access API Laboratory
               </Button>
             </div>
-            
+
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-400">
                 "Simplicity is the ultimate sophistication" - Leonardo da Vinci
@@ -258,30 +264,30 @@ export default function APITestingPage() {
   const executeAPI = async (test: any) => {
     setLoading(true)
     setSelectedAPI(test.id)
-    
+
     try {
       let url = `http://localhost:3001${test.endpoint}`
-      
+
       // Add query params for GET requests
       if (test.method === 'GET' && test.queryParams) {
         const params = new URLSearchParams(test.queryParams)
         url += `?${params}`
       }
-      
+
       const options: RequestInit = {
         method: test.method,
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       }
-      
+
       if (test.method === 'POST' && test.defaultPayload) {
         options.body = JSON.stringify(test.defaultPayload)
       }
-      
+
       const response = await fetch(url, options)
       const data = await response.json()
-      
+
       setResults({
         ...data,
         _metadata: {
@@ -300,7 +306,7 @@ export default function APITestingPage() {
         }
       })
     }
-    
+
     setLoading(false)
   }
 
@@ -331,10 +337,16 @@ export default function APITestingPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+              <Badge
+                variant="secondary"
+                className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+              >
                 Phase 2 Complete
               </Badge>
-              <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+              <Badge
+                variant="secondary"
+                className="bg-blue-500/20 text-blue-400 border-blue-500/30"
+              >
                 16 APIs Active
               </Badge>
             </div>
@@ -368,7 +380,7 @@ export default function APITestingPage() {
                   </TabsList>
 
                   <TabsContent value="phase1" className="space-y-3">
-                    {apiTests.phase1.map((test) => {
+                    {apiTests.phase1.map(test => {
                       const Icon = test.icon
                       return (
                         <motion.div
@@ -376,10 +388,10 @@ export default function APITestingPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <Card 
+                          <Card
                             className={`cursor-pointer transition-all duration-300 border ${
-                              selectedAPI === test.id 
-                                ? 'bg-blue-500/20 border-blue-500/50' 
+                              selectedAPI === test.id
+                                ? 'bg-blue-500/20 border-blue-500/50'
                                 : 'bg-white/5 border-white/10 hover:bg-white/10'
                             }`}
                             onClick={() => executeAPI(test)}
@@ -410,7 +422,7 @@ export default function APITestingPage() {
                   </TabsContent>
 
                   <TabsContent value="phase2" className="space-y-3">
-                    {apiTests.phase2.map((test) => {
+                    {apiTests.phase2.map(test => {
                       const Icon = test.icon
                       return (
                         <motion.div
@@ -418,10 +430,10 @@ export default function APITestingPage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <Card 
+                          <Card
                             className={`cursor-pointer transition-all duration-300 border ${
-                              selectedAPI === test.id 
-                                ? 'bg-purple-500/20 border-purple-500/50' 
+                              selectedAPI === test.id
+                                ? 'bg-purple-500/20 border-purple-500/50'
                                 : 'bg-white/5 border-white/10 hover:bg-white/10'
                             }`}
                             onClick={() => executeAPI(test)}
@@ -482,10 +494,17 @@ export default function APITestingPage() {
                         <div className="flex items-center space-x-2">
                           {(() => {
                             const StatusIcon = getStatusIcon(results._metadata?.status || 500)
-                            return <StatusIcon className={`w-5 h-5 ${getStatusColor(results._metadata?.status || 500)}`} />
+                            return (
+                              <StatusIcon
+                                className={`w-5 h-5 ${getStatusColor(results._metadata?.status || 500)}`}
+                              />
+                            )
                           })()}
-                          <span className={`font-mono text-sm ${getStatusColor(results._metadata?.status || 500)}`}>
-                            {results._metadata?.status || 'Unknown'} {results._metadata?.statusText || ''}
+                          <span
+                            className={`font-mono text-sm ${getStatusColor(results._metadata?.status || 500)}`}
+                          >
+                            {results._metadata?.status || 'Unknown'}{' '}
+                            {results._metadata?.statusText || ''}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2 text-sm text-gray-400">
@@ -503,7 +522,10 @@ export default function APITestingPage() {
                               <span className="text-sm text-emerald-400">Execution Time</span>
                             </div>
                             <p className="text-lg font-mono text-white mt-1">
-                              {results.total_execution_time_ms || results.performance_metrics?.total_time_ms || 0}ms
+                              {results.total_execution_time_ms ||
+                                results.performance_metrics?.total_time_ms ||
+                                0}
+                              ms
                             </p>
                           </div>
                           <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
@@ -536,7 +558,9 @@ export default function APITestingPage() {
                         <Code className="w-8 h-8 text-white" />
                       </div>
                       <h3 className="text-lg font-medium text-white mb-2">Select an API to test</h3>
-                      <p className="text-gray-400">Choose from Phase 1 or Phase 2 APIs to see live results</p>
+                      <p className="text-gray-400">
+                        Choose from Phase 1 or Phase 2 APIs to see live results
+                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -552,7 +576,9 @@ export default function APITestingPage() {
               <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                 All Systems Operational
               </Badge>
-              <span className="text-gray-400">HERA System Organization: 719dfed1-09b4-4ca8-bfda-f682460de945</span>
+              <span className="text-gray-400">
+                HERA System Organization: 719dfed1-09b4-4ca8-bfda-f682460de945
+              </span>
             </div>
             <div className="text-gray-500">
               "Simplicity is the ultimate sophistication" - Steve Jobs
@@ -565,11 +591,18 @@ export default function APITestingPage() {
         .shake {
           animation: shake 0.6s ease-in-out;
         }
-        
+
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          25% {
+            transform: translateX(-5px);
+          }
+          75% {
+            transform: translateX(5px);
+          }
         }
       `}</style>
     </div>

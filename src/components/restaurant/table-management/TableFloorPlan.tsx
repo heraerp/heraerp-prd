@@ -65,7 +65,7 @@ interface TableFloorPlanProps {
 export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableFloorPlanProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  
+
   const [selectedTable, setSelectedTable] = useState<Table | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
@@ -76,7 +76,9 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
   const [snapToGrid, setSnapToGrid] = useState(true)
   const [gridSize] = useState(20)
   const [mode, setMode] = useState<'select' | 'add' | 'delete'>('select')
-  const [newTableShape, setNewTableShape] = useState<'square' | 'rectangle' | 'round' | 'oval'>('square')
+  const [newTableShape, setNewTableShape] = useState<'square' | 'rectangle' | 'round' | 'oval'>(
+    'square'
+  )
   const [history, setHistory] = useState<Table[][]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [showLabels, setShowLabels] = useState(true)
@@ -95,26 +97,26 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
+
     // Save context state
     ctx.save()
-    
+
     // Apply zoom and pan
     ctx.translate(panOffset.x, panOffset.y)
     ctx.scale(zoom, zoom)
-    
+
     // Draw grid
     if (showGrid) {
       ctx.strokeStyle = '#e5e7eb'
       ctx.lineWidth = 0.5
-      
+
       for (let x = 0; x < canvas.width / zoom; x += gridSize) {
         ctx.beginPath()
         ctx.moveTo(x, 0)
         ctx.lineTo(x, canvas.height / zoom)
         ctx.stroke()
       }
-      
+
       for (let y = 0; y < canvas.height / zoom; y += gridSize) {
         ctx.beginPath()
         ctx.moveTo(0, y)
@@ -122,20 +124,20 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         ctx.stroke()
       }
     }
-    
+
     // Draw tables
     tables.forEach(table => {
       ctx.save()
-      
+
       // Position and rotation
       ctx.translate(table.x_position + table.width / 2, table.y_position + table.height / 2)
       ctx.rotate((table.rotation * Math.PI) / 180)
       ctx.translate(-table.width / 2, -table.height / 2)
-      
+
       // Table color based on status
       let fillColor = '#10b981' // available - green
       let strokeColor = '#059669'
-      
+
       switch (table.status) {
         case 'occupied':
           fillColor = '#ef4444' // red
@@ -154,18 +156,32 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
           strokeColor = '#4b5563'
           break
       }
-      
+
       // Draw table shape
       ctx.fillStyle = fillColor
       ctx.strokeStyle = strokeColor
       ctx.lineWidth = selectedTable?.id === table.id ? 3 : 2
-      
+
       if (table.shape === 'round' || table.shape === 'oval') {
         ctx.beginPath()
         if (table.shape === 'round') {
-          ctx.arc(table.width / 2, table.height / 2, Math.min(table.width, table.height) / 2, 0, 2 * Math.PI)
+          ctx.arc(
+            table.width / 2,
+            table.height / 2,
+            Math.min(table.width, table.height) / 2,
+            0,
+            2 * Math.PI
+          )
         } else {
-          ctx.ellipse(table.width / 2, table.height / 2, table.width / 2, table.height / 2, 0, 0, 2 * Math.PI)
+          ctx.ellipse(
+            table.width / 2,
+            table.height / 2,
+            table.width / 2,
+            table.height / 2,
+            0,
+            0,
+            2 * Math.PI
+          )
         }
         ctx.fill()
         ctx.stroke()
@@ -173,7 +189,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         ctx.fillRect(0, 0, table.width, table.height)
         ctx.strokeRect(0, 0, table.width, table.height)
       }
-      
+
       // Draw table number and info
       if (showLabels) {
         ctx.fillStyle = 'white'
@@ -181,23 +197,27 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(table.table_number, table.width / 2, table.height / 2 - 10)
-        
+
         if (showOccupancy && table.status === 'occupied') {
           ctx.font = '12px Arial'
-          ctx.fillText(`${table.current_party_size}/${table.capacity}`, table.width / 2, table.height / 2 + 10)
+          ctx.fillText(
+            `${table.current_party_size}/${table.capacity}`,
+            table.width / 2,
+            table.height / 2 + 10
+          )
         }
       }
-      
+
       // Draw server name
       if (table.server_name && showLabels) {
         ctx.fillStyle = 'white'
         ctx.font = '10px Arial'
         ctx.fillText(table.server_name, table.width / 2, table.height / 2 + 25)
       }
-      
+
       ctx.restore()
     })
-    
+
     // Restore context state
     ctx.restore()
   }
@@ -206,11 +226,11 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
     if (!canvas) return
-    
+
     const rect = canvas.getBoundingClientRect()
     const x = (e.clientX - rect.left - panOffset.x) / zoom
     const y = (e.clientY - rect.top - panOffset.y) / zoom
-    
+
     if (mode === 'select') {
       // Check if clicking on a table
       const clickedTable = tables.find(table => {
@@ -218,16 +238,16 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         const centerY = table.y_position + table.height / 2
         const dx = x - centerX
         const dy = y - centerY
-        
+
         // Rotate point back
-        const angle = -table.rotation * Math.PI / 180
+        const angle = (-table.rotation * Math.PI) / 180
         const rotatedX = dx * Math.cos(angle) - dy * Math.sin(angle)
         const rotatedY = dx * Math.sin(angle) + dy * Math.cos(angle)
-        
+
         // Check if inside table bounds
         return Math.abs(rotatedX) <= table.width / 2 && Math.abs(rotatedY) <= table.height / 2
       })
-      
+
       if (clickedTable) {
         setSelectedTable(clickedTable)
         onTableSelect(clickedTable)
@@ -255,7 +275,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         height: newTableShape === 'rectangle' ? 60 : 60,
         rotation: 0
       }
-      
+
       addTable(newTable)
     } else if (mode === 'delete') {
       // Delete table
@@ -264,14 +284,14 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         const centerY = table.y_position + table.height / 2
         const dx = x - centerX
         const dy = y - centerY
-        
-        const angle = -table.rotation * Math.PI / 180
+
+        const angle = (-table.rotation * Math.PI) / 180
         const rotatedX = dx * Math.cos(angle) - dy * Math.sin(angle)
         const rotatedY = dx * Math.sin(angle) + dy * Math.cos(angle)
-        
+
         return Math.abs(rotatedX) <= table.width / 2 && Math.abs(rotatedY) <= table.height / 2
       })
-      
+
       if (clickedTable) {
         deleteTable(clickedTable.id)
       }
@@ -281,18 +301,18 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
     if (!canvas) return
-    
+
     if (isDragging && selectedTable) {
       const rect = canvas.getBoundingClientRect()
       let x = (e.clientX - rect.left - panOffset.x) / zoom - dragOffset.x
       let y = (e.clientY - rect.top - panOffset.y) / zoom - dragOffset.y
-      
+
       // Snap to grid
       if (snapToGrid) {
         x = Math.round(x / gridSize) * gridSize
         y = Math.round(y / gridSize) * gridSize
       }
-      
+
       updateTablePosition(selectedTable.id, x, y)
     } else if (isPanning) {
       setPanOffset({
@@ -315,7 +335,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tableData)
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Table added successfully')
@@ -336,7 +356,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ x_position: x, y_position: y })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         onTablesUpdate()
@@ -348,12 +368,12 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
 
   const deleteTable = async (tableId: string) => {
     if (!confirm('Are you sure you want to delete this table?')) return
-    
+
     try {
       const response = await fetch(`/api/v1/restaurant/table-management/${tableId}`, {
         method: 'DELETE'
       })
-      
+
       const result = await response.json()
       if (result.success) {
         toast.success('Table deleted successfully')
@@ -374,7 +394,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rotation })
       })
-      
+
       const result = await response.json()
       if (result.success) {
         onTablesUpdate()
@@ -436,7 +456,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </Button>
-            
+
             {mode === 'add' && (
               <div className="flex items-center space-x-2 ml-4">
                 <span className="text-sm text-gray-600">Shape:</span>
@@ -471,35 +491,34 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
               </div>
             )}
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button variant="outline" size="sm" onClick={undo} disabled={historyIndex <= 0}>
               <Undo className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={redo} disabled={historyIndex >= history.length - 1}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={redo}
+              disabled={historyIndex >= history.length - 1}
+            >
               <Redo className="w-4 h-4" />
             </Button>
-            
+
             <div className="h-6 w-px bg-gray-300 mx-2" />
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-            >
+
+            <Button variant="outline" size="sm" onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}>
               <ZoomOut className="w-4 h-4" />
             </Button>
-            <span className="text-sm text-gray-600 w-12 text-center">{Math.round(zoom * 100)}%</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-            >
+            <span className="text-sm text-gray-600 w-12 text-center">
+              {Math.round(zoom * 100)}%
+            </span>
+            <Button variant="outline" size="sm" onClick={() => setZoom(Math.min(2, zoom + 0.1))}>
               <ZoomIn className="w-4 h-4" />
             </Button>
-            
+
             <div className="h-6 w-px bg-gray-300 mx-2" />
-            
+
             <Button
               variant={showGrid ? 'default' : 'outline'}
               size="sm"
@@ -521,9 +540,9 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
             >
               {showLabels ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
             </Button>
-            
+
             <div className="h-6 w-px bg-gray-300 mx-2" />
-            
+
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-2" />
               Export
@@ -534,20 +553,25 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
             </Button>
           </div>
         </div>
-        
+
         {/* Selected table controls */}
         {selectedTable && mode === 'select' && (
           <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
             <span className="text-sm font-medium">Table {selectedTable.table_number}</span>
-            <Badge className={
-              selectedTable.status === 'available' ? 'bg-green-100 text-green-800' :
-              selectedTable.status === 'occupied' ? 'bg-red-100 text-red-800' :
-              selectedTable.status === 'reserved' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-gray-100 text-gray-800'
-            }>
+            <Badge
+              className={
+                selectedTable.status === 'available'
+                  ? 'bg-green-100 text-green-800'
+                  : selectedTable.status === 'occupied'
+                    ? 'bg-red-100 text-red-800'
+                    : selectedTable.status === 'reserved'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
+              }
+            >
               {selectedTable.status}
             </Badge>
-            
+
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
@@ -561,7 +585,11 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const newTable = { ...selectedTable, id: `${selectedTable.id}_copy`, table_number: `${selectedTable.table_number}_copy` }
+                  const newTable = {
+                    ...selectedTable,
+                    id: `${selectedTable.id}_copy`,
+                    table_number: `${selectedTable.table_number}_copy`
+                  }
                   addTable(newTable)
                 }}
               >
@@ -572,9 +600,13 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
           </div>
         )}
       </div>
-      
+
       {/* Canvas */}
-      <div ref={containerRef} className="relative bg-white rounded-lg overflow-hidden" style={{ height: '600px' }}>
+      <div
+        ref={containerRef}
+        className="relative bg-white rounded-lg overflow-hidden"
+        style={{ height: '600px' }}
+      >
         <canvas
           ref={canvasRef}
           width={1200}
@@ -585,7 +617,7 @@ export function TableFloorPlan({ tables, onTableSelect, onTablesUpdate }: TableF
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         />
-        
+
         {/* Legend */}
         <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-lg border border-gray-200">
           <h4 className="text-sm font-semibold mb-2">Legend</h4>

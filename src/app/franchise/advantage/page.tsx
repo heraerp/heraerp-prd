@@ -7,7 +7,7 @@ import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { TestimonialsGrid } from '@/components/franchise/TestimonialCard'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   Zap,
   Clock,
   DollarSign,
@@ -27,8 +27,10 @@ import {
 
 export const metadata: Metadata = {
   title: 'Why HERA Wins - Competitive Advantage',
-  description: 'See how HERA outperforms SAP, Oracle, and other legacy ERP systems. 24-hour implementation vs 18 months traditional.',
-  keywords: 'HERA vs SAP, ERP comparison, HERA advantages, why choose HERA, ERP competitive analysis',
+  description:
+    'See how HERA outperforms SAP, Oracle, and other legacy ERP systems. 24-hour implementation vs 18 months traditional.',
+  keywords:
+    'HERA vs SAP, ERP comparison, HERA advantages, why choose HERA, ERP competitive analysis'
 }
 
 const comparison = [
@@ -103,21 +105,24 @@ const testimonials = [
     name: 'David Chen',
     title: 'Former SAP Consultant',
     company: 'Now HERA Partner',
-    testimonial: 'After implementing SAP for 12 years, I can say HERA is revolutionary. What we struggled to do in 18 months, HERA does in 24 hours. The client amazement is incredible.',
+    testimonial:
+      'After implementing SAP for 12 years, I can say HERA is revolutionary. What we struggled to do in 18 months, HERA does in 24 hours. The client amazement is incredible.',
     rating: 5
   },
   {
     name: 'Maria Gonzalez',
     title: 'CIO',
     company: 'Healthcare Systems Inc',
-    testimonial: 'We spent 3 years and $4M on an Oracle implementation that never worked properly. HERA gave us everything we needed in 24 hours for under $200K.',
+    testimonial:
+      'We spent 3 years and $4M on an Oracle implementation that never worked properly. HERA gave us everything we needed in 24 hours for under $200K.',
     rating: 5
   },
   {
     name: 'Robert Kim',
     title: 'Manufacturing Director',
     company: 'Precision Parts Co',
-    testimonial: 'SAP promised us integration but delivered complexity. HERA delivered on all promises in one day. Our productivity increased 40% immediately.',
+    testimonial:
+      'SAP promised us integration but delivered complexity. HERA delivered on all promises in one day. Our productivity increased 40% immediately.',
     rating: 5
   }
 ]
@@ -126,7 +131,8 @@ const advantages = [
   {
     icon: Zap,
     title: '24-Hour Implementation',
-    description: 'Complete ERP system live and operational in 24 hours vs 18+ months for legacy systems.',
+    description:
+      'Complete ERP system live and operational in 24 hours vs 18+ months for legacy systems.',
     impact: 'Revolutionary speed eliminates business disruption and accelerates ROI.'
   },
   {
@@ -144,19 +150,22 @@ const advantages = [
   {
     icon: Users,
     title: 'No Technical Debt',
-    description: 'Universal 6-table architecture scales infinitely without customization complexity.',
+    description:
+      'Universal 6-table architecture scales infinitely without customization complexity.',
     impact: 'Future-proof system grows with business without technical limitations.'
   },
   {
     icon: Target,
     title: 'Instant User Adoption',
-    description: '2-4 hours training vs 40-120 hours for SAP. Intuitive interface drives immediate adoption.',
+    description:
+      '2-4 hours training vs 40-120 hours for SAP. Intuitive interface drives immediate adoption.',
     impact: 'Eliminates user resistance and training costs that plague traditional ERP.'
   },
   {
     icon: Globe,
     title: 'Universal Architecture',
-    description: 'One system handles any business complexity across any industry without modifications.',
+    description:
+      'One system handles any business complexity across any industry without modifications.',
     impact: 'Eliminates need for multiple systems or expensive customizations.'
   }
 ]
@@ -215,16 +224,29 @@ export default function AdvantagePage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-slate-200 dark:border-slate-700">
-                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">Feature</th>
-                      <th className="text-left py-4 px-4 font-semibold text-green-600 bg-green-50 dark:bg-green-900/20 rounded-t-lg">HERA</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">SAP</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">Oracle</th>
-                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">Others</th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-900 dark:text-white">
+                        Feature
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-green-600 bg-green-50 dark:bg-green-900/20 rounded-t-lg">
+                        HERA
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                        SAP
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                        Oracle
+                      </th>
+                      <th className="text-left py-4 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                        Others
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {comparison.map((row, index) => (
-                      <tr key={index} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
+                      <tr
+                        key={index}
+                        className="border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+                      >
                         <td className="py-4 px-4 font-medium text-slate-900 dark:text-white">
                           {row.feature}
                         </td>
@@ -239,25 +261,19 @@ export default function AdvantagePage() {
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">
-                              {row.sap}
-                            </span>
+                            <span className="text-slate-600 dark:text-slate-400">{row.sap}</span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">
-                              {row.oracle}
-                            </span>
+                            <span className="text-slate-600 dark:text-slate-400">{row.oracle}</span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-slate-600 dark:text-slate-400">
-                              {row.others}
-                            </span>
+                            <span className="text-slate-600 dark:text-slate-400">{row.others}</span>
                           </div>
                         </td>
                       </tr>
@@ -284,7 +300,10 @@ export default function AdvantagePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {advantages.map((advantage, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-6">
                   <advantage.icon className="h-6 w-6 text-white" />
                 </div>
@@ -319,7 +338,10 @@ export default function AdvantagePage() {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {painPoints.map((category, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-red-200 dark:border-red-800 shadow-sm">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-red-200 dark:border-red-800 shadow-sm"
+              >
                 <div className="flex items-center mb-6">
                   <AlertCircle className="h-8 w-8 text-red-500 mr-3" />
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -330,9 +352,7 @@ export default function AdvantagePage() {
                   {category.points.map((point, pointIndex) => (
                     <li key={pointIndex} className="flex items-start">
                       <X className="h-5 w-5 text-red-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span className="text-slate-700 dark:text-slate-300">
-                        {point}
-                      </span>
+                      <span className="text-slate-700 dark:text-slate-300">{point}</span>
                     </li>
                   ))}
                 </ul>
@@ -347,8 +367,8 @@ export default function AdvantagePage() {
                 HERA's Track Record: 95% Success Rate
               </h3>
               <p className="text-lg text-slate-600 dark:text-slate-400">
-                While competitors fail spectacularly, HERA delivers success consistently. 
-                Zero failed implementations in our franchise network.
+                While competitors fail spectacularly, HERA delivers success consistently. Zero
+                failed implementations in our franchise network.
               </p>
             </div>
           </div>
@@ -363,7 +383,8 @@ export default function AdvantagePage() {
               Clients Choose HERA Over Competitors
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Real testimonials from businesses that switched from SAP, Oracle, and other legacy systems
+              Real testimonials from businesses that switched from SAP, Oracle, and other legacy
+              systems
             </p>
           </div>
 
@@ -381,26 +402,32 @@ export default function AdvantagePage() {
             <p className="text-xl text-blue-100 mb-8">
               When you sell HERA, you're not just selling software – you're selling miracles.
             </p>
-            
+
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
                 <Clock className="h-8 w-8 text-yellow-300 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-2">24-Hour Miracle</h3>
-                <p className="text-sm text-blue-100">Clients get results in 24 hours instead of waiting 18+ months</p>
+                <p className="text-sm text-blue-100">
+                  Clients get results in 24 hours instead of waiting 18+ months
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
                 <DollarSign className="h-8 w-8 text-green-300 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-2">90% Savings</h3>
-                <p className="text-sm text-blue-100">Massive cost savings create easy buying decisions</p>
+                <p className="text-sm text-blue-100">
+                  Massive cost savings create easy buying decisions
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
                 <Award className="h-8 w-8 text-purple-300 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-2">Guaranteed Success</h3>
-                <p className="text-sm text-blue-100">95% success rate eliminates implementation risk</p>
+                <p className="text-sm text-blue-100">
+                  95% success rate eliminates implementation risk
+                </p>
               </div>
             </div>
 
-            <Button 
+            <Button
               asChild
               size="lg"
               className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg"
@@ -422,12 +449,12 @@ export default function AdvantagePage() {
               Stop Selling Yesterday's Technology
             </h2>
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-              While competitors struggle with failed implementations and angry customers, 
-              you'll be closing deals with revolutionary technology that actually works.
+              While competitors struggle with failed implementations and angry customers, you'll be
+              closing deals with revolutionary technology that actually works.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
@@ -437,16 +464,9 @@ export default function AdvantagePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button 
-                asChild
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg"
-              >
-                <Link href="/franchise/proof">
-                  See Success Stories
-                </Link>
+
+              <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg">
+                <Link href="/franchise/proof">See Success Stories</Link>
               </Button>
             </div>
           </div>

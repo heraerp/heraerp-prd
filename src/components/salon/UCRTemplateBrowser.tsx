@@ -29,7 +29,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -77,19 +77,23 @@ export function UCRTemplateBrowser() {
     // Filter by category
     if (activeCategory !== 'all') {
       filtered = filtered.filter(t => {
-        if (activeCategory === 'booking') return t.smart_code.includes('APPOINTMENT') || t.smart_code.includes('RESERVATION')
-        if (activeCategory === 'pricing') return t.smart_code.includes('DISCOUNT') || t.smart_code.includes('PRICING')
-        if (activeCategory === 'notifications') return t.smart_code.includes('NOTIFICATION') || t.smart_code.includes('REMINDER')
+        if (activeCategory === 'booking')
+          return t.smart_code.includes('APPOINTMENT') || t.smart_code.includes('RESERVATION')
+        if (activeCategory === 'pricing')
+          return t.smart_code.includes('DISCOUNT') || t.smart_code.includes('PRICING')
+        if (activeCategory === 'notifications')
+          return t.smart_code.includes('NOTIFICATION') || t.smart_code.includes('REMINDER')
         return true
       })
     }
 
     // Filter by search query
     if (searchQuery) {
-      filtered = filtered.filter(t => 
-        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.smart_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.rule_payload.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        t =>
+          t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          t.smart_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          t.rule_payload.description?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
@@ -105,8 +109,10 @@ export function UCRTemplateBrowser() {
   }
 
   const getCategoryColor = (smartCode: string) => {
-    if (smartCode.includes('APPOINTMENT') || smartCode.includes('RESERVATION')) return 'from-purple-500 to-purple-700'
-    if (smartCode.includes('DISCOUNT') || smartCode.includes('PRICING')) return 'from-emerald-500 to-green-600'
+    if (smartCode.includes('APPOINTMENT') || smartCode.includes('RESERVATION'))
+      return 'from-purple-500 to-purple-700'
+    if (smartCode.includes('DISCOUNT') || smartCode.includes('PRICING'))
+      return 'from-emerald-500 to-green-600'
     if (smartCode.includes('NOTIFICATION')) return 'from-blue-500 to-indigo-600'
     if (smartCode.includes('CANCEL')) return 'from-orange-500 to-red-600'
     return 'from-gray-500 to-gray-700'
@@ -135,7 +141,9 @@ export function UCRTemplateBrowser() {
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-1">
               {Object.entries(payload.definitions).map(([key, value]) => (
                 <div key={key} className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">{key.replace(/_/g, ' ')}:</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    {key.replace(/_/g, ' ')}:
+                  </span>
                   <span className="font-mono">{String(value)}</span>
                 </div>
               ))}
@@ -221,7 +229,7 @@ export function UCRTemplateBrowser() {
           <Input
             placeholder="Search templates..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -237,15 +245,20 @@ export function UCRTemplateBrowser() {
 
       {/* Templates Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredTemplates.map((template) => {
+        {filteredTemplates.map(template => {
           const Icon = getCategoryIcon(template.smart_code)
           const gradient = getCategoryColor(template.smart_code)
-          
+
           return (
-            <Card key={template.template_id} className="hover:shadow-lg transition-all duration-300">
+            <Card
+              key={template.template_id}
+              className="hover:shadow-lg transition-all duration-300"
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${gradient} flex items-center justify-center`}>
+                  <div
+                    className={`w-10 h-10 rounded-lg bg-gradient-to-r ${gradient} flex items-center justify-center`}
+                  >
                     <Icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex gap-1">
@@ -308,9 +321,7 @@ export function UCRTemplateBrowser() {
         <DialogContent className="max-w-3xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle>{selectedTemplate?.title}</DialogTitle>
-            <DialogDescription>
-              {selectedTemplate?.rule_payload.description}
-            </DialogDescription>
+            <DialogDescription>{selectedTemplate?.rule_payload.description}</DialogDescription>
           </DialogHeader>
           <ScrollArea className="h-[400px] mt-4">
             {selectedTemplate && (
@@ -331,7 +342,7 @@ export function UCRTemplateBrowser() {
             <Button variant="outline" onClick={() => setShowPreview(false)}>
               Close
             </Button>
-            <Button 
+            <Button
               onClick={() => selectedTemplate && handleCloneTemplate(selectedTemplate)}
               className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
             >

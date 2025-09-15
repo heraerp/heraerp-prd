@@ -14,8 +14,14 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
   MessageCircle,
   Send,
   Phone,
@@ -74,7 +80,11 @@ interface WhatsAppManagerProps {
   industryType?: 'salon' | 'healthcare' | 'retail' | 'restaurant' | 'generic'
 }
 
-export function WhatsAppManager({ className, organizationId, industryType = 'generic' }: WhatsAppManagerProps) {
+export function WhatsAppManager({
+  className,
+  organizationId,
+  industryType = 'generic'
+}: WhatsAppManagerProps) {
   const { currentOrganization } = useMultiOrgAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
@@ -171,7 +181,8 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
         {
           id: '2',
           conversationId,
-          content: 'Of course! I can book you with Rocky for tomorrow at 2 PM. The service takes about 4 hours and costs AED 500. Would that work for you?',
+          content:
+            'Of course! I can book you with Rocky for tomorrow at 2 PM. The service takes about 4 hours and costs AED 500. Would that work for you?',
           type: 'text',
           direction: 'outbound',
           timestamp: new Date(Date.now() - 3.5 * 60 * 60 * 1000),
@@ -189,7 +200,8 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
         {
           id: '4',
           conversationId,
-          content: 'Your appointment for Brazilian Blowout on Dec 25, 2024 at 2:00 PM with Rocky has been confirmed. Total: AED 500. We look forward to seeing you!',
+          content:
+            'Your appointment for Brazilian Blowout on Dec 25, 2024 at 2:00 PM with Rocky has been confirmed. Total: AED 500. We look forward to seeing you!',
           type: 'template',
           direction: 'outbound',
           timestamp: new Date(Date.now() - 2.5 * 60 * 60 * 1000),
@@ -242,14 +254,13 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
       })
 
       // Update conversation last message
-      setConversations(prev => 
-        prev.map(conv => 
+      setConversations(prev =>
+        prev.map(conv =>
           conv.id === selectedConversation.id
             ? { ...conv, lastMessage: messageInput, lastMessageAt: new Date() }
             : conv
         )
       )
-
     } catch (error) {
       console.error('Failed to send message:', error)
     } finally {
@@ -267,7 +278,7 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
         'en',
         params
       )
-      
+
       const templateMessage: Message = {
         id: Date.now().toString(),
         conversationId: selectedConversation.id,
@@ -278,34 +289,44 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
         status: 'sent',
         metadata: { templateName }
       }
-      
+
       setMessages(prev => [...prev, templateMessage])
     } catch (error) {
       console.error('Failed to send template:', error)
     }
   }
 
-  const filteredConversations = conversations.filter(conv =>
-    conv.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    conv.customerPhone.includes(searchQuery)
+  const filteredConversations = conversations.filter(
+    conv =>
+      conv.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conv.customerPhone.includes(searchQuery)
   )
 
   const getStatusIcon = (status: Message['status']) => {
     switch (status) {
-      case 'sent': return <Check className="w-3 h-3 text-gray-400" />
-      case 'delivered': return <CheckCheck className="w-3 h-3 text-gray-400" />
-      case 'read': return <CheckCheck className="w-3 h-3 text-blue-500" />
-      case 'failed': return <AlertCircle className="w-3 h-3 text-red-500" />
-      default: return null
+      case 'sent':
+        return <Check className="w-3 h-3 text-gray-400" />
+      case 'delivered':
+        return <CheckCheck className="w-3 h-3 text-gray-400" />
+      case 'read':
+        return <CheckCheck className="w-3 h-3 text-blue-500" />
+      case 'failed':
+        return <AlertCircle className="w-3 h-3 text-red-500" />
+      default:
+        return null
     }
   }
 
   const getMessageIcon = (type: Message['type']) => {
     switch (type) {
-      case 'image': return <Image className="w-4 h-4" />
-      case 'document': return <FileText className="w-4 h-4" />
-      case 'template': return <Zap className="w-4 h-4" />
-      default: return <MessageCircle className="w-4 h-4" />
+      case 'image':
+        return <Image className="w-4 h-4" />
+      case 'document':
+        return <FileText className="w-4 h-4" />
+      case 'template':
+        return <Zap className="w-4 h-4" />
+      default:
+        return <MessageCircle className="w-4 h-4" />
     }
   }
 
@@ -313,15 +334,35 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
     switch (industryType) {
       case 'salon':
         return [
-          { name: 'appointment_reminder', label: 'Appointment Reminder', params: ['customer_name', 'service', 'time', 'stylist'] },
-          { name: 'booking_confirmation', label: 'Booking Confirmation', params: ['service', 'date', 'time', 'stylist', 'price'] },
-          { name: 'service_followup', label: 'Service Follow-up', params: ['customer_name', 'service'] }
+          {
+            name: 'appointment_reminder',
+            label: 'Appointment Reminder',
+            params: ['customer_name', 'service', 'time', 'stylist']
+          },
+          {
+            name: 'booking_confirmation',
+            label: 'Booking Confirmation',
+            params: ['service', 'date', 'time', 'stylist', 'price']
+          },
+          {
+            name: 'service_followup',
+            label: 'Service Follow-up',
+            params: ['customer_name', 'service']
+          }
         ]
       case 'healthcare':
         return [
-          { name: 'appointment_reminder', label: 'Appointment Reminder', params: ['patient_name', 'doctor', 'time'] },
+          {
+            name: 'appointment_reminder',
+            label: 'Appointment Reminder',
+            params: ['patient_name', 'doctor', 'time']
+          },
           { name: 'test_results', label: 'Test Results Ready', params: ['patient_name'] },
-          { name: 'medication_reminder', label: 'Medication Reminder', params: ['patient_name', 'medication'] }
+          {
+            name: 'medication_reminder',
+            label: 'Medication Reminder',
+            params: ['patient_name', 'medication']
+          }
         ]
       default:
         return [
@@ -332,7 +373,12 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
   }
 
   return (
-    <div className={cn("h-full flex flex-col lg:flex-row bg-white dark:bg-gray-900 rounded-lg border overflow-hidden", className)}>
+    <div
+      className={cn(
+        'h-full flex flex-col lg:flex-row bg-white dark:bg-gray-900 rounded-lg border overflow-hidden',
+        className
+      )}
+    >
       {/* Conversations Sidebar */}
       <div className="w-full lg:w-1/3 border-r border-gray-200 dark:border-gray-700 flex flex-col">
         {/* Header */}
@@ -346,14 +392,14 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
               <Settings className="w-4 h-4" />
             </Button>
           </div>
-          
+
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Search conversations..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-9"
             />
           </div>
@@ -362,7 +408,7 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
         {/* Conversations List */}
         <ScrollArea className="flex-1">
           <div className="p-2">
-            {filteredConversations.map((conversation) => (
+            {filteredConversations.map(conversation => (
               <div
                 key={conversation.id}
                 onClick={() => {
@@ -370,10 +416,10 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                   loadMessages(conversation.id)
                 }}
                 className={cn(
-                  "p-3 rounded-lg cursor-pointer transition-colors mb-2",
+                  'p-3 rounded-lg cursor-pointer transition-colors mb-2',
                   selectedConversation?.id === conversation.id
-                    ? "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                    ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-800'
                 )}
               >
                 <div className="flex items-start gap-3">
@@ -382,24 +428,24 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                       {conversation.customerName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <p className="font-medium truncate">{conversation.customerName}</p>
                       <span className="text-xs text-gray-500">
-                        {conversation.lastMessageAt.toLocaleTimeString('en-US', { 
-                          hour: 'numeric', 
-                          minute: '2-digit' 
+                        {conversation.lastMessageAt.toLocaleTimeString('en-US', {
+                          hour: 'numeric',
+                          minute: '2-digit'
                         })}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
                       {conversation.lastMessage}
                     </p>
-                    
+
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex gap-1">
-                        {conversation.tags.map((tag) => (
+                        {conversation.tags.map(tag => (
                           <Badge key={tag} variant="secondary" className="text-xs">
                             {tag}
                           </Badge>
@@ -436,7 +482,7 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                   <p className="text-sm text-gray-500">{selectedConversation.customerPhone}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm">
                   <Phone className="w-4 h-4 mr-2" />
@@ -451,20 +497,20 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
             {/* Messages */}
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
-                {messages.map((message) => (
+                {messages.map(message => (
                   <div
                     key={message.id}
                     className={cn(
-                      "flex",
+                      'flex',
                       message.direction === 'outbound' ? 'justify-end' : 'justify-start'
                     )}
                   >
                     <div
                       className={cn(
-                        "max-w-xs lg:max-w-md px-4 py-2 rounded-2xl",
+                        'max-w-xs lg:max-w-md px-4 py-2 rounded-2xl',
                         message.direction === 'outbound'
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-100 dark:bg-gray-800"
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-100 dark:bg-gray-800'
                       )}
                     >
                       {message.type === 'template' && (
@@ -476,9 +522,9 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                       <p className="text-sm">{message.content}</p>
                       <div className="flex items-center justify-end gap-1 mt-1">
                         <span className="text-xs opacity-75">
-                          {message.timestamp.toLocaleTimeString('en-US', { 
-                            hour: 'numeric', 
-                            minute: '2-digit' 
+                          {message.timestamp.toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit'
                           })}
                         </span>
                         {message.direction === 'outbound' && getStatusIcon(message.status)}
@@ -512,8 +558,8 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                     <Textarea
                       placeholder="Type a message..."
                       value={messageInput}
-                      onChange={(e) => setMessageInput(e.target.value)}
-                      onKeyDown={(e) => {
+                      onChange={e => setMessageInput(e.target.value)}
+                      onKeyDown={e => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault()
                           sendMessage()
@@ -521,7 +567,7 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
                       }}
                       className="min-h-[40px] max-h-[120px]"
                     />
-                    <Button 
+                    <Button
                       onClick={sendMessage}
                       disabled={!messageInput.trim() || sending}
                       className="bg-green-500 hover:bg-green-600"
@@ -533,7 +579,7 @@ export function WhatsAppManager({ className, organizationId, industryType = 'gen
 
                 <TabsContent value="templates">
                   <div className="space-y-2">
-                    {getIndustryTemplates().map((template) => (
+                    {getIndustryTemplates().map(template => (
                       <Button
                         key={template.name}
                         variant="outline"

@@ -12,21 +12,18 @@ const sizeMap = {
   xl: { width: 240, height: 80, fontSize: 64 }
 }
 
-export function HeraTextLogo({ 
-  className = '', 
-  size = 'lg'
-}: HeraTextLogoProps) {
+export function HeraTextLogo({ className = '', size = 'lg' }: HeraTextLogoProps) {
   const { width, height, fontSize } = sizeMap[size]
-  
+
   const gradientId = `heraTextGradient-${Math.random().toString(36).substr(2, 9)}`
   const patternId = `heraPattern-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
-    <svg 
-      width={width} 
-      height={height} 
-      viewBox={`0 0 ${width} ${height}`} 
-      fill="none" 
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -39,39 +36,39 @@ export function HeraTextLogo({
           <stop offset="75%" style={{ stopColor: '#7dd3fc' }} />
           <stop offset="100%" style={{ stopColor: '#06b6d4' }} />
         </linearGradient>
-        
+
         {/* Subtle pattern for texture */}
         <pattern id={patternId} x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="0.5" fill="#8b5cf6" opacity="0.3" />
           <circle cx="3" cy="3" r="0.5" fill="#7dd3fc" opacity="0.3" />
         </pattern>
-        
+
         {/* Glow effect */}
         <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
           <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        
+
         {/* Shadow */}
         <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2" />
         </filter>
       </defs>
-      
+
       {/* Background accent shape */}
-      <rect 
-        x={width * 0.02} 
+      <rect
+        x={width * 0.02}
         y={height * 0.1}
-        width={width * 0.96} 
+        width={width * 0.96}
         height={height * 0.8}
         rx="8"
         fill={`url(#${patternId})`}
         opacity="0.1"
       />
-      
+
       {/* Individual letters with unique styling */}
       <g filter="url(#shadow)">
         {/* H */}
@@ -86,7 +83,7 @@ export function HeraTextLogo({
         >
           H
         </text>
-        
+
         {/* E - slightly rotated */}
         <text
           x={width * 0.28}
@@ -100,7 +97,7 @@ export function HeraTextLogo({
         >
           E
         </text>
-        
+
         {/* R - slightly elevated */}
         <text
           x={width * 0.48}
@@ -113,7 +110,7 @@ export function HeraTextLogo({
         >
           R
         </text>
-        
+
         {/* A - slightly rotated opposite */}
         <text
           x={width * 0.68}
@@ -128,23 +125,11 @@ export function HeraTextLogo({
           A
         </text>
       </g>
-      
+
       {/* Decorative elements */}
-      <circle
-        cx={width * 0.92}
-        cy={height * 0.2}
-        r="3"
-        fill="#8b5cf6"
-        opacity="0.6"
-      />
-      <circle
-        cx={width * 0.05}
-        cy={height * 0.8}
-        r="2"
-        fill="#7dd3fc"
-        opacity="0.6"
-      />
-      
+      <circle cx={width * 0.92} cy={height * 0.2} r="3" fill="#8b5cf6" opacity="0.6" />
+      <circle cx={width * 0.05} cy={height * 0.8} r="2" fill="#7dd3fc" opacity="0.6" />
+
       {/* Underline accent */}
       <rect
         x={width * 0.08}

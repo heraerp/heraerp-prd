@@ -1,7 +1,7 @@
 /**
  * HERA Digital Accountant - Journal Entry Helper
  * Smart Code: HERA.DIGITAL.ACCOUNTANT.JOURNAL.HELPER.v1
- * 
+ *
  * Demonstrates how natural language transforms into complete journal entries
  */
 
@@ -108,13 +108,12 @@ export class DigitalAccountantHelper {
     lines: JournalEntryLine[]
     posting_result: any
   }> {
-    
     // 1. Parse natural language input
     const event = await this.parseNaturalLanguage(utterance, context)
-    
+
     // 2. Generate journal entry structure
     const { header, lines } = await this.generateJournalEntry(event)
-    
+
     // 3. Post to universal tables if auto-posting enabled
     let posting_result = null
     if (context.autoPost !== false) {
@@ -136,7 +135,6 @@ export class DigitalAccountantHelper {
     utterance: string,
     context: any
   ): Promise<UniversalFinanceEvent> {
-    
     // Call Digital Accountant API for NLP processing
     const response = await fetch('/api/v1/digital-accountant/parse', {
       method: 'POST',
@@ -161,10 +159,9 @@ export class DigitalAccountantHelper {
   private async generateJournalEntry(
     event: UniversalFinanceEvent
   ): Promise<{ header: JournalEntryHeader; lines: JournalEntryLine[] }> {
-    
     // Get current fiscal period
     const currentPeriod = await this.getCurrentFiscalPeriod()
-    
+
     // Generate transaction ID
     const transactionId = `TXN-${Date.now()}`
 
@@ -208,7 +205,6 @@ export class DigitalAccountantHelper {
     event: UniversalFinanceEvent,
     transactionId: string
   ): Promise<JournalEntryLine[]> {
-    
     const lines: JournalEntryLine[] = []
     let lineNumber = 1
 
@@ -218,9 +214,8 @@ export class DigitalAccountantHelper {
     switch (event.event_type) {
       case 'SALE':
         // Debit: Cash/Card Clearing
-        const assetAccount = event.payment?.method === 'CASH' 
-          ? accounts.cash_on_hand 
-          : accounts.card_clearing
+        const assetAccount =
+          event.payment?.method === 'CASH' ? accounts.cash_on_hand : accounts.card_clearing
 
         lines.push({
           organization_id: this.organizationId,
@@ -275,9 +270,8 @@ export class DigitalAccountantHelper {
         })
 
         // Credit: Cash/Accounts Payable
-        const liabilityAccount = event.payment?.method === 'CASH'
-          ? accounts.cash_on_hand
-          : accounts.accounts_payable
+        const liabilityAccount =
+          event.payment?.method === 'CASH' ? accounts.cash_on_hand : accounts.accounts_payable
 
         lines.push({
           organization_id: this.organizationId,
@@ -304,11 +298,12 @@ export class DigitalAccountantHelper {
     header: JournalEntryHeader,
     lines: JournalEntryLine[]
   ): Promise<any> {
-    
     // Validate entries balance
-    const debits = lines.filter(l => l.line_type === 'DEBIT')
+    const debits = lines
+      .filter(l => l.line_type === 'DEBIT')
       .reduce((sum, l) => sum + l.line_amount, 0)
-    const credits = lines.filter(l => l.line_type === 'CREDIT')
+    const credits = lines
+      .filter(l => l.line_type === 'CREDIT')
       .reduce((sum, l) => sum + l.line_amount, 0)
 
     if (Math.abs(debits - credits) > 0.01) {
@@ -327,7 +322,7 @@ export class DigitalAccountantHelper {
 
     // Post lines to universal_transaction_lines
     const linesResult = await Promise.all(
-      lines.map(line => 
+      lines.map(line =>
         universalApi.createTransactionLine({
           ...line,
           transaction_id: headerResult.id
@@ -371,22 +366,24 @@ export class DigitalAccountantHelper {
 
   private getJournalSmartCode(eventType: string): string {
     const codeMap = {
-      'SALE': 'HERA.ACCOUNTING.GL.JOURNAL.SALES.v1',
-      'PURCHASE': 'HERA.ACCOUNTING.GL.JOURNAL.PURCHASE.v1',
-      'EXPENSE': 'HERA.ACCOUNTING.GL.JOURNAL.EXPENSE.v1',
-      'PAYMENT': 'HERA.ACCOUNTING.GL.JOURNAL.PAYMENT.v1'
+      SALE: 'HERA.ACCOUNTING.GL.JOURNAL.SALES.v1',
+      PURCHASE: 'HERA.ACCOUNTING.GL.JOURNAL.PURCHASE.v1',
+      EXPENSE: 'HERA.ACCOUNTING.GL.JOURNAL.EXPENSE.v1',
+      PAYMENT: 'HERA.ACCOUNTING.GL.JOURNAL.PAYMENT.v1'
     }
     return codeMap[eventType as keyof typeof codeMap] || 'HERA.ACCOUNTING.GL.JOURNAL.GENERAL.v1'
   }
 
   private getAccountSmartCode(accountType: string): string {
     const codeMap = {
-      'asset': 'HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1',
-      'liability': 'HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1',
-      'revenue': 'HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.v1',
-      'expense': 'HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1'
+      asset: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1',
+      liability: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1',
+      revenue: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.v1',
+      expense: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1'
     }
-    return codeMap[accountType as keyof typeof codeMap] || 'HERA.ACCOUNTING.COA.ACCOUNT.GL.GENERAL.v1'
+    return (
+      codeMap[accountType as keyof typeof codeMap] || 'HERA.ACCOUNTING.COA.ACCOUNT.GL.GENERAL.v1'
+    )
   }
 
   private getPostingRecipe(event: UniversalFinanceEvent): string {
@@ -404,7 +401,6 @@ export class DigitalAccountantHelper {
  * Example usage for salon transactions
  */
 export const salonJournalExamples = {
-  
   // Simple cash sale
   async processCashSale(organizationId: string, amount: number, description: string) {
     const helper = new DigitalAccountantHelper(organizationId)
@@ -424,7 +420,12 @@ export const salonJournalExamples = {
   },
 
   // Commission payment
-  async processCommissionPayment(organizationId: string, staffName: string, rate: number, baseAmount: number) {
+  async processCommissionPayment(
+    organizationId: string,
+    staffName: string,
+    rate: number,
+    baseAmount: number
+  ) {
     const helper = new DigitalAccountantHelper(organizationId)
     const commissionAmount = baseAmount * (rate / 100)
     return await helper.processNaturalLanguageEntry(
@@ -434,7 +435,12 @@ export const salonJournalExamples = {
   },
 
   // Expense recording
-  async processExpense(organizationId: string, vendor: string, amount: number, description: string) {
+  async processExpense(
+    organizationId: string,
+    vendor: string,
+    amount: number,
+    description: string
+  ) {
     const helper = new DigitalAccountantHelper(organizationId)
     return await helper.processNaturalLanguageEntry(
       `Bought ${description} from ${vendor} for ${amount}`,
@@ -444,8 +450,4 @@ export const salonJournalExamples = {
 }
 
 // Export types for external use
-export type {
-  UniversalFinanceEvent,
-  JournalEntryHeader,
-  JournalEntryLine
-}
+export type { UniversalFinanceEvent, JournalEntryHeader, JournalEntryLine }

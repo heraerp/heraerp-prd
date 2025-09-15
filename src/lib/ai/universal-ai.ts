@@ -11,12 +11,12 @@ export const AI_SMART_CODES = {
   CONTENT_ANALYSIS: 'HERA.AI.CONTENT.ANALYZE.v1',
   CODE_GENERATION: 'HERA.AI.CODE.GENERATE.v1',
   EXPLANATION: 'HERA.AI.EXPLAIN.CONCEPT.v1',
-  
+
   // Learning-Specific AI
   LEARNING_ASSESSMENT: 'HERA.CA.AI.ASSESS.STUDENT.v1',
   FEEDBACK_GENERATION: 'HERA.CA.AI.FEEDBACK.QUIZ.v1',
   DIFFICULTY_ADJUSTMENT: 'HERA.CA.AI.DIFFICULTY.ADAPT.v1',
-  
+
   // Business AI Operations
   DOCUMENT_SUMMARY: 'HERA.BIZ.AI.DOC.SUMMARIZE.v1',
   REPORT_GENERATION: 'HERA.BIZ.AI.REPORT.GENERATE.v1',
@@ -145,7 +145,7 @@ class OpenAIProvider {
 
   private getSystemPrompt(smartCode: string, taskType: string): string {
     const basePrompt = `You are HERA's Universal AI Assistant. Smart Code: ${smartCode}`
-    
+
     switch (taskType) {
       case 'learning':
         return `${basePrompt}
@@ -225,16 +225,16 @@ export class UniversalAIService {
 
     // Intelligent selection based on task type and requirements
     const taskOptimalProviders: Record<string, string[]> = {
-      'learning': ['openai', 'claude', 'gemini'], // OpenAI for educational content generation
-      'question_generation': ['openai', 'claude', 'gemini'], // OpenAI excels at question generation
-      'code': ['openai', 'claude', 'gemini'],     // OpenAI strong for code generation
-      'analysis': ['claude', 'gemini', 'openai'], // Claude excellent for analysis
-      'chat': ['openai', 'claude', 'gemini'],     // General conversation
-      'generation': ['openai', 'gemini', 'claude'] // Creative generation
+      learning: ['openai', 'claude', 'gemini'], // OpenAI for educational content generation
+      question_generation: ['openai', 'claude', 'gemini'], // OpenAI excels at question generation
+      code: ['openai', 'claude', 'gemini'], // OpenAI strong for code generation
+      analysis: ['claude', 'gemini', 'openai'], // Claude excellent for analysis
+      chat: ['openai', 'claude', 'gemini'], // General conversation
+      generation: ['openai', 'gemini', 'claude'] // Creative generation
     }
 
     const preferredOrder = taskOptimalProviders[request.task_type] || ['openai', 'claude', 'gemini']
-    
+
     // Find first available provider in preferred order
     for (const provider of preferredOrder) {
       if (AI_PROVIDERS[provider]?.available) {
@@ -253,13 +253,13 @@ export class UniversalAIService {
 
   // New main method for API compatibility
   async callUniversalAI(request: UniversalAIRequest): Promise<UniversalAIResponse> {
-    return this.processRequest(request);
+    return this.processRequest(request)
   }
 
   // Provider health check
   async checkHealth(): Promise<Record<string, any>> {
-    const providerHealth: Record<string, any> = {};
-    
+    const providerHealth: Record<string, any> = {}
+
     for (const [name, config] of Object.entries(AI_PROVIDERS)) {
       providerHealth[name] = {
         name: config.name,
@@ -267,10 +267,10 @@ export class UniversalAIService {
         status: config.available ? 'healthy' : 'unavailable',
         capabilities: config.capabilities,
         last_check: new Date().toISOString()
-      };
+      }
     }
-    
-    return providerHealth;
+
+    return providerHealth
   }
 
   // Get usage statistics
@@ -288,11 +288,11 @@ export class UniversalAIService {
         total_cost: 12.45,
         cost_by_provider: {
           openai: 7.25,
-          claude: 3.50,
-          gemini: 1.70
+          claude: 3.5,
+          gemini: 1.7
         }
       }
-    };
+    }
   }
 
   // Main AI Processing Method
@@ -324,17 +324,24 @@ export class UniversalAIService {
       let lastError: Error | null = null
       const availableProviders = Object.keys(AI_PROVIDERS).filter(p => AI_PROVIDERS[p].available)
 
-      for (const providerName of [selectedProvider, ...availableProviders.filter(p => p !== selectedProvider)]) {
+      for (const providerName of [
+        selectedProvider,
+        ...availableProviders.filter(p => p !== selectedProvider)
+      ]) {
         try {
           const provider = this.providers.get(providerName)
           if (!provider) continue
 
           const result = await provider.makeRequest(request)
           const processingTime = Date.now() - startTime
-          
+
           // Calculate confidence score based on provider and content quality
-          const confidence = this.calculateConfidenceScore(result.content, providerName, request.task_type)
-          
+          const confidence = this.calculateConfidenceScore(
+            result.content,
+            providerName,
+            request.task_type
+          )
+
           // Calculate cost estimate
           const provider_config = AI_PROVIDERS[providerName]
           const costEstimate = result.tokens_used * provider_config.costPerToken
@@ -364,16 +371,15 @@ export class UniversalAIService {
           this.logAIRequest(request, response)
 
           return response
-
         } catch (error) {
           lastError = error as Error
           fallbackAttempts++
-          
+
           // If fallbacks are disabled, throw immediately
           if (!request.fallback_enabled) {
             break
           }
-          
+
           console.warn(`AI Provider ${providerName} failed:`, error)
         }
       }
@@ -390,7 +396,6 @@ export class UniversalAIService {
         smart_code: request.smart_code,
         timestamp: new Date().toISOString()
       }
-
     } catch (error) {
       return {
         success: false,
@@ -412,10 +417,10 @@ export class UniversalAIService {
 
     // Provider-specific confidence adjustments
     const providerBonus: Record<string, number> = {
-      'openai': 0.1,
-      'claude': 0.15,
-      'gemini': 0.05,
-      'local': -0.1
+      openai: 0.1,
+      claude: 0.15,
+      gemini: 0.05,
+      local: -0.1
     }
     score += providerBonus[provider] || 0
 
@@ -449,7 +454,7 @@ export class UniversalAIService {
   }
 
   // Stream processing for real-time applications
-  async* processStream(request: UniversalAIRequest): AsyncGenerator<string, void, unknown> {
+  async *processStream(request: UniversalAIRequest): AsyncGenerator<string, void, unknown> {
     // Mock implementation - would implement streaming for real-time responses
     const response = await this.processRequest(request)
     if (response.success && response.data) {
@@ -486,7 +491,11 @@ export const universalAI = new UniversalAIService()
 // Convenience functions for common AI tasks
 export const aiHelpers = {
   // Generate CA learning questions
-  async generateCAQuestions(topic: string, difficulty: 'easy' | 'medium' | 'hard', count: number = 5) {
+  async generateCAQuestions(
+    topic: string,
+    difficulty: 'easy' | 'medium' | 'hard',
+    count: number = 5
+  ) {
     return universalAI.processRequest({
       smart_code: AI_SMART_CODES.QUESTION_GENERATION,
       task_type: 'question_generation',

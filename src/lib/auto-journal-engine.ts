@@ -4,55 +4,55 @@
 // Smart Code: HERA.FIN.GL.AUTO.JOURNAL.ENGINE.v1
 // ================================================================================
 
-import { supabase } from './supabase';
+import { supabase } from './supabase'
 
 // ================================================================================
 // CORE INTERFACES
 // ================================================================================
 
 interface Transaction {
-  id: string;
-  organization_id: string;
-  transaction_type: string;
-  transaction_code: string;
-  transaction_date: string;
-  source_entity_id: string;
-  target_entity_id: string;
-  total_amount: number;
-  currency: string;
-  smart_code: string;
-  metadata: any;
-  lines: TransactionLine[];
+  id: string
+  organization_id: string
+  transaction_type: string
+  transaction_code: string
+  transaction_date: string
+  source_entity_id: string
+  target_entity_id: string
+  total_amount: number
+  currency: string
+  smart_code: string
+  metadata: any
+  lines: TransactionLine[]
 }
 
 interface TransactionLine {
-  id: string;
-  entity_id: string;
-  line_description: string;
-  quantity: number;
-  unit_price: number;
-  line_amount: number;
-  gl_account_id?: string; // Pre-mapped GL account if available
+  id: string
+  entity_id: string
+  line_description: string
+  quantity: number
+  unit_price: number
+  line_amount: number
+  gl_account_id?: string // Pre-mapped GL account if available
 }
 
 interface JournalEntry {
-  transaction_id: string;
-  journal_date: string;
-  description: string;
-  reference: string;
-  lines: JournalLine[];
-  auto_generated: boolean;
-  ai_confidence: number;
-  validation_status: 'pending' | 'validated' | 'requires_review';
+  transaction_id: string
+  journal_date: string
+  description: string
+  reference: string
+  lines: JournalLine[]
+  auto_generated: boolean
+  ai_confidence: number
+  validation_status: 'pending' | 'validated' | 'requires_review'
 }
 
 interface JournalLine {
-  gl_account_id: string;
-  gl_account_code: string;
-  description: string;
-  debit_amount: number;
-  credit_amount: number;
-  line_order: number;
+  gl_account_id: string
+  gl_account_code: string
+  description: string
+  debit_amount: number
+  credit_amount: number
+  line_order: number
 }
 
 // ================================================================================
@@ -60,62 +60,64 @@ interface JournalLine {
 // ================================================================================
 
 class JournalRelevanceEngine {
-  
   /**
    * Determines if a transaction requires journal entry creation
    * Uses rule-based logic first, then AI for complex cases
    */
   async isJournalRelevant(transaction: Transaction): Promise<{
-    isRelevant: boolean;
-    reason: string;
-    confidence: number;
-    complexity: 'simple' | 'complex' | 'ai_required';
+    isRelevant: boolean
+    reason: string
+    confidence: number
+    complexity: 'simple' | 'complex' | 'ai_required'
   }> {
-    
     // ============================================================================
     // RULE-BASED CLASSIFICATION (Fast & Deterministic)
     // ============================================================================
-    
-    const ruleBasedResult = this.applyJournalRules(transaction);
+
+    const ruleBasedResult = this.applyJournalRules(transaction)
     if (ruleBasedResult.confidence > 0.95) {
-      return ruleBasedResult;
+      return ruleBasedResult
     }
 
     // ============================================================================
     // AI-POWERED CLASSIFICATION (Complex Cases)
     // ============================================================================
-    
-    return await this.aiClassifyJournalRelevance(transaction);
+
+    return await this.aiClassifyJournalRelevance(transaction)
   }
 
   private applyJournalRules(transaction: Transaction): any {
-    const { transaction_type, smart_code, total_amount, metadata } = transaction;
+    const { transaction_type, smart_code, total_amount, metadata } = transaction
 
     // ALWAYS JOURNAL RELEVANT
-    if (transaction_type.includes('journal') || 
-        smart_code.includes('.GL.') ||
-        transaction_type.includes('payment') ||
-        transaction_type.includes('receipt') ||
-        transaction_type.includes('adjustment')) {
+    if (
+      transaction_type.includes('journal') ||
+      smart_code.includes('.GL.') ||
+      transaction_type.includes('payment') ||
+      transaction_type.includes('receipt') ||
+      transaction_type.includes('adjustment')
+    ) {
       return {
         isRelevant: true,
         reason: 'Direct financial impact - always requires journal entry',
         confidence: 1.0,
         complexity: 'simple'
-      };
+      }
     }
 
     // NEVER JOURNAL RELEVANT
-    if (transaction_type.includes('quote') ||
-        transaction_type.includes('inquiry') ||
-        smart_code.includes('.DRAFT') ||
-        metadata?.no_financial_impact === true) {
+    if (
+      transaction_type.includes('quote') ||
+      transaction_type.includes('inquiry') ||
+      smart_code.includes('.DRAFT') ||
+      metadata?.no_financial_impact === true
+    ) {
       return {
         isRelevant: false,
         reason: 'No financial impact - journal not required',
         confidence: 1.0,
         complexity: 'simple'
-      };
+      }
     }
 
     // CONDITIONAL BASED ON AMOUNT
@@ -125,7 +127,7 @@ class JournalRelevanceEngine {
         reason: 'Zero amount transaction - no journal needed',
         confidence: 0.98,
         complexity: 'simple'
-      };
+      }
     }
 
     // INVENTORY TRANSACTIONS (Usually journal relevant)
@@ -133,64 +135,70 @@ class JournalRelevanceEngine {
       return {
         isRelevant: true,
         reason: 'Inventory transaction affects GL accounts',
-        confidence: 0.90,
+        confidence: 0.9,
         complexity: 'simple'
-      };
+      }
     }
 
     // SALES/PURCHASE (Almost always journal relevant)
-    if (transaction_type.includes('sale') || 
-        transaction_type.includes('purchase') ||
-        transaction_type.includes('order')) {
+    if (
+      transaction_type.includes('sale') ||
+      transaction_type.includes('purchase') ||
+      transaction_type.includes('order')
+    ) {
       return {
         isRelevant: true,
         reason: 'Sales/Purchase transaction - revenue/expense impact',
         confidence: 0.85,
         complexity: 'simple'
-      };
+      }
     }
 
     // UNCERTAIN - Requires AI analysis
     return {
       isRelevant: true, // Default to safe side
       reason: 'Uncertain transaction type - requires AI analysis',
-      confidence: 0.50,
+      confidence: 0.5,
       complexity: 'ai_required'
-    };
+    }
   }
 
   private async aiClassifyJournalRelevance(transaction: Transaction): Promise<any> {
     try {
       // For now, use rule-based fallback since we don't have OpenAI configured
       // In production, this would use OpenAI API for complex analysis
-      console.log(`🤖 AI analysis would be performed for transaction: ${transaction.transaction_code}`);
-      
+      console.log(
+        `🤖 AI analysis would be performed for transaction: ${transaction.transaction_code}`
+      )
+
       // Intelligent fallback based on transaction patterns
-      if (transaction.total_amount > 0 && 
-          !transaction.smart_code.includes('.DRAFT') &&
-          !transaction.transaction_type.includes('quote')) {
+      if (
+        transaction.total_amount > 0 &&
+        !transaction.smart_code.includes('.DRAFT') &&
+        !transaction.transaction_type.includes('quote')
+      ) {
         return {
           isRelevant: true,
           reason: 'AI analysis suggests financial impact likely',
           confidence: 0.75,
           complexity: 'ai_required'
-        };
+        }
       }
 
       return {
         isRelevant: false,
         reason: 'AI analysis suggests no financial impact',
-        confidence: 0.70,
+        confidence: 0.7,
         complexity: 'ai_required'
-      };
+      }
     } catch (error) {
-      console.error('AI classification failed:', error);
+      console.error('AI classification failed:', error)
       return {
         isRelevant: true, // Safe default
         reason: 'AI classification failed - defaulting to journal creation',
-        confidence: 0.50,
+        confidence: 0.5,
         complexity: 'ai_required'
-      };
+      }
     }
   }
 }
@@ -200,11 +208,11 @@ class JournalRelevanceEngine {
 // ================================================================================
 
 class AutoJournalGenerator {
-  private glAccountMapping: Map<string, string>;
-  
+  private glAccountMapping: Map<string, string>
+
   constructor() {
-    this.glAccountMapping = new Map();
-    this.loadGLAccountMappings();
+    this.glAccountMapping = new Map()
+    this.loadGLAccountMappings()
   }
 
   /**
@@ -212,25 +220,24 @@ class AutoJournalGenerator {
    * Uses rule-based logic for simple cases, AI for complex scenarios
    */
   async generateJournalEntry(transaction: Transaction): Promise<JournalEntry> {
-    
     // ============================================================================
     // RULE-BASED JOURNAL GENERATION (Simple Cases)
     // ============================================================================
-    
-    const simpleJournal = this.trySimpleJournalGeneration(transaction);
+
+    const simpleJournal = this.trySimpleJournalGeneration(transaction)
     if (simpleJournal.ai_confidence > 0.95) {
-      return simpleJournal;
+      return simpleJournal
     }
 
     // ============================================================================
     // AI-POWERED JOURNAL GENERATION (Complex Cases)
     // ============================================================================
-    
-    return await this.aiGenerateJournalEntry(transaction);
+
+    return await this.aiGenerateJournalEntry(transaction)
   }
 
   private trySimpleJournalGeneration(transaction: Transaction): JournalEntry {
-    const { transaction_type, smart_code, lines, total_amount } = transaction;
+    const { transaction_type, smart_code, lines, total_amount } = transaction
 
     // SALES TRANSACTION
     if (transaction_type.includes('sale') || smart_code.includes('.SAL.')) {
@@ -260,7 +267,7 @@ class AutoJournalGenerator {
             line_order: 2
           }
         ]
-      };
+      }
     }
 
     // PURCHASE TRANSACTION
@@ -291,7 +298,7 @@ class AutoJournalGenerator {
             line_order: 2
           }
         ]
-      };
+      }
     }
 
     // PAYMENT TRANSACTION
@@ -322,7 +329,7 @@ class AutoJournalGenerator {
             line_order: 2
           }
         ]
-      };
+      }
     }
 
     // RECEIPT TRANSACTION
@@ -353,7 +360,7 @@ class AutoJournalGenerator {
             line_order: 2
           }
         ]
-      };
+      }
     }
 
     // COMPLEX CASE - Requires AI
@@ -363,40 +370,43 @@ class AutoJournalGenerator {
       description: 'Complex transaction - AI analysis required',
       reference: transaction.transaction_code,
       auto_generated: false,
-      ai_confidence: 0.20,
+      ai_confidence: 0.2,
       validation_status: 'requires_review',
       lines: []
-    };
+    }
   }
 
   private async aiGenerateJournalEntry(transaction: Transaction): Promise<JournalEntry> {
     try {
       // Load chart of accounts context
-      const chartOfAccounts = await this.getChartOfAccounts(transaction.organization_id);
-      
-      console.log(`🤖 AI journal generation would be performed for transaction: ${transaction.transaction_code}`);
-      
+      const chartOfAccounts = await this.getChartOfAccounts(transaction.organization_id)
+
+      console.log(
+        `🤖 AI journal generation would be performed for transaction: ${transaction.transaction_code}`
+      )
+
       // Intelligent fallback journal entry based on transaction type and amount
-      const fallbackJournal = this.createIntelligentFallbackJournal(transaction, chartOfAccounts);
-      
+      const fallbackJournal = this.createIntelligentFallbackJournal(transaction, chartOfAccounts)
+
       return {
         ...fallbackJournal,
         ai_confidence: 0.75,
         validation_status: 'requires_review'
-      };
-      
+      }
     } catch (error) {
-      console.error('AI journal generation failed:', error);
-      throw new Error('Failed to generate AI journal entry');
+      console.error('AI journal generation failed:', error)
+      throw new Error('Failed to generate AI journal entry')
     }
   }
 
-  private createIntelligentFallbackJournal(transaction: Transaction, chartOfAccounts: any[]): JournalEntry {
+  private createIntelligentFallbackJournal(
+    transaction: Transaction,
+    chartOfAccounts: any[]
+  ): JournalEntry {
     // Create a reasonable journal entry based on transaction patterns
-    const isExpense = transaction.total_amount > 0 && (
-      transaction.transaction_type.includes('expense') ||
-      transaction.smart_code.includes('.EXP.')
-    );
+    const isExpense =
+      transaction.total_amount > 0 &&
+      (transaction.transaction_type.includes('expense') || transaction.smart_code.includes('.EXP.'))
 
     if (isExpense) {
       return {
@@ -425,7 +435,7 @@ class AutoJournalGenerator {
             line_order: 2
           }
         ]
-      };
+      }
     }
 
     // Default to simple debit/credit entry
@@ -435,7 +445,7 @@ class AutoJournalGenerator {
       description: `General Transaction - ${transaction.transaction_code}`,
       reference: transaction.transaction_code,
       auto_generated: true,
-      ai_confidence: 0.60,
+      ai_confidence: 0.6,
       validation_status: 'requires_review',
       lines: [
         {
@@ -455,7 +465,7 @@ class AutoJournalGenerator {
           line_order: 2
         }
       ]
-    };
+    }
   }
 
   private async getChartOfAccounts(organizationId: string) {
@@ -465,31 +475,31 @@ class AutoJournalGenerator {
       .eq('organization_id', organizationId)
       .eq('entity_type', 'account')
       .eq('business_rules->ledger_type', 'GL')
-      .order('entity_code');
-    
-    return data || [];
+      .order('entity_code')
+
+    return data || []
   }
 
   private getGLAccount(accountType: string): string {
-    return this.glAccountMapping.get(accountType) || 'unknown';
+    return this.glAccountMapping.get(accountType) || 'unknown'
   }
 
   private getGLAccountIdByCode(accountCode: string): string {
     // Implementation to lookup GL account ID by code
-    return `gl_account_${accountCode}`;
+    return `gl_account_${accountCode}`
   }
 
   private loadGLAccountMappings() {
     // Standard GL account mappings
-    this.glAccountMapping.set('cash_bank', '1000');
-    this.glAccountMapping.set('accounts_receivable', '1200');
-    this.glAccountMapping.set('inventory_asset', '1300');
-    this.glAccountMapping.set('miscellaneous_asset', '1900');
-    this.glAccountMapping.set('accounts_payable', '2000');
-    this.glAccountMapping.set('sales_revenue', '4000');
-    this.glAccountMapping.set('miscellaneous_income', '4900');
-    this.glAccountMapping.set('cost_of_goods_sold', '5000');
-    this.glAccountMapping.set('operating_expense', '6000');
+    this.glAccountMapping.set('cash_bank', '1000')
+    this.glAccountMapping.set('accounts_receivable', '1200')
+    this.glAccountMapping.set('inventory_asset', '1300')
+    this.glAccountMapping.set('miscellaneous_asset', '1900')
+    this.glAccountMapping.set('accounts_payable', '2000')
+    this.glAccountMapping.set('sales_revenue', '4000')
+    this.glAccountMapping.set('miscellaneous_income', '4900')
+    this.glAccountMapping.set('cost_of_goods_sold', '5000')
+    this.glAccountMapping.set('operating_expense', '6000')
   }
 }
 
@@ -498,131 +508,147 @@ class AutoJournalGenerator {
 // ================================================================================
 
 class BatchJournalProcessor {
-  private journalEngine: AutoJournalGenerator;
-  private relevanceEngine: JournalRelevanceEngine;
+  private journalEngine: AutoJournalGenerator
+  private relevanceEngine: JournalRelevanceEngine
 
   constructor() {
-    this.journalEngine = new AutoJournalGenerator();
-    this.relevanceEngine = new JournalRelevanceEngine();
+    this.journalEngine = new AutoJournalGenerator()
+    this.relevanceEngine = new JournalRelevanceEngine()
   }
 
   /**
    * Process small transactions and create summary journal entries
    * Runs at end of day or when threshold is reached
    */
-  async processBatchJournals(organizationId: string, options: {
-    maxTransactionAmount?: number;
-    minBatchSize?: number;
-    summaryThreshold?: number;
-  } = {}) {
-    
+  async processBatchJournals(
+    organizationId: string,
+    options: {
+      maxTransactionAmount?: number
+      minBatchSize?: number
+      summaryThreshold?: number
+    } = {}
+  ) {
     const {
       maxTransactionAmount = 100, // Transactions under $100 are "small"
-      minBatchSize = 5,           // Need at least 5 transactions to batch
-      summaryThreshold = 500      // Batch if total > $500
-    } = options;
+      minBatchSize = 5, // Need at least 5 transactions to batch
+      summaryThreshold = 500 // Batch if total > $500
+    } = options
 
-    console.log(`🔄 Processing batch journals for org: ${organizationId}`);
+    console.log(`🔄 Processing batch journals for org: ${organizationId}`)
 
     // ============================================================================
     // FIND UNBATCHED SMALL TRANSACTIONS
     // ============================================================================
-    
+
     const smallTransactions = await this.getUnbatchedSmallTransactions(
-      organizationId, 
+      organizationId,
       maxTransactionAmount
-    );
+    )
 
     if (smallTransactions.length < minBatchSize) {
-      console.log(`📊 Only ${smallTransactions.length} small transactions - batch threshold not met`);
-      return { batched: 0, journals_created: 0 };
+      console.log(
+        `📊 Only ${smallTransactions.length} small transactions - batch threshold not met`
+      )
+      return { batched: 0, journals_created: 0 }
     }
 
     // ============================================================================
     // GROUP BY TRANSACTION TYPE AND DATE
     // ============================================================================
-    
-    const transactionGroups = this.groupTransactionsForBatching(smallTransactions);
-    let batchedCount = 0;
-    let journalsCreated = 0;
+
+    const transactionGroups = this.groupTransactionsForBatching(smallTransactions)
+    let batchedCount = 0
+    let journalsCreated = 0
 
     for (const [groupKey, groupTransactions] of Array.from(transactionGroups.entries())) {
-      const groupTotal = groupTransactions.reduce((sum, t) => sum + t.total_amount, 0);
-      
+      const groupTotal = groupTransactions.reduce((sum, t) => sum + t.total_amount, 0)
+
       if (groupTotal >= summaryThreshold) {
-        console.log(`📝 Creating batch journal for ${groupKey}: ${groupTransactions.length} transactions, total ${groupTotal}`);
-        
-        const batchJournal = await this.createBatchJournal(groupTransactions);
-        await this.saveBatchJournal(batchJournal);
-        
+        console.log(
+          `📝 Creating batch journal for ${groupKey}: ${groupTransactions.length} transactions, total ${groupTotal}`
+        )
+
+        const batchJournal = await this.createBatchJournal(groupTransactions)
+        await this.saveBatchJournal(batchJournal)
+
         // Mark transactions as batched
-        await this.markTransactionsAsBatched(groupTransactions.map(t => t.id), batchJournal.transaction_id);
-        
-        batchedCount += groupTransactions.length;
-        journalsCreated++;
+        await this.markTransactionsAsBatched(
+          groupTransactions.map(t => t.id),
+          batchJournal.transaction_id
+        )
+
+        batchedCount += groupTransactions.length
+        journalsCreated++
       }
     }
 
-    console.log(`✅ Batch processing complete: ${batchedCount} transactions batched, ${journalsCreated} journals created`);
-    return { batched: batchedCount, journals_created: journalsCreated };
+    console.log(
+      `✅ Batch processing complete: ${batchedCount} transactions batched, ${journalsCreated} journals created`
+    )
+    return { batched: batchedCount, journals_created: journalsCreated }
   }
 
   private async getUnbatchedSmallTransactions(organizationId: string, maxAmount: number) {
     const { data } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         lines:universal_transaction_lines(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .lte('total_amount', maxAmount)
       .eq('status', 'completed')
       .is('metadata->batch_journal_id', null) // Not already batched
       .gte('transaction_date', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Last 24 hours
-      .order('transaction_date');
+      .order('transaction_date')
 
-    return data || [];
+    return data || []
   }
 
   private groupTransactionsForBatching(transactions: Transaction[]): Map<string, Transaction[]> {
-    const groups = new Map<string, Transaction[]>();
+    const groups = new Map<string, Transaction[]>()
 
     transactions.forEach(transaction => {
       // Group by transaction type and date
-      const groupKey = `${transaction.transaction_type}_${transaction.transaction_date.split('T')[0]}`;
-      
-      if (!groups.has(groupKey)) {
-        groups.set(groupKey, []);
-      }
-      groups.get(groupKey)!.push(transaction);
-    });
+      const groupKey = `${transaction.transaction_type}_${transaction.transaction_date.split('T')[0]}`
 
-    return groups;
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, [])
+      }
+      groups.get(groupKey)!.push(transaction)
+    })
+
+    return groups
   }
 
   private async createBatchJournal(transactions: Transaction[]): Promise<JournalEntry> {
-    const totalAmount = transactions.reduce((sum, t) => sum + t.total_amount, 0);
-    const transactionDate = transactions[0].transaction_date.split('T')[0];
-    const transactionType = transactions[0].transaction_type;
-    
-    // Create summary transaction record
-    const summaryTransaction = await this.createSummaryTransaction(transactions, totalAmount);
-    
-    // Generate journal entry for the summary
-    const journalEntry = await this.journalEngine.generateJournalEntry(summaryTransaction);
-    
-    // Enhance with batch information
-    journalEntry.description = `Batch Journal - ${transactions.length} ${transactionType} transactions on ${transactionDate}`;
-    journalEntry.lines.forEach(line => {
-      line.description = `${line.description} (${transactions.length} transactions batched)`;
-    });
+    const totalAmount = transactions.reduce((sum, t) => sum + t.total_amount, 0)
+    const transactionDate = transactions[0].transaction_date.split('T')[0]
+    const transactionType = transactions[0].transaction_type
 
-    return journalEntry;
+    // Create summary transaction record
+    const summaryTransaction = await this.createSummaryTransaction(transactions, totalAmount)
+
+    // Generate journal entry for the summary
+    const journalEntry = await this.journalEngine.generateJournalEntry(summaryTransaction)
+
+    // Enhance with batch information
+    journalEntry.description = `Batch Journal - ${transactions.length} ${transactionType} transactions on ${transactionDate}`
+    journalEntry.lines.forEach(line => {
+      line.description = `${line.description} (${transactions.length} transactions batched)`
+    })
+
+    return journalEntry
   }
 
-  private async createSummaryTransaction(transactions: Transaction[], totalAmount: number): Promise<Transaction> {
-    const firstTxn = transactions[0];
-    
+  private async createSummaryTransaction(
+    transactions: Transaction[],
+    totalAmount: number
+  ): Promise<Transaction> {
+    const firstTxn = transactions[0]
+
     return {
       ...firstTxn,
       id: `batch_${Date.now()}`,
@@ -636,22 +662,25 @@ class BatchJournalProcessor {
         batched_transaction_ids: transactions.map(t => t.id)
       },
       lines: this.summarizeTransactionLines(transactions)
-    };
+    }
   }
 
   private summarizeTransactionLines(transactions: Transaction[]): TransactionLine[] {
-    const linesSummary = new Map<string, {
-      entity_id: string;
-      description: string;
-      total_quantity: number;
-      total_amount: number;
-      count: number;
-    }>();
+    const linesSummary = new Map<
+      string,
+      {
+        entity_id: string
+        description: string
+        total_quantity: number
+        total_amount: number
+        count: number
+      }
+    >()
 
     transactions.forEach(transaction => {
       transaction.lines.forEach(line => {
-        const key = `${line.entity_id}_${line.line_description}`;
-        
+        const key = `${line.entity_id}_${line.line_description}`
+
         if (!linesSummary.has(key)) {
           linesSummary.set(key, {
             entity_id: line.entity_id,
@@ -659,15 +688,15 @@ class BatchJournalProcessor {
             total_quantity: 0,
             total_amount: 0,
             count: 0
-          });
+          })
         }
 
-        const summary = linesSummary.get(key)!;
-        summary.total_quantity += line.quantity;
-        summary.total_amount += line.line_amount;
-        summary.count++;
-      });
-    });
+        const summary = linesSummary.get(key)!
+        summary.total_quantity += line.quantity
+        summary.total_amount += line.line_amount
+        summary.count++
+      })
+    })
 
     return Array.from(linesSummary.values()).map((summary, index) => ({
       id: `batch_line_${index}`,
@@ -676,7 +705,7 @@ class BatchJournalProcessor {
       quantity: summary.total_quantity,
       unit_price: summary.total_amount / summary.total_quantity,
       line_amount: summary.total_amount
-    }));
+    }))
   }
 
   async saveBatchJournal(journalEntry: JournalEntry) {
@@ -700,7 +729,7 @@ class BatchJournalProcessor {
         }
       })
       .select()
-      .single();
+      .single()
 
     // Create journal lines
     if (journalTxn) {
@@ -719,26 +748,24 @@ class BatchJournalProcessor {
           credit_amount: line.credit_amount,
           journal_line: true
         }
-      }));
+      }))
 
-      await supabase
-        .from('universal_transaction_lines')
-        .insert(journalLines);
+      await supabase.from('universal_transaction_lines').insert(journalLines)
     }
 
-    return journalTxn;
+    return journalTxn
   }
 
   private async markTransactionsAsBatched(transactionIds: string[], batchJournalId: string) {
     // Update metadata to mark transactions as batched
-    const batchMetadata = { batch_journal_id: batchJournalId, batch_processed: true };
-    
+    const batchMetadata = { batch_journal_id: batchJournalId, batch_processed: true }
+
     await supabase
       .from('universal_transactions')
       .update({
         metadata: batchMetadata
       })
-      .in('id', transactionIds);
+      .in('id', transactionIds)
   }
 }
 
@@ -747,14 +774,14 @@ class BatchJournalProcessor {
 // ================================================================================
 
 class RealTimeJournalProcessor {
-  private relevanceEngine: JournalRelevanceEngine;
-  private journalGenerator: AutoJournalGenerator;
-  private batchProcessor: BatchJournalProcessor;
+  private relevanceEngine: JournalRelevanceEngine
+  private journalGenerator: AutoJournalGenerator
+  private batchProcessor: BatchJournalProcessor
 
   constructor() {
-    this.relevanceEngine = new JournalRelevanceEngine();
-    this.journalGenerator = new AutoJournalGenerator();
-    this.batchProcessor = new BatchJournalProcessor();
+    this.relevanceEngine = new JournalRelevanceEngine()
+    this.journalGenerator = new AutoJournalGenerator()
+    this.batchProcessor = new BatchJournalProcessor()
   }
 
   /**
@@ -762,55 +789,58 @@ class RealTimeJournalProcessor {
    * Called by transaction posting webhook/trigger
    */
   async processTransactionPosting(transaction: Transaction): Promise<{
-    journal_created: boolean;
-    journal_id?: string;
-    batched: boolean;
-    processing_mode: 'immediate' | 'batched' | 'skipped';
-    ai_used: boolean;
+    journal_created: boolean
+    journal_id?: string
+    batched: boolean
+    processing_mode: 'immediate' | 'batched' | 'skipped'
+    ai_used: boolean
   }> {
-    
-    console.log(`🔄 Processing transaction: ${transaction.transaction_code}`);
+    console.log(`🔄 Processing transaction: ${transaction.transaction_code}`)
 
     // ============================================================================
     // STEP 1: CHECK JOURNAL RELEVANCE
     // ============================================================================
-    
-    const relevanceCheck = await this.relevanceEngine.isJournalRelevant(transaction);
-    
+
+    const relevanceCheck = await this.relevanceEngine.isJournalRelevant(transaction)
+
     if (!relevanceCheck.isRelevant) {
-      console.log(`⏭️  Transaction ${transaction.transaction_code} skipped - ${relevanceCheck.reason}`);
+      console.log(
+        `⏭️  Transaction ${transaction.transaction_code} skipped - ${relevanceCheck.reason}`
+      )
       return {
         journal_created: false,
         batched: false,
         processing_mode: 'skipped',
         ai_used: relevanceCheck.complexity === 'ai_required'
-      };
+      }
     }
 
     // ============================================================================
     // STEP 2: DETERMINE PROCESSING MODE
     // ============================================================================
-    
-    const processingMode = this.determineProcessingMode(transaction);
+
+    const processingMode = this.determineProcessingMode(transaction)
 
     if (processingMode === 'batched') {
-      console.log(`📦 Transaction ${transaction.transaction_code} queued for batch processing`);
+      console.log(`📦 Transaction ${transaction.transaction_code} queued for batch processing`)
       return {
         journal_created: false,
         batched: true,
         processing_mode: 'batched',
         ai_used: false
-      };
+      }
     }
 
     // ============================================================================
     // STEP 3: IMMEDIATE JOURNAL CREATION
     // ============================================================================
-    
-    const journalEntry = await this.journalGenerator.generateJournalEntry(transaction);
-    const journalRecord = await this.saveJournalEntry(journalEntry);
 
-    console.log(`✅ Journal entry created: ${journalRecord?.transaction_code} (AI confidence: ${journalEntry.ai_confidence})`);
+    const journalEntry = await this.journalGenerator.generateJournalEntry(transaction)
+    const journalRecord = await this.saveJournalEntry(journalEntry)
+
+    console.log(
+      `✅ Journal entry created: ${journalRecord?.transaction_code} (AI confidence: ${journalEntry.ai_confidence})`
+    )
 
     return {
       journal_created: true,
@@ -818,7 +848,7 @@ class RealTimeJournalProcessor {
       batched: false,
       processing_mode: 'immediate',
       ai_used: relevanceCheck.complexity === 'ai_required' || journalEntry.ai_confidence < 0.95
-    };
+    }
   }
 
   private determineProcessingMode(transaction: Transaction): 'immediate' | 'batched' {
@@ -826,39 +856,43 @@ class RealTimeJournalProcessor {
     // - Large transactions
     // - Critical transaction types
     // - Transactions requiring immediate GL impact
-    
-    if (transaction.total_amount > 1000 ||
-        transaction.transaction_type.includes('payment') ||
-        transaction.transaction_type.includes('receipt') ||
-        transaction.smart_code.includes('.CRITICAL.') ||
-        (transaction.metadata as any)?.immediate_posting === true) {
-      return 'immediate';
+
+    if (
+      transaction.total_amount > 1000 ||
+      transaction.transaction_type.includes('payment') ||
+      transaction.transaction_type.includes('receipt') ||
+      transaction.smart_code.includes('.CRITICAL.') ||
+      (transaction.metadata as any)?.immediate_posting === true
+    ) {
+      return 'immediate'
     }
 
     // Batch processing for small routine transactions
-    return 'batched';
+    return 'batched'
   }
 
   private async saveJournalEntry(journalEntry: JournalEntry) {
     // Implementation similar to batch processor
     // Creates journal transaction and lines in universal tables
-    return await this.batchProcessor.saveBatchJournal(journalEntry);
+    return await this.batchProcessor.saveBatchJournal(journalEntry)
   }
 
   /**
    * Scheduled batch processing - runs end of day
    */
   async runEndOfDayBatchProcessing(organizationId: string) {
-    console.log(`🌅 Running end-of-day batch processing for org: ${organizationId}`);
-    
+    console.log(`🌅 Running end-of-day batch processing for org: ${organizationId}`)
+
     const result = await this.batchProcessor.processBatchJournals(organizationId, {
       maxTransactionAmount: 100,
       minBatchSize: 3,
       summaryThreshold: 300
-    });
+    })
 
-    console.log(`📊 End-of-day summary: ${result.batched} transactions batched, ${result.journals_created} journals created`);
-    return result;
+    console.log(
+      `📊 End-of-day summary: ${result.batched} transactions batched, ${result.journals_created} journals created`
+    )
+    return result
   }
 }
 
@@ -867,10 +901,10 @@ class RealTimeJournalProcessor {
 // ================================================================================
 
 export class TransactionPostingHandler {
-  private journalProcessor: RealTimeJournalProcessor;
+  private journalProcessor: RealTimeJournalProcessor
 
   constructor() {
-    this.journalProcessor = new RealTimeJournalProcessor();
+    this.journalProcessor = new RealTimeJournalProcessor()
   }
 
   /**
@@ -878,72 +912,68 @@ export class TransactionPostingHandler {
    * Integrates with HERA's universal transaction system
    */
   async handleTransactionPosted(payload: {
-    transaction_id: string;
-    organization_id: string;
-    event_type: 'transaction.posted' | 'transaction.completed';
+    transaction_id: string
+    organization_id: string
+    event_type: 'transaction.posted' | 'transaction.completed'
   }) {
-    
     try {
       // Load complete transaction with lines
-      const transaction = await this.loadCompleteTransaction(payload.transaction_id);
-      
+      const transaction = await this.loadCompleteTransaction(payload.transaction_id)
+
       if (!transaction) {
-        throw new Error(`Transaction ${payload.transaction_id} not found`);
+        throw new Error(`Transaction ${payload.transaction_id} not found`)
       }
 
       // Process for journal creation
-      const result = await this.journalProcessor.processTransactionPosting(transaction);
-      
-      // Log processing result
-      await this.logJournalProcessing(payload.transaction_id, result);
-      
-      return result;
+      const result = await this.journalProcessor.processTransactionPosting(transaction)
 
+      // Log processing result
+      await this.logJournalProcessing(payload.transaction_id, result)
+
+      return result
     } catch (error) {
-      console.error('Transaction posting handler failed:', error);
-      await this.logProcessingError(payload.transaction_id, error);
-      throw error;
+      console.error('Transaction posting handler failed:', error)
+      await this.logProcessingError(payload.transaction_id, error)
+      throw error
     }
   }
 
   private async loadCompleteTransaction(transactionId: string): Promise<Transaction | null> {
     const { data } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         lines:universal_transaction_lines(*)
-      `)
+      `
+      )
       .eq('id', transactionId)
-      .single();
+      .single()
 
-    return data;
+    return data
   }
 
   private async logJournalProcessing(transactionId: string, result: any) {
-    await supabase
-      .from('core_dynamic_data')
-      .insert({
-        organization_id: 'system',
-        entity_id: transactionId,
-        field_name: 'journal_processing_result',
-        field_type: 'json',
-        field_value_json: result,
-        ai_enhanced_value: `Journal processing: ${result.processing_mode}, AI used: ${result.ai_used}`,
-        smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.LOG.v1'
-      });
+    await supabase.from('core_dynamic_data').insert({
+      organization_id: 'system',
+      entity_id: transactionId,
+      field_name: 'journal_processing_result',
+      field_type: 'json',
+      field_value_json: result,
+      ai_enhanced_value: `Journal processing: ${result.processing_mode}, AI used: ${result.ai_used}`,
+      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.LOG.v1'
+    })
   }
 
   private async logProcessingError(transactionId: string, error: any) {
-    await supabase
-      .from('core_dynamic_data')
-      .insert({
-        organization_id: 'system',
-        entity_id: transactionId,
-        field_name: 'journal_processing_error',
-        field_type: 'json',
-        field_value_json: { error: error.message, timestamp: new Date().toISOString() },
-        smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.ERROR.v1'
-      });
+    await supabase.from('core_dynamic_data').insert({
+      organization_id: 'system',
+      entity_id: transactionId,
+      field_name: 'journal_processing_error',
+      field_type: 'json',
+      field_value_json: { error: error.message, timestamp: new Date().toISOString() },
+      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.ERROR.v1'
+    })
   }
 }
 
@@ -952,7 +982,7 @@ export class TransactionPostingHandler {
 // ================================================================================
 
 // Initialize the auto-journal system
-const transactionHandler = new TransactionPostingHandler();
+const transactionHandler = new TransactionPostingHandler()
 
 /**
  * Main function to process a transaction for auto-journal creation
@@ -962,31 +992,31 @@ export async function processTransactionForJournal(transactionId: string, organi
     transaction_id: transactionId,
     organization_id: organizationId,
     event_type: 'transaction.completed'
-  });
+  })
 }
 
 /**
  * Scheduled batch processing (run via cron)
  */
 export async function runBatchProcessing(organizationId: string) {
-  const processor = new RealTimeJournalProcessor();
-  return await processor.runEndOfDayBatchProcessing(organizationId);
+  const processor = new RealTimeJournalProcessor()
+  return await processor.runEndOfDayBatchProcessing(organizationId)
 }
 
 /**
  * Check if transaction requires journal entry
  */
 export async function checkJournalRelevance(transaction: Transaction) {
-  const engine = new JournalRelevanceEngine();
-  return await engine.isJournalRelevant(transaction);
+  const engine = new JournalRelevanceEngine()
+  return await engine.isJournalRelevant(transaction)
 }
 
 /**
  * Generate journal entry for a transaction
  */
 export async function generateJournalEntry(transaction: Transaction) {
-  const generator = new AutoJournalGenerator();
-  return await generator.generateJournalEntry(transaction);
+  const generator = new AutoJournalGenerator()
+  return await generator.generateJournalEntry(transaction)
 }
 
 // ================================================================================

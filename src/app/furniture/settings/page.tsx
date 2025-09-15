@@ -6,38 +6,28 @@ export const dynamic = 'force-dynamic'
 import React from 'react'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
-import { 
-  Settings, 
-  Shield, 
-  Users, 
-  Building2, 
-  Code,
-  Database,
-  Bell,
-  Key,
-  Globe
-} from 'lucide-react'
+import { Settings, Shield, Users, Building2, Code, Database, Bell, Key, Globe } from 'lucide-react'
 
 const settingSections = [
   {
     title: 'Business Configuration',
     items: [
-      { 
-        name: 'Universal Configuration Rules', 
+      {
+        name: 'Universal Configuration Rules',
         description: 'Manage business logic without code changes',
         icon: Code,
         href: '/furniture/settings/ucr',
         color: 'text-amber-500'
       },
-      { 
-        name: 'Organization Settings', 
+      {
+        name: 'Organization Settings',
         description: 'Company details and preferences',
         icon: Building2,
         href: '/furniture/settings/organization',
         color: 'text-blue-500'
       },
-      { 
-        name: 'User Management', 
+      {
+        name: 'User Management',
         description: 'Manage users and permissions',
         icon: Users,
         href: '/furniture/settings/users',
@@ -48,22 +38,22 @@ const settingSections = [
   {
     title: 'System Configuration',
     items: [
-      { 
-        name: 'Security', 
+      {
+        name: 'Security',
         description: 'Authentication and access control',
         icon: Shield,
         href: '/furniture/settings/security',
         color: 'text-red-500'
       },
-      { 
-        name: 'API & Integrations', 
+      {
+        name: 'API & Integrations',
         description: 'External connections and webhooks',
         icon: Key,
         href: '/furniture/settings/integrations',
         color: 'text-green-500'
       },
-      { 
-        name: 'Data Management', 
+      {
+        name: 'Data Management',
         description: 'Backup, export, and archival',
         icon: Database,
         href: '/furniture/settings/data',
@@ -74,15 +64,15 @@ const settingSections = [
   {
     title: 'Preferences',
     items: [
-      { 
-        name: 'Notifications', 
+      {
+        name: 'Notifications',
         description: 'Alert and notification settings',
         icon: Bell,
         href: '/furniture/settings/notifications',
         color: 'text-yellow-500'
       },
-      { 
-        name: 'Localization', 
+      {
+        name: 'Localization',
         description: 'Language, currency, and regional settings',
         icon: Globe,
         href: '/furniture/settings/localization',
@@ -107,11 +97,11 @@ export default function FurnitureSettingsPage() {
         </div>
 
         {/* Setting Sections */}
-        {settingSections.map((section) => (
+        {settingSections.map(section => (
           <div key={section.title} className="space-y-4">
             <h2 className="text-xl font-semibold text-white">{section.title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {section.items.map((item) => (
+              {section.items.map(item => (
                 <Link key={item.name} href={item.href}>
                   <Card className="p-6 hover:scale-105 transition-transform cursor-pointer bg-gray-800/70 border-gray-700 backdrop-blur-sm h-full">
                     <div className="flex items-start gap-4">
@@ -141,8 +131,8 @@ export default function FurnitureSettingsPage() {
                 Revolutionary: Universal Configuration Rules (UCR)
               </h3>
               <p className="text-gray-300 mb-3">
-                Change business logic without touching code. Configure validation rules, pricing strategies, 
-                approval workflows, and more through a visual interface.
+                Change business logic without touching code. Configure validation rules, pricing
+                strategies, approval workflows, and more through a visual interface.
               </p>
               <Link href="/furniture/settings/ucr">
                 <span className="text-amber-500 hover:text-amber-400 font-medium">

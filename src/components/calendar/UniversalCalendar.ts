@@ -1,21 +1,21 @@
 /**
  * HERA Universal Calendar Export
- * 
+ *
  * This is the standard calendar component for all HERA modules.
  * The HeraDnaUniversalResourceCalendar is our Teams-inspired
  * multi-resource calendar that adapts to any business type.
- * 
+ *
  * @example
  * // Import the universal calendar
  * import { UniversalCalendar } from '@/components/calendar/UniversalCalendar'
- * 
+ *
  * // Use for salon
  * <UniversalCalendar
  *   businessType="salon"
  *   resourceType="stylist"
  *   appointmentType="service"
  * />
- * 
+ *
  * // Use for healthcare
  * <UniversalCalendar
  *   businessType="healthcare"

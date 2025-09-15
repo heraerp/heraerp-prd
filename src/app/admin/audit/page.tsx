@@ -7,10 +7,16 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
+import {
   Search,
   Filter,
   Download,
@@ -95,8 +101,8 @@ export default function AuditStreamPage() {
     })
 
     const source = new EventSource(`/api/v1/audit/stream?${params}`)
-    
-    source.onmessage = (event) => {
+
+    source.onmessage = event => {
       const newEvent = JSON.parse(event.data)
       setEvents(prev => [newEvent, ...prev].slice(0, 100)) // Keep last 100
     }
@@ -133,22 +139,32 @@ export default function AuditStreamPage() {
 
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
-      case 'auth': return <Key className="w-4 h-4" />
-      case 'data': return <Database className="w-4 h-4" />
-      case 'security': return <Shield className="w-4 h-4" />
-      case 'admin': return <User className="w-4 h-4" />
-      default: return <Activity className="w-4 h-4" />
+      case 'auth':
+        return <Key className="w-4 h-4" />
+      case 'data':
+        return <Database className="w-4 h-4" />
+      case 'security':
+        return <Shield className="w-4 h-4" />
+      case 'admin':
+        return <User className="w-4 h-4" />
+      default:
+        return <Activity className="w-4 h-4" />
     }
   }
 
   const getResultBadge = (result: string) => {
-    return result === 'success' 
-      ? <Badge className="bg-green-100 text-green-800">Success</Badge>
-      : <Badge className="bg-red-100 text-red-800">Failed</Badge>
+    return result === 'success' ? (
+      <Badge className="bg-green-100 text-green-800">Success</Badge>
+    ) : (
+      <Badge className="bg-red-100 text-red-800">Failed</Badge>
+    )
   }
 
   const filteredEvents = events.filter(event => {
-    if (filter.search && !JSON.stringify(event).toLowerCase().includes(filter.search.toLowerCase())) {
+    if (
+      filter.search &&
+      !JSON.stringify(event).toLowerCase().includes(filter.search.toLowerCase())
+    ) {
       return false
     }
     if (filter.eventType !== 'all' && !event.event_type.includes(filter.eventType)) {
@@ -170,8 +186,8 @@ export default function AuditStreamPage() {
         </div>
         <div className="flex items-center gap-4">
           {streaming ? (
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={stopStreaming}
               className="flex items-center gap-2"
             >
@@ -179,19 +195,12 @@ export default function AuditStreamPage() {
               Stop Streaming
             </Button>
           ) : (
-            <Button 
-              onClick={startStreaming}
-              className="flex items-center gap-2"
-            >
+            <Button onClick={startStreaming} className="flex items-center gap-2">
               <Activity className="w-4 h-4" />
               Start Live Stream
             </Button>
           )}
-          <Button 
-            variant="outline" 
-            onClick={exportEvents}
-            className="flex items-center gap-2"
-          >
+          <Button variant="outline" onClick={exportEvents} className="flex items-center gap-2">
             <Download className="w-4 h-4" />
             Export
           </Button>
@@ -213,14 +222,14 @@ export default function AuditStreamPage() {
               <Input
                 placeholder="Search events..."
                 value={filter.search}
-                onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+                onChange={e => setFilter({ ...filter, search: e.target.value })}
                 className="pl-10"
               />
             </div>
 
             <Select
               value={filter.eventType}
-              onValueChange={(value) => setFilter({ ...filter, eventType: value })}
+              onValueChange={value => setFilter({ ...filter, eventType: value })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -236,7 +245,7 @@ export default function AuditStreamPage() {
 
             <Select
               value={filter.result}
-              onValueChange={(value) => setFilter({ ...filter, result: value })}
+              onValueChange={value => setFilter({ ...filter, result: value })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -250,7 +259,7 @@ export default function AuditStreamPage() {
 
             <Select
               value={filter.timeRange}
-              onValueChange={(value) => setFilter({ ...filter, timeRange: value })}
+              onValueChange={value => setFilter({ ...filter, timeRange: value })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -272,9 +281,7 @@ export default function AuditStreamPage() {
           <div className="flex justify-between items-center">
             <CardTitle>Audit Events</CardTitle>
             {streaming && (
-              <Badge className="bg-green-100 text-green-800 animate-pulse">
-                Live Streaming
-              </Badge>
+              <Badge className="bg-green-100 text-green-800 animate-pulse">Live Streaming</Badge>
             )}
           </div>
         </CardHeader>
@@ -287,22 +294,18 @@ export default function AuditStreamPage() {
           ) : filteredEvents.length === 0 ? (
             <Alert>
               <AlertTriangle className="w-4 h-4" />
-              <AlertDescription>
-                No audit events found matching your filters.
-              </AlertDescription>
+              <AlertDescription>No audit events found matching your filters.</AlertDescription>
             </Alert>
           ) : (
             <div className="space-y-4">
-              {filteredEvents.map((event) => (
+              {filteredEvents.map(event => (
                 <div
                   key={event.id}
                   className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                      <div className="mt-1">
-                        {getEventIcon(event.event_type)}
-                      </div>
+                      <div className="mt-1">{getEventIcon(event.event_type)}</div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-medium">{event.action}</span>

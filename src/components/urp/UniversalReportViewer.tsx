@@ -1,7 +1,7 @@
 /**
  * Universal Report Viewer Component
  * Smart Code: HERA.UI.URP.VIEWER.v1
- * 
+ *
  * React component for displaying URP reports
  */
 
@@ -10,7 +10,13 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, RefreshCw, Download, FileText, AlertCircle } from 'lucide-react'
@@ -79,7 +85,7 @@ export function UniversalReportViewer({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${await universalApi.getAuthToken()}`
+          Authorization: `Bearer ${await universalApi.getAuthToken()}`
         },
         body: JSON.stringify({ action: 'list' })
       })
@@ -90,7 +96,7 @@ export function UniversalReportViewer({
 
       const data = await response.json()
       setRecipes(data.recipes || [])
-      
+
       // Set default recipe if provided and exists
       if (defaultRecipe && data.recipes.some((r: ReportRecipe) => r.name === defaultRecipe)) {
         setSelectedRecipe(defaultRecipe)
@@ -108,13 +114,13 @@ export function UniversalReportViewer({
 
     setLoading(true)
     setError(null)
-    
+
     try {
       const response = await fetch('/api/v1/urp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${await universalApi.getAuthToken()}`
+          Authorization: `Bearer ${await universalApi.getAuthToken()}`
         },
         body: JSON.stringify({
           action: 'execute',
@@ -132,7 +138,7 @@ export function UniversalReportViewer({
 
       const data = await response.json()
       setReportData(data.data)
-      
+
       if (onReportLoad) {
         onReportLoad(data.data)
       }
@@ -182,8 +188,8 @@ export function UniversalReportViewer({
                 {recipes.map(recipe => (
                   <SelectItem key={recipe.name} value={recipe.name}>
                     <div className="flex items-center gap-2">
-                      <Badge 
-                        variant="secondary" 
+                      <Badge
+                        variant="secondary"
                         className={cn('text-xs', categoryColors[recipe.category])}
                       >
                         {recipe.category}
@@ -210,10 +216,12 @@ export function UniversalReportViewer({
                     {param.type === 'boolean' ? (
                       <Select
                         value={String(parameters[param.name] || false)}
-                        onValueChange={val => setParameters({
-                          ...parameters,
-                          [param.name]: val === 'true'
-                        })}
+                        onValueChange={val =>
+                          setParameters({
+                            ...parameters,
+                            [param.name]: val === 'true'
+                          })
+                        }
                       >
                         <SelectTrigger className="h-9">
                           <SelectValue />
@@ -228,12 +236,15 @@ export function UniversalReportViewer({
                         type={param.type === 'number' ? 'number' : 'text'}
                         className="w-full px-3 py-2 text-sm border rounded-md dark:bg-gray-800"
                         value={parameters[param.name] || ''}
-                        onChange={e => setParameters({
-                          ...parameters,
-                          [param.name]: param.type === 'number' 
-                            ? parseFloat(e.target.value) || 0 
-                            : e.target.value
-                        })}
+                        onChange={e =>
+                          setParameters({
+                            ...parameters,
+                            [param.name]:
+                              param.type === 'number'
+                                ? parseFloat(e.target.value) || 0
+                                : e.target.value
+                          })
+                        }
                       />
                     )}
                   </div>
@@ -258,7 +269,7 @@ export function UniversalReportViewer({
                 'Generate Report'
               )}
             </Button>
-            
+
             <Button
               variant="outline"
               onClick={() => executeReport(true)}
@@ -270,20 +281,12 @@ export function UniversalReportViewer({
 
             {reportData && (
               <>
-                <Button
-                  variant="outline"
-                  onClick={() => exportReport('csv')}
-                  disabled={loading}
-                >
+                <Button variant="outline" onClick={() => exportReport('csv')} disabled={loading}>
                   <Download className="h-4 w-4 mr-2" />
                   CSV
                 </Button>
-                
-                <Button
-                  variant="outline"
-                  onClick={() => exportReport('excel')}
-                  disabled={loading}
-                >
+
+                <Button variant="outline" onClick={() => exportReport('excel')} disabled={loading}>
                   <Download className="h-4 w-4 mr-2" />
                   Excel
                 </Button>
@@ -311,9 +314,7 @@ export function UniversalReportViewer({
           </CardHeader>
           <CardContent>
             <div className="overflow-auto">
-              <pre className="text-sm">
-                {JSON.stringify(reportData, null, 2)}
-              </pre>
+              <pre className="text-sm">{JSON.stringify(reportData, null, 2)}</pre>
             </div>
           </CardContent>
         </Card>

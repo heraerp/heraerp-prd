@@ -2,7 +2,7 @@
  * HERA Financial Modules Index
  * Central registry for all financial DNA modules
  * Smart Code: HERA.FIN.MODULE.INDEX.v1
- * 
+ *
  * This index provides easy discovery and access to all financial modules
  */
 
@@ -36,7 +36,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
   'HERA.FIN.GL.MODULE.v1': {
     id: 'HERA.FIN.GL.MODULE.v1',
     name: 'General Ledger Module',
-    description: 'Complete GL management with journal entries, COA, reporting, and period management',
+    description:
+      'Complete GL management with journal entries, COA, reporting, and period management',
     category: 'financial',
     subcategory: 'general_ledger',
     location: '/src/lib/dna/modules/financial/gl-module-dna.tsx',
@@ -80,7 +81,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
       '3-way matching'
     ],
     industryAdaptations: {
-      iceCream: 'Dairy supplier tracking, cold chain vendor management, quality certificates, seasonal pricing',
+      iceCream:
+        'Dairy supplier tracking, cold chain vendor management, quality certificates, seasonal pricing',
       restaurant: 'Food supplier management, delivery tracking, invoice matching',
       healthcare: 'Medical supplier tracking, compliance certificates'
     },
@@ -90,7 +92,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
   'HERA.FIN.AR.MODULE.v1': {
     id: 'HERA.FIN.AR.MODULE.v1',
     name: 'Accounts Receivable Module',
-    description: 'Customer management, invoice generation, collections workflow, and credit management',
+    description:
+      'Customer management, invoice generation, collections workflow, and credit management',
     category: 'financial',
     subcategory: 'accounts_receivable',
     location: '/src/lib/dna/modules/financial/ar-module-dna.tsx',
@@ -107,7 +110,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
       'Dunning letters'
     ],
     industryAdaptations: {
-      iceCream: 'Multi-channel billing, freezer deposit tracking, seasonal terms, cold chain compensation',
+      iceCream:
+        'Multi-channel billing, freezer deposit tracking, seasonal terms, cold chain compensation',
       retail: 'POS integration, loyalty programs, returns processing',
       services: 'Recurring billing, project invoicing, retainer management'
     },
@@ -117,7 +121,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
   'HERA.FIN.FA.MODULE.v1': {
     id: 'HERA.FIN.FA.MODULE.v1',
     name: 'Fixed Assets Module',
-    description: 'Asset lifecycle management from acquisition to disposal with depreciation automation',
+    description:
+      'Asset lifecycle management from acquisition to disposal with depreciation automation',
     category: 'financial',
     subcategory: 'fixed_assets',
     location: '/src/lib/dna/modules/financial/fa-module-dna.tsx',
@@ -134,7 +139,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
       'Physical inventory'
     ],
     industryAdaptations: {
-      iceCream: 'Freezer fleet management, cold chain equipment, refrigerated vehicles, energy tracking',
+      iceCream:
+        'Freezer fleet management, cold chain equipment, refrigerated vehicles, energy tracking',
       manufacturing: 'Production equipment, tooling management, capacity tracking',
       retail: 'Store fixtures, POS equipment, display units'
     },
@@ -161,7 +167,7 @@ export const FINANCIAL_COMPONENT_REGISTRY = {
     location: '/src/components/fin/FINDashboard.tsx',
     description: 'Central financial management dashboard with cash position and KPIs'
   },
-  
+
   // Cashflow System
   'HERA.FIN.CASHFLOW.SYSTEM.v1': {
     name: 'Universal Cashflow DNA',
@@ -169,21 +175,21 @@ export const FINANCIAL_COMPONENT_REGISTRY = {
     cli: '/mcp-server/cashflow-dna-cli.js',
     description: 'Real-time cashflow statements with industry-specific intelligence'
   },
-  
+
   // Auto-Journal Engine
   'HERA.FIN.AUTO.JOURNAL.ENGINE.v1': {
     name: 'Auto-Journal Engine',
     documentation: '/src/app/docs/features/auto-journal/page.tsx',
     description: '85% automation rate for journal entry creation, $34,560 annual savings'
   },
-  
+
   // Daily Operations
   'HERA.FIN.DAILY.CASH.CLOSE.v1': {
     name: 'Daily Cash Close',
     location: '/src/components/pos/DailyCashClose.tsx',
     description: 'POS reconciliation and daily closing procedures'
   },
-  
+
   // Period Management
   'HERA.FIN.YEAR.END.CLOSE.v1': {
     name: 'Year-End Closing Wizard',
@@ -191,14 +197,14 @@ export const FINANCIAL_COMPONENT_REGISTRY = {
     checklist: '/src/components/accounting/FiscalCloseChecklist.tsx',
     description: 'Fiscal year closing and balance carry forward'
   },
-  
+
   // Financial Reports
   'HERA.FIN.TRIAL.BALANCE.v1': {
     name: 'Trial Balance DNA',
     cli: '/mcp-server/trial-balance-dna-cli.js',
     description: 'Professional trial balance with industry configurations'
   },
-  
+
   'HERA.FIN.BALANCE.SHEET.v1': {
     name: 'Balance Sheet DNA',
     sql: '/database/dna-updates/balance-sheet-dna.sql',
@@ -214,9 +220,7 @@ export function getFinancialModule(moduleId: string) {
 }
 
 export function getModulesByCategory(category: string) {
-  return Object.values(FINANCIAL_MODULE_REGISTRY).filter(
-    module => module.subcategory === category
-  )
+  return Object.values(FINANCIAL_MODULE_REGISTRY).filter(module => module.subcategory === category)
 }
 
 export function getModulesByIndustry(industry: string) {
@@ -253,17 +257,17 @@ export const FINANCIAL_SMART_CODE_PATTERNS = {
   GL_JOURNAL: 'HERA.FIN.GL.TXN.JE.*',
   GL_ACCOUNT: 'HERA.FIN.GL.ACC.*',
   GL_REPORT: 'HERA.FIN.GL.RPT.*',
-  
+
   // AP Patterns
   AP_INVOICE: 'HERA.FIN.AP.TXN.INV.*',
   AP_PAYMENT: 'HERA.FIN.AP.TXN.PAY.*',
   AP_VENDOR: 'HERA.FIN.AP.VND.*',
-  
+
   // AR Patterns
   AR_INVOICE: 'HERA.FIN.AR.TXN.INV.*',
   AR_RECEIPT: 'HERA.FIN.AR.TXN.RCP.*',
   AR_CUSTOMER: 'HERA.FIN.AR.CUS.*',
-  
+
   // FA Patterns
   FA_ASSET: 'HERA.FIN.FA.AST.*',
   FA_DEPRECIATION: 'HERA.FIN.FA.DEP.*',

@@ -1,7 +1,7 @@
 /**
  * HERA CRM Email Composer Component
  * Professional email composition with templates and contact integration
- * 
+ *
  * Project Manager Task: Email Integration UI
  */
 
@@ -13,13 +13,29 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { 
-  Mail, Send, Save, X, User, Building, 
-  Paperclip, FileText, Loader2, CheckCircle, 
-  AlertCircle, Clock, Eye
+import {
+  Mail,
+  Send,
+  Save,
+  X,
+  User,
+  Building,
+  Paperclip,
+  FileText,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  Eye
 } from 'lucide-react'
 import { createEmailService, EmailMessage, EmailTemplate } from '@/lib/crm/email-service'
 import { CRMContact } from '@/lib/crm/production-api'
@@ -32,18 +48,22 @@ interface EmailComposerProps {
   onEmailSent?: (emailId: string) => void
 }
 
-export function EmailComposer({ 
-  contact, 
-  isOpen, 
-  onClose, 
-  organizationId, 
-  onEmailSent 
+export function EmailComposer({
+  contact,
+  isOpen,
+  onClose,
+  organizationId,
+  onEmailSent
 }: EmailComposerProps) {
   const [emailService] = useState(() => createEmailService(organizationId))
   const [templates, setTemplates] = useState<EmailTemplate[]>([])
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
   const [isSending, setIsSending] = useState(false)
-  const [sendResult, setSendResult] = useState<{ success: boolean; messageId?: string; error?: string } | null>(null)
+  const [sendResult, setSendResult] = useState<{
+    success: boolean
+    messageId?: string
+    error?: string
+  } | null>(null)
 
   // Email form state
   const [emailData, setEmailData] = useState<Partial<EmailMessage>>({
@@ -126,7 +146,7 @@ export function EmailComposer({
       } as EmailMessage)
 
       setSendResult(result)
-      
+
       if (result.success) {
         onEmailSent?.(result.messageId || '')
         // Auto-close after 2 seconds on success
@@ -188,7 +208,10 @@ export function EmailComposer({
                 <div className="flex items-center gap-3">
                   <Avatar>
                     <AvatarFallback>
-                      {contact.name.split(' ').map(n => n[0]).join('')}
+                      {contact.name
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -211,19 +234,20 @@ export function EmailComposer({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="font-medium">Email Templates</Label>
-              {isLoadingTemplates && (
-                <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
-              )}
+              {isLoadingTemplates && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
             </div>
-            <Select value={selectedTemplate} onValueChange={(value) => {
-              setSelectedTemplate(value)
-              applyTemplate(value)
-            }}>
+            <Select
+              value={selectedTemplate}
+              onValueChange={value => {
+                setSelectedTemplate(value)
+                applyTemplate(value)
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Choose a template..." />
               </SelectTrigger>
               <SelectContent>
-                {templates.map((template) => (
+                {templates.map(template => (
                   <SelectItem key={template.id} value={template.id}>
                     <div className="flex items-center gap-2">
                       <FileText className="h-4 w-4" />
@@ -247,10 +271,15 @@ export function EmailComposer({
                 <Input
                   id="to"
                   value={emailData.to?.join(', ') || ''}
-                  onChange={(e) => setEmailData(prev => ({
-                    ...prev,
-                    to: e.target.value.split(',').map(email => email.trim()).filter(Boolean)
-                  }))}
+                  onChange={e =>
+                    setEmailData(prev => ({
+                      ...prev,
+                      to: e.target.value
+                        .split(',')
+                        .map(email => email.trim())
+                        .filter(Boolean)
+                    }))
+                  }
                   placeholder="recipient@example.com"
                   className="mt-1"
                 />
@@ -260,10 +289,15 @@ export function EmailComposer({
                 <Input
                   id="cc"
                   value={emailData.cc?.join(', ') || ''}
-                  onChange={(e) => setEmailData(prev => ({
-                    ...prev,
-                    cc: e.target.value.split(',').map(email => email.trim()).filter(Boolean)
-                  }))}
+                  onChange={e =>
+                    setEmailData(prev => ({
+                      ...prev,
+                      cc: e.target.value
+                        .split(',')
+                        .map(email => email.trim())
+                        .filter(Boolean)
+                    }))
+                  }
                   placeholder="cc@example.com"
                   className="mt-1"
                 />
@@ -273,10 +307,15 @@ export function EmailComposer({
                 <Input
                   id="bcc"
                   value={emailData.bcc?.join(', ') || ''}
-                  onChange={(e) => setEmailData(prev => ({
-                    ...prev,
-                    bcc: e.target.value.split(',').map(email => email.trim()).filter(Boolean)
-                  }))}
+                  onChange={e =>
+                    setEmailData(prev => ({
+                      ...prev,
+                      bcc: e.target.value
+                        .split(',')
+                        .map(email => email.trim())
+                        .filter(Boolean)
+                    }))
+                  }
                   placeholder="bcc@example.com"
                   className="mt-1"
                 />
@@ -289,7 +328,7 @@ export function EmailComposer({
               <Input
                 id="subject"
                 value={emailData.subject || ''}
-                onChange={(e) => setEmailData(prev => ({ ...prev, subject: e.target.value }))}
+                onChange={e => setEmailData(prev => ({ ...prev, subject: e.target.value }))}
                 placeholder="Enter email subject"
                 className="mt-1"
               />
@@ -301,7 +340,7 @@ export function EmailComposer({
               <Textarea
                 id="body"
                 value={emailData.body || ''}
-                onChange={(e) => setEmailData(prev => ({ ...prev, body: e.target.value }))}
+                onChange={e => setEmailData(prev => ({ ...prev, body: e.target.value }))}
                 placeholder="Write your message here..."
                 rows={12}
                 className="mt-1 font-mono text-sm"
@@ -320,7 +359,9 @@ export function EmailComposer({
 
           {/* Send Result */}
           {sendResult && (
-            <Card className={`border ${sendResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+            <Card
+              className={`border ${sendResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
                   {sendResult.success ? (
@@ -362,9 +403,11 @@ export function EmailComposer({
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSendEmail} 
-                disabled={isSending || !emailData.to?.length || !emailData.subject || !emailData.body}
+              <Button
+                onClick={handleSendEmail}
+                disabled={
+                  isSending || !emailData.to?.length || !emailData.subject || !emailData.body
+                }
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 {isSending ? (
@@ -392,7 +435,9 @@ export function EmailComposer({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-500">Email history will be displayed here in the next update</p>
+                <p className="text-sm text-gray-500">
+                  Email history will be displayed here in the next update
+                </p>
               </CardContent>
             </Card>
           )}

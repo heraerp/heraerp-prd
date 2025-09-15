@@ -50,7 +50,7 @@ export function useISPDashboard(organizationId: string) {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true)
-        
+
         // Set the organization context
         universalApi.setOrganizationId(organizationId)
 

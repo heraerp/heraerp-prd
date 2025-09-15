@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Calculator,
   Search,
   Filter,
@@ -27,13 +27,13 @@ import {
   BarChart3,
   PieChart
 } from 'lucide-react'
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   LineChart,
   Line,
@@ -182,20 +182,29 @@ export default function CostCentersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'on-track': return 'bg-emerald-500/20 text-emerald-400'
-      case 'warning': return 'bg-yellow-500/20 text-yellow-400'
-      case 'over-budget': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+      case 'on-track':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'warning':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'over-budget':
+        return 'bg-red-500/20 text-red-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
     }
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'operational': return Settings
-      case 'support': return Users
-      case 'administrative': return Building2
-      case 'r&d': return Package
-      default: return Briefcase
+      case 'operational':
+        return Settings
+      case 'support':
+        return Users
+      case 'administrative':
+        return Building2
+      case 'r&d':
+        return Package
+      default:
+        return Briefcase
     }
   }
 
@@ -210,7 +219,7 @@ export default function CostCentersPage() {
           <p className="text-white/60 mt-1">Monitor and manage departmental costs and budgets</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -269,10 +278,14 @@ export default function CostCentersPage() {
                   <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600">
                     <Calculator className="h-6 w-6 text-white" />
                   </div>
-                  <span className="text-xs text-yellow-400 font-medium">{overviewMetrics.totalCenters} centers</span>
+                  <span className="text-xs text-yellow-400 font-medium">
+                    {overviewMetrics.totalCenters} centers
+                  </span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Total Budget</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.totalBudget / 10000000).toFixed(0)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.totalBudget / 10000000).toFixed(0)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">Annual allocation</p>
               </div>
             </div>
@@ -287,7 +300,9 @@ export default function CostCentersPage() {
                   <span className="text-xs text-emerald-400 font-medium">YTD</span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Actual Spend</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.totalSpend / 10000000).toFixed(0)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.totalSpend / 10000000).toFixed(0)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">90% of budget</p>
               </div>
             </div>
@@ -322,28 +337,23 @@ export default function CostCentersPage() {
                   <LineChart data={spendTrend}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${value}Cr`} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={value => `₹${value}Cr`} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
                       formatter={(value: any) => `₹${value} Cr`}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="budget" 
-                      stroke="#f59e0b" 
+                    <Line
+                      type="monotone"
+                      dataKey="budget"
+                      stroke="#f59e0b"
                       strokeWidth={2}
                       strokeDasharray="5 5"
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="actual" 
-                      stroke="#10b981" 
-                      strokeWidth={3}
-                    />
+                    <Line type="monotone" dataKey="actual" stroke="#10b981" strokeWidth={3} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -355,25 +365,26 @@ export default function CostCentersPage() {
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                 <h2 className="text-xl font-semibold text-white mb-6">Department Efficiency</h2>
                 <ResponsiveContainer width="100%" height={250}>
-                  <RadialBarChart cx="50%" cy="50%" innerRadius="10%" outerRadius="80%" data={efficiencyData}>
-                    <RadialBar
-                      minAngle={15}
-                      background
-                      clockWise
-                      dataKey="efficiency"
-                    />
-                    <Legend 
-                      iconSize={10} 
-                      layout="vertical" 
-                      verticalAlign="middle" 
+                  <RadialBarChart
+                    cx="50%"
+                    cy="50%"
+                    innerRadius="10%"
+                    outerRadius="80%"
+                    data={efficiencyData}
+                  >
+                    <RadialBar minAngle={15} background clockWise dataKey="efficiency" />
+                    <Legend
+                      iconSize={10}
+                      layout="vertical"
+                      verticalAlign="middle"
                       align="right"
                       wrapperStyle={{
-                        paddingLeft: '20px',
+                        paddingLeft: '20px'
                       }}
                     />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
@@ -397,14 +408,14 @@ export default function CostCentersPage() {
                 type="text"
                 placeholder="Search cost centers..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-yellow-500 transition-colors"
               />
             </div>
-            
+
             <select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
+              onChange={e => setSelectedType(e.target.value)}
               className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-yellow-500 transition-colors"
             >
               <option value="all">All Types</option>
@@ -422,7 +433,7 @@ export default function CostCentersPage() {
 
           {/* Cost Centers List */}
           <div className="space-y-4">
-            {costCenters.map((center) => {
+            {costCenters.map(center => {
               const Icon = getTypeIcon(center.type)
               return (
                 <div key={center.id} className="relative group">
@@ -436,11 +447,13 @@ export default function CostCentersPage() {
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60">
                             {center.code}
                           </span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(center.status)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(center.status)}`}
+                          >
                             {center.status.replace('-', ' ')}
                           </span>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
                           <div>
                             <p className="text-xs text-white/60 mb-1">Budget</p>
@@ -456,14 +469,20 @@ export default function CostCentersPage() {
                           </div>
                           <div>
                             <p className="text-xs text-white/60 mb-1">Variance</p>
-                            <p className={`text-lg font-semibold ${center.variance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                              {center.variance >= 0 ? '+' : ''}₹{(Math.abs(center.variance) / 10000000).toFixed(1)} Cr
+                            <p
+                              className={`text-lg font-semibold ${center.variance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}
+                            >
+                              {center.variance >= 0 ? '+' : ''}₹
+                              {(Math.abs(center.variance) / 10000000).toFixed(1)} Cr
                             </p>
                           </div>
                           <div>
                             <p className="text-xs text-white/60 mb-1">Variance %</p>
-                            <p className={`text-lg font-semibold ${center.variancePercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                              {center.variancePercent >= 0 ? '+' : ''}{center.variancePercent}%
+                            <p
+                              className={`text-lg font-semibold ${center.variancePercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}
+                            >
+                              {center.variancePercent >= 0 ? '+' : ''}
+                              {center.variancePercent}%
                             </p>
                           </div>
                           <div>
@@ -480,7 +499,9 @@ export default function CostCentersPage() {
                             </div>
                             <div className="flex items-center space-x-2">
                               <Activity className="h-4 w-4" />
-                              <span>Updated: {new Date(center.lastUpdated).toLocaleDateString()}</span>
+                              <span>
+                                Updated: {new Date(center.lastUpdated).toLocaleDateString()}
+                              </span>
                             </div>
                           </div>
 
@@ -488,24 +509,28 @@ export default function CostCentersPage() {
                           <div className="w-48">
                             <div className="flex justify-between text-xs text-white/60 mb-1">
                               <span>Budget Used</span>
-                              <span>{((center.actualSpend / center.budget) * 100).toFixed(0)}%</span>
+                              <span>
+                                {((center.actualSpend / center.budget) * 100).toFixed(0)}%
+                              </span>
                             </div>
                             <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                              <div 
+                              <div
                                 className={`h-full rounded-full transition-all duration-500 ${
-                                  center.status === 'on-track' 
-                                    ? 'bg-gradient-to-r from-emerald-400 to-green-500' 
+                                  center.status === 'on-track'
+                                    ? 'bg-gradient-to-r from-emerald-400 to-green-500'
                                     : center.status === 'warning'
-                                    ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
-                                    : 'bg-gradient-to-r from-red-400 to-rose-500'
+                                      ? 'bg-gradient-to-r from-yellow-400 to-amber-500'
+                                      : 'bg-gradient-to-r from-red-400 to-rose-500'
                                 }`}
-                                style={{ width: `${Math.min((center.actualSpend / center.budget) * 100, 100)}%` }}
+                                style={{
+                                  width: `${Math.min((center.actualSpend / center.budget) * 100, 100)}%`
+                                }}
                               />
                             </div>
                           </div>
                         </div>
                       </div>
-                      
+
                       <button className="ml-4 text-white/40 hover:text-white transition-colors">
                         <MoreVertical className="h-5 w-5" />
                       </button>
@@ -526,7 +551,7 @@ export default function CostCentersPage() {
             <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-white mb-6">Cost Category Analysis</h2>
               <div className="space-y-4">
-                {categoryBreakdown.map((category) => (
+                {categoryBreakdown.map(category => (
                   <div key={category.category}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-white">{category.category}</span>
@@ -537,19 +562,22 @@ export default function CostCentersPage() {
                         <span className="text-sm text-white/60">
                           Actual: ₹{(category.actual / 10000000).toFixed(0)} Cr
                         </span>
-                        <span className={`text-sm font-medium ${
-                          category.variance >= 0 ? 'text-emerald-400' : 'text-red-400'
-                        }`}>
-                          {category.variance >= 0 ? '+' : ''}₹{(Math.abs(category.variance) / 10000000).toFixed(1)} Cr
+                        <span
+                          className={`text-sm font-medium ${
+                            category.variance >= 0 ? 'text-emerald-400' : 'text-red-400'
+                          }`}
+                        >
+                          {category.variance >= 0 ? '+' : ''}₹
+                          {(Math.abs(category.variance) / 10000000).toFixed(1)} Cr
                         </span>
                       </div>
                     </div>
                     <div className="relative h-8 rounded-lg bg-white/10 overflow-hidden">
-                      <div 
+                      <div
                         className="absolute h-full bg-gradient-to-r from-yellow-500/30 to-amber-600/30"
                         style={{ width: '100%' }}
                       />
-                      <div 
+                      <div
                         className="absolute h-full bg-gradient-to-r from-yellow-500 to-amber-600"
                         style={{ width: `${(category.actual / category.budget) * 100}%` }}
                       />

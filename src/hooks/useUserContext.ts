@@ -35,13 +35,13 @@ export function useUserContext() {
       setLoading(true)
       setError(null)
 
-      const url = orgId 
+      const url = orgId
         ? `/api/v1/auth/user-context?organization_id=${orgId}`
         : '/api/v1/auth/user-context'
 
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -69,7 +69,7 @@ export function useUserContext() {
       const response = await fetch('/api/v1/auth/switch-organization', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ organization_id: organizationId })

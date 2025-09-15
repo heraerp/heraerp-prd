@@ -72,7 +72,7 @@ export class ValidationService {
     }
 
     const numAmount = Number(amount)
-    
+
     if (isNaN(numAmount)) {
       throw new ValidationError('Amount must be a valid number', 'amount', amount)
     }
@@ -81,7 +81,8 @@ export class ValidationService {
       throw new ValidationError('Amount must be positive', 'amount', amount)
     }
 
-    if (numAmount > 1000000000) { // 1 billion limit
+    if (numAmount > 1000000000) {
+      // 1 billion limit
       throw new ValidationError('Amount exceeds maximum limit', 'amount', amount)
     }
 
@@ -107,7 +108,8 @@ export class ValidationService {
 
     // Check size limit (prevent DoS)
     const metadataString = JSON.stringify(metadata)
-    if (metadataString.length > 10000) { // 10KB limit
+    if (metadataString.length > 10000) {
+      // 10KB limit
       throw new ValidationError('Metadata size exceeds limit', 'metadata', metadata)
     }
 
@@ -117,10 +119,7 @@ export class ValidationService {
   /**
    * Validate Smart Code against transaction metadata
    */
-  validateSmartCodeMetadataConsistency(
-    smartCode: string, 
-    metadata: Record<string, any>
-  ): void {
+  validateSmartCodeMetadataConsistency(smartCode: string, metadata: Record<string, any>): void {
     const codeParts = smartCode.split('.')
     if (codeParts.length < 4) return
 
@@ -164,7 +163,7 @@ export class ValidationService {
     for (const [key, value] of Object.entries(obj)) {
       // Sanitize key
       const cleanKey = this.sanitizeString(key)
-      
+
       if (value === null || value === undefined) {
         sanitized[cleanKey] = value
       } else if (typeof value === 'string') {
@@ -174,8 +173,10 @@ export class ValidationService {
       } else if (typeof value === 'boolean') {
         sanitized[cleanKey] = value
       } else if (Array.isArray(value)) {
-        sanitized[cleanKey] = value.map(item => 
-          typeof item === 'object' ? this.sanitizeJsonObject(item) : this.sanitizeString(String(item))
+        sanitized[cleanKey] = value.map(item =>
+          typeof item === 'object'
+            ? this.sanitizeJsonObject(item)
+            : this.sanitizeString(String(item))
         )
       } else if (typeof value === 'object') {
         sanitized[cleanKey] = this.sanitizeJsonObject(value)
@@ -198,17 +199,17 @@ export class ValidationService {
 
     // Remove null bytes and control characters
     let cleaned = input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-    
+
     // Trim whitespace
     cleaned = cleaned.trim()
-    
+
     // Limit length
     if (cleaned.length > 1000) {
       cleaned = cleaned.substring(0, 1000)
     }
 
     // Sanitize HTML/XML
-    cleaned = DOMPurify.sanitize(cleaned, { 
+    cleaned = DOMPurify.sanitize(cleaned, {
       ALLOWED_TAGS: [],
       ALLOWED_ATTR: []
     })
@@ -239,12 +240,17 @@ export class ValidationService {
    * Validate required fields
    */
   private validateRequiredFields(
-    data: Record<string, any>, 
+    data: Record<string, any>,
     requiredFields: string[],
     context: string
   ): void {
     for (const field of requiredFields) {
-      if (!(field in data) || data[field] === null || data[field] === undefined || data[field] === '') {
+      if (
+        !(field in data) ||
+        data[field] === null ||
+        data[field] === undefined ||
+        data[field] === ''
+      ) {
         throw new ValidationError(
           `Required field '${field}' is missing for ${context} transaction`,
           field,
@@ -258,10 +264,7 @@ export class ValidationService {
   /**
    * Validate organization access
    */
-  async validateOrganizationAccess(
-    userId: string, 
-    organizationId: string
-  ): Promise<boolean> {
+  async validateOrganizationAccess(userId: string, organizationId: string): Promise<boolean> {
     try {
       // This would typically check against your auth system
       // For now, implement basic UUID validation
@@ -284,7 +287,7 @@ export class ValidationService {
    * Validate API key format and permissions
    */
   async validateApiKey(
-    apiKey: string, 
+    apiKey: string,
     requiredPermissions: string[] = []
   ): Promise<{ valid: boolean; permissions: string[] }> {
     try {
@@ -303,8 +306,8 @@ export class ValidationService {
       //   perm => keyInfo.permissions.includes(perm)
       // )
 
-      return { 
-        valid: true, 
+      return {
+        valid: true,
         permissions: ['transaction:create', 'ai:classify'] // Placeholder
       }
     } catch (error) {
@@ -323,7 +326,7 @@ export class ValidationService {
   ): { allowed: boolean; retryAfter?: number } {
     // This would typically integrate with your rate limiting service
     // For now, return basic validation
-    
+
     if (!identifier || !action) {
       return { allowed: false }
     }
@@ -372,9 +375,9 @@ export class ValidationService {
     })
 
     if (errors.length > 0) {
-      const errorMessage = `Validation failed for ${errors.length} items: ${
-        errors.map(e => `[${e.index}] ${e.error.message}`).join(', ')
-      }`
+      const errorMessage = `Validation failed for ${errors.length} items: ${errors
+        .map(e => `[${e.index}] ${e.error.message}`)
+        .join(', ')}`
       throw new ValidationError(errorMessage, 'batch', errors)
     }
   }

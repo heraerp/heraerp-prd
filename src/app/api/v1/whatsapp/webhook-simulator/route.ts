@@ -12,46 +12,57 @@ export async function POST(request: NextRequest) {
 
     // Create a realistic WhatsApp webhook payload
     const webhookPayload = {
-      entry: [{
-        id: "12345678901234567",
-        changes: [{
-          value: {
-            messaging_product: "whatsapp",
-            metadata: {
-              display_phone_number: "919945896033",
-              phone_number_id: "712631301940690"
-            },
-            contacts: [{
-              profile: {
-                name: contact_name || `User ${phone}`
+      entry: [
+        {
+          id: '12345678901234567',
+          changes: [
+            {
+              value: {
+                messaging_product: 'whatsapp',
+                metadata: {
+                  display_phone_number: '919945896033',
+                  phone_number_id: '712631301940690'
+                },
+                contacts: [
+                  {
+                    profile: {
+                      name: contact_name || `User ${phone}`
+                    },
+                    wa_id: phone.replace('+', '')
+                  }
+                ],
+                messages: [
+                  {
+                    from: phone.replace('+', ''),
+                    id: `wamid.${Date.now()}`,
+                    timestamp: Math.floor(Date.now() / 1000).toString(),
+                    text: {
+                      body: message
+                    },
+                    type: 'text'
+                  }
+                ]
               },
-              wa_id: phone.replace('+', '')
-            }],
-            messages: [{
-              from: phone.replace('+', ''),
-              id: `wamid.${Date.now()}`,
-              timestamp: Math.floor(Date.now() / 1000).toString(),
-              text: {
-                body: message
-              },
-              type: "text"
-            }]
-          },
-          field: "messages"
-        }]
-      }]
+              field: 'messages'
+            }
+          ]
+        }
+      ]
     }
 
-    console.log('🔔 Simulating WhatsApp webhook with payload:', JSON.stringify(webhookPayload, null, 2))
+    console.log(
+      '🔔 Simulating WhatsApp webhook with payload:',
+      JSON.stringify(webhookPayload, null, 2)
+    )
 
     // Call the actual webhook endpoint
-    const origin = request.headers.get('host')?.includes('localhost') 
-      ? `http://localhost:3000` 
+    const origin = request.headers.get('host')?.includes('localhost')
+      ? `http://localhost:3000`
       : `https://${request.headers.get('host')}`
     const webhookUrl = `${origin}/api/v1/whatsapp/webhook`
-    
+
     console.log('📡 Calling webhook at:', webhookUrl)
-    
+
     const webhookResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
@@ -77,13 +88,15 @@ export async function POST(request: NextRequest) {
         'Try sending booking keywords like "BOOK haircut tomorrow"'
       ]
     })
-
   } catch (error) {
     console.error('Webhook simulation error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 

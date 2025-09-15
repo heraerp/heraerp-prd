@@ -4,15 +4,15 @@
  * No direct Supabase writes allowed
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import path from 'path'
 
-const execAsync = promisify(exec);
+const execAsync = promisify(exec)
 
 // MCP Server configuration
-const MCP_SERVER_PATH = path.join(process.cwd(), 'mcp-server');
-const MCP_TIMEOUT = 30000; // 30 seconds
+const MCP_SERVER_PATH = path.join(process.cwd(), 'mcp-server')
+const MCP_TIMEOUT = 30000 // 30 seconds
 
 /**
  * Execute MCP CLI command with proper error handling
@@ -20,41 +20,45 @@ const MCP_TIMEOUT = 30000; // 30 seconds
 async function executeMCP(command: string, args: any = {}): Promise<any> {
   try {
     // Escape single quotes in JSON args
-    const argsJson = JSON.stringify(args).replace(/'/g, "'\"'\"'");
-    
+    const argsJson = JSON.stringify(args).replace(/'/g, "'\"'\"'")
+
     // Use the WhatsApp MCP CLI for WhatsApp operations
-    const isWhatsAppCommand = command.startsWith('thread.') || command.startsWith('message.') || command.includes('whatsapp');
-    const cliScript = isWhatsAppCommand ? 'whatsapp-mcp-cli.js' : 'hera-cli.js';
-    
-    const fullCommand = `node ${cliScript} ${command} '${argsJson}'`;
-    
+    const isWhatsAppCommand =
+      command.startsWith('thread.') ||
+      command.startsWith('message.') ||
+      command.includes('whatsapp')
+    const cliScript = isWhatsAppCommand ? 'whatsapp-mcp-cli.js' : 'hera-cli.js'
+
+    const fullCommand = `node ${cliScript} ${command} '${argsJson}'`
+
     const { stdout, stderr } = await execAsync(fullCommand, {
       cwd: MCP_SERVER_PATH,
       timeout: MCP_TIMEOUT,
       maxBuffer: 1024 * 1024 * 10, // 10MB buffer
       env: {
         ...process.env,
-        DEFAULT_ORGANIZATION_ID: args.organization_id || args.organizationId || process.env.DEFAULT_ORGANIZATION_ID
+        DEFAULT_ORGANIZATION_ID:
+          args.organization_id || args.organizationId || process.env.DEFAULT_ORGANIZATION_ID
       }
-    });
+    })
 
     if (stderr && !stderr.includes('Warning')) {
-      console.error('MCP stderr:', stderr);
+      console.error('MCP stderr:', stderr)
     }
 
     // Parse the response
     try {
-      return JSON.parse(stdout);
+      return JSON.parse(stdout)
     } catch (parseError) {
       // If not JSON, return raw output
-      return { success: true, output: stdout };
+      return { success: true, output: stdout }
     }
   } catch (error) {
-    console.error('MCP execution error:', error);
+    console.error('MCP execution error:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown MCP error'
-    };
+    }
   }
 }
 
@@ -67,11 +71,11 @@ export const whatsappThread = {
    * MCP enforces: organization_id, smart_code validation, six-table discipline
    */
   async create(params: {
-    organizationId: string;
-    customerEntityId: string;
-    phoneNumber: string;
-    agentQueueEntityId?: string;
-    metadata?: Record<string, any>;
+    organizationId: string
+    customerEntityId: string
+    phoneNumber: string
+    agentQueueEntityId?: string
+    metadata?: Record<string, any>
   }) {
     return executeMCP('thread.create', {
       organizationId: params.organizationId,
@@ -79,24 +83,24 @@ export const whatsappThread = {
       phoneNumber: params.phoneNumber,
       agentQueueEntityId: params.agentQueueEntityId,
       metadata: params.metadata
-    });
+    })
   },
 
   /**
    * Update thread metadata (pin/archive/status)
    */
   async update(params: {
-    organizationId: string;
-    threadId: string;
-    metadata: Record<string, any>;
+    organizationId: string
+    threadId: string
+    metadata: Record<string, any>
   }) {
     return executeMCP('thread.update', {
       organizationId: params.organizationId,
       threadId: params.threadId,
       metadata: params.metadata
-    });
+    })
   }
-};
+}
 
 /**
  * WhatsApp Message Operations
@@ -107,19 +111,19 @@ export const whatsappMessage = {
    * MCP enforces: smart_code validation, line number sequencing
    */
   async send(params: {
-    organizationId: string;
-    threadId: string;
-    direction: 'inbound' | 'outbound';
-    text?: string;
-    media?: Array<{ url: string; mime: string }>;
-    interactive?: any;
-    channelMsgId?: string;
-    cost?: number;
+    organizationId: string
+    threadId: string
+    direction: 'inbound' | 'outbound'
+    text?: string
+    media?: Array<{ url: string; mime: string }>
+    interactive?: any
+    channelMsgId?: string
+    cost?: number
   }) {
     // Determine smart code based on message type
-    let smartCode = 'HERA.WHATSAPP.MESSAGE.TEXT.v1';
-    if (params.media) smartCode = 'HERA.WHATSAPP.MESSAGE.MEDIA.v1';
-    if (params.interactive) smartCode = 'HERA.WHATSAPP.MESSAGE.INTERACTIVE.v1';
+    let smartCode = 'HERA.WHATSAPP.MESSAGE.TEXT.v1'
+    if (params.media) smartCode = 'HERA.WHATSAPP.MESSAGE.MEDIA.v1'
+    if (params.interactive) smartCode = 'HERA.WHATSAPP.MESSAGE.INTERACTIVE.v1'
 
     return executeMCP('message.send', {
       organizationId: params.organizationId,
@@ -130,26 +134,26 @@ export const whatsappMessage = {
       interactive: params.interactive,
       channelMsgId: params.channelMsgId,
       cost: params.cost
-    });
+    })
   },
 
   /**
    * Add internal note to thread
    */
   async addNote(params: {
-    organizationId: string;
-    threadId: string;
-    noteText: string;
-    authorEntityId?: string;
+    organizationId: string
+    threadId: string
+    noteText: string
+    authorEntityId?: string
   }) {
     return executeMCP('message.addNote', {
       organizationId: params.organizationId,
       threadId: params.threadId,
       noteText: params.noteText,
       authorEntityId: params.authorEntityId
-    });
+    })
   }
-};
+}
 
 /**
  * WhatsApp Template Operations
@@ -160,12 +164,12 @@ export const whatsappTemplate = {
    * MCP enforces: entity creation with proper smart_code
    */
   async register(params: {
-    organizationId: string;
-    name: string;
-    language: string;
-    body: string;
-    variables?: string[];
-    category?: string;
+    organizationId: string
+    name: string
+    language: string
+    body: string
+    variables?: string[]
+    category?: string
   }) {
     // Create template entity
     const entityResult = await executeMCP('create-entity', {
@@ -178,10 +182,10 @@ export const whatsappTemplate = {
         language: params.language,
         category: params.category || 'marketing'
       }
-    });
+    })
 
     if (!entityResult.success || !entityResult.entity_id) {
-      return entityResult;
+      return entityResult
     }
 
     // Store template body in dynamic data
@@ -191,7 +195,7 @@ export const whatsappTemplate = {
       field_name: 'body',
       field_value: params.body,
       smart_code: 'HERA.WHATSAPP.TEMPLATE.BODY.v1'
-    });
+    })
 
     // Store variables if present
     if (params.variables && params.variables.length > 0) {
@@ -201,16 +205,16 @@ export const whatsappTemplate = {
         field_name: 'variables',
         field_value: JSON.stringify(params.variables),
         smart_code: 'HERA.WHATSAPP.TEMPLATE.VARS.v1'
-      });
+      })
     }
 
     return {
       success: true,
       template_id: entityResult.entity_id,
       data: entityResult
-    };
+    }
   }
-};
+}
 
 /**
  * WhatsApp Campaign Operations
@@ -221,11 +225,11 @@ export const whatsappCampaign = {
    * MCP enforces: transaction header creation with proper relationships
    */
   async create(params: {
-    organizationId: string;
-    name: string;
-    templateEntityId: string;
-    audienceQuery: string;
-    scheduleAt?: string;
+    organizationId: string
+    name: string
+    templateEntityId: string
+    audienceQuery: string
+    scheduleAt?: string
   }) {
     // Create campaign transaction
     const campaignResult = await executeMCP('create-transaction', {
@@ -238,10 +242,10 @@ export const whatsappCampaign = {
         schedule_at: params.scheduleAt || new Date().toISOString(),
         status: 'scheduled'
       }
-    });
+    })
 
     if (!campaignResult.success || !campaignResult.transaction_id) {
-      return campaignResult;
+      return campaignResult
     }
 
     // Store audience query as dynamic data
@@ -251,23 +255,23 @@ export const whatsappCampaign = {
       field_name: 'audience_query',
       field_value: params.audienceQuery,
       smart_code: 'HERA.WHATSAPP.CAMPAIGN.AUDIENCE.v1'
-    });
+    })
 
     return {
       success: true,
       campaign_id: campaignResult.transaction_id,
       data: campaignResult
-    };
+    }
   },
 
   /**
    * Send campaign message to recipient
    */
   async sendMessage(params: {
-    organizationId: string;
-    campaignId: string;
-    recipientEntityId: string;
-    templateEntityId: string;
+    organizationId: string
+    campaignId: string
+    recipientEntityId: string
+    templateEntityId: string
   }) {
     return executeMCP('add-transaction-line', {
       organization_id: params.organizationId,
@@ -282,9 +286,9 @@ export const whatsappCampaign = {
         status: 'queued',
         queued_at: new Date().toISOString()
       }
-    });
+    })
   }
-};
+}
 
 /**
  * WhatsApp Payment Operations
@@ -294,12 +298,12 @@ export const whatsappPayment = {
    * Share payment link via WhatsApp
    */
   async shareLink(params: {
-    organizationId: string;
-    threadId: string;
-    invoiceEntityId: string;
-    paymentUrl: string;
-    amount: number;
-    currency: string;
+    organizationId: string
+    threadId: string
+    invoiceEntityId: string
+    paymentUrl: string
+    amount: number
+    currency: string
   }) {
     return executeMCP('add-transaction-line', {
       organization_id: params.organizationId,
@@ -314,20 +318,20 @@ export const whatsappPayment = {
         currency: params.currency,
         shared_at: new Date().toISOString()
       }
-    });
+    })
   },
 
   /**
    * Confirm payment received
    */
   async confirm(params: {
-    organizationId: string;
-    payerEntityId: string;
-    payeeEntityId: string;
-    amount: number;
-    currency: string;
-    providerRef: string;
-    invoiceEntityId?: string;
+    organizationId: string
+    payerEntityId: string
+    payeeEntityId: string
+    amount: number
+    currency: string
+    providerRef: string
+    invoiceEntityId?: string
   }) {
     // Create payment transaction with proper GL posting
     return executeMCP('create-payment', {
@@ -343,9 +347,9 @@ export const whatsappPayment = {
         channel: 'whatsapp',
         collected_at: new Date().toISOString()
       }
-    });
+    })
   }
-};
+}
 
 /**
  * WhatsApp Customer Operations
@@ -356,9 +360,9 @@ export const whatsappCustomer = {
    * MCP enforces: entity uniqueness by org+code+type
    */
   async upsertByPhone(params: {
-    organizationId: string;
-    phoneNumber: string;
-    displayName: string;
+    organizationId: string
+    phoneNumber: string
+    displayName: string
   }) {
     return executeMCP('upsert-entity', {
       organization_id: params.organizationId,
@@ -370,9 +374,9 @@ export const whatsappCustomer = {
         msisdn: params.phoneNumber,
         channel: 'whatsapp'
       }
-    });
+    })
   }
-};
+}
 
 /**
  * WhatsApp Query Operations (Read-only, can use Supabase)
@@ -383,10 +387,10 @@ export const whatsappQuery = {
    * Read operations can use Supabase but should still respect org isolation
    */
   async getConversations(params: {
-    organizationId: string;
-    status?: 'open' | 'pending' | 'resolved';
-    search?: string;
-    assigneeEntityId?: string;
+    organizationId: string
+    status?: 'open' | 'pending' | 'resolved'
+    search?: string
+    assigneeEntityId?: string
   }) {
     return executeMCP('query', {
       table: 'universal_transactions',
@@ -398,30 +402,26 @@ export const whatsappQuery = {
       include_lines: true,
       order_by: 'created_at',
       order_direction: 'desc'
-    });
+    })
   },
 
   /**
    * Get analytics data
    */
-  async getAnalytics(params: {
-    organizationId: string;
-    startDate?: Date;
-    endDate?: Date;
-  }) {
+  async getAnalytics(params: { organizationId: string; startDate?: Date; endDate?: Date }) {
     return executeMCP('analytics.whatsapp', {
       organization_id: params.organizationId,
       start_date: params.startDate?.toISOString(),
       end_date: params.endDate?.toISOString()
-    });
+    })
   }
-};
+}
 
 /**
  * Idempotency helper for WhatsApp operations
  */
 export function generateIdempotencyKey(channelMsgId: string): string {
-  return `whatsapp_${channelMsgId}`;
+  return `whatsapp_${channelMsgId}`
 }
 
 /**
@@ -436,4 +436,4 @@ export const whatsappMCP = {
   customer: whatsappCustomer,
   query: whatsappQuery,
   generateIdempotencyKey
-};
+}

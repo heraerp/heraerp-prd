@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { 
-  Scissors, 
-  IceCream2, 
-  UtensilsCrossed, 
-  Stethoscope, 
+import {
+  Scissors,
+  IceCream2,
+  UtensilsCrossed,
+  Stethoscope,
   Factory,
   Store,
   Briefcase,
@@ -44,7 +44,12 @@ const industries = [
     color: 'from-purple-500 to-pink-600',
     bgColor: 'from-purple-50 to-pink-50',
     darkBgColor: 'dark:from-purple-900/20 dark:to-pink-900/20',
-    features: ['Appointment Booking', 'Staff Management', 'Inventory Tracking', 'WhatsApp Integration'],
+    features: [
+      'Appointment Booking',
+      'Staff Management',
+      'Inventory Tracking',
+      'WhatsApp Integration'
+    ],
     demoUrl: '/salon-data',
     buildUrl: '/discover',
     stats: { businesses: '2,400+', revenue: '$4.2M processed', time: '30 seconds' }
@@ -174,10 +179,9 @@ export default function LandingPage() {
             PRELAUNCH
           </Badge>
           <span className="font-medium">
-            Welcome to HERA ERP Preview! Feel free to explore. 
+            Welcome to HERA ERP Preview! Feel free to explore.
             <span className="hidden sm:inline"> Official launch on</span>
-            <span className="font-bold sm:hidden"> Launching</span>
-            {' '}
+            <span className="font-bold sm:hidden"> Launching</span>{' '}
             <span className="font-bold text-yellow-300">October 1st, 2025</span>
           </span>
           <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse hidden sm:block" />
@@ -200,32 +204,58 @@ export default function LandingPage() {
                 <span className="text-white font-bold text-sm sm:text-lg">H</span>
               </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">HERA ERP</h1>
-                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">Universal Business Platform</p>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                  HERA ERP
+                </h1>
+                <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 hidden sm:block">
+                  Universal Business Platform
+                </p>
               </div>
             </div>
-            
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/discover" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/discover"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Discover
               </Link>
-              <Link href="/demo" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/demo"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Demo Apps
               </Link>
-              <Link href="/validate" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/validate"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Solutions
               </Link>
-              <Link href="/pricing" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/pricing"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Pricing
               </Link>
-              <Link href="/docs" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/docs"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Docs
               </Link>
-              <Button variant="outline" size="sm" className="ml-2 !text-slate-700 dark:!text-slate-200">
+              <Button
+                variant="outline"
+                size="sm"
+                className="ml-2 !text-slate-700 dark:!text-slate-200"
+              >
                 Sign In
               </Button>
-              <Button size="sm" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white">
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white"
+              >
                 Start Free Trial
               </Button>
             </nav>
@@ -248,27 +278,54 @@ export default function LandingPage() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
             <div className="container mx-auto px-4 py-4 space-y-4">
-              <Link href="/discover" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/discover"
+                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Discover
               </Link>
-              <Link href="/demo" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/demo"
+                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Demo Apps
               </Link>
-              <Link href="/validate" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/validate"
+                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Solutions
               </Link>
-              <Link href="/pricing" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/pricing"
+                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Pricing
               </Link>
-              <Link href="/docs" className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/docs"
+                className="block text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Docs
               </Link>
               <div className="pt-4 space-y-2">
                 <Button variant="outline" className="w-full" asChild>
-                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                    Sign In
+                  </Link>
                 </Button>
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white" asChild>
-                  <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</Link>
+                <Button
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white"
+                  asChild
+                >
+                  <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
+                    Start Free Trial
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -284,7 +341,7 @@ export default function LandingPage() {
               <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
               <span className="text-xs sm:text-sm">Trusted by 10,000+ businesses worldwide</span>
             </Badge>
-            
+
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold">
               <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-slate-100 dark:to-white bg-clip-text text-transparent">
                 Run Your Entire Business
@@ -294,31 +351,31 @@ export default function LandingPage() {
                 In One Beautiful Platform
               </span>
             </h1>
-            
+
             <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl md:max-w-3xl mx-auto">
-              HERA transforms how businesses operate. Explore live demos of real companies, 
-              then build your own customized version in minutes.
+              HERA transforms how businesses operate. Explore live demos of real companies, then
+              build your own customized version in minutes.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 onClick={() => router.push('/demo')}
               >
                 <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Explore Demo Apps
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-purple-600 hover:bg-purple-700 !text-white px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 onClick={() => router.push('/readiness-questionnaire')}
               >
                 <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 ERP Readiness Check
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="outline"
                 className="border-2 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto !text-slate-700 dark:!text-slate-200"
                 onClick={() => router.push('/auth/signup')}
@@ -349,8 +406,12 @@ export default function LandingPage() {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 mb-2" />
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{stat.label}</div>
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
+                  {stat.value}
+                </div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -365,7 +426,8 @@ export default function LandingPage() {
               Your Journey to Modern Business
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
-              From discovery to deployment in <span className="text-[#B0B0B0] font-semibold">days, not months</span>
+              From discovery to deployment in{' '}
+              <span className="text-[#B0B0B0] font-semibold">days, not months</span>
             </p>
           </div>
 
@@ -383,11 +445,18 @@ export default function LandingPage() {
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
                       <stage.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-white">{stage.stage}</CardTitle>
-                    <CardDescription className="text-sm sm:text-base text-[#B0B0B0] font-medium">{stage.description}</CardDescription>
+                    <CardTitle className="text-lg sm:text-xl text-gray-900 dark:text-white">
+                      {stage.stage}
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base text-[#B0B0B0] font-medium">
+                      {stage.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="link" className="p-0 h-auto text-sm sm:text-base !text-blue-600 dark:!text-blue-400 hover:!text-blue-700 dark:hover:!text-blue-300">
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto text-sm sm:text-base !text-blue-600 dark:!text-blue-400 hover:!text-blue-700 dark:hover:!text-blue-300"
+                    >
                       {stage.action} <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
                     </Button>
                   </CardContent>
@@ -404,14 +473,19 @@ export default function LandingPage() {
       </section>
 
       {/* Industry Showcase */}
-      <section id="industries" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+      <section
+        id="industries"
+        className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3 sm:mb-4">
               <span className="text-[#B0B0B0]">Explore</span> Real Business Demos
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              See how successful businesses use HERA. Each demo is a <span className="text-[#B0B0B0] font-semibold">real implementation</span> you can explore and customize.
+              See how successful businesses use HERA. Each demo is a{' '}
+              <span className="text-[#B0B0B0] font-semibold">real implementation</span> you can
+              explore and customize.
             </p>
           </div>
 
@@ -428,49 +502,70 @@ export default function LandingPage() {
                   <div className={`h-2 bg-gradient-to-r ${industry.color}`} />
                   <CardHeader className="pb-3 sm:pb-4">
                     <div className="flex items-start justify-between mb-3 sm:mb-4">
-                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${industry.bgColor} ${industry.darkBgColor} flex items-center justify-center`}>
+                      <div
+                        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${industry.bgColor} ${industry.darkBgColor} flex items-center justify-center`}
+                      >
                         <industry.icon className="w-6 h-6 sm:w-7 sm:h-7 text-slate-700 dark:text-slate-300" />
                       </div>
-                      <Badge variant="secondary" className="text-xs sm:text-sm text-slate-700 dark:text-slate-200">Live Demo</Badge>
+                      <Badge
+                        variant="secondary"
+                        className="text-xs sm:text-sm text-slate-700 dark:text-slate-200"
+                      >
+                        Live Demo
+                      </Badge>
                     </div>
-                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">{industry.title}</CardTitle>
-                    <CardDescription className="text-sm sm:text-base text-gray-700 dark:text-gray-200">{industry.description}</CardDescription>
+                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">
+                      {industry.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base text-gray-700 dark:text-gray-200">
+                      {industry.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex flex-wrap gap-2">
                       {industry.features.map((feature, featureIndex) => (
-                        <Badge key={featureIndex} variant="outline" className="text-xs text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600">
+                        <Badge
+                          key={featureIndex}
+                          variant="outline"
+                          className="text-xs text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600"
+                        >
                           {feature}
                         </Badge>
                       ))}
                     </div>
-                    
+
                     <div className="grid grid-cols-3 gap-4 py-3 sm:py-4 border-y">
                       <div className="text-center">
-                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{industry.stats.businesses}</div>
+                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                          {industry.stats.businesses}
+                        </div>
                         <div className="text-xs text-slate-600 dark:text-slate-400">Active</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{industry.stats.revenue}</div>
+                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                          {industry.stats.revenue}
+                        </div>
                         <div className="text-xs text-slate-600 dark:text-slate-400">Revenue</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">{industry.stats.time}</div>
+                        <div className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+                          {industry.stats.time}
+                        </div>
                         <div className="text-xs text-slate-600 dark:text-slate-400">Setup</div>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex gap-2 sm:gap-3">
-                        <Button 
+                        <Button
                           className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white text-sm sm:text-base"
                           onClick={() => router.push(industry.demoUrl)}
                         >
                           <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                           Try Demo
                         </Button>
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           className="flex-1 text-sm sm:text-base !text-gray-700 dark:!text-gray-200"
                           onClick={() => router.push(industry.buildUrl)}
                         >
@@ -488,14 +583,16 @@ export default function LandingPage() {
           <div className="mt-12 sm:mt-16 text-center">
             <Card className="max-w-2xl mx-auto bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-2 border-blue-200 dark:border-blue-800">
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">Don't see your industry?</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-white">
+                  Don't see your industry?
+                </CardTitle>
                 <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                   HERA's universal architecture works for any business type
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white text-sm sm:text-base"
                   onClick={() => router.push('/build')}
                 >
@@ -519,14 +616,16 @@ export default function LandingPage() {
               More industry-specific demos launching soon
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-3xl mx-auto">
             {comingSoon.map((item, index) => (
               <div key={index} className="text-center">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
                   <item.icon className="w-7 h-7 sm:w-8 sm:h-8 text-slate-400" />
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">{item.title}</p>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  {item.title}
+                </p>
               </div>
             ))}
           </div>
@@ -541,7 +640,8 @@ export default function LandingPage() {
               Why Businesses Choose HERA
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
-              Revolutionary architecture that delivers <span className="text-[#B0B0B0] font-semibold">real results</span>
+              Revolutionary architecture that delivers{' '}
+              <span className="text-[#B0B0B0] font-semibold">real results</span>
             </p>
           </div>
 
@@ -557,9 +657,15 @@ export default function LandingPage() {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <prop.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white mb-1 sm:mb-2">{prop.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2">{prop.description}</p>
-                <p className="text-sm sm:text-base font-medium text-blue-600 dark:text-blue-400">{prop.metric}</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white mb-1 sm:mb-2">
+                  {prop.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2">
+                  {prop.description}
+                </p>
+                <p className="text-sm sm:text-base font-medium text-blue-600 dark:text-blue-400">
+                  {prop.metric}
+                </p>
               </div>
             ))}
           </div>
@@ -574,30 +680,32 @@ export default function LandingPage() {
               Ready to Transform Your Business?
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 sm:mb-8">
-              Join <span className="text-[#B0B0B0] font-semibold">thousands of businesses</span> already running on HERA's revolutionary platform
+              Join <span className="text-[#B0B0B0] font-semibold">thousands of businesses</span>{' '}
+              already running on HERA's revolutionary platform
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-white text-slate-900 hover:bg-slate-100 !text-slate-900 dark:!text-slate-900 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 onClick={() => router.push('/auth/signup')}
               >
                 Start Your Free Trial
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="border-white !text-white hover:bg-white hover:!text-slate-900 px-6 py-4 sm:px-8 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
                 onClick={() => router.push('/contact')}
               >
                 Talk to Sales
               </Button>
             </div>
-            
+
             <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-slate-400">
-              <span className="text-[#B0B0B0]">No credit card required</span> • <span className="text-[#B0B0B0]">14-day free trial</span> • Cancel anytime
+              <span className="text-[#B0B0B0]">No credit card required</span> •{' '}
+              <span className="text-[#B0B0B0]">14-day free trial</span> • Cancel anytime
             </p>
           </div>
         </div>
@@ -608,9 +716,16 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-              © 2025 HERA ERP. All rights reserved. • 
-              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white"> Privacy</Link> • 
-              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white"> Terms</Link>
+              © 2025 HERA ERP. All rights reserved. •
+              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white">
+                {' '}
+                Privacy
+              </Link>{' '}
+              •
+              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white">
+                {' '}
+                Terms
+              </Link>
             </p>
           </div>
         </div>

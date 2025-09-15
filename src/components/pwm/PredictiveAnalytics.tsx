@@ -1,28 +1,39 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot } from 'recharts';
-import { Brain, TrendingUp, Calendar, DollarSign } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  LineChart,
+  Line,
+  Area,
+  AreaChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceDot
+} from 'recharts'
+import { Brain, TrendingUp, Calendar, DollarSign } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface PredictiveAnalyticsProps {
-  organizationId: string;
+  organizationId: string
 }
 
 export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps) {
   // Generate predicted wealth trajectory
   const generatePrediction = () => {
-    const months = 24;
-    const currentWealth = 100000000; // $100M
-    const data = [];
-    
+    const months = 24
+    const currentWealth = 100000000 // $100M
+    const data = []
+
     // Historical data (past 12 months)
     for (let i = -12; i <= 0; i++) {
-      const date = new Date();
-      date.setMonth(date.getMonth() + i);
-      const value = currentWealth * (1 + (i * 0.008)); // 0.8% monthly growth
+      const date = new Date()
+      date.setMonth(date.getMonth() + i)
+      const value = currentWealth * (1 + i * 0.008) // 0.8% monthly growth
       data.push({
         date: date.toISOString(),
         actual: value,
@@ -30,18 +41,18 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
         optimistic: null,
         conservative: null,
         isHistorical: true
-      });
+      })
     }
-    
+
     // Future predictions
     for (let i = 1; i <= months; i++) {
-      const date = new Date();
-      date.setMonth(date.getMonth() + i);
-      const baseGrowth = 0.01; // 1% monthly
-      const predicted = currentWealth * Math.pow(1 + baseGrowth, i);
-      const optimistic = currentWealth * Math.pow(1 + baseGrowth * 1.5, i);
-      const conservative = currentWealth * Math.pow(1 + baseGrowth * 0.5, i);
-      
+      const date = new Date()
+      date.setMonth(date.getMonth() + i)
+      const baseGrowth = 0.01 // 1% monthly
+      const predicted = currentWealth * Math.pow(1 + baseGrowth, i)
+      const optimistic = currentWealth * Math.pow(1 + baseGrowth * 1.5, i)
+      const conservative = currentWealth * Math.pow(1 + baseGrowth * 0.5, i)
+
       data.push({
         date: date.toISOString(),
         actual: null,
@@ -49,16 +60,16 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
         optimistic,
         conservative,
         isHistorical: false
-      });
+      })
     }
-    
-    return data;
-  };
 
-  const predictionData = generatePrediction();
-  const lastPrediction = predictionData[predictionData.length - 1];
-  const projectedGrowth = lastPrediction.predicted! - 100000000;
-  const projectedReturn = (projectedGrowth / 100000000) * 100;
+    return data
+  }
+
+  const predictionData = generatePrediction()
+  const lastPrediction = predictionData[predictionData.length - 1]
+  const projectedGrowth = lastPrediction.predicted! - 100000000
+  const projectedReturn = (projectedGrowth / 100000000) * 100
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -68,39 +79,38 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
       maximumFractionDigits: 0,
       notation: 'compact',
       compactDisplay: 'short'
-    }).format(value);
-  };
+    }).format(value)
+  }
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString([], { 
-      month: 'short', 
-      year: '2-digit' 
-    });
-  };
+    return new Date(dateStr).toLocaleDateString([], {
+      month: 'short',
+      year: '2-digit'
+    })
+  }
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload[0]) {
-      const isHistorical = payload[0].payload.isHistorical;
+      const isHistorical = payload[0].payload.isHistorical
       return (
         <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg p-4 shadow-xl">
           <p className="text-sm text-slate-400 mb-2">
             {formatDate(label)} • {isHistorical ? 'Historical' : 'Predicted'}
           </p>
-          {payload.map((entry: any, index: number) => (
-            entry.value && (
-              <p key={index} className="text-sm">
-                <span className="text-slate-400">{entry.name}:</span>
-                <span className="ml-2 font-medium text-white">
-                  {formatCurrency(entry.value)}
-                </span>
-              </p>
-            )
-          ))}
+          {payload.map(
+            (entry: any, index: number) =>
+              entry.value && (
+                <p key={index} className="text-sm">
+                  <span className="text-slate-400">{entry.name}:</span>
+                  <span className="ml-2 font-medium text-white">{formatCurrency(entry.value)}</span>
+                </p>
+              )
+          )}
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   return (
     <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
@@ -136,18 +146,14 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
             <TrendingUp className="h-4 w-4 text-emerald-400" />
             <span className="text-xs text-slate-400">Projected Growth</span>
           </div>
-          <p className="text-lg font-bold text-emerald-400">
-            +{projectedReturn.toFixed(1)}%
-          </p>
+          <p className="text-lg font-bold text-emerald-400">+{projectedReturn.toFixed(1)}%</p>
         </div>
         <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
           <div className="flex items-center gap-2 mb-1">
             <DollarSign className="h-4 w-4 text-blue-400" />
             <span className="text-xs text-slate-400">Expected Gain</span>
           </div>
-          <p className="text-lg font-bold text-blue-400">
-            +{formatCurrency(projectedGrowth)}
-          </p>
+          <p className="text-lg font-bold text-blue-400">+{formatCurrency(projectedGrowth)}</p>
         </div>
       </div>
 
@@ -157,39 +163,39 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
           <AreaChart data={predictionData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorPredicted" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorOptimistic" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorConservative" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2}/>
-                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
               </linearGradient>
             </defs>
-            
+
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-            
-            <XAxis 
-              dataKey="date" 
+
+            <XAxis
+              dataKey="date"
               tickFormatter={formatDate}
               stroke="#64748b"
               tick={{ fill: '#64748b', fontSize: 12 }}
               axisLine={{ stroke: '#334155' }}
             />
-            
-            <YAxis 
-              tickFormatter={(v) => formatCurrency(v)}
+
+            <YAxis
+              tickFormatter={v => formatCurrency(v)}
               stroke="#64748b"
               tick={{ fill: '#64748b', fontSize: 12 }}
               axisLine={{ stroke: '#334155' }}
               width={80}
             />
-            
+
             <Tooltip content={<CustomTooltip />} />
-            
+
             {/* Historical line */}
             <Line
               type="monotone"
@@ -199,7 +205,7 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
               dot={false}
               name="Historical"
             />
-            
+
             {/* Prediction areas */}
             <Area
               type="monotone"
@@ -211,7 +217,7 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
               strokeDasharray="3 3"
               name="Optimistic"
             />
-            
+
             <Area
               type="monotone"
               dataKey="predicted"
@@ -221,7 +227,7 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
               fill="url(#colorPredicted)"
               name="Expected"
             />
-            
+
             <Area
               type="monotone"
               dataKey="conservative"
@@ -232,7 +238,7 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
               strokeDasharray="3 3"
               name="Conservative"
             />
-            
+
             {/* Current position marker */}
             <ReferenceDot
               x={predictionData[12].date}
@@ -271,5 +277,5 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
         </div>
       </div>
     </Card>
-  );
+  )
 }

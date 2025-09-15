@@ -1,14 +1,14 @@
 /**
  * 🌐 HERA Universal Table API
- * 
+ *
  * Complete CRUD operations for all universal 6-table schema:
  * - core_organizations
- * - core_entities  
+ * - core_entities
  * - core_dynamic_data
  * - core_relationships
  * - universal_transactions
  * - universal_transaction_lines
- * 
+ *
  * Features:
  * - Auto organization_id filtering for multi-tenancy
  * - Schema introspection and validation
@@ -21,7 +21,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://hsumtzuqzoqccpjiaikh.supabase.co'
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://hsumtzuqzoqccpjiaikh.supabase.co'
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 const supabase = supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null
 
@@ -31,12 +32,32 @@ const UNIVERSAL_SCHEMA = {
     primary_key: 'id',
     required_fields: ['organization_name', 'organization_code', 'organization_type'],
     optional_fields: [
-      'industry', 'business_size', 'tax_id', 'registration_number', 
-      'email', 'phone', 'website', 'address', 'status', 'subscription_tier',
-      'settings', 'ai_insights', 'ai_classification', 'ai_confidence',
-      'legal_entity_name', 'subsidiary_type', 'country_code', 'region',
-      'regulatory_requirements', 'intercompany_code', 'consolidation_method',
-      'functional_currency', 'reporting_currency', 'created_by', 'updated_by', 'version'
+      'industry',
+      'business_size',
+      'tax_id',
+      'registration_number',
+      'email',
+      'phone',
+      'website',
+      'address',
+      'status',
+      'subscription_tier',
+      'settings',
+      'ai_insights',
+      'ai_classification',
+      'ai_confidence',
+      'legal_entity_name',
+      'subsidiary_type',
+      'country_code',
+      'region',
+      'regulatory_requirements',
+      'intercompany_code',
+      'consolidation_method',
+      'functional_currency',
+      'reporting_currency',
+      'created_by',
+      'updated_by',
+      'version'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: false, // This IS the organization table
@@ -46,10 +67,24 @@ const UNIVERSAL_SCHEMA = {
     primary_key: 'id',
     required_fields: ['organization_id', 'entity_type', 'entity_name', 'smart_code'],
     optional_fields: [
-      'entity_code', 'entity_category', 'entity_subcategory', 'description', 'tags',
-      'status', 'effective_date', 'expiry_date', 'metadata', 'ai_confidence',
-      'ai_classification', 'ai_tags', 'from_entity_id', 'hierarchy_level',
-      'sort_order', 'created_by', 'updated_by', 'version'
+      'entity_code',
+      'entity_category',
+      'entity_subcategory',
+      'description',
+      'tags',
+      'status',
+      'effective_date',
+      'expiry_date',
+      'metadata',
+      'ai_confidence',
+      'ai_classification',
+      'ai_tags',
+      'from_entity_id',
+      'hierarchy_level',
+      'sort_order',
+      'created_by',
+      'updated_by',
+      'version'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: true,
@@ -59,11 +94,24 @@ const UNIVERSAL_SCHEMA = {
     primary_key: 'id',
     required_fields: ['organization_id', 'entity_id', 'field_name', 'field_type'],
     optional_fields: [
-      'field_label', 'field_description', 'field_category', 'field_value',
-      'field_value_number', 'field_value_boolean', 'field_value_date',
-      'field_value_datetime', 'field_value_json', 'display_order', 'is_required',
-      'is_searchable', 'validation_rules', 'ai_enhanced_value', 'ai_confidence',
-      'validation_status', 'created_by', 'updated_by'
+      'field_label',
+      'field_description',
+      'field_category',
+      'field_value',
+      'field_value_number',
+      'field_value_boolean',
+      'field_value_date',
+      'field_value_datetime',
+      'field_value_json',
+      'display_order',
+      'is_required',
+      'is_searchable',
+      'validation_rules',
+      'ai_enhanced_value',
+      'ai_confidence',
+      'validation_status',
+      'created_by',
+      'updated_by'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: true,
@@ -71,12 +119,30 @@ const UNIVERSAL_SCHEMA = {
   },
   core_relationships: {
     primary_key: 'id',
-    required_fields: ['organization_id', 'from_entity_id', 'to_entity_id', 'relationship_type', 'smart_code'],
+    required_fields: [
+      'organization_id',
+      'from_entity_id',
+      'to_entity_id',
+      'relationship_type',
+      'smart_code'
+    ],
     optional_fields: [
-      'relationship_label', 'relationship_strength', 'is_bidirectional', 'is_active',
-      'hierarchy_level', 'workflow_state', 'workflow_step', 'relationship_data',
-      'business_rules', 'effective_date', 'expiry_date', 'ai_discovered',
-      'ai_confidence', 'created_by', 'updated_by', 'metadata'
+      'relationship_label',
+      'relationship_strength',
+      'is_bidirectional',
+      'is_active',
+      'hierarchy_level',
+      'workflow_state',
+      'workflow_step',
+      'relationship_data',
+      'business_rules',
+      'effective_date',
+      'expiry_date',
+      'ai_discovered',
+      'ai_confidence',
+      'created_by',
+      'updated_by',
+      'metadata'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: true,
@@ -86,13 +152,39 @@ const UNIVERSAL_SCHEMA = {
     primary_key: 'id',
     required_fields: ['organization_id', 'transaction_type', 'transaction_code', 'smart_code'],
     optional_fields: [
-      'transaction_date', 'reference_number', 'external_reference', 'source_entity_id',
-      'target_entity_id', 'total_amount', 'tax_amount', 'discount_amount', 'net_amount',
-      'currency', 'status', 'workflow_state', 'priority', 'department', 'project_code',
-      'cost_center', 'due_date', 'completed_date', 'description', 'notes', 'metadata',
-      'attachments', 'ai_insights', 'ai_risk_score', 'ai_anomaly_score', 'created_by',
-      'updated_by', 'version', 'is_intercompany', 'intercompany_source_org',
-      'intercompany_target_org', 'intercompany_reference', 'elimination_required'
+      'transaction_date',
+      'reference_number',
+      'external_reference',
+      'source_entity_id',
+      'target_entity_id',
+      'total_amount',
+      'tax_amount',
+      'discount_amount',
+      'net_amount',
+      'currency',
+      'status',
+      'workflow_state',
+      'priority',
+      'department',
+      'project_code',
+      'cost_center',
+      'due_date',
+      'completed_date',
+      'description',
+      'notes',
+      'metadata',
+      'attachments',
+      'ai_insights',
+      'ai_risk_score',
+      'ai_anomaly_score',
+      'created_by',
+      'updated_by',
+      'version',
+      'is_intercompany',
+      'intercompany_source_org',
+      'intercompany_target_org',
+      'intercompany_reference',
+      'elimination_required'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: true,
@@ -102,13 +194,33 @@ const UNIVERSAL_SCHEMA = {
     primary_key: 'id',
     required_fields: ['transaction_id', 'organization_id', 'line_description', 'smart_code'],
     optional_fields: [
-      'entity_id', 'line_order', 'quantity', 'unit_of_measure', 'unit_price',
-      'line_amount', 'discount_percentage', 'discount_amount', 'tax_code',
-      'tax_percentage', 'tax_amount', 'net_line_amount', 'gl_account_code',
-      'cost_center', 'department', 'project_code', 'delivery_date',
-      'service_period_start', 'service_period_end', 'notes', 'metadata',
-      'ai_gl_suggestion', 'ai_confidence', 'ai_cost_prediction',
-      'ai_margin_analysis', 'created_by', 'updated_by'
+      'entity_id',
+      'line_order',
+      'quantity',
+      'unit_of_measure',
+      'unit_price',
+      'line_amount',
+      'discount_percentage',
+      'discount_amount',
+      'tax_code',
+      'tax_percentage',
+      'tax_amount',
+      'net_line_amount',
+      'gl_account_code',
+      'cost_center',
+      'department',
+      'project_code',
+      'delivery_date',
+      'service_period_start',
+      'service_period_end',
+      'notes',
+      'metadata',
+      'ai_gl_suggestion',
+      'ai_confidence',
+      'ai_cost_prediction',
+      'ai_margin_analysis',
+      'created_by',
+      'updated_by'
     ],
     auto_fields: ['created_at', 'updated_at'],
     has_org_filter: true,
@@ -129,34 +241,42 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'schema':
         return getUniversalSchema(table)
-      
+
       case 'read':
         if (!table) {
-          return NextResponse.json({
-            success: false,
-            error: 'Table parameter required for read operation'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Table parameter required for read operation'
+            },
+            { status: 400 }
+          )
         }
         return await readRecords(table, id, organizationId)
-      
+
       case 'health':
         return getApiHealth()
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: ['schema', 'read', 'health']
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: ['schema', 'read', 'health']
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Universal API GET error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -168,38 +288,46 @@ export async function POST(request: NextRequest) {
     console.log(`🌐 Universal API POST: ${action}`, { table, organization_id })
 
     if (!table || !UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]) {
-      return NextResponse.json({
-        success: false,
-        error: 'Valid table parameter required',
-        available_tables: Object.keys(UNIVERSAL_SCHEMA)
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Valid table parameter required',
+          available_tables: Object.keys(UNIVERSAL_SCHEMA)
+        },
+        { status: 400 }
+      )
     }
 
     switch (action) {
       case 'create':
         return await createRecord(table, data, organization_id)
-      
+
       case 'batch_create':
         return await batchCreate(table, data, organization_id)
-      
+
       case 'validate':
         return validateRecord(table, data)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: ['create', 'batch_create', 'validate']
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: ['create', 'batch_create', 'validate']
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Universal API POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -211,28 +339,36 @@ export async function PUT(request: NextRequest) {
     console.log(`🌐 Universal API PUT: ${table}/${id}`, { organization_id })
 
     if (!table || !UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]) {
-      return NextResponse.json({
-        success: false,
-        error: 'Valid table parameter required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Valid table parameter required'
+        },
+        { status: 400 }
+      )
     }
 
     if (!id) {
-      return NextResponse.json({
-        success: false,
-        error: 'Record ID required for update'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Record ID required for update'
+        },
+        { status: 400 }
+      )
     }
 
     return await updateRecord(table, id, data, organization_id)
-
   } catch (error) {
     console.error('Universal API PUT error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -246,28 +382,36 @@ export async function DELETE(request: NextRequest) {
     console.log(`🌐 Universal API DELETE: ${table}/${id}`, { organizationId })
 
     if (!table || !UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]) {
-      return NextResponse.json({
-        success: false,
-        error: 'Valid table parameter required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Valid table parameter required'
+        },
+        { status: 400 }
+      )
     }
 
     if (!id) {
-      return NextResponse.json({
-        success: false,
-        error: 'Record ID required for delete'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Record ID required for delete'
+        },
+        { status: 400 }
+      )
     }
 
     return await deleteRecord(table, id, organizationId)
-
   } catch (error) {
     console.error('Universal API DELETE error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -276,11 +420,14 @@ function getUniversalSchema(table?: string | null) {
   if (table) {
     const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
     if (!schema) {
-      return NextResponse.json({
-        success: false,
-        error: `Table '${table}' not found in universal schema`,
-        available_tables: Object.keys(UNIVERSAL_SCHEMA)
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Table '${table}' not found in universal schema`,
+          available_tables: Object.keys(UNIVERSAL_SCHEMA)
+        },
+        { status: 404 }
+      )
     }
 
     return NextResponse.json({
@@ -338,11 +485,14 @@ async function readRecords(table: string, id?: string | null, organizationId?: s
 
     if (error) {
       console.error(`Error reading ${table}:`, error)
-      return NextResponse.json({
-        success: false,
-        error: error.message,
-        table
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+          table
+        },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
@@ -352,13 +502,15 @@ async function readRecords(table: string, id?: string | null, organizationId?: s
       count: data?.length || 0,
       organization_filtered: schema.has_org_filter && !!organizationId
     })
-
   } catch (error) {
     console.error(`Read ${table} error:`, error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Read operation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Read operation failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -369,7 +521,7 @@ async function createRecord(table: string, data: any, organizationId?: string) {
 
   try {
     const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
-    
+
     // Validate required fields
     const validation = validateRecord(table, data)
     if (!validation.success) {
@@ -379,10 +531,13 @@ async function createRecord(table: string, data: any, organizationId?: string) {
     // Add organization_id if required
     if (schema.has_org_filter) {
       if (!organizationId) {
-        return NextResponse.json({
-          success: false,
-          error: 'organization_id required for this table'
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'organization_id required for this table'
+          },
+          { status: 400 }
+        )
       }
       data.organization_id = organizationId
     }
@@ -391,19 +546,18 @@ async function createRecord(table: string, data: any, organizationId?: string) {
     data.created_at = new Date().toISOString()
     data.updated_at = new Date().toISOString()
 
-    const { data: result, error } = await supabase
-      .from(table)
-      .insert(data)
-      .select()
-      .single()
+    const { data: result, error } = await supabase.from(table).insert(data).select().single()
 
     if (error) {
       console.error(`Create ${table} error:`, error)
-      return NextResponse.json({
-        success: false,
-        error: error.message,
-        table
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+          table
+        },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
@@ -412,13 +566,15 @@ async function createRecord(table: string, data: any, organizationId?: string) {
       data: result,
       message: `Record created successfully in ${table}`
     })
-
   } catch (error) {
     console.error(`Create ${table} error:`, error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Create operation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Create operation failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -429,35 +585,33 @@ async function updateRecord(table: string, id: string, data: any, organizationId
 
   try {
     const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
-    
+
     // Add updated_at
     data.updated_at = new Date().toISOString()
-    
+
     // Remove read-only fields
     delete data.created_at
     delete data[schema.primary_key]
 
-    let query = supabase
-      .from(table)
-      .update(data)
-      .eq(schema.primary_key, id)
+    let query = supabase.from(table).update(data).eq(schema.primary_key, id)
 
     // Apply organization filter if required
     if (schema.has_org_filter && organizationId) {
       query = query.eq('organization_id', organizationId)
     }
 
-    const { data: result, error } = await query
-      .select()
-      .single()
+    const { data: result, error } = await query.select().single()
 
     if (error) {
       console.error(`Update ${table} error:`, error)
-      return NextResponse.json({
-        success: false,
-        error: error.message,
-        table
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+          table
+        },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
@@ -466,13 +620,15 @@ async function updateRecord(table: string, id: string, data: any, organizationId
       data: result,
       message: `Record updated successfully in ${table}`
     })
-
   } catch (error) {
     console.error(`Update ${table} error:`, error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Update operation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Update operation failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -484,10 +640,7 @@ async function deleteRecord(table: string, id: string, organizationId?: string) 
   try {
     const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
 
-    let query = supabase
-      .from(table)
-      .delete()
-      .eq(schema.primary_key, id)
+    let query = supabase.from(table).delete().eq(schema.primary_key, id)
 
     // Apply organization filter if required
     if (schema.has_org_filter && organizationId) {
@@ -498,11 +651,14 @@ async function deleteRecord(table: string, id: string, organizationId?: string) 
 
     if (error) {
       console.error(`Delete ${table} error:`, error)
-      return NextResponse.json({
-        success: false,
-        error: error.message,
-        table
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+          table
+        },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
@@ -511,13 +667,15 @@ async function deleteRecord(table: string, id: string, organizationId?: string) 
       deleted_count: data?.length || 0,
       message: `Record deleted successfully from ${table}`
     })
-
   } catch (error) {
     console.error(`Delete ${table} error:`, error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Delete operation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Delete operation failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -533,12 +691,15 @@ function validateRecord(table: string, data: any) {
   }
 
   if (missing.length > 0) {
-    return NextResponse.json({
-      success: false,
-      error: 'Missing required fields',
-      missing_fields: missing,
-      required_fields: schema.required_fields
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Missing required fields',
+        missing_fields: missing,
+        required_fields: schema.required_fields
+      },
+      { status: 400 }
+    )
   }
 
   return NextResponse.json({
@@ -562,7 +723,7 @@ async function batchCreate(table: string, records: any[], organizationId?: strin
   try {
     const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
     const timestamp = new Date().toISOString()
-    
+
     // Prepare all records
     const preparedRecords = records.map(record => {
       if (schema.has_org_filter) {
@@ -573,17 +734,17 @@ async function batchCreate(table: string, records: any[], organizationId?: strin
       return record
     })
 
-    const { data, error } = await supabase
-      .from(table)
-      .insert(preparedRecords)
-      .select()
+    const { data, error } = await supabase.from(table).insert(preparedRecords).select()
 
     if (error) {
-      return NextResponse.json({
-        success: false,
-        error: error.message,
-        table
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message,
+          table
+        },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
@@ -593,12 +754,14 @@ async function batchCreate(table: string, records: any[], organizationId?: strin
       created_count: data?.length || 0,
       message: `Batch created ${data?.length || 0} records in ${table}`
     })
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Batch create failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Batch create failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -720,7 +883,7 @@ function getMockData(table: string, id?: string | null) {
         smart_code: 'HERA.REST.SALE.TXN.ORDER.v1',
         transaction_date: '2024-08-08',
         reference_number: 'INV-001',
-        total_amount: 1250.00,
+        total_amount: 1250.0,
         currency: 'USD',
         status: 'completed',
         created_at: '2024-08-08T00:00:00Z'
@@ -736,18 +899,20 @@ function getMockData(table: string, id?: string | null) {
         smart_code: 'HERA.REST.SALE.LINE.FOOD.v1',
         line_order: 1,
         quantity: 2,
-        unit_price: 25.00,
-        line_amount: 50.00,
+        unit_price: 25.0,
+        line_amount: 50.0,
         created_at: '2024-08-08T00:00:00Z'
       }
     ]
   }
 
   const data = mockData[table as keyof typeof mockData] || []
-  const filteredData = id ? data.filter((item: any) => {
-    const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
-    return item[schema.primary_key] === id
-  }) : data
+  const filteredData = id
+    ? data.filter((item: any) => {
+        const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
+        return item[schema.primary_key] === id
+      })
+    : data
 
   return NextResponse.json({
     success: true,
@@ -761,7 +926,7 @@ function getMockData(table: string, id?: string | null) {
 function getMockCreateResponse(table: string, data: any) {
   const schema = UNIVERSAL_SCHEMA[table as keyof typeof UNIVERSAL_SCHEMA]
   const mockId = `mock-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return NextResponse.json({
     success: true,
     table,

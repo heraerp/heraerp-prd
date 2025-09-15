@@ -113,7 +113,10 @@ export class FiscalDashboardService {
   /**
    * Calculate period start and end dates
    */
-  private calculatePeriodDates(periodCode: string, periodType: string): { start: string; end: string } {
+  private calculatePeriodDates(
+    periodCode: string,
+    periodType: string
+  ): { start: string; end: string } {
     const parts = periodCode.split('-')
     const year = parseInt(parts[0])
 
@@ -204,19 +207,17 @@ export class FiscalDashboardService {
     ]
 
     const supabase = getSupabase()
-    
+
     for (const step of standardSteps) {
-      await supabase
-        .from('core_dynamic_data')
-        .insert({
-          id: uuidv4(),
-          entity_id: periodId,
-          field_name: `closing_step_${step.step_number}`,
-          field_value_text: JSON.stringify(step),
-          field_type: 'json',
-          smart_code: `HERA.FISCAL.CLOSING.STEP.${step.step_code}.v1`,
-          organization_id: organizationId
-        })
+      await supabase.from('core_dynamic_data').insert({
+        id: uuidv4(),
+        entity_id: periodId,
+        field_name: `closing_step_${step.step_number}`,
+        field_value_text: JSON.stringify(step),
+        field_type: 'json',
+        smart_code: `HERA.FISCAL.CLOSING.STEP.${step.step_code}.v1`,
+        organization_id: organizationId
+      })
     }
   }
 
@@ -306,19 +307,23 @@ export class FiscalDashboardService {
       const amount = txn.total_amount || 0
 
       // Revenue transactions
-      if (smartCode.includes('.REVENUE.') || 
-          smartCode.includes('.SALE.') ||
-          smartCode.includes('.SERVICE.')) {
+      if (
+        smartCode.includes('.REVENUE.') ||
+        smartCode.includes('.SALE.') ||
+        smartCode.includes('.SERVICE.')
+      ) {
         revenue += amount
       }
-      
+
       // Expense transactions
-      else if (smartCode.includes('.EXPENSE.') ||
-               smartCode.includes('.COST.') ||
-               smartCode.includes('.PAYROLL.')) {
+      else if (
+        smartCode.includes('.EXPENSE.') ||
+        smartCode.includes('.COST.') ||
+        smartCode.includes('.PAYROLL.')
+      ) {
         expenses += amount
       }
-      
+
       // Retained earnings adjustments
       else if (smartCode.includes('.EQUITY.RETAINED.')) {
         retainedEarnings += amount
@@ -365,7 +370,7 @@ export class FiscalDashboardService {
 
     // Calculate KPIs for each branch
     const branchResults: BranchConsolidation[] = []
-    
+
     for (const branch of branches || []) {
       const kpis = await this.calculateKPIs(organizationId, periodStart, periodEnd, branch.id)
       branchResults.push({
@@ -410,12 +415,12 @@ export class FiscalDashboardService {
 
     const step: ClosingStep = JSON.parse(stepData.field_value_text)
     step.status = status
-    
+
     if (status === 'completed') {
       step.completed_at = new Date().toISOString()
       step.completed_by = completedBy
     }
-    
+
     if (notes) {
       step.notes = notes
     }
@@ -432,24 +437,22 @@ export class FiscalDashboardService {
     if (updateError) throw updateError
 
     // Log to transactions for audit trail
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'GL.CLOSE',
-        transaction_date: new Date().toISOString(),
-        source_entity_id: periodId,
-        total_amount: 0,
-        smart_code: `HERA.FISCAL.CLOSING.UPDATE.${stepCode}.v1`,
-        organization_id: organizationId,
-        metadata: {
-          period_code: periodCode,
-          step_code: stepCode,
-          new_status: status,
-          updated_by: completedBy,
-          notes
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'GL.CLOSE',
+      transaction_date: new Date().toISOString(),
+      source_entity_id: periodId,
+      total_amount: 0,
+      smart_code: `HERA.FISCAL.CLOSING.UPDATE.${stepCode}.v1`,
+      organization_id: organizationId,
+      metadata: {
+        period_code: periodCode,
+        step_code: stepCode,
+        new_status: status,
+        updated_by: completedBy,
+        notes
+      }
+    })
   }
 
   /**
@@ -468,7 +471,8 @@ export class FiscalDashboardService {
 
     if (error) throw error
 
-    return steps.map(s => JSON.parse(s.field_value_text))
+    return steps
+      .map(s => JSON.parse(s.field_value_text))
       .sort((a: ClosingStep, b: ClosingStep) => a.step_number - b.step_number)
   }
 }

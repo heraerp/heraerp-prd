@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     if (!db) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    
+
     let query = db
       .from(table)
       .select('*')
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       query = query.eq('entity_type', entityType)
     }
 
-    // Add transaction_type filter if specified  
+    // Add transaction_type filter if specified
     if (transactionType && table === 'universal_transactions') {
       query = query.eq('transaction_type', transactionType)
     }
@@ -66,13 +66,9 @@ export async function GET(request: NextRequest) {
       count: data?.length || 0,
       data: data || []
     })
-
   } catch (error) {
     console.error('API: Request error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch data' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 })
   }
 }
 
@@ -85,10 +81,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    console.log('API: Universal data insert:', { organizationId, table, recordCount: Array.isArray(insertData) ? insertData.length : 1 })
+    console.log('API: Universal data insert:', {
+      organizationId,
+      table,
+      recordCount: Array.isArray(insertData) ? insertData.length : 1
+    })
 
     // Ensure organization_id is set on all records
-    const dataWithOrgId = Array.isArray(insertData) 
+    const dataWithOrgId = Array.isArray(insertData)
       ? insertData.map(record => ({ ...record, organization_id: organizationId }))
       : { ...insertData, organization_id: organizationId }
 
@@ -96,11 +96,8 @@ export async function POST(request: NextRequest) {
     if (!db) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    
-    const { data, error } = await db
-      .from(table)
-      .insert(dataWithOrgId)
-      .select()
+
+    const { data, error } = await db.from(table).insert(dataWithOrgId).select()
 
     if (error) {
       console.error('API: Insert error:', error)
@@ -114,12 +111,8 @@ export async function POST(request: NextRequest) {
       count: data?.length || 0,
       data: data || []
     })
-
   } catch (error) {
     console.error('API: Insert request error:', error)
-    return NextResponse.json(
-      { error: 'Failed to insert data' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to insert data' }, { status: 500 })
   }
 }

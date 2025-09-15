@@ -15,26 +15,22 @@ interface DocBreadcrumbProps {
   className?: string
 }
 
-export default function DocBreadcrumb({ 
-  path, 
-  docType, 
-  className 
-}: DocBreadcrumbProps) {
+export default function DocBreadcrumb({ path, docType, className }: DocBreadcrumbProps) {
   const basePath = [
     { title: 'Home', href: '/' },
     { title: 'Docs', href: '/docs' },
-    { 
-      title: docType === 'dev' ? 'Developer Guide' : 'User Guide', 
-      href: `/docs/${docType}` 
+    {
+      title: docType === 'dev' ? 'Developer Guide' : 'User Guide',
+      href: `/docs/${docType}`
     }
   ]
 
   const fullPath = [...basePath, ...path]
 
   return (
-    <nav 
-      aria-label="Breadcrumb" 
-      className={cn("flex items-center space-x-1 text-sm text-muted-foreground mb-6", className)}
+    <nav
+      aria-label="Breadcrumb"
+      className={cn('flex items-center space-x-1 text-sm text-muted-foreground mb-6', className)}
     >
       <ol className="flex items-center space-x-1">
         {fullPath.map((item, index) => {
@@ -42,26 +38,19 @@ export default function DocBreadcrumb({
 
           return (
             <li key={item.href} className="flex items-center space-x-1">
-              {index === 0 && (
-                <Home className="h-3 w-3 mr-1" />
-              )}
-              
+              {index === 0 && <Home className="h-3 w-3 mr-1" />}
+
               {isLast ? (
                 <span className="font-medium text-foreground" aria-current="page">
                   {item.title}
                 </span>
               ) : (
-                <Link
-                  href={item.href}
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link href={item.href} className="hover:text-foreground transition-colors">
                   {item.title}
                 </Link>
               )}
-              
-              {!isLast && (
-                <ChevronRight className="h-3 w-3 mx-1" />
-              )}
+
+              {!isLast && <ChevronRight className="h-3 w-3 mx-1" />}
             </li>
           )
         })}

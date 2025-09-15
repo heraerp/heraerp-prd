@@ -1,6 +1,6 @@
 /**
  * 🚀 HERA Provisioning Service
- * 
+ *
  * Handles tenant provisioning and setup
  * - Organization creation
  * - Subdomain assignment
@@ -19,7 +19,14 @@ export interface ProvisioningRequest {
   organizationName: string
   organizationCode: string
   subdomain: string
-  industryType: 'restaurant' | 'healthcare' | 'salon' | 'retail' | 'manufacturing' | 'professional_services' | 'furniture'
+  industryType:
+    | 'restaurant'
+    | 'healthcare'
+    | 'salon'
+    | 'retail'
+    | 'manufacturing'
+    | 'professional_services'
+    | 'furniture'
   country?: string
   ownerEmail: string
   ownerName: string
@@ -66,9 +73,9 @@ export class ProvisioningService {
       // 1. Validate subdomain availability
       const subdomainAvailable = await this.checkSubdomainAvailability(request.subdomain)
       if (!subdomainAvailable) {
-        return { 
-          success: false, 
-          error: `Subdomain '${request.subdomain}' is already taken` 
+        return {
+          success: false,
+          error: `Subdomain '${request.subdomain}' is already taken`
         }
       }
 
@@ -100,17 +107,15 @@ export class ProvisioningService {
       const organizationId = organization.id
 
       // 3. Store subdomain in dynamic data
-      await supabase
-        .from('core_dynamic_data')
-        .insert({
-          organization_id: organizationId,
-          entity_id: organizationId,
-          field_name: 'subdomain',
-          field_type: 'text',
-          field_value_text: request.subdomain,
-          smart_code: 'HERA.TENANT.SUBDOMAIN.v1',
-          is_system_field: true
-        })
+      await supabase.from('core_dynamic_data').insert({
+        organization_id: organizationId,
+        entity_id: organizationId,
+        field_name: 'subdomain',
+        field_type: 'text',
+        field_value_text: request.subdomain,
+        smart_code: 'HERA.TENANT.SUBDOMAIN.v1',
+        is_system_field: true
+      })
 
       // 4. Create owner entity
       const { data: owner, error: ownerError } = await supabase
@@ -136,20 +141,22 @@ export class ProvisioningService {
 
       // 5. Store owner email
       if (owner) {
-        await supabase
-          .from('core_dynamic_data')
-          .insert({
-            organization_id: organizationId,
-            entity_id: owner.id,
-            field_name: 'email',
-            field_type: 'text',
-            field_value_text: request.ownerEmail,
-            smart_code: 'HERA.CONTACT.EMAIL.v1'
-          })
+        await supabase.from('core_dynamic_data').insert({
+          organization_id: organizationId,
+          entity_id: owner.id,
+          field_name: 'email',
+          field_type: 'text',
+          field_value_text: request.ownerEmail,
+          smart_code: 'HERA.CONTACT.EMAIL.v1'
+        })
       }
 
       // 6. Grant core modules (always included)
-      const coreModules = ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.TRANSACTIONS.MODULE.v1', 'HERA.CORE.ACCOUNTING.MODULE.v1']
+      const coreModules = [
+        'HERA.CORE.ENTITIES.MODULE.v1',
+        'HERA.CORE.TRANSACTIONS.MODULE.v1',
+        'HERA.CORE.ACCOUNTING.MODULE.v1'
+      ]
       for (const moduleCode of coreModules) {
         await entitlementsService.grantModuleAccess({
           organizationId,
@@ -171,10 +178,17 @@ export class ProvisioningService {
 
       // 8. Setup Chart of Accounts
       universalApi.setOrganizationId(organizationId)
-      const coaResult = await this.setupChartOfAccounts(organizationId, request.industryType, request.country || 'US')
+      const coaResult = await this.setupChartOfAccounts(
+        organizationId,
+        request.industryType,
+        request.country || 'US'
+      )
 
       // 9. Create initial data based on industry
-      const initialData = await this.createIndustrySpecificData(organizationId, request.industryType)
+      const initialData = await this.createIndustrySpecificData(
+        organizationId,
+        request.industryType
+      )
 
       // 10. Cache will be cleared automatically on next request
 
@@ -190,11 +204,10 @@ export class ProvisioningService {
           initialData
         }
       }
-
     } catch (error) {
       console.error('[Provisioning] Error:', error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: 'Provisioning failed',
         details: { error }
       }
@@ -209,7 +222,17 @@ export class ProvisioningService {
       const supabase = await this.getSupabase()
 
       // Reserved subdomains
-      const reserved = ['www', 'app', 'api', 'admin', 'auth', 'demo', 'test', 'staging', 'production']
+      const reserved = [
+        'www',
+        'app',
+        'api',
+        'admin',
+        'auth',
+        'demo',
+        'test',
+        'staging',
+        'production'
+      ]
       if (reserved.includes(subdomain)) return false
 
       // Check if already taken
@@ -285,7 +308,7 @@ export class ProvisioningService {
           { name: 'Caesar Salad', price: 8.99, category: 'Salad' },
           { name: 'Tiramisu', price: 6.99, category: 'Dessert' }
         ]
-        
+
         for (const item of menuItems) {
           const entity = await universalApi.createEntity({
             organization_id: organizationId,
@@ -294,7 +317,7 @@ export class ProvisioningService {
             smart_code: 'HERA.REST.MENU.ITEM.v1',
             metadata: { category: item.category }
           })
-          
+
           if (entity.id) {
             await universalApi.setDynamicField(entity.id, 'price', item.price)
             data.entities.push(entity)
@@ -305,11 +328,11 @@ export class ProvisioningService {
       case 'salon':
         // Create sample services
         const services = [
-          { name: 'Haircut & Style', price: 45.00, duration: 45 },
-          { name: 'Hair Color', price: 85.00, duration: 120 },
-          { name: 'Manicure', price: 35.00, duration: 30 }
+          { name: 'Haircut & Style', price: 45.0, duration: 45 },
+          { name: 'Hair Color', price: 85.0, duration: 120 },
+          { name: 'Manicure', price: 35.0, duration: 30 }
         ]
-        
+
         for (const service of services) {
           const entity = await universalApi.createEntity({
             organization_id: organizationId,
@@ -318,7 +341,7 @@ export class ProvisioningService {
             smart_code: 'HERA.SALON.SERVICE.v1',
             metadata: { duration_minutes: service.duration }
           })
-          
+
           if (entity.id) {
             await universalApi.setDynamicField(entity.id, 'price', service.price)
             data.entities.push(entity)
@@ -333,7 +356,7 @@ export class ProvisioningService {
           { name: 'Annual Physical', duration: 60, code: 'PHYSICAL' },
           { name: 'Follow-up Visit', duration: 15, code: 'FOLLOWUP' }
         ]
-        
+
         for (const appt of appointmentTypes) {
           const entity = await universalApi.createEntity({
             organization_id: organizationId,
@@ -343,7 +366,7 @@ export class ProvisioningService {
             smart_code: 'HERA.HEALTH.APPT.TYPE.v1',
             metadata: { duration_minutes: appt.duration }
           })
-          
+
           data.entities.push(entity)
         }
         break
@@ -352,8 +375,11 @@ export class ProvisioningService {
         // Create comprehensive furniture demo data
         const result = await createFurnitureDemoData(organizationId)
         if (result.success) {
-          data.entities.push({ type: 'furniture_demo', message: 'Complete furniture manufacturing data created' })
-          data.settings = { 
+          data.entities.push({
+            type: 'furniture_demo',
+            message: 'Complete furniture manufacturing data created'
+          })
+          data.settings = {
             default_gst_rate: 0.18,
             state_code: '32', // Kerala
             financial_year: `${new Date().getFullYear()}-${(new Date().getFullYear() + 1) % 100}`,
@@ -371,17 +397,17 @@ export class ProvisioningService {
    */
   private getDefaultCurrency(country: string): string {
     const currencyMap: Record<string, string> = {
-      'US': 'USD',
-      'CA': 'CAD',
-      'GB': 'GBP',
-      'EU': 'EUR',
-      'AU': 'AUD',
-      'AE': 'AED',
-      'IN': 'INR',
-      'CN': 'CNY',
-      'JP': 'JPY',
-      'SG': 'SGD',
-      'HK': 'HKD'
+      US: 'USD',
+      CA: 'CAD',
+      GB: 'GBP',
+      EU: 'EUR',
+      AU: 'AUD',
+      AE: 'AED',
+      IN: 'INR',
+      CN: 'CNY',
+      JP: 'JPY',
+      SG: 'SGD',
+      HK: 'HKD'
     }
     return currencyMap[country] || 'USD'
   }
@@ -391,17 +417,17 @@ export class ProvisioningService {
    */
   private getDefaultTimezone(country: string): string {
     const timezoneMap: Record<string, string> = {
-      'US': 'America/New_York',
-      'CA': 'America/Toronto',
-      'GB': 'Europe/London',
-      'EU': 'Europe/Berlin',
-      'AU': 'Australia/Sydney',
-      'AE': 'Asia/Dubai',
-      'IN': 'Asia/Kolkata',
-      'CN': 'Asia/Shanghai',
-      'JP': 'Asia/Tokyo',
-      'SG': 'Asia/Singapore',
-      'HK': 'Asia/Hong_Kong'
+      US: 'America/New_York',
+      CA: 'America/Toronto',
+      GB: 'Europe/London',
+      EU: 'Europe/Berlin',
+      AU: 'Australia/Sydney',
+      AE: 'Asia/Dubai',
+      IN: 'Asia/Kolkata',
+      CN: 'Asia/Shanghai',
+      JP: 'Asia/Tokyo',
+      SG: 'Asia/Singapore',
+      HK: 'Asia/Hong_Kong'
     }
     return timezoneMap[country] || 'UTC'
   }
@@ -416,7 +442,7 @@ export class ProvisioningService {
       // Soft delete by marking as inactive
       const { error } = await supabase
         .from('core_organizations')
-        .update({ 
+        .update({
           status: 'inactive',
           updated_at: new Date().toISOString(),
           settings: supabase.rpc('jsonb_merge', {

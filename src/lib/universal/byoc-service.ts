@@ -1,7 +1,7 @@
 /**
  * HERA Universal BYOC (Bring Your Own Cloud) Service
  * A complete service layer for managing cloud storage across any HERA application
- * 
+ *
  * Features:
  * - Universal configuration management
  * - Multi-provider support (AWS, Azure, GCP, Custom)
@@ -19,7 +19,7 @@ let CryptoJS: any = null
 // Try to import crypto-js dynamically
 const loadCryptoJS = async () => {
   if (CryptoJS) return CryptoJS
-  
+
   try {
     if (typeof window === 'undefined') {
       // Node.js environment
@@ -193,29 +193,68 @@ export class BYOCService {
         name: 'Amazon Web Services S3',
         description: 'Industry-leading cloud storage with global availability',
         category: 'cloud',
-        features: ['read', 'write', 'delete', 'process', 'versioning', 'encryption', 'cdn', 'analytics'],
+        features: [
+          'read',
+          'write',
+          'delete',
+          'process',
+          'versioning',
+          'encryption',
+          'cdn',
+          'analytics'
+        ],
         configSchema: [
-          { name: 'accessKeyId', label: 'Access Key ID', type: 'text', required: true, sensitive: true },
-          { name: 'secretAccessKey', label: 'Secret Access Key', type: 'password', required: true, sensitive: true },
-          { name: 'region', label: 'AWS Region', type: 'select', required: true, validation: {
-            options: [
-              { value: 'us-east-1', label: 'US East (N. Virginia)' },
-              { value: 'us-west-2', label: 'US West (Oregon)' },
-              { value: 'eu-west-1', label: 'Europe (Ireland)' },
-              { value: 'ap-southeast-1', label: 'Asia Pacific (Singapore)' },
-              { value: 'ap-south-1', label: 'Asia Pacific (Mumbai)' }
-            ]
-          }},
+          {
+            name: 'accessKeyId',
+            label: 'Access Key ID',
+            type: 'text',
+            required: true,
+            sensitive: true
+          },
+          {
+            name: 'secretAccessKey',
+            label: 'Secret Access Key',
+            type: 'password',
+            required: true,
+            sensitive: true
+          },
+          {
+            name: 'region',
+            label: 'AWS Region',
+            type: 'select',
+            required: true,
+            validation: {
+              options: [
+                { value: 'us-east-1', label: 'US East (N. Virginia)' },
+                { value: 'us-west-2', label: 'US West (Oregon)' },
+                { value: 'eu-west-1', label: 'Europe (Ireland)' },
+                { value: 'ap-southeast-1', label: 'Asia Pacific (Singapore)' },
+                { value: 'ap-south-1', label: 'Asia Pacific (Mumbai)' }
+              ]
+            }
+          },
           { name: 'bucketName', label: 'S3 Bucket Name', type: 'text', required: true },
-          { name: 'path', label: 'Object Key Prefix', type: 'text', required: false, placeholder: 'myapp-documents/' },
-          { name: 'storageClass', label: 'Storage Class', type: 'select', required: false, validation: {
-            options: [
-              { value: 'STANDARD', label: 'Standard' },
-              { value: 'STANDARD_IA', label: 'Standard-Infrequent Access' },
-              { value: 'GLACIER', label: 'Glacier' },
-              { value: 'DEEP_ARCHIVE', label: 'Glacier Deep Archive' }
-            ]
-          }}
+          {
+            name: 'path',
+            label: 'Object Key Prefix',
+            type: 'text',
+            required: false,
+            placeholder: 'myapp-documents/'
+          },
+          {
+            name: 'storageClass',
+            label: 'Storage Class',
+            type: 'select',
+            required: false,
+            validation: {
+              options: [
+                { value: 'STANDARD', label: 'Standard' },
+                { value: 'STANDARD_IA', label: 'Standard-Infrequent Access' },
+                { value: 'GLACIER', label: 'Glacier' },
+                { value: 'DEEP_ARCHIVE', label: 'Glacier Deep Archive' }
+              ]
+            }
+          }
         ],
         pricing: { model: 'pay-per-use', estimatedCost: '$0.023/GB/month + requests' }
       },
@@ -227,16 +266,34 @@ export class BYOCService {
         features: ['read', 'write', 'delete', 'process', 'tiering', 'encryption', 'compliance'],
         configSchema: [
           { name: 'accountName', label: 'Storage Account Name', type: 'text', required: true },
-          { name: 'accountKey', label: 'Account Key', type: 'password', required: true, sensitive: true },
+          {
+            name: 'accountKey',
+            label: 'Account Key',
+            type: 'password',
+            required: true,
+            sensitive: true
+          },
           { name: 'containerName', label: 'Container Name', type: 'text', required: true },
-          { name: 'path', label: 'Blob Path Prefix', type: 'text', required: false, placeholder: 'myapp-documents/' },
-          { name: 'tier', label: 'Access Tier', type: 'select', required: false, validation: {
-            options: [
-              { value: 'Hot', label: 'Hot (Frequent Access)' },
-              { value: 'Cool', label: 'Cool (Infrequent Access)' },
-              { value: 'Archive', label: 'Archive (Rare Access)' }
-            ]
-          }}
+          {
+            name: 'path',
+            label: 'Blob Path Prefix',
+            type: 'text',
+            required: false,
+            placeholder: 'myapp-documents/'
+          },
+          {
+            name: 'tier',
+            label: 'Access Tier',
+            type: 'select',
+            required: false,
+            validation: {
+              options: [
+                { value: 'Hot', label: 'Hot (Frequent Access)' },
+                { value: 'Cool', label: 'Cool (Infrequent Access)' },
+                { value: 'Archive', label: 'Archive (Rare Access)' }
+              ]
+            }
+          }
         ],
         pricing: { model: 'pay-per-use', estimatedCost: '$0.0184/GB/month + transactions' }
       },
@@ -248,17 +305,35 @@ export class BYOCService {
         features: ['read', 'write', 'delete', 'process', 'ml-integration', 'global-cdn'],
         configSchema: [
           { name: 'projectId', label: 'Project ID', type: 'text', required: true },
-          { name: 'keyFile', label: 'Service Account Key (JSON)', type: 'textarea', required: true, sensitive: true },
+          {
+            name: 'keyFile',
+            label: 'Service Account Key (JSON)',
+            type: 'textarea',
+            required: true,
+            sensitive: true
+          },
           { name: 'bucketName', label: 'Bucket Name', type: 'text', required: true },
-          { name: 'path', label: 'Object Prefix', type: 'text', required: false, placeholder: 'myapp-documents/' },
-          { name: 'storageClass', label: 'Storage Class', type: 'select', required: false, validation: {
-            options: [
-              { value: 'STANDARD', label: 'Standard' },
-              { value: 'NEARLINE', label: 'Nearline' },
-              { value: 'COLDLINE', label: 'Coldline' },
-              { value: 'ARCHIVE', label: 'Archive' }
-            ]
-          }}
+          {
+            name: 'path',
+            label: 'Object Prefix',
+            type: 'text',
+            required: false,
+            placeholder: 'myapp-documents/'
+          },
+          {
+            name: 'storageClass',
+            label: 'Storage Class',
+            type: 'select',
+            required: false,
+            validation: {
+              options: [
+                { value: 'STANDARD', label: 'Standard' },
+                { value: 'NEARLINE', label: 'Nearline' },
+                { value: 'COLDLINE', label: 'Coldline' },
+                { value: 'ARCHIVE', label: 'Archive' }
+              ]
+            }
+          }
         ],
         pricing: { model: 'pay-per-use', estimatedCost: '$0.020/GB/month + operations' }
       },
@@ -269,16 +344,37 @@ export class BYOCService {
         category: 'hybrid',
         features: ['read', 'write', 'delete', 'process', 'cost-effective'],
         configSchema: [
-          { name: 'endpoint', label: 'Endpoint URL', type: 'text', required: true, placeholder: 'https://s3.example.com' },
+          {
+            name: 'endpoint',
+            label: 'Endpoint URL',
+            type: 'text',
+            required: true,
+            placeholder: 'https://s3.example.com'
+          },
           { name: 'accessKey', label: 'Access Key', type: 'text', required: true, sensitive: true },
-          { name: 'secretKey', label: 'Secret Key', type: 'password', required: true, sensitive: true },
+          {
+            name: 'secretKey',
+            label: 'Secret Key',
+            type: 'password',
+            required: true,
+            sensitive: true
+          },
           { name: 'bucketName', label: 'Bucket Name', type: 'text', required: true },
           { name: 'region', label: 'Region (Optional)', type: 'text', required: false },
-          { name: 'path', label: 'Object Prefix', type: 'text', required: false, placeholder: 'myapp-documents/' },
+          {
+            name: 'path',
+            label: 'Object Prefix',
+            type: 'text',
+            required: false,
+            placeholder: 'myapp-documents/'
+          },
           { name: 'ssl', label: 'Use SSL/HTTPS', type: 'boolean', required: false },
           { name: 'pathStyle', label: 'Use Path-Style URLs', type: 'boolean', required: false }
         ],
-        pricing: { model: 'pay-per-use', estimatedCost: 'Varies by provider (typically 50-80% less than AWS)' }
+        pricing: {
+          model: 'pay-per-use',
+          estimatedCost: 'Varies by provider (typically 50-80% less than AWS)'
+        }
       }
     ]
   }
@@ -289,7 +385,7 @@ export class BYOCService {
   async encryptSecrets(secrets: Record<string, any>): Promise<string> {
     try {
       const jsonString = JSON.stringify(secrets)
-      
+
       if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
         // Use Web Crypto API (modern browsers)
         return await this.encryptWithWebCrypto(jsonString)
@@ -323,8 +419,13 @@ export class BYOCService {
   async decryptSecrets(encryptedData: string): Promise<Record<string, any>> {
     try {
       let jsonString: string
-      
-      if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle && encryptedData.includes(':')) {
+
+      if (
+        typeof window !== 'undefined' &&
+        window.crypto &&
+        window.crypto.subtle &&
+        encryptedData.includes(':')
+      ) {
         // Web Crypto API format (includes IV)
         jsonString = await this.decryptWithWebCrypto(encryptedData)
       } else if (encryptedData.length > 20) {
@@ -357,7 +458,7 @@ export class BYOCService {
           throw new Error('No base64 decoding method available')
         }
       }
-      
+
       return JSON.parse(jsonString)
     } catch (error) {
       throw new Error('Failed to decrypt secrets')
@@ -421,7 +522,7 @@ export class BYOCService {
 
     const encoder = new TextEncoder()
     const decoder = new TextDecoder()
-    
+
     const keyMaterial = await window.crypto.subtle.importKey(
       'raw',
       encoder.encode(this.encryptionKey.padEnd(32, '0').slice(0, 32)),
@@ -450,10 +551,10 @@ export class BYOCService {
   ): Promise<{ success: boolean; data?: BYOCConfiguration; error?: string }> {
     try {
       // Separate sensitive fields from regular config
-      const provider = await this.getProviders().then(providers => 
+      const provider = await this.getProviders().then(providers =>
         providers.find(p => p.id === config.provider)
       )
-      
+
       if (!provider) {
         throw new Error('Invalid provider specified')
       }
@@ -471,9 +572,8 @@ export class BYOCService {
       })
 
       // Encrypt secrets
-      const encryptedSecrets = Object.keys(secrets).length > 0 
-        ? await this.encryptSecrets(secrets)
-        : ''
+      const encryptedSecrets =
+        Object.keys(secrets).length > 0 ? await this.encryptSecrets(secrets) : ''
 
       const fullConfig: BYOCConfiguration = {
         id: config.id || `byoc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -534,7 +634,7 @@ export class BYOCService {
       }
 
       const result = await response.json()
-      
+
       if (result.success) {
         // Log audit event
         await this.logAuditEvent({
@@ -566,9 +666,9 @@ export class BYOCService {
         heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ERROR.v1'
       })
 
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to save configuration' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to save configuration'
       }
     }
   }
@@ -577,14 +677,14 @@ export class BYOCService {
    * Get all configurations for an application
    */
   async getConfigurations(
-    applicationId: string, 
+    applicationId: string,
     organizationId: string
   ): Promise<BYOCConfiguration[]> {
     try {
       const response = await fetch(
         `${this.apiBaseUrl}?applicationId=${applicationId}&organizationId=${organizationId}`
       )
-      
+
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`)
       }
@@ -606,7 +706,7 @@ export class BYOCService {
     organizationId: string
   ): Promise<BYOCTestResult> {
     const startTime = Date.now()
-    
+
     try {
       const response = await fetch(`${this.apiBaseUrl}/test`, {
         method: 'POST',
@@ -624,7 +724,7 @@ export class BYOCService {
       }
 
       const result = await response.json()
-      
+
       const testResult: BYOCTestResult = {
         configId,
         testType: 'connection',
@@ -665,7 +765,7 @@ export class BYOCService {
     organizationId: string
   ): Promise<BYOCTestResult> {
     const startTime = Date.now()
-    
+
     try {
       const response = await fetch(`${this.apiBaseUrl}/test`, {
         method: 'POST',
@@ -679,7 +779,7 @@ export class BYOCService {
       })
 
       const result = await response.json()
-      
+
       return {
         configId,
         testType: 'permissions',
@@ -766,10 +866,7 @@ export class BYOCService {
   /**
    * Export configuration (with or without secrets)
    */
-  exportConfiguration(
-    config: BYOCConfiguration, 
-    includeSecrets = false
-  ): string {
+  exportConfiguration(config: BYOCConfiguration, includeSecrets = false): string {
     const exportData = {
       ...config,
       encryptedSecrets: includeSecrets ? config.encryptedSecrets : '***REDACTED***',
@@ -792,7 +889,7 @@ export class BYOCService {
   ): Promise<{ success: boolean; data?: BYOCConfiguration; error?: string }> {
     try {
       const importedData = JSON.parse(jsonData)
-      
+
       // Validate import format
       if (importedData.exportFormat !== 'HERA_BYOC_v1.0') {
         throw new Error('Invalid or unsupported import format')
@@ -829,7 +926,7 @@ export class BYOCService {
 
       // This would integrate with HERA's universal transaction system
       console.log('BYOC Audit Event:', auditEvent)
-      
+
       // In production, this would save to universal_transactions table
       // await fetch('/api/v1/universal/transactions', {
       //   method: 'POST',
@@ -856,17 +953,19 @@ export class BYOCService {
   ): Promise<{ healthy: number; unhealthy: number; results: Record<string, boolean> }> {
     const configs = await this.getConfigurations(applicationId, organizationId)
     const results: Record<string, boolean> = {}
-    
+
     // Test connections for all active configs
     await Promise.all(
-      configs.filter(c => c.metadata.isActive).map(async (config) => {
-        try {
-          const testResult = await this.testConnection(config.id, applicationId, organizationId)
-          results[config.id] = testResult.success
-        } catch (error) {
-          results[config.id] = false
-        }
-      })
+      configs
+        .filter(c => c.metadata.isActive)
+        .map(async config => {
+          try {
+            const testResult = await this.testConnection(config.id, applicationId, organizationId)
+            results[config.id] = testResult.success
+          } catch (error) {
+            results[config.id] = false
+          }
+        })
     )
 
     const healthy = Object.values(results).filter(Boolean).length

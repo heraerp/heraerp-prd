@@ -1,33 +1,29 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { 
-  Diamond, 
-  PieChart, 
-  Brain, 
-  Zap, 
+import React, { useState } from 'react'
+import { cn } from '@/lib/utils'
+import {
+  Diamond,
+  PieChart,
+  Brain,
+  Zap,
   Settings,
   Shield,
   ChevronDown,
   Bell,
   User
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 interface PWMNavigationProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  notifications?: number;
+  activeTab: string
+  onTabChange: (tab: string) => void
+  notifications?: number
 }
 
-export function PWMNavigation({ 
-  activeTab, 
-  onTabChange, 
-  notifications = 0 
-}: PWMNavigationProps) {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+export function PWMNavigation({ activeTab, onTabChange, notifications = 0 }: PWMNavigationProps) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   const tabs = [
     {
@@ -66,7 +62,7 @@ export function PWMNavigation({
       icon: Shield,
       description: 'Data encryption'
     }
-  ];
+  ]
 
   return (
     <>
@@ -87,31 +83,31 @@ export function PWMNavigation({
 
             {/* Tab Navigation */}
             <div className="flex items-center gap-1 p-1 bg-slate-900/50 rounded-2xl border border-slate-800">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                
+              {tabs.map(tab => {
+                const Icon = tab.icon
+                const isActive = activeTab === tab.id
+
                 return (
                   <button
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
                     className={cn(
-                      "relative flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200",
-                      "hover:bg-slate-800/50",
-                      isActive 
-                        ? "bg-slate-800 text-white shadow-lg" 
-                        : "text-slate-400 hover:text-slate-300"
+                      'relative flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200',
+                      'hover:bg-slate-800/50',
+                      isActive
+                        ? 'bg-slate-800 text-white shadow-lg'
+                        : 'text-slate-400 hover:text-slate-300'
                     )}
                   >
                     <Icon className="h-4 w-4" />
                     <span className="text-sm font-medium">{tab.label}</span>
-                    
+
                     {/* Active indicator */}
                     {isActive && (
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20" />
                     )}
                   </button>
-                );
+                )
               })}
             </div>
 
@@ -121,8 +117,8 @@ export function PWMNavigation({
               <button className="relative p-2 text-slate-400 hover:text-white transition-colors">
                 <Bell className="h-5 w-5" />
                 {notifications > 0 && (
-                  <Badge 
-                    variant="destructive" 
+                  <Badge
+                    variant="destructive"
                     className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs"
                   >
                     {notifications > 9 ? '9+' : notifications}
@@ -152,10 +148,7 @@ export function PWMNavigation({
                       <p className="text-white font-medium">Valued Client</p>
                       <p className="text-xs text-slate-400">Private Wealth Management</p>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full text-slate-300 border-slate-700"
-                    >
+                    <Button variant="outline" className="w-full text-slate-300 border-slate-700">
                       Account Settings
                     </Button>
                   </div>
@@ -169,31 +162,29 @@ export function PWMNavigation({
       {/* Mobile Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800">
         <div className="flex items-center justify-around py-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            
+          {tabs.map(tab => {
+            const Icon = tab.icon
+            const isActive = activeTab === tab.id
+
             return (
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
                 className={cn(
-                  "relative flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-200",
-                  "touch-target", // Minimum 44px touch target
-                  isActive 
-                    ? "text-emerald-400" 
-                    : "text-slate-500 hover:text-slate-300"
+                  'relative flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-200',
+                  'touch-target', // Minimum 44px touch target
+                  isActive ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'
                 )}
               >
                 <Icon className="h-5 w-5" />
                 <span className="text-xs font-medium">{tab.label}</span>
-                
+
                 {/* Active indicator */}
                 {isActive && (
                   <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 h-1 w-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full" />
                 )}
               </button>
-            );
+            )
           })}
         </div>
       </nav>
@@ -215,8 +206,8 @@ export function PWMNavigation({
             <button className="relative p-2 text-slate-400 hover:text-white transition-colors touch-target">
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
-                <Badge 
-                  variant="destructive" 
+                <Badge
+                  variant="destructive"
                   className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs"
                 >
                   {notifications > 9 ? '9+' : notifications}
@@ -232,5 +223,5 @@ export function PWMNavigation({
         </div>
       </header>
     </>
-  );
+  )
 }

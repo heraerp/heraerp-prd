@@ -4,7 +4,8 @@ import { verifyAuth } from '@/lib/auth/verify-auth'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // GET /api/v1/readiness/sessions - List all sessions
@@ -17,8 +18,9 @@ export async function GET(request: NextRequest) {
     // }
 
     const { searchParams } = new URL(request.url)
-    const organizationId = searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
-    
+    const organizationId =
+      searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
+
     if (!organizationId) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
@@ -30,7 +32,7 @@ export async function GET(request: NextRequest) {
       .eq('organization_id', organizationId)
       .eq('transaction_type', 'readiness_assessment')
       .order('created_at', { ascending: false })
-    
+
     if (error) {
       console.error('Failed to fetch sessions:', error)
       return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 })
@@ -38,16 +40,16 @@ export async function GET(request: NextRequest) {
 
     // For each session, fetch the answer lines
     const sessionsWithAnswers = await Promise.all(
-      (sessions || []).map(async (session) => {
+      (sessions || []).map(async session => {
         console.log(`📋 Fetching answers for session ${session.id}...`)
-        
+
         // Get transaction lines for this session
         const { data: answers, error: answersError } = await supabase
           .from('universal_transaction_lines')
           .select('*')
           .eq('transaction_id', session.id)
           .order('line_number', { ascending: true })
-        
+
         if (answersError) {
           console.error(`❌ Error fetching answers for session ${session.id}:`, answersError)
         } else {
@@ -61,7 +63,7 @@ export async function GET(request: NextRequest) {
             })
           }
         }
-        
+
         // Get AI insights from dynamic data
         const { data: insightsData } = await supabase
           .from('core_dynamic_data')
@@ -72,7 +74,9 @@ export async function GET(request: NextRequest) {
 
         let insights = null
         try {
-          insights = insightsData?.field_value_text ? JSON.parse(insightsData.field_value_text) : null
+          insights = insightsData?.field_value_text
+            ? JSON.parse(insightsData.field_value_text)
+            : null
         } catch (e) {
           console.warn('Failed to parse AI insights for session', session.id)
         }
@@ -84,14 +88,14 @@ export async function GET(request: NextRequest) {
           completionRate: (session.metadata as any)?.completionRate || 0,
           totalQuestions: (session.metadata as any)?.totalQuestions || 0
         }
-        
+
         console.log(`📊 Session ${session.id} summary:`, {
           status: session.transaction_status,
           answers_count: sessionWithAnswers.answers.length,
           has_insights: !!insights,
           completion_rate: sessionWithAnswers.completionRate
         })
-        
+
         return sessionWithAnswers
       })
     )
@@ -102,10 +106,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Failed to fetch sessions:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch sessions' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 })
   }
 }
 
@@ -155,10 +156,7 @@ export async function POST(request: NextRequest) {
 
     if (error || !session) {
       console.error('Failed to create session:', error)
-      return NextResponse.json(
-        { error: 'Failed to create session' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -167,9 +165,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Failed to create session:', error)
-    return NextResponse.json(
-      { error: 'Failed to create session' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
   }
 }

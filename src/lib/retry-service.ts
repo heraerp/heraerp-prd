@@ -33,18 +33,18 @@ export class RetryService {
    */
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     let lastError: Error
-    
+
     for (let attempt = 1; attempt <= this.options.maxAttempts; attempt++) {
       try {
         return await operation()
       } catch (error) {
         lastError = error as Error
-        
+
         // Don't retry if condition fails
         if (!this.options.retryCondition!(lastError)) {
           throw lastError
         }
-        
+
         // Don't delay on last attempt
         if (attempt < this.options.maxAttempts) {
           const delay = this.calculateDelay(attempt)
@@ -52,34 +52,28 @@ export class RetryService {
         }
       }
     }
-    
+
     throw new RetryExhaustedError(lastError!, this.options.maxAttempts)
   }
 
   /**
    * Execute with timeout and retry
    */
-  async executeWithTimeout<T>(
-    operation: () => Promise<T>,
-    timeoutMs: number
-  ): Promise<T> {
+  async executeWithTimeout<T>(operation: () => Promise<T>, timeoutMs: number): Promise<T> {
     return this.execute(async () => {
-      return Promise.race([
-        operation(),
-        this.createTimeoutPromise(timeoutMs)
-      ])
+      return Promise.race([operation(), this.createTimeoutPromise(timeoutMs)])
     })
   }
 
   private calculateDelay(attempt: number): number {
-    const exponentialDelay = this.options.baseDelayMs * 
-      Math.pow(this.options.backoffMultiplier, attempt - 1)
-    
+    const exponentialDelay =
+      this.options.baseDelayMs * Math.pow(this.options.backoffMultiplier, attempt - 1)
+
     const cappedDelay = Math.min(exponentialDelay, this.options.maxDelayMs)
-    
+
     // Add jitter to prevent thundering herd
     const jitter = Math.random() * this.options.jitterMs!
-    
+
     return cappedDelay + jitter
   }
 
@@ -97,14 +91,8 @@ export class RetryService {
 
   private defaultRetryCondition(error: Error): boolean {
     // Retry on transient errors
-    const retryableErrors = [
-      'ECONNRESET',
-      'ECONNREFUSED', 
-      'ETIMEDOUT',
-      'ENOTFOUND',
-      'EAI_AGAIN'
-    ]
-    
+    const retryableErrors = ['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN']
+
     const retryableMessages = [
       'database connection',
       'network error',
@@ -112,12 +100,12 @@ export class RetryService {
       'service unavailable',
       'too many connections'
     ]
-    
+
     // Check error codes
     if ('code' in error && retryableErrors.includes(error.code as string)) {
       return true
     }
-    
+
     // Check error messages
     const errorMessage = error.message.toLowerCase()
     return retryableMessages.some(msg => errorMessage.includes(msg))

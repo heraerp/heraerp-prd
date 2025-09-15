@@ -99,7 +99,7 @@ export class CloudStorageService {
    */
   async testConnection(): Promise<{ success: boolean; message: string; latency?: number }> {
     const startTime = Date.now()
-    
+
     try {
       switch (this.config.provider) {
         case 'aws':
@@ -111,8 +111,8 @@ export class CloudStorageService {
         case 'custom':
           return await this.testCustomConnection()
         default:
-          return { 
-            success: true, 
+          return {
+            success: true,
             message: 'HERA Default Storage is always available',
             latency: Date.now() - startTime
           }
@@ -129,9 +129,9 @@ export class CloudStorageService {
   /**
    * Test permissions (read, write, delete, process)
    */
-  async testPermissions(): Promise<{ 
+  async testPermissions(): Promise<{
     read: boolean
-    write: boolean 
+    write: boolean
     delete: boolean
     process: boolean
     errors: string[]
@@ -152,7 +152,7 @@ export class CloudStorageService {
           temporary: true,
           tags: { purpose: 'permission-test' }
         })
-        
+
         if (uploadResult.success) {
           results.write = true
 
@@ -164,7 +164,9 @@ export class CloudStorageService {
                 results.read = true
               }
             } catch (error) {
-              results.errors.push(`Read test failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+              results.errors.push(
+                `Read test failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+              )
             }
           }
 
@@ -176,7 +178,9 @@ export class CloudStorageService {
                 results.delete = true
               }
             } catch (error) {
-              results.errors.push(`Delete test failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+              results.errors.push(
+                `Delete test failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+              )
             }
           }
 
@@ -188,12 +192,16 @@ export class CloudStorageService {
                 results.process = true
               }
             } catch (error) {
-              results.errors.push(`Process test failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+              results.errors.push(
+                `Process test failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+              )
             }
           }
         }
       } catch (error) {
-        results.errors.push(`Write test failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        results.errors.push(
+          `Write test failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        )
       }
     }
 
@@ -204,8 +212,8 @@ export class CloudStorageService {
    * Upload file to cloud storage
    */
   async uploadFile(
-    fileName: string, 
-    file: File | Blob, 
+    fileName: string,
+    file: File | Blob,
     options?: {
       path?: string
       tags?: Record<string, string>
@@ -220,18 +228,18 @@ export class CloudStorageService {
 
     // Validate file size
     if (file.size > this.config.advanced.maxFileSize * 1024 * 1024) {
-      return { 
-        success: false, 
-        error: `File size exceeds limit of ${this.config.advanced.maxFileSize}MB` 
+      return {
+        success: false,
+        error: `File size exceeds limit of ${this.config.advanced.maxFileSize}MB`
       }
     }
 
     // Validate file type
     const fileExtension = fileName.split('.').pop()?.toLowerCase()
     if (fileExtension && !this.config.advanced.allowedFileTypes.includes(fileExtension)) {
-      return { 
-        success: false, 
-        error: `File type ${fileExtension} not allowed` 
+      return {
+        success: false,
+        error: `File type ${fileExtension} not allowed`
       }
     }
 
@@ -328,7 +336,10 @@ export class CloudStorageService {
   /**
    * Process file (OCR, AI analysis, etc.)
    */
-  async processFile(key: string, processingType: 'ocr' | 'text-extraction' | 'ai-analysis' | 'metadata-extraction'): Promise<CloudProcessingResult> {
+  async processFile(
+    key: string,
+    processingType: 'ocr' | 'text-extraction' | 'ai-analysis' | 'metadata-extraction'
+  ): Promise<CloudProcessingResult> {
     if (!this.config.permissions.process) {
       return { success: false, error: 'Process permission not granted' }
     }
@@ -371,7 +382,7 @@ export class CloudStorageService {
 
     try {
       const basePath = path || this.getBasePath()
-      
+
       switch (this.config.provider) {
         case 'aws':
           return await this.listFromAWS(basePath, limit)
@@ -408,7 +419,11 @@ export class CloudStorageService {
   }
 
   // AWS S3 Methods (Mock implementations - would use AWS SDK in production)
-  private async testAWSConnection(): Promise<{ success: boolean; message: string; latency: number }> {
+  private async testAWSConnection(): Promise<{
+    success: boolean
+    message: string
+    latency: number
+  }> {
     const startTime = Date.now()
     // Mock AWS connection test
     await new Promise(resolve => setTimeout(resolve, 200))
@@ -419,7 +434,11 @@ export class CloudStorageService {
     }
   }
 
-  private async uploadToAWS(key: string, file: File | Blob, tags?: Record<string, string>): Promise<CloudUploadResult> {
+  private async uploadToAWS(
+    key: string,
+    file: File | Blob,
+    tags?: Record<string, string>
+  ): Promise<CloudUploadResult> {
     // Mock AWS S3 upload
     await new Promise(resolve => setTimeout(resolve, 300))
     return {
@@ -466,7 +485,11 @@ export class CloudStorageService {
   }
 
   // Azure Blob Methods (Mock implementations)
-  private async testAzureConnection(): Promise<{ success: boolean; message: string; latency: number }> {
+  private async testAzureConnection(): Promise<{
+    success: boolean
+    message: string
+    latency: number
+  }> {
     const startTime = Date.now()
     await new Promise(resolve => setTimeout(resolve, 180))
     return {
@@ -476,7 +499,11 @@ export class CloudStorageService {
     }
   }
 
-  private async uploadToAzure(key: string, file: File | Blob, tags?: Record<string, string>): Promise<CloudUploadResult> {
+  private async uploadToAzure(
+    key: string,
+    file: File | Blob,
+    tags?: Record<string, string>
+  ): Promise<CloudUploadResult> {
     await new Promise(resolve => setTimeout(resolve, 250))
     return {
       success: true,
@@ -518,8 +545,12 @@ export class CloudStorageService {
   }
 
   // Similar mock implementations for GCP, Custom, and Default storage...
-  
-  private async testGCPConnection(): Promise<{ success: boolean; message: string; latency: number }> {
+
+  private async testGCPConnection(): Promise<{
+    success: boolean
+    message: string
+    latency: number
+  }> {
     const startTime = Date.now()
     await new Promise(resolve => setTimeout(resolve, 220))
     return {
@@ -529,7 +560,11 @@ export class CloudStorageService {
     }
   }
 
-  private async testCustomConnection(): Promise<{ success: boolean; message: string; latency: number }> {
+  private async testCustomConnection(): Promise<{
+    success: boolean
+    message: string
+    latency: number
+  }> {
     const startTime = Date.now()
     await new Promise(resolve => setTimeout(resolve, 160))
     return {
@@ -604,21 +639,25 @@ export class CloudStorageService {
   private async compressFile(file: File | Blob): Promise<Blob> {
     // Mock compression - in production would use actual compression library
     await new Promise(resolve => setTimeout(resolve, 200))
-    return new Blob([await file.arrayBuffer()], { 
-      type: file.type || 'application/octet-stream' 
+    return new Blob([await file.arrayBuffer()], {
+      type: file.type || 'application/octet-stream'
     })
   }
 
   private async encryptFile(file: File | Blob): Promise<Blob> {
     // Mock encryption - in production would use actual encryption
     await new Promise(resolve => setTimeout(resolve, 150))
-    return new Blob([await file.arrayBuffer()], { 
-      type: file.type || 'application/octet-stream' 
+    return new Blob([await file.arrayBuffer()], {
+      type: file.type || 'application/octet-stream'
     })
   }
 
   // Default storage implementations (mock)
-  private async uploadToDefault(key: string, file: File | Blob, tags?: Record<string, string>): Promise<CloudUploadResult> {
+  private async uploadToDefault(
+    key: string,
+    file: File | Blob,
+    tags?: Record<string, string>
+  ): Promise<CloudUploadResult> {
     await new Promise(resolve => setTimeout(resolve, 100))
     return {
       success: true,
@@ -660,7 +699,11 @@ export class CloudStorageService {
   }
 
   // More provider implementations would go here...
-  private async uploadToGCP(key: string, file: File | Blob, tags?: Record<string, string>): Promise<CloudUploadResult> {
+  private async uploadToGCP(
+    key: string,
+    file: File | Blob,
+    tags?: Record<string, string>
+  ): Promise<CloudUploadResult> {
     await new Promise(resolve => setTimeout(resolve, 280))
     return {
       success: true,
@@ -701,7 +744,11 @@ export class CloudStorageService {
     }))
   }
 
-  private async uploadToCustom(key: string, file: File | Blob, tags?: Record<string, string>): Promise<CloudUploadResult> {
+  private async uploadToCustom(
+    key: string,
+    file: File | Blob,
+    tags?: Record<string, string>
+  ): Promise<CloudUploadResult> {
     await new Promise(resolve => setTimeout(resolve, 320))
     return {
       success: true,

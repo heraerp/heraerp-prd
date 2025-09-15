@@ -1,52 +1,52 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  ShoppingCart, 
-  Package, 
-  Factory, 
+import React, { useState } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  ShoppingCart,
+  Package,
+  Factory,
   TruckIcon,
   BarChart,
   TrendingUp,
   AlertCircle,
   CheckCircle
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { 
-  SalesOrderForm, 
-  PurchaseOrderForm, 
-  ManufacturingOrderDashboard, 
-  InventoryMovementTracker 
-} from './transactions';
+} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import {
+  SalesOrderForm,
+  PurchaseOrderForm,
+  ManufacturingOrderDashboard,
+  InventoryMovementTracker
+} from './transactions'
 
 interface TransactionStats {
   salesOrders: {
-    total: number;
-    pending: number;
-    value: number;
-  };
+    total: number
+    pending: number
+    value: number
+  }
   purchaseOrders: {
-    total: number;
-    pending: number;
-    value: number;
-  };
+    total: number
+    pending: number
+    value: number
+  }
   manufacturingOrders: {
-    total: number;
-    inProgress: number;
-    completed: number;
-  };
+    total: number
+    inProgress: number
+    completed: number
+  }
   inventoryMovements: {
-    today: number;
-    week: number;
-    stockValue: number;
-  };
+    today: number
+    week: number
+    stockValue: number
+  }
 }
 
 export function TransactionsDashboard() {
-  const [activeTab, setActiveTab] = useState('sales');
-  
+  const [activeTab, setActiveTab] = useState('sales')
+
   // In a real implementation, these would be fetched from the API
   const stats: TransactionStats = {
     salesOrders: {
@@ -69,7 +69,7 @@ export function TransactionsDashboard() {
       week: 67,
       stockValue: 425000
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -80,18 +80,18 @@ export function TransactionsDashboard() {
           Manage all furniture business transactions with UCR integration
         </p>
       </div>
-      
+
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Sales Orders
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Sales Orders</CardTitle>
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">AED {(stats.salesOrders.value / 1000).toFixed(0)}K</div>
+            <div className="text-2xl font-bold">
+              AED {(stats.salesOrders.value / 1000).toFixed(0)}K
+            </div>
             <div className="flex items-center gap-2 mt-2">
               <Badge variant="outline">{stats.salesOrders.total} Total</Badge>
               <Badge variant="secondary">{stats.salesOrders.pending} Pending</Badge>
@@ -102,32 +102,29 @@ export function TransactionsDashboard() {
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Purchase Orders
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Purchase Orders</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">AED {(stats.purchaseOrders.value / 1000).toFixed(0)}K</div>
+            <div className="text-2xl font-bold">
+              AED {(stats.purchaseOrders.value / 1000).toFixed(0)}K
+            </div>
             <div className="flex items-center gap-2 mt-2">
               <Badge variant="outline">{stats.purchaseOrders.total} Total</Badge>
               <Badge variant="secondary">{stats.purchaseOrders.pending} Pending</Badge>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              <AlertCircle className="inline w-3 h-3 mr-1 text-orange-500" />
-              3 require approval
+              <AlertCircle className="inline w-3 h-3 mr-1 text-orange-500" />3 require approval
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Manufacturing
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Manufacturing</CardTitle>
             <Factory className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -143,16 +140,16 @@ export function TransactionsDashboard() {
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Inventory Value
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">AED {(stats.inventoryMovements.stockValue / 1000).toFixed(0)}K</div>
+            <div className="text-2xl font-bold">
+              AED {(stats.inventoryMovements.stockValue / 1000).toFixed(0)}K
+            </div>
             <div className="flex items-center gap-2 mt-2">
               <Badge variant="outline">{stats.inventoryMovements.today} Today</Badge>
               <Badge variant="outline">{stats.inventoryMovements.week} This Week</Badge>
@@ -164,13 +161,14 @@ export function TransactionsDashboard() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Transaction Tabs */}
       <Card className="shadow-sm">
         <CardHeader>
           <CardTitle>Transaction Management</CardTitle>
           <CardDescription>
-            Create and manage furniture business transactions with automatic UCR validation, pricing, and approvals
+            Create and manage furniture business transactions with automatic UCR validation,
+            pricing, and approvals
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -193,26 +191,26 @@ export function TransactionsDashboard() {
                 Inventory
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="sales" className="mt-6">
               <SalesOrderForm />
             </TabsContent>
-            
+
             <TabsContent value="purchase" className="mt-6">
               <PurchaseOrderForm />
             </TabsContent>
-            
+
             <TabsContent value="manufacturing" className="mt-6">
               <ManufacturingOrderDashboard />
             </TabsContent>
-            
+
             <TabsContent value="inventory" className="mt-6">
               <InventoryMovementTracker />
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
-      
+
       {/* UCR Integration Info */}
       <Card className="bg-muted/50">
         <CardHeader>
@@ -251,5 +249,5 @@ export function TransactionsDashboard() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

@@ -21,6 +21,7 @@ import { ResourceCalendar } from '@/components/calendar/UniversalCalendar'
 ### Usage Examples
 
 #### Salon Implementation
+
 ```tsx
 <UniversalCalendar
   businessType="salon"
@@ -32,6 +33,7 @@ import { ResourceCalendar } from '@/components/calendar/UniversalCalendar'
 ```
 
 #### Healthcare Implementation
+
 ```tsx
 <UniversalCalendar
   businessType="healthcare"
@@ -43,6 +45,7 @@ import { ResourceCalendar } from '@/components/calendar/UniversalCalendar'
 ```
 
 #### Manufacturing Implementation
+
 ```tsx
 <UniversalCalendar
   businessType="manufacturing"
@@ -75,13 +78,13 @@ If you're using any of these deprecated calendars, switch to UniversalCalendar:
 
 ### Standard Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `businessType` | string | Type of business (salon, healthcare, manufacturing, etc.) |
-| `resourceType` | string | Type of resource (stylist, doctor, machine, etc.) |
-| `appointmentType` | string | Type of appointment (service, consultation, job, etc.) |
-| `organizations` | array | List of organizations/branches to display |
-| `currentOrganizationId` | string | Current selected organization ID |
+| Prop                    | Type   | Description                                               |
+| ----------------------- | ------ | --------------------------------------------------------- |
+| `businessType`          | string | Type of business (salon, healthcare, manufacturing, etc.) |
+| `resourceType`          | string | Type of resource (stylist, doctor, machine, etc.)         |
+| `appointmentType`       | string | Type of appointment (service, consultation, job, etc.)    |
+| `organizations`         | array  | List of organizations/branches to display                 |
+| `currentOrganizationId` | string | Current selected organization ID                          |
 
 ## DO NOT CREATE NEW CALENDAR COMPONENTS
 

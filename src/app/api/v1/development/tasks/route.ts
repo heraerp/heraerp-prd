@@ -3,7 +3,7 @@ import { headers } from 'next/headers'
 
 /**
  * HERA Development Tasks API
- * 
+ *
  * Meta-system for tracking HERA's own development using universal architecture:
  * - Development tasks stored as core_entities with entity_type='development_task'
  * - Work logs stored as universal_transactions with transaction_type='development_work'
@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
     const tasksWithLogs = tasks.map(task => {
       const workLogs = mockWorkLogs.filter(log => log.metadata.task_id === task.id)
       const totalHours = workLogs.reduce((sum, log) => sum + log.total_amount, 0)
-      
+
       return {
         ...task,
         work_logs: workLogs,
@@ -177,12 +177,14 @@ export async function GET(request: NextRequest) {
           completed: tasks.filter(t => t.status === 'completed').length,
           in_progress: tasks.filter(t => t.status === 'in_progress').length,
           blocked: tasks.filter(t => t.status === 'blocked').length,
-          total_hours_estimated: tasks.reduce((sum, t) => sum + (t.metadata.estimated_hours || 0), 0),
+          total_hours_estimated: tasks.reduce(
+            (sum, t) => sum + (t.metadata.estimated_hours || 0),
+            0
+          ),
           total_hours_actual: tasks.reduce((sum, t) => sum + (t.metadata.actual_hours || 0), 0)
         }
       }
     })
-
   } catch (error) {
     console.error('Development tasks API error:', error)
     return NextResponse.json(
@@ -272,11 +274,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid action' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid action' }, { status: 400 })
   } catch (error) {
     console.error('Development tasks API error:', error)
     return NextResponse.json(

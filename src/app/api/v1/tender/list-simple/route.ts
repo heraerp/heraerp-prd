@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   return enterpriseMiddleware(request, async (req, ctx) => {
     const organizationId = ctx.organizationId
     const searchParams = request.nextUrl.searchParams
-    
+
     const search = searchParams.get('q') || ''
     const status = searchParams.get('status') || 'all'
     const limit = parseInt(searchParams.get('limit') || '50')
@@ -21,10 +21,12 @@ export async function GET(request: NextRequest) {
       // Get tender entities
       let query = supabase
         .from('core_entities')
-        .select(`
+        .select(
+          `
           *,
           core_dynamic_data(*)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.v1')
         .range(offset, offset + limit - 1)
@@ -43,7 +45,8 @@ export async function GET(request: NextRequest) {
       const formattedTenders = (tenders || []).map((tender: any) => {
         // Extract dynamic data
         const dynamicData = (tender.core_dynamic_data || []).reduce((acc: any, item: any) => {
-          acc[item.field_name] = item.field_value_text || item.field_value_number || item.field_value_date
+          acc[item.field_name] =
+            item.field_value_text || item.field_value_number || item.field_value_date
           return acc
         }, {})
 
@@ -52,7 +55,10 @@ export async function GET(request: NextRequest) {
         if (dynamicData.closing_date) {
           const closingDate = new Date(dynamicData.closing_date)
           const today = new Date()
-          daysLeft = Math.max(0, Math.ceil((closingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))
+          daysLeft = Math.max(
+            0,
+            Math.ceil((closingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+          )
         }
 
         return {
@@ -73,9 +79,10 @@ export async function GET(request: NextRequest) {
       })
 
       // Filter by status if needed
-      const filteredTenders = status === 'all' 
-        ? formattedTenders 
-        : formattedTenders.filter((t: any) => t.status === status)
+      const filteredTenders =
+        status === 'all'
+          ? formattedTenders
+          : formattedTenders.filter((t: any) => t.status === status)
 
       return NextResponse.json({
         success: true,
@@ -93,8 +100,8 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error('Error fetching tender list:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to fetch tender list',
           smart_code: 'HERA.FURNITURE.TENDER.LIST.ERROR.v1'
         },

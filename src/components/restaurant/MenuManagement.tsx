@@ -8,10 +8,10 @@ interface MenuManagementProps {
   isDemoMode?: boolean
 }
 
-export function MenuManagement({ 
-  organizationId, 
+export function MenuManagement({
+  organizationId,
   smartCodes,
-  isDemoMode = false 
+  isDemoMode = false
 }: MenuManagementProps) {
   return (
     <div className="p-6 text-center">

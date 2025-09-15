@@ -14,12 +14,15 @@ export async function DELETE(
 ) {
   try {
     const documentId = params.id
-    
+
     if (!documentId) {
-      return NextResponse.json({
-        success: false,
-        message: 'Document ID required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Document ID required'
+        },
+        { status: 400 }
+      )
     }
 
     // Get document details first
@@ -30,10 +33,13 @@ export async function DELETE(
       .single()
 
     if (fetchError || !document) {
-      return NextResponse.json({
-        success: false,
-        message: 'Document not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Document not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Get file path from dynamic data
@@ -72,28 +78,29 @@ export async function DELETE(
       .eq('id', documentId)
 
     if (entityError) {
-      return NextResponse.json({
-        success: false,
-        message: 'Failed to delete document'
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Failed to delete document'
+        },
+        { status: 500 }
+      )
     }
 
     // Record deletion transaction
-    const { error: transactionError } = await supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: document.organization_id,
-        transaction_type: 'document_deletion',
-        transaction_code: `DEL-${Date.now()}`,
-        transaction_date: new Date().toISOString(),
-        reference_entity_id: documentId,
-        smart_code: 'HERA.FURNITURE.DOCUMENT.DELETE.TXN.v1',
-        metadata: {
-          document_name: document.entity_name,
-          deleted_at: new Date().toISOString(),
-          action: 'delete'
-        }
-      })
+    const { error: transactionError } = await supabase.from('universal_transactions').insert({
+      organization_id: document.organization_id,
+      transaction_type: 'document_deletion',
+      transaction_code: `DEL-${Date.now()}`,
+      transaction_date: new Date().toISOString(),
+      reference_entity_id: documentId,
+      smart_code: 'HERA.FURNITURE.DOCUMENT.DELETE.TXN.v1',
+      metadata: {
+        document_name: document.entity_name,
+        deleted_at: new Date().toISOString(),
+        action: 'delete'
+      }
+    })
 
     if (transactionError) {
       console.error('Error creating deletion transaction:', transactionError)
@@ -103,13 +110,15 @@ export async function DELETE(
       success: true,
       message: 'Document deleted successfully'
     })
-
   } catch (error) {
     console.error('Document deletion error:', error)
-    return NextResponse.json({
-      success: false,
-      message: 'Document deletion failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Document deletion failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

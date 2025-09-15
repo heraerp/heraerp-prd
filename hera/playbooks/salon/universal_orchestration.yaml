@@ -1,0 +1,13 @@
+smart_code: HERA.SYSTEM.PLAYBOOK.SALON.SEED.v1
+contracts:
+  - entities.core.yml
+  - entities.keydefs.yml
+  - dynamic_data.seed.yml
+  - relationships.seed.yml
+  - reports.yml
+  - read_models.yml
+  - smart_codes.yml
+  - tests.uat.yml
+vars:
+  default_currency: AED
+

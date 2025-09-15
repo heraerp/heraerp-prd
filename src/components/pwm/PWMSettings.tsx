@@ -1,31 +1,37 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Settings, 
-  User, 
-  Bell, 
-  Shield, 
-  Palette, 
+import React, { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Settings,
+  User,
+  Bell,
+  Shield,
+  Palette,
   Globe,
   Smartphone,
   Mail,
   Lock,
   Eye,
   Download
-} from 'lucide-react';
-import { PWMPreferences } from '@/lib/pwm/types';
+} from 'lucide-react'
+import { PWMPreferences } from '@/lib/pwm/types'
 
 interface PWMSettingsProps {
-  organizationId: string;
+  organizationId: string
 }
 
 export function PWMSettings({ organizationId }: PWMSettingsProps) {
@@ -43,24 +49,27 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
       widgets: ['wealth', 'performance', 'ai', 'portfolio'],
       theme: 'dark'
     }
-  });
+  })
 
   const handlePreferenceChange = (key: keyof PWMPreferences, value: any) => {
     setPreferences(prev => ({
       ...prev,
       [key]: value
-    }));
-  };
+    }))
+  }
 
-  const handleNotificationChange = (key: keyof PWMPreferences['notificationPreferences'], value: boolean) => {
+  const handleNotificationChange = (
+    key: keyof PWMPreferences['notificationPreferences'],
+    value: boolean
+  ) => {
     setPreferences(prev => ({
       ...prev,
       notificationPreferences: {
         ...prev.notificationPreferences,
         [key]: value
       }
-    }));
-  };
+    }))
+  }
 
   return (
     <div className="space-y-6">
@@ -79,23 +88,38 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
 
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList className="grid grid-cols-5 w-full max-w-2xl bg-slate-800/50 p-1">
-          <TabsTrigger value="profile" className="data-[state=active]:bg-slate-700 flex items-center gap-2">
+          <TabsTrigger
+            value="profile"
+            className="data-[state=active]:bg-slate-700 flex items-center gap-2"
+          >
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Profile</span>
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="data-[state=active]:bg-slate-700 flex items-center gap-2">
+          <TabsTrigger
+            value="notifications"
+            className="data-[state=active]:bg-slate-700 flex items-center gap-2"
+          >
             <Bell className="h-4 w-4" />
             <span className="hidden sm:inline">Alerts</span>
           </TabsTrigger>
-          <TabsTrigger value="preferences" className="data-[state=active]:bg-slate-700 flex items-center gap-2">
+          <TabsTrigger
+            value="preferences"
+            className="data-[state=active]:bg-slate-700 flex items-center gap-2"
+          >
             <Palette className="h-4 w-4" />
             <span className="hidden sm:inline">Display</span>
           </TabsTrigger>
-          <TabsTrigger value="security" className="data-[state=active]:bg-slate-700 flex items-center gap-2">
+          <TabsTrigger
+            value="security"
+            className="data-[state=active]:bg-slate-700 flex items-center gap-2"
+          >
             <Shield className="h-4 w-4" />
             <span className="hidden sm:inline">Security</span>
           </TabsTrigger>
-          <TabsTrigger value="data" className="data-[state=active]:bg-slate-700 flex items-center gap-2">
+          <TabsTrigger
+            value="data"
+            className="data-[state=active]:bg-slate-700 flex items-center gap-2"
+          >
             <Download className="h-4 w-4" />
             <span className="hidden sm:inline">Data</span>
           </TabsTrigger>
@@ -105,27 +129,33 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
         <TabsContent value="profile" className="space-y-6">
           <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
             <h3 className="text-lg font-semibold text-white mb-4">Profile Information</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="firstName" className="text-slate-300">First Name</Label>
-                <Input 
+                <Label htmlFor="firstName" className="text-slate-300">
+                  First Name
+                </Label>
+                <Input
                   id="firstName"
                   defaultValue="John"
                   className="mt-1 bg-slate-800/50 border-slate-700"
                 />
               </div>
               <div>
-                <Label htmlFor="lastName" className="text-slate-300">Last Name</Label>
-                <Input 
+                <Label htmlFor="lastName" className="text-slate-300">
+                  Last Name
+                </Label>
+                <Input
                   id="lastName"
                   defaultValue="Doe"
                   className="mt-1 bg-slate-800/50 border-slate-700"
                 />
               </div>
               <div>
-                <Label htmlFor="email" className="text-slate-300">Email</Label>
-                <Input 
+                <Label htmlFor="email" className="text-slate-300">
+                  Email
+                </Label>
+                <Input
                   id="email"
                   type="email"
                   defaultValue="john.doe@example.com"
@@ -133,8 +163,10 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="phone" className="text-slate-300">Phone</Label>
-                <Input 
+                <Label htmlFor="phone" className="text-slate-300">
+                  Phone
+                </Label>
+                <Input
                   id="phone"
                   defaultValue="+1 (555) 123-4567"
                   className="mt-1 bg-slate-800/50 border-slate-700"
@@ -143,7 +175,9 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
             </div>
 
             <div className="mt-6">
-              <Label htmlFor="timezone" className="text-slate-300">Timezone</Label>
+              <Label htmlFor="timezone" className="text-slate-300">
+                Timezone
+              </Label>
               <Select defaultValue="america/new_york">
                 <SelectTrigger className="mt-1 bg-slate-800/50 border-slate-700">
                   <SelectValue />
@@ -160,12 +194,12 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
 
           <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
             <h3 className="text-lg font-semibold text-white mb-4">Investment Profile</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <Label className="text-slate-300">Risk Tolerance</Label>
-                <Select 
-                  value={preferences.riskTolerance} 
+                <Select
+                  value={preferences.riskTolerance}
                   onValueChange={(value: any) => handlePreferenceChange('riskTolerance', value)}
                 >
                   <SelectTrigger className="mt-1 bg-slate-800/50 border-slate-700">
@@ -180,8 +214,8 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
               </div>
               <div>
                 <Label className="text-slate-300">Investment Horizon</Label>
-                <Select 
-                  value={preferences.investmentHorizon} 
+                <Select
+                  value={preferences.investmentHorizon}
                   onValueChange={(value: any) => handlePreferenceChange('investmentHorizon', value)}
                 >
                   <SelectTrigger className="mt-1 bg-slate-800/50 border-slate-700">
@@ -196,9 +230,9 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
               </div>
               <div>
                 <Label className="text-slate-300">Default Currency</Label>
-                <Select 
-                  value={preferences.defaultCurrency} 
-                  onValueChange={(value) => handlePreferenceChange('defaultCurrency', value)}
+                <Select
+                  value={preferences.defaultCurrency}
+                  onValueChange={value => handlePreferenceChange('defaultCurrency', value)}
                 >
                   <SelectTrigger className="mt-1 bg-slate-800/50 border-slate-700">
                     <SelectValue />
@@ -219,19 +253,21 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
         <TabsContent value="notifications" className="space-y-6">
           <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
             <h3 className="text-lg font-semibold text-white mb-4">Notification Preferences</h3>
-            
+
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Bell className="h-5 w-5 text-blue-400" />
                   <div>
                     <p className="text-white font-medium">Price Alerts</p>
-                    <p className="text-sm text-slate-400">Get notified of significant price movements</p>
+                    <p className="text-sm text-slate-400">
+                      Get notified of significant price movements
+                    </p>
                   </div>
                 </div>
-                <Switch 
+                <Switch
                   checked={preferences.notificationPreferences.priceAlerts}
-                  onCheckedChange={(checked) => handleNotificationChange('priceAlerts', checked)}
+                  onCheckedChange={checked => handleNotificationChange('priceAlerts', checked)}
                 />
               </div>
 
@@ -240,12 +276,14 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                   <Mail className="h-5 w-5 text-purple-400" />
                   <div>
                     <p className="text-white font-medium">AI Insights</p>
-                    <p className="text-sm text-slate-400">Receive AI-generated investment recommendations</p>
+                    <p className="text-sm text-slate-400">
+                      Receive AI-generated investment recommendations
+                    </p>
                   </div>
                 </div>
-                <Switch 
+                <Switch
                   checked={preferences.notificationPreferences.aiInsights}
-                  onCheckedChange={(checked) => handleNotificationChange('aiInsights', checked)}
+                  onCheckedChange={checked => handleNotificationChange('aiInsights', checked)}
                 />
               </div>
 
@@ -257,9 +295,9 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                     <p className="text-sm text-slate-400">Get notified of all transactions</p>
                   </div>
                 </div>
-                <Switch 
+                <Switch
                   checked={preferences.notificationPreferences.transactions}
-                  onCheckedChange={(checked) => handleNotificationChange('transactions', checked)}
+                  onCheckedChange={checked => handleNotificationChange('transactions', checked)}
                 />
               </div>
 
@@ -268,12 +306,14 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                   <Globe className="h-5 w-5 text-yellow-400" />
                   <div>
                     <p className="text-white font-medium">Performance Reports</p>
-                    <p className="text-sm text-slate-400">Weekly and monthly performance summaries</p>
+                    <p className="text-sm text-slate-400">
+                      Weekly and monthly performance summaries
+                    </p>
                   </div>
                 </div>
-                <Switch 
+                <Switch
                   checked={preferences.notificationPreferences.performance}
-                  onCheckedChange={(checked) => handleNotificationChange('performance', checked)}
+                  onCheckedChange={checked => handleNotificationChange('performance', checked)}
                 />
               </div>
             </div>
@@ -284,7 +324,7 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
         <TabsContent value="preferences" className="space-y-6">
           <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
             <h3 className="text-lg font-semibold text-white mb-4">Display Preferences</h3>
-            
+
             <div className="space-y-6">
               <div>
                 <Label className="text-slate-300">Theme</Label>
@@ -294,17 +334,24 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="dark">Dark (Premium)</SelectItem>
-                    <SelectItem value="light" disabled>Light (Coming Soon)</SelectItem>
+                    <SelectItem value="light" disabled>
+                      Light (Coming Soon)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-slate-500 mt-1">Premium dark theme optimized for wealth management</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Premium dark theme optimized for wealth management
+                </p>
               </div>
 
               <div>
                 <Label className="text-slate-300">Dashboard Layout</Label>
                 <div className="grid grid-cols-2 gap-3 mt-2">
-                  {['wealth', 'performance', 'ai', 'portfolio'].map((widget) => (
-                    <div key={widget} className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                  {['wealth', 'performance', 'ai', 'portfolio'].map(widget => (
+                    <div
+                      key={widget}
+                      className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700/50"
+                    >
                       <span className="text-sm text-slate-300 capitalize">{widget}</span>
                       <Switch defaultChecked />
                     </div>
@@ -319,7 +366,7 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
         <TabsContent value="security" className="space-y-6">
           <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
             <h3 className="text-lg font-semibold text-white mb-4">Security Settings</h3>
-            
+
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
                 <div className="flex items-center gap-3">
@@ -329,7 +376,10 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                     <p className="text-sm text-slate-400">Enabled via Authenticator App</p>
                   </div>
                 </div>
-                <Badge variant="outline" className="bg-green-500/20 text-green-300 border-green-500/30">
+                <Badge
+                  variant="outline"
+                  className="bg-green-500/20 text-green-300 border-green-500/30"
+                >
                   Active
                 </Badge>
               </div>
@@ -356,17 +406,26 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
         <TabsContent value="data" className="space-y-6">
           <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
             <h3 className="text-lg font-semibold text-white mb-4">Data Management</h3>
-            
+
             <div className="space-y-4">
-              <Button variant="outline" className="w-full justify-start bg-slate-800/50 border-slate-700">
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-slate-800/50 border-slate-700"
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export Portfolio Data (CSV)
               </Button>
-              <Button variant="outline" className="w-full justify-start bg-slate-800/50 border-slate-700">
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-slate-800/50 border-slate-700"
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export Transaction History (PDF)
               </Button>
-              <Button variant="outline" className="w-full justify-start bg-slate-800/50 border-slate-700">
+              <Button
+                variant="outline"
+                className="w-full justify-start bg-slate-800/50 border-slate-700"
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export Tax Documents (ZIP)
               </Button>
@@ -377,10 +436,8 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button className="px-8 bg-emerald-600 hover:bg-emerald-700">
-          Save Changes
-        </Button>
+        <Button className="px-8 bg-emerald-600 hover:bg-emerald-700">Save Changes</Button>
       </div>
     </div>
-  );
+  )
 }

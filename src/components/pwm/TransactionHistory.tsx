@@ -1,23 +1,37 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, Filter, Download, Search, ArrowUpDown, TrendingUp, TrendingDown } from 'lucide-react';
-import { WealthTransaction } from '@/lib/pwm/types';
-import { cn } from '@/lib/utils';
+import React, { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Calendar,
+  Filter,
+  Download,
+  Search,
+  ArrowUpDown,
+  TrendingUp,
+  TrendingDown
+} from 'lucide-react'
+import { WealthTransaction } from '@/lib/pwm/types'
+import { cn } from '@/lib/utils'
 
 interface TransactionHistoryProps {
-  organizationId: string;
+  organizationId: string
 }
 
 export function TransactionHistory({ organizationId }: TransactionHistoryProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  const [sortBy, setSortBy] = useState('date');
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterType, setFilterType] = useState('all')
+  const [sortBy, setSortBy] = useState('date')
 
   // Mock transaction data
   const transactions: WealthTransaction[] = [
@@ -65,37 +79,37 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       status: 'completed',
       created_at: '2024-01-05T11:20:00Z'
     }
-  ];
+  ]
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
       case 'buy':
-        return <TrendingUp className="h-4 w-4 text-emerald-400" />;
+        return <TrendingUp className="h-4 w-4 text-emerald-400" />
       case 'sell':
-        return <TrendingDown className="h-4 w-4 text-red-400" />;
+        return <TrendingDown className="h-4 w-4 text-red-400" />
       case 'dividend':
-        return <TrendingUp className="h-4 w-4 text-blue-400" />;
+        return <TrendingUp className="h-4 w-4 text-blue-400" />
       case 'rebalance':
-        return <ArrowUpDown className="h-4 w-4 text-purple-400" />;
+        return <ArrowUpDown className="h-4 w-4 text-purple-400" />
       default:
-        return <ArrowUpDown className="h-4 w-4 text-slate-400" />;
+        return <ArrowUpDown className="h-4 w-4 text-slate-400" />
     }
-  };
+  }
 
   const getTransactionColor = (type: string) => {
     switch (type) {
       case 'buy':
-        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
       case 'sell':
-        return 'bg-red-500/20 text-red-300 border-red-500/30';
+        return 'bg-red-500/20 text-red-300 border-red-500/30'
       case 'dividend':
-        return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+        return 'bg-blue-500/20 text-blue-300 border-blue-500/30'
       case 'rebalance':
-        return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+        return 'bg-purple-500/20 text-purple-300 border-purple-500/30'
       default:
-        return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+        return 'bg-slate-500/20 text-slate-300 border-slate-500/30'
     }
-  };
+  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -103,8 +117,8 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(amount);
-  };
+    }).format(amount)
+  }
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString([], {
@@ -113,8 +127,8 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    });
-  };
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -139,7 +153,7 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
             <Input
               placeholder="Search transactions..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10 bg-slate-800/50 border-slate-700"
             />
           </div>
@@ -181,41 +195,51 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
       {/* Transaction List */}
       <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-800">
         <div className="divide-y divide-slate-800">
-          {transactions.map((transaction) => (
-            <div key={transaction.transaction_id} className="p-6 hover:bg-slate-800/30 transition-colors">
+          {transactions.map(transaction => (
+            <div
+              key={transaction.transaction_id}
+              className="p-6 hover:bg-slate-800/30 transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-xl bg-slate-800/50 border border-slate-700/50">
                     {getTransactionIcon(transaction.transaction_type)}
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <h3 className="font-medium text-white">{transaction.description}</h3>
-                      <Badge 
+                      <Badge
                         variant="outline"
-                        className={cn("text-xs", getTransactionColor(transaction.transaction_type))}
+                        className={cn('text-xs', getTransactionColor(transaction.transaction_type))}
                       >
                         {transaction.transaction_type}
                       </Badge>
                     </div>
                     <p className="text-sm text-slate-400">
-                      {formatDate(transaction.transaction_date)} • 
-                      Status: <span className="text-emerald-400">{transaction.status}</span>
+                      {formatDate(transaction.transaction_date)} • Status:{' '}
+                      <span className="text-emerald-400">{transaction.status}</span>
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <p className={cn(
-                    "text-xl font-bold",
-                    transaction.transaction_type === 'buy' || transaction.transaction_type === 'dividend'
-                      ? "text-emerald-400"
-                      : transaction.transaction_type === 'sell'
-                      ? "text-red-400"
-                      : "text-white"
-                  )}>
-                    {transaction.transaction_type === 'sell' ? '+' : transaction.transaction_type === 'buy' ? '-' : '+'}
+                  <p
+                    className={cn(
+                      'text-xl font-bold',
+                      transaction.transaction_type === 'buy' ||
+                        transaction.transaction_type === 'dividend'
+                        ? 'text-emerald-400'
+                        : transaction.transaction_type === 'sell'
+                          ? 'text-red-400'
+                          : 'text-white'
+                    )}
+                  >
+                    {transaction.transaction_type === 'sell'
+                      ? '+'
+                      : transaction.transaction_type === 'buy'
+                        ? '-'
+                        : '+'}
                     {formatCurrency(transaction.total_amount)}
                   </p>
                   <p className="text-sm text-slate-400">{transaction.currency}</p>
@@ -226,7 +250,8 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
               {transaction.transaction_type === 'rebalance' && (
                 <div className="mt-4 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
                   <p className="text-sm text-purple-300">
-                    📊 AI Analysis: This rebalancing is projected to improve portfolio efficiency by 2.3% annually
+                    📊 AI Analysis: This rebalancing is projected to improve portfolio efficiency by
+                    2.3% annually
                   </p>
                 </div>
               )}
@@ -236,8 +261,8 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
 
         {/* Load More */}
         <div className="p-6 border-t border-slate-800">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full text-slate-400 hover:text-white hover:bg-slate-800/50"
           >
             Load More Transactions
@@ -261,5 +286,5 @@ export function TransactionHistory({ organizationId }: TransactionHistoryProps) 
         </Card>
       </div>
     </div>
-  );
+  )
 }

@@ -10,24 +10,33 @@ export interface UniversalCOAAccount {
   entity_name: string
   smart_code: string
   status: string
-  account_type: 'assets' | 'liabilities' | 'equity' | 'revenue' | 'cost_of_sales' | 'direct_expenses' | 'indirect_expenses' | 'taxes_extraordinary' | 'statistical'
+  account_type:
+    | 'assets'
+    | 'liabilities'
+    | 'equity'
+    | 'revenue'
+    | 'cost_of_sales'
+    | 'direct_expenses'
+    | 'indirect_expenses'
+    | 'taxes_extraordinary'
+    | 'statistical'
   normal_balance: 'debit' | 'credit'
   vat_applicable: string
   currency: string
   // IFRS Lineage - MANDATORY FIELDS
-  ifrs_classification: string        // IFRS Statement Classification
-  parent_account: string             // Parent account code for hierarchy
-  account_level: number              // 1=Header, 2=Category, 3=SubCategory, 4=Account, 5=SubAccount
-  ifrs_category: string              // IFRS Presentation Category
-  presentation_order: number         // Order in financial statements
-  is_header: boolean                 // True for header/summary accounts
-  rollup_account: string            // Account where this rolls up to
+  ifrs_classification: string // IFRS Statement Classification
+  parent_account: string // Parent account code for hierarchy
+  account_level: number // 1=Header, 2=Category, 3=SubCategory, 4=Account, 5=SubAccount
+  ifrs_category: string // IFRS Presentation Category
+  presentation_order: number // Order in financial statements
+  is_header: boolean // True for header/summary accounts
+  rollup_account: string // Account where this rolls up to
   // Additional IFRS Fields
-  ifrs_statement?: 'SFP' | 'SPL' | 'SCE' | 'SCF' | 'NOTES'  // Statement of Financial Position, Profit/Loss, Changes in Equity, Cash Flows
-  ifrs_subcategory?: string          // Detailed IFRS subcategory
-  consolidation_method?: 'sum' | 'net' | 'none'  // How to consolidate in group accounts
-  elimination_rule?: string          // Intercompany elimination rules
-  reporting_standard?: 'IFRS' | 'IFRS_SME' | 'LOCAL_GAAP'  // Applicable reporting standard
+  ifrs_statement?: 'SFP' | 'SPL' | 'SCE' | 'SCF' | 'NOTES' // Statement of Financial Position, Profit/Loss, Changes in Equity, Cash Flows
+  ifrs_subcategory?: string // Detailed IFRS subcategory
+  consolidation_method?: 'sum' | 'net' | 'none' // How to consolidate in group accounts
+  elimination_rule?: string // Intercompany elimination rules
+  reporting_standard?: 'IFRS' | 'IFRS_SME' | 'LOCAL_GAAP' // Applicable reporting standard
 }
 
 export interface COATemplate {
@@ -80,30 +89,40 @@ export class UniversalCOATemplateGenerator {
       main_revenue_account: 'Product Sales Revenue',
       key_cost_accounts: ['Raw Materials', 'Direct Labor', 'Manufacturing Overhead'],
       specific_direct_expenses: ['Production Staff Wages', 'Machine Maintenance'],
-      industry_assets: ['Raw Materials Inventory', 'Work in Process', 'Finished Goods', 'Manufacturing Equipment'],
+      industry_assets: [
+        'Raw Materials Inventory',
+        'Work in Process',
+        'Finished Goods',
+        'Manufacturing Equipment'
+      ],
       regulatory_accounts: ['Environmental Compliance Fees', 'Safety License Deposits']
     }
   }
 
   private countryCurrencies: { [key: string]: { currency: string; vat_rate: string } } = {
-    'AE': { currency: 'AED', vat_rate: '5%' },
-    'US': { currency: 'USD', vat_rate: '0%' },
-    'GB': { currency: 'GBP', vat_rate: '20%' },
-    'IN': { currency: 'INR', vat_rate: '18%' },
-    'CA': { currency: 'CAD', vat_rate: '13%' },
-    'AU': { currency: 'AUD', vat_rate: '10%' },
-    'DE': { currency: 'EUR', vat_rate: '19%' },
-    'FR': { currency: 'EUR', vat_rate: '20%' },
-    'SG': { currency: 'SGD', vat_rate: '7%' }
+    AE: { currency: 'AED', vat_rate: '5%' },
+    US: { currency: 'USD', vat_rate: '0%' },
+    GB: { currency: 'GBP', vat_rate: '20%' },
+    IN: { currency: 'INR', vat_rate: '18%' },
+    CA: { currency: 'CAD', vat_rate: '13%' },
+    AU: { currency: 'AUD', vat_rate: '10%' },
+    DE: { currency: 'EUR', vat_rate: '19%' },
+    FR: { currency: 'EUR', vat_rate: '20%' },
+    SG: { currency: 'SGD', vat_rate: '7%' }
   }
 
   /**
    * Generate complete COA template for any industry following global numbering structure
    */
-  generateUniversalCOA(industry: string, country: string = 'AE', organizationName: string = 'Business'): COATemplate {
+  generateUniversalCOA(
+    industry: string,
+    country: string = 'AE',
+    organizationName: string = 'Business'
+  ): COATemplate {
     const countryInfo = this.countryCurrencies[country] || this.countryCurrencies['AE']
-    const customization = this.industryCustomizations[industry] || this.industryCustomizations['salon']
-    
+    const customization =
+      this.industryCustomizations[industry] || this.industryCustomizations['salon']
+
     const accounts: UniversalCOAAccount[] = [
       ...this.generateAssetsSection(industry, country, customization, countryInfo.currency),
       ...this.generateLiabilitiesSection(industry, country, customization, countryInfo.currency),
@@ -111,8 +130,18 @@ export class UniversalCOATemplateGenerator {
       ...this.generateRevenueSection(industry, country, customization, countryInfo.currency),
       ...this.generateCostOfSalesSection(industry, country, customization, countryInfo.currency),
       ...this.generateDirectExpensesSection(industry, country, customization, countryInfo.currency),
-      ...this.generateIndirectExpensesSection(industry, country, customization, countryInfo.currency),
-      ...this.generateTaxesExtraordinarySection(industry, country, customization, countryInfo.currency),
+      ...this.generateIndirectExpensesSection(
+        industry,
+        country,
+        customization,
+        countryInfo.currency
+      ),
+      ...this.generateTaxesExtraordinarySection(
+        industry,
+        country,
+        customization,
+        countryInfo.currency
+      ),
       ...this.generateStatisticalSection(industry, country, customization)
     ]
 
@@ -125,7 +154,12 @@ export class UniversalCOATemplateGenerator {
     }
   }
 
-  private generateAssetsSection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateAssetsSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 1000-1999: ASSETS (MANDATORY GLOBAL STRUCTURE WITH IFRS LINEAGE)
       {
@@ -140,12 +174,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Financial Position',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Assets',
         presentation_order: 1,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SFP',
         ifrs_subcategory: 'Total Assets',
         consolidation_method: 'sum',
@@ -223,7 +257,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateLiabilitiesSection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateLiabilitiesSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 2000-2999: LIABILITIES (MANDATORY GLOBAL STRUCTURE)
       {
@@ -238,12 +277,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Financial Position',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Liabilities',
         presentation_order: 20,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SFP',
         ifrs_subcategory: 'Total Liabilities',
         consolidation_method: 'sum',
@@ -298,7 +337,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateEquitySection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateEquitySection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 3000-3999: EQUITY (MANDATORY GLOBAL STRUCTURE)
       {
@@ -313,12 +357,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Financial Position',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Equity',
         presentation_order: 30,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SFP',
         ifrs_subcategory: 'Total Equity',
         consolidation_method: 'sum',
@@ -350,7 +394,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateRevenueSection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateRevenueSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 4000-4999: REVENUE (MANDATORY GLOBAL STRUCTURE)
       {
@@ -365,12 +414,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Profit or Loss',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Revenue',
         presentation_order: 40,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SPL',
         ifrs_subcategory: 'Total Revenue',
         consolidation_method: 'sum',
@@ -402,7 +451,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateCostOfSalesSection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateCostOfSalesSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 5000-5999: COST OF SALES (MANDATORY GLOBAL STRUCTURE)
       {
@@ -417,12 +471,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Profit or Loss',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Cost of Sales',
         presentation_order: 50,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SPL',
         ifrs_subcategory: 'Total Cost of Sales',
         consolidation_method: 'sum',
@@ -454,7 +508,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateDirectExpensesSection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateDirectExpensesSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 6000-6999: DIRECT EXPENSES (MANDATORY GLOBAL STRUCTURE)
       {
@@ -469,12 +528,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Profit or Loss',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Direct Expenses',
         presentation_order: 60,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SPL',
         ifrs_subcategory: 'Total Direct Expenses',
         consolidation_method: 'sum',
@@ -506,7 +565,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateIndirectExpensesSection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateIndirectExpensesSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 7000-7999: INDIRECT EXPENSES (MANDATORY GLOBAL STRUCTURE)
       {
@@ -521,12 +585,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Profit or Loss',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Indirect Expenses',
         presentation_order: 70,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SPL',
         ifrs_subcategory: 'Total Indirect Expenses',
         consolidation_method: 'sum',
@@ -627,7 +691,12 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateTaxesExtraordinarySection(industry: string, country: string, customization: IndustryCustomization, currency: string): UniversalCOAAccount[] {
+  private generateTaxesExtraordinarySection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization,
+    currency: string
+  ): UniversalCOAAccount[] {
     return [
       // 8000-8999: TAXES & EXTRAORDINARY (MANDATORY GLOBAL STRUCTURE)
       {
@@ -642,12 +711,12 @@ export class UniversalCOATemplateGenerator {
         currency: currency,
         // IFRS Lineage
         ifrs_classification: 'Statement of Profit or Loss',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Taxes and Extraordinary',
         presentation_order: 80,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'SPL',
         ifrs_subcategory: 'Total Taxes and Extraordinary',
         consolidation_method: 'sum',
@@ -702,7 +771,11 @@ export class UniversalCOATemplateGenerator {
     ]
   }
 
-  private generateStatisticalSection(industry: string, country: string, customization: IndustryCustomization): UniversalCOAAccount[] {
+  private generateStatisticalSection(
+    industry: string,
+    country: string,
+    customization: IndustryCustomization
+  ): UniversalCOAAccount[] {
     return [
       // 9000-9999: STATISTICAL ACCOUNTS (MANDATORY GLOBAL STRUCTURE)
       {
@@ -717,12 +790,12 @@ export class UniversalCOATemplateGenerator {
         currency: 'UNITS',
         // IFRS Lineage
         ifrs_classification: 'Memorandum Accounts',
-        parent_account: '',  // Top level
+        parent_account: '', // Top level
         account_level: 1,
         ifrs_category: 'Statistical Information',
         presentation_order: 90,
         is_header: true,
-        rollup_account: '',  // Top level
+        rollup_account: '', // Top level
         ifrs_statement: 'NOTES',
         ifrs_subcategory: 'Non-Financial Information',
         consolidation_method: 'none',
@@ -780,7 +853,11 @@ export class UniversalCOATemplateGenerator {
   /**
    * Generate TypeScript code for industry-specific COA page
    */
-  generateCOAPageCode(industry: string, country: string = 'AE', organizationName: string = 'Business'): string {
+  generateCOAPageCode(
+    industry: string,
+    country: string = 'AE',
+    organizationName: string = 'Business'
+  ): string {
     const template = this.generateUniversalCOA(industry, country, organizationName)
     const accounts = template.accounts
 
@@ -803,28 +880,39 @@ const initializeDefault${this.capitalizeFirst(industry)}COA = (): GLAccount[] =>
   validateAccountStructure(account: UniversalCOAAccount): { valid: boolean; errors: string[] } {
     const errors: string[] = []
     const firstDigit = account.entity_code.charAt(0)
-    
+
     const expectedTypes: { [key: string]: string } = {
       '1': 'assets',
-      '2': 'liabilities', 
+      '2': 'liabilities',
       '3': 'equity',
       '4': 'revenue',
       '5': 'cost_of_sales',
       '6': 'direct_expenses',
-      '7': 'indirect_expenses', 
+      '7': 'indirect_expenses',
       '8': 'taxes_extraordinary',
       '9': 'statistical'
     }
 
     if (expectedTypes[firstDigit] !== account.account_type) {
-      errors.push(`Account ${account.entity_code} should have type '${expectedTypes[firstDigit]}' but has '${account.account_type}'`)
+      errors.push(
+        `Account ${account.entity_code} should have type '${expectedTypes[firstDigit]}' but has '${account.account_type}'`
+      )
     }
 
-    const debitAccounts = ['assets', 'cost_of_sales', 'direct_expenses', 'indirect_expenses', 'taxes_extraordinary', 'statistical']
+    const debitAccounts = [
+      'assets',
+      'cost_of_sales',
+      'direct_expenses',
+      'indirect_expenses',
+      'taxes_extraordinary',
+      'statistical'
+    ]
     const expectedBalance = debitAccounts.includes(account.account_type) ? 'debit' : 'credit'
-    
+
     if (account.normal_balance !== expectedBalance) {
-      errors.push(`Account ${account.entity_code} should have normal balance '${expectedBalance}' but has '${account.normal_balance}'`)
+      errors.push(
+        `Account ${account.entity_code} should have normal balance '${expectedBalance}' but has '${account.normal_balance}'`
+      )
     }
 
     return {

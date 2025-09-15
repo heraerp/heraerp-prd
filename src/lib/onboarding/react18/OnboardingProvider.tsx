@@ -1,6 +1,6 @@
 /**
  * HERA Universal Onboarding - React 18 Compatible Provider
- * 
+ *
  * Lightweight onboarding implementation without deprecated React methods
  * Uses Floating UI for positioning and native React 18 features
  */
@@ -10,7 +10,15 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from '@floating-ui/dom'
-import type { HeraTour, HeraStep, OnboardingState, StartTourOptions, UseOnboardingReturn, HeraOnboardingConfig, OnboardingStatus } from '../types'
+import type {
+  HeraTour,
+  HeraStep,
+  OnboardingState,
+  StartTourOptions,
+  UseOnboardingReturn,
+  HeraOnboardingConfig,
+  OnboardingStatus
+} from '../types'
 import { tourRegistry } from '../stepRegistry'
 import { useRouter } from 'next/navigation'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -44,67 +52,76 @@ export function HeraOnboardingProvider({
   const stepStartTimeRef = useRef<number | null>(null)
 
   // Start a tour
-  const startTour = useCallback(async (code: string, options?: StartTourOptions) => {
-    const tour = tourRegistry.getTourByCode(code as any)
-    if (!tour) {
-      console.error(`Tour not found: ${code}`)
-      return
-    }
-
-    // Check if already completed
-    if (!options?.auto && localStorage.getItem(`hera_onboarding_${code}_completed`) === 'true') {
-      return
-    }
-
-    setCurrentTour(tour)
-    setState({
-      activeTour: tour.tourSmartCode,
-      currentStep: options?.startAt || 0,
-      totalSteps: tour.steps.length,
-      isRunning: true,
-      isLoading: false,
-      error: null,
-      startedAt: new Date().toISOString(),
-      stepDurations: {}
-    })
-
-    stepStartTimeRef.current = Date.now()
-
-    // Emit start event
-    config.onEmit?.({
-      id: crypto.randomUUID(),
-      organization_id: config.organizationId,
-      smart_code: tour.tourSmartCode,
-      occurred_at: new Date().toISOString(),
-      ai_confidence: null,
-      ai_insights: null,
-      metadata: {
-        tour_id: tour.tourSmartCode,
-        user_id: 'current-user',
-        session_id: 'current-session'
+  const startTour = useCallback(
+    async (code: string, options?: StartTourOptions) => {
+      const tour = tourRegistry.getTourByCode(code as any)
+      if (!tour) {
+        console.error(`Tour not found: ${code}`)
+        return
       }
-    }, [])
-  }, [config])
+
+      // Check if already completed
+      if (!options?.auto && localStorage.getItem(`hera_onboarding_${code}_completed`) === 'true') {
+        return
+      }
+
+      setCurrentTour(tour)
+      setState({
+        activeTour: tour.tourSmartCode,
+        currentStep: options?.startAt || 0,
+        totalSteps: tour.steps.length,
+        isRunning: true,
+        isLoading: false,
+        error: null,
+        startedAt: new Date().toISOString(),
+        stepDurations: {}
+      })
+
+      stepStartTimeRef.current = Date.now()
+
+      // Emit start event
+      config.onEmit?.(
+        {
+          id: crypto.randomUUID(),
+          organization_id: config.organizationId,
+          smart_code: tour.tourSmartCode,
+          occurred_at: new Date().toISOString(),
+          ai_confidence: null,
+          ai_insights: null,
+          metadata: {
+            tour_id: tour.tourSmartCode,
+            user_id: 'current-user',
+            session_id: 'current-session'
+          }
+        },
+        []
+      )
+    },
+    [config]
+  )
 
   // Stop tour
   const stopTour = useCallback(() => {
     if (currentTour) {
       // Mark as completed
       localStorage.setItem(`hera_onboarding_${currentTour.tourSmartCode}_completed`, 'true')
-      
+
       // Emit completion event
-      config.onEmit?.({
-        id: crypto.randomUUID(),
-        organization_id: config.organizationId,
-        smart_code: currentTour.tourSmartCode,
-        occurred_at: new Date().toISOString(),
-        ai_confidence: null,
-        ai_insights: null,
-        metadata: {
-          tour_id: currentTour.tourSmartCode,
-          status: 'completed' as OnboardingStatus
-        }
-      }, [])
+      config.onEmit?.(
+        {
+          id: crypto.randomUUID(),
+          organization_id: config.organizationId,
+          smart_code: currentTour.tourSmartCode,
+          occurred_at: new Date().toISOString(),
+          ai_confidence: null,
+          ai_insights: null,
+          metadata: {
+            tour_id: currentTour.tourSmartCode,
+            status: 'completed' as OnboardingStatus
+          }
+        },
+        []
+      )
     }
 
     setCurrentTour(null)
@@ -239,36 +256,32 @@ function OnboardingOverlay({
       }
 
       // Set up auto-updating position
-      const cleanup = autoUpdate(
-        targetElement,
-        tooltipRef.current,
-        async () => {
-          const { x, y, placement, middlewareData } = await computePosition(
-            targetElement,
-            tooltipRef.current!,
-            {
-              placement: step.placement || 'bottom',
-              middleware: [
-                offset(10),
-                flip(),
-                shift({ padding: 10 }),
-                arrow({ element: arrowRef.current! })
-              ]
-            }
-          )
-
-          setTooltipPosition({ x, y })
-
-          // Position arrow
-          if (arrowRef.current && middlewareData.arrow) {
-            const { x: arrowX, y: arrowY } = middlewareData.arrow
-            Object.assign(arrowRef.current.style, {
-              left: arrowX != null ? `${arrowX}px` : '',
-              top: arrowY != null ? `${arrowY}px` : ''
-            })
+      const cleanup = autoUpdate(targetElement, tooltipRef.current, async () => {
+        const { x, y, placement, middlewareData } = await computePosition(
+          targetElement,
+          tooltipRef.current!,
+          {
+            placement: step.placement || 'bottom',
+            middleware: [
+              offset(10),
+              flip(),
+              shift({ padding: 10 }),
+              arrow({ element: arrowRef.current! })
+            ]
           }
+        )
+
+        setTooltipPosition({ x, y })
+
+        // Position arrow
+        if (arrowRef.current && middlewareData.arrow) {
+          const { x: arrowX, y: arrowY } = middlewareData.arrow
+          Object.assign(arrowRef.current.style, {
+            left: arrowX != null ? `${arrowX}px` : '',
+            top: arrowY != null ? `${arrowY}px` : ''
+          })
         }
-      )
+      })
 
       cleanupRef.current = cleanup
       setIsVisible(true)
@@ -296,7 +309,7 @@ function OnboardingOverlay({
     <>
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
-      
+
       {/* Tooltip */}
       <div
         ref={tooltipRef}
@@ -340,8 +353,12 @@ function OnboardingOverlay({
                   idx === currentStep
                     ? 'bg-blue-500'
                     : idx < currentStep
-                    ? theme === 'dark' ? 'bg-gray-600' : 'bg-gray-400'
-                    : theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
+                      ? theme === 'dark'
+                        ? 'bg-gray-600'
+                        : 'bg-gray-400'
+                      : theme === 'dark'
+                        ? 'bg-gray-700'
+                        : 'bg-gray-300'
                 }`}
               />
             ))}
@@ -356,7 +373,9 @@ function OnboardingOverlay({
             className={`px-3 py-1 text-sm rounded flex items-center gap-1 ${
               isFirstStep
                 ? 'opacity-50 cursor-not-allowed'
-                : theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                : theme === 'dark'
+                  ? 'hover:bg-slate-700'
+                  : 'hover:bg-gray-100'
             }`}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -374,7 +393,7 @@ function OnboardingOverlay({
                 Skip Tour
               </button>
             )}
-            
+
             <button
               onClick={onNext}
               className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-1"

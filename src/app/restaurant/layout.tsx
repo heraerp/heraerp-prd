@@ -1,7 +1,7 @@
 'use client'
 
 import { UniversalLayout } from '@/components/layout/UniversalLayout'
-import { 
+import {
   UtensilsCrossed,
   ShoppingCart,
   Users,
@@ -151,15 +151,11 @@ const quickActions = [
     icon: <DollarSign className="w-5 h-5" />,
     href: '/restaurant/reports?view=daily',
     color: 'hover:bg-red-100',
-    description: 'View today\'s revenue'
+    description: "View today's revenue"
   }
 ]
 
-export default function RestaurantLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function RestaurantLayout({ children }: { children: React.ReactNode }) {
   return (
     <UniversalLayout
       title="Restaurant Pro"

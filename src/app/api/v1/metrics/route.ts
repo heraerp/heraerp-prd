@@ -17,10 +17,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error generating metrics:', error)
-    return NextResponse.json(
-      { error: 'Failed to generate metrics' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to generate metrics' }, { status: 500 })
   }
 }
 
@@ -33,10 +30,7 @@ export async function POST(request: NextRequest) {
     const { organization_id } = await request.json()
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     // Persist metrics to database
@@ -52,10 +46,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error persisting metrics:', error)
-    return NextResponse.json(
-      { error: 'Failed to persist metrics' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to persist metrics' }, { status: 500 })
   }
 }
 
@@ -65,7 +56,7 @@ export async function POST(request: NextRequest) {
 async function updateBusinessMetrics(organizationId: string) {
   // These would be calculated from actual data
   // For now, using example values
-  
+
   // Update entity counts
   heraMetrics.updateEntityCount(organizationId, 'customer', 1250)
   heraMetrics.updateEntityCount(organizationId, 'product', 450)

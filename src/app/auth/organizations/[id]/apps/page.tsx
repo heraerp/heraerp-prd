@@ -10,10 +10,24 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { 
-  Package, Store, Heart, Briefcase, Factory, Users, 
-  Calculator, TrendingUp, FileText, Settings, ArrowRight,
-  CheckCircle, Loader2, Sparkles, Zap, Shield, Globe
+import {
+  Package,
+  Store,
+  Heart,
+  Briefcase,
+  Factory,
+  Users,
+  Calculator,
+  TrendingUp,
+  FileText,
+  Settings,
+  ArrowRight,
+  CheckCircle,
+  Loader2,
+  Sparkles,
+  Zap,
+  Shield,
+  Globe
 } from 'lucide-react'
 
 const AVAILABLE_APPS = [
@@ -105,7 +119,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             is_active: true
           }
           setOrganization(org)
-          
+
           // For salon organizations, skip app selection and go directly to salon dashboard
           if (orgData.type === 'salon') {
             // Trigger salon setup if not already done
@@ -114,7 +128,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${session.access_token}`
+                  Authorization: `Bearer ${session.access_token}`
                 },
                 body: JSON.stringify({
                   organizationId: orgData.id,
@@ -124,24 +138,22 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                 })
               }).catch(console.error)
             }
-            
+
             // Clean up localStorage
             localStorage.removeItem(`new-org-${organizationId}`)
-            
+
             // Redirect to salon dashboard with subdomain
             router.push(`/~${orgData.subdomain}/salon`)
             return
           }
-          
+
           // Pre-select recommended apps
-          const recommended = AVAILABLE_APPS
-            .filter(app => 
-              app.recommended.includes('all') || 
-              app.recommended.includes(orgData.type || 'general')
-            )
-            .map(app => app.id)
+          const recommended = AVAILABLE_APPS.filter(
+            app =>
+              app.recommended.includes('all') || app.recommended.includes(orgData.type || 'general')
+          ).map(app => app.id)
           setSelectedApps(['accounting', ...recommended.filter(id => id !== 'accounting')])
-          
+
           // Clean up localStorage
           localStorage.removeItem(`new-org-${organizationId}`)
           setIsLoadingOrg(false)
@@ -153,7 +165,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
 
       // Otherwise, try to find in existing organizations
       let org = organizations.find(o => o.id === organizationId)
-      
+
       if (!org && isAuthenticated) {
         // If not found, refresh organizations list
         await refreshOrganizations()
@@ -163,7 +175,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
 
       if (org) {
         setOrganization(org)
-        
+
         // For salon organizations, skip app selection and go directly to salon dashboard
         if (org.type === 'salon') {
           // Trigger salon setup if not already done
@@ -172,7 +184,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`
+                Authorization: `Bearer ${session.access_token}`
               },
               body: JSON.stringify({
                 organizationId: org.id,
@@ -182,19 +194,16 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
               })
             }).catch(console.error)
           }
-          
+
           // Redirect to salon dashboard with subdomain
           router.push(`/~${org.subdomain}/salon`)
           return
         }
-        
+
         // Pre-select recommended apps based on organization type
-        const recommended = AVAILABLE_APPS
-          .filter(app => 
-            app.recommended.includes('all') || 
-            app.recommended.includes(org.type || 'general')
-          )
-          .map(app => app.id)
+        const recommended = AVAILABLE_APPS.filter(
+          app => app.recommended.includes('all') || app.recommended.includes(org.type || 'general')
+        ).map(app => app.id)
         setSelectedApps(['accounting', ...recommended.filter(id => id !== 'accounting')])
       } else if (!isAuthenticated) {
         // If not authenticated, redirect to login
@@ -203,7 +212,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
         // If authenticated but org not found, it's an error
         setError('Organization not found')
       }
-      
+
       setIsLoadingOrg(false)
     }
 
@@ -211,10 +220,8 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
   }, [organizationId, organizations, isAuthenticated, refreshOrganizations, router])
 
   const toggleApp = (appId: string) => {
-    setSelectedApps(prev => 
-      prev.includes(appId) 
-        ? prev.filter(id => id !== appId)
-        : [...prev, appId]
+    setSelectedApps(prev =>
+      prev.includes(appId) ? prev.filter(id => id !== appId) : [...prev, appId]
     )
   }
 
@@ -237,9 +244,9 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
       // Install selected apps
       const response = await fetch(`/api/v1/organizations/${organizationId}/apps`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`
         },
         body: JSON.stringify({ apps: selectedApps })
       })
@@ -277,7 +284,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Animated background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      
+
       {/* Glassmorphic orbs for depth */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
@@ -296,11 +303,16 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">Select Apps</h1>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
+                  Select Apps
+                </h1>
                 <p className="text-xs text-gray-600 dark:text-gray-400">{organization.name}</p>
               </div>
             </div>
-            <Badge variant="secondary" className="bg-blue-100/80 dark:bg-blue-900/30 backdrop-blur-sm text-blue-700 dark:text-blue-300 border-blue-200/50 dark:border-blue-700/50">
+            <Badge
+              variant="secondary"
+              className="bg-blue-100/80 dark:bg-blue-900/30 backdrop-blur-sm text-blue-700 dark:text-blue-300 border-blue-200/50 dark:border-blue-700/50"
+            >
               {organization.subdomain}.heraerp.com
             </Badge>
           </div>
@@ -318,30 +330,35 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             Choose Your Business Apps
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Select the apps you need for {organization.name}. You can always add or remove apps later.
+            Select the apps you need for {organization.name}. You can always add or remove apps
+            later.
           </p>
         </div>
 
         {error && (
-          <Alert variant="destructive" className="mb-6 bg-red-50/80 dark:bg-red-900/30 backdrop-blur border-red-200/50 dark:border-red-800/50">
+          <Alert
+            variant="destructive"
+            className="mb-6 bg-red-50/80 dark:bg-red-900/30 backdrop-blur border-red-200/50 dark:border-red-800/50"
+          >
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
         {/* Apps Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {AVAILABLE_APPS.map((app) => {
+          {AVAILABLE_APPS.map(app => {
             const Icon = app.icon
             const isSelected = selectedApps.includes(app.id)
-            const isRecommended = app.recommended.includes('all') || 
-                                app.recommended.includes(organization.type || 'general')
-            
+            const isRecommended =
+              app.recommended.includes('all') ||
+              app.recommended.includes(organization.type || 'general')
+
             return (
-              <Card 
+              <Card
                 key={app.id}
                 className={`bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl cursor-pointer transition-all transform hover:-translate-y-1 hover:scale-105 duration-200 ${
-                  isSelected 
-                    ? 'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl' 
+                  isSelected
+                    ? 'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl'
                     : 'border border-white/20 dark:border-gray-700/50 hover:border-blue-300/50 dark:hover:border-blue-600/50 hover:shadow-xl'
                 }`}
                 onClick={() => toggleApp(app.id)}
@@ -353,7 +370,10 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                     </div>
                     <div className="flex items-center gap-2">
                       {isRecommended && (
-                        <Badge variant="secondary" className="text-xs bg-green-100/80 dark:bg-green-900/30 backdrop-blur-sm text-green-700 dark:text-green-300 border-green-200/50 dark:border-green-700/50">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs bg-green-100/80 dark:bg-green-900/30 backdrop-blur-sm text-green-700 dark:text-green-300 border-green-200/50 dark:border-green-700/50"
+                        >
                           Recommended
                         </Badge>
                       )}
@@ -363,12 +383,17 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                     </div>
                   </div>
                   <CardTitle className="mt-4 text-gray-900 dark:text-white">{app.name}</CardTitle>
-                  <CardDescription className="text-gray-600 dark:text-gray-400">{app.description}</CardDescription>
+                  <CardDescription className="text-gray-600 dark:text-gray-400">
+                    {app.description}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     {app.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                      >
                         <div className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-600 rounded-full" />
                         {feature}
                       </div>

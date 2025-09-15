@@ -1,0 +1,49 @@
+smart_code: HERA.SALON.SERVICE.BOM_CONSUMPTION.v1
+intent: >
+  When a service_line is posted (e.g., in a POS order), emit inventory_move_line issues for mapped BOM items proportional to service quantity.
+scope:
+  in_scope:
+    - Resolve BOM (SERVICE_BOM relationships)
+    - Emit inventory consumption lines (inventory_move_line) with negative quantities
+    - Optional low-stock detection based on reorder_level
+  out_of_scope:
+    - Inventory receipts
+    - Warehouse/location management
+preconditions:
+  - catalog contains TXN_TYPE: [pos_order]
+  - catalog contains LINE_TYPE: [service_line, inventory_move_line]
+  - permissions: [pos_operator]
+invariants:
+  - all writes include organization_id
+  - emitted inventory_move_line quantities = -(service_qty × BOM.qty)
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: payload
+    - name: pos_order_id
+      type: uuid
+      where: payload
+outputs:
+  entities_created: []
+  transactions_emitted: []
+happy_path:
+  - step: Read POS order lines (service_line with quantity)
+  - step: For each service_line, resolve SERVICE_BOM items and compute issue qty
+  - step: Append inventory_move_line per BOM item with negative quantity, uom per BOM
+  - step: Aggregate by product to minimize lines
+  - step: If resulting qty_on_hand < reorder_level, set low_stock flag in procedure log
+errors:
+  - code: NO_BOM_DEFINED
+    when: service has no SERVICE_BOM mapping
+    action: proceed without inventory_move_line
+observability:
+  logs: [service_lines_scanned, bom_resolved, inventory_issued, low_stock_flagged]
+  audit_json: true
+example_payload:
+  organization_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  pos_order_id: "c9bf9e57-1685-4c89-bafb-ff5af830be8a"
+checks:
+  - description: inventory_move_line total equals computed consumption
+  - description: low_stock flag raised when below reorder_level
+

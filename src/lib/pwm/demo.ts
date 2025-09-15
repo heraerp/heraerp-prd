@@ -1,9 +1,9 @@
 // PWM Demo Data and Testing Utilities
 
-import { WealthOverview, WealthEntity, WealthTransaction, AIInsight } from './types';
+import { WealthOverview, WealthEntity, WealthTransaction, AIInsight } from './types'
 
 // Demo organization ID (matches our seeded data)
-export const DEMO_ORG_ID = 'o2222222-2222-2222-2222-222222222222';
+export const DEMO_ORG_ID = 'o2222222-2222-2222-2222-222222222222'
 
 // Demo user credentials
 export const DEMO_USER = {
@@ -13,7 +13,7 @@ export const DEMO_USER = {
   role: 'client_admin',
   organization_id: DEMO_ORG_ID,
   organization_name: 'Johnson Family Office'
-};
+}
 
 // Mock demo data that matches our database seeds
 export const DEMO_WEALTH_ENTITIES: WealthEntity[] = [
@@ -161,7 +161,7 @@ export const DEMO_WEALTH_ENTITIES: WealthEntity[] = [
     risk_score: 1,
     liquidity_score: 10
   }
-];
+]
 
 export const DEMO_TRANSACTIONS: WealthTransaction[] = [
   {
@@ -219,14 +219,15 @@ export const DEMO_TRANSACTIONS: WealthTransaction[] = [
     status: 'completed',
     created_at: '2024-01-01T00:00:00Z'
   }
-];
+]
 
 export const DEMO_AI_INSIGHTS: AIInsight[] = [
   {
     id: 'ai-001',
     type: 'opportunity',
     title: 'Tech Sector Rotation Opportunity',
-    description: 'Based on market patterns, rotating 15% from bonds to tech equities could yield additional 12% annual returns',
+    description:
+      'Based on market patterns, rotating 15% from bonds to tech equities could yield additional 12% annual returns',
     impact: 1500000,
     confidence: 0.85,
     priority: 'high',
@@ -260,18 +261,24 @@ export const DEMO_AI_INSIGHTS: AIInsight[] = [
     priority: 'high',
     created_at: new Date().toISOString()
   }
-];
+]
 
 // Demo wealth overview calculation
 export function calculateDemoWealthOverview(): WealthOverview {
-  const totalWealth = DEMO_WEALTH_ENTITIES.reduce((sum, entity) => sum + (entity.current_value || 0), 0);
-  const totalCostBasis = DEMO_WEALTH_ENTITIES.reduce((sum, entity) => sum + (entity.cost_basis || 0), 0);
-  const dailyChange = 2345000; // From demo data
-  const dailyChangePercent = (dailyChange / totalWealth) * 100;
-  
+  const totalWealth = DEMO_WEALTH_ENTITIES.reduce(
+    (sum, entity) => sum + (entity.current_value || 0),
+    0
+  )
+  const totalCostBasis = DEMO_WEALTH_ENTITIES.reduce(
+    (sum, entity) => sum + (entity.cost_basis || 0),
+    0
+  )
+  const dailyChange = 2345000 // From demo data
+  const dailyChangePercent = (dailyChange / totalWealth) * 100
+
   // Calculate asset allocation
-  const assetAllocation = calculateDemoAssetAllocation();
-  
+  const assetAllocation = calculateDemoAssetAllocation()
+
   return {
     totalWealth,
     currency: 'USD',
@@ -283,17 +290,20 @@ export function calculateDemoWealthOverview(): WealthOverview {
     assetAllocation,
     topHoldings: DEMO_WEALTH_ENTITIES.slice(0, 10),
     recentTransactions: DEMO_TRANSACTIONS
-  };
+  }
 }
 
 function calculateDemoAssetAllocation() {
-  const totalValue = DEMO_WEALTH_ENTITIES.reduce((sum, entity) => sum + (entity.current_value || 0), 0);
-  const allocationMap = new Map();
-  
+  const totalValue = DEMO_WEALTH_ENTITIES.reduce(
+    (sum, entity) => sum + (entity.current_value || 0),
+    0
+  )
+  const allocationMap = new Map()
+
   DEMO_WEALTH_ENTITIES.forEach(entity => {
-    const category = mapEntityTypeToCategory(entity.entity_type);
-    const value = entity.current_value || 0;
-    
+    const category = mapEntityTypeToCategory(entity.entity_type)
+    const value = entity.current_value || 0
+
     if (!allocationMap.has(category)) {
       allocationMap.set(category, {
         category,
@@ -302,20 +312,20 @@ function calculateDemoAssetAllocation() {
         change24h: (Math.random() - 0.5) * 5, // Mock change
         riskScore: calculateRiskScore(category),
         entities: []
-      });
+      })
     }
-    
-    const allocation = allocationMap.get(category);
-    allocation.value += value;
-    allocation.entities.push(entity);
-  });
-  
+
+    const allocation = allocationMap.get(category)
+    allocation.value += value
+    allocation.entities.push(entity)
+  })
+
   // Calculate percentages
   allocationMap.forEach(allocation => {
-    allocation.percentage = totalValue > 0 ? (allocation.value / totalValue) * 100 : 0;
-  });
-  
-  return Array.from(allocationMap.values()).sort((a, b) => b.value - a.value);
+    allocation.percentage = totalValue > 0 ? (allocation.value / totalValue) * 100 : 0
+  })
+
+  return Array.from(allocationMap.values()).sort((a, b) => b.value - a.value)
 }
 
 function mapEntityTypeToCategory(entityType: string): string {
@@ -331,9 +341,9 @@ function mapEntityTypeToCategory(entityType: string): string {
     hedge_fund: 'Hedge Funds',
     trust: 'Trusts',
     foundation: 'Foundations'
-  };
-  
-  return categoryMap[entityType] || 'Other';
+  }
+
+  return categoryMap[entityType] || 'Other'
 }
 
 function calculateRiskScore(category: string): number {
@@ -342,56 +352,66 @@ function calculateRiskScore(category: string): number {
     'Real Estate': 3,
     'Public Equities': 5,
     'Managed Portfolios': 5,
-    'Commodities': 6,
+    Commodities: 6,
     'Hedge Funds': 7,
     'Private Equity': 8,
-    'Cryptocurrency': 9,
+    Cryptocurrency: 9,
     'General Assets': 5,
-    'Trusts': 3,
-    'Foundations': 3,
-    'Other': 5
-  };
-  
-  return riskScores[category] || 5;
+    Trusts: 3,
+    Foundations: 3,
+    Other: 5
+  }
+
+  return riskScores[category] || 5
 }
 
 // Demo API testing utilities
 export async function testDemoAPI() {
-  console.log('🧪 Testing PWM Demo System...');
-  
+  console.log('🧪 Testing PWM Demo System...')
+
   try {
     // Test wealth overview calculation
-    const wealthOverview = calculateDemoWealthOverview();
+    const wealthOverview = calculateDemoWealthOverview()
     console.log('✅ Wealth Overview:', {
       totalWealth: wealthOverview.totalWealth,
       assetCount: wealthOverview.topHoldings.length,
       allocationCategories: wealthOverview.assetAllocation.length
-    });
-    
+    })
+
     // Test entity processing
     console.log('✅ Demo Entities:', {
       totalEntities: DEMO_WEALTH_ENTITIES.length,
       entityTypes: [...new Set(DEMO_WEALTH_ENTITIES.map(e => e.entity_type))],
       totalValue: DEMO_WEALTH_ENTITIES.reduce((sum, e) => sum + (e.current_value || 0), 0)
-    });
-    
+    })
+
     // Test transactions
     console.log('✅ Demo Transactions:', {
       totalTransactions: DEMO_TRANSACTIONS.length,
       transactionTypes: [...new Set(DEMO_TRANSACTIONS.map(t => t.transaction_type))],
       dateRange: {
-        earliest: DEMO_TRANSACTIONS.reduce((min, t) => t.transaction_date < min ? t.transaction_date : min, DEMO_TRANSACTIONS[0].transaction_date),
-        latest: DEMO_TRANSACTIONS.reduce((max, t) => t.transaction_date > max ? t.transaction_date : max, DEMO_TRANSACTIONS[0].transaction_date)
+        earliest: DEMO_TRANSACTIONS.reduce(
+          (min, t) => (t.transaction_date < min ? t.transaction_date : min),
+          DEMO_TRANSACTIONS[0].transaction_date
+        ),
+        latest: DEMO_TRANSACTIONS.reduce(
+          (max, t) => (t.transaction_date > max ? t.transaction_date : max),
+          DEMO_TRANSACTIONS[0].transaction_date
+        )
       }
-    });
-    
+    })
+
     // Test AI insights
     console.log('✅ AI Insights:', {
       totalInsights: DEMO_AI_INSIGHTS.length,
       insightTypes: [...new Set(DEMO_AI_INSIGHTS.map(i => i.type))],
-      averageConfidence: (DEMO_AI_INSIGHTS.reduce((sum, i) => sum + i.confidence, 0) / DEMO_AI_INSIGHTS.length * 100).toFixed(1) + '%'
-    });
-    
+      averageConfidence:
+        (
+          (DEMO_AI_INSIGHTS.reduce((sum, i) => sum + i.confidence, 0) / DEMO_AI_INSIGHTS.length) *
+          100
+        ).toFixed(1) + '%'
+    })
+
     return {
       success: true,
       summary: {
@@ -401,14 +421,13 @@ export async function testDemoAPI() {
         transactions: DEMO_TRANSACTIONS.length,
         insights: DEMO_AI_INSIGHTS.length
       }
-    };
-    
+    }
   } catch (error) {
-    console.error('❌ Demo API Test Failed:', error);
+    console.error('❌ Demo API Test Failed:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
-    };
+    }
   }
 }
 
@@ -419,7 +438,7 @@ export function associateUserWithDemo(email: string) {
     email,
     id: `user-${email.split('@')[0]}-${Date.now()}`,
     created_at: new Date().toISOString()
-  };
+  }
 }
 
 export function getDemoUserPermissions() {
@@ -435,5 +454,5 @@ export function getDemoUserPermissions() {
       tradingHours: 'market_hours_only',
       requiresApproval: ['large_trades', 'new_investments']
     }
-  };
+  }
 }

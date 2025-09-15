@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 export default function AuditRedirectPage() {
   const router = useRouter()
-  
+
   useEffect(() => {
     // Redirect to audit-progressive immediately
     router.replace('/audit-progressive')

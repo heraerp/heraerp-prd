@@ -1,0 +1,28 @@
+{
+  "name": "hera-salon-scripts",
+  "version": "1.0.0",
+  "description": "HERA Salon bootstrap and validation scripts",
+  "scripts": {
+    "salon:bootstrap": "npm run salon:create-orgs && npm run salon:seed-ho",
+    "salon:create-orgs": "node apply-salon-seeds.js",
+    "salon:seed-ho": "node apply-salon-ho-seeds.js",
+    "salon:verify": "node verify-salon-ho-data.js",
+    "salon:guardrails": "node guardrail-checks-enhanced.js",
+    "salon:guardrails:basic": "node guardrail-checks.js",
+    "salon:fix-smart-codes": "node fix-smart-codes.js",
+    "salon:clean": "node clear-ho-data.js",
+    "salon:check-entities": "node check-entities.js",
+    "salon:check-issues": "node check-remaining-issues.js",
+    "test": "npm run salon:guardrails",
+    "ci": "npm run salon:guardrails -- --ci"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.x",
+    "dotenv": "^16.x",
+    "js-yaml": "^4.x"
+  },
+  "devDependencies": {},
+  "keywords": ["hera", "erp", "salon", "bootstrap", "guardrails"],
+  "author": "HERA Team",
+  "license": "MIT"
+}

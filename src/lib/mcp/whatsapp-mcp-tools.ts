@@ -213,7 +213,8 @@ export class MCPTools {
       // Generate sample slots (9 AM - 6 PM)
       for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
         for (let hour = 9; hour < 18; hour++) {
-          if (Math.random() > 0.3) { // 70% availability
+          if (Math.random() > 0.3) {
+            // 70% availability
             const slotStart = new Date(d)
             slotStart.setHours(hour, 0, 0, 0)
             const slotEnd = new Date(slotStart.getTime() + duration * 60000)
@@ -320,9 +321,10 @@ export class MCPTools {
         organization_id: input.organization_id,
         header: {
           transaction_type: 'WHATSAPP_MESSAGE_SEND',
-          smart_code: input.kind === 'freeform' ? 
-            'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.v1' : 
-            'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.v1',
+          smart_code:
+            input.kind === 'freeform'
+              ? 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.v1'
+              : 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.v1',
           transaction_status: 'sent',
           metadata: {
             to: input.to,
@@ -431,15 +433,17 @@ export class MCPTools {
   /**
    * Upsert entity in HERA
    */
-  async heraEntityUpsert(input: HeraEntityUpsertInput): Promise<MCPToolResponse<HeraEntityUpsertOutput>> {
+  async heraEntityUpsert(
+    input: HeraEntityUpsertInput
+  ): Promise<MCPToolResponse<HeraEntityUpsertOutput>> {
     try {
       universalApi.setOrganizationId(input.organization_id)
 
       // Try to find existing entity
       const entities = await universalApi.getEntitiesByType(input.entity_type)
-      const existing = entities.find(e => 
-        e.entity_code === input.payload.entity_code ||
-        e.entity_name === input.payload.entity_name
+      const existing = entities.find(
+        e =>
+          e.entity_code === input.payload.entity_code || e.entity_name === input.payload.entity_name
       )
 
       if (existing) {
@@ -458,7 +462,8 @@ export class MCPTools {
       const entity = await universalApi.createEntity({
         entity_type: input.entity_type,
         entity_name: input.payload.entity_name,
-        entity_code: input.payload.entity_code || `${input.entity_type.toUpperCase()}-${Date.now()}`,
+        entity_code:
+          input.payload.entity_code || `${input.entity_type.toUpperCase()}-${Date.now()}`,
         smart_code: input.payload.smart_code,
         metadata: input.payload.metadata
       })
@@ -487,9 +492,7 @@ export class MCPTools {
 
       // Check dynamic data for consent
       const dynamicData = await universalApi.getDynamicFields(input.customer_id)
-      const consentField = dynamicData.find(f => 
-        f.field_name === `${input.channel}_consent`
-      )
+      const consentField = dynamicData.find(f => f.field_name === `${input.channel}_consent`)
 
       return {
         success: true,
@@ -512,9 +515,9 @@ export class MCPTools {
   async budgetCheck(input: BudgetCheckInput): Promise<MCPToolResponse<BudgetCheckOutput>> {
     try {
       // In production, check actual spend vs limits
-      const dailyLimit = input.category === 'marketing' ? 20.00 : 50.00
+      const dailyLimit = input.category === 'marketing' ? 20.0 : 50.0
       const currentSpend = Math.random() * dailyLimit * 0.8 // Random spend up to 80% of limit
-      
+
       return {
         success: true,
         data: {
@@ -535,13 +538,15 @@ export class MCPTools {
   /**
    * Estimate WhatsApp message pricing
    */
-  async pricingEstimate(input: PricingEstimateInput): Promise<MCPToolResponse<PricingEstimateOutput>> {
+  async pricingEstimate(
+    input: PricingEstimateInput
+  ): Promise<MCPToolResponse<PricingEstimateOutput>> {
     try {
       // Simplified pricing model
       const basePrices: Record<string, Record<string, number>> = {
-        'UK': { utility: 0.05, marketing: 0.08, authentication: 0.03 },
-        'US': { utility: 0.04, marketing: 0.07, authentication: 0.02 },
-        'AE': { utility: 0.03, marketing: 0.05, authentication: 0.02 }
+        UK: { utility: 0.05, marketing: 0.08, authentication: 0.03 },
+        US: { utility: 0.04, marketing: 0.07, authentication: 0.02 },
+        AE: { utility: 0.03, marketing: 0.05, authentication: 0.02 }
       }
 
       const prices = basePrices[input.region] || basePrices['US']
@@ -569,12 +574,12 @@ export class MCPTools {
     try {
       const event = input.event
       const uid = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}@herasalon.com`
-      
+
       // Format dates properly for ICS
       const formatDate = (date: string) => {
         return new Date(date).toISOString().replace(/[-:]/g, '').replace(/\..+/, '') + 'Z'
       }
-      
+
       // Build ICS content
       let icsContent = `BEGIN:VCALENDAR
 VERSION:2.0

@@ -1,0 +1,59 @@
+smart_code: HERA.SALON.REPORTS.CORE.DEFS.v1
+reports:
+  - report_code: HERA.SALON.REPORT.APPTS_BY_STYLIST.CORE.v1
+    description: "Upcoming appointments by stylist"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT sty.entity_name AS stylist,
+               COUNT(*)        AS upcoming_count
+        FROM universal_transactions t
+        LEFT JOIN core_entities sty ON sty.id = t.reference_entity_id AND sty.organization_id = $org
+        WHERE t.organization_id = $org
+          AND t.transaction_type = 'appointment'
+          AND t.status IN ('pending','confirmed','approved')
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY sty.entity_name
+        ORDER BY upcoming_count DESC
+
+  - report_code: HERA.SALON.REPORT.DAILY_SALES.CORE.v1
+    description: "Daily sales summary (AED)"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT DATE(t.transaction_date) AS day,
+               SUM(t.total_amount)      AS total_sales_aed,
+               COUNT(*)                 AS orders
+        FROM universal_transactions t
+        WHERE t.organization_id = $org
+          AND t.transaction_type = 'pos_order'
+          AND t.status = 'posted'
+          AND COALESCE(t.metadata->>'cancelled','false') <> 'true'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY DATE(t.transaction_date)
+        ORDER BY day DESC
+
+  - report_code: HERA.SALON.REPORT.REVENUE_BY_SERVICE.CORE.v1
+    description: "Revenue by service"
+    params_schema:
+      from: { type: date }
+      to:   { type: date }
+    query:
+      template: |
+        SELECT s.entity_name AS service_name,
+               SUM(l.line_amount) AS revenue_aed
+        FROM universal_transaction_lines l
+        JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+        LEFT JOIN core_entities s ON s.id = l.line_entity_id AND s.organization_id = $org
+        WHERE l.organization_id = $org
+          AND l.line_type IN ('service_line')
+          AND t.transaction_type IN ('service_invoice','pos_order')
+          AND t.status = 'posted'
+          AND COALESCE(t.metadata->>'cancelled','false') <> 'true'
+          AND t.transaction_date BETWEEN $from AND $to
+        GROUP BY s.entity_name
+        ORDER BY revenue_aed DESC

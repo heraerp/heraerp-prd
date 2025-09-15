@@ -3,11 +3,19 @@
 import React, { useState } from 'react'
 import { Button } from './button'
 import { ModernModal } from './modern-modal'
-import { 
-  Home, Users, Calendar, MessageCircle, Phone, 
-  FileText, MoreHorizontal,
-  Target, BarChart3, Briefcase,
-  Star, Activity
+import {
+  Home,
+  Users,
+  Calendar,
+  MessageCircle,
+  Phone,
+  FileText,
+  MoreHorizontal,
+  Target,
+  BarChart3,
+  Briefcase,
+  Star,
+  Activity
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
@@ -143,26 +151,28 @@ export function TeamsSidebar() {
   const NavIcon = ({ item, showLabel = false }: { item: NavItem; showLabel?: boolean }) => {
     const Icon = item.icon
     const isActive = activeItem === item.id
-    
+
     return (
-      <Link 
+      <Link
         href={item.href}
         className={cn(
-          "group relative flex items-center rounded-lg transition-all duration-200 mb-2",
-          "hover:bg-gray-100 p-3",
-          isActive && "bg-blue-50 border-l-4 border-blue-600"
+          'group relative flex items-center rounded-lg transition-all duration-200 mb-2',
+          'hover:bg-gray-100 p-3',
+          isActive && 'bg-blue-50 border-l-4 border-blue-600'
         )}
         onClick={() => setActiveItem(item.id)}
         title={!showLabel ? item.name : undefined}
       >
-        <div className={cn(
-          "flex items-center justify-center rounded-lg h-8 w-8 flex-shrink-0",
-          item.bgColor,
-          "group-hover:shadow-md transition-shadow"
-        )}>
-          <Icon className={cn("h-5 w-5", item.color)} />
+        <div
+          className={cn(
+            'flex items-center justify-center rounded-lg h-8 w-8 flex-shrink-0',
+            item.bgColor,
+            'group-hover:shadow-md transition-shadow'
+          )}
+        >
+          <Icon className={cn('h-5 w-5', item.color)} />
         </div>
-        
+
         {showLabel && (
           <div className="ml-3 min-w-0 flex-1 overflow-hidden">
             <p className="font-medium text-gray-900 truncate text-sm">{item.name}</p>
@@ -180,10 +190,12 @@ export function TeamsSidebar() {
   return (
     <>
       {/* Teams-style Sidebar */}
-      <div className={cn(
-        "fixed left-0 top-0 h-full bg-white/95 backdrop-blur-xl border-r border-gray-200 z-40 transition-all duration-300 shadow-xl",
-        isExpanded ? "w-64" : "w-16"
-      )}>
+      <div
+        className={cn(
+          'fixed left-0 top-0 h-full bg-white/95 backdrop-blur-xl border-r border-gray-200 z-40 transition-all duration-300 shadow-xl',
+          isExpanded ? 'w-64' : 'w-16'
+        )}
+      >
         {/* Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center">
@@ -208,7 +220,7 @@ export function TeamsSidebar() {
                 Core Apps
               </h3>
             )}
-            {primaryNavItems.map((item) => (
+            {primaryNavItems.map(item => (
               <NavIcon key={item.id} item={item} showLabel={isExpanded} />
             ))}
           </div>
@@ -220,7 +232,7 @@ export function TeamsSidebar() {
                 Business Modules
               </h3>
             )}
-            {additionalNavItems.map((item) => (
+            {additionalNavItems.map(item => (
               <NavIcon key={item.id} item={item} showLabel={isExpanded} />
             ))}
           </div>
@@ -247,23 +259,22 @@ export function TeamsSidebar() {
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
             className={cn(
-              "w-full justify-center hover:bg-gray-100 transition-all duration-200",
-              isExpanded ? "justify-start" : "p-2"
+              'w-full justify-center hover:bg-gray-100 transition-all duration-200',
+              isExpanded ? 'justify-start' : 'p-2'
             )}
           >
-            <div className={cn(
-              "h-6 w-6 border-2 border-gray-400 rounded flex items-center justify-center transition-transform duration-200",
-              isExpanded && "rotate-180"
-            )}>
+            <div
+              className={cn(
+                'h-6 w-6 border-2 border-gray-400 rounded flex items-center justify-center transition-transform duration-200',
+                isExpanded && 'rotate-180'
+              )}
+            >
               <div className="w-0 h-0 border-l-[4px] border-l-gray-400 border-t-[3px] border-t-transparent border-b-[3px] border-b-transparent ml-0.5" />
             </div>
-            {isExpanded && (
-              <span className="ml-3 text-sm text-gray-600">Collapse</span>
-            )}
+            {isExpanded && <span className="ml-3 text-sm text-gray-600">Collapse</span>}
           </Button>
         </div>
       </div>
-
     </>
   )
 }

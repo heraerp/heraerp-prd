@@ -1,16 +1,20 @@
 /**
  * Production Data Loading Pattern - HERA DNA Component
- * 
+ *
  * Provides standardized data loading for production modules across all industries.
  * Eliminates repetitive data loading code and ensures consistent patterns.
- * 
+ *
  * Usage:
  * const production = useProductionData(organizationId)
- * 
+ *
  * Acceleration: 50x (eliminates 90% of data loading boilerplate)
  */
 
-import { useUniversalData, universalFilters, universalSorters } from './universal-api-loading-pattern'
+import {
+  useUniversalData,
+  universalFilters,
+  universalSorters
+} from './universal-api-loading-pattern'
 
 export interface ProductionStats {
   activeOrders: number
@@ -35,15 +39,15 @@ export interface ProductionData {
   transactionLines: any[]
   relationships: any[]
   statusEntities: any[]
-  
+
   // Loading states
   ordersLoading: boolean
   centersLoading: boolean
-  
+
   // Computed data
   stats: ProductionStats
   activeOrders: any[]
-  
+
   // Helper functions
   getOrderStatus: (orderId: string) => string
   getOrderProgress: (orderId: string, orderAmount: number) => ProductionProgress
@@ -52,7 +56,7 @@ export interface ProductionData {
 
 /**
  * Universal Production Data Hook
- * 
+ *
  * Loads all production-related data using consistent patterns.
  * Returns computed statistics and helper functions.
  */
@@ -60,9 +64,8 @@ export function useProductionData(organizationId: string): ProductionData {
   // Load production orders
   const { data: productionOrders = [], loading: ordersLoading } = useUniversalData({
     table: 'universal_transactions',
-    filter: (t) => 
-      t.transaction_type === 'production_order' &&
-      t.smart_code?.includes('HERA.MFG.PROD'),
+    filter: t =>
+      t.transaction_type === 'production_order' && t.smart_code?.includes('HERA.MFG.PROD'),
     sort: universalSorters.byCreatedDesc,
     organizationId,
     enabled: !!organizationId
@@ -102,7 +105,7 @@ export function useProductionData(organizationId: string): ProductionData {
   // Load relationships for status tracking
   const { data: relationships = [] } = useUniversalData({
     table: 'core_relationships',
-    filter: (r) => r.relationship_type === 'has_status',
+    filter: r => r.relationship_type === 'has_status',
     organizationId,
     enabled: !!organizationId
   })
@@ -125,8 +128,9 @@ export function useProductionData(organizationId: string): ProductionData {
   // Helper function to calculate production progress
   const getOrderProgress = (orderId: string, orderAmount: number): ProductionProgress => {
     const orderLines = transactionLines.filter(l => l.transaction_id === orderId)
-    const completedQty = orderLines.reduce((sum, line) => 
-      sum + ((line.metadata as any)?.completed_quantity || 0), 0
+    const completedQty = orderLines.reduce(
+      (sum, line) => sum + ((line.metadata as any)?.completed_quantity || 0),
+      0
     )
     const progress = orderAmount ? (completedQty / orderAmount) * 100 : 0
     const activeOperation = orderLines.find(l => (l.metadata as any)?.status === 'in_progress')
@@ -145,7 +149,7 @@ export function useProductionData(organizationId: string): ProductionData {
       const statusCode = getOrderStatus(order.id)
       return statusCode === 'STATUS-IN_PROGRESS'
     })
-    
+
     return activeOrders.find(order => order.target_entity_id === workCenterId) || null
   }
 
@@ -158,19 +162,17 @@ export function useProductionData(organizationId: string): ProductionData {
   // Calculate production statistics
   const stats: ProductionStats = {
     activeOrders: activeOrders.length,
-    
-    plannedQuantity: productionOrders.reduce((sum, o) => 
-      sum + (o.total_amount || 0), 0
-    ),
-    
+
+    plannedQuantity: productionOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0),
+
     completedToday: productionOrders.filter(o => {
       const completedDate = new Date((o.metadata as any)?.completed_date || '')
       const today = new Date()
       return completedDate.toDateString() === today.toDateString()
     }).length,
-    
-    workCenterUtilization: workCenters.length > 0 ? 
-      Math.round((activeOrders.length / workCenters.length) * 100) : 0
+
+    workCenterUtilization:
+      workCenters.length > 0 ? Math.round((activeOrders.length / workCenters.length) * 100) : 0
   }
 
   return {
@@ -182,15 +184,15 @@ export function useProductionData(organizationId: string): ProductionData {
     transactionLines,
     relationships,
     statusEntities,
-    
+
     // Loading states
     ordersLoading,
     centersLoading,
-    
+
     // Computed data
     stats,
     activeOrders,
-    
+
     // Helper functions
     getOrderStatus,
     getOrderProgress,
@@ -205,7 +207,7 @@ export const PRODUCTION_SMART_CODES = {
   // Production Orders
   PRODUCTION_ORDER: 'HERA.MFG.PROD.ORDER.v1',
   PRODUCTION_BATCH: 'HERA.MFG.PROD.BATCH.v1',
-  
+
   // Work Centers (Industry-agnostic)
   WORKCENTER_CUTTING: 'HERA.MFG.WORKCENTER.CUTTING.v1',
   WORKCENTER_ASSEMBLY: 'HERA.MFG.WORKCENTER.ASSEMBLY.v1',
@@ -213,7 +215,7 @@ export const PRODUCTION_SMART_CODES = {
   WORKCENTER_MIXING: 'HERA.MFG.WORKCENTER.MIXING.v1',
   WORKCENTER_PACKAGING: 'HERA.MFG.WORKCENTER.PACKAGING.v1',
   WORKCENTER_TESTING: 'HERA.MFG.WORKCENTER.TESTING.v1',
-  
+
   // Materials
   MATERIAL_WOOD: 'HERA.MFG.MATERIAL.WOOD.v1',
   MATERIAL_METAL: 'HERA.MFG.MATERIAL.METAL.v1',
@@ -221,19 +223,19 @@ export const PRODUCTION_SMART_CODES = {
   MATERIAL_CHEMICAL: 'HERA.MFG.MATERIAL.CHEMICAL.v1',
   MATERIAL_HARDWARE: 'HERA.MFG.MATERIAL.HARDWARE.v1',
   MATERIAL_PACKAGING: 'HERA.MFG.MATERIAL.PACKAGING.v1',
-  
+
   // Operations
   OPERATION_EXEC: 'HERA.MFG.EXEC.OPERATION.v1',
   MACHINE_LOG: 'HERA.MFG.MACHINE.LOG.v1',
   QUALITY_CHECK: 'HERA.MFG.QUALITY.CHECK.v1',
-  
+
   // BOM & Routing
   BOM_COMPONENT: 'HERA.MFG.BOM.COMPONENT.v1',
   ROUTING_STEP: 'HERA.MFG.ROUTING.STEP.v1',
-  
+
   // Status Management
   STATUS_WORKFLOW: 'HERA.MFG.PROD.STATUS.v1',
-  
+
   // Material Requisition
   MATERIAL_REQ: 'HERA.MFG.MATERIAL.REQ.v1',
   MATERIAL_ISSUE: 'HERA.MFG.MATERIAL.ISSUE.v1'
@@ -277,7 +279,7 @@ export const PRODUCTION_INDUSTRY_CONFIGS = {
     batchRequired: false,
     serialTracking: true
   },
-  
+
   FOOD: {
     workCenterTypes: ['mixing', 'cooking', 'cooling', 'packaging'],
     materialTypes: ['ingredient', 'packaging_material', 'additive'],
@@ -287,7 +289,7 @@ export const PRODUCTION_INDUSTRY_CONFIGS = {
     expiryTracking: true,
     temperatureControl: true
   },
-  
+
   PHARMACEUTICAL: {
     workCenterTypes: ['mixing', 'tablet_press', 'coating', 'packaging'],
     materialTypes: ['api', 'excipient', 'packaging_material'],
@@ -297,7 +299,7 @@ export const PRODUCTION_INDUSTRY_CONFIGS = {
     serialTracking: true,
     complianceRequired: true
   },
-  
+
   AUTOMOTIVE: {
     workCenterTypes: ['stamping', 'welding', 'painting', 'assembly'],
     materialTypes: ['metal', 'plastic', 'rubber', 'electronic'],
@@ -335,7 +337,7 @@ export const PRODUCTION_STATUS_WORKFLOW = [
  */
 export const WORK_CENTER_STATUS = {
   ACTIVE: 'active',
-  IDLE: 'idle', 
+  IDLE: 'idle',
   MAINTENANCE: 'maintenance',
   DOWN: 'down'
 } as const
@@ -351,30 +353,29 @@ export function generateProductionCode(
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-  
+  const random = Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, '0')
+
   const typeMap = {
     order: 'PRD',
-    batch: 'BCH', 
+    batch: 'BCH',
     log: 'LOG'
   }
-  
+
   return `${typeMap[type]}-${industryPrefix}-${year}${month}${day}-${random}`
 }
 
 /**
  * Helper function to calculate work center utilization
  */
-export function calculateWorkCenterUtilization(
-  workCenters: any[],
-  activeOrders: any[]
-): number {
+export function calculateWorkCenterUtilization(workCenters: any[], activeOrders: any[]): number {
   if (workCenters.length === 0) return 0
-  
-  const busyWorkCenters = workCenters.filter(wc => 
+
+  const busyWorkCenters = workCenters.filter(wc =>
     activeOrders.some(order => order.target_entity_id === wc.id)
   ).length
-  
+
   return Math.round((busyWorkCenters / workCenters.length) * 100)
 }
 
@@ -383,7 +384,7 @@ export function calculateWorkCenterUtilization(
  */
 export function getNextOperation(
   currentOperation: string,
-  industryConfig: typeof PRODUCTION_INDUSTRY_CONFIGS[keyof typeof PRODUCTION_INDUSTRY_CONFIGS]
+  industryConfig: (typeof PRODUCTION_INDUSTRY_CONFIGS)[keyof typeof PRODUCTION_INDUSTRY_CONFIGS]
 ): string | null {
   const currentIndex = industryConfig.operationSequence.indexOf(currentOperation)
   if (currentIndex === -1 || currentIndex === industryConfig.operationSequence.length - 1) {

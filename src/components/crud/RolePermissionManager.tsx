@@ -5,19 +5,32 @@ import { useSupabaseAuth } from '@/contexts/supabase-auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Shield, 
-  Key, 
-  Users, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Shield,
+  Key,
+  Users,
+  Plus,
+  Edit,
+  Trash2,
   RefreshCw,
   Crown,
   Settings,
@@ -84,95 +97,334 @@ const PERMISSION_CATEGORIES = {
 
 const UNIVERSAL_PERMISSIONS: Permission[] = [
   // Entity Management - Low to Medium Risk
-  { id: 'entities:read', name: 'View Entities', description: 'View all entity types (customers, products, etc.)', category: 'entities', is_system: true, risk_level: 'low' },
-  { id: 'entities:create', name: 'Create Entities', description: 'Create new entities', category: 'entities', is_system: true, risk_level: 'medium' },
-  { id: 'entities:update', name: 'Pencil Entities', description: 'Modify existing entities', category: 'entities', is_system: true, risk_level: 'medium' },
-  { id: 'entities:delete', name: 'Delete Entities', description: 'Remove entities from system', category: 'entities', is_system: true, risk_level: 'high' },
-  { id: 'entities:*', name: 'Full Entity Access', description: 'Complete control over all entities', category: 'entities', is_system: true, risk_level: 'critical' },
-  
+  {
+    id: 'entities:read',
+    name: 'View Entities',
+    description: 'View all entity types (customers, products, etc.)',
+    category: 'entities',
+    is_system: true,
+    risk_level: 'low'
+  },
+  {
+    id: 'entities:create',
+    name: 'Create Entities',
+    description: 'Create new entities',
+    category: 'entities',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'entities:update',
+    name: 'Pencil Entities',
+    description: 'Modify existing entities',
+    category: 'entities',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'entities:delete',
+    name: 'Delete Entities',
+    description: 'Remove entities from system',
+    category: 'entities',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'entities:*',
+    name: 'Full Entity Access',
+    description: 'Complete control over all entities',
+    category: 'entities',
+    is_system: true,
+    risk_level: 'critical'
+  },
+
   // Transaction Operations - Medium to High Risk
-  { id: 'transactions:read', name: 'View Transactions', description: 'View transaction records', category: 'transactions', is_system: true, risk_level: 'low' },
-  { id: 'transactions:create', name: 'Create Transactions', description: 'Create new transactions', category: 'transactions', is_system: true, risk_level: 'medium' },
-  { id: 'transactions:update', name: 'Pencil Transactions', description: 'Modify transaction records', category: 'transactions', is_system: true, risk_level: 'high' },
-  { id: 'transactions:delete', name: 'Delete Transactions', description: 'Remove transaction records', category: 'transactions', is_system: true, risk_level: 'critical' },
-  { id: 'transactions:approve', name: 'Approve Transactions', description: 'Approve pending transactions', category: 'transactions', is_system: true, risk_level: 'high' },
-  { id: 'transactions:*', name: 'Full Transaction Access', description: 'Complete transaction management', category: 'transactions', is_system: true, risk_level: 'critical' },
-  
+  {
+    id: 'transactions:read',
+    name: 'View Transactions',
+    description: 'View transaction records',
+    category: 'transactions',
+    is_system: true,
+    risk_level: 'low'
+  },
+  {
+    id: 'transactions:create',
+    name: 'Create Transactions',
+    description: 'Create new transactions',
+    category: 'transactions',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'transactions:update',
+    name: 'Pencil Transactions',
+    description: 'Modify transaction records',
+    category: 'transactions',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'transactions:delete',
+    name: 'Delete Transactions',
+    description: 'Remove transaction records',
+    category: 'transactions',
+    is_system: true,
+    risk_level: 'critical'
+  },
+  {
+    id: 'transactions:approve',
+    name: 'Approve Transactions',
+    description: 'Approve pending transactions',
+    category: 'transactions',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'transactions:*',
+    name: 'Full Transaction Access',
+    description: 'Complete transaction management',
+    category: 'transactions',
+    is_system: true,
+    risk_level: 'critical'
+  },
+
   // Relationship Management - Low to Medium Risk
-  { id: 'relationships:read', name: 'View Relationships', description: 'View entity relationships', category: 'relationships', is_system: true, risk_level: 'low' },
-  { id: 'relationships:create', name: 'Create Relationships', description: 'Establish entity connections', category: 'relationships', is_system: true, risk_level: 'medium' },
-  { id: 'relationships:update', name: 'Pencil Relationships', description: 'Modify relationships', category: 'relationships', is_system: true, risk_level: 'medium' },
-  { id: 'relationships:delete', name: 'Delete Relationships', description: 'Remove relationships', category: 'relationships', is_system: true, risk_level: 'high' },
-  { id: 'relationships:*', name: 'Full Relationship Access', description: 'Complete relationship management', category: 'relationships', is_system: true, risk_level: 'critical' },
-  
+  {
+    id: 'relationships:read',
+    name: 'View Relationships',
+    description: 'View entity relationships',
+    category: 'relationships',
+    is_system: true,
+    risk_level: 'low'
+  },
+  {
+    id: 'relationships:create',
+    name: 'Create Relationships',
+    description: 'Establish entity connections',
+    category: 'relationships',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'relationships:update',
+    name: 'Pencil Relationships',
+    description: 'Modify relationships',
+    category: 'relationships',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'relationships:delete',
+    name: 'Delete Relationships',
+    description: 'Remove relationships',
+    category: 'relationships',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'relationships:*',
+    name: 'Full Relationship Access',
+    description: 'Complete relationship management',
+    category: 'relationships',
+    is_system: true,
+    risk_level: 'critical'
+  },
+
   // User Administration - High to Critical Risk
-  { id: 'users:read', name: 'View Users', description: 'View user accounts', category: 'users', is_system: true, risk_level: 'medium' },
-  { id: 'users:create', name: 'Create Users', description: 'Add new users to organization', category: 'users', is_system: true, risk_level: 'high' },
-  { id: 'users:update', name: 'Pencil Users', description: 'Modify user accounts', category: 'users', is_system: true, risk_level: 'high' },
-  { id: 'users:delete', name: 'Delete Users', description: 'Remove user accounts', category: 'users', is_system: true, risk_level: 'critical' },
-  { id: 'users:manage', name: 'Full User Management', description: 'Complete user administration', category: 'users', is_system: true, risk_level: 'critical' },
-  
+  {
+    id: 'users:read',
+    name: 'View Users',
+    description: 'View user accounts',
+    category: 'users',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'users:create',
+    name: 'Create Users',
+    description: 'Add new users to organization',
+    category: 'users',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'users:update',
+    name: 'Pencil Users',
+    description: 'Modify user accounts',
+    category: 'users',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'users:delete',
+    name: 'Delete Users',
+    description: 'Remove user accounts',
+    category: 'users',
+    is_system: true,
+    risk_level: 'critical'
+  },
+  {
+    id: 'users:manage',
+    name: 'Full User Management',
+    description: 'Complete user administration',
+    category: 'users',
+    is_system: true,
+    risk_level: 'critical'
+  },
+
   // System Settings - Critical Risk
-  { id: 'settings:read', name: 'View Settings', description: 'View system configuration', category: 'settings', is_system: true, risk_level: 'low' },
-  { id: 'settings:update', name: 'Modify Settings', description: 'Change system settings', category: 'settings', is_system: true, risk_level: 'critical' },
-  { id: 'settings:manage', name: 'Full Settings Access', description: 'Complete settings management', category: 'settings', is_system: true, risk_level: 'critical' },
-  
+  {
+    id: 'settings:read',
+    name: 'View Settings',
+    description: 'View system configuration',
+    category: 'settings',
+    is_system: true,
+    risk_level: 'low'
+  },
+  {
+    id: 'settings:update',
+    name: 'Modify Settings',
+    description: 'Change system settings',
+    category: 'settings',
+    is_system: true,
+    risk_level: 'critical'
+  },
+  {
+    id: 'settings:manage',
+    name: 'Full Settings Access',
+    description: 'Complete settings management',
+    category: 'settings',
+    is_system: true,
+    risk_level: 'critical'
+  },
+
   // Reports & Analytics - Low to Medium Risk
-  { id: 'reports:read', name: 'View Reports', description: 'Access standard reports', category: 'reports', is_system: true, risk_level: 'low' },
-  { id: 'reports:create', name: 'Create Reports', description: 'Generate custom reports', category: 'reports', is_system: true, risk_level: 'medium' },
-  { id: 'reports:all', name: 'Full Report Access', description: 'Access to all reports and analytics', category: 'reports', is_system: true, risk_level: 'medium' },
-  
+  {
+    id: 'reports:read',
+    name: 'View Reports',
+    description: 'Access standard reports',
+    category: 'reports',
+    is_system: true,
+    risk_level: 'low'
+  },
+  {
+    id: 'reports:create',
+    name: 'Create Reports',
+    description: 'Generate custom reports',
+    category: 'reports',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'reports:all',
+    name: 'Full Report Access',
+    description: 'Access to all reports and analytics',
+    category: 'reports',
+    is_system: true,
+    risk_level: 'medium'
+  },
+
   // API Access - Medium to Critical Risk
-  { id: 'api:read', name: 'API Read Access', description: 'Read-only API access', category: 'api', is_system: true, risk_level: 'medium' },
-  { id: 'api:write', name: 'API Write Access', description: 'Create and modify via API', category: 'api', is_system: true, risk_level: 'high' },
-  { id: 'api:admin', name: 'Full API Access', description: 'Complete API administration', category: 'api', is_system: true, risk_level: 'critical' }
+  {
+    id: 'api:read',
+    name: 'API Read Access',
+    description: 'Read-only API access',
+    category: 'api',
+    is_system: true,
+    risk_level: 'medium'
+  },
+  {
+    id: 'api:write',
+    name: 'API Write Access',
+    description: 'Create and modify via API',
+    category: 'api',
+    is_system: true,
+    risk_level: 'high'
+  },
+  {
+    id: 'api:admin',
+    name: 'Full API Access',
+    description: 'Complete API administration',
+    category: 'api',
+    is_system: true,
+    risk_level: 'critical'
+  }
 ]
 
 const SYSTEM_ROLES: Role[] = [
-  { 
-    id: 'owner', 
-    name: 'Owner', 
-    description: 'Organization owner with full access to all features', 
-    permissions: ['entities:*', 'transactions:*', 'relationships:*', 'users:manage', 'settings:manage', 'reports:all', 'api:admin'],
+  {
+    id: 'owner',
+    name: 'Owner',
+    description: 'Organization owner with full access to all features',
+    permissions: [
+      'entities:*',
+      'transactions:*',
+      'relationships:*',
+      'users:manage',
+      'settings:manage',
+      'reports:all',
+      'api:admin'
+    ],
     is_system: true,
     user_count: 0,
     created_at: new Date().toISOString(),
     created_by: 'system'
   },
-  { 
-    id: 'admin', 
-    name: 'Administrator', 
-    description: 'Administrative access with user management capabilities', 
-    permissions: ['entities:*', 'transactions:*', 'relationships:*', 'users:manage', 'settings:read', 'reports:all', 'api:write'],
+  {
+    id: 'admin',
+    name: 'Administrator',
+    description: 'Administrative access with user management capabilities',
+    permissions: [
+      'entities:*',
+      'transactions:*',
+      'relationships:*',
+      'users:manage',
+      'settings:read',
+      'reports:all',
+      'api:write'
+    ],
     is_system: true,
     user_count: 0,
     created_at: new Date().toISOString(),
     created_by: 'system'
   },
-  { 
-    id: 'manager', 
-    name: 'Manager', 
-    description: 'Management level access with operational permissions', 
-    permissions: ['entities:*', 'transactions:*', 'relationships:read', 'users:read', 'reports:read', 'api:read'],
+  {
+    id: 'manager',
+    name: 'Manager',
+    description: 'Management level access with operational permissions',
+    permissions: [
+      'entities:*',
+      'transactions:*',
+      'relationships:read',
+      'users:read',
+      'reports:read',
+      'api:read'
+    ],
     is_system: true,
     user_count: 0,
     created_at: new Date().toISOString(),
     created_by: 'system'
   },
-  { 
-    id: 'user', 
-    name: 'Standard User', 
-    description: 'Basic user access for daily operations', 
-    permissions: ['entities:read', 'transactions:read', 'relationships:read', 'reports:read', 'api:read'],
+  {
+    id: 'user',
+    name: 'Standard User',
+    description: 'Basic user access for daily operations',
+    permissions: [
+      'entities:read',
+      'transactions:read',
+      'relationships:read',
+      'reports:read',
+      'api:read'
+    ],
     is_system: true,
     user_count: 0,
     created_at: new Date().toISOString(),
     created_by: 'system'
   },
-  { 
-    id: 'readonly', 
-    name: 'Read Only', 
-    description: 'View-only access to system data', 
+  {
+    id: 'readonly',
+    name: 'Read Only',
+    description: 'View-only access to system data',
     permissions: ['entities:read', 'transactions:read', 'relationships:read', 'reports:read'],
     is_system: true,
     user_count: 0,
@@ -205,33 +457,49 @@ export function RolePermissionManager() {
   // Permission statistics
   const permissionStats = {
     total: UNIVERSAL_PERMISSIONS.length,
-    by_category: Object.keys(PERMISSION_CATEGORIES).reduce((acc, cat) => {
-      acc[cat] = UNIVERSAL_PERMISSIONS.filter(p => p.category === cat).length
-      return acc
-    }, {} as Record<string, number>),
-    by_risk: ['low', 'medium', 'high', 'critical'].reduce((acc, risk) => {
-      acc[risk] = UNIVERSAL_PERMISSIONS.filter(p => p.risk_level === risk).length
-      return acc
-    }, {} as Record<string, number>)
+    by_category: Object.keys(PERMISSION_CATEGORIES).reduce(
+      (acc, cat) => {
+        acc[cat] = UNIVERSAL_PERMISSIONS.filter(p => p.category === cat).length
+        return acc
+      },
+      {} as Record<string, number>
+    ),
+    by_risk: ['low', 'medium', 'high', 'critical'].reduce(
+      (acc, risk) => {
+        acc[risk] = UNIVERSAL_PERMISSIONS.filter(p => p.risk_level === risk).length
+        return acc
+      },
+      {} as Record<string, number>
+    )
   }
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'text-green-600 bg-green-50 border-green-200'
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'low':
+        return 'text-green-600 bg-green-50 border-green-200'
+      case 'medium':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'critical':
+        return 'text-red-600 bg-red-50 border-red-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
   const getRiskIcon = (risk: string) => {
     switch (risk) {
-      case 'low': return CheckCircle
-      case 'medium': return Info
-      case 'high': return AlertTriangle
-      case 'critical': return XCircle
-      default: return Info
+      case 'low':
+        return CheckCircle
+      case 'medium':
+        return Info
+      case 'high':
+        return AlertTriangle
+      case 'critical':
+        return XCircle
+      default:
+        return Info
     }
   }
 
@@ -256,9 +524,16 @@ export function RolePermissionManager() {
     setCustomRoles(prev => [...prev, newRole])
     setRoleForm({ name: '', description: '', permissions: [], copy_from_role: '' })
     setShowCreateRole(false)
-    
+
     // Log the action
-    logPermissionAction('create_role', newRole.id, newRole.name, [], newRole.permissions, 'Created custom role')
+    logPermissionAction(
+      'create_role',
+      newRole.id,
+      newRole.name,
+      [],
+      newRole.permissions,
+      'Created custom role'
+    )
   }
 
   // Copy permissions from existing role
@@ -284,11 +559,11 @@ export function RolePermissionManager() {
 
   // Log permission changes
   const logPermissionAction = (
-    action: string, 
-    targetId: string, 
-    targetName: string, 
-    permissionsBefore: string[], 
-    permissionsAfter: string[], 
+    action: string,
+    targetId: string,
+    targetName: string,
+    permissionsBefore: string[],
+    permissionsAfter: string[],
     reason: string
   ) => {
     const auditEntry: PermissionAudit = {
@@ -370,12 +645,7 @@ export function RolePermissionManager() {
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
           {error}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="float-right" 
-            onClick={() => setError(null)}
-          >
+          <Button variant="ghost" size="sm" className="float-right" onClick={() => setError(null)}>
             ×
           </Button>
         </div>
@@ -400,13 +670,14 @@ export function RolePermissionManager() {
                   <Crown className="h-5 w-5 text-yellow-500" />
                   System Roles
                 </CardTitle>
-                <CardDescription>
-                  Predefined roles with standard permission sets
-                </CardDescription>
+                <CardDescription>Predefined roles with standard permission sets</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {roles.map(role => (
-                  <div key={role.id} className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <div
+                    key={role.id}
+                    className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <h4 className="font-medium flex items-center gap-2">
@@ -420,7 +691,10 @@ export function RolePermissionManager() {
                     <div className="flex items-center justify-between">
                       <div className="flex flex-wrap gap-1">
                         {role.permissions.slice(0, 3).map(permission => (
-                          <span key={permission} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                          <span
+                            key={permission}
+                            className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded"
+                          >
                             {permission}
                           </span>
                         ))}
@@ -430,11 +704,7 @@ export function RolePermissionManager() {
                           </span>
                         )}
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => setSelectedRole(role)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedRole(role)}>
                         View Details
                       </Button>
                     </div>
@@ -467,7 +737,10 @@ export function RolePermissionManager() {
                 ) : (
                   <div className="space-y-3">
                     {customRoles.map(role => (
-                      <div key={role.id} className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                      <div
+                        key={role.id}
+                        className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                      >
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h4 className="font-medium">{role.name}</h4>
@@ -509,19 +782,25 @@ export function RolePermissionManager() {
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-green-600">{permissionStats.by_risk.low}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {permissionStats.by_risk.low}
+                </div>
                 <p className="text-xs text-gray-500">Low Risk</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-orange-600">{permissionStats.by_risk.high}</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {permissionStats.by_risk.high}
+                </div>
                 <p className="text-xs text-gray-500">High Risk</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-red-600">{permissionStats.by_risk.critical}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {permissionStats.by_risk.critical}
+                </div>
                 <p className="text-xs text-gray-500">Critical Risk</p>
               </CardContent>
             </Card>
@@ -537,34 +816,42 @@ export function RolePermissionManager() {
                     {category.name}
                   </CardTitle>
                   <CardDescription>
-                    {UNIVERSAL_PERMISSIONS.filter(p => p.category === categoryKey).length} permissions available
+                    {UNIVERSAL_PERMISSIONS.filter(p => p.category === categoryKey).length}{' '}
+                    permissions available
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-3 md:grid-cols-2">
-                    {UNIVERSAL_PERMISSIONS
-                      .filter(permission => permission.category === categoryKey)
-                      .map(permission => {
-                        const RiskIcon = getRiskIcon(permission.risk_level)
-                        return (
-                          <div key={permission.id} className="flex items-start gap-3 p-3 border rounded-lg">
-                            <RiskIcon className={`h-4 w-4 mt-1 ${getRiskColor(permission.risk_level).split(' ')[0]}`} />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between mb-1">
-                                <p className="font-medium text-sm">{permission.name}</p>
-                                <Badge 
-                                  variant="outline" 
-                                  className={`text-xs ${getRiskColor(permission.risk_level)}`}
-                                >
-                                  {permission.risk_level}
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-gray-600 mb-2">{permission.description}</p>
-                              <code className="text-xs bg-gray-100 px-1 rounded">{permission.id}</code>
+                    {UNIVERSAL_PERMISSIONS.filter(
+                      permission => permission.category === categoryKey
+                    ).map(permission => {
+                      const RiskIcon = getRiskIcon(permission.risk_level)
+                      return (
+                        <div
+                          key={permission.id}
+                          className="flex items-start gap-3 p-3 border rounded-lg"
+                        >
+                          <RiskIcon
+                            className={`h-4 w-4 mt-1 ${getRiskColor(permission.risk_level).split(' ')[0]}`}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                              <p className="font-medium text-sm">{permission.name}</p>
+                              <Badge
+                                variant="outline"
+                                className={`text-xs ${getRiskColor(permission.risk_level)}`}
+                              >
+                                {permission.risk_level}
+                              </Badge>
                             </div>
+                            <p className="text-xs text-gray-600 mb-2">{permission.description}</p>
+                            <code className="text-xs bg-gray-100 px-1 rounded">
+                              {permission.id}
+                            </code>
                           </div>
-                        )
-                      })}
+                        </div>
+                      )
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -580,9 +867,7 @@ export function RolePermissionManager() {
                 <History className="h-5 w-5" />
                 Permission Audit Trail
               </CardTitle>
-              <CardDescription>
-                Complete history of role and permission changes
-              </CardDescription>
+              <CardDescription>Complete history of role and permission changes</CardDescription>
             </CardHeader>
             <CardContent>
               {auditLogs.length === 0 ? (
@@ -609,13 +894,17 @@ export function RolePermissionManager() {
                           {entry.action}
                         </Badge>
                       </div>
-                      {(entry.permissions_before.length > 0 || entry.permissions_after.length > 0) && (
+                      {(entry.permissions_before.length > 0 ||
+                        entry.permissions_after.length > 0) && (
                         <div className="mt-3 grid gap-2 md:grid-cols-2">
                           <div>
                             <p className="text-xs font-medium text-gray-600">Before:</p>
                             <div className="flex flex-wrap gap-1">
                               {entry.permissions_before.map(perm => (
-                                <span key={perm} className="text-xs bg-red-50 text-red-700 px-1 rounded">
+                                <span
+                                  key={perm}
+                                  className="text-xs bg-red-50 text-red-700 px-1 rounded"
+                                >
                                   {perm}
                                 </span>
                               ))}
@@ -625,7 +914,10 @@ export function RolePermissionManager() {
                             <p className="text-xs font-medium text-gray-600">After:</p>
                             <div className="flex flex-wrap gap-1">
                               {entry.permissions_after.map(perm => (
-                                <span key={perm} className="text-xs bg-green-50 text-green-700 px-1 rounded">
+                                <span
+                                  key={perm}
+                                  className="text-xs bg-green-50 text-green-700 px-1 rounded"
+                                >
                                   {perm}
                                 </span>
                               ))}
@@ -659,8 +951,8 @@ export function RolePermissionManager() {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full" 
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${Math.random() * 100}%` }}
                           />
                         </div>
@@ -682,7 +974,10 @@ export function RolePermissionManager() {
                   {Object.entries(permissionStats.by_risk).map(([risk, count]) => {
                     const RiskIcon = getRiskIcon(risk)
                     return (
-                      <div key={risk} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div
+                        key={risk}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
                         <div className="flex items-center gap-3">
                           <RiskIcon className={`h-5 w-5 ${getRiskColor(risk).split(' ')[0]}`} />
                           <div>
@@ -745,7 +1040,7 @@ export function RolePermissionManager() {
                 <Input
                   id="role_name"
                   value={roleForm.name}
-                  onChange={(e) => setRoleForm(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={e => setRoleForm(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Enter role name"
                   required
                 />
@@ -754,7 +1049,7 @@ export function RolePermissionManager() {
                 <Label htmlFor="copy_from">Copy From Existing Role</Label>
                 <Select
                   value={roleForm.copy_from_role}
-                  onValueChange={(value) => {
+                  onValueChange={value => {
                     setRoleForm(prev => ({ ...prev, copy_from_role: value }))
                     if (value) copyFromRole(value)
                   }}
@@ -764,7 +1059,9 @@ export function RolePermissionManager() {
                   </SelectTrigger>
                   <SelectContent>
                     {[...roles, ...customRoles].map(role => (
-                      <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                      <SelectItem key={role.id} value={role.id}>
+                        {role.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -776,7 +1073,7 @@ export function RolePermissionManager() {
               <Textarea
                 id="role_description"
                 value={roleForm.description}
-                onChange={(e) => setRoleForm(prev => ({ ...prev, description: e.target.value }))}
+                onChange={e => setRoleForm(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Describe this role's purpose and responsibilities"
                 rows={3}
               />
@@ -793,28 +1090,28 @@ export function RolePermissionManager() {
                       {category.name}
                     </h4>
                     <div className="grid gap-2 md:grid-cols-2 ml-6">
-                      {UNIVERSAL_PERMISSIONS
-                        .filter(permission => permission.category === categoryKey)
-                        .map(permission => (
-                          <div key={permission.id} className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              id={permission.id}
-                              checked={roleForm.permissions.includes(permission.id)}
-                              onChange={() => togglePermission(permission.id)}
-                              className="rounded"
-                            />
-                            <Label htmlFor={permission.id} className="text-sm">
-                              {permission.name}
-                              <Badge 
-                                variant="outline" 
-                                className={`ml-2 text-xs ${getRiskColor(permission.risk_level)}`}
-                              >
-                                {permission.risk_level}
-                              </Badge>
-                            </Label>
-                          </div>
-                        ))}
+                      {UNIVERSAL_PERMISSIONS.filter(
+                        permission => permission.category === categoryKey
+                      ).map(permission => (
+                        <div key={permission.id} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={permission.id}
+                            checked={roleForm.permissions.includes(permission.id)}
+                            onChange={() => togglePermission(permission.id)}
+                            className="rounded"
+                          />
+                          <Label htmlFor={permission.id} className="text-sm">
+                            {permission.name}
+                            <Badge
+                              variant="outline"
+                              className={`ml-2 text-xs ${getRiskColor(permission.risk_level)}`}
+                            >
+                              {permission.risk_level}
+                            </Badge>
+                          </Label>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -822,8 +1119,8 @@ export function RolePermissionManager() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setShowCreateRole(false)
                 setRoleForm({ name: '', description: '', permissions: [], copy_from_role: '' })

@@ -1,0 +1,106 @@
+smart_code: HERA.SALON.READ_MODELS.CORE.DEFS.v1
+views:
+  - name: v_salon_appointments_upcoming
+    description: "Upcoming appointments with stylist and customer context"
+    sql: |
+      SELECT
+        t.id                 AS appointment_id,
+        t.transaction_number AS appt_number,
+        t.transaction_date   AS appt_datetime,
+        t.status,
+        t.currency_code,
+        sty.entity_name      AS stylist,
+        t.reference_entity_id AS stylist_id
+      FROM universal_transactions t
+      LEFT JOIN core_entities sty ON sty.id = t.reference_entity_id AND sty.organization_id = $org
+      WHERE t.organization_id = $org
+        AND t.transaction_type = 'appointment'
+        AND t.status IN ('pending','confirmed','approved')
+      ORDER BY t.transaction_date ASC
+
+  - name: v_salon_sales_brief
+    description: "POS orders summary (AED)"
+    sql: |
+      SELECT
+        transaction_number,
+        transaction_date,
+        currency_code,
+        total_amount,
+        status,
+        smart_code,
+        created_at,
+        updated_at
+      FROM universal_transactions
+      WHERE organization_id = $org
+        AND transaction_type = 'pos_order'
+      ORDER BY transaction_date DESC, transaction_number DESC
+
+  - name: v_salon_commissions_period
+    description: "Stylist commissions over a date range, include/exclude tips per smart code variant"
+    sql: |
+      SELECT
+        t.reference_entity_id      AS stylist_id,
+        sty.entity_name            AS stylist_name,
+        SUM(CASE WHEN l.line_type = 'service_line' THEN l.line_amount ELSE 0 END)                                        AS service_revenue,
+        SUM(CASE WHEN l.line_type = 'tip'          THEN l.line_amount ELSE 0 END)                                        AS tips,
+        COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = t.organization_id AND d.entity_id = t.reference_entity_id AND d.key = 'stylist.commission_pct' LIMIT 1), 0) AS commission_pct,
+        -- Commission includes tips only when smart_code indicates INCL_TIP variant
+        SUM(
+          CASE 
+            WHEN l.line_type = 'service_line' THEN l.line_amount * COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = t.organization_id AND d.entity_id = t.reference_entity_id AND d.key = 'stylist.commission_pct' LIMIT 1), 0)
+            WHEN l.line_type = 'tip' AND t.smart_code LIKE 'HERA.SALON.POS.TXN.SALE.INCL_TIP.v1' THEN l.line_amount * COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = t.organization_id AND d.entity_id = t.reference_entity_id AND d.key = 'stylist.commission_pct' LIMIT 1), 0)
+            ELSE 0
+          END
+        ) AS commission_aed
+      FROM universal_transaction_lines l
+      JOIN universal_transactions t ON t.id = l.transaction_id AND t.organization_id = $org
+      LEFT JOIN core_entities sty ON sty.id = t.reference_entity_id AND sty.organization_id = $org
+      WHERE l.organization_id = $org
+        AND t.transaction_type = 'pos_order'
+        AND t.status = 'posted'
+        AND t.transaction_date BETWEEN $from AND $to
+      GROUP BY t.reference_entity_id, sty.entity_name
+      ORDER BY commission_aed DESC
+
+  - name: v_salon_chair_utilization_daily
+    description: "Daily chair utilization using appointment metadata start/end times"
+    sql: |
+      -- Expects appointment metadata with 'start_time' and 'end_time' ISO strings
+      WITH appts AS (
+        SELECT
+          t.id,
+          t.transaction_date::date AS day,
+          (t.metadata->>'chair_slug') AS chair_slug,
+          (t.metadata->>'start_time')::timestamp AS start_ts,
+          (t.metadata->>'end_time')::timestamp   AS end_ts
+        FROM universal_transactions t
+        WHERE t.organization_id = $org
+          AND t.transaction_type = 'appointment'
+          AND t.status IN ('pending','confirmed','approved','completed')
+          AND t.transaction_date::date BETWEEN $from AND $to
+      )
+      SELECT
+        day,
+        chair_slug,
+        SUM(EXTRACT(EPOCH FROM (end_ts - start_ts)) / 60.0) AS minutes_booked,
+        60.0 * 12                                           AS minutes_capacity, -- assume 12 hours/day for baseline
+        (SUM(EXTRACT(EPOCH FROM (end_ts - start_ts)) / 60.0) / (60.0 * 12)) * 100.0 AS utilization_pct
+      FROM appts
+      GROUP BY day, chair_slug
+      ORDER BY day DESC, utilization_pct DESC
+
+  - name: v_salon_inventory_levels
+    description: "Simple inventory level from inventory_move_line (consumption is negative quantity)"
+    sql: |
+      SELECT
+        l.line_entity_id   AS product_id,
+        p.entity_name      AS product_name,
+        SUM(l.quantity)    AS qty_on_hand,
+        (SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = l.organization_id AND d.entity_id = l.line_entity_id AND d.key = 'product.reorder_level' LIMIT 1) AS reorder_level,
+        CASE WHEN SUM(l.quantity) < COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = l.organization_id AND d.entity_id = l.line_entity_id AND d.key = 'product.reorder_level' LIMIT 1), 0)
+             THEN true ELSE false END AS low_stock
+      FROM universal_transaction_lines l
+      LEFT JOIN core_entities p ON p.id = l.line_entity_id AND p.organization_id = $org
+      WHERE l.organization_id = $org
+        AND l.line_type = 'inventory_move_line'
+      GROUP BY l.line_entity_id, p.entity_name

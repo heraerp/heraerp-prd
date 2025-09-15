@@ -9,7 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -136,12 +142,14 @@ export function APModule({
   onInvoiceProcessed,
   onPaymentMade
 }: APModuleProps) {
-  const [activeTab, setActiveTab] = useState<'vendors' | 'invoices' | 'payments' | 'aging' | 'approvals'>('invoices')
+  const [activeTab, setActiveTab] = useState<
+    'vendors' | 'invoices' | 'payments' | 'aging' | 'approvals'
+  >('invoices')
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [invoices, setInvoices] = useState<PurchaseInvoice[]>([])
   const [selectedVendor, setSelectedVendor] = useState<string>('')
   const [loading, setLoading] = useState(false)
-  
+
   // Invoice Form State
   const [invoiceForm, setInvoiceForm] = useState<Partial<PurchaseInvoice>>({
     invoiceDate: new Date(),
@@ -163,19 +171,21 @@ export function APModule({
           entity_type: 'vendor'
         }
       })
-      
+
       if (response.data) {
-        setVendors(response.data.map((vendor: any) => ({
-          id: vendor.id,
-          vendorCode: vendor.entity_code,
-          vendorName: vendor.entity_name,
-          vendorType: (vendor.metadata as any)?.vendor_type || 'general',
-          status: vendor.status || 'active',
-          creditLimit: (vendor.metadata as any)?.credit_limit || 0,
-          currentBalance: (vendor.metadata as any)?.current_balance || 0,
-          paymentTerms: (vendor.metadata as any)?.payment_terms || 'NET30',
-          metadata: vendor.metadata
-        })))
+        setVendors(
+          response.data.map((vendor: any) => ({
+            id: vendor.id,
+            vendorCode: vendor.entity_code,
+            vendorName: vendor.entity_name,
+            vendorType: (vendor.metadata as any)?.vendor_type || 'general',
+            status: vendor.status || 'active',
+            creditLimit: (vendor.metadata as any)?.credit_limit || 0,
+            currentBalance: (vendor.metadata as any)?.current_balance || 0,
+            paymentTerms: (vendor.metadata as any)?.payment_terms || 'NET30',
+            metadata: vendor.metadata
+          }))
+        )
       }
     } catch (error) {
       console.error('Failed to load vendors:', error)
@@ -207,12 +217,12 @@ export function APModule({
     setInvoiceForm(prev => {
       const newLines = [...(prev.lines || [])]
       newLines[index] = { ...newLines[index], [field]: value }
-      
+
       // Calculate amount
       if (field === 'quantity' || field === 'unitPrice') {
         newLines[index].amount = newLines[index].quantity * newLines[index].unitPrice
       }
-      
+
       return { ...prev, lines: newLines }
     })
   }
@@ -231,7 +241,7 @@ export function APModule({
 
     try {
       setLoading(true)
-      
+
       // Create purchase invoice transaction
       const invoice = await universalApi.createTransaction({
         transaction_type: 'purchase_invoice',
@@ -279,7 +289,6 @@ export function APModule({
 
       // Reload data
       loadVendors()
-      
     } catch (error) {
       console.error('Failed to process invoice:', error)
       alert('Failed to process invoice')
@@ -297,32 +306,33 @@ export function APModule({
       days90: 0,
       over90: 0
     }
-    
+
     // In real implementation, would calculate from invoice data
     aging.current = 45000
     aging.days30 = 23000
     aging.days60 = 12000
     aging.days90 = 8000
     aging.over90 = 5000
-    
+
     return aging
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")}>
-      <Card className={cn(
-        "shadow-lg",
-        isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : "bg-white border-gray-200"
-      )}>
-        <CardHeader className={cn(
-          "border-b",
-          isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-        )}>
+    <div className={cn('min-h-screen', isDarkMode && 'dark')}>
+      <Card
+        className={cn(
+          'shadow-lg',
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+        )}
+      >
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
           <div className="flex items-center justify-between">
-            <CardTitle className={cn(
-              "text-xl flex items-center gap-2",
-              isDarkMode ? "text-white" : "text-gray-900"
-            )}>
+            <CardTitle
+              className={cn(
+                'text-xl flex items-center gap-2',
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              )}
+            >
               <Receipt className="h-5 w-5" />
               Accounts Payable Module
             </CardTitle>
@@ -340,13 +350,12 @@ export function APModule({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-6">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className={cn(
-              "grid w-full grid-cols-5",
-              isDarkMode ? "bg-[#292929]" : "bg-gray-100"
-            )}>
+          <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+            <TabsList
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+            >
               <TabsTrigger value="vendors" className="gap-1">
                 <Users className="h-4 w-4" />
                 Vendors
@@ -370,7 +379,7 @@ export function APModule({
                 </TabsTrigger>
               )}
             </TabsList>
-            
+
             {/* Vendors Tab */}
             <TabsContent value="vendors" className="space-y-4 mt-4">
               <div className="flex justify-between items-center mb-4">
@@ -380,17 +389,19 @@ export function APModule({
                     <Input
                       placeholder="Search vendors..."
                       className={cn(
-                        "pl-10 w-[300px]",
-                        isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
+                        'pl-10 w-[300px]',
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
                       )}
                     />
                   </div>
                   {industrySpecific.dairySupplierTracking && (
                     <Select>
-                      <SelectTrigger className={cn(
-                        "w-[200px]",
-                        isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                      )}>
+                      <SelectTrigger
+                        className={cn(
+                          'w-[200px]',
+                          isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                        )}
+                      >
                         <SelectValue placeholder="Filter by type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -402,17 +413,20 @@ export function APModule({
                     </Select>
                   )}
                 </div>
-                <Button className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}>
+                <Button className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}>
                   <Plus className="h-4 w-4 mr-1" />
                   Add Vendor
                 </Button>
               </div>
-              
+
               <div className="grid grid-cols-1 gap-4">
                 {vendors.map(vendor => (
-                  <Card key={vendor.id} className={cn(
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                  )}>
+                  <Card
+                    key={vendor.id}
+                    className={cn(
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                    )}
+                  >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -442,19 +456,21 @@ export function APModule({
                               <span className="text-gray-500">Terms:</span> {vendor.paymentTerms}
                             </div>
                             <div>
-                              <span className="text-gray-500">Credit Limit:</span> ${vendor.creditLimit.toLocaleString()}
+                              <span className="text-gray-500">Credit Limit:</span> $
+                              {vendor.creditLimit.toLocaleString()}
                             </div>
                           </div>
-                          {industrySpecific.qualityCertificateTracking && (vendor.metadata as any)?.qualityCertificates && (
-                            <div className="mt-2 flex gap-2">
-                              {vendor.metadata.qualityCertificates.map((cert, idx) => (
-                                <Badge key={idx} variant="outline" className="text-xs">
-                                  <Award className="h-3 w-3 mr-1" />
-                                  {cert}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
+                          {industrySpecific.qualityCertificateTracking &&
+                            (vendor.metadata as any)?.qualityCertificates && (
+                              <div className="mt-2 flex gap-2">
+                                {vendor.metadata.qualityCertificates.map((cert, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    <Award className="h-3 w-3 mr-1" />
+                                    {cert}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-semibold">
@@ -468,12 +484,14 @@ export function APModule({
                 ))}
               </div>
             </TabsContent>
-            
+
             {/* Invoices Tab */}
             <TabsContent value="invoices" className="space-y-4 mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">New Purchase Invoice</CardTitle>
                 </CardHeader>
@@ -482,7 +500,9 @@ export function APModule({
                     <div>
                       <Label>Vendor</Label>
                       <Select value={selectedVendor} onValueChange={setSelectedVendor}>
-                        <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                        <SelectTrigger
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                        >
                           <SelectValue placeholder="Select vendor" />
                         </SelectTrigger>
                         <SelectContent>
@@ -499,20 +519,27 @@ export function APModule({
                       <Input
                         placeholder="INV-2024-001"
                         value={invoiceForm.invoiceNumber}
-                        onChange={(e) => setInvoiceForm(prev => ({ ...prev, invoiceNumber: e.target.value }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setInvoiceForm(prev => ({ ...prev, invoiceNumber: e.target.value }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label>Invoice Date</Label>
                       <Input
                         type="date"
                         value={invoiceForm.invoiceDate?.toISOString().split('T')[0]}
-                        onChange={(e) => setInvoiceForm(prev => ({ ...prev, invoiceDate: new Date(e.target.value) }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setInvoiceForm(prev => ({
+                            ...prev,
+                            invoiceDate: new Date(e.target.value)
+                          }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -520,12 +547,14 @@ export function APModule({
                       <Input
                         type="date"
                         value={invoiceForm.dueDate?.toISOString().split('T')[0]}
-                        onChange={(e) => setInvoiceForm(prev => ({ ...prev, dueDate: new Date(e.target.value) }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setInvoiceForm(prev => ({ ...prev, dueDate: new Date(e.target.value) }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   {/* Ice Cream Specific Fields */}
                   {industrySpecific.qualityCertificateTracking && (
                     <div className="grid grid-cols-3 gap-4">
@@ -533,22 +562,26 @@ export function APModule({
                         <Label>Quality Certificate</Label>
                         <Input
                           placeholder="QC-2024-001"
-                          onChange={(e) => setInvoiceForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, qualityCertificate: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setInvoiceForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, qualityCertificate: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Batch Number</Label>
                         <Input
                           placeholder="BATCH-2024-001"
-                          onChange={(e) => setInvoiceForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, batchNumber: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setInvoiceForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, batchNumber: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       {industrySpecific.coldChainVendorManagement && (
@@ -557,19 +590,24 @@ export function APModule({
                           <Input
                             type="number"
                             placeholder="-18"
-                            onChange={(e) => setInvoiceForm(prev => ({
-                              ...prev,
-                              metadata: { ...prev.metadata, temperature: parseFloat(e.target.value) }
-                            }))}
-                            className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                            onChange={e =>
+                              setInvoiceForm(prev => ({
+                                ...prev,
+                                metadata: {
+                                  ...prev.metadata,
+                                  temperature: parseFloat(e.target.value)
+                                }
+                              }))
+                            }
+                            className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                           />
                         </div>
                       )}
                     </div>
                   )}
-                  
+
                   <Separator />
-                  
+
                   {/* Invoice Lines */}
                   <div>
                     <div className="flex justify-between items-center mb-2">
@@ -577,19 +615,21 @@ export function APModule({
                       <Button
                         size="sm"
                         onClick={addInvoiceLine}
-                        className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                        className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                       >
                         Add Line
                       </Button>
                     </div>
-                    
+
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className={cn(
-                            "border-b",
-                            isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                          )}>
+                          <tr
+                            className={cn(
+                              'border-b',
+                              isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                            )}
+                          >
                             <th className="text-left py-2">Description</th>
                             <th className="text-right py-2 w-20">Qty</th>
                             <th className="text-right py-2 w-24">Unit Price</th>
@@ -598,18 +638,23 @@ export function APModule({
                         </thead>
                         <tbody>
                           {(invoiceForm.lines || []).map((line, index) => (
-                            <tr key={line.id} className={cn(
-                              "border-b",
-                              isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                            )}>
+                            <tr
+                              key={line.id}
+                              className={cn(
+                                'border-b',
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              )}
+                            >
                               <td className="py-2 pr-2">
                                 <Input
                                   placeholder="Item description"
                                   value={line.description}
-                                  onChange={(e) => updateInvoiceLine(index, 'description', e.target.value)}
+                                  onChange={e =>
+                                    updateInvoiceLine(index, 'description', e.target.value)
+                                  }
                                   className={cn(
-                                    "h-8",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -617,10 +662,16 @@ export function APModule({
                                 <Input
                                   type="number"
                                   value={line.quantity}
-                                  onChange={(e) => updateInvoiceLine(index, 'quantity', parseFloat(e.target.value) || 0)}
+                                  onChange={e =>
+                                    updateInvoiceLine(
+                                      index,
+                                      'quantity',
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className={cn(
-                                    "h-8 text-right",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8 text-right',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
@@ -628,30 +679,34 @@ export function APModule({
                                 <Input
                                   type="number"
                                   value={line.unitPrice}
-                                  onChange={(e) => updateInvoiceLine(index, 'unitPrice', parseFloat(e.target.value) || 0)}
+                                  onChange={e =>
+                                    updateInvoiceLine(
+                                      index,
+                                      'unitPrice',
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
                                   className={cn(
-                                    "h-8 text-right",
-                                    isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                                    'h-8 text-right',
+                                    isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                                   )}
                                 />
                               </td>
-                              <td className="py-2 pl-2 text-right">
-                                {line.amount.toFixed(2)}
-                              </td>
+                              <td className="py-2 pl-2 text-right">{line.amount.toFixed(2)}</td>
                             </tr>
                           ))}
                         </tbody>
                         <tfoot>
                           <tr className="font-semibold">
-                            <td colSpan={3} className="py-2 text-right">Total:</td>
-                            <td className="py-2 pl-2 text-right">
-                              {calculateTotal().toFixed(2)}
+                            <td colSpan={3} className="py-2 text-right">
+                              Total:
                             </td>
+                            <td className="py-2 pl-2 text-right">{calculateTotal().toFixed(2)}</td>
                           </tr>
                         </tfoot>
                       </table>
                     </div>
-                    
+
                     {/* Action Buttons */}
                     <div className="flex justify-end gap-2 mt-4">
                       <Button
@@ -670,7 +725,7 @@ export function APModule({
                       <Button
                         onClick={processInvoice}
                         disabled={loading || !selectedVendor || !invoiceForm.invoiceNumber}
-                        className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                        className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                       >
                         Process Invoice
                       </Button>
@@ -679,16 +734,18 @@ export function APModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Payments Tab */}
             <TabsContent value="payments" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg">Payment Processing</CardTitle>
-                    <Button className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}>
+                    <Button className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}>
                       <DollarSign className="h-4 w-4 mr-1" />
                       New Payment
                     </Button>
@@ -698,10 +755,18 @@ export function APModule({
                   <Alert>
                     <DollarSign className="h-4 w-4" />
                     <AlertDescription>
-                      Total Outstanding: <strong>${calculateAging().current + calculateAging().days30 + calculateAging().days60 + calculateAging().days90 + calculateAging().over90}</strong>
+                      Total Outstanding:{' '}
+                      <strong>
+                        $
+                        {calculateAging().current +
+                          calculateAging().days30 +
+                          calculateAging().days60 +
+                          calculateAging().days90 +
+                          calculateAging().over90}
+                      </strong>
                     </AlertDescription>
                   </Alert>
-                  
+
                   {features.earlyPaymentDiscounts && (
                     <Alert className="mt-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
                       <TrendingUp className="h-4 w-4 text-green-600" />
@@ -713,23 +778,32 @@ export function APModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Aging Tab */}
             <TabsContent value="aging" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Accounts Payable Aging</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {Object.entries(calculateAging()).map(([period, amount]) => {
-                      const percentage = (amount / Object.values(calculateAging()).reduce((a, b) => a + b, 0)) * 100
+                      const percentage =
+                        (amount / Object.values(calculateAging()).reduce((a, b) => a + b, 0)) * 100
                       return (
                         <div key={period}>
                           <div className="flex justify-between text-sm mb-1">
-                            <span className="capitalize">{period === 'over90' ? 'Over 90 days' : period === 'current' ? 'Current' : `${period.slice(4)} days`}</span>
+                            <span className="capitalize">
+                              {period === 'over90'
+                                ? 'Over 90 days'
+                                : period === 'current'
+                                  ? 'Current'
+                                  : `${period.slice(4)} days`}
+                            </span>
                             <span className="font-semibold">${amount.toLocaleString()}</span>
                           </div>
                           <Progress value={percentage} className="h-2" />
@@ -737,25 +811,28 @@ export function APModule({
                       )
                     })}
                   </div>
-                  
+
                   {industrySpecific.seasonalPricingAgreements && (
                     <Alert className="mt-6">
                       <Calendar className="h-4 w-4" />
                       <AlertDescription>
-                        Seasonal pricing agreements active for 5 dairy suppliers. Summer rates apply.
+                        Seasonal pricing agreements active for 5 dairy suppliers. Summer rates
+                        apply.
                       </AlertDescription>
                     </Alert>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Approvals Tab */}
             {features.approvalWorkflow && (
               <TabsContent value="approvals" className="mt-4">
-                <Card className={cn(
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                )}>
+                <Card
+                  className={cn(
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                  )}
+                >
                   <CardHeader>
                     <CardTitle className="text-lg">Pending Approvals</CardTitle>
                   </CardHeader>
@@ -765,25 +842,27 @@ export function APModule({
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="font-medium">INV-2024-0145</h4>
-                            <p className="text-sm text-gray-500">Kerala Dairy Suppliers - $45,000</p>
+                            <p className="text-sm text-gray-500">
+                              Kerala Dairy Suppliers - $45,000
+                            </p>
                           </div>
                           <div className="flex gap-2">
                             <Button size="sm" variant="outline">
                               Reject
                             </Button>
-                            <Button size="sm">
-                              Approve
-                            </Button>
+                            <Button size="sm">Approve</Button>
                           </div>
                         </div>
                       </div>
-                      
+
                       {industrySpecific.freezerPlacementTracking && (
                         <div className="p-4 border rounded-lg">
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">Freezer Placement - 10 Units</h4>
-                              <p className="text-sm text-gray-500">Cold Chain Solutions Ltd - $25,000</p>
+                              <p className="text-sm text-gray-500">
+                                Cold Chain Solutions Ltd - $25,000
+                              </p>
                               <Badge className="mt-1" variant="outline">
                                 <Thermometer className="h-3 w-3 mr-1" />
                                 Equipment Purchase
@@ -793,9 +872,7 @@ export function APModule({
                               <Button size="sm" variant="outline">
                                 Reject
                               </Button>
-                              <Button size="sm">
-                                Approve
-                              </Button>
+                              <Button size="sm">Approve</Button>
                             </div>
                           </div>
                         </div>
@@ -816,7 +893,8 @@ export function APModule({
 export const AP_MODULE_DNA = {
   id: 'HERA.FIN.AP.MODULE.v1',
   name: 'Accounts Payable Module',
-  description: 'Complete AP management with vendor management, invoice processing, payments, and approvals',
+  description:
+    'Complete AP management with vendor management, invoice processing, payments, and approvals',
   component: APModule,
   category: 'financial',
   subcategory: 'accounts_payable',
@@ -868,12 +946,7 @@ export const AP_MODULE_DNA = {
       ]
     }
   },
-  dependencies: [
-    'universalApi',
-    'Vendor master data',
-    'GL account setup',
-    'Organization context'
-  ],
+  dependencies: ['universalApi', 'Vendor master data', 'GL account setup', 'Organization context'],
   smartCodes: [
     'HERA.FIN.AP.ENT.VEN.v1',
     'HERA.FIN.AP.TXN.INV.v1',

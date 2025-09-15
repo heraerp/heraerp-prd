@@ -4,11 +4,11 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { 
-  AlertTriangle, 
-  RefreshCw, 
-  Wifi, 
-  Server, 
+import {
+  AlertTriangle,
+  RefreshCw,
+  Wifi,
+  Server,
   ShieldAlert,
   Clock,
   AlertCircle,
@@ -29,7 +29,7 @@ interface ErrorBoundaryProps {
 }
 
 export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({
-  title = "Something went wrong",
+  title = 'Something went wrong',
   description = "We're sorry, but something unexpected happened.",
   onRetry,
   showRetry = true,
@@ -43,17 +43,12 @@ export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({
             <AlertTriangle className="h-8 w-8 text-red-600" />
           </div>
           <CardTitle className="text-xl text-gray-900">{title}</CardTitle>
-          <CardDescription className="text-gray-600">
-            {description}
-          </CardDescription>
+          <CardDescription className="text-gray-600">{description}</CardDescription>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           {children}
           {showRetry && (
-            <Button 
-              onClick={onRetry}
-              className="w-full bg-red-600 hover:bg-red-700"
-            >
+            <Button onClick={onRetry} className="w-full bg-red-600 hover:bg-red-700">
               <RefreshCw className="h-4 w-4 mr-2" />
               Try Again
             </Button>
@@ -71,14 +66,9 @@ interface ApiErrorProps {
   onDismiss?: () => void
 }
 
-export const ApiError: React.FC<ApiErrorProps> = ({
-  error,
-  endpoint,
-  onRetry,
-  onDismiss
-}) => {
+export const ApiError: React.FC<ApiErrorProps> = ({ error, endpoint, onRetry, onDismiss }) => {
   const errorMessage = typeof error === 'string' ? error : error.message
-  
+
   const getErrorType = (message: string) => {
     if (message.includes('network') || message.includes('fetch')) {
       return { type: 'network', icon: Wifi, color: 'orange' }
@@ -110,11 +100,16 @@ export const ApiError: React.FC<ApiErrorProps> = ({
 
   const getActionText = (type: string) => {
     switch (type) {
-      case 'network': return 'Check your connection and try again'
-      case 'timeout': return 'The request took too long. Please try again'
-      case 'server': return 'Our servers are experiencing issues. Please try again later'
-      case 'auth': return 'You may need to log in again'
-      default: return 'Please try again or contact support if the issue persists'
+      case 'network':
+        return 'Check your connection and try again'
+      case 'timeout':
+        return 'The request took too long. Please try again'
+      case 'server':
+        return 'Our servers are experiencing issues. Please try again later'
+      case 'auth':
+        return 'You may need to log in again'
+      default:
+        return 'Please try again or contact support if the issue persists'
     }
   }
 
@@ -124,9 +119,7 @@ export const ApiError: React.FC<ApiErrorProps> = ({
       <AlertTitle>Error occurred</AlertTitle>
       <AlertDescription className="space-y-2">
         <p>{errorMessage}</p>
-        {endpoint && (
-          <p className="text-xs opacity-75">Endpoint: {endpoint}</p>
-        )}
+        {endpoint && <p className="text-xs opacity-75">Endpoint: {endpoint}</p>}
         <p className="text-sm">{getActionText(errorInfo.type)}</p>
         <div className="flex gap-2 mt-3">
           {onRetry && (
@@ -151,10 +144,7 @@ interface MenuErrorProps {
   showFallback?: boolean
 }
 
-export const MenuError: React.FC<MenuErrorProps> = ({ 
-  onRetry,
-  showFallback = true 
-}) => {
+export const MenuError: React.FC<MenuErrorProps> = ({ onRetry, showFallback = true }) => {
   return (
     <Card className="bg-red-50 border-red-200">
       <CardHeader>
@@ -189,11 +179,7 @@ interface OrderErrorProps {
   onCancel?: () => void
 }
 
-export const OrderError: React.FC<OrderErrorProps> = ({
-  orderId,
-  onRetry,
-  onCancel
-}) => {
+export const OrderError: React.FC<OrderErrorProps> = ({ orderId, onRetry, onCancel }) => {
   return (
     <Card className="bg-red-50 border-red-200">
       <CardHeader>
@@ -202,17 +188,14 @@ export const OrderError: React.FC<OrderErrorProps> = ({
           Order Failed
         </CardTitle>
         <CardDescription className="text-red-600">
-          {orderId 
+          {orderId
             ? `Order ${orderId} could not be processed.`
-            : 'Your order could not be processed at this time.'
-          }
+            : 'Your order could not be processed at this time.'}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          <p className="text-sm text-red-600">
-            This could be due to:
-          </p>
+          <p className="text-sm text-red-600">This could be due to:</p>
           <ul className="text-sm text-red-600 space-y-1 ml-4">
             <li>• Network connectivity issues</li>
             <li>• Menu items no longer available</li>
@@ -240,22 +223,16 @@ interface NetworkErrorProps {
   isOffline?: boolean
 }
 
-export const NetworkError: React.FC<NetworkErrorProps> = ({
-  onRetry,
-  isOffline = false
-}) => {
+export const NetworkError: React.FC<NetworkErrorProps> = ({ onRetry, isOffline = false }) => {
   return (
     <Alert className="border-orange-200 bg-orange-50 text-orange-800">
       <Wifi className="h-4 w-4" />
-      <AlertTitle>
-        {isOffline ? 'You\'re offline' : 'Connection issues'}
-      </AlertTitle>
+      <AlertTitle>{isOffline ? "You're offline" : 'Connection issues'}</AlertTitle>
       <AlertDescription className="space-y-2">
         <p>
-          {isOffline 
+          {isOffline
             ? 'Some features may not be available while offline.'
-            : 'We\'re having trouble connecting to our servers.'
-          }
+            : "We're having trouble connecting to our servers."}
         </p>
         <div className="flex gap-2">
           {onRetry && (
@@ -275,12 +252,9 @@ interface ValidationErrorProps {
   onDismiss?: () => void
 }
 
-export const ValidationError: React.FC<ValidationErrorProps> = ({
-  errors,
-  onDismiss
-}) => {
+export const ValidationError: React.FC<ValidationErrorProps> = ({ errors, onDismiss }) => {
   const errorCount = Object.keys(errors).length
-  
+
   if (errorCount === 0) return null
 
   return (
@@ -320,7 +294,7 @@ interface SuccessMessageProps {
 }
 
 export const SuccessMessage: React.FC<SuccessMessageProps> = ({
-  title = "Success!",
+  title = 'Success!',
   message,
   action,
   onDismiss,
@@ -364,7 +338,7 @@ interface InfoMessageProps {
 }
 
 export const InfoMessage: React.FC<InfoMessageProps> = ({
-  title = "Information",
+  title = 'Information',
   message,
   onDismiss
 }) => {
@@ -395,26 +369,13 @@ interface EmptyStateProps {
   }
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({
-  icon,
-  title,
-  description,
-  action
-}) => {
+export const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description, action }) => {
   return (
     <div className="text-center py-12">
-      {icon && (
-        <div className="mx-auto mb-4 p-3 rounded-full bg-gray-100">
-          {icon}
-        </div>
-      )}
+      {icon && <div className="mx-auto mb-4 p-3 rounded-full bg-gray-100">{icon}</div>}
       <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 mb-4 max-w-sm mx-auto">{description}</p>
-      {action && (
-        <Button onClick={action.onClick}>
-          {action.label}
-        </Button>
-      )}
+      {action && <Button onClick={action.onClick}>{action.label}</Button>}
     </div>
   )
 }

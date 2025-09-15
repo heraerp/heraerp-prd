@@ -5,18 +5,14 @@ import { CalendarSmartCodes, UniversalResource, UniversalAppointment } from '@/t
 
 export class CalendarSmartCodeService {
   // Smart Code Pattern: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{OBJECT}.{STATUS}.v{VERSION}
-  
+
   /**
    * Generate Smart Code for Calendar Resources
    */
-  generateResourceSmartCode(
-    industry: string,
-    resourceType: string,
-    status: string = 'v1'
-  ): string {
+  generateResourceSmartCode(industry: string, resourceType: string, status: string = 'v1'): string {
     const industryCode = this.getIndustryCode(industry)
     const resourceTypeCode = this.getResourceTypeCode(resourceType)
-    
+
     return `HERA.${industryCode}.CRM.RES.${resourceTypeCode}.${status}`
   }
 
@@ -30,7 +26,7 @@ export class CalendarSmartCodeService {
   ): string {
     const industryCode = this.getIndustryCode(industry)
     const appointmentTypeCode = this.getAppointmentTypeCode(appointmentType)
-    
+
     return `HERA.${industryCode}.CRM.TXN.${appointmentTypeCode}.${status}`
   }
 
@@ -73,7 +69,7 @@ export class CalendarSmartCodeService {
   } {
     const errors: string[] = []
     const parts = smartCode.split('.')
-    
+
     if (parts.length < 6) {
       errors.push('Smart code must have at least 6 parts separated by dots')
       return { isValid: false, parts: null, errors }
@@ -117,13 +113,13 @@ export class CalendarSmartCodeService {
       ROOM: this.generateResourceSmartCode(industry, 'ROOM'),
       VEHICLE: this.generateResourceSmartCode(industry, 'VEHICLE'),
       VIRTUAL: this.generateResourceSmartCode(industry, 'VIRTUAL'),
-      
+
       // Universal Appointment Types
       APPOINTMENT: this.generateAppointmentSmartCode(industry, 'APPOINTMENT'),
       MEETING: this.generateAppointmentSmartCode(industry, 'MEETING'),
       MAINTENANCE: this.generateAppointmentSmartCode(industry, 'MAINTENANCE'),
       CONSULTATION: this.generateAppointmentSmartCode(industry, 'CONSULTATION'),
-      
+
       // Calendar Events
       EVENT_DRAFT: this.generateCalendarEventSmartCode('draft'),
       EVENT_AI_ENHANCED: this.generateCalendarEventSmartCode('ai_enhanced'),
@@ -145,7 +141,7 @@ export class CalendarSmartCodeService {
           EXAMINATION_ROOM: 'HERA.HLTH.CRM.RES.EXAMROOM.v1',
           OPERATING_ROOM: 'HERA.HLTH.CRM.RES.OPROOM.v1'
         }
-        
+
       case 'restaurant':
         return {
           ...basePatterns,
@@ -159,7 +155,7 @@ export class CalendarSmartCodeService {
           CHEF: 'HERA.REST.CRM.RES.CHEF.v1',
           BAR_STATION: 'HERA.REST.CRM.RES.BAR.v1'
         }
-        
+
       case 'professional':
         return {
           ...basePatterns,
@@ -171,7 +167,7 @@ export class CalendarSmartCodeService {
           VIDEO_CALL_ROOM: 'HERA.PROF.CRM.RES.VIRTUAL.v1',
           PRESENTATION_ROOM: 'HERA.PROF.CRM.RES.PRESROOM.v1'
         }
-        
+
       case 'manufacturing':
         return {
           ...basePatterns,
@@ -184,7 +180,7 @@ export class CalendarSmartCodeService {
           TECHNICIAN: 'HERA.MFG.CRM.RES.TECH.v1',
           QUALITY_STATION: 'HERA.MFG.CRM.RES.QC.v1'
         }
-        
+
       default:
         return basePatterns
     }
@@ -205,7 +201,7 @@ export class CalendarSmartCodeService {
   } {
     const name = resourceName.toLowerCase()
     const industrySmartCodes = this.getIndustrySmartCodes(industry)
-    
+
     // Healthcare classification
     if (industry === 'healthcare') {
       if (name.includes('doctor') || name.includes('physician') || name.includes('md')) {
@@ -219,7 +215,7 @@ export class CalendarSmartCodeService {
       if (name.includes('nurse') || name.includes('rn')) {
         return {
           suggestedType: 'NURSE',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.NURSE,
           reasoning: 'Name contains nursing professional indicators'
         }
@@ -233,7 +229,7 @@ export class CalendarSmartCodeService {
         }
       }
     }
-    
+
     // Restaurant classification
     if (industry === 'restaurant') {
       if (name.includes('table') && /\d/.test(name)) {
@@ -247,7 +243,7 @@ export class CalendarSmartCodeService {
       if (name.includes('chef') || name.includes('cook')) {
         return {
           suggestedType: 'CHEF',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.CHEF,
           reasoning: 'Name contains culinary professional indicators'
         }
@@ -255,19 +251,19 @@ export class CalendarSmartCodeService {
       if (name.includes('server') || name.includes('waiter') || name.includes('waitress')) {
         return {
           suggestedType: 'SERVER',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.SERVER,
           reasoning: 'Name contains service professional indicators'
         }
       }
     }
-    
+
     // Professional services classification
     if (industry === 'professional') {
       if (name.includes('consultant') || name.includes('advisor')) {
         return {
           suggestedType: 'CONSULTANT',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.CONSULTANT,
           reasoning: 'Name contains professional service indicators'
         }
@@ -281,13 +277,13 @@ export class CalendarSmartCodeService {
         }
       }
     }
-    
+
     // Manufacturing classification
     if (industry === 'manufacturing') {
       if (name.includes('line') || name.includes('assembly')) {
         return {
           suggestedType: 'PRODUCTION_LINE',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.PRODUCTION_LINE,
           reasoning: 'Name indicates production/assembly line'
         }
@@ -301,30 +297,30 @@ export class CalendarSmartCodeService {
         }
       }
     }
-    
+
     // Generic classification fallback
     if (name.includes('room') || name.includes('space')) {
       return {
         suggestedType: 'ROOM',
-        confidence: 0.70,
+        confidence: 0.7,
         smartCode: this.generateResourceSmartCode(industry, 'ROOM'),
         reasoning: 'Generic room/space classification'
       }
     }
-    
+
     if (name.includes('equipment') || name.includes('device') || name.includes('tool')) {
       return {
         suggestedType: 'EQUIPMENT',
-        confidence: 0.70,
+        confidence: 0.7,
         smartCode: this.generateResourceSmartCode(industry, 'EQUIPMENT'),
         reasoning: 'Generic equipment classification'
       }
     }
-    
+
     // Default to staff if no other classification matches
     return {
       suggestedType: 'STAFF',
-      confidence: 0.50,
+      confidence: 0.5,
       smartCode: this.generateResourceSmartCode(industry, 'STAFF'),
       reasoning: 'Default staff classification - manual review recommended'
     }
@@ -345,7 +341,7 @@ export class CalendarSmartCodeService {
   } {
     const title = appointmentTitle.toLowerCase()
     const industrySmartCodes = this.getIndustrySmartCodes(industry)
-    
+
     // Healthcare appointments
     if (industry === 'healthcare') {
       if (title.includes('surgery') || title.includes('operation')) {
@@ -359,13 +355,13 @@ export class CalendarSmartCodeService {
       if (title.includes('consultation') || title.includes('checkup') || title.includes('visit')) {
         return {
           suggestedType: 'PATIENT_APPOINTMENT',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.PATIENT_APPOINTMENT,
           reasoning: 'Title indicates patient consultation'
         }
       }
     }
-    
+
     // Restaurant appointments
     if (industry === 'restaurant') {
       if (title.includes('reservation') || title.includes('table') || title.includes('dinner')) {
@@ -385,18 +381,22 @@ export class CalendarSmartCodeService {
         }
       }
     }
-    
+
     // Professional services appointments
     if (industry === 'professional') {
       if (title.includes('meeting') || title.includes('discussion') || title.includes('review')) {
         return {
           suggestedType: 'CLIENT_MEETING',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.CLIENT_MEETING,
           reasoning: 'Title indicates client meeting'
         }
       }
-      if (title.includes('consultation') || title.includes('advice') || title.includes('strategy')) {
+      if (
+        title.includes('consultation') ||
+        title.includes('advice') ||
+        title.includes('strategy')
+      ) {
         return {
           suggestedType: 'CONSULTATION',
           confidence: 0.85,
@@ -405,7 +405,7 @@ export class CalendarSmartCodeService {
         }
       }
     }
-    
+
     // Manufacturing appointments
     if (industry === 'manufacturing') {
       if (title.includes('maintenance') || title.includes('repair') || title.includes('service')) {
@@ -419,17 +419,17 @@ export class CalendarSmartCodeService {
       if (title.includes('inspection') || title.includes('quality') || title.includes('check')) {
         return {
           suggestedType: 'QUALITY_INSPECTION',
-          confidence: 0.90,
+          confidence: 0.9,
           smartCode: industrySmartCodes.QUALITY_INSPECTION,
           reasoning: 'Title indicates quality control activity'
         }
       }
     }
-    
+
     // Default classification
     return {
       suggestedType: 'APPOINTMENT',
-      confidence: 0.60,
+      confidence: 0.6,
       smartCode: this.generateAppointmentSmartCode(industry, 'APPOINTMENT'),
       reasoning: 'Generic appointment classification'
     }
@@ -438,52 +438,52 @@ export class CalendarSmartCodeService {
   // Private helper methods
   private getIndustryCode(industry: string): string {
     const industryMap: Record<string, string> = {
-      'healthcare': 'HLTH',
-      'restaurant': 'REST',
-      'professional': 'PROF',
-      'manufacturing': 'MFG',
-      'universal': 'UNI'
+      healthcare: 'HLTH',
+      restaurant: 'REST',
+      professional: 'PROF',
+      manufacturing: 'MFG',
+      universal: 'UNI'
     }
     return industryMap[industry.toLowerCase()] || 'UNI'
   }
 
   private getResourceTypeCode(resourceType: string): string {
     const typeMap: Record<string, string> = {
-      'STAFF': 'STAFF',
-      'EQUIPMENT': 'EQUIP',
-      'ROOM': 'ROOM',
-      'VEHICLE': 'VEHICLE',
-      'VIRTUAL': 'VIRTUAL',
-      'DOCTOR': 'DOCTOR',
-      'NURSE': 'NURSE',
-      'TABLE': 'TABLE',
-      'KITCHEN': 'KITCHEN',
-      'MACHINE': 'MACHINE',
-      'LINE': 'LINE'
+      STAFF: 'STAFF',
+      EQUIPMENT: 'EQUIP',
+      ROOM: 'ROOM',
+      VEHICLE: 'VEHICLE',
+      VIRTUAL: 'VIRTUAL',
+      DOCTOR: 'DOCTOR',
+      NURSE: 'NURSE',
+      TABLE: 'TABLE',
+      KITCHEN: 'KITCHEN',
+      MACHINE: 'MACHINE',
+      LINE: 'LINE'
     }
     return typeMap[resourceType.toUpperCase()] || resourceType.toUpperCase()
   }
 
   private getAppointmentTypeCode(appointmentType: string): string {
     const typeMap: Record<string, string> = {
-      'APPOINTMENT': 'APPT',
-      'RESERVATION': 'RESV',
-      'MEETING': 'MEET',
-      'MAINTENANCE': 'MAINT',
-      'CONSULTATION': 'CONSULT',
-      'SURGERY': 'SURG',
-      'EVENT': 'EVENT',
-      'INSPECTION': 'QC'
+      APPOINTMENT: 'APPT',
+      RESERVATION: 'RESV',
+      MEETING: 'MEET',
+      MAINTENANCE: 'MAINT',
+      CONSULTATION: 'CONSULT',
+      SURGERY: 'SURG',
+      EVENT: 'EVENT',
+      INSPECTION: 'QC'
     }
     return typeMap[appointmentType.toUpperCase()] || appointmentType.substring(0, 6).toUpperCase()
   }
 
   private getEventStatusCode(status: string): string {
     const statusMap: Record<string, string> = {
-      'draft': 'DRAFT',
-      'ai_enhanced': 'AI.HIGH',
-      'human_reviewed': 'HR.v1',
-      'production': 'PROD.v1'
+      draft: 'DRAFT',
+      ai_enhanced: 'AI.HIGH',
+      human_reviewed: 'HR.v1',
+      production: 'PROD.v1'
     }
     return statusMap[status] || 'DRAFT'
   }

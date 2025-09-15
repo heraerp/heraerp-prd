@@ -16,20 +16,20 @@ const HERA_ASSESSMENT_COLORS = {
   good: { bg: 'bg-blue-500/20', text: 'text-blue-300', border: 'border-blue-500/50' },
   fair: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/50' },
   poor: { bg: 'bg-red-500/20', text: 'text-red-300', border: 'border-red-500/50' },
-  
+
   // Text Colors with WCAG AAA compliance
   primary: 'text-gray-900 dark:text-gray-100',
   secondary: 'text-gray-700 dark:text-gray-200',
   muted: 'text-gray-600 dark:text-gray-300',
-  
+
   // Status Colors
   complete: 'text-emerald-400',
   pending: 'text-amber-400',
   incomplete: 'text-gray-400',
-  
+
   // Tab Colors (high contrast)
   tabInactive: 'text-teal-200 hover:text-teal-100',
-  tabActive: 'text-white',
+  tabActive: 'text-white'
 }
 
 interface TabConfig {
@@ -74,12 +74,12 @@ export function AssessmentDashboardDNA({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card 
+      <Card
         className={cn(
-          "relative overflow-hidden backdrop-blur-xl",
-          "bg-white/90 dark:bg-gray-900/90",
-          "border border-white/20 dark:border-gray-800/50",
-          "shadow-xl",
+          'relative overflow-hidden backdrop-blur-xl',
+          'bg-white/90 dark:bg-gray-900/90',
+          'border border-white/20 dark:border-gray-800/50',
+          'shadow-xl',
           className
         )}
       >
@@ -92,80 +92,72 @@ export function AssessmentDashboardDNA({
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <CardTitle className={cn("text-2xl font-bold", HERA_ASSESSMENT_COLORS.primary)}>
+              <CardTitle className={cn('text-2xl font-bold', HERA_ASSESSMENT_COLORS.primary)}>
                 {title}
               </CardTitle>
               {subtitle && (
-                <CardDescription className={cn("mt-1", HERA_ASSESSMENT_COLORS.secondary)}>
+                <CardDescription className={cn('mt-1', HERA_ASSESSMENT_COLORS.secondary)}>
                   {subtitle}
                 </CardDescription>
               )}
             </div>
-            
+
             {/* Score Display */}
             {score !== undefined && scoreColor && (
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <p className={cn("text-sm font-medium mb-1", HERA_ASSESSMENT_COLORS.muted)}>
+                  <p className={cn('text-sm font-medium mb-1', HERA_ASSESSMENT_COLORS.muted)}>
                     {scoreLabel}
                   </p>
-                  <div className={cn(
-                    "px-6 py-3 rounded-xl",
-                    "border-2",
-                    scoreColor.bg,
-                    scoreColor.border
-                  )}>
-                    <span className={cn("text-3xl font-bold", scoreColor.text)}>
-                      {score}%
-                    </span>
+                  <div
+                    className={cn(
+                      'px-6 py-3 rounded-xl',
+                      'border-2',
+                      scoreColor.bg,
+                      scoreColor.border
+                    )}
+                  >
+                    <span className={cn('text-3xl font-bold', scoreColor.text)}>{score}%</span>
                   </div>
                 </div>
-                {actions && (
-                  <div className="flex items-center gap-2">
-                    {actions}
-                  </div>
-                )}
+                {actions && <div className="flex items-center gap-2">{actions}</div>}
               </div>
             )}
-            
+
             {/* Actions without score */}
-            {!score && actions && (
-              <div className="flex items-center gap-2">
-                {actions}
-              </div>
-            )}
+            {!score && actions && <div className="flex items-center gap-2">{actions}</div>}
           </div>
         </CardHeader>
 
         <CardContent>
           {tabs ? (
             <Tabs defaultValue={tabs[0]?.value} className="w-full">
-              <TabsList 
+              <TabsList
                 className="grid w-full mb-6"
                 style={{
                   gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
                   background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                {tabs.map((tab) => (
+                {tabs.map(tab => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
                     className={cn(
-                      "data-[state=active]:bg-gradient-to-r",
-                      "data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20",
+                      'data-[state=active]:bg-gradient-to-r',
+                      'data-[state=active]:from-blue-500/20 data-[state=active]:to-purple-500/20',
                       `data-[state=active]:${HERA_ASSESSMENT_COLORS.tabActive}`,
                       HERA_ASSESSMENT_COLORS.tabInactive,
-                      "transition-all duration-200"
+                      'transition-all duration-200'
                     )}
                   >
                     {tab.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
-              
-              {tabs.map((tab) => (
+
+              {tabs.map(tab => (
                 <TabsContent key={tab.value} value={tab.value}>
                   {tab.content}
                 </TabsContent>
@@ -194,13 +186,14 @@ export function AssessmentScoreCard({
   className?: string
 }) {
   const percentage = total ? Math.round((score / total) * 100) : score
-  const scoreColor = percentage >= 80 
-    ? HERA_ASSESSMENT_COLORS.excellent
-    : percentage >= 60 
-    ? HERA_ASSESSMENT_COLORS.good
-    : percentage >= 40
-    ? HERA_ASSESSMENT_COLORS.fair
-    : HERA_ASSESSMENT_COLORS.poor
+  const scoreColor =
+    percentage >= 80
+      ? HERA_ASSESSMENT_COLORS.excellent
+      : percentage >= 60
+        ? HERA_ASSESSMENT_COLORS.good
+        : percentage >= 40
+          ? HERA_ASSESSMENT_COLORS.fair
+          : HERA_ASSESSMENT_COLORS.poor
 
   return (
     <motion.div
@@ -208,32 +201,30 @@ export function AssessmentScoreCard({
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        "p-6 rounded-xl",
-        "bg-white/50 dark:bg-gray-800/50",
-        "border border-gray-200/50 dark:border-gray-700/50",
-        "backdrop-blur-sm",
+        'p-6 rounded-xl',
+        'bg-white/50 dark:bg-gray-800/50',
+        'border border-gray-200/50 dark:border-gray-700/50',
+        'backdrop-blur-sm',
         className
       )}
     >
-      <p className={cn("text-sm font-medium mb-2", HERA_ASSESSMENT_COLORS.muted)}>
-        {label}
-      </p>
+      <p className={cn('text-sm font-medium mb-2', HERA_ASSESSMENT_COLORS.muted)}>{label}</p>
       <div className="flex items-baseline gap-2">
-        <span className={cn("text-3xl font-bold", scoreColor.text)}>
-          {percentage}%
-        </span>
+        <span className={cn('text-3xl font-bold', scoreColor.text)}>{percentage}%</span>
         {total && (
-          <span className={cn("text-sm", HERA_ASSESSMENT_COLORS.muted)}>
+          <span className={cn('text-sm', HERA_ASSESSMENT_COLORS.muted)}>
             ({score}/{total})
           </span>
         )}
       </div>
-      <Progress 
-        value={percentage} 
+      <Progress
+        value={percentage}
         className="mt-3 h-2"
-        style={{
-          '--progress-background': scoreColor.bg.replace('bg-', '').replace('/20', ''),
-        } as React.CSSProperties}
+        style={
+          {
+            '--progress-background': scoreColor.bg.replace('bg-', '').replace('/20', '')
+          } as React.CSSProperties
+        }
       />
     </motion.div>
   )
@@ -247,36 +238,27 @@ export function AssessmentStatusBadge({
   className?: string
 }) {
   const config = {
-    complete: { 
-      color: HERA_ASSESSMENT_COLORS.complete, 
+    complete: {
+      color: HERA_ASSESSMENT_COLORS.complete,
       label: 'Complete',
       bg: 'bg-emerald-500/10'
     },
-    pending: { 
-      color: HERA_ASSESSMENT_COLORS.pending, 
+    pending: {
+      color: HERA_ASSESSMENT_COLORS.pending,
       label: 'Pending',
       bg: 'bg-amber-500/10'
     },
-    incomplete: { 
-      color: HERA_ASSESSMENT_COLORS.incomplete, 
+    incomplete: {
+      color: HERA_ASSESSMENT_COLORS.incomplete,
       label: 'Incomplete',
       bg: 'bg-gray-500/10'
-    },
+    }
   }
 
   const { color, label, bg } = config[status]
 
   return (
-    <Badge 
-      variant="outline" 
-      className={cn(
-        "font-medium",
-        bg,
-        color,
-        "border-current",
-        className
-      )}
-    >
+    <Badge variant="outline" className={cn('font-medium', bg, color, 'border-current', className)}>
       {label}
     </Badge>
   )

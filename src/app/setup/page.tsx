@@ -8,7 +8,16 @@ import { useRouter } from 'next/navigation'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Store, Scissors, Package, Heart, Calculator, Briefcase, Loader2 } from 'lucide-react'
+import {
+  ArrowRight,
+  Store,
+  Scissors,
+  Package,
+  Heart,
+  Calculator,
+  Briefcase,
+  Loader2
+} from 'lucide-react'
 
 interface AppOption {
   id: string
@@ -23,7 +32,8 @@ const availableApps: AppOption[] = [
   {
     id: 'salon',
     title: 'Salon Management',
-    description: 'Complete salon operations with appointment booking, staff management, and inventory',
+    description:
+      'Complete salon operations with appointment booking, staff management, and inventory',
     icon: Scissors,
     route: '/dashboard-progressive/salon',
     color: 'from-pink-500 to-purple-600'
@@ -105,37 +115,36 @@ export default function SetupPage() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-light text-gray-900 mb-4">
-              Choose Your HERA Application
-            </h1>
+            <h1 className="text-4xl font-light text-gray-900 mb-4">Choose Your HERA Application</h1>
             <p className="text-xl text-gray-600">
-              {currentOrganization ? 
-                `Welcome to ${currentOrganization.name}. Select an app to get started.` :
-                'Select an application to begin your business management journey'
-              }
+              {currentOrganization
+                ? `Welcome to ${currentOrganization.name}. Select an app to get started.`
+                : 'Select an application to begin your business management journey'}
             </p>
           </div>
 
           {/* App Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availableApps.map((app) => {
+            {availableApps.map(app => {
               const Icon = app.icon
               return (
-                <Card 
+                <Card
                   key={app.id}
                   className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
                   onClick={() => handleAppSelection(app)}
                 >
                   <CardHeader>
-                    <div className={`w-16 h-16 bg-gradient-to-r ${app.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <div
+                      className={`w-16 h-16 bg-gradient-to-r ${app.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                    >
                       <Icon className="w-8 h-8 text-white" />
                     </div>
                     <CardTitle className="text-xl">{app.title}</CardTitle>
                     <CardDescription>{app.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       className="w-full justify-between group-hover:text-primary"
                       disabled={selectedApp === app.id}
                     >
@@ -163,10 +172,7 @@ export default function SetupPage() {
               All apps include sample data and are ready to use immediately. No setup required.
             </p>
             <div className="mt-4">
-              <Button 
-                variant="outline"
-                onClick={() => router.push('/custom-request')}
-              >
+              <Button variant="outline" onClick={() => router.push('/custom-request')}>
                 Need a Custom Solution?
               </Button>
             </div>

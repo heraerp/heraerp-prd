@@ -6,14 +6,19 @@
 import { z } from 'zod'
 
 // Base schemas
-export const SmartCodeSchema = z.string().regex(
-  /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$/,
-  'Invalid smart code format: must match HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{N}'
-)
+export const SmartCodeSchema = z
+  .string()
+  .regex(
+    /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$/,
+    'Invalid smart code format: must match HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{N}'
+  )
 
 export const UUIDSchema = z.string().uuid('Invalid UUID format')
 
-export const CurrencySchema = z.string().length(3, 'Currency code must be 3 characters').regex(/^[A-Z]{3}$/)
+export const CurrencySchema = z
+  .string()
+  .length(3, 'Currency code must be 3 characters')
+  .regex(/^[A-Z]{3}$/)
 
 // CLI Global Options
 export const GlobalOptionsSchema = z.object({
@@ -35,14 +40,16 @@ export const InitOutputSchema = z.object({
   organization_id: UUIDSchema,
   sacred_tables_ok: z.boolean(),
   guardrails_version: z.string().regex(/^[0-9]+\.[0-9]+\.[0-9]+$/),
-  capabilities: z.array(z.enum([
-    'finance_dna',
-    'fiscal_year_close', 
-    'auto_journal',
-    'universal_cashflow',
-    'ifrs_coa',
-    'budgeting'
-  ])),
+  capabilities: z.array(
+    z.enum([
+      'finance_dna',
+      'fiscal_year_close',
+      'auto_journal',
+      'universal_cashflow',
+      'ifrs_coa',
+      'budgeting'
+    ])
+  ),
   connection_status: z.enum(['connected', 'mock', 'offline']),
   config_written: z.boolean().optional()
 })
@@ -59,12 +66,14 @@ export const SmartCodeValidateOutputSchema = z.object({
   valid: z.boolean(),
   pattern: z.string(),
   hints: z.array(z.string()),
-  semantic_checks: z.object({
-    industry_valid: z.boolean(),
-    module_recognized: z.boolean(),
-    version_current: z.boolean(),
-    reserved_keywords: z.array(z.string()).optional()
-  }).optional(),
+  semantic_checks: z
+    .object({
+      industry_valid: z.boolean(),
+      module_recognized: z.boolean(),
+      version_current: z.boolean(),
+      reserved_keywords: z.array(z.string()).optional()
+    })
+    .optional(),
   suggestions: z.array(z.string()).optional()
 })
 
@@ -79,12 +88,14 @@ export const TransactionLineSchema = z.object({
   tax_amount: z.number().default(0),
   smart_code: SmartCodeSchema,
   line_data: z.record(z.any()).optional(),
-  dimensions: z.object({
-    cost_center: z.string().optional(),
-    profit_center: z.string().optional(),
-    project: z.string().optional(),
-    department: z.string().optional()
-  }).optional()
+  dimensions: z
+    .object({
+      cost_center: z.string().optional(),
+      profit_center: z.string().optional(),
+      project: z.string().optional(),
+      department: z.string().optional()
+    })
+    .optional()
 })
 
 export const CreateTransactionInputSchema = z.object({
@@ -108,14 +119,16 @@ export const CreateTransactionOutputSchema = z.object({
   transaction_date: z.string().datetime(),
   total_amount: z.number(),
   currency: CurrencySchema,
-  lines: z.array(z.object({
-    id: UUIDSchema,
-    line_number: z.number().int(),
-    line_type: z.string(),
-    entity_id: UUIDSchema.optional(),
-    line_amount: z.number(),
-    smart_code: SmartCodeSchema
-  })),
+  lines: z.array(
+    z.object({
+      id: UUIDSchema,
+      line_number: z.number().int(),
+      line_type: z.string(),
+      entity_id: UUIDSchema.optional(),
+      line_amount: z.number(),
+      smart_code: SmartCodeSchema
+    })
+  ),
   ai_confidence: z.number().min(0).max(1).default(0),
   ai_insights: z.record(z.any()).default({}),
   guardrails_passed: z.object({
@@ -124,11 +137,13 @@ export const CreateTransactionOutputSchema = z.object({
     gl_balanced: z.boolean(),
     schema_valid: z.boolean()
   }),
-  auto_journal_result: z.object({
-    processed: z.boolean(),
-    journal_id: UUIDSchema.optional(),
-    mode: z.enum(['immediate', 'batched', 'skipped']).optional()
-  }).optional()
+  auto_journal_result: z
+    .object({
+      processed: z.boolean(),
+      journal_id: UUIDSchema.optional(),
+      mode: z.enum(['immediate', 'batched', 'skipped']).optional()
+    })
+    .optional()
 })
 
 // Transaction List Schemas
@@ -144,16 +159,18 @@ export const ListTransactionsInputSchema = z.object({
 })
 
 export const ListTransactionsOutputSchema = z.object({
-  transactions: z.array(z.object({
-    id: UUIDSchema,
-    transaction_type: z.string(),
-    transaction_date: z.string().datetime(),
-    total_amount: z.number(),
-    currency: CurrencySchema,
-    smart_code: SmartCodeSchema,
-    line_count: z.number().int().nonnegative(),
-    lines: z.array(TransactionLineSchema).optional()
-  })),
+  transactions: z.array(
+    z.object({
+      id: UUIDSchema,
+      transaction_type: z.string(),
+      transaction_date: z.string().datetime(),
+      total_amount: z.number(),
+      currency: CurrencySchema,
+      smart_code: SmartCodeSchema,
+      line_count: z.number().int().nonnegative(),
+      lines: z.array(TransactionLineSchema).optional()
+    })
+  ),
   pagination: z.object({
     total: z.number().int().nonnegative(),
     limit: z.number().int().positive(),
@@ -164,14 +181,16 @@ export const ListTransactionsOutputSchema = z.object({
     total_amount: z.number(),
     transaction_count: z.number().int(),
     currencies: z.array(CurrencySchema),
-    date_range: z.object({
-      earliest: z.string().datetime(),
-      latest: z.string().datetime()
-    }).optional()
+    date_range: z
+      .object({
+        earliest: z.string().datetime(),
+        latest: z.string().datetime()
+      })
+      .optional()
   })
 })
 
-// Data Command Schemas  
+// Data Command Schemas
 export const PutDataInputSchema = z.object({
   entity: UUIDSchema,
   key: z.string().min(1).max(100),
@@ -200,12 +219,14 @@ export const GuardrailCheckOutputSchema = z.object({
     failed: z.number().int().nonnegative(),
     warnings: z.number().int().nonnegative()
   }),
-  checks: z.array(z.object({
-    name: z.string(),
-    status: z.enum(['PASS', 'FAIL', 'WARN']),
-    message: z.string(),
-    details: z.record(z.any()).optional()
-  })),
+  checks: z.array(
+    z.object({
+      name: z.string(),
+      status: z.enum(['PASS', 'FAIL', 'WARN']),
+      message: z.string(),
+      details: z.record(z.any()).optional()
+    })
+  ),
   recommendations: z.array(z.string()),
   schema_version: z.string(),
   execution_time_ms: z.number().int().nonnegative()
@@ -229,17 +250,21 @@ export const ConfigSchema = z.object({
   timezone: z.string().default('UTC'),
   output_format: z.enum(['table', 'json', 'csv']).default('table'),
   auto_journal: z.boolean().default(false),
-  guardrails: z.object({
-    enforce_smart_codes: z.boolean().default(true),
-    enforce_multi_tenancy: z.boolean().default(true),
-    enforce_gl_balance: z.boolean().default(true),
-    auto_fix_violations: z.boolean().default(false)
-  }).default({}),
-  telemetry: z.object({
-    enabled: z.boolean().default(true),
-    endpoint: z.string().url().optional(),
-    include_performance: z.boolean().default(true)
-  }).default({})
+  guardrails: z
+    .object({
+      enforce_smart_codes: z.boolean().default(true),
+      enforce_multi_tenancy: z.boolean().default(true),
+      enforce_gl_balance: z.boolean().default(true),
+      auto_fix_violations: z.boolean().default(false)
+    })
+    .default({}),
+  telemetry: z
+    .object({
+      enabled: z.boolean().default(true),
+      endpoint: z.string().url().optional(),
+      include_performance: z.boolean().default(true)
+    })
+    .default({})
 })
 
 // Helper validation functions

@@ -14,7 +14,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 
 interface SupplierInfo {
@@ -71,18 +71,17 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
       })
 
       // Filter suppliers
-      const supplierEntities = entities?.filter((e: any) => 
-        e.entity_type === 'supplier'
-      ) || []
+      const supplierEntities = entities?.filter((e: any) => e.entity_type === 'supplier') || []
 
       // Build supplier info
       const supplierData: SupplierInfo[] = []
 
       for (const supplier of supplierEntities) {
         // Find all products this supplier sources
-        const supplierRels = relationships?.filter((r: any) => 
-          r.from_entity_id === supplier.id && r.relationship_type === 'sources'
-        ) || []
+        const supplierRels =
+          relationships?.filter(
+            (r: any) => r.from_entity_id === supplier.id && r.relationship_type === 'sources'
+          ) || []
 
         const products = []
         let totalLeadTime = 0
@@ -124,7 +123,6 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
       if (supplierData.length > 0 && !selectedSupplier) {
         setSelectedSupplier(supplierData[0].id)
       }
-
     } catch (err) {
       console.error('Error loading supplier data:', err)
       setError(err instanceof Error ? err.message : 'Failed to load supplier data')
@@ -148,7 +146,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
 
   if (loading) {
     return (
-      <div className={cn("grid gap-6", className)}>
+      <div className={cn('grid gap-6', className)}>
         <Card className="bg-gray-800/50 border-gray-700">
           <CardHeader>
             <CardTitle>Supplier Relationships</CardTitle>
@@ -166,7 +164,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
 
   if (error) {
     return (
-      <Card className={cn("bg-gray-800/50 border-gray-700", className)}>
+      <Card className={cn('bg-gray-800/50 border-gray-700', className)}>
         <CardHeader>
           <CardTitle>Supplier Relationships</CardTitle>
         </CardHeader>
@@ -183,15 +181,15 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
   const selectedSupplierData = suppliers.find(s => s.id === selectedSupplier)
 
   return (
-    <div className={cn("grid gap-6", className)}>
+    <div className={cn('grid gap-6', className)}>
       {/* Supplier Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {suppliers.map(supplier => (
           <Card
             key={supplier.id}
             className={cn(
-              "bg-gray-800/50 border-gray-700 cursor-pointer transition-all hover:scale-[1.02]",
-              selectedSupplier === supplier.id && "ring-2 ring-amber-500"
+              'bg-gray-800/50 border-gray-700 cursor-pointer transition-all hover:scale-[1.02]',
+              selectedSupplier === supplier.id && 'ring-2 ring-amber-500'
             )}
             onClick={() => setSelectedSupplier(supplier.id)}
           >
@@ -216,7 +214,7 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                 </div>
                 <div>
                   <p className="text-gray-400">Avg Lead Time</p>
-                  <p className={cn("font-semibold", getLeadTimeColor(supplier.avgLeadTime))}>
+                  <p className={cn('font-semibold', getLeadTimeColor(supplier.avgLeadTime))}>
                     {supplier.avgLeadTime} days
                   </p>
                 </div>
@@ -226,12 +224,17 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-sm mb-1">
                     <span className="text-gray-400">Quality Rating</span>
-                    <span className={cn("font-semibold", getQualityColor(supplier.products[0].qualityRating))}>
+                    <span
+                      className={cn(
+                        'font-semibold',
+                        getQualityColor(supplier.products[0].qualityRating)
+                      )}
+                    >
                       {supplier.products[0].qualityRating}/5
                     </span>
                   </div>
-                  <Progress 
-                    value={supplier.products[0].qualityRating * 20} 
+                  <Progress
+                    value={supplier.products[0].qualityRating * 20}
                     className="h-2 bg-gray-700"
                   />
                 </div>
@@ -287,7 +290,9 @@ export function SupplierRelationships({ organizationId, className }: SupplierRel
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <DollarSign className="h-4 w-4 text-gray-400" />
-                          <span>₹{product.unitPrice.toLocaleString()}/{product.priceUnit}</span>
+                          <span>
+                            ₹{product.unitPrice.toLocaleString()}/{product.priceUnit}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell>

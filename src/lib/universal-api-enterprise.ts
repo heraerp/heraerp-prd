@@ -21,10 +21,18 @@ export interface UniversalAPIConfig {
 }
 
 // Enhanced operation types covering all CRUD scenarios
-export type UniversalOperation = 
-  | 'create' | 'update' | 'archive' | 'restore' | 'delete' 
-  | 'bulk_create' | 'bulk_update' | 'bulk_archive' | 'bulk_delete'
-  | 'transaction' | 'query'
+export type UniversalOperation =
+  | 'create'
+  | 'update'
+  | 'archive'
+  | 'restore'
+  | 'delete'
+  | 'bulk_create'
+  | 'bulk_update'
+  | 'bulk_archive'
+  | 'bulk_delete'
+  | 'transaction'
+  | 'query'
 
 // Transaction control for complex operations
 export interface TransactionControl {
@@ -203,11 +211,11 @@ export interface ExecuteRequest {
   organization_id: string
   smart_code: string
   operation: UniversalOperation
-  
+
   // Optional transaction coordination
   transaction_id?: string
   transaction_control?: TransactionControl
-  
+
   // Data payload
   data?: Record<string, any>
   dynamic_data?: Array<{
@@ -222,10 +230,10 @@ export interface ExecuteRequest {
     is_active?: boolean
     metadata?: Record<string, any>
   }>
-  
+
   // Bulk operations
   batch?: BulkConfig
-  
+
   // Multi-operation transactions
   operations?: Array<{
     entity: string
@@ -236,34 +244,34 @@ export interface ExecuteRequest {
     dynamic_data?: any[]
     relationships?: any[]
   }>
-  
+
   // Delete/Archive behavior
   cascade?: CascadeOptions
-  
+
   // File handling
   attachments?: AttachmentConfig[]
-  
+
   // AI enhancements
   ai_requests?: AIEnhancement
-  
+
   // Webhooks
   webhooks?: WebhookConfig
-  
+
   // Concurrency control
   idempotency_key?: string
   version?: string
   if_match?: string
-  
+
   // Performance hints
   performance?: PerformanceOptions
-  
+
   // Relationship management
   guard?: RelationshipGuard
-  
+
   // Audit and compliance
   reason?: string
   audit_context?: Record<string, any>
-  
+
   // Auto-commit control
   commit?: boolean
 }
@@ -277,20 +285,20 @@ export interface QueryRequest {
   entity: string
   organization_id: string
   smart_code: string
-  
+
   // Advanced query DSL
   query: AdvancedQuery
-  
+
   // Pagination
   pagination?: PaginationOptions
-  
+
   // Performance controls
   performance?: PerformanceOptions
-  
+
   // Security context
   access_level?: 'read' | 'read_sensitive' | 'admin'
   field_filters?: string[]
-  
+
   // Real-time options
   subscribe?: boolean
   webhook_url?: string
@@ -308,7 +316,7 @@ export class UniversalAPIEnterprise {
   constructor(config: UniversalAPIConfig) {
     this.config = config
     this.mockMode = config.mockMode || false
-    
+
     if (!this.mockMode && config.supabaseUrl && config.supabaseKey) {
       // Initialize Supabase client
     }
@@ -328,7 +336,7 @@ export class UniversalAPIEnterprise {
 
       // Handle different operation types
       let result: any
-      
+
       switch (request.operation) {
         case 'create':
           result = await this.handleCreate(request)
@@ -377,7 +385,6 @@ export class UniversalAPIEnterprise {
           transaction_id: result.transaction_id
         }
       }
-      
     } catch (error) {
       return this.handleError(error, requestId, Date.now() - startTime)
     }
@@ -399,7 +406,10 @@ export class UniversalAPIEnterprise {
       const queryResult = await this.executeAdvancedQuery(request)
 
       // Apply performance optimizations
-      const optimizedResult = await this.applyPerformanceOptimizations(queryResult, request.performance)
+      const optimizedResult = await this.applyPerformanceOptimizations(
+        queryResult,
+        request.performance
+      )
 
       // Handle pagination
       const paginatedResult = await this.applyPagination(optimizedResult, request.pagination)
@@ -417,7 +427,6 @@ export class UniversalAPIEnterprise {
           query_plan: request.performance?.explain ? optimizedResult.plan : undefined
         }
       }
-      
     } catch (error) {
       return this.handleError(error, requestId, Date.now() - startTime)
     }
@@ -442,7 +451,7 @@ export class UniversalAPIEnterprise {
     // Real implementation would:
     // 1. Insert into appropriate core table
     // 2. Insert dynamic data if provided
-    // 3. Create relationships if provided  
+    // 3. Create relationships if provided
     // 4. Record transaction header and lines
     // 5. Handle attachments
     // 6. Apply business rules from smart code
@@ -580,14 +589,10 @@ export class UniversalAPIEnterprise {
 
     for (let i = 0; i < request.batch.items.length; i++) {
       const item = request.batch.items[i]
-      
+
       try {
-        const itemResult = await this.processBulkItem(
-          request.operation,
-          item,
-          request
-        )
-        
+        const itemResult = await this.processBulkItem(request.operation, item, request)
+
         results.push({
           index: i,
           success: true,
@@ -619,7 +624,7 @@ export class UniversalAPIEnterprise {
 
   private async handleMultiOperation(request: ExecuteRequest): Promise<any> {
     const transactionId = request.transaction_id || this.generateTransactionId()
-    
+
     if (!request.operations) {
       throw new Error('Operations array required for transaction')
     }
@@ -631,14 +636,14 @@ export class UniversalAPIEnterprise {
       // Execute operations in order
       for (let i = 0; i < request.operations.length; i++) {
         const operation = request.operations[i]
-        
+
         // Resolve references to previous operations
         const resolvedOperation = this.resolveOperationReferences(operation, operationResults)
-        
+
         const result = await this.executeOperation(resolvedOperation)
-        
+
         results.push(result)
-        
+
         // Store result by alias for reference resolution
         if (operation.alias) {
           operationResults[operation.alias] = result
@@ -655,7 +660,6 @@ export class UniversalAPIEnterprise {
         operations: results,
         committed: request.commit !== false
       }
-      
     } catch (error) {
       // Rollback transaction on error
       await this.rollbackTransaction(transactionId)
@@ -691,10 +695,12 @@ export class UniversalAPIEnterprise {
       ...this.generateMockEntityData(request.entity)
     }))
 
-    const groups = request.query.aggregations ? [
-      { group_key: 'active', count: 8 },
-      { group_key: 'archived', count: 2 }
-    ] : undefined
+    const groups = request.query.aggregations
+      ? [
+          { group_key: 'active', count: 8 },
+          { group_key: 'archived', count: 2 }
+        ]
+      : undefined
 
     return {
       rows,
@@ -751,11 +757,13 @@ export class UniversalAPIEnterprise {
   private handleError(error: any, requestId: string, processingTime: number): UniversalResponse {
     return {
       status: 'error',
-      errors: [{
-        code: error.code || 'INTERNAL_ERROR',
-        message: error.message,
-        retry_possible: true
-      }],
+      errors: [
+        {
+          code: error.code || 'INTERNAL_ERROR',
+          message: error.message,
+          retry_possible: true
+        }
+      ],
       metadata: {
         request_id: requestId,
         processing_time_ms: processingTime
@@ -772,7 +780,10 @@ export class UniversalAPIEnterprise {
     // Webhook triggering logic would go here
   }
 
-  private async applyPerformanceOptimizations(queryResult: any, performance?: PerformanceOptions): Promise<any> {
+  private async applyPerformanceOptimizations(
+    queryResult: any,
+    performance?: PerformanceOptions
+  ): Promise<any> {
     // Performance optimization logic would go here
     return queryResult
   }
@@ -797,7 +808,11 @@ export class UniversalAPIEnterprise {
     return false // Default to false for safety
   }
 
-  private async processBulkItem(operation: string, item: any, request: ExecuteRequest): Promise<any> {
+  private async processBulkItem(
+    operation: string,
+    item: any,
+    request: ExecuteRequest
+  ): Promise<any> {
     // Process individual bulk item
     return { processed: true, ...item }
   }
@@ -805,7 +820,7 @@ export class UniversalAPIEnterprise {
   private resolveOperationReferences(operation: any, results: Record<string, any>): any {
     // Resolve $ops.alias.field references in operation data
     const resolved = JSON.parse(JSON.stringify(operation))
-    
+
     // Simple reference resolution (would be more sophisticated in real implementation)
     if (resolved.data) {
       for (const [key, value] of Object.entries(resolved.data)) {
@@ -817,7 +832,7 @@ export class UniversalAPIEnterprise {
         }
       }
     }
-    
+
     return resolved
   }
 

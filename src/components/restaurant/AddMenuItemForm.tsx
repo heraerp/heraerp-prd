@@ -6,16 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { 
-  X,
-  Check,
-  DollarSign,
-  Clock,
-  Tag,
-  FileText,
-  Plus,
-  Minus
-} from 'lucide-react'
+import { X, Check, DollarSign, Clock, Tag, FileText, Plus, Minus } from 'lucide-react'
 
 interface AddMenuItemFormProps {
   onItemAdded: () => void
@@ -32,21 +23,36 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
     prep_time: '',
     ingredients: ''
   })
-  
+
   const [dietaryTags, setDietaryTags] = useState<string[]>([])
   const [customCategory, setCustomCategory] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Predefined categories
   const predefinedCategories = [
-    'Pizza', 'Pasta', 'Salads', 'Appetizers', 'Seafood', 
-    'Meat & Poultry', 'Desserts', 'Beverages', 'Soups', 'Sandwiches'
+    'Pizza',
+    'Pasta',
+    'Salads',
+    'Appetizers',
+    'Seafood',
+    'Meat & Poultry',
+    'Desserts',
+    'Beverages',
+    'Soups',
+    'Sandwiches'
   ]
 
   // Predefined dietary tags
   const availableDietaryTags = [
-    'vegetarian', 'vegan', 'gluten_free', 'gluten_free_option', 
-    'keto_friendly', 'dairy_free', 'nut_free', 'healthy', 'spicy'
+    'vegetarian',
+    'vegan',
+    'gluten_free',
+    'gluten_free_option',
+    'keto_friendly',
+    'dairy_free',
+    'nut_free',
+    'healthy',
+    'spicy'
   ]
 
   const handleInputChange = (field: string, value: string) => {
@@ -57,11 +63,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
   }
 
   const toggleDietaryTag = (tag: string) => {
-    setDietaryTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
-    )
+    setDietaryTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]))
   }
 
   const formatDietaryTag = (tag: string) => {
@@ -69,15 +71,23 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
   }
 
   const getDietaryTagColor = (tag: string) => {
-    switch (tag) {  
-      case 'vegetarian': return 'bg-green-100 text-green-800 border-green-300'
-      case 'vegan': return 'bg-green-200 text-green-900 border-green-400' 
-      case 'gluten_free': return 'bg-blue-100 text-blue-800 border-blue-300'
-      case 'gluten_free_option': return 'bg-blue-50 text-blue-700 border-blue-200'
-      case 'keto_friendly': return 'bg-purple-100 text-purple-800 border-purple-300'
-      case 'healthy': return 'bg-emerald-100 text-emerald-800 border-emerald-300'
-      case 'spicy': return 'bg-red-100 text-red-800 border-red-300'
-      default: return 'bg-gray-100 text-gray-800 border-gray-300'
+    switch (tag) {
+      case 'vegetarian':
+        return 'bg-green-100 text-green-800 border-green-300'
+      case 'vegan':
+        return 'bg-green-200 text-green-900 border-green-400'
+      case 'gluten_free':
+        return 'bg-blue-100 text-blue-800 border-blue-300'
+      case 'gluten_free_option':
+        return 'bg-blue-50 text-blue-700 border-blue-200'
+      case 'keto_friendly':
+        return 'bg-purple-100 text-purple-800 border-purple-300'
+      case 'healthy':
+        return 'bg-emerald-100 text-emerald-800 border-emerald-300'
+      case 'spicy':
+        return 'bg-red-100 text-red-800 border-red-300'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300'
     }
   }
 
@@ -103,7 +113,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
   const validateForm = () => {
     const required = ['entity_name', 'price', 'description', 'category', 'prep_time', 'ingredients']
     const missing = required.filter(field => !formData[field as keyof typeof formData])
-    
+
     if (missing.length > 0) {
       alert(`Please fill in all required fields: ${missing.join(', ')}`)
       return false
@@ -126,7 +136,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
     if (!validateForm()) return
 
     setIsSubmitting(true)
-    
+
     try {
       const finalCategory = customCategory || formData.category
 
@@ -157,7 +167,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         alert(`Menu item "${formData.entity_name}" added successfully!`)
         onItemAdded()
@@ -197,7 +207,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   <Input
                     placeholder="e.g., Margherita Pizza"
                     value={formData.entity_name}
-                    onChange={(e) => handleInputChange('entity_name', e.target.value)}
+                    onChange={e => handleInputChange('entity_name', e.target.value)}
                   />
                 </div>
                 <div>
@@ -207,7 +217,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   <Input
                     placeholder="e.g., PIZZA_MARG"
                     value={formData.entity_code}
-                    onChange={(e) => handleInputChange('entity_code', e.target.value)}
+                    onChange={e => handleInputChange('entity_code', e.target.value)}
                   />
                 </div>
                 <div>
@@ -221,7 +231,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                       step="0.01"
                       placeholder="18.50"
                       value={formData.price}
-                      onChange={(e) => handleInputChange('price', e.target.value)}
+                      onChange={e => handleInputChange('price', e.target.value)}
                       className="pl-10"
                     />
                   </div>
@@ -236,13 +246,13 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                       type="number"
                       placeholder="15"
                       value={formData.prep_time}
-                      onChange={(e) => handleInputChange('prep_time', e.target.value)}
+                      onChange={e => handleInputChange('prep_time', e.target.value)}
                       className="pl-10"
                     />
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-4">
                 <Label className="text-sm font-medium text-gray-700 mb-2 block">
                   Description *
@@ -250,7 +260,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                 <textarea
                   placeholder="Describe your menu item..."
                   value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  onChange={e => handleInputChange('description', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none"
                   rows={3}
                 />
@@ -267,17 +277,19 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   </Label>
                   <select
                     value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    onChange={e => handleInputChange('category', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm"
                   >
                     <option value="">Select a category...</option>
                     {predefinedCategories.map(category => (
-                      <option key={category} value={category}>{category}</option>
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
                     ))}
                     <option value="custom">Custom Category</option>
                   </select>
                 </div>
-                
+
                 {formData.category === 'custom' && (
                   <div>
                     <Label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -286,7 +298,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                     <Input
                       placeholder="Enter custom category"
                       value={customCategory}
-                      onChange={(e) => setCustomCategory(e.target.value)}
+                      onChange={e => setCustomCategory(e.target.value)}
                     />
                   </div>
                 )}
@@ -297,7 +309,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
             <Card className="p-4">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Dietary Tags</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {availableDietaryTags.map((tag) => (
+                {availableDietaryTags.map(tag => (
                   <button
                     key={tag}
                     type="button"
@@ -312,18 +324,15 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   </button>
                 ))}
               </div>
-              
+
               {dietaryTags.length > 0 && (
                 <div className="mt-3">
                   <Label className="text-sm font-medium text-gray-700 mb-2 block">
                     Selected Tags:
                   </Label>
                   <div className="flex flex-wrap gap-2">
-                    {dietaryTags.map((tag) => (
-                      <Badge 
-                        key={tag} 
-                        className={`text-xs ${getDietaryTagColor(tag)}`}
-                      >
+                    {dietaryTags.map(tag => (
+                      <Badge key={tag} className={`text-xs ${getDietaryTagColor(tag)}`}>
                         {formatDietaryTag(tag)}
                         <button
                           onClick={() => toggleDietaryTag(tag)}
@@ -348,7 +357,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                 <textarea
                   placeholder="List main ingredients (e.g., Tomato sauce, fresh mozzarella, basil, olive oil)"
                   value={formData.ingredients}
-                  onChange={(e) => handleInputChange('ingredients', e.target.value)}
+                  onChange={e => handleInputChange('ingredients', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none"
                   rows={3}
                 />
@@ -380,7 +389,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   </div>
                   {dietaryTags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {dietaryTags.map((tag) => (
+                      {dietaryTags.map(tag => (
                         <Badge key={tag} className={`text-xs ${getDietaryTagColor(tag)}`}>
                           {formatDietaryTag(tag)}
                         </Badge>
@@ -398,11 +407,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
             {/* Submit Button */}
             <div className="flex gap-3 pt-4 border-t border-gray-200">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                className="flex-1"
-              >
+              <Button variant="outline" onClick={onClose} className="flex-1">
                 Cancel
               </Button>
               <Button

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  CreditCard, 
+import {
+  CreditCard,
   Download,
   FileText,
   Calendar,
@@ -22,7 +22,17 @@ import {
   Edit2,
   Trash2
 } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar
+} from 'recharts'
 import { ISPModal } from '@/components/isp/ISPModal'
 import { ISPTable } from '@/components/isp/ISPTable'
 import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
@@ -33,14 +43,14 @@ const billingData = [
   { month: 'Mar', billed: 4100000, collected: 3900000, pending: 200000 },
   { month: 'Apr', billed: 4050000, collected: 3950000, pending: 100000 },
   { month: 'May', billed: 4200000, collected: 4050000, pending: 150000 },
-  { month: 'Jun', billed: 4350000, collected: 4200000, pending: 150000 },
+  { month: 'Jun', billed: 4350000, collected: 4200000, pending: 150000 }
 ]
 
 const paymentMethods = [
   { method: 'Online Banking', amount: 2520000, percentage: 60 },
   { method: 'Credit/Debit Card', amount: 1050000, percentage: 25 },
   { method: 'UPI', amount: 420000, percentage: 10 },
-  { method: 'Cash', amount: 210000, percentage: 5 },
+  { method: 'Cash', amount: 210000, percentage: 5 }
 ]
 
 interface Invoice {
@@ -94,7 +104,7 @@ const initialInvoices: Invoice[] = [
     paidDate: null,
     description: 'Home broadband subscription',
     billingPeriod: 'May 2024'
-  },
+  }
 ]
 
 interface BillingCardProps {
@@ -111,15 +121,23 @@ function BillingCard({ title, value, change, icon: Icon, gradient, subValue }: B
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`} />
+      <div
+        className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300`}
+      />
       <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
           </div>
           {change !== undefined && (
-            <div className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-              {isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+            <div
+              className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}
+            >
+              {isPositive ? (
+                <ArrowUpRight className="h-4 w-4" />
+              ) : (
+                <ArrowDownRight className="h-4 w-4" />
+              )}
               <span>{Math.abs(change)}%</span>
             </div>
           )}
@@ -179,17 +197,20 @@ export default function BillingPage() {
 
   const handleUpdate = () => {
     if (selectedInvoice) {
-      setInvoices(invoices.map(inv => 
-        inv.id === selectedInvoice.id 
-          ? { 
-              ...inv, 
-              ...formData,
-              paidDate: formData.status === 'paid' && !inv.paidDate 
-                ? new Date().toISOString().split('T')[0] 
-                : inv.paidDate
-            }
-          : inv
-      ))
+      setInvoices(
+        invoices.map(inv =>
+          inv.id === selectedInvoice.id
+            ? {
+                ...inv,
+                ...formData,
+                paidDate:
+                  formData.status === 'paid' && !inv.paidDate
+                    ? new Date().toISOString().split('T')[0]
+                    : inv.paidDate
+              }
+            : inv
+        )
+      )
       setShowEditModal(false)
       setSelectedInvoice(null)
       resetForm()
@@ -214,8 +235,9 @@ export default function BillingPage() {
   }
 
   const filteredInvoices = invoices.filter(invoice => {
-    const matchesSearch = invoice.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         invoice.id.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      invoice.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      invoice.id.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesSearch
   })
 
@@ -257,13 +279,13 @@ export default function BillingPage() {
           </h1>
           <p className="text-white/60 mt-1">Manage invoices, payments, and revenue tracking</p>
         </div>
-        
+
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button className="flex items-center space-x-2 px-4 py-2 bg-slate-900/50 border border-white/10 rounded-lg text-white/60 hover:bg-white/20 hover:text-white transition-all duration-200">
             <Calendar className="h-5 w-5" />
             <span>Jun 2024</span>
           </button>
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#0099CC]/40 transition-all duration-300"
           >
@@ -328,29 +350,29 @@ export default function BillingPage() {
                   </div>
                 </div>
               </div>
-              
+
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={safeBillingData}>
                   <defs>
                     <linearGradient id="billedGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#0099CC" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0099CC" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#0099CC" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="collectedGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                   <XAxis dataKey="month" stroke="rgba(255,255,255,0.4)" />
                   <YAxis stroke="rgba(255,255,255,0.4)" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       borderRadius: '8px',
                       backdropFilter: 'blur(10px)'
-                    }} 
+                    }}
                   />
                   <Area
                     type="monotone"
@@ -380,7 +402,7 @@ export default function BillingPage() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-white mb-6">Payment Methods</h2>
-              
+
               <div className="space-y-4">
                 {paymentMethods.map((method, index) => (
                   <div key={index} className="space-y-2">
@@ -390,19 +412,21 @@ export default function BillingPage() {
                     </div>
                     <div className="relative">
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-[#0099CC] to-[#FFD700] rounded-full transition-all duration-1000"
                           style={{ width: `${method.percentage}%` }}
                         />
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-white/40">₹{(method.amount / 100000).toFixed(1)} L</span>
+                      <span className="text-white/40">
+                        ₹{(method.amount / 100000).toFixed(1)} L
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-6 pt-6 border-t border-white/10">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-white/60">Total Collected</span>
@@ -423,12 +447,12 @@ export default function BillingPage() {
             {
               key: 'id',
               label: 'Invoice ID',
-              render: (item) => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
+              render: item => <span className="text-sm font-medium text-[#0099CC]">{item.id}</span>
             },
             {
               key: 'customer',
               label: 'Customer',
-              render: (item) => (
+              render: item => (
                 <div>
                   <p className="text-sm font-medium text-white">{item.customer}</p>
                   {item.description && <p className="text-xs text-white/60">{item.description}</p>}
@@ -438,17 +462,21 @@ export default function BillingPage() {
             {
               key: 'amount',
               label: 'Amount',
-              render: (item) => <span className="text-sm font-medium text-white">₹{item.amount.toLocaleString()}</span>
+              render: item => (
+                <span className="text-sm font-medium text-white">
+                  ₹{item.amount.toLocaleString()}
+                </span>
+              )
             },
             {
               key: 'status',
               label: 'Status',
-              render: (item) => getStatusBadge(item.status)
+              render: item => getStatusBadge(item.status)
             },
             {
               key: 'dueDate',
               label: 'Due Date',
-              render: (item) => (
+              render: item => (
                 <div className="space-y-1">
                   <p className="text-sm text-white/80">{item.dueDate}</p>
                   {item.paidDate && (
@@ -516,64 +544,67 @@ export default function BillingPage() {
         title="Generate New Invoice"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleAdd()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleAdd()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Customer Name"
             value={formData.customer}
-            onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+            onChange={e => setFormData({ ...formData, customer: e.target.value })}
             placeholder="Enter customer name"
             required
           />
-          
+
           <ISPInput
             label="Amount (₹)"
             type="number"
             value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, amount: parseInt(e.target.value) })}
             placeholder="Enter invoice amount"
             icon={<DollarSign className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Due Date"
             type="date"
             value={formData.dueDate}
-            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
             icon={<Calendar className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
             options={[
               { value: 'pending', label: 'Pending' },
               { value: 'paid', label: 'Paid' },
               { value: 'overdue', label: 'Overdue' }
             ]}
           />
-          
+
           <ISPInput
             label="Billing Period"
             value={formData.billingPeriod}
-            onChange={(e) => setFormData({ ...formData, billingPeriod: e.target.value })}
+            onChange={e => setFormData({ ...formData, billingPeriod: e.target.value })}
             placeholder="e.g., June 2024"
             required
           />
-          
+
           <ISPInput
             label="Description"
             value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={e => setFormData({ ...formData, description: e.target.value })}
             placeholder="Enter invoice description"
             icon={<FileText className="h-4 w-4 text-white/40" />}
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -585,9 +616,7 @@ export default function BillingPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Generate Invoice
-            </ISPButton>
+            <ISPButton type="submit">Generate Invoice</ISPButton>
           </div>
         </form>
       </ISPModal>
@@ -603,64 +632,67 @@ export default function BillingPage() {
         title="Edit Invoice"
         size="md"
       >
-        <form onSubmit={(e) => {
-          e.preventDefault()
-          handleUpdate()
-        }} className="space-y-4">
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            handleUpdate()
+          }}
+          className="space-y-4"
+        >
           <ISPInput
             label="Customer Name"
             value={formData.customer}
-            onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+            onChange={e => setFormData({ ...formData, customer: e.target.value })}
             placeholder="Enter customer name"
             required
           />
-          
+
           <ISPInput
             label="Amount (₹)"
             type="number"
             value={formData.amount}
-            onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
+            onChange={e => setFormData({ ...formData, amount: parseInt(e.target.value) })}
             placeholder="Enter invoice amount"
             icon={<DollarSign className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPInput
             label="Due Date"
             type="date"
             value={formData.dueDate}
-            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
             icon={<Calendar className="h-4 w-4 text-white/40" />}
             required
           />
-          
+
           <ISPSelect
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+            onChange={e => setFormData({ ...formData, status: e.target.value as any })}
             options={[
               { value: 'pending', label: 'Pending' },
               { value: 'paid', label: 'Paid' },
               { value: 'overdue', label: 'Overdue' }
             ]}
           />
-          
+
           <ISPInput
             label="Billing Period"
             value={formData.billingPeriod}
-            onChange={(e) => setFormData({ ...formData, billingPeriod: e.target.value })}
+            onChange={e => setFormData({ ...formData, billingPeriod: e.target.value })}
             placeholder="e.g., June 2024"
             required
           />
-          
+
           <ISPInput
             label="Description"
             value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={e => setFormData({ ...formData, description: e.target.value })}
             placeholder="Enter invoice description"
             icon={<FileText className="h-4 w-4 text-white/40" />}
           />
-          
+
           <div className="flex justify-end space-x-3 pt-4">
             <ISPButton
               type="button"
@@ -673,15 +705,14 @@ export default function BillingPage() {
             >
               Cancel
             </ISPButton>
-            <ISPButton type="submit">
-              Update Invoice
-            </ISPButton>
+            <ISPButton type="submit">Update Invoice</ISPButton>
           </div>
         </form>
       </ISPModal>
     </div>
   )
 }
-  // Defensive normalization for chart inputs
-  const toArray = (v: any): any[] => (Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : [])
-  const safeBillingData = toArray(billingData)
+// Defensive normalization for chart inputs
+const toArray = (v: any): any[] =>
+  Array.isArray(v) ? v : v && typeof v === 'object' ? Object.values(v) : []
+const safeBillingData = toArray(billingData)

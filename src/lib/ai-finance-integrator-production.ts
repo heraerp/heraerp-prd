@@ -27,7 +27,10 @@ export class AIClassificationError extends Error {
 }
 
 export class DatabaseConnectionError extends Error {
-  constructor(message: string, public readonly originalError?: Error) {
+  constructor(
+    message: string,
+    public readonly originalError?: Error
+  ) {
     super(message)
     this.name = 'DatabaseConnectionError'
   }
@@ -132,7 +135,6 @@ export class ProductionAIFinanceIntegrator {
       })
 
       return transactionId
-
     } catch (error) {
       // Comprehensive Error Handling
       await this.handleTransactionError(error, {
@@ -195,7 +197,6 @@ export class ProductionAIFinanceIntegrator {
       })
 
       return result
-
     } catch (error) {
       await this.handleAIClassificationError(error, {
         smartCode,
@@ -250,23 +251,27 @@ export class ProductionAIFinanceIntegrator {
     }
   }
 
-  private async performTransactionCreation(transactionData: BusinessTransactionEvent): Promise<string> {
+  private async performTransactionCreation(
+    transactionData: BusinessTransactionEvent
+  ): Promise<string> {
     try {
       const { data, error } = await supabase
         .from('universal_transactions')
-        .insert([{
-          organization_id: transactionData.organization_id,
-          transaction_type: transactionData.transaction_type,
-          smart_code: transactionData.smart_code,
-          reference_number: transactionData.reference_number,
-          total_amount: transactionData.total_amount,
-          transaction_metadata: transactionData.transaction_metadata,
-          source_module: transactionData.source_module,
-          source_document_id: transactionData.source_document_id,
-          transaction_date: new Date().toISOString(),
-          status: 'active',
-          created_at: new Date().toISOString()
-        }])
+        .insert([
+          {
+            organization_id: transactionData.organization_id,
+            transaction_type: transactionData.transaction_type,
+            smart_code: transactionData.smart_code,
+            reference_number: transactionData.reference_number,
+            total_amount: transactionData.total_amount,
+            transaction_metadata: transactionData.transaction_metadata,
+            source_module: transactionData.source_module,
+            source_document_id: transactionData.source_document_id,
+            transaction_date: new Date().toISOString(),
+            status: 'active',
+            created_at: new Date().toISOString()
+          }
+        ])
         .select('id')
         .single()
 
@@ -291,12 +296,11 @@ export class ProductionAIFinanceIntegrator {
     transactionMetadata: Record<string, any>
   ): Promise<AIClassificationResult | null> {
     try {
-      const { data, error } = await supabase
-        .rpc('ai_classify_transaction', {
-          p_smart_code: smartCode,
-          p_transaction_data: transactionMetadata,
-          p_organization_id: this.organizationId
-        })
+      const { data, error } = await supabase.rpc('ai_classify_transaction', {
+        p_smart_code: smartCode,
+        p_transaction_data: transactionMetadata,
+        p_organization_id: this.organizationId
+      })
 
       if (error) {
         throw new AIClassificationError('AI classification RPC failed', error)
@@ -372,7 +376,7 @@ export class ProductionAIFinanceIntegrator {
     const window = 60 // seconds
 
     const current = await this.cache.increment(key, 1, { ttl: window })
-    
+
     if (current > limit) {
       throw new Error(`Rate limit exceeded for ${operation}`)
     }
@@ -383,10 +387,7 @@ export class ProductionAIFinanceIntegrator {
   }
 
   private generateCacheKey(prefix: string, ...parts: any[]): string {
-    const hash = require('crypto')
-      .createHash('md5')
-      .update(JSON.stringify(parts))
-      .digest('hex')
+    const hash = require('crypto').createHash('md5').update(JSON.stringify(parts)).digest('hex')
     return `${prefix}:${this.organizationId}:${hash}`
   }
 
@@ -398,8 +399,10 @@ export class ProductionAIFinanceIntegrator {
   }
 
   private isCriticalError(error: Error): boolean {
-    return error instanceof DatabaseConnectionError ||
-           (error instanceof AIClassificationError && error.message.includes('unavailable'))
+    return (
+      error instanceof DatabaseConnectionError ||
+      (error instanceof AIClassificationError && error.message.includes('unavailable'))
+    )
   }
 }
 

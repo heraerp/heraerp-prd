@@ -4,76 +4,76 @@
  * Smart Code: HERA.MCP.API.EXECUTE.v1
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
+import { NextRequest, NextResponse } from 'next/server'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import path from 'path'
 
-const execAsync = promisify(exec);
+const execAsync = promisify(exec)
 
 export async function POST(request: NextRequest) {
   try {
-    const { operation, organizationId } = await request.json();
+    const { operation, organizationId } = await request.json()
 
     if (!operation || !organizationId) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Missing required fields: operation and organizationId',
           smartCode: 'HERA.MCP.ERROR.MISSING_FIELDS.v1'
-        }, 
+        },
         { status: 400 }
-      );
+      )
     }
 
     // Map operation to MCP command
-    const command = mapOperationToMCPCommand(operation);
-    
+    const command = mapOperationToMCPCommand(operation)
+
     // Execute MCP command
-    const mcpPath = path.join(process.cwd(), 'mcp-server');
-    const fullCommand = `cd ${mcpPath} && node hera-cli.js ${command.action} '${JSON.stringify(command.args)}'`;
-    
-    console.log('MCP Execute:', { command: command.action, args: command.args });
+    const mcpPath = path.join(process.cwd(), 'mcp-server')
+    const fullCommand = `cd ${mcpPath} && node hera-cli.js ${command.action} '${JSON.stringify(command.args)}'`
+
+    console.log('MCP Execute:', { command: command.action, args: command.args })
 
     try {
       const { stdout, stderr } = await execAsync(fullCommand, {
         env: { ...process.env, FORCE_COLOR: '0' }
-      });
+      })
 
       if (stderr && !stderr.includes('Warning')) {
-        console.error('MCP stderr:', stderr);
-        throw new Error(stderr);
+        console.error('MCP stderr:', stderr)
+        throw new Error(stderr)
       }
 
       // Parse MCP output
-      const result = parseMCPOutput(stdout);
-      
+      const result = parseMCPOutput(stdout)
+
       return NextResponse.json({
         success: true,
         data: result,
         smartCode: 'HERA.MCP.SUCCESS.v1'
-      });
+      })
     } catch (execError: any) {
-      console.error('MCP execution error:', execError);
+      console.error('MCP execution error:', execError)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: execError.message || 'MCP execution failed',
           smartCode: 'HERA.MCP.ERROR.EXECUTION.v1'
-        }, 
+        },
         { status: 500 }
-      );
+      )
     }
   } catch (error) {
-    console.error('MCP API Error:', error);
+    console.error('MCP API Error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: error instanceof Error ? error.message : 'Internal server error',
         smartCode: 'HERA.MCP.ERROR.INTERNAL.v1'
-      }, 
+      },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -81,17 +81,17 @@ export async function POST(request: NextRequest) {
  * Map DNA operation to MCP command
  */
 function mapOperationToMCPCommand(operation: any): { action: string; args: any } {
-  const { table, operation: op, data, id } = operation;
+  const { table, operation: op, data, id } = operation
 
   // Map table to MCP entity type
   const tableMap: Record<string, string> = {
-    'core_entities': 'entity',
-    'universal_transactions': 'transaction',
-    'core_relationships': 'relationship',
-    'core_dynamic_data': 'dynamic',
-  };
+    core_entities: 'entity',
+    universal_transactions: 'transaction',
+    core_relationships: 'relationship',
+    core_dynamic_data: 'dynamic'
+  }
 
-  const baseType = tableMap[table] || 'entity';
+  const baseType = tableMap[table] || 'entity'
 
   switch (op) {
     case 'create':
@@ -106,7 +106,7 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
             smart_code: data.smart_code,
             metadata: data.metadata
           }
-        };
+        }
       } else if (table === 'universal_transactions') {
         return {
           action: 'create-transaction',
@@ -122,7 +122,7 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
             currency: data.currency,
             metadata: data.metadata
           }
-        };
+        }
       } else if (table === 'core_relationships') {
         return {
           action: 'create-relationship',
@@ -134,7 +134,7 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
             smart_code: data.smart_code,
             metadata: data.metadata
           }
-        };
+        }
       } else if (table === 'core_dynamic_data') {
         return {
           action: 'set-field',
@@ -142,14 +142,17 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
             organization_id: operation.organizationId,
             entity_id: data.entity_id,
             field_name: data.field_name,
-            field_value: data.field_value_text || data.field_value_number || 
-                        data.field_value_boolean || data.field_value_date || 
-                        data.field_value_json,
+            field_value:
+              data.field_value_text ||
+              data.field_value_number ||
+              data.field_value_boolean ||
+              data.field_value_date ||
+              data.field_value_json,
             smart_code: data.smart_code
           }
-        };
+        }
       }
-      break;
+      break
 
     case 'read':
       return {
@@ -160,7 +163,7 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
           filters: data.filters || {},
           limit: data.limit || 100
         }
-      };
+      }
 
     case 'update':
       return {
@@ -170,7 +173,7 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
           id: id,
           updates: data
         }
-      };
+      }
 
     case 'delete':
       return {
@@ -179,10 +182,10 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
           organization_id: operation.organizationId,
           id: id
         }
-      };
+      }
   }
 
-  throw new Error(`Unsupported operation: ${op} on table ${table}`);
+  throw new Error(`Unsupported operation: ${op} on table ${table}`)
 }
 
 /**
@@ -191,32 +194,32 @@ function mapOperationToMCPCommand(operation: any): { action: string; args: any }
 function parseMCPOutput(output: string): any {
   try {
     // Try to parse as JSON first
-    const lines = output.split('\n');
-    const jsonLine = lines.find(line => line.trim().startsWith('{') || line.trim().startsWith('['));
+    const lines = output.split('\n')
+    const jsonLine = lines.find(line => line.trim().startsWith('{') || line.trim().startsWith('['))
     if (jsonLine) {
-      return JSON.parse(jsonLine);
+      return JSON.parse(jsonLine)
     }
 
     // Look for success patterns
     if (output.includes('✅ Created entity') || output.includes('✅ Created transaction')) {
       // Extract ID from output
-      const idMatch = output.match(/ID: ([a-f0-9-]+)/i);
+      const idMatch = output.match(/ID: ([a-f0-9-]+)/i)
       return {
         id: idMatch ? idMatch[1] : null,
         success: true
-      };
+      }
     }
 
     // For queries, look for data
     if (output.includes('Found') && output.includes('records')) {
       // Simple extraction - in production, parse the table output
-      return [];
+      return []
     }
 
     // Default return
-    return { success: true, output };
+    return { success: true, output }
   } catch (error) {
-    console.error('Failed to parse MCP output:', error);
-    return { success: true, raw: output };
+    console.error('Failed to parse MCP output:', error)
+    return { success: true, raw: output }
   }
 }

@@ -49,13 +49,16 @@ interface TableAnalyticsProps {
 
 export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
   const [dateRange, setDateRange] = useState<'today' | 'week' | 'month' | 'year'>('week')
-  const [selectedMetric, setSelectedMetric] = useState<'occupancy' | 'revenue' | 'turnover' | 'utilization'>('occupancy')
+  const [selectedMetric, setSelectedMetric] = useState<
+    'occupancy' | 'revenue' | 'turnover' | 'utilization'
+  >('occupancy')
 
   // Mock analytics data (in production, this would come from API)
   const analyticsData = useMemo(() => {
-    const days = dateRange === 'today' ? 24 : dateRange === 'week' ? 7 : dateRange === 'month' ? 30 : 365
+    const days =
+      dateRange === 'today' ? 24 : dateRange === 'week' ? 7 : dateRange === 'month' ? 30 : 365
     const data = []
-    
+
     for (let i = days - 1; i >= 0; i--) {
       const date = subDays(new Date(), i)
       data.push({
@@ -68,28 +71,33 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
         peakHour: Math.floor(Math.random() * 4) + 18
       })
     }
-    
+
     return data
   }, [dateRange])
 
   // Table performance data
   const tablePerformance = useMemo(() => {
-    return tables.map(table => ({
-      table: table.table_number,
-      revenue: Math.floor(Math.random() * 5000) + 2000,
-      occupancy: Math.floor(Math.random() * 30) + 60,
-      turnover: Math.floor(Math.random() * 15) + 5,
-      averagePartySize: (Math.random() * 2 + 2).toFixed(1)
-    })).sort((a, b) => b.revenue - a.revenue)
+    return tables
+      .map(table => ({
+        table: table.table_number,
+        revenue: Math.floor(Math.random() * 5000) + 2000,
+        occupancy: Math.floor(Math.random() * 30) + 60,
+        turnover: Math.floor(Math.random() * 15) + 5,
+        averagePartySize: (Math.random() * 2 + 2).toFixed(1)
+      }))
+      .sort((a, b) => b.revenue - a.revenue)
   }, [tables])
 
   // Location distribution
   const locationDistribution = useMemo(() => {
-    const distribution = tables.reduce((acc, table) => {
-      acc[table.location] = (acc[table.location] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-    
+    const distribution = tables.reduce(
+      (acc, table) => {
+        acc[table.location] = (acc[table.location] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
+
     return Object.entries(distribution).map(([location, count]) => ({
       name: location,
       value: count,
@@ -122,12 +130,12 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
       peakHoursData,
       exportDate: new Date().toISOString()
     }
-    
+
     const dataStr = JSON.stringify(data, null, 2)
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-    
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+
     const exportFileDefaultName = `table-analytics_${formatDate(new Date(), 'yyyy-MM-dd')}.json`
-    
+
     const linkElement = document.createElement('a')
     linkElement.setAttribute('href', dataUri)
     linkElement.setAttribute('download', exportFileDefaultName)
@@ -141,12 +149,14 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Table Analytics</h3>
-            <p className="text-sm text-gray-600 mt-1">Analyze table performance and optimize operations</p>
+            <p className="text-sm text-gray-600 mt-1">
+              Analyze table performance and optimize operations
+            </p>
           </div>
           <div className="flex items-center space-x-3">
             <select
               value={dateRange}
-              onChange={(e) => setDateRange(e.target.value as any)}
+              onChange={e => setDateRange(e.target.value as any)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="today">Today</option>
@@ -192,7 +202,9 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
               <span className="text-sm text-purple-600 font-medium">Avg Turnover Time</span>
               <Timer className="w-5 h-5 text-purple-500" />
             </div>
-            <p className="text-2xl font-bold text-purple-900">{stats?.average_turnover_time || 0}m</p>
+            <p className="text-2xl font-bold text-purple-900">
+              {stats?.average_turnover_time || 0}m
+            </p>
             <div className="flex items-center mt-2 text-sm">
               <ArrowDown className="w-4 h-4 text-green-500 mr-1" />
               <span className="text-green-600">-3.5m from last period</span>
@@ -224,7 +236,13 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
-              <Area type="monotone" dataKey="occupancy" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.3} />
+              <Area
+                type="monotone"
+                dataKey="occupancy"
+                stroke="#3B82F6"
+                fill="#3B82F6"
+                fillOpacity={0.3}
+              />
             </AreaChart>
           </ResponsiveContainer>
         </Card>
@@ -281,8 +299,20 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
               <YAxis yAxisId="right" orientation="right" />
               <Tooltip />
               <Legend />
-              <Line yAxisId="left" type="monotone" dataKey="occupancy" stroke="#3B82F6" name="Occupancy %" />
-              <Line yAxisId="right" type="monotone" dataKey="revenue" stroke="#10B981" name="Revenue $" />
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="occupancy"
+                stroke="#3B82F6"
+                name="Occupancy %"
+              />
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="revenue"
+                stroke="#10B981"
+                name="Revenue $"
+              />
             </LineChart>
           </ResponsiveContainer>
         </Card>
@@ -317,7 +347,10 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {tablePerformance.map((table, index) => {
-                const performanceScore = (table.revenue / 5000) * 0.4 + (table.occupancy / 100) * 0.4 + (table.turnover / 20) * 0.2
+                const performanceScore =
+                  (table.revenue / 5000) * 0.4 +
+                  (table.occupancy / 100) * 0.4 +
+                  (table.turnover / 20) * 0.2
                 return (
                   <tr key={table.table}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -344,13 +377,20 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
                       {table.averagePartySize}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Badge className={
-                        performanceScore > 0.8 ? 'bg-green-100 text-green-800' :
-                        performanceScore > 0.6 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }>
-                        {performanceScore > 0.8 ? 'Excellent' :
-                         performanceScore > 0.6 ? 'Good' : 'Needs Attention'}
+                      <Badge
+                        className={
+                          performanceScore > 0.8
+                            ? 'bg-green-100 text-green-800'
+                            : performanceScore > 0.6
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-red-100 text-red-800'
+                        }
+                      >
+                        {performanceScore > 0.8
+                          ? 'Excellent'
+                          : performanceScore > 0.6
+                            ? 'Good'
+                            : 'Needs Attention'}
                       </Badge>
                     </td>
                   </tr>
@@ -369,21 +409,29 @@ export function TableAnalytics({ tables, stats }: TableAnalyticsProps) {
             <Target className="w-5 h-5 text-blue-500 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-blue-900">Optimize Peak Hours</p>
-              <p className="text-sm text-blue-700">Tables T1-T5 show highest revenue during 7-9 PM. Consider dynamic pricing.</p>
+              <p className="text-sm text-blue-700">
+                Tables T1-T5 show highest revenue during 7-9 PM. Consider dynamic pricing.
+              </p>
             </div>
           </div>
           <div className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
             <TrendingUp className="w-5 h-5 text-green-500 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-green-900">Improve Turnover</p>
-              <p className="text-sm text-green-700">Outdoor tables have 15% faster turnover. Staff allocation could improve indoor efficiency.</p>
+              <p className="text-sm text-green-700">
+                Outdoor tables have 15% faster turnover. Staff allocation could improve indoor
+                efficiency.
+              </p>
             </div>
           </div>
           <div className="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
             <Activity className="w-5 h-5 text-purple-500 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-purple-900">Capacity Utilization</p>
-              <p className="text-sm text-purple-700">Large tables (6+ capacity) are underutilized. Consider flexible seating arrangements.</p>
+              <p className="text-sm text-purple-700">
+                Large tables (6+ capacity) are underutilized. Consider flexible seating
+                arrangements.
+              </p>
             </div>
           </div>
         </div>

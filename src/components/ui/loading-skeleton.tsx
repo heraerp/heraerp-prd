@@ -8,13 +8,14 @@ interface LoadingSkeletonProps {
   lines?: number
 }
 
-export function LoadingSkeleton({ 
-  className = '', 
+export function LoadingSkeleton({
+  className = '',
   variant = 'rectangle',
-  lines = 1 
+  lines = 1
 }: LoadingSkeletonProps) {
-  const baseClasses = "animate-pulse bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 bg-[length:200%_100%] animate-[shimmer_2s_infinite]"
-  
+  const baseClasses =
+    'animate-pulse bg-gradient-to-r from-gray-300 via-gray-400 to-gray-300 bg-[length:200%_100%] animate-[shimmer_2s_infinite]'
+
   if (variant === 'text') {
     return (
       <div className="space-y-2">
@@ -31,14 +32,10 @@ export function LoadingSkeleton({
   }
 
   if (variant === 'circle') {
-    return (
-      <div className={`rounded-full ${baseClasses} ${className}`} />
-    )
+    return <div className={`rounded-full ${baseClasses} ${className}`} />
   }
 
-  return (
-    <div className={`${baseClasses} rounded ${className}`} />
-  )
+  return <div className={`${baseClasses} rounded ${className}`} />
 }
 
 // App Card Skeleton for loading states
@@ -52,20 +49,20 @@ export function AppCardSkeleton() {
           <LoadingSkeleton className="w-16 h-4" />
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <LoadingSkeleton className="w-3/4 h-5" />
         <LoadingSkeleton variant="text" lines={2} />
       </div>
-      
+
       <LoadingSkeleton className="w-full h-20" />
-      
+
       <div className="grid grid-cols-3 gap-2">
         <LoadingSkeleton className="h-16" />
         <LoadingSkeleton className="h-16" />
         <LoadingSkeleton className="h-16" />
       </div>
-      
+
       <div className="flex gap-2">
         <LoadingSkeleton className="flex-1 h-10" />
         <LoadingSkeleton className="w-10 h-10" />

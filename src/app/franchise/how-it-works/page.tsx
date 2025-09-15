@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   User,
   Search,
   FileText,
@@ -24,8 +24,9 @@ import {
 
 export const metadata: Metadata = {
   title: 'How It Works - HERA Franchise',
-  description: 'From chaos to clarity in 5 simple steps. Learn how the HERA franchise system works and how you can start earning $25K–$500K+ annually.',
-  keywords: 'HERA franchise process, how it works, franchise steps, ERP business opportunity',
+  description:
+    'From chaos to clarity in 5 simple steps. Learn how the HERA franchise system works and how you can start earning $25K–$500K+ annually.',
+  keywords: 'HERA franchise process, how it works, franchise steps, ERP business opportunity'
 }
 
 const steps = [
@@ -33,7 +34,8 @@ const steps = [
     number: 1,
     icon: User,
     title: 'Apply & Get Approved',
-    description: 'Simple 3-minute application. We approve based on ambition, not experience. No technical background required.',
+    description:
+      'Simple 3-minute application. We approve based on ambition, not experience. No technical background required.',
     timeline: '24-48 hours',
     details: [
       'Complete online application in 3 minutes',
@@ -46,7 +48,8 @@ const steps = [
     number: 2,
     icon: Award,
     title: 'Complete Training',
-    description: 'Intensive 5-day training program covers sales, client relationships, and the HERA advantage. 100% remote.',
+    description:
+      'Intensive 5-day training program covers sales, client relationships, and the HERA advantage. 100% remote.',
     timeline: '1 week',
     details: [
       'HERA system overview and competitive advantages',
@@ -59,7 +62,8 @@ const steps = [
     number: 3,
     icon: Search,
     title: 'Identify Prospects',
-    description: 'Use our proven prospecting system to identify businesses frustrated with legacy ERP or manual processes.',
+    description:
+      'Use our proven prospecting system to identify businesses frustrated with legacy ERP or manual processes.',
     timeline: '2-4 weeks',
     details: [
       'Target market identification (manufacturing, healthcare, retail)',
@@ -72,7 +76,8 @@ const steps = [
     number: 4,
     icon: FileText,
     title: 'Present & Propose',
-    description: 'Deliver HERA\'s compelling value proposition. 24-hour implementation vs 18-month traditional systems.',
+    description:
+      "Deliver HERA's compelling value proposition. 24-hour implementation vs 18-month traditional systems.",
     timeline: '1-2 weeks',
     details: [
       'Discovery sessions with prospects',
@@ -85,7 +90,8 @@ const steps = [
     number: 5,
     icon: Rocket,
     title: 'HERA Delivers',
-    description: 'You close the deal, HERA implements in 24 hours. You earn commission, client gets revolutionary ERP.',
+    description:
+      'You close the deal, HERA implements in 24 hours. You earn commission, client gets revolutionary ERP.',
     timeline: '24 hours',
     details: [
       'Contract signing and project initiation',
@@ -100,22 +106,26 @@ const support = [
   {
     icon: Shield,
     title: 'Territory Protection',
-    description: 'Exclusive geographic protection ensures no HERA franchise competition in your market.'
+    description:
+      'Exclusive geographic protection ensures no HERA franchise competition in your market.'
   },
   {
     icon: Zap,
     title: 'Technical Delivery',
-    description: 'HERA handles all implementation, support, and technical aspects. You focus on relationships.'
+    description:
+      'HERA handles all implementation, support, and technical aspects. You focus on relationships.'
   },
   {
     icon: Users,
     title: 'Marketing Support',
-    description: 'Professional marketing materials, case studies, and lead generation support included.'
+    description:
+      'Professional marketing materials, case studies, and lead generation support included.'
   },
   {
     icon: Clock,
     title: 'Ongoing Training',
-    description: 'Monthly training sessions, quarterly conferences, and 24/7 franchise support portal.'
+    description:
+      'Monthly training sessions, quarterly conferences, and 24/7 franchise support portal.'
   }
 ]
 
@@ -164,11 +174,11 @@ export default function HowItWorksPage() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <p className="text-lg text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
                       {step.description}
                     </p>
-                    
+
                     <ul className="space-y-2">
                       {step.details.map((detail, detailIndex) => (
                         <li key={detailIndex} className="flex items-center">
@@ -181,11 +191,15 @@ export default function HowItWorksPage() {
                 </div>
 
                 {/* Step Visual */}
-                <div className={`w-full lg:w-80 mb-8 lg:mb-0 ${index % 2 === 1 ? 'lg:order-1 lg:mr-8' : 'lg:ml-8'}`}>
+                <div
+                  className={`w-full lg:w-80 mb-8 lg:mb-0 ${index % 2 === 1 ? 'lg:order-1 lg:mr-8' : 'lg:ml-8'}`}
+                >
                   <div className="bg-white dark:bg-slate-900 rounded-xl p-8 border border-slate-200 dark:border-slate-700 shadow-lg">
                     <step.icon className="h-16 w-16 text-blue-600 mx-auto mb-4" />
                     <div className="text-center">
-                      <h4 className="font-semibold text-slate-900 dark:text-white mb-2">Step {step.number}</h4>
+                      <h4 className="font-semibold text-slate-900 dark:text-white mb-2">
+                        Step {step.number}
+                      </h4>
                       <p className="text-sm text-slate-600 dark:text-slate-400">{step.timeline}</p>
                     </div>
                   </div>
@@ -217,7 +231,10 @@ export default function HowItWorksPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {support.map((item, index) => (
-              <div key={index} className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200 text-center">
+              <div
+                key={index}
+                className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow duration-200 text-center"
+              >
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <item.icon className="h-6 w-6 text-blue-600" />
                 </div>
@@ -258,7 +275,9 @@ export default function HowItWorksPage() {
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <DollarSign className="h-8 w-8 text-yellow-300 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-2">Week 7+</h3>
-                <p className="text-sm text-blue-100">First deals close, commissions start flowing</p>
+                <p className="text-sm text-blue-100">
+                  First deals close, commissions start flowing
+                </p>
               </div>
             </div>
           </div>
@@ -273,11 +292,12 @@ export default function HowItWorksPage() {
               Ready to Start Step 1?
             </h2>
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-              The hardest part is making the decision. Everything else is just following our proven system.
+              The hardest part is making the decision. Everything else is just following our proven
+              system.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
@@ -287,16 +307,9 @@ export default function HowItWorksPage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button 
-                asChild
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg"
-              >
-                <Link href="/franchise/opportunity">
-                  Learn About the Opportunity
-                </Link>
+
+              <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg">
+                <Link href="/franchise/opportunity">Learn About the Opportunity</Link>
               </Button>
             </div>
           </div>

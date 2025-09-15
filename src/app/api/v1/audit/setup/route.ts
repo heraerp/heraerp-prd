@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * HERA Audit System Setup API
- * 
+ *
  * Handles initial configuration for new audit firms:
  * - Creates initial system configuration
  * - Sets up demo data and templates
@@ -32,7 +32,7 @@ const AUDIT_DOCUMENT_TEMPLATES = [
   },
   {
     name: 'Audit Planning Memorandum',
-    category: 'planning', 
+    category: 'planning',
     file_type: 'docx',
     description: 'Planning memo template'
   },
@@ -64,7 +64,7 @@ const AUDIT_DOCUMENT_TEMPLATES = [
     name: 'Audit Report Template',
     category: 'reporting',
     file_type: 'docx',
-    description: 'Independent auditor\'s report'
+    description: "Independent auditor's report"
   }
 ]
 
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       // Create demo data if requested
       if (setup_options?.create_demo_data) {
         console.log('📊 Creating demo data...')
-        
+
         const demoClients = [
           {
             id: `demo_client_1_${firm_id}`,
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
       // Setup document templates if requested
       if (setup_options?.setup_templates) {
         console.log('📄 Setting up document templates...')
-        
+
         setupResults.configurations.push({
           type: 'document_templates',
           items_created: AUDIT_DOCUMENT_TEMPLATES.length,
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
       // Configure workflows if requested
       if (setup_options?.configure_workflows) {
         console.log('⚙️ Configuring audit workflows...')
-        
+
         setupResults.configurations.push({
           type: 'audit_workflows',
           items_created: DEFAULT_WORKFLOWS.length,
@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
     // Create demo data only
     if (action === 'create_demo_data') {
       console.log('📊 Creating additional demo data...')
-      
+
       const demoEngagements = [
         {
           id: `demo_engagement_${firm_id}_001`,
@@ -238,7 +238,7 @@ export async function POST(request: NextRequest) {
     // Setup templates only
     if (action === 'setup_templates') {
       console.log('📄 Setting up audit templates...')
-      
+
       const templateSetup = {
         firm_id,
         templates_configured: AUDIT_DOCUMENT_TEMPLATES,
@@ -253,16 +253,12 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid setup action' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid setup action' }, { status: 400 })
   } catch (error) {
     console.error('❌ Audit setup error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         message: 'Setup failed',
         error: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -314,11 +310,7 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, message: 'Invalid request' },
-      { status: 400 }
-    )
-
+    return NextResponse.json({ success: false, message: 'Invalid request' }, { status: 400 })
   } catch (error) {
     console.error('❌ Setup status error:', error)
     return NextResponse.json(

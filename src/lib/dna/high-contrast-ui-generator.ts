@@ -80,7 +80,7 @@ export function generateStatsCard(config: {
   changeLogic?: (value: number) => string
 }) {
   const gradient = config.gradient || HERA_HIGH_CONTRAST_SCHEME.accents.primaryGradient
-  
+
   return `
 <Card className="${HERA_HIGH_CONTRAST_SCHEME.backgrounds.card} border ${HERA_HIGH_CONTRAST_SCHEME.borders.primary} shadow-sm hover:shadow-md transition-shadow">
   <CardHeader className="pb-2">
@@ -135,12 +135,16 @@ export function generateSidebar(config: {
   {/* Logo */}
   <div className="flex items-center justify-between h-16 px-6 border-b ${HERA_HIGH_CONTRAST_SCHEME.borders.sidebar}">
     <div className="flex items-center space-x-3">
-      ${config.logoIcon ? `
+      ${
+        config.logoIcon
+          ? `
       <div className="relative">
         <div className="w-10 h-10 bg-gradient-to-br ${HERA_HIGH_CONTRAST_SCHEME.accents.primaryGradient} rounded-full flex items-center justify-center shadow-lg">
           <${config.logoIcon} className="w-6 h-6 text-white" />
         </div>
-      </div>` : ''}
+      </div>`
+          : ''
+      }
       <div>
         <h2 className="text-lg font-bold ${HERA_HIGH_CONTRAST_SCHEME.text.sidebarPrimary}">
           ${config.appName}

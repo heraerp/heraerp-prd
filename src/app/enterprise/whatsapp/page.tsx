@@ -11,12 +11,12 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Search, 
-  Send, 
-  MoreVertical, 
-  Phone, 
-  Video, 
+import {
+  Search,
+  Send,
+  MoreVertical,
+  Phone,
+  Video,
   Paperclip,
   Smile,
   Check,
@@ -91,37 +91,38 @@ export default function EnterpriseWhatsApp() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [statusHistoryOpen, setStatusHistoryOpen] = useState(false)
   const [selectedMessageForStatus, setSelectedMessageForStatus] = useState<Message | null>(null)
-  
+
   // Fetch conversations
   const fetchConversations = async () => {
     try {
       const response = await fetch('/api/v1/whatsapp/messages-simple')
       const result = await response.json()
-      
+
       if (result.status === 'success') {
         // Extract unique conversations with metadata
         const convMap = new Map<string, Conversation>()
-        
+
         result.data.conversationsWithMessages.forEach((item: any) => {
           const conv = item.conversation
           // Calculate unread count and last activity
-          const unreadCount = item.messages.filter((m: Message) => 
-            m.direction === 'inbound' && (m.metadata as any)?.status !== 'read'
+          const unreadCount = item.messages.filter(
+            (m: Message) => m.direction === 'inbound' && (m.metadata as any)?.status !== 'read'
           ).length
-          
+
           conv.metadata = {
             ...conv.metadata,
             unread_count: unreadCount,
             last_activity: item.lastMessage?.occurred_at || conv.created_at
           }
-          
+
           convMap.set(conv.id, conv)
         })
-        
-        setConversations(Array.from(convMap.values())
-          .sort((a, b) => 
-            new Date(b.metadata.last_activity || b.created_at).getTime() - 
-            new Date(a.metadata.last_activity || a.created_at).getTime()
+
+        setConversations(
+          Array.from(convMap.values()).sort(
+            (a, b) =>
+              new Date(b.metadata.last_activity || b.created_at).getTime() -
+              new Date(a.metadata.last_activity || a.created_at).getTime()
           )
         )
       }
@@ -129,22 +130,25 @@ export default function EnterpriseWhatsApp() {
       console.error('Error fetching conversations:', error)
     }
   }
-  
+
   // Fetch messages for selected conversation
   const fetchMessages = async (conversationId: string) => {
     try {
       setLoading(true)
       const response = await fetch('/api/v1/whatsapp/messages-simple')
       const result = await response.json()
-      
+
       if (result.status === 'success') {
         const convData = result.data.conversationsWithMessages.find(
           (c: any) => c.conversation.id === conversationId
         )
         if (convData) {
-          setMessages(convData.messages.sort((a: Message, b: Message) => 
-            new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime()
-          ))
+          setMessages(
+            convData.messages.sort(
+              (a: Message, b: Message) =>
+                new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime()
+            )
+          )
         }
       }
     } catch (error) {
@@ -153,28 +157,30 @@ export default function EnterpriseWhatsApp() {
       setLoading(false)
     }
   }
-  
+
   // Send message
   const sendMessage = async () => {
     if (!messageText.trim() || !selectedConversation) return
-    
+
     try {
       setSending(true)
-      
+
       // Check 24-hour window
       const lastInboundMessage = messages
         .filter(m => m.direction === 'inbound')
         .sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime())[0]
-      
-      const hoursSinceLastInbound = lastInboundMessage 
+
+      const hoursSinceLastInbound = lastInboundMessage
         ? differenceInHoursSafe(new Date(), new Date(lastInboundMessage.occurred_at))
         : 25
-      
+
       if (hoursSinceLastInbound > 24) {
-        alert('Cannot send message: Outside 24-hour customer service window. Use a template message instead.')
+        alert(
+          'Cannot send message: Outside 24-hour customer service window. Use a template message instead.'
+        )
         return
       }
-      
+
       // In production, this would call the actual WhatsApp API
       // For now, we'll create a local message
       const response = await fetch('/api/v1/whatsapp/send', {
@@ -186,7 +192,7 @@ export default function EnterpriseWhatsApp() {
           to: selectedConversation.metadata.phone
         })
       })
-      
+
       if (response.ok) {
         setMessageText('')
         // Refresh messages
@@ -199,16 +205,16 @@ export default function EnterpriseWhatsApp() {
       setSending(false)
     }
   }
-  
+
   // Initial load
   useEffect(() => {
     fetchConversations()
   }, [])
-  
+
   // Auto-refresh
   useEffect(() => {
     if (!autoRefresh) return
-    
+
     const interval = setInterval(() => {
       // Only fetch data, don't trigger any page reloads
       const fetchInBackground = async () => {
@@ -217,40 +223,40 @@ export default function EnterpriseWhatsApp() {
           // Fetch conversations without showing loading state
           const convResponse = await fetch('/api/v1/whatsapp/messages-simple')
           const convResult = await convResponse.json()
-          
+
           if (convResult.status === 'success') {
             // Update conversations without triggering re-renders unless data changed
             const convMap = new Map<string, Conversation>()
-            
+
             convResult.data.conversationsWithMessages.forEach((item: any) => {
               const conv = item.conversation
-              const unreadCount = item.messages.filter((m: Message) => 
-                m.direction === 'inbound' && (m.metadata as any)?.status !== 'read'
+              const unreadCount = item.messages.filter(
+                (m: Message) => m.direction === 'inbound' && (m.metadata as any)?.status !== 'read'
               ).length
-              
+
               conv.metadata = {
                 ...conv.metadata,
                 unread_count: unreadCount,
                 last_activity: item.lastMessage?.occurred_at || conv.created_at
               }
-              
+
               convMap.set(conv.id, conv)
             })
-            
+
             setConversations(prev => {
-              const newConvs = Array.from(convMap.values())
-                .sort((a, b) => 
-                  new Date(b.metadata.last_activity || b.created_at).getTime() - 
+              const newConvs = Array.from(convMap.values()).sort(
+                (a, b) =>
+                  new Date(b.metadata.last_activity || b.created_at).getTime() -
                   new Date(a.metadata.last_activity || a.created_at).getTime()
-                )
-              
+              )
+
               // Only update if data actually changed
               if (JSON.stringify(prev) !== JSON.stringify(newConvs)) {
                 return newConvs
               }
               return prev
             })
-            
+
             // Update messages for selected conversation
             if (selectedConversation) {
               const convData = convResult.data.conversationsWithMessages.find(
@@ -258,10 +264,11 @@ export default function EnterpriseWhatsApp() {
               )
               if (convData) {
                 setMessages(prev => {
-                  const newMessages = convData.messages.sort((a: Message, b: Message) => 
-                    new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime()
+                  const newMessages = convData.messages.sort(
+                    (a: Message, b: Message) =>
+                      new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime()
                   )
-                  
+
                   // Only update if messages changed
                   if (JSON.stringify(prev) !== JSON.stringify(newMessages)) {
                     // Check if there are new messages
@@ -282,18 +289,18 @@ export default function EnterpriseWhatsApp() {
           setIsRefreshing(false)
         }
       }
-      
+
       fetchInBackground()
     }, 5000)
-    
+
     return () => clearInterval(interval)
   }, [autoRefresh, selectedConversation?.id])
-  
+
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-  
+
   // Filter conversations
   const filteredConversations = conversations.filter(conv => {
     // Search filter
@@ -305,7 +312,7 @@ export default function EnterpriseWhatsApp() {
         conv.entity_code.toLowerCase().includes(query)
       )
     }
-    
+
     // Status filter
     switch (filter) {
       case 'unread':
@@ -318,7 +325,7 @@ export default function EnterpriseWhatsApp() {
         return true
     }
   })
-  
+
   // Format timestamp
   const formatMessageTime = (timestamp: string) => {
     const date = new Date(timestamp)
@@ -329,7 +336,7 @@ export default function EnterpriseWhatsApp() {
     }
     return formatDate(date, 'dd/MM/yyyy HH:mm')
   }
-  
+
   // Format last seen
   const formatLastSeen = (timestamp: string) => {
     const date = new Date(timestamp)
@@ -340,7 +347,7 @@ export default function EnterpriseWhatsApp() {
     }
     return formatDate(date, 'dd MMM yyyy')
   }
-  
+
   // Message status icon
   const MessageStatus = ({ status, onClick }: { status?: string; onClick?: () => void }) => {
     const content = (() => {
@@ -382,7 +389,7 @@ export default function EnterpriseWhatsApp() {
           )
       }
     })()
-    
+
     return onClick ? (
       <button
         onClick={onClick}
@@ -394,7 +401,7 @@ export default function EnterpriseWhatsApp() {
       content
     )
   }
-  
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       {/* Sidebar - Conversations List */}
@@ -414,26 +421,28 @@ export default function EnterpriseWhatsApp() {
                 onClick={() => setAutoRefresh(!autoRefresh)}
                 title={autoRefresh ? 'Disable auto-refresh' : 'Enable auto-refresh'}
               >
-                <RefreshCw className={cn(
-                  "w-4 h-4",
-                  autoRefresh && "text-green-600 dark:text-green-400",
-                  isRefreshing && "animate-spin"
-                )} />
+                <RefreshCw
+                  className={cn(
+                    'w-4 h-4',
+                    autoRefresh && 'text-green-600 dark:text-green-400',
+                    isRefreshing && 'animate-spin'
+                  )}
+                />
               </Button>
             </div>
           </div>
-          
+
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Search conversations..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-9"
             />
           </div>
-          
+
           {/* Filters */}
           <div className="flex gap-2 mt-3">
             <Button
@@ -468,10 +477,10 @@ export default function EnterpriseWhatsApp() {
             </Button>
           </div>
         </div>
-        
+
         {/* Conversations List */}
         <ScrollArea className="h-[calc(100vh-180px)]">
-          {filteredConversations.map((conv) => (
+          {filteredConversations.map(conv => (
             <div
               key={conv.id}
               onClick={() => {
@@ -479,18 +488,24 @@ export default function EnterpriseWhatsApp() {
                 fetchMessages(conv.id)
               }}
               className={cn(
-                "p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50",
-                selectedConversation?.id === conv.id && "bg-gray-100 dark:bg-gray-700"
+                'p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50',
+                selectedConversation?.id === conv.id && 'bg-gray-100 dark:bg-gray-700'
               )}
             >
               <div className="flex items-start gap-3">
                 <Avatar className="w-12 h-12">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${conv.metadata.phone}`} />
+                  <AvatarImage
+                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${conv.metadata.phone}`}
+                  />
                   <AvatarFallback>
-                    {conv.entity_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    {conv.entity_name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <h3 className="font-medium truncate">{conv.entity_name}</h3>
@@ -498,7 +513,7 @@ export default function EnterpriseWhatsApp() {
                       {formatLastSeen(conv.metadata.last_activity || conv.created_at)}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
                       {conv.metadata.phone}
@@ -510,9 +525,7 @@ export default function EnterpriseWhatsApp() {
                         <Bot className="w-4 h-4 text-green-500" />
                       )}
                       {(conv.metadata.unread_count || 0) > 0 && (
-                        <Badge className="text-xs px-2 py-0">
-                          {conv.metadata.unread_count}
-                        </Badge>
+                        <Badge className="text-xs px-2 py-0">{conv.metadata.unread_count}</Badge>
                       )}
                     </div>
                   </div>
@@ -522,7 +535,7 @@ export default function EnterpriseWhatsApp() {
           ))}
         </ScrollArea>
       </div>
-      
+
       {/* Main Chat Area */}
       {selectedConversation ? (
         <div className="flex-1 flex flex-col">
@@ -531,9 +544,15 @@ export default function EnterpriseWhatsApp() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${selectedConversation.metadata.phone}`} />
+                  <AvatarImage
+                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${selectedConversation.metadata.phone}`}
+                  />
                   <AvatarFallback>
-                    {selectedConversation.entity_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    {selectedConversation.entity_name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -543,16 +562,16 @@ export default function EnterpriseWhatsApp() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="icon"
                   onClick={() => fetchMessages(selectedConversation.id)}
                   disabled={loading}
                   title="Refresh messages"
                 >
-                  <RefreshCw className={cn("w-5 h-5", loading && "animate-spin")} />
+                  <RefreshCw className={cn('w-5 h-5', loading && 'animate-spin')} />
                 </Button>
                 <Button variant="ghost" size="icon">
                   <Phone className="w-5 h-5" />
@@ -566,7 +585,7 @@ export default function EnterpriseWhatsApp() {
               </div>
             </div>
           </div>
-          
+
           {/* Messages Area */}
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
@@ -580,20 +599,20 @@ export default function EnterpriseWhatsApp() {
                   <p className="text-gray-500">No messages yet</p>
                 </div>
               ) : (
-                messages.map((message) => (
+                messages.map(message => (
                   <div
                     key={message.id}
                     className={cn(
-                      "flex",
-                      message.direction === 'inbound' ? "justify-start" : "justify-end"
+                      'flex',
+                      message.direction === 'inbound' ? 'justify-start' : 'justify-end'
                     )}
                   >
                     <div
                       className={cn(
-                        "max-w-[70%] rounded-lg px-4 py-2",
+                        'max-w-[70%] rounded-lg px-4 py-2',
                         message.direction === 'inbound'
-                          ? "bg-gray-200 dark:bg-gray-700"
-                          : "bg-green-500 text-white"
+                          ? 'bg-gray-200 dark:bg-gray-700'
+                          : 'bg-green-500 text-white'
                       )}
                     >
                       <p className="text-sm">{message.text}</p>
@@ -602,7 +621,7 @@ export default function EnterpriseWhatsApp() {
                           {formatMessageTime(message.occurred_at)}
                         </span>
                         {message.direction === 'outbound' && (
-                          <MessageStatus 
+                          <MessageStatus
                             status={(message.metadata as any)?.status}
                             onClick={() => {
                               setSelectedMessageForStatus(message)
@@ -618,7 +637,7 @@ export default function EnterpriseWhatsApp() {
               <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
-          
+
           {/* Message Input */}
           <div className="bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-end gap-2">
@@ -629,8 +648,8 @@ export default function EnterpriseWhatsApp() {
                 <Textarea
                   placeholder="Type a message..."
                   value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                  onKeyDown={(e) => {
+                  onChange={e => setMessageText(e.target.value)}
+                  onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
                       sendMessage()
@@ -643,37 +662,36 @@ export default function EnterpriseWhatsApp() {
               <Button variant="ghost" size="icon">
                 <Smile className="w-5 h-5" />
               </Button>
-              <Button 
-                onClick={sendMessage} 
-                disabled={sending || !messageText.trim()}
-                size="icon"
-              >
+              <Button onClick={sendMessage} disabled={sending || !messageText.trim()} size="icon">
                 <Send className="w-5 h-5" />
               </Button>
             </div>
-            
+
             {/* 24-hour window warning */}
-            {messages.length > 0 && (() => {
-              const lastInbound = messages
-                .filter(m => m.direction === 'inbound')
-                .sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime())[0]
-              
-              const hours = lastInbound 
-                ? differenceInHoursSafe(new Date(), new Date(lastInbound.occurred_at))
-                : 25
-                
-              return hours > 20 && hours < 24 ? (
-                <div className="flex items-center gap-2 mt-2 text-xs text-orange-600 dark:text-orange-400">
-                  <AlertCircle className="w-3 h-3" />
-                  <span>24-hour window expires in {24 - hours} hours</span>
-                </div>
-              ) : hours >= 24 ? (
-                <div className="flex items-center gap-2 mt-2 text-xs text-red-600 dark:text-red-400">
-                  <AlertCircle className="w-3 h-3" />
-                  <span>Outside 24-hour window - use template messages only</span>
-                </div>
-              ) : null
-            })()}
+            {messages.length > 0 &&
+              (() => {
+                const lastInbound = messages
+                  .filter(m => m.direction === 'inbound')
+                  .sort(
+                    (a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime()
+                  )[0]
+
+                const hours = lastInbound
+                  ? differenceInHoursSafe(new Date(), new Date(lastInbound.occurred_at))
+                  : 25
+
+                return hours > 20 && hours < 24 ? (
+                  <div className="flex items-center gap-2 mt-2 text-xs text-orange-600 dark:text-orange-400">
+                    <AlertCircle className="w-3 h-3" />
+                    <span>24-hour window expires in {24 - hours} hours</span>
+                  </div>
+                ) : hours >= 24 ? (
+                  <div className="flex items-center gap-2 mt-2 text-xs text-red-600 dark:text-red-400">
+                    <AlertCircle className="w-3 h-3" />
+                    <span>Outside 24-hour window - use template messages only</span>
+                  </div>
+                ) : null
+              })()}
           </div>
         </div>
       ) : (
@@ -686,7 +704,7 @@ export default function EnterpriseWhatsApp() {
           </div>
         </div>
       )}
-      
+
       {/* Message Status History Dialog */}
       <MessageStatusHistory
         open={statusHistoryOpen}

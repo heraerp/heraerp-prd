@@ -17,31 +17,37 @@ The Universal Report Pattern (URP) is a revolutionary reporting system that prov
 ## The 6 URP Primitives
 
 ### 1. Entity Resolver (`HERA.URP.PRIMITIVE.ENTITY.RESOLVER.v1`)
+
 - Fetches entities with dynamic fields in one call
 - Handles entity type filtering and smart code matching
 - Automatic organization isolation
 
 ### 2. Hierarchy Builder (`HERA.URP.PRIMITIVE.HIERARCHY.BUILDER.v1`)
+
 - Constructs parent-child relationships
 - Supports multi-level hierarchies (accounts, BOM, org structure)
 - Handles circular reference detection
 
 ### 3. Transaction Facts (`HERA.URP.PRIMITIVE.TRANSACTION.FACTS.v1`)
+
 - Aggregates transaction data with line items
 - Time-based grouping (daily, monthly, yearly)
 - Smart code-based categorization
 
 ### 4. Dynamic Join (`HERA.URP.PRIMITIVE.DYNAMIC.JOIN.v1`)
+
 - Joins data across tables based on smart codes
 - Handles complex relationships without SQL
 - Performance optimized with indexes
 
 ### 5. Rollup & Balance (`HERA.URP.PRIMITIVE.ROLLUP.BALANCE.v1`)
+
 - Calculates running balances and cumulative totals
 - Handles opening/closing balances
 - Multi-currency support
 
 ### 6. Presentation Formatter (`HERA.URP.PRIMITIVE.PRESENTATION.FORMAT.v1`)
+
 - Formats data for specific output (JSON, Excel, PDF)
 - Applies business rules for display
 - Handles localization and currency formatting
@@ -49,6 +55,7 @@ The Universal Report Pattern (URP) is a revolutionary reporting system that prov
 ## Naming Conventions
 
 ### Smart Code Format
+
 ```
 HERA.URP.{CATEGORY}.{TYPE}.{SUBTYPE}.v{VERSION}
 
@@ -61,6 +68,7 @@ Categories:
 ```
 
 ### Recipe Naming
+
 ```
 HERA.URP.RECIPE.{DOMAIN}.{REPORT}.v1
 
@@ -72,6 +80,7 @@ Examples:
 ```
 
 ### View Naming
+
 ```
 urp_{domain}_{report}_v{version}
 
@@ -93,14 +102,11 @@ const reportEngine = new UniversalReportEngine({
 })
 
 // Execute a report recipe
-const chartOfAccounts = await reportEngine.executeRecipe(
-  'HERA.URP.RECIPE.FINANCE.COA.v1',
-  {
-    fiscalYear: 2024,
-    includeInactive: false,
-    hierarchyDepth: 4
-  }
-)
+const chartOfAccounts = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.v1', {
+  fiscalYear: 2024,
+  includeInactive: false,
+  hierarchyDepth: 4
+})
 
 // Use individual primitives
 const entities = await reportEngine.entityResolver.resolve({

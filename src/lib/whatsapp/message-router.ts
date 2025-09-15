@@ -154,10 +154,7 @@ export class WhatsAppMessageRouter {
   /**
    * Handle messages outside 24h window (template required)
    */
-  private async handleClosedWindow(
-    ctx: MessageContext,
-    intent: any
-  ): Promise<RouteResult> {
+  private async handleClosedWindow(ctx: MessageContext, intent: any): Promise<RouteResult> {
     const { organizationId, waContactId } = ctx
 
     // Get template decision from Universal AI
@@ -240,10 +237,7 @@ export class WhatsAppMessageRouter {
   /**
    * Process booking completion
    */
-  async completeBooking(
-    customerId: string,
-    appointmentData: any
-  ): Promise<string> {
+  async completeBooking(customerId: string, appointmentData: any): Promise<string> {
     // Book the slot
     const bookResult = await this.mcp.bookSlot({
       organization_id: this.organizationId,
@@ -265,10 +259,10 @@ export class WhatsAppMessageRouter {
 
 📋 Booking ID: ${confirmation_code}
 📅 Date: ${new Date(appointmentData.slot.start).toLocaleDateString()}
-⏰ Time: ${new Date(appointmentData.slot.start).toLocaleTimeString('en-US', { 
-  hour: 'numeric', 
-  minute: '2-digit' 
-})}
+⏰ Time: ${new Date(appointmentData.slot.start).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    })}
 
 📎 Add to Calendar: ${ics_url}
 

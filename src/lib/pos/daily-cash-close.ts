@@ -1,7 +1,7 @@
 /**
  * HERA POS Daily Cash Close Implementation
  * Smart Code: HERA.POS.DAILY.CASH.CLOSE.IMPL.v1
- * 
+ *
  * Complete POS daily cash close with card authorization capture
  * using only HERA's six sacred tables
  */
@@ -91,13 +91,10 @@ interface CardBatchData {
 /**
  * Open a new shift
  */
-export async function openShift(
-  organizationId: string,
-  data: ShiftOpenData
-): Promise<string> {
+export async function openShift(organizationId: string, data: ShiftOpenData): Promise<string> {
   const now = new Date()
   const shiftCode = `SHIFT-${now.toISOString().split('T')[0]}-${Date.now().toString().slice(-4)}`
-  
+
   // Create shift entity
   const shiftEntity = await universalApi.createEntity({
     entity_type: 'shift',
@@ -106,7 +103,7 @@ export async function openShift(
     smart_code: 'HERA.POS.SHIFT.DAILY.v1',
     organization_id: organizationId
   })
-  
+
   // Create shift open transaction
   const shiftTransaction = await universalApi.createTransaction({
     transaction_type: 'SHIFT_OPEN',
@@ -134,7 +131,7 @@ export async function openShift(
       opened_at: now.toISOString()
     }
   })
-  
+
   // Create relationship: shift -> register
   await universalApi.createRelationship({
     from_entity_id: shiftEntity.id,
@@ -143,7 +140,7 @@ export async function openShift(
     smart_code: 'HERA.POS.REL.SHIFT.REGISTER.v1',
     organization_id: organizationId
   })
-  
+
   // Create relationship: shift -> operator
   await universalApi.createRelationship({
     from_entity_id: shiftEntity.id,
@@ -152,7 +149,7 @@ export async function openShift(
     smart_code: 'HERA.POS.REL.SHIFT.OPERATOR.v1',
     organization_id: organizationId
   })
-  
+
   return shiftCode
 }
 
@@ -170,14 +167,15 @@ export async function processSale(
   const now = new Date()
   const receiptNumber = `RCP-${now.toISOString().split('T')[0]}-${Date.now().toString().slice(-6)}`
   const paymentIntentIds: string[] = []
-  
+
   // Calculate totals
-  const subtotal = data.items.reduce((sum, item) => 
-    sum + (item.unitPrice * item.quantity - (item.discount || 0)), 0
+  const subtotal = data.items.reduce(
+    (sum, item) => sum + (item.unitPrice * item.quantity - (item.discount || 0)),
+    0
   )
   const taxAmount = subtotal * (data.taxRate / 100)
   const totalAmount = subtotal + taxAmount
-  
+
   // Create sale transaction
   const saleTransaction = await universalApi.createTransaction({
     transaction_type: 'POS_SALE',
@@ -206,10 +204,10 @@ export async function processSale(
       items_count: data.items.length
     }
   })
-  
+
   // Create transaction lines
   let lineNumber = 1
-  
+
   // Item lines
   for (const item of data.items) {
     await universalApi.createTransactionLine({
@@ -228,7 +226,7 @@ export async function processSale(
         category: 'products'
       }
     })
-    
+
     // Discount line if applicable
     if (item.discount && item.discount > 0) {
       await universalApi.createTransactionLine({
@@ -248,7 +246,7 @@ export async function processSale(
       })
     }
   }
-  
+
   // Tax line
   if (taxAmount > 0) {
     await universalApi.createTransactionLine({
@@ -268,7 +266,7 @@ export async function processSale(
       }
     })
   }
-  
+
   // Payment lines
   for (const payment of data.payments) {
     const paymentLine = await universalApi.createTransactionLine({
@@ -286,11 +284,11 @@ export async function processSale(
         ...(payment.cardDetails || {})
       }
     })
-    
+
     // Create payment intent for card payments
     if (payment.method === 'card' && payment.cardDetails) {
       const paymentIntentCode = `PI-${now.toISOString().split('T')[0]}-${Date.now().toString().slice(-6)}`
-      
+
       const paymentIntent = await universalApi.createEntity({
         entity_type: 'payment_intent',
         entity_name: `Card Auth ${paymentIntentCode}`,
@@ -298,7 +296,7 @@ export async function processSale(
         smart_code: 'HERA.POS.PAYMENT.INTENT.CARD.v1',
         organization_id: organizationId
       })
-      
+
       // Store authorization details
       await universalApi.setDynamicField(
         paymentIntent.id,
@@ -306,14 +304,14 @@ export async function processSale(
         'authorized',
         'HERA.POS.DYN.PAYMENT.STATUS.v1'
       )
-      
+
       await universalApi.setDynamicField(
         paymentIntent.id,
         'auth_id',
         payment.cardDetails.authorizationId,
         'HERA.POS.DYN.AUTH.ID.v1'
       )
-      
+
       // Link sale to payment intent
       await universalApi.createRelationship({
         from_entity_id: saleTransaction.id,
@@ -322,11 +320,11 @@ export async function processSale(
         smart_code: 'HERA.POS.REL.SALE.PAYMENT.v1',
         organization_id: organizationId
       })
-      
+
       paymentIntentIds.push(paymentIntent.id)
     }
   }
-  
+
   // Handle change if overpayment
   const totalPaid = data.payments.reduce((sum, p) => sum + p.amount, 0)
   if (totalPaid > totalAmount) {
@@ -342,7 +340,7 @@ export async function processSale(
       smart_code: 'HERA.POS.SALE.LINE.CHANGE.v1'
     })
   }
-  
+
   return {
     receiptNumber,
     transactionId: saleTransaction.id,
@@ -359,7 +357,7 @@ export async function processCashMovement(
 ): Promise<string> {
   const now = new Date()
   const movementCode = `CASH-${now.toISOString().split('T')[0]}-${data.movementType.toUpperCase()}-${Date.now().toString().slice(-4)}`
-  
+
   const cashMovement = await universalApi.createTransaction({
     transaction_type: 'CASH_MOVEMENT',
     transaction_code: movementCode,
@@ -385,7 +383,7 @@ export async function processCashMovement(
       witness: data.witness
     }
   })
-  
+
   return movementCode
 }
 
@@ -402,19 +400,19 @@ export async function closeShift(
 }> {
   const now = new Date()
   const closeCode = `SHF-CLOSE-${now.toISOString().split('T')[0]}-${Date.now().toString().slice(-4)}`
-  
+
   // Calculate expected cash
   const { expectedCash, cashSales, drops, pickups, openingFloat } = await calculateExpectedCash(
     organizationId,
     data.shiftId
   )
-  
+
   const variance = data.cashCounted - expectedCash
   const varianceType = variance > 0 ? 'over' : variance < 0 ? 'short' : 'balanced'
-  
+
   // Get shift totals
   const shiftTotals = await getShiftTotals(organizationId, data.shiftId)
-  
+
   // Create shift close transaction
   const closeTransaction = await universalApi.createTransaction({
     transaction_type: 'SHIFT_CLOSE',
@@ -445,10 +443,10 @@ export async function closeShift(
       closed_at: now.toISOString()
     }
   })
-  
+
   // Create transaction lines
   let lineNumber = 1
-  
+
   // Expected cash line
   await universalApi.createTransactionLine({
     transaction_id: closeTransaction.id,
@@ -468,7 +466,7 @@ export async function closeShift(
       pickups: pickups
     }
   })
-  
+
   // Counted cash line
   await universalApi.createTransactionLine({
     transaction_id: closeTransaction.id,
@@ -486,7 +484,7 @@ export async function closeShift(
       verified_by: data.verifiedBy
     }
   })
-  
+
   // Variance line if not balanced
   if (variance !== 0) {
     await universalApi.createTransactionLine({
@@ -501,13 +499,13 @@ export async function closeShift(
       smart_code: variance > 0 ? 'HERA.POS.SHIFT.LINE.OVER.v1' : 'HERA.POS.SHIFT.LINE.SHORT.v1',
       line_data: {
         variance_type: varianceType,
-        variance_percentage: (Math.abs(variance) / expectedCash * 100).toFixed(2),
+        variance_percentage: ((Math.abs(variance) / expectedCash) * 100).toFixed(2),
         within_tolerance: Math.abs(variance) <= 50,
-        tolerance_limit: 50.00
+        tolerance_limit: 50.0
       }
     })
   }
-  
+
   return {
     variance,
     varianceType,
@@ -529,11 +527,11 @@ export async function createCardBatch(
 }> {
   const now = new Date()
   const batchId = `BATCH-${now.toISOString().split('T')[0]}-${data.acquirer}-${Date.now().toString().slice(-4)}`
-  
+
   // Get all authorizations for this batch
   const authorizations = await getAuthorizationsByIds(organizationId, data.authorizationIds)
   const totalAmount = authorizations.reduce((sum, auth) => sum + auth.amount, 0)
-  
+
   // Create batch transaction
   const batchTransaction = await universalApi.createTransaction({
     transaction_type: 'CARD_BATCH',
@@ -565,7 +563,7 @@ export async function createCardBatch(
       currency: 'AED'
     }
   })
-  
+
   // Link batch to payment intents
   for (const auth of authorizations) {
     await universalApi.createRelationship({
@@ -575,7 +573,7 @@ export async function createCardBatch(
       smart_code: 'HERA.POS.REL.BATCH.AUTH.v1',
       organization_id: organizationId
     })
-    
+
     // Update payment intent status
     await universalApi.setDynamicField(
       auth.paymentIntentId,
@@ -584,7 +582,7 @@ export async function createCardBatch(
       'HERA.POS.DYN.PAYMENT.STATUS.v1'
     )
   }
-  
+
   return {
     batchId,
     transactionId: batchTransaction.id,
@@ -613,14 +611,18 @@ export async function runEndOfDay(
     if (openShifts.length > 0) {
       throw new Error('Cannot run EOD with open shifts')
     }
-    
+
     // 2. Get all unsettled card authorizations
-    const unsettledAuths = await getUnsettledAuthorizations(organizationId, registerId, businessDate)
-    
+    const unsettledAuths = await getUnsettledAuthorizations(
+      organizationId,
+      registerId,
+      businessDate
+    )
+
     // 3. Group by acquirer and create batches
     const authsByAcquirer = groupAuthorizationsByAcquirer(unsettledAuths)
     const batchResults = []
-    
+
     for (const [acquirer, auths] of Object.entries(authsByAcquirer)) {
       const batch = await createCardBatch(organizationId, {
         registerId,
@@ -632,10 +634,10 @@ export async function runEndOfDay(
       })
       batchResults.push(batch)
     }
-    
+
     // 4. Calculate EOD totals
     const eodTotals = await calculateEODTotals(organizationId, registerId, businessDate)
-    
+
     // 5. Create EOD settlement transaction
     const eodTransaction = await universalApi.createTransaction({
       transaction_type: 'EOD_SETTLEMENT',
@@ -663,13 +665,18 @@ export async function runEndOfDay(
         reports: ['z_report', 'vat_summary', 'payment_summary']
       }
     })
-    
+
     // 6. Create EOD summary lines
     await createEODSummaryLines(eodTransaction.id, organizationId, eodTotals)
-    
+
     // 7. Generate Z Report
-    const zReport = await generateZReport(organizationId, registerId, businessDate, eodTransaction.id)
-    
+    const zReport = await generateZReport(
+      organizationId,
+      registerId,
+      businessDate,
+      eodTransaction.id
+    )
+
     // 8. Update register status
     await universalApi.setDynamicField(
       registerId,
@@ -677,14 +684,14 @@ export async function runEndOfDay(
       businessDate.toISOString(),
       'HERA.POS.DYN.REGISTER.EOD.DATE.v1'
     )
-    
+
     await universalApi.setDynamicField(
       registerId,
       'eod_status',
       'completed',
       'HERA.POS.DYN.REGISTER.EOD.STATUS.v1'
     )
-    
+
     return {
       success: true,
       eodTransactionId: eodTransaction.id,
@@ -692,7 +699,6 @@ export async function runEndOfDay(
       cashFinal: eodTotals.cashFinal,
       cardBatches: batchResults.length
     }
-    
   } catch (error) {
     // Log error
     await universalApi.createTransaction({
@@ -732,11 +738,11 @@ async function calculateExpectedCash(
   // Implementation would query the database using universalApi
   // For now, returning mock data
   return {
-    expectedCash: 2480.00,
-    cashSales: 3200.00,
-    drops: 1220.00,
+    expectedCash: 2480.0,
+    cashSales: 3200.0,
+    drops: 1220.0,
     pickups: 0,
-    openingFloat: 500.00
+    openingFloat: 500.0
   }
 }
 
@@ -752,22 +758,24 @@ async function getShiftTotals(
   return {
     salesCount: 42,
     voidCount: 2,
-    totalSales: 12500.00
+    totalSales: 12500.0
   }
 }
 
 async function getAuthorizationsByIds(
   organizationId: string,
   authIds: string[]
-): Promise<Array<{
-  paymentIntentId: string
-  amount: number
-  authId: string
-}>> {
+): Promise<
+  Array<{
+    paymentIntentId: string
+    amount: number
+    authId: string
+  }>
+> {
   // Implementation would query the database
   return authIds.map(id => ({
     paymentIntentId: id,
-    amount: 100.00,
+    amount: 100.0,
     authId: `AUTH-${id}`
   }))
 }
@@ -785,11 +793,13 @@ async function getUnsettledAuthorizations(
   organizationId: string,
   registerId: string,
   businessDate: Date
-): Promise<Array<{
-  id: string
-  amount: number
-  acquirer: string
-}>> {
+): Promise<
+  Array<{
+    id: string
+    amount: number
+    acquirer: string
+  }>
+> {
   // Implementation would query for unsettled card authorizations
   return []
 }
@@ -838,9 +848,9 @@ async function calculateEODTotals(
 }> {
   // Implementation would calculate from database
   return {
-    totalSales: 12500.00,
+    totalSales: 12500.0,
     totalVAT: 595.24,
-    cashFinal: 2500.00,
+    cashFinal: 2500.0,
     shiftCount: 2,
     transactionCount: 142
   }
@@ -871,7 +881,7 @@ async function createEODSummaryLines(
       smart_code: 'HERA.POS.EOD.LINE.PAYMENT.CASH.v1'
     }
   ]
-  
+
   for (let i = 0; i < lines.length; i++) {
     await universalApi.createTransactionLine({
       transaction_id: transactionId,
@@ -899,56 +909,56 @@ async function generateZReport(
     business_date: businessDate.toISOString().split('T')[0],
     generated_at: new Date().toISOString(),
     eod_transaction_id: eodTransactionId,
-    
+
     sales: {
-      gross_sales: 12500.00,
-      net_sales: 11900.00,
+      gross_sales: 12500.0,
+      net_sales: 11900.0,
       transaction_count: 142,
       average_ticket: 88.03,
       void_count: 3,
       refund_count: 2
     },
-    
+
     payments: {
-      cash: 3200.00,
-      card: 8700.00,
-      digital_wallet: 600.00,
-      total: 12500.00
+      cash: 3200.0,
+      card: 8700.0,
+      digital_wallet: 600.0,
+      total: 12500.0
     },
-    
+
     tax: {
       vat_collected: 595.24,
       taxable_sales: 11904.76,
-      exempt_sales: 0.00
+      exempt_sales: 0.0
     },
-    
+
     cash: {
-      opening_balance: 500.00,
-      cash_sales: 3200.00,
-      drops: 1220.00,
-      pickups: 0.00,
-      expected_closing: 2480.00,
-      actual_closing: 2500.00,
-      variance: 20.00
+      opening_balance: 500.0,
+      cash_sales: 3200.0,
+      drops: 1220.0,
+      pickups: 0.0,
+      expected_closing: 2480.0,
+      actual_closing: 2500.0,
+      variance: 20.0
     },
-    
+
     card_batches: [
       {
         acquirer: 'Network International',
         batch_id: 'BATCH-NETWORK-20250115-001',
         auth_count: 62,
-        total_amount: 8700.00,
+        total_amount: 8700.0,
         status: 'submitted'
       }
     ],
-    
+
     staff: {
       operators: ['STAFF-001', 'STAFF-002'],
       shifts: 2,
-      average_sales_per_operator: 6250.00
+      average_sales_per_operator: 6250.0
     }
   }
-  
+
   // Store Z Report as entity
   await universalApi.createEntity({
     entity_type: 'report',
@@ -958,7 +968,7 @@ async function generateZReport(
     organization_id: organizationId,
     metadata: report
   })
-  
+
   return report
 }
 

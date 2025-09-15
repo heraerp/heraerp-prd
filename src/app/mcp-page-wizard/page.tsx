@@ -19,10 +19,25 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Code, Wand2, Copy, Download, CheckCircle, AlertTriangle,
-  ArrowRight, Sparkles, FileCode, Zap, Play, ArrowLeft,
-  Database, RefreshCw, GitBranch, Package, Loader2, Save
+import {
+  Code,
+  Wand2,
+  Copy,
+  Download,
+  CheckCircle,
+  AlertTriangle,
+  ArrowRight,
+  Sparkles,
+  FileCode,
+  Zap,
+  Play,
+  ArrowLeft,
+  Database,
+  RefreshCw,
+  GitBranch,
+  Package,
+  Loader2,
+  Save
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -52,7 +67,7 @@ export default function MCPPageWizard() {
       const urlPath = pageUrl.replace(/^https?:\/\/[^\/]+/, '')
       const response = await fetch(`/api/fetch-page-content?path=${encodeURIComponent(urlPath)}`)
       const data = await response.json()
-      
+
       if (data.success && data.content) {
         setOriginalCode(data.content)
         return true
@@ -72,7 +87,7 @@ export default function MCPPageWizard() {
   const startConversion = async () => {
     setIsConverting(true)
     setProgress(0)
-    
+
     // If URL mode and no code yet, fetch it first
     if (inputMode === 'url' && !originalCode && pageUrl) {
       const success = await fetchPageContent()
@@ -81,7 +96,7 @@ export default function MCPPageWizard() {
         return
       }
     }
-    
+
     const steps: ConversionStep[] = [
       {
         id: 'analyze',
@@ -114,61 +129,61 @@ export default function MCPPageWizard() {
         status: 'pending'
       }
     ]
-    
+
     setConversionSteps(steps)
     processConversion(steps)
   }
 
   const processConversion = async (steps: ConversionStep[]) => {
     let converted = originalCode
-    
+
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i]
-      
+
       // Update step status
-      setConversionSteps(prev => prev.map(s => 
-        s.id === step.id ? { ...s, status: 'processing' } : s
-      ))
-      
+      setConversionSteps(prev =>
+        prev.map(s => (s.id === step.id ? { ...s, status: 'processing' } : s))
+      )
+
       // Simulate processing
       await new Promise(resolve => setTimeout(resolve, 1500))
-      
+
       // Perform conversion based on step
       switch (step.id) {
         case 'analyze':
           // Find hard-coded data patterns
           converted = analyzeHardcodedData(converted)
           break
-          
+
         case 'imports':
           // Add Universal API imports
           converted = addUniversalImports(converted)
           break
-          
+
         case 'state':
           // Convert to dynamic state
           converted = convertToDynamicState(converted)
           break
-          
+
         case 'api':
           // Add API connections
           converted = addAPIConnections(converted)
           break
-          
+
         case 'cleanup':
           // Clean up code
           converted = cleanupCode(converted)
           break
       }
-      
+
       // Update step status to completed
-      setConversionSteps(prev => prev.map(s => 
-        s.id === step.id ? { ...s, status: 'completed', code: converted } : s
-      ))
-      
+      setConversionSteps(prev =>
+        prev.map(s => (s.id === step.id ? { ...s, status: 'completed', code: converted } : s))
+      )
+
       setProgress(((i + 1) / steps.length) * 100)
     }
-    
+
     setConvertedCode(converted)
     setIsConverting(false)
   }
@@ -176,18 +191,15 @@ export default function MCPPageWizard() {
   const analyzeHardcodedData = (code: string): string => {
     // Mark hard-coded data sections
     let analyzed = code
-    
+
     // Find const declarations with demo data
-    analyzed = analyzed.replace(
-      /const\s+(\w+)\s*=\s*\[[\s\S]*?\]/g,
-      (match, varName) => {
-        if (match.includes('name:') || match.includes('email:') || match.includes('price:')) {
-          return `// TODO: Replace with API data\n// ${match}`
-        }
-        return match
+    analyzed = analyzed.replace(/const\s+(\w+)\s*=\s*\[[\s\S]*?\]/g, (match, varName) => {
+      if (match.includes('name:') || match.includes('email:') || match.includes('price:')) {
+        return `// TODO: Replace with API data\n// ${match}`
       }
-    )
-    
+      return match
+    })
+
     return analyzed
   }
 
@@ -198,17 +210,17 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 `
-    
+
     // Add imports after existing imports
     const importEndIndex = code.lastIndexOf('import')
     const nextLineIndex = code.indexOf('\n', importEndIndex)
-    
+
     return code.slice(0, nextLineIndex + 1) + '\n' + imports + code.slice(nextLineIndex + 1)
   }
 
   const convertToDynamicState = (code: string): string => {
     let converted = code
-    
+
     // Replace hard-coded demo data with state
     converted = converted.replace(
       /const\s+initialCustomers\s*=\s*\[[\s\S]*?\]/,
@@ -216,7 +228,7 @@ import { Loader2 } from 'lucide-react'
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)`
     )
-    
+
     // Replace other demo data arrays
     converted = converted.replace(
       /const\s+demoData\s*=\s*{[\s\S]*?}/,
@@ -231,13 +243,13 @@ import { Loader2 } from 'lucide-react'
     recentClients: []
   })`
     )
-    
+
     return converted
   }
 
   const addAPIConnections = (code: string): string => {
     let converted = code
-    
+
     // Add useEffect for data fetching
     const dataFetchingCode = `
   // Fetch data from Universal API
@@ -309,30 +321,31 @@ import { Loader2 } from 'lucide-react'
     fetchData()
   }, [])
 `
-    
+
     // Find the component function and add after the state declarations
     const componentMatch = converted.match(/export\s+default\s+function\s+\w+\s*\([^)]*\)\s*{/)
     if (componentMatch) {
       const insertIndex = converted.indexOf('{', componentMatch.index) + 1
       const nextStateIndex = converted.indexOf('useState', insertIndex)
-      const insertPoint = converted.indexOf('\n', converted.lastIndexOf('useState', nextStateIndex)) + 1
-      
+      const insertPoint =
+        converted.indexOf('\n', converted.lastIndexOf('useState', nextStateIndex)) + 1
+
       converted = converted.slice(0, insertPoint) + dataFetchingCode + converted.slice(insertPoint)
     }
-    
+
     return converted
   }
 
   const cleanupCode = (code: string): string => {
     let cleaned = code
-    
+
     // Remove test mode flags
     cleaned = cleaned.replace(/testMode/g, 'false')
     cleaned = cleaned.replace(/initialTestMode\s*=\s*true/g, 'initialTestMode = false')
-    
+
     // Remove demo data comments
     cleaned = cleaned.replace(/\/\/\s*Progressive Demo Data[\s\S]*?(?=\n\n)/g, '')
-    
+
     // Add loading states to render
     const renderLoadingCode = `
   if (isLoading) {
@@ -359,11 +372,15 @@ import { Loader2 } from 'lucide-react'
     )
   }
 `
-    
+
     // Insert loading states before main return
     const mainReturnIndex = cleaned.lastIndexOf('return (')
-    cleaned = cleaned.slice(0, mainReturnIndex) + renderLoadingCode + '\n\n  ' + cleaned.slice(mainReturnIndex)
-    
+    cleaned =
+      cleaned.slice(0, mainReturnIndex) +
+      renderLoadingCode +
+      '\n\n  ' +
+      cleaned.slice(mainReturnIndex)
+
     return cleaned
   }
 
@@ -385,26 +402,26 @@ import { Loader2 } from 'lucide-react'
 
   const saveToProduction = async () => {
     if (!convertedCode || !pageUrl) return
-    
+
     setIsSaving(true)
     setSaveSuccess(false)
-    
+
     try {
       const urlPath = pageUrl.replace(/^https?:\/\/[^\/]+/, '')
       const response = await fetch('/api/save-production-file', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           content: convertedCode,
           originalPath: urlPath,
           fileName: 'page.tsx'
-        }),
+        })
       })
-      
+
       const data = await response.json()
-      
+
       if (data.success) {
         setSaveSuccess(true)
         alert(`File saved successfully to: ${data.filePath}`)
@@ -436,7 +453,9 @@ import { Loader2 } from 'lucide-react'
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Page Production Wizard
                 </h1>
-                <p className="text-slate-700 font-medium">Convert Progressive Pages to Production-Ready Code</p>
+                <p className="text-slate-700 font-medium">
+                  Convert Progressive Pages to Production-Ready Code
+                </p>
               </div>
             </div>
             <Badge className="px-4 py-2 bg-purple-500/20 text-purple-800 border-purple-500/30">
@@ -480,7 +499,7 @@ import { Loader2 } from 'lucide-react'
                       Paste Code
                     </Button>
                   </div>
-                  
+
                   {inputMode === 'url' ? (
                     <div className="space-y-4">
                       <div>
@@ -489,7 +508,7 @@ import { Loader2 } from 'lucide-react'
                           id="page-url"
                           placeholder="e.g., https://heraerp.com/salon-progressive/customers"
                           value={pageUrl}
-                          onChange={(e) => setPageUrl(e.target.value)}
+                          onChange={e => setPageUrl(e.target.value)}
                           className="bg-white/50"
                         />
                         <p className="text-xs text-slate-600 mt-1">
@@ -501,21 +520,27 @@ import { Loader2 } from 'lucide-react'
                           <div className="flex flex-wrap gap-2">
                             <button
                               type="button"
-                              onClick={() => setPageUrl('https://heraerp.com/salon-progressive/customers')}
+                              onClick={() =>
+                                setPageUrl('https://heraerp.com/salon-progressive/customers')
+                              }
                               className="text-xs text-blue-600 hover:text-blue-800 underline"
                             >
                               Salon Customers
                             </button>
                             <button
                               type="button"
-                              onClick={() => setPageUrl('https://heraerp.com/restaurant-progressive/pos')}
+                              onClick={() =>
+                                setPageUrl('https://heraerp.com/restaurant-progressive/pos')
+                              }
                               className="text-xs text-blue-600 hover:text-blue-800 underline"
                             >
                               Restaurant POS
                             </button>
                             <button
                               type="button"
-                              onClick={() => setPageUrl('https://heraerp.com/jewelry-progressive/inventory')}
+                              onClick={() =>
+                                setPageUrl('https://heraerp.com/jewelry-progressive/inventory')
+                              }
                               className="text-xs text-blue-600 hover:text-blue-800 underline"
                             >
                               Jewelry Inventory
@@ -561,13 +586,13 @@ import { Loader2 } from 'lucide-react'
                         id="original-code"
                         placeholder="Paste your complete progressive page component code here..."
                         value={originalCode}
-                        onChange={(e) => setOriginalCode(e.target.value)}
+                        onChange={e => setOriginalCode(e.target.value)}
                         className="h-96 font-mono text-sm bg-white/80 border-slate-200 text-slate-800"
                       />
                     </div>
                   )}
                 </div>
-                
+
                 <Button
                   onClick={startConversion}
                   disabled={(!originalCode && !pageUrl) || isConverting}
@@ -599,9 +624,9 @@ import { Loader2 } from 'lucide-react'
                 </CardHeader>
                 <CardContent>
                   <Progress value={progress} className="mb-4" />
-                  
+
                   <div className="space-y-3">
-                    {conversionSteps.map((step) => (
+                    {conversionSteps.map(step => (
                       <div key={step.id} className="flex items-center gap-3">
                         <div className="flex-shrink-0">
                           {step.status === 'completed' && (
@@ -693,45 +718,57 @@ import { Loader2 } from 'lucide-react'
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                      <span className="text-slate-800">Added Universal API imports and authentication hooks</span>
+                      <span className="text-slate-800">
+                        Added Universal API imports and authentication hooks
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                      <span className="text-slate-800">Replaced hard-coded data with dynamic state management</span>
+                      <span className="text-slate-800">
+                        Replaced hard-coded data with dynamic state management
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                      <span className="text-slate-800">Added API calls to fetch real data from Supabase</span>
+                      <span className="text-slate-800">
+                        Added API calls to fetch real data from Supabase
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                      <span className="text-slate-800">Implemented proper loading and error states</span>
+                      <span className="text-slate-800">
+                        Implemented proper loading and error states
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
                       <span className="text-slate-800">Removed test mode flags and demo data</span>
                     </li>
                   </ul>
-                  
+
                   <Alert className="mt-4">
                     <Sparkles className="h-4 w-4" />
                     <AlertDescription>
-                      Your page is now ready for production deployment with real data from the Universal API!
+                      Your page is now ready for production deployment with real data from the
+                      Universal API!
                     </AlertDescription>
                   </Alert>
-                  
+
                   <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
                     <h4 className="font-medium text-purple-900 mb-2 flex items-center gap-2">
                       <Save className="h-4 w-4" />
                       Save to Production
                     </h4>
                     <p className="text-sm text-purple-800 mb-3">
-                      Click the save button above to automatically create the production file in the correct location.
+                      Click the save button above to automatically create the production file in the
+                      correct location.
                     </p>
                     {pageUrl && (
                       <p className="text-xs text-purple-700">
-                        Will save to: <code className="bg-purple-100 px-1 rounded">
-                          {pageUrl.replace(/^https?:\/\/[^\/]+/, '').replace('-progressive', '')}/page.tsx
+                        Will save to:{' '}
+                        <code className="bg-purple-100 px-1 rounded">
+                          {pageUrl.replace(/^https?:\/\/[^\/]+/, '').replace('-progressive', '')}
+                          /page.tsx
                         </code>
                       </p>
                     )}

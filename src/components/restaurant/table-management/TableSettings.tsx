@@ -46,7 +46,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
     requireDeposit: false,
     defaultDepositAmount: 50,
     depositThresholdPartySize: 6,
-    
+
     // Operating Hours
     operatingHours: {
       monday: { open: '11:00', close: '22:00', closed: false },
@@ -57,27 +57,27 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
       saturday: { open: '10:00', close: '23:00', closed: false },
       sunday: { open: '10:00', close: '21:00', closed: false }
     },
-    
+
     // Table Management
     enableTableCombining: true,
     enableQRCodeMenus: true,
     autoReleaseTime: 15,
     overbookingPercentage: 10,
     bufferTimeBetweenReservations: 15,
-    
+
     // Notifications
     enableSMSNotifications: true,
     enableEmailNotifications: true,
     reminderTimeBeforeReservation: 120,
     waitlistNotifications: true,
-    
+
     // Pricing Tiers
     pricingTiers: {
       standard: { name: 'Standard', surcharge: 0 },
       premium: { name: 'Premium', surcharge: 15 },
       vip: { name: 'VIP', surcharge: 30 }
     },
-    
+
     // Status Colors
     statusColors: {
       available: '#10b981',
@@ -86,7 +86,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
       cleaning: '#3b82f6',
       maintenance: '#6b7280'
     },
-    
+
     // Integration Settings
     posIntegration: true,
     kitchenDisplayIntegration: true,
@@ -112,7 +112,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
 
   const resetToDefaults = () => {
     if (!confirm('Are you sure you want to reset all settings to defaults?')) return
-    
+
     // Reset to default values
     setSettings({
       defaultCapacity: 4,
@@ -158,7 +158,7 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
       loyaltyProgramIntegration: false,
       thirdPartyReservations: true
     })
-    
+
     toast.success('Settings reset to defaults')
   }
 
@@ -169,7 +169,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Table Management Settings</h3>
-            <p className="text-sm text-gray-600 mt-1">Configure default settings for table management</p>
+            <p className="text-sm text-gray-600 mt-1">
+              Configure default settings for table management
+            </p>
           </div>
           <div className="flex items-center space-x-3">
             <Button variant="outline" onClick={resetToDefaults}>
@@ -197,53 +199,65 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               id="defaultCapacity"
               type="number"
               value={settings.defaultCapacity}
-              onChange={(e) => setSettings({ ...settings, defaultCapacity: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({ ...settings, defaultCapacity: parseInt(e.target.value) })
+              }
               min="1"
               max="20"
             />
             <p className="text-xs text-gray-500 mt-1">Default capacity when creating new tables</p>
           </div>
-          
+
           <div>
             <Label htmlFor="defaultDuration">Default Reservation Duration (minutes)</Label>
             <Input
               id="defaultDuration"
               type="number"
               value={settings.defaultDuration}
-              onChange={(e) => setSettings({ ...settings, defaultDuration: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({ ...settings, defaultDuration: parseInt(e.target.value) })
+              }
               min="30"
               max="480"
               step="30"
             />
             <p className="text-xs text-gray-500 mt-1">How long reservations last by default</p>
           </div>
-          
+
           <div>
             <Label htmlFor="minReservationNotice">Minimum Reservation Notice (minutes)</Label>
             <Input
               id="minReservationNotice"
               type="number"
               value={settings.minReservationNotice}
-              onChange={(e) => setSettings({ ...settings, minReservationNotice: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({ ...settings, minReservationNotice: parseInt(e.target.value) })
+              }
               min="0"
               max="1440"
             />
-            <p className="text-xs text-gray-500 mt-1">How far in advance reservations must be made</p>
+            <p className="text-xs text-gray-500 mt-1">
+              How far in advance reservations must be made
+            </p>
           </div>
-          
+
           <div>
             <Label htmlFor="maxAdvanceBooking">Maximum Advance Booking (days)</Label>
             <Input
               id="maxAdvanceBooking"
               type="number"
               value={settings.maxAdvanceBooking}
-              onChange={(e) => setSettings({ ...settings, maxAdvanceBooking: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({ ...settings, maxAdvanceBooking: parseInt(e.target.value) })
+              }
               min="1"
               max="365"
             />
-            <p className="text-xs text-gray-500 mt-1">How far in the future reservations can be made</p>
+            <p className="text-xs text-gray-500 mt-1">
+              How far in the future reservations can be made
+            </p>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="autoConfirm">Auto-confirm Reservations</Label>
@@ -252,10 +266,12 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="autoConfirm"
               checked={settings.autoConfirmReservations}
-              onCheckedChange={(checked) => setSettings({ ...settings, autoConfirmReservations: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, autoConfirmReservations: checked })
+              }
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="requireDeposit">Require Deposit</Label>
@@ -264,10 +280,10 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="requireDeposit"
               checked={settings.requireDeposit}
-              onCheckedChange={(checked) => setSettings({ ...settings, requireDeposit: checked })}
+              onCheckedChange={checked => setSettings({ ...settings, requireDeposit: checked })}
             />
           </div>
-          
+
           {settings.requireDeposit && (
             <>
               <div>
@@ -276,19 +292,26 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
                   id="defaultDepositAmount"
                   type="number"
                   value={settings.defaultDepositAmount}
-                  onChange={(e) => setSettings({ ...settings, defaultDepositAmount: parseFloat(e.target.value) })}
+                  onChange={e =>
+                    setSettings({ ...settings, defaultDepositAmount: parseFloat(e.target.value) })
+                  }
                   min="0"
                   step="10"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="depositThresholdPartySize">Deposit Required for Parties Of</Label>
                 <Input
                   id="depositThresholdPartySize"
                   type="number"
                   value={settings.depositThresholdPartySize}
-                  onChange={(e) => setSettings({ ...settings, depositThresholdPartySize: parseInt(e.target.value) })}
+                  onChange={e =>
+                    setSettings({
+                      ...settings,
+                      depositThresholdPartySize: parseInt(e.target.value)
+                    })
+                  }
                   min="1"
                   max="20"
                 />
@@ -313,46 +336,50 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               <div className="flex items-center space-x-2 flex-1">
                 <Switch
                   checked={!hours.closed}
-                  onCheckedChange={(checked) => setSettings({
-                    ...settings,
-                    operatingHours: {
-                      ...settings.operatingHours,
-                      [day]: { ...hours, closed: !checked }
-                    }
-                  })}
+                  onCheckedChange={checked =>
+                    setSettings({
+                      ...settings,
+                      operatingHours: {
+                        ...settings.operatingHours,
+                        [day]: { ...hours, closed: !checked }
+                      }
+                    })
+                  }
                 />
                 {!hours.closed && (
                   <>
                     <Input
                       type="time"
                       value={hours.open}
-                      onChange={(e) => setSettings({
-                        ...settings,
-                        operatingHours: {
-                          ...settings.operatingHours,
-                          [day]: { ...hours, open: e.target.value }
-                        }
-                      })}
+                      onChange={e =>
+                        setSettings({
+                          ...settings,
+                          operatingHours: {
+                            ...settings.operatingHours,
+                            [day]: { ...hours, open: e.target.value }
+                          }
+                        })
+                      }
                       className="w-32"
                     />
                     <span className="text-gray-500">to</span>
                     <Input
                       type="time"
                       value={hours.close}
-                      onChange={(e) => setSettings({
-                        ...settings,
-                        operatingHours: {
-                          ...settings.operatingHours,
-                          [day]: { ...hours, close: e.target.value }
-                        }
-                      })}
+                      onChange={e =>
+                        setSettings({
+                          ...settings,
+                          operatingHours: {
+                            ...settings.operatingHours,
+                            [day]: { ...hours, close: e.target.value }
+                          }
+                        })
+                      }
                       className="w-32"
                     />
                   </>
                 )}
-                {hours.closed && (
-                  <span className="text-gray-500 text-sm">Closed</span>
-                )}
+                {hours.closed && <span className="text-gray-500 text-sm">Closed</span>}
               </div>
             </div>
           ))}
@@ -369,15 +396,19 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableTableCombining">Enable Table Combining</Label>
-              <p className="text-xs text-gray-500">Allow tables to be combined for larger parties</p>
+              <p className="text-xs text-gray-500">
+                Allow tables to be combined for larger parties
+              </p>
             </div>
             <Switch
               id="enableTableCombining"
               checked={settings.enableTableCombining}
-              onCheckedChange={(checked) => setSettings({ ...settings, enableTableCombining: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, enableTableCombining: checked })
+              }
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableQRCodeMenus">Enable QR Code Menus</Label>
@@ -386,43 +417,52 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="enableQRCodeMenus"
               checked={settings.enableQRCodeMenus}
-              onCheckedChange={(checked) => setSettings({ ...settings, enableQRCodeMenus: checked })}
+              onCheckedChange={checked => setSettings({ ...settings, enableQRCodeMenus: checked })}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="autoReleaseTime">Auto-release Time (minutes)</Label>
             <Input
               id="autoReleaseTime"
               type="number"
               value={settings.autoReleaseTime}
-              onChange={(e) => setSettings({ ...settings, autoReleaseTime: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({ ...settings, autoReleaseTime: parseInt(e.target.value) })
+              }
               min="5"
               max="60"
             />
             <p className="text-xs text-gray-500 mt-1">Release reservation if party doesn't show</p>
           </div>
-          
+
           <div>
             <Label htmlFor="overbookingPercentage">Overbooking Percentage</Label>
             <Input
               id="overbookingPercentage"
               type="number"
               value={settings.overbookingPercentage}
-              onChange={(e) => setSettings({ ...settings, overbookingPercentage: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({ ...settings, overbookingPercentage: parseInt(e.target.value) })
+              }
               min="0"
               max="30"
             />
             <p className="text-xs text-gray-500 mt-1">Allow overbooking to account for no-shows</p>
           </div>
-          
+
           <div>
             <Label htmlFor="bufferTime">Buffer Time Between Reservations (minutes)</Label>
             <Input
               id="bufferTime"
               type="number"
               value={settings.bufferTimeBetweenReservations}
-              onChange={(e) => setSettings({ ...settings, bufferTimeBetweenReservations: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({
+                  ...settings,
+                  bufferTimeBetweenReservations: parseInt(e.target.value)
+                })
+              }
               min="0"
               max="60"
             />
@@ -446,10 +486,12 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="enableSMS"
               checked={settings.enableSMSNotifications}
-              onCheckedChange={(checked) => setSettings({ ...settings, enableSMSNotifications: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, enableSMSNotifications: checked })
+              }
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableEmail">Enable Email Notifications</Label>
@@ -458,23 +500,30 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="enableEmail"
               checked={settings.enableEmailNotifications}
-              onCheckedChange={(checked) => setSettings({ ...settings, enableEmailNotifications: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, enableEmailNotifications: checked })
+              }
             />
           </div>
-          
+
           <div>
             <Label htmlFor="reminderTime">Reminder Time Before Reservation (minutes)</Label>
             <Input
               id="reminderTime"
               type="number"
               value={settings.reminderTimeBeforeReservation}
-              onChange={(e) => setSettings({ ...settings, reminderTimeBeforeReservation: parseInt(e.target.value) })}
+              onChange={e =>
+                setSettings({
+                  ...settings,
+                  reminderTimeBeforeReservation: parseInt(e.target.value)
+                })
+              }
               min="30"
               max="1440"
               step="30"
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="waitlistNotifications">Waitlist Notifications</Label>
@@ -483,7 +532,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="waitlistNotifications"
               checked={settings.waitlistNotifications}
-              onCheckedChange={(checked) => setSettings({ ...settings, waitlistNotifications: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, waitlistNotifications: checked })
+              }
             />
           </div>
         </div>
@@ -499,11 +550,15 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           {Object.entries(settings.pricingTiers).map(([tier, config]) => (
             <div key={tier} className="flex items-center space-x-4">
               <div className="w-24">
-                <Badge className={
-                  tier === 'vip' ? 'bg-purple-100 text-purple-800' :
-                  tier === 'premium' ? 'bg-blue-100 text-blue-800' :
-                  'bg-gray-100 text-gray-800'
-                }>
+                <Badge
+                  className={
+                    tier === 'vip'
+                      ? 'bg-purple-100 text-purple-800'
+                      : tier === 'premium'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-800'
+                  }
+                >
                   {config.name}
                 </Badge>
               </div>
@@ -512,13 +567,15 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
                 <Input
                   type="number"
                   value={config.surcharge}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    pricingTiers: {
-                      ...settings.pricingTiers,
-                      [tier]: { ...config, surcharge: parseInt(e.target.value) }
-                    }
-                  })}
+                  onChange={e =>
+                    setSettings({
+                      ...settings,
+                      pricingTiers: {
+                        ...settings.pricingTiers,
+                        [tier]: { ...config, surcharge: parseInt(e.target.value) }
+                      }
+                    })
+                  }
                   min="0"
                   max="100"
                   className="w-24"
@@ -544,10 +601,10 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="posIntegration"
               checked={settings.posIntegration}
-              onCheckedChange={(checked) => setSettings({ ...settings, posIntegration: checked })}
+              onCheckedChange={checked => setSettings({ ...settings, posIntegration: checked })}
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="kitchenDisplay">Kitchen Display Integration</Label>
@@ -556,10 +613,12 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="kitchenDisplay"
               checked={settings.kitchenDisplayIntegration}
-              onCheckedChange={(checked) => setSettings({ ...settings, kitchenDisplayIntegration: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, kitchenDisplayIntegration: checked })
+              }
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="loyaltyProgram">Loyalty Program Integration</Label>
@@ -568,10 +627,12 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="loyaltyProgram"
               checked={settings.loyaltyProgramIntegration}
-              onCheckedChange={(checked) => setSettings({ ...settings, loyaltyProgramIntegration: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, loyaltyProgramIntegration: checked })
+              }
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="thirdParty">Third-party Reservations</Label>
@@ -580,7 +641,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
             <Switch
               id="thirdParty"
               checked={settings.thirdPartyReservations}
-              onCheckedChange={(checked) => setSettings({ ...settings, thirdPartyReservations: checked })}
+              onCheckedChange={checked =>
+                setSettings({ ...settings, thirdPartyReservations: checked })
+              }
             />
           </div>
         </div>
@@ -598,13 +661,15 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               <input
                 type="color"
                 value={color}
-                onChange={(e) => setSettings({
-                  ...settings,
-                  statusColors: {
-                    ...settings.statusColors,
-                    [status]: e.target.value
-                  }
-                })}
+                onChange={e =>
+                  setSettings({
+                    ...settings,
+                    statusColors: {
+                      ...settings.statusColors,
+                      [status]: e.target.value
+                    }
+                  })
+                }
                 className="w-10 h-10 rounded cursor-pointer"
               />
               <Label className="capitalize">{status}</Label>

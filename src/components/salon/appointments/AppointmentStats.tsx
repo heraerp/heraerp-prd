@@ -1,7 +1,16 @@
 'use client'
 
 import React from 'react'
-import { Calendar, Clock, DollarSign, TrendingUp, Users, CheckCircle, AlertCircle, XCircle } from 'lucide-react'
+import {
+  Calendar,
+  Clock,
+  DollarSign,
+  TrendingUp,
+  Users,
+  CheckCircle,
+  AlertCircle,
+  XCircle
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface AppointmentStats {
@@ -46,9 +55,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm !text-gray-600 dark:!text-gray-400">Today</p>
-            <p className="text-3xl font-bold !text-gray-900 dark:!text-white">
-              {stats.todayTotal}
-            </p>
+            <p className="text-3xl font-bold !text-gray-900 dark:!text-white">{stats.todayTotal}</p>
             <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">appointments</p>
           </div>
           <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white">
@@ -148,9 +155,7 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm !text-gray-600 dark:!text-gray-400">This Month</p>
-            <p className="text-3xl font-bold !text-gray-900 dark:!text-white">
-              {stats.monthTotal}
-            </p>
+            <p className="text-3xl font-bold !text-gray-900 dark:!text-white">{stats.monthTotal}</p>
             <p className="text-xs !text-gray-500 dark:!text-gray-500 mt-1">total appointments</p>
           </div>
           <div className="p-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white">

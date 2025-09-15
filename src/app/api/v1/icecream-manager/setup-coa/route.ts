@@ -5,28 +5,22 @@ import { supabaseAdmin } from '@/lib/supabase-server'
 export async function POST(request: NextRequest) {
   try {
     const { organizationId, organizationName, country = 'IN' } = await request.json()
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
-    
+
     // Verify organization exists and user has access
     const { data: org, error: orgError } = await supabaseAdmin
       .from('core_organizations')
       .select('id, organization_name')
       .eq('id', organizationId)
       .single()
-    
+
     if (orgError || !org) {
-      return NextResponse.json(
-        { error: 'Invalid organization' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Invalid organization' }, { status: 403 })
     }
-    
+
     // Generate COA for ice cream business
     const generator = new IceCreamCOAGenerator({
       organizationId,
@@ -37,9 +31,9 @@ export async function POST(request: NextRequest) {
       multiLocation: true,
       exportBusiness: false
     })
-    
+
     const result = await generator.generateCOA()
-    
+
     // Return summary
     return NextResponse.json({
       success: true,
@@ -66,9 +60,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error setting up ice cream COA:', error)
-    return NextResponse.json(
-      { error: 'Failed to setup Chart of Accounts' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to setup Chart of Accounts' }, { status: 500 })
   }
 }

@@ -52,7 +52,7 @@ export class SSOProvider {
    */
   async configureSSOProvider(config: SSOConfig): Promise<string> {
     const supabase = getSupabase()
-    
+
     // Store as entity with proper smart code
     const { data: entity, error: entityError } = await supabase
       .from('core_entities')
@@ -61,7 +61,8 @@ export class SSOProvider {
         entity_type: 'sso_config',
         entity_name: `${config.provider.toUpperCase()} - ${config.tenant_id}`,
         entity_code: `SSO-${config.provider.toUpperCase()}-${config.tenant_id}`,
-        smart_code: config.smart_code || `HERA.SECURITY.SSO.${config.provider.toUpperCase()}.CONFIG.v1`,
+        smart_code:
+          config.smart_code || `HERA.SECURITY.SSO.${config.provider.toUpperCase()}.CONFIG.v1`,
         organization_id: config.tenant_id,
         metadata: {
           provider: config.provider,
@@ -75,31 +76,27 @@ export class SSOProvider {
 
     // Store config details in dynamic data (encrypted)
     const encryptedConfig = await this.encryptSSOConfig(config.metadata)
-    
-    await supabase
-      .from('core_dynamic_data')
-      .insert({
-        id: uuidv4(),
-        entity_id: entity.id,
-        field_name: 'sso_metadata',
-        field_value_text: encryptedConfig,
-        field_type: 'encrypted_json',
-        smart_code: `HERA.SECURITY.SSO.${config.provider.toUpperCase()}.METADATA.v1`,
-        organization_id: config.tenant_id
-      })
+
+    await supabase.from('core_dynamic_data').insert({
+      id: uuidv4(),
+      entity_id: entity.id,
+      field_name: 'sso_metadata',
+      field_value_text: encryptedConfig,
+      field_type: 'encrypted_json',
+      smart_code: `HERA.SECURITY.SSO.${config.provider.toUpperCase()}.METADATA.v1`,
+      organization_id: config.tenant_id
+    })
 
     // Store attribute mapping
-    await supabase
-      .from('core_dynamic_data')
-      .insert({
-        id: uuidv4(),
-        entity_id: entity.id,
-        field_name: 'attribute_mapping',
-        field_value_text: JSON.stringify(config.attribute_mapping),
-        field_type: 'json',
-        smart_code: `HERA.SECURITY.SSO.ATTRIBUTE.MAPPING.v1`,
-        organization_id: config.tenant_id
-      })
+    await supabase.from('core_dynamic_data').insert({
+      id: uuidv4(),
+      entity_id: entity.id,
+      field_name: 'attribute_mapping',
+      field_value_text: JSON.stringify(config.attribute_mapping),
+      field_type: 'json',
+      smart_code: `HERA.SECURITY.SSO.ATTRIBUTE.MAPPING.v1`,
+      organization_id: config.tenant_id
+    })
 
     // Log configuration
     await this.auditLog(config.tenant_id, 'sso_config_created', {
@@ -113,22 +110,19 @@ export class SSOProvider {
   /**
    * Handle SAML assertion
    */
-  async processSAMLAssertion(
-    samlResponse: string,
-    organizationId: string
-  ): Promise<SSOSession> {
+  async processSAMLAssertion(samlResponse: string, organizationId: string): Promise<SSOSession> {
     const config = await this.getActiveConfig(organizationId, 'saml')
     if (!config) throw new Error('No active SAML configuration found')
 
     // Validate SAML assertion
     const assertion = await this.validateSAMLAssertion(samlResponse, config)
-    
+
     // Extract attributes
     const attributes = this.extractSAMLAttributes(assertion, config.attribute_mapping)
-    
+
     // Get or create user
     const user = await this.getOrCreateUser(attributes.email, organizationId, attributes)
-    
+
     // Get roles and scopes from groups
     const { roles, scopes } = await this.mapGroupsToRolesAndScopes(
       attributes.groups || [],
@@ -172,16 +166,16 @@ export class SSOProvider {
 
     // Exchange code for tokens
     const tokens = await this.exchangeOIDCCode(code, config)
-    
+
     // Validate ID token
     const claims = await this.validateIDToken(tokens.id_token, config)
-    
+
     // Extract attributes
     const attributes = this.mapOIDCClaims(claims, config.attribute_mapping)
-    
+
     // Get or create user
     const user = await this.getOrCreateUser(attributes.email, organizationId, attributes)
-    
+
     // Get roles and scopes
     const { roles, scopes } = await this.mapGroupsToRolesAndScopes(
       attributes.groups || [],
@@ -255,17 +249,15 @@ export class SSOProvider {
     // Store additional attributes
     for (const [key, value] of Object.entries(attributes)) {
       if (key !== 'email' && value) {
-        await supabase
-          .from('core_dynamic_data')
-          .insert({
-            id: uuidv4(),
-            entity_id: user.id,
-            field_name: key,
-            field_value_text: String(value),
-            field_type: 'text',
-            smart_code: `HERA.SECURITY.USER.ATTRIBUTE.${key.toUpperCase()}.v1`,
-            organization_id: organizationId
-          })
+        await supabase.from('core_dynamic_data').insert({
+          id: uuidv4(),
+          entity_id: user.id,
+          field_name: key,
+          field_value_text: String(value),
+          field_type: 'text',
+          smart_code: `HERA.SECURITY.USER.ATTRIBUTE.${key.toUpperCase()}.v1`,
+          organization_id: organizationId
+        })
       }
     }
 
@@ -284,10 +276,12 @@ export class SSOProvider {
     // Get role mappings
     const { data: mappings } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data!inner(field_name, field_value_text)
-      `)
+      `
+      )
       .eq('entity_type', 'role_mapping')
       .eq('organization_id', organizationId)
       .in('entity_code', groups)
@@ -296,12 +290,8 @@ export class SSOProvider {
     const scopes: string[] = []
 
     mappings?.forEach(mapping => {
-      const roleData = mapping.core_dynamic_data?.find(
-        (d: any) => d.field_name === 'role'
-      )
-      const scopeData = mapping.core_dynamic_data?.find(
-        (d: any) => d.field_name === 'scopes'
-      )
+      const roleData = mapping.core_dynamic_data?.find((d: any) => d.field_name === 'role')
+      const scopeData = mapping.core_dynamic_data?.find((d: any) => d.field_name === 'scopes')
 
       if (roleData?.field_value_text) {
         roles.push(roleData.field_value_text)
@@ -323,10 +313,7 @@ export class SSOProvider {
   /**
    * Store session in universal tables
    */
-  private async storeSession(
-    session: SSOSession,
-    refreshToken?: string
-  ): Promise<void> {
+  private async storeSession(session: SSOSession, refreshToken?: string): Promise<void> {
     const supabase = getSupabase()
 
     // Create session transaction
@@ -354,39 +341,36 @@ export class SSOProvider {
 
     // Store refresh token if provided
     if (refreshToken && txn) {
-      await supabase
-        .from('core_dynamic_data')
-        .insert({
-          id: uuidv4(),
-          entity_id: session.user_id,
-          field_name: 'refresh_token',
-          field_value_text: await this.encryptToken(refreshToken),
-          field_type: 'encrypted_text',
-          smart_code: 'HERA.SECURITY.TOKEN.REFRESH.v1',
-          organization_id: session.organization_id,
-          metadata: {
-            session_id: txn.id,
-            expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-          }
-        })
+      await supabase.from('core_dynamic_data').insert({
+        id: uuidv4(),
+        entity_id: session.user_id,
+        field_name: 'refresh_token',
+        field_value_text: await this.encryptToken(refreshToken),
+        field_type: 'encrypted_text',
+        smart_code: 'HERA.SECURITY.TOKEN.REFRESH.v1',
+        organization_id: session.organization_id,
+        metadata: {
+          session_id: txn.id,
+          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      })
     }
   }
 
   /**
    * Get active SSO configuration
    */
-  private async getActiveConfig(
-    organizationId: string,
-    provider: 'saml' | 'oidc'
-  ): Promise<any> {
+  private async getActiveConfig(organizationId: string, provider: 'saml' | 'oidc'): Promise<any> {
     const supabase = getSupabase()
 
     const { data: configs } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data!inner(field_name, field_value_text)
-      `)
+      `
+      )
       .eq('entity_type', 'sso_config')
       .eq('organization_id', organizationId)
       .eq('metadata->>provider', provider)
@@ -413,28 +397,22 @@ export class SSOProvider {
   /**
    * Audit log helper
    */
-  private async auditLog(
-    organizationId: string,
-    action: string,
-    details: any
-  ): Promise<void> {
+  private async auditLog(organizationId: string, action: string, details: any): Promise<void> {
     const supabase = getSupabase()
 
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'audit',
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        smart_code: `HERA.SECURITY.AUDIT.${action.toUpperCase()}.v1`,
-        organization_id: organizationId,
-        metadata: {
-          action,
-          details,
-          timestamp: new Date().toISOString()
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'audit',
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      smart_code: `HERA.SECURITY.AUDIT.${action.toUpperCase()}.v1`,
+      organization_id: organizationId,
+      metadata: {
+        action,
+        details,
+        timestamp: new Date().toISOString()
+      }
+    })
   }
 
   // Placeholder encryption methods - implement with actual KMS

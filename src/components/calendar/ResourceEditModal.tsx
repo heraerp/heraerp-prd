@@ -10,23 +10,24 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  Users,
-  CheckCircle
-} from 'lucide-react'
+import { Users, CheckCircle } from 'lucide-react'
 
-import { 
-  UniversalResource
-} from '@/types/calendar.types'
+import { UniversalResource } from '@/types/calendar.types'
 
 interface ResourceEditModalProps {
   organization_id: string
@@ -38,28 +39,72 @@ interface ResourceEditModalProps {
 
 const INDUSTRY_SKILL_SETS = {
   healthcare: [
-    'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Surgery', 'Emergency Medicine',
-    'Internal Medicine', 'Radiology', 'Pathology', 'Anesthesiology', 'Patient Care',
-    'Medical Procedures', 'Lab Work', 'Diagnostics'
+    'Cardiology',
+    'Neurology',
+    'Orthopedics',
+    'Pediatrics',
+    'Surgery',
+    'Emergency Medicine',
+    'Internal Medicine',
+    'Radiology',
+    'Pathology',
+    'Anesthesiology',
+    'Patient Care',
+    'Medical Procedures',
+    'Lab Work',
+    'Diagnostics'
   ],
   restaurant: [
-    'Italian Cuisine', 'French Cuisine', 'Asian Cuisine', 'Pastry', 'Grilling', 'Wine Service',
-    'Customer Service', 'Food Safety', 'Kitchen Management', 'Bartending', 'Sommelier',
-    'Event Planning', 'Catering'
+    'Italian Cuisine',
+    'French Cuisine',
+    'Asian Cuisine',
+    'Pastry',
+    'Grilling',
+    'Wine Service',
+    'Customer Service',
+    'Food Safety',
+    'Kitchen Management',
+    'Bartending',
+    'Sommelier',
+    'Event Planning',
+    'Catering'
   ],
   professional: [
-    'Project Management', 'Strategy Consulting', 'Financial Analysis', 'Legal Advisory',
-    'Marketing', 'Sales', 'IT Consulting', 'HR Consulting', 'Change Management',
-    'Business Development', 'Public Speaking', 'Training'
+    'Project Management',
+    'Strategy Consulting',
+    'Financial Analysis',
+    'Legal Advisory',
+    'Marketing',
+    'Sales',
+    'IT Consulting',
+    'HR Consulting',
+    'Change Management',
+    'Business Development',
+    'Public Speaking',
+    'Training'
   ],
   manufacturing: [
-    'CNC Operation', 'Quality Control', 'Welding', 'Assembly', 'Maintenance',
-    'Safety Inspection', 'Production Planning', 'Equipment Calibration',
-    'Process Engineering', 'Lean Manufacturing', 'Six Sigma'
+    'CNC Operation',
+    'Quality Control',
+    'Welding',
+    'Assembly',
+    'Maintenance',
+    'Safety Inspection',
+    'Production Planning',
+    'Equipment Calibration',
+    'Process Engineering',
+    'Lean Manufacturing',
+    'Six Sigma'
   ],
   universal: [
-    'Communication', 'Problem Solving', 'Leadership', 'Time Management',
-    'Customer Service', 'Technical Skills', 'Organization', 'Teamwork'
+    'Communication',
+    'Problem Solving',
+    'Leadership',
+    'Time Management',
+    'Customer Service',
+    'Technical Skills',
+    'Organization',
+    'Teamwork'
   ]
 }
 
@@ -70,7 +115,6 @@ export function ResourceEditModal({
   on_close,
   on_save
 }: ResourceEditModalProps) {
-
   // ==================== STATE MANAGEMENT ====================
   const [formData, setFormData] = useState<UniversalResource>(resource)
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
@@ -85,14 +129,16 @@ export function ResourceEditModal({
 
   // ==================== COMPUTED VALUES ====================
   const availableSkills = useMemo(() => {
-    return INDUSTRY_SKILL_SETS[resource.industry_type as keyof typeof INDUSTRY_SKILL_SETS] || 
-           INDUSTRY_SKILL_SETS.universal
+    return (
+      INDUSTRY_SKILL_SETS[resource.industry_type as keyof typeof INDUSTRY_SKILL_SETS] ||
+      INDUSTRY_SKILL_SETS.universal
+    )
   }, [resource.industry_type])
 
   // ==================== FORM HANDLERS ====================
   const handleInputChange = (field: keyof UniversalResource, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
-    
+
     // Clear validation error
     if (validationErrors[field]) {
       setValidationErrors(prev => {
@@ -106,7 +152,7 @@ export function ResourceEditModal({
   const handleSkillToggle = (skill: string) => {
     setFormData(prev => ({
       ...prev,
-      skills: prev.skills?.includes(skill) 
+      skills: prev.skills?.includes(skill)
         ? prev.skills.filter(s => s !== skill)
         : [...(prev.skills || []), skill]
     }))
@@ -160,9 +206,7 @@ export function ResourceEditModal({
             <span>Pencil Resource</span>
             <Badge variant="outline">{resource.industry_type}</Badge>
           </DialogTitle>
-          <DialogDescription>
-            Update resource information and settings
-          </DialogDescription>
+          <DialogDescription>Update resource information and settings</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -175,7 +219,7 @@ export function ResourceEditModal({
                   <Input
                     id="entity_name"
                     value={formData.entity_name}
-                    onChange={(e) => handleInputChange('entity_name', e.target.value)}
+                    onChange={e => handleInputChange('entity_name', e.target.value)}
                     className={validationErrors.entity_name ? 'border-red-500' : ''}
                   />
                   {validationErrors.entity_name && (
@@ -188,7 +232,7 @@ export function ResourceEditModal({
                   <Input
                     id="entity_code"
                     value={formData.entity_code}
-                    onChange={(e) => handleInputChange('entity_code', e.target.value)}
+                    onChange={e => handleInputChange('entity_code', e.target.value)}
                     className={validationErrors.entity_code ? 'border-red-500' : ''}
                   />
                   {validationErrors.entity_code && (
@@ -213,7 +257,7 @@ export function ResourceEditModal({
                   <Label htmlFor="status">Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value) => handleInputChange('status', value)}
+                    onValueChange={value => handleInputChange('status', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -233,7 +277,7 @@ export function ResourceEditModal({
                     type="number"
                     min="1"
                     value={formData.capacity}
-                    onChange={(e) => handleInputChange('capacity', parseInt(e.target.value) || 1)}
+                    onChange={e => handleInputChange('capacity', parseInt(e.target.value) || 1)}
                     className={validationErrors.capacity ? 'border-red-500' : ''}
                   />
                   {validationErrors.capacity && (
@@ -248,7 +292,7 @@ export function ResourceEditModal({
                   <Input
                     id="location"
                     value={formData.location || ''}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    onChange={e => handleInputChange('location', e.target.value)}
                   />
                 </div>
 
@@ -260,7 +304,9 @@ export function ResourceEditModal({
                     min="0"
                     step="0.01"
                     value={formData.cost_per_hour || 0}
-                    onChange={(e) => handleInputChange('cost_per_hour', parseFloat(e.target.value) || 0)}
+                    onChange={e =>
+                      handleInputChange('cost_per_hour', parseFloat(e.target.value) || 0)
+                    }
                     className={validationErrors.cost_per_hour ? 'border-red-500' : ''}
                   />
                   {validationErrors.cost_per_hour && (
@@ -284,16 +330,13 @@ export function ResourceEditModal({
                         checked={formData.skills?.includes(skill) || false}
                         onCheckedChange={() => handleSkillToggle(skill)}
                       />
-                      <Label 
-                        htmlFor={`skill_${skill}`} 
-                        className="text-sm cursor-pointer"
-                      >
+                      <Label htmlFor={`skill_${skill}`} className="text-sm cursor-pointer">
                         {skill}
                       </Label>
                     </div>
                   ))}
                 </div>
-                
+
                 {formData.skills && formData.skills.length > 0 && (
                   <div className="mt-4">
                     <p className="text-sm font-medium mb-2">Selected Skills:</p>

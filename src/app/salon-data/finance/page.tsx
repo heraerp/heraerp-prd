@@ -5,14 +5,14 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Finance Dashboard
  * Smart Code: HERA.SALON.FINANCE.DASHBOARD.v1
- * 
+ *
  * Finance management hub for salon operations
  */
 
 import React from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { 
+import {
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -144,8 +144,8 @@ export default function SalonFinanceDashboard() {
               <p className="text-xs text-gray-500 mt-1">
                 {quickStats.monthGrowth > 0 ? (
                   <>
-                    <ArrowUpRight className="w-3 h-3 inline mr-1 text-green-500" />
-                    +{quickStats.monthGrowth}% growth
+                    <ArrowUpRight className="w-3 h-3 inline mr-1 text-green-500" />+
+                    {quickStats.monthGrowth}% growth
                   </>
                 ) : (
                   <>
@@ -164,9 +164,7 @@ export default function SalonFinanceDashboard() {
                 <CreditCard className="w-4 h-4 text-orange-600" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.pendingPayments)}</p>
-              <p className="text-xs text-gray-500 mt-1">
-                From 7 invoices
-              </p>
+              <p className="text-xs text-gray-500 mt-1">From 7 invoices</p>
             </CardContent>
           </Card>
 
@@ -192,10 +190,12 @@ export default function SalonFinanceDashboard() {
               <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 h-full">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between mb-2">
-                    <div className={cn(
-                      "w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white shadow-lg",
-                      module.color
-                    )}>
+                    <div
+                      className={cn(
+                        'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center text-white shadow-lg',
+                        module.color
+                      )}
+                    >
                       {module.icon}
                     </div>
                     <ChevronRight className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform" />
@@ -263,7 +263,9 @@ export default function SalonFinanceDashboard() {
                   </div>
                   <div>
                     <p className="font-medium">Expense Recorded</p>
-                    <p className="text-sm text-gray-500">Salon Supplies - Beauty Pro Distributors</p>
+                    <p className="text-sm text-gray-500">
+                      Salon Supplies - Beauty Pro Distributors
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">

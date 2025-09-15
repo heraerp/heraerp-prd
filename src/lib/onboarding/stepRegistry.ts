@@ -1,99 +1,99 @@
 /**
  * HERA Universal Onboarding - Step Registry
- * 
+ *
  * Central registry for all onboarding tours and steps
  * Maps Smart Codes to tour configurations
  */
 
-import type { HeraTour, SmartCode, HeraStep } from './types';
+import type { HeraTour, SmartCode, HeraStep } from './types'
 
 /**
  * In-memory tour registry
  * In production, this could be backed by database
  */
 class TourRegistry {
-  private tours: Map<SmartCode, HeraTour> = new Map();
-  
+  private tours: Map<SmartCode, HeraTour> = new Map()
+
   /**
    * Register a new tour
    */
   registerTour(tour: HeraTour): void {
     if (!tour.tourSmartCode || !tour.steps.length) {
-      throw new Error('Invalid tour: must have Smart Code and at least one step');
+      throw new Error('Invalid tour: must have Smart Code and at least one step')
     }
-    
+
     // Validate Smart Code format
     if (!this.isValidSmartCode(tour.tourSmartCode)) {
-      throw new Error(`Invalid Smart Code format: ${tour.tourSmartCode}`);
+      throw new Error(`Invalid Smart Code format: ${tour.tourSmartCode}`)
     }
-    
+
     // Sort steps by stepIndex if provided
     const sortedSteps = [...tour.steps].sort((a, b) => {
       if (a.stepIndex !== undefined && b.stepIndex !== undefined) {
-        return a.stepIndex - b.stepIndex;
+        return a.stepIndex - b.stepIndex
       }
-      return 0;
-    });
-    
+      return 0
+    })
+
     this.tours.set(tour.tourSmartCode, {
       ...tour,
-      steps: sortedSteps,
-    });
+      steps: sortedSteps
+    })
   }
-  
+
   /**
    * Get tour by Smart Code
    */
   getTourByCode(code: SmartCode): HeraTour | undefined {
-    return this.tours.get(code);
+    return this.tours.get(code)
   }
-  
+
   /**
    * Get all registered tours
    */
   getAllTours(): HeraTour[] {
-    return Array.from(this.tours.values());
+    return Array.from(this.tours.values())
   }
-  
+
   /**
    * Get enabled tours based on feature flags
    */
   getEnabledTours(enabledCodes: SmartCode[]): HeraTour[] {
     return enabledCodes
       .map(code => this.tours.get(code))
-      .filter((tour): tour is HeraTour => tour !== undefined);
+      .filter((tour): tour is HeraTour => tour !== undefined)
   }
-  
+
   /**
    * Remove a tour from registry
    */
   unregisterTour(code: SmartCode): boolean {
-    return this.tours.delete(code);
+    return this.tours.delete(code)
   }
-  
+
   /**
    * Clear all tours
    */
   clear(): void {
-    this.tours.clear();
+    this.tours.clear()
   }
-  
+
   /**
    * Validate Smart Code format
    */
   private isValidSmartCode(code: string): code is SmartCode {
-    return /^HERA\.UI\.ONBOARD\.[A-Z0-9_.]+\.v\d+$/.test(code);
+    return /^HERA\.UI\.ONBOARD\.[A-Z0-9_.]+\.v\d+$/.test(code)
   }
 }
 
 // Global registry instance
-export const tourRegistry = new TourRegistry();
+export const tourRegistry = new TourRegistry()
 
 // Convenience exports
-export const registerTour = tourRegistry.registerTour.bind(tourRegistry);
-export const getTourByCode = tourRegistry.getTourByCode.bind(tourRegistry);
-export const getAllTours = tourRegistry.getAllTours.bind(tourRegistry);
-export const getEnabledTours = tourRegistry.getEnabledTours.bind(tourRegistry);
+export const registerTour = tourRegistry.registerTour.bind(tourRegistry)
+export const getTourByCode = tourRegistry.getTourByCode.bind(tourRegistry)
+export const getAllTours = tourRegistry.getAllTours.bind(tourRegistry)
+export const getEnabledTours = tourRegistry.getEnabledTours.bind(tourRegistry)
 
 /**
  * Example Dashboard Tour
@@ -114,7 +114,7 @@ const dashboardTour: HeraTour = {
       spotlightPadding: 8,
       waitFor: '[data-testid="page-title"]',
       timeoutMs: 6000,
-      stepIndex: 0,
+      stepIndex: 0
     },
     {
       smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.FILTERS.v1',
@@ -125,7 +125,7 @@ const dashboardTour: HeraTour = {
       spotlightPadding: 12,
       waitFor: () => !!document.querySelector('[data-testid="filters-panel"]'),
       timeoutMs: 5000,
-      stepIndex: 1,
+      stepIndex: 1
     },
     {
       smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.KPIS.v1',
@@ -134,7 +134,7 @@ const dashboardTour: HeraTour = {
       bodyKey: 'ui.onboard.console.dashboard.kpis.body',
       placement: 'top',
       spotlightPadding: 16,
-      stepIndex: 2,
+      stepIndex: 2
     },
     {
       smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.CREATE.v1',
@@ -143,10 +143,10 @@ const dashboardTour: HeraTour = {
       bodyKey: 'ui.onboard.console.dashboard.create.body',
       placement: 'left',
       spotlightPadding: 8,
-      stepIndex: 3,
-    },
-  ],
-};
+      stepIndex: 3
+    }
+  ]
+}
 
 /**
  * CRM Module Tour
@@ -165,7 +165,7 @@ const crmTour: HeraTour = {
       placement: 'top',
       route: '/crm/customers',
       waitFor: '[data-testid="customers-table"]',
-      timeoutMs: 5000,
+      timeoutMs: 5000
     },
     {
       smartCode: 'HERA.UI.ONBOARD.CRM.PIPELINE.VIEW.v1',
@@ -175,10 +175,10 @@ const crmTour: HeraTour = {
       placement: 'top',
       route: '/crm/pipeline',
       waitFor: '[data-testid="sales-pipeline"]',
-      timeoutMs: 5000,
-    },
-  ],
-};
+      timeoutMs: 5000
+    }
+  ]
+}
 
 /**
  * Financial Module Tour
@@ -197,7 +197,7 @@ const financialTour: HeraTour = {
       placement: 'right',
       route: '/financial/gl',
       waitFor: '[data-testid="gl-accounts-tree"]',
-      timeoutMs: 5000,
+      timeoutMs: 5000
     },
     {
       smartCode: 'HERA.UI.ONBOARD.FINANCIAL.TRANSACTIONS.LIST.v1',
@@ -207,10 +207,10 @@ const financialTour: HeraTour = {
       placement: 'top',
       route: '/financial/transactions',
       waitFor: '[data-testid="transactions-table"]',
-      timeoutMs: 5000,
-    },
-  ],
-};
+      timeoutMs: 5000
+    }
+  ]
+}
 
 /**
  * Progressive Mode Tour
@@ -228,7 +228,7 @@ const progressiveTour: HeraTour = {
       bodyKey: 'ui.onboard.progressive.welcome.body',
       placement: 'bottom',
       disableBeacon: true,
-      hideBackButton: true,
+      hideBackButton: true
     },
     {
       smartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.UPGRADE.CTA.v1',
@@ -236,16 +236,16 @@ const progressiveTour: HeraTour = {
       titleKey: 'ui.onboard.progressive.upgrade.title',
       bodyKey: 'ui.onboard.progressive.upgrade.body',
       placement: 'bottom',
-      spotlightPadding: 12,
-    },
-  ],
-};
+      spotlightPadding: 12
+    }
+  ]
+}
 
 // Register example tours
-registerTour(dashboardTour);
-registerTour(crmTour);
-registerTour(financialTour);
-registerTour(progressiveTour);
+registerTour(dashboardTour)
+registerTour(crmTour)
+registerTour(financialTour)
+registerTour(progressiveTour)
 
 /**
  * Helper to create context-specific mini-tours
@@ -255,44 +255,47 @@ export function createMiniTour(
   baseCode: string,
   steps: Array<Omit<HeraStep, 'smartCode'>>
 ): HeraTour {
-  const tourSmartCode = `HERA.UI.ONBOARD.${baseCode}.v1` as SmartCode;
-  
+  const tourSmartCode = `HERA.UI.ONBOARD.${baseCode}.v1` as SmartCode
+
   const fullSteps: HeraStep[] = steps.map((step, index) => ({
     ...step,
     smartCode: `HERA.UI.ONBOARD.${baseCode}.STEP${index + 1}.v1` as SmartCode,
-    stepIndex: index,
-  }));
-  
+    stepIndex: index
+  }))
+
   return {
     tourSmartCode,
     steps: fullSteps,
     autoStart: false,
-    allowSkip: true,
-  };
+    allowSkip: true
+  }
 }
 
 /**
  * Get tour statistics for analytics
  */
 export function getTourStats(): {
-  totalTours: number;
-  totalSteps: number;
-  toursByModule: Record<string, number>;
+  totalTours: number
+  totalSteps: number
+  toursByModule: Record<string, number>
 } {
-  const tours = getAllTours();
-  const totalSteps = tours.reduce((sum, tour) => sum + tour.steps.length, 0);
-  
+  const tours = getAllTours()
+  const totalSteps = tours.reduce((sum, tour) => sum + tour.steps.length, 0)
+
   // Group tours by module (extract from Smart Code)
-  const toursByModule = tours.reduce((acc, tour) => {
-    const match = tour.tourSmartCode.match(/HERA\.UI\.ONBOARD\.([^.]+)\./);
-    const module = match?.[1] || 'OTHER';
-    acc[module] = (acc[module] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
+  const toursByModule = tours.reduce(
+    (acc, tour) => {
+      const match = tour.tourSmartCode.match(/HERA\.UI\.ONBOARD\.([^.]+)\./)
+      const module = match?.[1] || 'OTHER'
+      acc[module] = (acc[module] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
   return {
     totalTours: tours.length,
     totalSteps,
-    toursByModule,
-  };
+    toursByModule
+  }
 }

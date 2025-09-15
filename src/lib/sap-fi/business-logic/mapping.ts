@@ -42,7 +42,7 @@ export class SAPMappingService {
     'HERA.ERP.FI.AR.RECEIPT.v1': 'DZ',
     'HERA.ERP.FI.AR.CREDIT.v1': 'DG'
   }
-  
+
   // Map HERA transaction to SAP format
   static mapToSAPDocument(
     transaction: UniversalTransaction,
@@ -51,10 +51,10 @@ export class SAPMappingService {
   ): { header: SAPDocumentHeader; lines: SAPDocumentLine[] } {
     const header = this.mapHeader(transaction, companyCode)
     const sapLines = this.mapLines(transaction, lines)
-    
+
     return { header, lines: sapLines }
   }
-  
+
   // Map transaction header
   private static mapHeader(
     transaction: UniversalTransaction,
@@ -72,14 +72,14 @@ export class SAPMappingService {
       TransactionType: transaction.transaction_type
     }
   }
-  
+
   // Map transaction lines
   private static mapLines(
     transaction: UniversalTransaction,
     lines: UniversalTransactionLine[]
   ): SAPDocumentLine[] {
     const sapLines: SAPDocumentLine[] = []
-    
+
     // Handle different transaction types
     if (transaction.smart_code.includes('.AP.INVOICE.')) {
       sapLines.push(...this.mapAPInvoiceLines(transaction, lines))
@@ -91,17 +91,17 @@ export class SAPMappingService {
       // Default mapping
       sapLines.push(...this.mapDefaultLines(lines))
     }
-    
+
     return sapLines
   }
-  
+
   // Map AP Invoice lines
   private static mapAPInvoiceLines(
     transaction: UniversalTransaction,
     lines: UniversalTransactionLine[]
   ): SAPDocumentLine[] {
     const sapLines: SAPDocumentLine[] = []
-    
+
     // Vendor line (credit)
     const vendorTotal = lines.reduce((sum, line) => sum + (line.line_amount || 0), 0)
     sapLines.push({
@@ -113,7 +113,7 @@ export class SAPMappingService {
       DueDate: (transaction.metadata as any)?.due_date,
       PaymentTerms: (transaction.metadata as any)?.payment_terms
     })
-    
+
     // GL lines (debit)
     lines.forEach((line, index) => {
       sapLines.push({
@@ -128,17 +128,17 @@ export class SAPMappingService {
         Assignment: line.reference
       })
     })
-    
+
     return sapLines
   }
-  
+
   // Map AR Invoice lines
   private static mapARInvoiceLines(
     transaction: UniversalTransaction,
     lines: UniversalTransactionLine[]
   ): SAPDocumentLine[] {
     const sapLines: SAPDocumentLine[] = []
-    
+
     // Customer line (debit)
     const customerTotal = lines.reduce((sum, line) => sum + (line.line_amount || 0), 0)
     sapLines.push({
@@ -150,7 +150,7 @@ export class SAPMappingService {
       DueDate: (transaction.metadata as any)?.due_date,
       PaymentTerms: (transaction.metadata as any)?.payment_terms
     })
-    
+
     // GL lines (credit)
     lines.forEach((line, index) => {
       sapLines.push({
@@ -165,14 +165,12 @@ export class SAPMappingService {
         Assignment: line.reference
       })
     })
-    
+
     return sapLines
   }
-  
+
   // Map Journal Entry lines
-  private static mapJournalEntryLines(
-    lines: UniversalTransactionLine[]
-  ): SAPDocumentLine[] {
+  private static mapJournalEntryLines(lines: UniversalTransactionLine[]): SAPDocumentLine[] {
     return lines.map((line, index) => ({
       ItemNumber: index + 1,
       GLAccount: line.gl_account_code,
@@ -185,11 +183,9 @@ export class SAPMappingService {
       Assignment: line.reference
     }))
   }
-  
+
   // Default line mapping
-  private static mapDefaultLines(
-    lines: UniversalTransactionLine[]
-  ): SAPDocumentLine[] {
+  private static mapDefaultLines(lines: UniversalTransactionLine[]): SAPDocumentLine[] {
     return lines.map((line, index) => ({
       ItemNumber: index + 1,
       GLAccount: line.gl_account_code,
@@ -202,7 +198,7 @@ export class SAPMappingService {
       Assignment: line.reference
     }))
   }
-  
+
   // Map SAP response back to HERA format
   static mapFromSAPDocument(sapDoc: any): Partial<UniversalTransaction> {
     return {
@@ -218,18 +214,15 @@ export class SAPMappingService {
       transaction_status: 'posted'
     }
   }
-  
+
   // Utility functions
   private static formatDate(date: string | Date): string {
     const d = new Date(date)
     return d.toISOString().split('T')[0] // YYYY-MM-DD format
   }
-  
+
   // Regional specific mappings
-  static applyRegionalMapping(
-    sapDoc: any,
-    region: string
-  ): any {
+  static applyRegionalMapping(sapDoc: any, region: string): any {
     switch (region) {
       case 'IN': // India
         return this.applyIndiaMapping(sapDoc)
@@ -241,7 +234,7 @@ export class SAPMappingService {
         return sapDoc
     }
   }
-  
+
   private static applyIndiaMapping(sapDoc: any): any {
     // Add GST specific fields
     if (sapDoc.lines) {
@@ -255,7 +248,7 @@ export class SAPMappingService {
     }
     return sapDoc
   }
-  
+
   private static applyEUMapping(sapDoc: any): any {
     // Add VAT specific fields
     if (sapDoc.lines) {
@@ -268,7 +261,7 @@ export class SAPMappingService {
     }
     return sapDoc
   }
-  
+
   private static applyUSMapping(sapDoc: any): any {
     // Add US sales tax fields
     if (sapDoc.lines) {

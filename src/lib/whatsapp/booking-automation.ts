@@ -11,7 +11,13 @@ export interface BookingScenario {
 }
 
 export interface AutomationAction {
-  type: 'find_slots' | 'suggest_services' | 'book_appointment' | 'send_reminder' | 'check_availability' | 'send_calendar_invite'
+  type:
+    | 'find_slots'
+    | 'suggest_services'
+    | 'book_appointment'
+    | 'send_reminder'
+    | 'check_availability'
+    | 'send_calendar_invite'
   params?: any
   conditions?: ActionCondition[]
 }
@@ -83,7 +89,7 @@ export interface TimeSlotSuggestion {
 export class BookingAutomationService {
   private mcp: MCPTools
   private claude: ClaudeWhatsAppService
-  
+
   constructor(organizationId: string, claudeApiKey?: string) {
     this.mcp = new MCPTools(organizationId)
     this.claude = new ClaudeWhatsAppService(claudeApiKey)
@@ -104,7 +110,11 @@ export class BookingAutomationService {
       ],
       followUp: {
         steps: [
-          { delay: 1440, message: 'Hi! Just a reminder about your appointment tomorrow at {time}. Reply YES to confirm or RESCHEDULE to change.' },
+          {
+            delay: 1440,
+            message:
+              'Hi! Just a reminder about your appointment tomorrow at {time}. Reply YES to confirm or RESCHEDULE to change.'
+          },
           { delay: 60, message: 'Your appointment is in 1 hour. We look forward to seeing you! 💇‍♀️' }
         ]
       }
@@ -114,10 +124,7 @@ export class BookingAutomationService {
       name: 'Service Inquiry',
       description: 'Help customers explore services before booking',
       triggers: ['services', 'what do you offer', 'menu', 'price', 'cost'],
-      actions: [
-        { type: 'suggest_services' },
-        { type: 'check_availability' }
-      ]
+      actions: [{ type: 'suggest_services' }, { type: 'check_availability' }]
     },
     {
       id: 'smart_rebooking',
@@ -126,7 +133,10 @@ export class BookingAutomationService {
       triggers: ['same as last time', 'usual', 'regular'],
       actions: [
         { type: 'find_slots', params: { based_on: 'last_appointment' } },
-        { type: 'book_appointment', conditions: [{ field: 'customer_type', operator: 'equals', value: 'regular' }] }
+        {
+          type: 'book_appointment',
+          conditions: [{ field: 'customer_type', operator: 'equals', value: 'regular' }]
+        }
       ]
     },
     {
@@ -148,12 +158,34 @@ export class BookingAutomationService {
       name: 'New Customer Welcome',
       description: 'Onboarding flow for first-time customers',
       nodes: [
-        { id: 'welcome', type: 'message', content: 'Welcome to {salon_name}! 🌟 I\'m here to help you book your perfect appointment.' },
-        { id: 'ask_service', type: 'question', content: 'What service are you interested in today?', options: ['Hair Cut', 'Hair Color', 'Hair Treatment', 'Show me all services'] },
+        {
+          id: 'welcome',
+          type: 'message',
+          content: "Welcome to {salon_name}! 🌟 I'm here to help you book your perfect appointment."
+        },
+        {
+          id: 'ask_service',
+          type: 'question',
+          content: 'What service are you interested in today?',
+          options: ['Hair Cut', 'Hair Color', 'Hair Treatment', 'Show me all services']
+        },
         { id: 'show_availability', type: 'action', action: { type: 'find_slots' } },
-        { id: 'send_tentative_calendar', type: 'action', action: { type: 'send_calendar_invite', params: { tentative: true } } },
-        { id: 'ask_confirmation', type: 'question', content: 'I\'ve sent you a calendar invite! Would you like to confirm this appointment?', options: ['Yes, confirm it!', 'Let me check and get back'] },
-        { id: 'confirm_booking', type: 'message', content: 'Great! Your appointment is confirmed. See you soon! ✨' }
+        {
+          id: 'send_tentative_calendar',
+          type: 'action',
+          action: { type: 'send_calendar_invite', params: { tentative: true } }
+        },
+        {
+          id: 'ask_confirmation',
+          type: 'question',
+          content: "I've sent you a calendar invite! Would you like to confirm this appointment?",
+          options: ['Yes, confirm it!', 'Let me check and get back']
+        },
+        {
+          id: 'confirm_booking',
+          type: 'message',
+          content: 'Great! Your appointment is confirmed. See you soon! ✨'
+        }
       ],
       edges: [
         { from: 'welcome', to: 'ask_service' },
@@ -168,9 +200,22 @@ export class BookingAutomationService {
       name: 'VIP Fast Track',
       description: 'Express booking for VIP customers',
       nodes: [
-        { id: 'vip_greeting', type: 'message', content: 'Welcome back {customer_name}! 👑 Your VIP fast-track booking is ready.' },
-        { id: 'check_usual', type: 'question', content: 'Book your usual with {preferred_stylist}?', options: ['Yes, book it!', 'Show me other options'] },
-        { id: 'instant_book', type: 'action', action: { type: 'book_appointment', params: { vip: true } } }
+        {
+          id: 'vip_greeting',
+          type: 'message',
+          content: 'Welcome back {customer_name}! 👑 Your VIP fast-track booking is ready.'
+        },
+        {
+          id: 'check_usual',
+          type: 'question',
+          content: 'Book your usual with {preferred_stylist}?',
+          options: ['Yes, book it!', 'Show me other options']
+        },
+        {
+          id: 'instant_book',
+          type: 'action',
+          action: { type: 'book_appointment', params: { vip: true } }
+        }
       ],
       edges: [
         { from: 'vip_greeting', to: 'check_usual' },
@@ -179,10 +224,7 @@ export class BookingAutomationService {
     }
   ]
 
-  async getSmartSuggestions(
-    customerId: string,
-    messageContext: string
-  ): Promise<SmartSuggestion> {
+  async getSmartSuggestions(customerId: string, messageContext: string): Promise<SmartSuggestion> {
     // Analyze customer history
     const customerHistory = await this.mcp.queryHera({
       organizationId: this.mcp['organizationId'],
@@ -247,36 +289,41 @@ export class BookingAutomationService {
     ]
   }
 
-  private async suggestTimeSlots(customerId: string, availability: any): Promise<TimeSlotSuggestion[]> {
+  private async suggestTimeSlots(
+    customerId: string,
+    availability: any
+  ): Promise<TimeSlotSuggestion[]> {
     // Smart time slot ranking based on customer patterns
     const suggestions: TimeSlotSuggestion[] = []
-    
+
     // Mock implementation - in production, this would use ML
     const preferredTimes = [
       { hour: 10, score: 95 }, // Customer usually books at 10am
       { hour: 14, score: 85 }, // Second preference
-      { hour: 17, score: 75 }  // After work option
+      { hour: 17, score: 75 } // After work option
     ]
 
     // Generate suggestions for next 7 days
     for (let day = 0; day < 7; day++) {
       const date = new Date()
       date.setDate(date.getDate() + day)
-      
+
       for (const pref of preferredTimes) {
         date.setHours(pref.hour, 0, 0, 0)
-        
+
         suggestions.push({
           start: new Date(date),
           end: new Date(date.getTime() + 60 * 60 * 1000),
           staffId: 'staff_001',
           staffName: 'Sarah',
-          score: pref.score - (day * 5), // Prefer sooner appointments
+          score: pref.score - day * 5, // Prefer sooner appointments
           factors: [
             day === 0 ? 'Available today!' : `In ${day} days`,
-            pref.hour === 10 ? 'Your preferred morning slot' : 
-            pref.hour === 14 ? 'Quiet afternoon time' : 
-            'Evening appointment',
+            pref.hour === 10
+              ? 'Your preferred morning slot'
+              : pref.hour === 14
+                ? 'Quiet afternoon time'
+                : 'Evening appointment',
             'Sarah is available'
           ]
         })
@@ -313,15 +360,20 @@ export class BookingAutomationService {
 
   private checkConditions(conditions?: ActionCondition[], context?: any): boolean {
     if (!conditions || conditions.length === 0) return true
-    
+
     return conditions.every(condition => {
       const value = context[condition.field]
       switch (condition.operator) {
-        case 'equals': return value === condition.value
-        case 'contains': return value?.includes(condition.value)
-        case 'greater_than': return value > condition.value
-        case 'less_than': return value < condition.value
-        default: return false
+        case 'equals':
+          return value === condition.value
+        case 'contains':
+          return value?.includes(condition.value)
+        case 'greater_than':
+          return value > condition.value
+        case 'less_than':
+          return value < condition.value
+        default:
+          return false
       }
     })
   }
@@ -334,10 +386,12 @@ export class BookingAutomationService {
           duration: action.params?.duration || 60,
           date_range: {
             start: new Date().toISOString(),
-            end: new Date(Date.now() + (action.params?.days_ahead || 7) * 24 * 60 * 60 * 1000).toISOString()
+            end: new Date(
+              Date.now() + (action.params?.days_ahead || 7) * 24 * 60 * 60 * 1000
+            ).toISOString()
           }
         })
-      
+
       case 'book_appointment':
         return await this.mcp.book({
           organization_id: this.mcp['organizationId'],
@@ -346,14 +400,14 @@ export class BookingAutomationService {
           slot: context.selectedSlot,
           location_id: context.locationId
         })
-      
+
       case 'send_calendar_invite':
         // Generate ICS calendar file
         const icsResult = await this.mcp.generateICS({
           organization_id: this.mcp['organizationId'],
           event: {
-            title: action.params?.tentative 
-              ? `[TENTATIVE] ${context.serviceName || 'Salon Appointment'}` 
+            title: action.params?.tentative
+              ? `[TENTATIVE] ${context.serviceName || 'Salon Appointment'}`
               : `${context.serviceName || 'Salon Appointment'}`,
             description: `Your appointment at ${context.salonName || 'Our Salon'}\n\nService: ${context.serviceName}\nStylist: ${context.stylistName}\n\nPlease reply to confirm this booking.`,
             location: context.salonAddress || 'Salon Location',
@@ -364,14 +418,16 @@ export class BookingAutomationService {
               name: context.salonName || 'Salon',
               email: context.salonEmail || 'salon@example.com'
             },
-            attendees: [{
-              name: context.customerName,
-              email: context.customerEmail || '',
-              rsvp: true
-            }],
+            attendees: [
+              {
+                name: context.customerName,
+                email: context.customerEmail || '',
+                rsvp: true
+              }
+            ],
             reminders: [
               { method: 'ALERT', minutes: 1440 }, // 24 hours
-              { method: 'ALERT', minutes: 60 }    // 1 hour
+              { method: 'ALERT', minutes: 60 } // 1 hour
             ]
           }
         })
@@ -384,16 +440,16 @@ export class BookingAutomationService {
             kind: 'document',
             document_url: icsResult.data.download_url,
             filename: 'appointment.ics',
-            caption: action.params?.tentative 
-              ? '📅 Here\'s your tentative appointment. Add it to your calendar and reply to confirm!'
+            caption: action.params?.tentative
+              ? "📅 Here's your tentative appointment. Add it to your calendar and reply to confirm!"
               : '📅 Your appointment is confirmed! Add it to your calendar.'
           })
-          
+
           return { ...icsResult, sendResult }
         }
-        
+
         return icsResult
-      
+
       default:
         throw new Error(`Unknown action type: ${action.type}`)
     }
@@ -420,7 +476,7 @@ export class BookingAutomationService {
     if (!currentNode) throw new Error(`Node ${currentNodeId} not found`)
 
     const actions = []
-    
+
     // Execute current node action if any
     if (currentNode.action) {
       const result = await this.executeAction(currentNode.action, { userResponse })
@@ -451,34 +507,34 @@ export const BOOKING_PATTERNS = {
     discount: 15, // percentage
     message: 'We have a last-minute opening! Book now and get 15% off.'
   },
-  
+
   PEAK_HOURS: {
     name: 'Peak Hours',
     times: ['10:00', '14:00', '18:00'],
     surcharge: 10, // percentage
     message: 'High demand time slot - book early to secure!'
   },
-  
+
   OFF_PEAK: {
     name: 'Off Peak Special',
     times: ['09:00', '11:00', '15:00'],
     discount: 10,
     message: 'Quieter time available - enjoy a relaxed experience with 10% off'
   },
-  
+
   // Customer patterns
   REGULAR_CUSTOMER: {
     name: 'Regular Customer Fast Track',
     bookingCount: 5, // minimum bookings
     benefits: ['Priority booking', 'Loyalty discount', 'Flexible rescheduling']
   },
-  
+
   VIP_CUSTOMER: {
     name: 'VIP Treatment',
     criteria: { totalSpend: 1000, bookingCount: 10 },
     benefits: ['Instant booking', 'Personal stylist', 'Complimentary services']
   },
-  
+
   NEW_CUSTOMER: {
     name: 'First Time Special',
     discount: 20,

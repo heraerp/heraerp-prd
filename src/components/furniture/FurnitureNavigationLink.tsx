@@ -14,47 +14,55 @@ interface FurnitureNavigationLinkProps {
   onClick?: () => void
 }
 
-export function FurnitureNavigationLink({ 
-  href, 
-  icon: Icon, 
-  title, 
-  badge, 
+export function FurnitureNavigationLink({
+  href,
+  icon: Icon,
+  title,
+  badge,
   badgeColor,
   active,
-  onClick 
+  onClick
 }: FurnitureNavigationLinkProps) {
   return (
     <NavigationLink
       href={href}
       onClick={onClick}
       className={cn(
-        "flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 group relative",
-        "text-gray-400 hover:text-white hover:bg-gray-700/50"
+        'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 group relative',
+        'text-gray-400 hover:text-white hover:bg-gray-700/50'
       )}
       activeClassName="!bg-gradient-to-r from-amber-600/20 to-orange-600/20 !text-white"
     >
       <div className="relative">
-        <Icon className={cn(
-          "h-5 w-5 transition-colors duration-300",
-          active ? "text-amber-400" : "text-gray-400 group-hover:text-amber-400"
-        )} />
-        
+        <Icon
+          className={cn(
+            'h-5 w-5 transition-colors duration-300',
+            active ? 'text-amber-400' : 'text-gray-400 group-hover:text-amber-400'
+          )}
+        />
+
         {/* Badge indicator */}
         {badge && (
-          <span className={cn(
-            "absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center",
-            badgeColor || "bg-gray-600"
-          )}>
+          <span
+            className={cn(
+              'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+              badgeColor || 'bg-gray-600'
+            )}
+          >
             {badge}
           </span>
         )}
       </div>
-      
+
       {/* Text label - full text on mobile, abbreviated on desktop */}
-      <span className={cn(
-        "ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight transition-colors duration-300",
-        active ? "text-amber-400" : "text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300"
-      )}>
+      <span
+        className={cn(
+          'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight transition-colors duration-300',
+          active
+            ? 'text-amber-400'
+            : 'text-gray-300 lg:text-gray-500 group-hover:text-gray-100 lg:group-hover:text-gray-300'
+        )}
+      >
         {title}
       </span>
 
@@ -63,7 +71,8 @@ export function FurnitureNavigationLink({
         <p className="font-medium">{title}</p>
         {badge && (
           <p className="text-xs text-gray-400 mt-1">
-            {badge} {title === 'Sales' ? 'active orders' : title === 'Production' ? 'in queue' : 'alerts'}
+            {badge}{' '}
+            {title === 'Sales' ? 'active orders' : title === 'Production' ? 'in queue' : 'alerts'}
           </p>
         )}
       </div>

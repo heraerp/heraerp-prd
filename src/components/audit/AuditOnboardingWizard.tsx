@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Shield, 
-  ArrowRight, 
+import {
+  Shield,
+  ArrowRight,
   ArrowLeft,
-  CheckCircle, 
+  CheckCircle,
   Loader2,
   Building2,
   Users,
@@ -39,7 +39,7 @@ interface AuditFirmData {
   email: string
   password: string
   phone: string
-  
+
   // Firm Details
   firm_name: string
   firm_code: string
@@ -47,13 +47,13 @@ interface AuditFirmData {
   established_year: string
   registration_country: string
   website: string
-  
+
   // Firm Size & Type
   firm_type: 'sole_practitioner' | 'small_practice' | 'mid_tier' | 'big_four'
   partner_count: string
   staff_count: string
   office_locations: string[]
-  
+
   // Specializations
   specializations: string[]
   quality_control_system: string
@@ -113,14 +113,14 @@ export function AuditOnboardingWizard() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  
+
   const [formData, setFormData] = useState<AuditFirmData>({
     // Personal Info
     full_name: '',
     email: '',
     password: '',
     phone: '',
-    
+
     // Firm Details
     firm_name: '',
     firm_code: '',
@@ -128,7 +128,7 @@ export function AuditOnboardingWizard() {
     established_year: '',
     registration_country: 'Bahrain',
     website: '',
-    
+
     // Firm Profile
     firm_type: 'small_practice',
     partner_count: '1',
@@ -153,19 +153,22 @@ export function AuditOnboardingWizard() {
       case 1:
         if (!formData.full_name.trim()) newErrors.full_name = 'Full name is required'
         if (!formData.email.trim()) newErrors.email = 'Email is required'
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Valid email is required'
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+          newErrors.email = 'Valid email is required'
         if (!formData.password) newErrors.password = 'Password is required'
-        if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters'
+        if (formData.password.length < 8)
+          newErrors.password = 'Password must be at least 8 characters'
         break
-        
+
       case 2:
         if (!formData.firm_name.trim()) newErrors.firm_name = 'Firm name is required'
         if (!formData.firm_code.trim()) newErrors.firm_code = 'Firm code is required'
-        if (formData.firm_code.length > 10) newErrors.firm_code = 'Firm code must be 10 characters or less'
+        if (formData.firm_code.length > 10)
+          newErrors.firm_code = 'Firm code must be 10 characters or less'
         if (!formData.license_number.trim()) newErrors.license_number = 'License number is required'
         if (!formData.established_year) newErrors.established_year = 'Established year is required'
         break
-        
+
       case 3:
         if (!formData.partner_count || parseInt(formData.partner_count) < 1) {
           newErrors.partner_count = 'At least 1 partner required'
@@ -195,9 +198,7 @@ export function AuditOnboardingWizard() {
 
   const handleSpecializationToggle = (spec: string) => {
     const current = formData.specializations
-    const updated = current.includes(spec)
-      ? current.filter(s => s !== spec)
-      : [...current, spec]
+    const updated = current.includes(spec) ? current.filter(s => s !== spec) : [...current, spec]
     updateFormData('specializations', updated)
   }
 
@@ -207,7 +208,7 @@ export function AuditOnboardingWizard() {
     setIsSubmitting(true)
     try {
       console.log('🚀 Starting audit firm onboarding...')
-      
+
       // Step 1: Register with Supabase
       console.log('📧 Registering with Supabase...')
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -238,7 +239,7 @@ export function AuditOnboardingWizard() {
           admin_email: formData.email,
           admin_name: formData.full_name,
           admin_phone: formData.phone,
-          
+
           // Firm info
           entity_name: formData.firm_name,
           entity_code: formData.firm_code.toUpperCase(),
@@ -246,7 +247,7 @@ export function AuditOnboardingWizard() {
           established_year: parseInt(formData.established_year),
           registration_country: formData.registration_country,
           website: formData.website,
-          
+
           // Firm profile
           firm_type: formData.firm_type,
           partner_count: parseInt(formData.partner_count),
@@ -261,13 +262,13 @@ export function AuditOnboardingWizard() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authData.session?.access_token}`
+          Authorization: `Bearer ${authData.session?.access_token}`
         },
         body: JSON.stringify(firmRegistration)
       })
 
       const firmResult = await firmResponse.json()
-      
+
       if (!firmResult.success) {
         throw new Error(`Firm registration failed: ${firmResult.message}`)
       }
@@ -276,12 +277,12 @@ export function AuditOnboardingWizard() {
 
       // Step 3: Set up initial audit system configuration
       console.log('⚙️ Setting up audit system configuration...')
-      
+
       const configResponse = await fetch('/api/v1/audit/setup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authData.session?.access_token}`
+          Authorization: `Bearer ${authData.session?.access_token}`
         },
         body: JSON.stringify({
           action: 'initialize_firm',
@@ -300,12 +301,11 @@ export function AuditOnboardingWizard() {
 
       // Step 4: Success - move to final step
       setCurrentStep(4)
-      
+
       // Auto-redirect after showing success
       setTimeout(() => {
         window.location.href = '/login'
       }, 3000)
-
     } catch (error) {
       console.error('❌ Onboarding error:', error)
       setErrors({ general: error instanceof Error ? error.message : 'Registration failed' })
@@ -320,12 +320,10 @@ export function AuditOnboardingWizard() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
               <Input
                 value={formData.full_name}
-                onChange={(e) => updateFormData('full_name', e.target.value)}
+                onChange={e => updateFormData('full_name', e.target.value)}
                 placeholder="Enter your full name"
                 className={errors.full_name ? 'border-red-300' : ''}
               />
@@ -339,7 +337,7 @@ export function AuditOnboardingWizard() {
               <Input
                 type="email"
                 value={formData.email}
-                onChange={(e) => updateFormData('email', e.target.value)}
+                onChange={e => updateFormData('email', e.target.value)}
                 placeholder="your.email@firm.com"
                 className={errors.email ? 'border-red-300' : ''}
               />
@@ -347,14 +345,12 @@ export function AuditOnboardingWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password *</label>
               <div className="relative">
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
-                  onChange={(e) => updateFormData('password', e.target.value)}
+                  onChange={e => updateFormData('password', e.target.value)}
                   placeholder="Create a secure password"
                   className={errors.password ? 'border-red-300' : ''}
                 />
@@ -363,19 +359,21 @@ export function AuditOnboardingWizard() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-400" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-400" />
+                  )}
                 </button>
               </div>
               {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
               <Input
                 value={formData.phone}
-                onChange={(e) => updateFormData('phone', e.target.value)}
+                onChange={e => updateFormData('phone', e.target.value)}
                 placeholder="+973 1234 5678"
               />
             </div>
@@ -387,30 +385,30 @@ export function AuditOnboardingWizard() {
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Firm Name *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Firm Name *</label>
                 <Input
                   value={formData.firm_name}
-                  onChange={(e) => updateFormData('firm_name', e.target.value)}
+                  onChange={e => updateFormData('firm_name', e.target.value)}
                   placeholder="ABC Audit Partners"
                   className={errors.firm_name ? 'border-red-300' : ''}
                 />
-                {errors.firm_name && <p className="text-red-600 text-sm mt-1">{errors.firm_name}</p>}
+                {errors.firm_name && (
+                  <p className="text-red-600 text-sm mt-1">{errors.firm_name}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Firm Code *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Firm Code *</label>
                 <Input
                   value={formData.firm_code}
-                  onChange={(e) => updateFormData('firm_code', e.target.value.toUpperCase())}
+                  onChange={e => updateFormData('firm_code', e.target.value.toUpperCase())}
                   placeholder="ABC"
                   maxLength={10}
                   className={errors.firm_code ? 'border-red-300' : ''}
                 />
-                {errors.firm_code && <p className="text-red-600 text-sm mt-1">{errors.firm_code}</p>}
+                {errors.firm_code && (
+                  <p className="text-red-600 text-sm mt-1">{errors.firm_code}</p>
+                )}
               </div>
             </div>
 
@@ -421,11 +419,13 @@ export function AuditOnboardingWizard() {
                 </label>
                 <Input
                   value={formData.license_number}
-                  onChange={(e) => updateFormData('license_number', e.target.value)}
+                  onChange={e => updateFormData('license_number', e.target.value)}
                   placeholder="AUD-BH-2025-001"
                   className={errors.license_number ? 'border-red-300' : ''}
                 />
-                {errors.license_number && <p className="text-red-600 text-sm mt-1">{errors.license_number}</p>}
+                {errors.license_number && (
+                  <p className="text-red-600 text-sm mt-1">{errors.license_number}</p>
+                )}
               </div>
 
               <div>
@@ -435,23 +435,23 @@ export function AuditOnboardingWizard() {
                 <Input
                   type="number"
                   value={formData.established_year}
-                  onChange={(e) => updateFormData('established_year', e.target.value)}
+                  onChange={e => updateFormData('established_year', e.target.value)}
                   placeholder="2020"
                   min="1900"
                   max={new Date().getFullYear()}
                   className={errors.established_year ? 'border-red-300' : ''}
                 />
-                {errors.established_year && <p className="text-red-600 text-sm mt-1">{errors.established_year}</p>}
+                {errors.established_year && (
+                  <p className="text-red-600 text-sm mt-1">{errors.established_year}</p>
+                )}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Website
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Website</label>
               <Input
                 value={formData.website}
-                onChange={(e) => updateFormData('website', e.target.value)}
+                onChange={e => updateFormData('website', e.target.value)}
                 placeholder="https://www.yourfirm.com"
               />
             </div>
@@ -462,7 +462,7 @@ export function AuditOnboardingWizard() {
               </label>
               <select
                 value={formData.registration_country}
-                onChange={(e) => updateFormData('registration_country', e.target.value)}
+                onChange={e => updateFormData('registration_country', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="Bahrain">Bahrain</option>
@@ -480,11 +480,9 @@ export function AuditOnboardingWizard() {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Firm Type *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Firm Type *</label>
               <div className="grid grid-cols-2 gap-3">
-                {FIRM_TYPES.map((type) => (
+                {FIRM_TYPES.map(type => (
                   <button
                     key={type.value}
                     type="button"
@@ -510,11 +508,13 @@ export function AuditOnboardingWizard() {
                 <Input
                   type="number"
                   value={formData.partner_count}
-                  onChange={(e) => updateFormData('partner_count', e.target.value)}
+                  onChange={e => updateFormData('partner_count', e.target.value)}
                   min="1"
                   className={errors.partner_count ? 'border-red-300' : ''}
                 />
-                {errors.partner_count && <p className="text-red-600 text-sm mt-1">{errors.partner_count}</p>}
+                {errors.partner_count && (
+                  <p className="text-red-600 text-sm mt-1">{errors.partner_count}</p>
+                )}
               </div>
 
               <div>
@@ -524,11 +524,13 @@ export function AuditOnboardingWizard() {
                 <Input
                   type="number"
                   value={formData.staff_count}
-                  onChange={(e) => updateFormData('staff_count', e.target.value)}
+                  onChange={e => updateFormData('staff_count', e.target.value)}
                   min="1"
                   className={errors.staff_count ? 'border-red-300' : ''}
                 />
-                {errors.staff_count && <p className="text-red-600 text-sm mt-1">{errors.staff_count}</p>}
+                {errors.staff_count && (
+                  <p className="text-red-600 text-sm mt-1">{errors.staff_count}</p>
+                )}
               </div>
             </div>
 
@@ -537,7 +539,7 @@ export function AuditOnboardingWizard() {
                 Specializations * (Select all that apply)
               </label>
               <div className="grid grid-cols-3 gap-2">
-                {SPECIALIZATIONS.map((spec) => (
+                {SPECIALIZATIONS.map(spec => (
                   <button
                     key={spec}
                     type="button"
@@ -552,7 +554,9 @@ export function AuditOnboardingWizard() {
                   </button>
                 ))}
               </div>
-              {errors.specializations && <p className="text-red-600 text-sm mt-1">{errors.specializations}</p>}
+              {errors.specializations && (
+                <p className="text-red-600 text-sm mt-1">{errors.specializations}</p>
+              )}
             </div>
 
             <div>
@@ -561,7 +565,7 @@ export function AuditOnboardingWizard() {
               </label>
               <Input
                 value={formData.office_locations[0]}
-                onChange={(e) => updateFormData('office_locations', [e.target.value])}
+                onChange={e => updateFormData('office_locations', [e.target.value])}
                 placeholder="Manama, Bahrain"
               />
             </div>
@@ -574,7 +578,9 @@ export function AuditOnboardingWizard() {
             {isSubmitting ? (
               <div className="space-y-4">
                 <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto" />
-                <h3 className="text-xl font-semibold text-gray-900">Setting up your audit firm...</h3>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Setting up your audit firm...
+                </h3>
                 <div className="space-y-2 text-sm text-gray-600">
                   <p>✅ Creating Supabase account</p>
                   <p>✅ Registering audit firm</p>
@@ -586,7 +592,8 @@ export function AuditOnboardingWizard() {
                 <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />
                 <h3 className="text-xl font-semibold text-gray-900">Registration Successful!</h3>
                 <p className="text-gray-600">
-                  Your audit firm has been successfully registered. You'll be redirected to the login page shortly.
+                  Your audit firm has been successfully registered. You'll be redirected to the
+                  login page shortly.
                 </p>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <h4 className="font-medium text-green-900 mb-2">What's Next?</h4>
@@ -615,25 +622,25 @@ export function AuditOnboardingWizard() {
             <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            
+
             <CardTitle className="text-2xl font-light text-gray-900">
               Join HERA Audit Platform
             </CardTitle>
-            
-            <p className="text-gray-600 mt-2">
-              Set up your audit firm in minutes
-            </p>
+
+            <p className="text-gray-600 mt-2">Set up your audit firm in minutes</p>
 
             {/* Progress Steps */}
             <div className="flex justify-center mt-6">
               <div className="flex items-center space-x-4">
                 {ONBOARDING_STEPS.map((step, index) => (
                   <React.Fragment key={step.id}>
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                      currentStep >= step.id 
-                        ? 'border-blue-500 bg-blue-500 text-white' 
-                        : 'border-gray-300 text-gray-400'
-                    }`}>
+                    <div
+                      className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                        currentStep >= step.id
+                          ? 'border-blue-500 bg-blue-500 text-white'
+                          : 'border-gray-300 text-gray-400'
+                      }`}
+                    >
                       {currentStep > step.id ? (
                         <CheckCircle className="w-4 h-4" />
                       ) : (
@@ -641,9 +648,11 @@ export function AuditOnboardingWizard() {
                       )}
                     </div>
                     {index < ONBOARDING_STEPS.length - 1 && (
-                      <div className={`w-8 h-0.5 ${
-                        currentStep > step.id ? 'bg-blue-500' : 'bg-gray-300'
-                      }`} />
+                      <div
+                        className={`w-8 h-0.5 ${
+                          currentStep > step.id ? 'bg-blue-500' : 'bg-gray-300'
+                        }`}
+                      />
                     )}
                   </React.Fragment>
                 ))}
@@ -701,10 +710,7 @@ export function AuditOnboardingWizard() {
                     )}
                   </Button>
                 ) : (
-                  <Button
-                    onClick={handleNext}
-                    className="flex items-center gap-2"
-                  >
+                  <Button onClick={handleNext} className="flex items-center gap-2">
                     Next
                     <ArrowRight className="w-4 h-4" />
                   </Button>

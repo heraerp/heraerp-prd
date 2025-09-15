@@ -111,16 +111,20 @@ export async function enterpriseMiddleware(
     logAndRecordMetrics(request, response, ctx, duration)
 
     return response
-
   } catch (error) {
     // Error handling
     const duration = Date.now() - ctx.startTime
-    
-    heraLogger.error('Request failed', error as Error, {
-      method: request.method,
-      path: request.nextUrl.pathname,
-      duration
-    }, ctx.requestId)
+
+    heraLogger.error(
+      'Request failed',
+      error as Error,
+      {
+        method: request.method,
+        path: request.nextUrl.pathname,
+        duration
+      },
+      ctx.requestId
+    )
 
     heraMetrics.recordAPIError(
       request.method,
@@ -129,7 +133,6 @@ export async function enterpriseMiddleware(
     )
 
     return createErrorResponse(error as Error, ctx)
-
   } finally {
     // Cleanup
     heraLogger.clearContext(ctx.requestId)
@@ -140,10 +143,7 @@ export async function enterpriseMiddleware(
 /**
  * Rate limit check
  */
-async function checkRateLimit(
-  request: NextRequest,
-  ctx: MiddlewareContext
-): Promise<any> {
+async function checkRateLimit(request: NextRequest, ctx: MiddlewareContext): Promise<any> {
   if (!ctx.organizationId) {
     return { allowed: true }
   }
@@ -162,10 +162,7 @@ async function checkRateLimit(
 /**
  * RBAC check
  */
-async function checkRBAC(
-  request: NextRequest,
-  ctx: MiddlewareContext
-): Promise<any> {
+async function checkRBAC(request: NextRequest, ctx: MiddlewareContext): Promise<any> {
   if (!ctx.organizationId || !ctx.userId) {
     return { allowed: false, reason: 'Missing authentication context' }
   }
@@ -189,10 +186,7 @@ async function checkRBAC(
 /**
  * Idempotency check
  */
-async function checkIdempotency(
-  key: string,
-  ctx: MiddlewareContext
-): Promise<any> {
+async function checkIdempotency(key: string, ctx: MiddlewareContext): Promise<any> {
   if (!ctx.organizationId) {
     return { exists: false }
   }
@@ -218,7 +212,10 @@ async function storeIdempotencyResult(
     organization_id: ctx.organizationId
   })
 
-  const responseBody = await response.clone().json().catch(() => null)
+  const responseBody = await response
+    .clone()
+    .json()
+    .catch(() => null)
 
   await rateLimiter.storeIdempotency({
     key,
@@ -260,17 +257,9 @@ function logAndRecordMetrics(
   })
 
   // Metrics
-  heraMetrics.recordAPIRequest(
-    request.method,
-    request.nextUrl.pathname,
-    response.status
-  )
-  
-  heraMetrics.recordAPIDuration(
-    request.method,
-    request.nextUrl.pathname,
-    duration
-  )
+  heraMetrics.recordAPIRequest(request.method, request.nextUrl.pathname, response.status)
+
+  heraMetrics.recordAPIDuration(request.method, request.nextUrl.pathname, duration)
 }
 
 /**
@@ -317,22 +306,19 @@ function createForbiddenResponse(result: any): Response {
 }
 
 function createIdempotentResponse(cached: any): Response {
-  return new Response(
-    JSON.stringify(cached.response),
-    {
-      status: cached.status_code,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Idempotent-Replay': 'true',
-        'X-Original-Date': cached.created_at
-      }
+  return new Response(JSON.stringify(cached.response), {
+    status: cached.status_code,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Idempotent-Replay': 'true',
+      'X-Original-Date': cached.created_at
     }
-  )
+  })
 }
 
 function createErrorResponse(error: Error, ctx: MiddlewareContext): Response {
   const errorId = uuidv4()
-  
+
   return new Response(
     JSON.stringify({
       type: 'https://hera.app/errors/internal',
@@ -365,7 +351,7 @@ function getApiGroup(path: string): string {
 function extractSmartCode(request: NextRequest): string | undefined {
   // Extract from body or headers
   const smartCode = request.headers.get('x-smart-code') || undefined
-  
+
   // Normalize if present (V1 → v1)
   if (smartCode) {
     try {
@@ -375,7 +361,7 @@ function extractSmartCode(request: NextRequest): string | undefined {
       return smartCode
     }
   }
-  
+
   return undefined
 }
 

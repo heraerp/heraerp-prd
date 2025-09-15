@@ -1,34 +1,34 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { PredictiveAnalytics } from './PredictiveAnalytics';
-import { AIInsightsFeed } from './AIInsightsFeed';
-import { RiskAlerts } from './RiskAlerts';
-import { OpportunityFeed } from './OpportunityFeed';
-import { MarketIntelligence } from './MarketIntelligence';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Brain, Target, Shield, Lightbulb, BarChart3 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { getAIInsights } from '@/lib/pwm/api';
+import React, { useState } from 'react'
+import { PredictiveAnalytics } from './PredictiveAnalytics'
+import { AIInsightsFeed } from './AIInsightsFeed'
+import { RiskAlerts } from './RiskAlerts'
+import { OpportunityFeed } from './OpportunityFeed'
+import { MarketIntelligence } from './MarketIntelligence'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Brain, Target, Shield, Lightbulb, BarChart3 } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { getAIInsights } from '@/lib/pwm/api'
 
 interface AIIntelligenceCenterProps {
-  organizationId: string;
+  organizationId: string
 }
 
 export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterProps) {
-  const [activeTab, setActiveTab] = useState('predictions');
+  const [activeTab, setActiveTab] = useState('predictions')
 
   // Fetch AI insights
   const { data: insights, isLoading } = useQuery({
     queryKey: ['ai-insights-full', organizationId],
     queryFn: () => getAIInsights(organizationId),
-    refetchInterval: 60000, // Refresh every minute
-  });
+    refetchInterval: 60000 // Refresh every minute
+  })
 
   const handleInsightAction = (insight: any, actionId: string) => {
-    console.log('AI action triggered:', insight, actionId);
+    console.log('AI action triggered:', insight, actionId)
     // TODO: Implement AI action handling
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -50,35 +50,35 @@ export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterPro
       {/* AI Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid grid-cols-5 w-full max-w-3xl bg-slate-800/50 p-1">
-          <TabsTrigger 
-            value="predictions" 
+          <TabsTrigger
+            value="predictions"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
           >
             <Target className="h-4 w-4" />
             <span className="hidden sm:inline">Predictions</span>
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="insights"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
           >
             <Brain className="h-4 w-4" />
             <span className="hidden sm:inline">Insights</span>
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="risks"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
           >
             <Shield className="h-4 w-4" />
             <span className="hidden sm:inline">Risks</span>
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="opportunities"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
           >
             <Lightbulb className="h-4 w-4" />
             <span className="hidden sm:inline">Opportunities</span>
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="market"
             className="data-[state=active]:bg-slate-700 flex items-center gap-2"
           >
@@ -128,12 +128,10 @@ export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterPro
           </div>
           <div>
             <p className="text-sm font-medium text-white">AI Active</p>
-            <p className="text-xs text-slate-400">
-              Processing {insights?.length || 0} insights
-            </p>
+            <p className="text-xs text-slate-400">Processing {insights?.length || 0} insights</p>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

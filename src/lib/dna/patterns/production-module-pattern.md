@@ -14,10 +14,10 @@ The Production Module DNA Pattern provides complete production management capabi
 
 ```typescript
 const PRODUCTION_ENTITY_TYPES = {
-  WORK_CENTER: 'work_center',      // Manufacturing stations/machines
-  PRODUCT: 'product',              // Finished goods
-  RAW_MATERIAL: 'raw_material',    // Input materials
-  RECIPE: 'recipe',                // Production formulas/BOMs
+  WORK_CENTER: 'work_center', // Manufacturing stations/machines
+  PRODUCT: 'product', // Finished goods
+  RAW_MATERIAL: 'raw_material', // Input materials
+  RECIPE: 'recipe', // Production formulas/BOMs
   WORKFLOW_STATUS: 'workflow_status' // Status entities
 }
 ```
@@ -26,9 +26,9 @@ const PRODUCTION_ENTITY_TYPES = {
 
 ```typescript
 const PRODUCTION_TRANSACTION_TYPES = {
-  PRODUCTION_ORDER: 'production_order',    // Main production transactions
-  PRODUCTION_BATCH: 'production_batch',    // Batch production records
-  MACHINE_LOG: 'machine_log',              // Equipment operation logs
+  PRODUCTION_ORDER: 'production_order', // Main production transactions
+  PRODUCTION_BATCH: 'production_batch', // Batch production records
+  MACHINE_LOG: 'machine_log', // Equipment operation logs
   MATERIAL_REQUISITION: 'material_requisition' // Material consumption
 }
 ```
@@ -40,24 +40,24 @@ const PRODUCTION_SMART_CODES = {
   // Production Orders
   PRODUCTION_ORDER: 'HERA.MFG.PROD.ORDER.v1',
   PRODUCTION_BATCH: 'HERA.MFG.PROD.BATCH.v1',
-  
+
   // Work Centers
   WORKCENTER_CUTTING: 'HERA.MFG.WORKCENTER.CUTTING.v1',
   WORKCENTER_ASSEMBLY: 'HERA.MFG.WORKCENTER.ASSEMBLY.v1',
   WORKCENTER_FINISHING: 'HERA.MFG.WORKCENTER.FINISHING.v1',
-  
+
   // Materials
   MATERIAL_WOOD: 'HERA.MFG.MATERIAL.WOOD.v1',
   MATERIAL_FABRIC: 'HERA.MFG.MATERIAL.FABRIC.v1',
   MATERIAL_HARDWARE: 'HERA.MFG.MATERIAL.HARDWARE.v1',
-  
+
   // Operations
   OPERATION_EXEC: 'HERA.MFG.EXEC.OPERATION.v1',
   MACHINE_LOG: 'HERA.MFG.MACHINE.LOG.v1',
-  
+
   // BOM Components
   BOM_COMPONENT: 'HERA.MFG.BOM.COMPONENT.v1',
-  
+
   // Status Management
   STATUS_WORKFLOW: 'HERA.MFG.PROD.STATUS.v1'
 }
@@ -72,9 +72,8 @@ export function useProductionData(organizationId: string) {
   // Load production orders
   const { data: productionOrders, loading: ordersLoading } = useUniversalData({
     table: 'universal_transactions',
-    filter: (t) => 
-      t.transaction_type === 'production_order' &&
-      t.smart_code?.includes('HERA.MFG.PROD'),
+    filter: t =>
+      t.transaction_type === 'production_order' && t.smart_code?.includes('HERA.MFG.PROD'),
     sort: universalSorters.byCreatedDesc,
     organizationId,
     enabled: !!organizationId
@@ -106,7 +105,7 @@ export function useProductionData(organizationId: string) {
   // Load relationships for status tracking
   const { data: relationships } = useUniversalData({
     table: 'core_relationships',
-    filter: (r) => r.relationship_type === 'has_status',
+    filter: r => r.relationship_type === 'has_status',
     organizationId,
     enabled: !!organizationId
   })
@@ -155,13 +154,18 @@ const activeOrders = productionOrders.filter(order => {
 ### **Transaction Line-Based Progress**
 
 ```typescript
-function calculateProductionProgress(orderId: string, orderAmount: number, transactionLines: any[]) {
+function calculateProductionProgress(
+  orderId: string,
+  orderAmount: number,
+  transactionLines: any[]
+) {
   const orderLines = transactionLines.filter(l => l.transaction_id === orderId)
-  const completedQty = orderLines.reduce((sum, line) => 
-    sum + (line.metadata?.completed_quantity || 0), 0
+  const completedQty = orderLines.reduce(
+    (sum, line) => sum + (line.metadata?.completed_quantity || 0),
+    0
   )
   const progress = orderAmount ? (completedQty / orderAmount) * 100 : 0
-  
+
   return {
     completedQty,
     totalQty: orderAmount,
@@ -246,12 +250,12 @@ export function ProductionMetricsCards({ stats }: { stats: ProductionStats }) {
 ### **Production Order Card Template**
 
 ```typescript
-export function ProductionOrderCard({ 
-  order, 
-  product, 
-  workCenter, 
-  progress, 
-  status 
+export function ProductionOrderCard({
+  order,
+  product,
+  workCenter,
+  progress,
+  status
 }: ProductionOrderCardProps) {
   return (
     <div className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50 hover:bg-gray-900/70 transition-colors">
@@ -315,11 +319,11 @@ export function ProductionOrderCard({
 ### **Work Center Status Grid**
 
 ```typescript
-export function WorkCenterGrid({ 
-  workCenters, 
-  activeOrders, 
-  products, 
-  transactionLines 
+export function WorkCenterGrid({
+  workCenters,
+  activeOrders,
+  products,
+  transactionLines
 }: WorkCenterGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -327,7 +331,7 @@ export function WorkCenterGrid({
         const activeOrder = activeOrders.find(o => o.target_entity_id === center.id)
         const product = activeOrder ? products.find(p => p.id === activeOrder.source_entity_id) : null
         const orderLines = activeOrder ? transactionLines.filter(l => l.transaction_id === activeOrder.id) : []
-        
+
         const currentOperation = orderLines.find(l => l.metadata?.status === 'in_progress')
         const completedOperations = orderLines.filter(l => l.metadata?.status === 'completed').length
         const totalOperations = orderLines.length || 1
@@ -449,6 +453,7 @@ export function ActivityFeed({ activities }: { activities: Activity[] }) {
 ### **1. Production Dashboard Page**
 
 Structure:
+
 - Header with organization info and action buttons
 - 4-metric overview cards
 - Tabbed content (Orders, Work Centers, Schedule, Performance)
@@ -457,6 +462,7 @@ Structure:
 ### **2. Production Planning Page**
 
 Structure:
+
 - Planning overview metrics
 - Tabbed content (Demand Planning, Capacity Planning, Material Requirements, Master Schedule)
 - Product demand analysis with action buttons
@@ -465,6 +471,7 @@ Structure:
 ### **3. Production Tracking Page**
 
 Structure:
+
 - Live statistics with pulse animations
 - Work center status grid with real-time updates
 - Active production orders with progress tracking
@@ -506,24 +513,28 @@ const FOOD_PRODUCTION_CONFIG = {
 ## Implementation Checklist
 
 ### **Phase 1: Basic Production (Day 1)**
+
 - [ ] Create production entity types in seed data
 - [ ] Implement production dashboard with metrics cards
 - [ ] Add production order listing with status
 - [ ] Create work center grid view
 
 ### **Phase 2: Enhanced Features (Day 2)**
+
 - [ ] Add production planning page with demand analysis
 - [ ] Implement work center capacity planning
 - [ ] Add material requirements planning
 - [ ] Create production order creation form
 
 ### **Phase 3: Real-Time Tracking (Day 3)**
+
 - [ ] Implement real-time production tracking page
 - [ ] Add progress tracking with transaction lines
 - [ ] Create activity feed for recent operations
 - [ ] Add work center status monitoring
 
 ### **Phase 4: Advanced Features (Day 4)**
+
 - [ ] Add production scheduling (Gantt chart view)
 - [ ] Implement performance analytics
 - [ ] Add quality management integration

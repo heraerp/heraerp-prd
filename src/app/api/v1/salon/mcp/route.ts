@@ -91,28 +91,31 @@ async function executeInventoryCheck(organizationId: string, args: any) {
     .eq('organization_id', organizationId)
     .eq('entity_type', 'product')
     .eq('status', 'active')
-  
+
   if (args.productName) {
     query = query.ilike('entity_name', `%${args.productName}%`)
   }
-  
+
   const { data: products, error } = await query
   if (error) throw error
-  
-  const inventory = products?.map(product => {
-    const stockField = product.core_dynamic_data?.find((f: any) => f.field_name === 'current_stock')
-    const minField = product.core_dynamic_data?.find((f: any) => f.field_name === 'min_stock')
-    const currentStock = stockField?.field_value_number || 0
-    const minStock = minField?.field_value_number || 5
-    
-    return {
-      name: product.entity_name,
-      currentStock,
-      minStock,
-      isLow: currentStock <= minStock
-    }
-  }) || []
-  
+
+  const inventory =
+    products?.map(product => {
+      const stockField = product.core_dynamic_data?.find(
+        (f: any) => f.field_name === 'current_stock'
+      )
+      const minField = product.core_dynamic_data?.find((f: any) => f.field_name === 'min_stock')
+      const currentStock = stockField?.field_value_number || 0
+      const minStock = minField?.field_value_number || 5
+
+      return {
+        name: product.entity_name,
+        currentStock,
+        minStock,
+        isLow: currentStock <= minStock
+      }
+    }) || []
+
   return {
     inventory,
     summary: {
@@ -134,7 +137,7 @@ async function executeBookAppointment(organizationId: string, args: any) {
 async function executeCheckRevenue(organizationId: string, args: any) {
   const now = new Date()
   let dateFrom: Date, dateTo: Date
-  
+
   switch (args.period) {
     case 'today':
       dateFrom = new Date(now.setHours(0, 0, 0, 0))
@@ -154,7 +157,7 @@ async function executeCheckRevenue(organizationId: string, args: any) {
       dateFrom = new Date(now.setHours(0, 0, 0, 0))
       dateTo = new Date()
   }
-  
+
   const { data: transactions, error } = await supabase
     .from('universal_transactions')
     .select('*')
@@ -163,12 +166,12 @@ async function executeCheckRevenue(organizationId: string, args: any) {
     .in('transaction_status', ['completed', 'paid'])
     .gte('transaction_date', dateFrom.toISOString())
     .lte('transaction_date', dateTo.toISOString())
-  
+
   if (error) throw error
-  
+
   const totalRevenue = transactions?.reduce((sum, txn) => sum + (txn.total_amount || 0), 0) || 0
   const transactionCount = transactions?.length || 0
-  
+
   return {
     period: args.period,
     totalRevenue,
@@ -182,8 +185,8 @@ async function executeStaffPerformance(organizationId: string, args: any) {
   // Placeholder for brevity
   return {
     period: args.period,
-    topPerformer: { name: 'Emily Davis', revenue: 1445, commission: 433.50 },
-    totalCommission: 592.50
+    topPerformer: { name: 'Emily Davis', revenue: 1445, commission: 433.5 },
+    totalCommission: 592.5
   }
 }
 
@@ -203,14 +206,14 @@ async function executeFindQuietTimes(organizationId: string, args: any) {
 export async function POST(request: NextRequest) {
   try {
     const { message, organizationId, useClaude = true } = await request.json()
-    
+
     if (!message || !organizationId) {
       return NextResponse.json(
         { error: 'Message and organizationId are required' },
         { status: 400 }
       )
     }
-    
+
     // If Claude integration is enabled, use it for natural language understanding
     if (useClaude && process.env.ANTHROPIC_API_KEY) {
       const completion = await anthropic.messages.create({
@@ -218,20 +221,22 @@ export async function POST(request: NextRequest) {
         max_tokens: 1000,
         temperature: 0.3,
         tools: SALON_TOOLS,
-        messages: [{
-          role: 'user',
-          content: message
-        }],
+        messages: [
+          {
+            role: 'user',
+            content: message
+          }
+        ],
         system: `You are a salon management assistant. Use the available tools to help with salon operations.
 When users ask about inventory, appointments, revenue, or staff performance, use the appropriate tools.
 Always be helpful and professional in your responses.`
       })
-      
+
       // Process tool calls if any
       if (completion.content[0].type === 'tool_use') {
         const toolCall = completion.content[0]
         let result
-        
+
         switch (toolCall.name) {
           case 'check_inventory':
             result = await executeInventoryCheck(organizationId, toolCall.input)
@@ -249,7 +254,7 @@ Always be helpful and professional in your responses.`
             result = await executeFindQuietTimes(organizationId, toolCall.input)
             break
         }
-        
+
         // Format response based on tool results
         return NextResponse.json({
           success: true,
@@ -258,17 +263,17 @@ Always be helpful and professional in your responses.`
           message: formatToolResponse(toolCall.name, result)
         })
       }
-      
+
       // Return Claude's direct response if no tool was used
       return NextResponse.json({
         success: true,
         message: completion.content[0].text
       })
     }
-    
+
     // Fallback to pattern matching if Claude is not available
     const lower = message.toLowerCase()
-    
+
     if (lower.includes('inventory') || lower.includes('stock')) {
       const result = await executeInventoryCheck(organizationId, {})
       return NextResponse.json({
@@ -277,7 +282,7 @@ Always be helpful and professional in your responses.`
         message: formatToolResponse('check_inventory', result)
       })
     }
-    
+
     if (lower.includes('revenue') || lower.includes('sales')) {
       const period = lower.includes('month') ? 'this_month' : 'today'
       const result = await executeCheckRevenue(organizationId, { period })
@@ -287,17 +292,20 @@ Always be helpful and professional in your responses.`
         message: formatToolResponse('check_revenue', result)
       })
     }
-    
+
     // Default response
     return NextResponse.json({
       success: false,
-      error: 'I could not understand your request. Try asking about inventory, revenue, appointments, or staff performance.'
+      error:
+        'I could not understand your request. Try asking about inventory, revenue, appointments, or staff performance.'
     })
-    
   } catch (error) {
     console.error('MCP API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }
@@ -313,16 +321,16 @@ function formatToolResponse(tool: string, result: any): string {
       })
       msg += `\n📊 Total: ${result.summary.totalProducts} products, ${result.summary.lowStockItems} low`
       return msg
-      
+
     case 'check_revenue':
       return `💰 Revenue (${result.period}): $${result.totalRevenue.toFixed(2)}\n📊 Transactions: ${result.transactionCount}\n💵 Average: $${result.averageTransaction.toFixed(2)}`
-      
+
     case 'staff_performance':
       return `💸 Total Commission (${result.period}): $${result.totalCommission.toFixed(2)}\n👑 Top performer: ${result.topPerformer.name} - $${result.topPerformer.commission.toFixed(2)}`
-      
+
     case 'find_quiet_times':
       return result.recommendation
-      
+
     default:
       return result.message || 'Operation completed successfully'
   }

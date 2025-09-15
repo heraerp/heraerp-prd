@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { 
-  History, 
-  Trash2, 
-  MessageSquare, 
+import {
+  History,
+  Trash2,
+  MessageSquare,
   Clock,
   Search,
   Plus,
@@ -44,17 +44,18 @@ export function ChatHistory({
   className
 }: ChatHistoryProps) {
   const [searchQuery, setSearchQuery] = React.useState('')
-  
-  const filteredSessions = sessions.filter(session =>
-    session.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    session.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredSessions = sessions.filter(
+    session =>
+      session.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      session.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const starredSessions = filteredSessions.filter(s => s.isStarred)
   const recentSessions = filteredSessions.filter(s => !s.isStarred)
 
   return (
-    <Card className={cn("border-purple-200 dark:border-purple-800 shadow-sm", className)}>
+    <Card className={cn('border-purple-200 dark:border-purple-800 shadow-sm', className)}>
       <CardHeader className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
@@ -81,7 +82,7 @@ export function ChatHistory({
             type="text"
             placeholder="Search conversations..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="w-full h-8 pl-8 pr-3 text-sm bg-muted/50 border border-purple-100 dark:border-purple-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
@@ -96,7 +97,7 @@ export function ChatHistory({
                   Starred
                 </p>
                 <div className="space-y-1">
-                  {starredSessions.map((session) => (
+                  {starredSessions.map(session => (
                     <SessionItem
                       key={session.id}
                       session={session}
@@ -117,7 +118,7 @@ export function ChatHistory({
                   Recent
                 </p>
                 <div className="space-y-1">
-                  {recentSessions.map((session) => (
+                  {recentSessions.map(session => (
                     <SessionItem
                       key={session.id}
                       session={session}
@@ -159,10 +160,10 @@ function SessionItem({
   return (
     <div
       className={cn(
-        "group relative p-2 rounded-lg cursor-pointer transition-all",
+        'group relative p-2 rounded-lg cursor-pointer transition-all',
         isActive
-          ? "bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 border border-purple-300 dark:border-purple-700"
-          : "hover:bg-purple-50 dark:hover:bg-purple-950 border border-transparent"
+          ? 'bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 border border-purple-300 dark:border-purple-700'
+          : 'hover:bg-purple-50 dark:hover:bg-purple-950 border border-transparent'
       )}
       onClick={onSelect}
       onMouseEnter={() => setShowActions(true)}
@@ -180,9 +181,7 @@ function SessionItem({
               {session.timestamp.toLocaleDateString()}
             </span>
             <span className="text-xs text-muted-foreground">•</span>
-            <span className="text-xs text-muted-foreground">
-              {session.messageCount} messages
-            </span>
+            <span className="text-xs text-muted-foreground">{session.messageCount} messages</span>
           </div>
         </div>
         {showActions && (
@@ -191,7 +190,7 @@ function SessionItem({
               size="sm"
               variant="ghost"
               className="h-7 w-7 p-0 hover:bg-red-100 dark:hover:bg-red-900"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 onDelete()
               }}

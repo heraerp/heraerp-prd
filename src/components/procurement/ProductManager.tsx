@@ -44,24 +44,24 @@ interface Product {
   created_at: string
   updated_at: string
   description: string
-  
+
   // Basic Product Information
   category: string
   brand: string
   model: string
   manufacturer: string
-  
+
   // Inventory Details
   unit_of_measure: string
   minimum_stock: number
   reorder_point: number
   lead_time_days: number
-  
+
   // Pricing
   standard_cost: number
   last_purchase_price: number
   list_price: number
-  
+
   // Physical Specifications (optional)
   weight?: number
   dimensions?: string
@@ -101,18 +101,18 @@ export function ProductManager() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Search and Filter State
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('active')
   const [categoryFilter, setCategoryFilter] = useState<string>('')
-  
+
   // Modal States
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   // Form State
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
@@ -138,14 +138,39 @@ export function ProductManager() {
 
   // Categories for filtering
   const categories = [
-    'general', 'raw_materials', 'components', 'supplies', 'equipment', 
-    'consumables', 'packaging', 'maintenance', 'safety', 'chemicals'
+    'general',
+    'raw_materials',
+    'components',
+    'supplies',
+    'equipment',
+    'consumables',
+    'packaging',
+    'maintenance',
+    'safety',
+    'chemicals'
   ]
 
   // Units of measure
   const units = [
-    'each', 'kg', 'lb', 'g', 'oz', 'l', 'ml', 'gal', 'ft', 'm',
-    'cm', 'in', 'sqft', 'sqm', 'box', 'pack', 'case', 'roll', 'sheet'
+    'each',
+    'kg',
+    'lb',
+    'g',
+    'oz',
+    'l',
+    'ml',
+    'gal',
+    'ft',
+    'm',
+    'cm',
+    'in',
+    'sqft',
+    'sqm',
+    'box',
+    'pack',
+    'case',
+    'roll',
+    'sheet'
   ]
 
   // Load products from API
@@ -153,11 +178,11 @@ export function ProductManager() {
     try {
       setIsLoading(true)
       setError(null)
-      
+
       console.log('📦 Product Manager: Loading products...')
       const response = await fetch('/api/v1/procurement/products?include_specs=true')
       const result = await response.json()
-      
+
       if (result.success) {
         setProducts(result.data)
         setFilteredProducts(result.data)
@@ -180,10 +205,11 @@ export function ProductManager() {
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -206,12 +232,18 @@ export function ProductManager() {
   }, [])
 
   // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked :
-              type === 'number' ? parseFloat(value) || 0 : value
+      [name]:
+        type === 'checkbox'
+          ? (e.target as HTMLInputElement).checked
+          : type === 'number'
+            ? parseFloat(value) || 0
+            : value
     }))
   }
 
@@ -244,7 +276,7 @@ export function ProductManager() {
   // Handle create product
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.name.trim() || !formData.category.trim()) {
       alert('Please fill in required fields: Name and Category')
       return
@@ -282,7 +314,7 @@ export function ProductManager() {
   // Handle edit product
   const handleUpdateProduct = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!editingProduct || !formData.name.trim()) {
       return
     }
@@ -346,10 +378,14 @@ export function ProductManager() {
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'inactive': return 'bg-gray-100 text-gray-800'
-      case 'discontinued': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'active':
+        return 'bg-green-100 text-green-800'
+      case 'inactive':
+        return 'bg-gray-100 text-gray-800'
+      case 'discontinued':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -398,7 +434,7 @@ export function ProductManager() {
               type="text"
               placeholder="Search products by name, code, or category..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -406,7 +442,7 @@ export function ProductManager() {
           {/* Status Filter */}
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={e => setStatusFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Status</option>
@@ -418,7 +454,7 @@ export function ProductManager() {
           {/* Category Filter */}
           <select
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
+            onChange={e => setCategoryFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">All Categories</option>
@@ -454,7 +490,7 @@ export function ProductManager() {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
+        {filteredProducts.map(product => (
           <Card key={product.id} className="p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
@@ -466,9 +502,7 @@ export function ProductManager() {
                   <p className="text-sm text-gray-600">{product.code}</p>
                 </div>
               </div>
-              <Badge className={getStatusColor(product.status)}>
-                {product.status}
-              </Badge>
+              <Badge className={getStatusColor(product.status)}>{product.status}</Badge>
             </div>
 
             <div className="space-y-3">
@@ -489,13 +523,17 @@ export function ProductManager() {
               {/* Pricing */}
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Standard Cost:</span>
-                <span className="font-semibold text-gray-900">{formatCurrency(product.standard_cost)}</span>
+                <span className="font-semibold text-gray-900">
+                  {formatCurrency(product.standard_cost)}
+                </span>
               </div>
-              
+
               {product.list_price > 0 && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">List Price:</span>
-                  <span className="font-semibold text-gray-900">{formatCurrency(product.list_price)}</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatCurrency(product.list_price)}
+                  </span>
                 </div>
               )}
 
@@ -534,7 +572,7 @@ export function ProductManager() {
                 <button
                   type="button"
                   className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault()
                     e.stopPropagation()
                     console.log('Pencil button clicked for:', product.name)
@@ -583,7 +621,7 @@ export function ProductManager() {
               <h2 className="text-xl font-semibold text-gray-900">Add New Product</h2>
               <p className="text-gray-600 mt-1">Create a new product or material in your catalog</p>
             </div>
-            
+
             <form onSubmit={handleCreateProduct} className="p-6 space-y-6">
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -601,9 +639,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="category"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Category *
                   </label>
                   <select
@@ -638,7 +679,7 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-1">
                     Model
@@ -652,9 +693,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="manufacturer" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="manufacturer"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Manufacturer
                   </label>
                   <input
@@ -671,7 +715,10 @@ export function ProductManager() {
               {/* Inventory & Pricing */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label htmlFor="unit_of_measure" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="unit_of_measure"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Unit of Measure *
                   </label>
                   <select
@@ -683,13 +730,18 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   >
                     {units.map(unit => (
-                      <option key={unit} value={unit}>{unit}</option>
+                      <option key={unit} value={unit}>
+                        {unit}
+                      </option>
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="standard_cost" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="standard_cost"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Standard Cost
                   </label>
                   <input
@@ -703,9 +755,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="list_price" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="list_price"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     List Price
                   </label>
                   <input
@@ -719,9 +774,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="lead_time_days" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="lead_time_days"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Lead Time (Days)
                   </label>
                   <input
@@ -753,9 +811,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="dimensions" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="dimensions"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Dimensions
                   </label>
                   <input
@@ -768,7 +829,7 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="color" className="block text-sm font-medium text-gray-700 mb-1">
                     Color
@@ -782,9 +843,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="material" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="material"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Material
                   </label>
                   <input
@@ -810,7 +874,7 @@ export function ProductManager() {
                   />
                   <span className="text-sm text-gray-700">Hazardous Material</span>
                 </label>
-                
+
                 <label className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -825,7 +889,10 @@ export function ProductManager() {
 
               {/* Storage Requirements */}
               <div>
-                <label htmlFor="storage_requirements" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="storage_requirements"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Storage Requirements
                 </label>
                 <input
@@ -841,7 +908,10 @@ export function ProductManager() {
 
               {/* Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Description
                 </label>
                 <textarea
@@ -897,12 +967,15 @@ export function ProductManager() {
               <h2 className="text-xl font-semibold text-gray-900">Pencil Product</h2>
               <p className="text-gray-600 mt-1">Update product information and specifications</p>
             </div>
-            
+
             <form onSubmit={handleUpdateProduct} className="p-6 space-y-6">
               {/* Same form fields as create modal - abbreviated for brevity */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="edit_name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="edit_name"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Product Name *
                   </label>
                   <input
@@ -915,9 +988,12 @@ export function ProductManager() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="edit_category" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="edit_category"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Category *
                   </label>
                   <select
@@ -980,24 +1056,29 @@ export function ProductManager() {
             HERA Universal Product Architecture
           </h3>
           <p className="text-sm text-blue-800 mb-4">
-            This product catalog demonstrates HERA's universal entity system with unlimited dynamic specifications:
+            This product catalog demonstrates HERA's universal entity system with unlimited dynamic
+            specifications:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-700">
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>core_entities</strong><br />
+              <strong>core_entities</strong>
+              <br />
               Products stored as universal entities with standard properties
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>core_dynamic_data</strong><br />
+              <strong>core_dynamic_data</strong>
+              <br />
               Unlimited custom specifications without schema changes
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Steve Jobs Design</strong><br />
+              <strong>Steve Jobs Design</strong>
+              <br />
               "Simplicity is the ultimate sophistication" - one catalog, infinite possibilities
             </div>
           </div>
           <p className="text-xs text-blue-600 mt-4">
-            Same architecture supports manufacturing parts, medical supplies, retail inventory, and service materials
+            Same architecture supports manufacturing parts, medical supplies, retail inventory, and
+            service materials
           </p>
         </div>
       </Card>

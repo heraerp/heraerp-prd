@@ -20,25 +20,27 @@ export default function ClearSessionPage() {
     const clearSession = async () => {
       try {
         console.log('Clearing all sessions...')
-        
+
         // Clear Supabase session
         const { error } = await supabase.auth.signOut()
         if (error) {
           console.error('Sign out error:', error)
         }
-        
+
         // Clear all localStorage items related to auth
         localStorage.removeItem('redirectAfterLogin')
         localStorage.removeItem('redirectAfterOrg')
         localStorage.removeItem('supabase.auth.token')
-        
+
         // Clear all cookies
-        document.cookie.split(";").forEach((c) => {
-          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
-        
+        document.cookie.split(';').forEach(c => {
+          document.cookie = c
+            .replace(/^ +/, '')
+            .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
+        })
+
         console.log('Session cleared successfully')
-        
+
         // Wait a moment to ensure everything is cleared
         setTimeout(() => {
           setClearing(false)
@@ -86,23 +88,17 @@ export default function ClearSessionPage() {
             <Alert>
               <CheckCircle className="h-4 w-4" />
               <AlertDescription>
-                Your session has been cleared successfully. You can now sign in with a fresh session.
+                Your session has been cleared successfully. You can now sign in with a fresh
+                session.
               </AlertDescription>
             </Alert>
           )}
-          
+
           <div className="space-y-3">
-            <Button 
-              onClick={() => router.push('/auth/login')} 
-              className="w-full"
-            >
+            <Button onClick={() => router.push('/auth/login')} className="w-full">
               Go to Login
             </Button>
-            <Button 
-              onClick={() => router.push('/')} 
-              variant="outline"
-              className="w-full"
-            >
+            <Button onClick={() => router.push('/')} variant="outline" className="w-full">
               Go to Homepage
             </Button>
           </div>

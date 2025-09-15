@@ -246,7 +246,11 @@ export class HeraMetrics {
   /**
    * Record report timing
    */
-  recordReportDuration(reportType: string, dataSize: 'small' | 'medium' | 'large', durationMs: number) {
+  recordReportDuration(
+    reportType: string,
+    dataSize: 'small' | 'medium' | 'large',
+    durationMs: number
+  ) {
     this.reportDuration.observe({ report_type: reportType, data_size: dataSize }, durationMs)
   }
 
@@ -289,7 +293,10 @@ export class HeraMetrics {
    * Record transaction volume
    */
   recordTransactionVolume(organizationId: string, transactionType: string) {
-    this.transactionVolume.inc({ organization_id: organizationId, transaction_type: transactionType })
+    this.transactionVolume.inc({
+      organization_id: organizationId,
+      transaction_type: transactionType
+    })
   }
 
   /**
@@ -342,32 +349,33 @@ export class HeraMetrics {
     const metrics = await this.getMetricsJSON()
 
     // Store as transaction for audit
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'metrics_snapshot',
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        smart_code: 'HERA.OBSERVABILITY.METRICS.SNAPSHOT.v1',
-        organization_id: organizationId,
-        metadata: {
-          metrics: metrics,
-          timestamp: new Date().toISOString()
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'metrics_snapshot',
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      smart_code: 'HERA.OBSERVABILITY.METRICS.SNAPSHOT.v1',
+      organization_id: organizationId,
+      metadata: {
+        metrics: metrics,
+        timestamp: new Date().toISOString()
+      }
+    })
   }
 
   /**
    * Create summary metrics
    */
-  async createMetricsSummary(organizationId: string, period: 'hour' | 'day' | 'week'): Promise<any> {
+  async createMetricsSummary(
+    organizationId: string,
+    period: 'hour' | 'day' | 'week'
+  ): Promise<any> {
     const supabase = getSupabase()
-    
+
     // Calculate time range
     const now = new Date()
     const startTime = new Date()
-    
+
     switch (period) {
       case 'hour':
         startTime.setHours(now.getHours() - 1)

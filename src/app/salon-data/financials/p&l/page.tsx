@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Profit & Loss Statement (Dubai/UAE)
  * Smart Code: HERA.FINANCE.PNL.REPORT.v1
- * 
+ *
  * VAT-aware P&L reporting with UAE compliance
  * Built on 6-table foundation with smart code intelligence
  */
@@ -20,7 +20,7 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import type { BranchType, PeriodType, ExportFormat } from '@/types/salon.types'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   Calendar,
@@ -52,7 +52,15 @@ import { cn } from '@/lib/utils'
 // ----------------------------- Types & Interfaces ------------------------------------
 
 interface PnLLine {
-  section: 'REVENUE' | 'COGS' | 'OPEX' | 'OTHER_INCOME' | 'OTHER_EXPENSE' | 'FINANCE_COST' | 'TAX' | 'KPI'
+  section:
+    | 'REVENUE'
+    | 'COGS'
+    | 'OPEX'
+    | 'OTHER_INCOME'
+    | 'OTHER_EXPENSE'
+    | 'FINANCE_COST'
+    | 'TAX'
+    | 'KPI'
   label: string
   amount: number
   percentage?: number
@@ -106,28 +114,28 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
   // Generate realistic P&L data for a salon
   const isYTD = startDate.includes('-01-01')
   const monthCount = isYTD ? 8 : 1 // Assuming current month is September
-  
+
   // Base monthly figures
   const baseServiceRevenue = 180000
   const baseProductRevenue = 45000
   const baseCOGS = 67500
   const baseStaffCost = 90000
   const baseRent = 25000
-  
+
   // Scale by month count
   const serviceRevenue = baseServiceRevenue * monthCount
   const productRevenue = baseProductRevenue * monthCount
   const totalRevenue = serviceRevenue + productRevenue
-  
+
   // VAT calculation (5% standard rate in UAE)
   const vatOnSales = totalRevenue * 0.05
   const revenueNetOfVAT = totalRevenue
-  
+
   // COGS
   const productCost = baseCOGS * monthCount
   const suppliesCost = 22500 * monthCount
   const totalCOGS = productCost + suppliesCost
-  
+
   // OPEX
   const staffCost = baseStaffCost * monthCount
   const rentExpense = baseRent * monthCount
@@ -136,12 +144,12 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
   const insurance = 5000 * monthCount
   const otherOpex = 15000 * monthCount
   const totalOPEX = staffCost + rentExpense + utilities + marketing + insurance + otherOpex
-  
+
   // Other items
   const interestIncome = 2000 * monthCount
   const miscExpense = 3000 * monthCount
   const financeCost = 4000 * monthCount
-  
+
   // Calculate KPIs
   const grossProfit = revenueNetOfVAT - totalCOGS
   const grossMargin = (grossProfit / revenueNetOfVAT) * 100
@@ -152,7 +160,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
   const incomeTax = 0 // No corporate tax for small business in UAE
   const netProfit = profitBeforeTax - incomeTax
   const netMargin = (netProfit / revenueNetOfVAT) * 100
-  
+
   // VAT on purchases (input VAT)
   const vatOnPurchases = (totalCOGS + totalOPEX) * 0.05 * 0.6 // Assuming 60% of expenses have VAT
 
@@ -189,7 +197,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         percentage: (productRevenue / revenueNetOfVAT) * 100,
         indent: 1
       },
-      
+
       // COGS Section
       {
         section: 'COGS',
@@ -211,7 +219,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         percentage: (suppliesCost / totalCOGS) * 100,
         indent: 1
       },
-      
+
       // Gross Profit
       {
         section: 'KPI',
@@ -220,7 +228,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         percentage: grossMargin,
         isTotal: true
       },
-      
+
       // OPEX Section
       {
         section: 'OPEX',
@@ -270,7 +278,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         percentage: (otherOpex / totalOPEX) * 100,
         indent: 1
       },
-      
+
       // EBITDA
       {
         section: 'KPI',
@@ -279,7 +287,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         percentage: ebitdaMargin,
         isTotal: true
       },
-      
+
       // Operating Income
       {
         section: 'KPI',
@@ -287,7 +295,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         amount: operatingIncome,
         isTotal: true
       },
-      
+
       // Other Income/Expense
       {
         section: 'OTHER_INCOME',
@@ -307,7 +315,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         amount: financeCost,
         indent: 1
       },
-      
+
       // Profit Before Tax
       {
         section: 'KPI',
@@ -315,7 +323,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         amount: profitBeforeTax,
         isTotal: true
       },
-      
+
       // Tax
       {
         section: 'TAX',
@@ -323,7 +331,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
         amount: incomeTax,
         indent: 1
       },
-      
+
       // Net Profit
       {
         section: 'KPI',
@@ -353,7 +361,7 @@ const generateMockPnLData = (startDate: string, endDate: string, branch?: string
       net_vat_payable: vatOnSales - vatOnPurchases
     }
   }
-  
+
   return report
 }
 
@@ -400,16 +408,18 @@ export default function SalonProfitLossPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('month')
   const [selectedBranch, setSelectedBranch] = useState<BranchType>('all')
   const [showComparison, setShowComparison] = useState(false)
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['REVENUE', 'COGS', 'OPEX']))
-  
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set(['REVENUE', 'COGS', 'OPEX'])
+  )
+
   // Default organization ID for salon - Hair Talkz Park Regis
   const organizationId = currentOrganization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-  
+
   // Calculate date ranges
   const today = new Date()
   const currentYear = today.getFullYear()
   const currentMonth = today.getMonth()
-  
+
   const getPeriodDates = () => {
     switch (selectedPeriod) {
       case 'month':
@@ -435,27 +445,33 @@ export default function SalonProfitLossPage() {
         }
     }
   }
-  
+
   const { start: periodStart, end: periodEnd } = getPeriodDates()
-  
+
   // Generate mock data
   const currentReport = generateMockPnLData(
-    periodStart, 
+    periodStart,
     periodEnd,
-    selectedBranch === 'all' ? undefined : 
-    selectedBranch === 'branch1' ? 'Hair Talkz • Park Regis' :
-    'Hair Talkz • Mercure Gold'
+    selectedBranch === 'all'
+      ? undefined
+      : selectedBranch === 'branch1'
+        ? 'Hair Talkz • Park Regis'
+        : 'Hair Talkz • Mercure Gold'
   )
-  
+
   // Generate comparison data (previous period)
-  const comparisonReport = showComparison ? generateMockPnLData(
-    '2025-07-01',
-    '2025-07-31',
-    selectedBranch === 'all' ? undefined : 
-    selectedBranch === 'branch1' ? 'Hair Talkz • Park Regis' :
-    'Hair Talkz • Mercure Gold'
-  ) : null
-  
+  const comparisonReport = showComparison
+    ? generateMockPnLData(
+        '2025-07-01',
+        '2025-07-31',
+        selectedBranch === 'all'
+          ? undefined
+          : selectedBranch === 'branch1'
+            ? 'Hair Talkz • Park Regis'
+            : 'Hair Talkz • Mercure Gold'
+      )
+    : null
+
   const toggleSection = (section: string) => {
     const newExpanded = new Set(expandedSections)
     if (newExpanded.has(section)) {
@@ -465,19 +481,15 @@ export default function SalonProfitLossPage() {
     }
     setExpandedSections(newExpanded)
   }
-  
+
   const exportReport = async (format: ExportFormat) => {
     // In production, this would generate actual PDF/CSV
-    handleError(
-      new Error('Export functionality not yet implemented'),
-      'pnl-export',
-      { 
-        showToast: true,
-        fallbackMessage: `Export to ${format.toUpperCase()} will be available soon`
-      }
-    )
+    handleError(new Error('Export functionality not yet implemented'), 'pnl-export', {
+      showToast: true,
+      fallbackMessage: `Export to ${format.toUpperCase()} will be available soon`
+    })
   }
-  
+
   if (contextLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
@@ -492,7 +504,6 @@ export default function SalonProfitLossPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -526,7 +537,6 @@ export default function SalonProfitLossPage() {
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              
               {/* Period Selection */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -540,10 +550,10 @@ export default function SalonProfitLossPage() {
                       size="sm"
                       onClick={() => setSelectedPeriod(period)}
                       className={cn(
-                        "flex-1",
-                        selectedPeriod === period 
-                          ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                          : ""
+                        'flex-1',
+                        selectedPeriod === period
+                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                          : ''
                       )}
                     >
                       {period.toUpperCase()}
@@ -551,7 +561,7 @@ export default function SalonProfitLossPage() {
                   ))}
                 </div>
               </div>
-              
+
               {/* Branch Selection */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -559,7 +569,7 @@ export default function SalonProfitLossPage() {
                 </label>
                 <select
                   value={selectedBranch}
-                  onChange={(e) => setSelectedBranch(e.target.value as BranchType)}
+                  onChange={e => setSelectedBranch(e.target.value as BranchType)}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="all">All Branches (Consolidated)</option>
@@ -567,7 +577,7 @@ export default function SalonProfitLossPage() {
                   <option value="branch2">Mercure Gold</option>
                 </select>
               </div>
-              
+
               {/* Date Range Display */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -576,11 +586,12 @@ export default function SalonProfitLossPage() {
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {new Date(periodStart).toLocaleDateString('en-AE')} - {new Date(periodEnd).toLocaleDateString('en-AE')}
+                    {new Date(periodStart).toLocaleDateString('en-AE')} -{' '}
+                    {new Date(periodEnd).toLocaleDateString('en-AE')}
                   </span>
                 </div>
               </div>
-              
+
               {/* Comparison Toggle */}
               <div>
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
@@ -596,7 +607,6 @@ export default function SalonProfitLossPage() {
                   {showComparison ? 'Hide' : 'Show'} Prior Period
                 </Button>
               </div>
-              
             </div>
           </CardContent>
         </Card>
@@ -616,7 +626,7 @@ export default function SalonProfitLossPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -630,7 +640,7 @@ export default function SalonProfitLossPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -644,7 +654,7 @@ export default function SalonProfitLossPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -677,7 +687,10 @@ export default function SalonProfitLossPage() {
                   {currentReport.header.currency}
                 </Badge>
                 {currentReport.header.vat_compliant && (
-                  <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                  >
                     <CheckCircle className="w-3 h-3 mr-1" />
                     VAT Compliant
                   </Badge>
@@ -694,7 +707,10 @@ export default function SalonProfitLossPage() {
                       Account
                     </th>
                     <th className="text-right px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {new Date(periodEnd).toLocaleDateString('en-AE', { month: 'short', year: 'numeric' })}
+                      {new Date(periodEnd).toLocaleDateString('en-AE', {
+                        month: 'short',
+                        year: 'numeric'
+                      })}
                     </th>
                     {showComparison && (
                       <>
@@ -715,38 +731,44 @@ export default function SalonProfitLossPage() {
                   {currentReport.lines.map((line, index) => {
                     const isSection = line.isSubtotal && !line.isTotal
                     const shouldShow = !line.indent || expandedSections.has(line.section)
-                    
+
                     if (!shouldShow && !isSection && !line.isTotal) return null
-                    
+
                     return (
-                      <tr 
+                      <tr
                         key={index}
                         className={cn(
-                          "border-b border-gray-100 dark:border-gray-800",
-                          line.isTotal && "bg-gray-50 dark:bg-gray-900 font-semibold",
-                          line.isSubtotal && "font-medium cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900",
-                          line.indent && "text-sm"
+                          'border-b border-gray-100 dark:border-gray-800',
+                          line.isTotal && 'bg-gray-50 dark:bg-gray-900 font-semibold',
+                          line.isSubtotal &&
+                            'font-medium cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900',
+                          line.indent && 'text-sm'
                         )}
                         onClick={() => isSection && toggleSection(line.section)}
                       >
-                        <td className={cn(
-                          "px-6 py-3",
-                          line.indent && `pl-${10 + (line.indent * 4)}`,
-                          getSectionColor(line.section)
-                        )}>
+                        <td
+                          className={cn(
+                            'px-6 py-3',
+                            line.indent && `pl-${10 + line.indent * 4}`,
+                            getSectionColor(line.section)
+                          )}
+                        >
                           <div className="flex items-center gap-2">
-                            {isSection && (
-                              expandedSections.has(line.section) 
-                                ? <ChevronDown className="w-4 h-4" />
-                                : <ChevronUp className="w-4 h-4" />
-                            )}
+                            {isSection &&
+                              (expandedSections.has(line.section) ? (
+                                <ChevronDown className="w-4 h-4" />
+                              ) : (
+                                <ChevronUp className="w-4 h-4" />
+                              ))}
                             {line.label}
                           </div>
                         </td>
-                        <td className={cn(
-                          "text-right px-6 py-3",
-                          line.amount < 0 && "text-red-600 dark:text-red-400"
-                        )}>
+                        <td
+                          className={cn(
+                            'text-right px-6 py-3',
+                            line.amount < 0 && 'text-red-600 dark:text-red-400'
+                          )}
+                        >
                           {formatCurrency(Math.abs(line.amount))}
                         </td>
                         {showComparison && (
@@ -757,9 +779,11 @@ export default function SalonProfitLossPage() {
                             <td className="text-right px-6 py-3">
                               <div className="flex items-center justify-end gap-1">
                                 {getVarianceIcon(line.amount * 0.1)}
-                                <span className={cn(
-                                  line.amount * 0.1 > 0 ? "text-green-600" : "text-red-600"
-                                )}>
+                                <span
+                                  className={cn(
+                                    line.amount * 0.1 > 0 ? 'text-green-600' : 'text-red-600'
+                                  )}
+                                >
                                   {formatPercent(10)}
                                 </span>
                               </div>
@@ -832,7 +856,6 @@ export default function SalonProfitLossPage() {
             </Badge>
           </div>
         </div>
-        
       </div>
     </div>
   )

@@ -49,7 +49,7 @@ export async function getDocPage(slug: string, docType: 'dev' | 'user'): Promise
   if (typeof window === 'undefined') {
     return null
   }
-  
+
   try {
     // Query HERA entities for the documentation page
     const response = await fetch(`${HERA_API_BASE}/entities/search`, {
@@ -77,7 +77,7 @@ export async function getDocPage(slug: string, docType: 'dev' | 'user'): Promise
 
     const entity = data.entities[0]
     const dynamicData = entity.dynamic_data || []
-    
+
     // Extract content and metadata from dynamic data
     const contentField = dynamicData.find((field: any) => field.field_name === 'content')
     const descriptionField = dynamicData.find((field: any) => field.field_name === 'description')
@@ -87,7 +87,7 @@ export async function getDocPage(slug: string, docType: 'dev' | 'user'): Promise
     // Convert markdown content to HTML
     const rawContent = contentField?.field_value || ''
     const htmlContent = await markdownToHtml(rawContent)
-    
+
     // Calculate reading time (rough estimate: 200 words per minute)
     const wordCount = rawContent.split(/\s+/).length
     const readingTime = Math.ceil(wordCount / 200)
@@ -128,7 +128,7 @@ export async function getDocNavigation(docType: 'dev' | 'user'): Promise<DocNavi
   if (typeof window === 'undefined') {
     return generateDefaultNavigation(docType)
   }
-  
+
   try {
     // Fetch all documentation pages for the type
     const pagesResponse = await fetch(`${HERA_API_BASE}/entities/search`, {
@@ -161,7 +161,7 @@ export async function getDocNavigation(docType: 'dev' | 'user'): Promise<DocNavi
       })
     })
 
-    const relationshipsData = relationshipsResponse.ok 
+    const relationshipsData = relationshipsResponse.ok
       ? await relationshipsResponse.json()
       : { relationships: [] }
 
@@ -176,10 +176,7 @@ export async function getDocNavigation(docType: 'dev' | 'user'): Promise<DocNavi
 /**
  * Search documentation content
  */
-export async function searchDocs(
-  query: string, 
-  docType?: 'dev' | 'user'
-): Promise<SearchResult[]> {
+export async function searchDocs(query: string, docType?: 'dev' | 'user'): Promise<SearchResult[]> {
   try {
     const searchBody: any = {
       query,
@@ -236,7 +233,7 @@ export async function searchDocs(
  * Track documentation page view
  */
 export async function trackDocView(
-  pageId: string, 
+  pageId: string,
   docType: 'dev' | 'user',
   metadata?: Record<string, any>
 ): Promise<void> {
@@ -252,12 +249,14 @@ export async function trackDocView(
           doc_type: docType,
           ...metadata
         },
-        transaction_lines: [{
-          line_type: 'page_view',
-          entity_id: pageId,
-          quantity: 1,
-          line_data: metadata
-        }]
+        transaction_lines: [
+          {
+            line_type: 'page_view',
+            entity_id: pageId,
+            quantity: 1,
+            line_data: metadata
+          }
+        ]
       })
     })
   } catch (error) {
@@ -279,16 +278,38 @@ async function markdownToHtml(markdown: string): Promise<string> {
   })
 
   const html = await marked(markdown)
-  
+
   // Sanitize HTML to prevent XSS
   return DOMPurify.sanitize(html as string, {
     ALLOWED_TAGS: [
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'p', 'br', 'strong', 'em', 'u', 's',
-      'a', 'img', 'ul', 'ol', 'li',
-      'blockquote', 'code', 'pre',
-      'table', 'thead', 'tbody', 'tr', 'th', 'td',
-      'div', 'span'
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'p',
+      'br',
+      'strong',
+      'em',
+      'u',
+      's',
+      'a',
+      'img',
+      'ul',
+      'ol',
+      'li',
+      'blockquote',
+      'code',
+      'pre',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'div',
+      'span'
     ],
     ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'id', 'class', 'target', 'rel']
   })
@@ -298,7 +319,7 @@ async function markdownToHtml(markdown: string): Promise<string> {
  * Generate breadcrumb navigation from relationships
  */
 async function generateBreadcrumb(
-  pageId: string, 
+  pageId: string,
   docType: 'dev' | 'user'
 ): Promise<Array<{ title: string; href: string }>> {
   try {
@@ -315,9 +336,12 @@ async function generateBreadcrumb(
  * Get previous and next page context
  */
 async function getNavigationContext(
-  pageId: string, 
+  pageId: string,
   docType: 'dev' | 'user'
-): Promise<{ nextPage?: { title: string; slug: string }; prevPage?: { title: string; slug: string } }> {
+): Promise<{
+  nextPage?: { title: string; slug: string }
+  prevPage?: { title: string; slug: string }
+}> {
   try {
     // This would query relationships to find adjacent pages in the navigation structure
     // For now, return empty context
@@ -334,10 +358,10 @@ async function getNavigationContext(
 function buildNavigationTree(pages: any[], relationships: any[]): DocNavigation[] {
   // Create a map of page entities
   const pageMap = new Map(pages.map(page => [page.id, page]))
-  
+
   // Find root pages (pages without parent relationships)
-  const rootPages = pages.filter(page => 
-    !relationships.some(rel => rel.target_entity_id === page.id)
+  const rootPages = pages.filter(
+    page => !relationships.some(rel => rel.target_entity_id === page.id)
   )
 
   // Build tree recursively
@@ -367,8 +391,10 @@ function buildNavigationTree(pages: any[], relationships: any[]): DocNavigation[
   // Build navigation for root pages
   return rootPages
     .sort((a, b) => {
-      const aOrder = a.dynamic_data?.find((field: any) => field.field_name === 'order')?.field_value || 0
-      const bOrder = b.dynamic_data?.find((field: any) => field.field_name === 'order')?.field_value || 0
+      const aOrder =
+        a.dynamic_data?.find((field: any) => field.field_name === 'order')?.field_value || 0
+      const bOrder =
+        b.dynamic_data?.find((field: any) => field.field_name === 'order')?.field_value || 0
       return aOrder - bOrder
     })
     .map(page => {
@@ -420,7 +446,7 @@ function generateDefaultNavigation(docType: 'dev' | 'user'): DocNavigation[] {
 function generateExcerpt(content: string, searchTerm: string, maxLength = 200): string {
   // Remove markdown formatting
   const plainText = content.replace(/[#*_`\[\]()]/g, '').trim()
-  
+
   if (searchTerm) {
     // Find the first occurrence of the search term
     const termIndex = plainText.toLowerCase().indexOf(searchTerm.toLowerCase())
@@ -429,18 +455,16 @@ function generateExcerpt(content: string, searchTerm: string, maxLength = 200): 
       const start = Math.max(0, termIndex - 50)
       const end = Math.min(plainText.length, start + maxLength)
       let excerpt = plainText.substring(start, end)
-      
+
       if (start > 0) excerpt = '...' + excerpt
       if (end < plainText.length) excerpt = excerpt + '...'
-      
+
       return excerpt
     }
   }
-  
+
   // Fallback to beginning of content
-  return plainText.length > maxLength 
-    ? plainText.substring(0, maxLength) + '...'
-    : plainText
+  return plainText.length > maxLength ? plainText.substring(0, maxLength) + '...' : plainText
 }
 
 /**

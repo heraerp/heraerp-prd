@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  GitBranch, 
-  GitPullRequest, 
-  Clock, 
-  Code2, 
+import {
+  GitBranch,
+  GitPullRequest,
+  Clock,
+  Code2,
   CheckCircle2,
   Circle,
   AlertCircle,
@@ -247,29 +247,42 @@ export function HERADevelopmentDashboard() {
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-600 bg-green-50 border-green-200'
-      case 'in_progress': return 'text-blue-600 bg-blue-50 border-blue-200'
-      case 'blocked': return 'text-red-600 bg-red-50 border-red-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'completed':
+        return 'text-green-600 bg-green-50 border-green-200'
+      case 'in_progress':
+        return 'text-blue-600 bg-blue-50 border-blue-200'
+      case 'blocked':
+        return 'text-red-600 bg-red-50 border-red-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-100 text-red-800'
-      case 'high': return 'bg-orange-100 text-orange-800'
-      case 'medium': return 'bg-yellow-100 text-yellow-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'critical':
+        return 'bg-red-100 text-red-800'
+      case 'high':
+        return 'bg-orange-100 text-orange-800'
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'commit': return <GitPullRequest className="w-4 h-4" />
-      case 'pr': return <GitBranch className="w-4 h-4" />
-      case 'issue': return <Bug className="w-4 h-4" />
-      case 'merge': return <CheckCircle2 className="w-4 h-4" />
-      default: return <Circle className="w-4 h-4" />
+      case 'commit':
+        return <GitPullRequest className="w-4 h-4" />
+      case 'pr':
+        return <GitBranch className="w-4 h-4" />
+      case 'issue':
+        return <Bug className="w-4 h-4" />
+      case 'merge':
+        return <CheckCircle2 className="w-4 h-4" />
+      default:
+        return <Circle className="w-4 h-4" />
     }
   }
 
@@ -291,7 +304,7 @@ export function HERADevelopmentDashboard() {
             <Activity className="w-3 h-3 mr-1" />
             Live Tracking
           </Badge>
-          <Button 
+          <Button
             onClick={refreshData}
             variant="outline"
             className="flex items-center gap-2"
@@ -317,11 +330,13 @@ export function HERADevelopmentDashboard() {
         <CardContent>
           <Progress value={overallProgress} className="h-3 mb-4" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {buildProgress.map((item) => {
+            {buildProgress.map(item => {
               const Icon = item.icon
               return (
                 <div key={item.category} className="text-center">
-                  <div className={`w-12 h-12 mx-auto mb-2 bg-${item.color}-100 rounded-xl flex items-center justify-center`}>
+                  <div
+                    className={`w-12 h-12 mx-auto mb-2 bg-${item.color}-100 rounded-xl flex items-center justify-center`}
+                  >
                     <Icon className={`w-6 h-6 text-${item.color}-600`} />
                   </div>
                   <div className="text-sm font-medium text-gray-900">{item.category}</div>
@@ -351,22 +366,21 @@ export function HERADevelopmentDashboard() {
                   <FileCode className="w-5 h-5" />
                   Active Development Tasks
                 </span>
-                <Button size="sm">
-                  Create Task
-                </Button>
+                <Button size="sm">Create Task</Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentTasks.map((task) => (
-                  <div key={task.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                {recentTasks.map(task => (
+                  <div
+                    key={task.id}
+                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <Badge variant="outline">{task.entity_code}</Badge>
-                          <Badge className={getPriorityColor(task.priority)}>
-                            {task.priority}
-                          </Badge>
+                          <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
                           <Badge className={getStatusColor(task.status)}>
                             {task.status.replace('_', ' ')}
                           </Badge>
@@ -384,7 +398,7 @@ export function HERADevelopmentDashboard() {
                           <span>{task.sprint}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2">
-                          {task.tags.map((tag) => (
+                          {task.tags.map(tag => (
                             <Badge key={tag} variant="secondary" className="text-xs">
                               {tag}
                             </Badge>
@@ -421,21 +435,20 @@ export function HERADevelopmentDashboard() {
                     {currentSprint.story_points_completed}
                   </div>
                   <div className="text-sm text-gray-600">Points Completed</div>
-                  <Progress 
-                    value={(currentSprint.story_points_completed / currentSprint.story_points_planned) * 100} 
+                  <Progress
+                    value={
+                      (currentSprint.story_points_completed / currentSprint.story_points_planned) *
+                      100
+                    }
                     className="mt-2"
                   />
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600">
-                    {currentSprint.velocity}
-                  </div>
+                  <div className="text-3xl font-bold text-green-600">{currentSprint.velocity}</div>
                   <div className="text-sm text-gray-600">Velocity</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600">
-                    7
-                  </div>
+                  <div className="text-3xl font-bold text-purple-600">7</div>
                   <div className="text-sm text-gray-600">Days Remaining</div>
                 </div>
               </div>
@@ -472,14 +485,22 @@ export function HERADevelopmentDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {gitActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      activity.type === 'commit' ? 'bg-green-100 text-green-600' :
-                      activity.type === 'pr' ? 'bg-blue-100 text-blue-600' :
-                      activity.type === 'issue' ? 'bg-red-100 text-red-600' :
-                      'bg-purple-100 text-purple-600'
-                    }`}>
+                {gitActivity.map(activity => (
+                  <div
+                    key={activity.id}
+                    className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        activity.type === 'commit'
+                          ? 'bg-green-100 text-green-600'
+                          : activity.type === 'pr'
+                            ? 'bg-blue-100 text-blue-600'
+                            : activity.type === 'issue'
+                              ? 'bg-red-100 text-red-600'
+                              : 'bg-purple-100 text-purple-600'
+                      }`}
+                    >
                       {getActivityIcon(activity.type)}
                     </div>
                     <div className="flex-1">
@@ -507,7 +528,7 @@ export function HERADevelopmentDashboard() {
         {/* Build Metrics Tab */}
         <TabsContent value="metrics" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {buildProgress.map((category) => {
+            {buildProgress.map(category => {
               const Icon = category.icon
               return (
                 <Card key={category.category}>
@@ -523,14 +544,18 @@ export function HERADevelopmentDashboard() {
                   <CardContent>
                     <p className="text-sm text-gray-600 mb-4">{category.description}</p>
                     <div className="space-y-2">
-                      {category.tasks.map((task) => (
+                      {category.tasks.map(task => (
                         <div key={task.name} className="flex items-center justify-between">
                           <span className="text-sm text-gray-700">{task.name}</span>
-                          <Badge className={
-                            task.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            task.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }>
+                          <Badge
+                            className={
+                              task.status === 'completed'
+                                ? 'bg-green-100 text-green-800'
+                                : task.status === 'in_progress'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : 'bg-gray-100 text-gray-800'
+                            }
+                          >
                             {task.status.replace('_', ' ')}
                           </Badge>
                         </div>
@@ -552,7 +577,8 @@ export function HERADevelopmentDashboard() {
             <h3 className="text-lg font-semibold text-purple-900">HERA Meta-Architecture</h3>
           </div>
           <p className="text-sm text-purple-800 mb-4">
-            This dashboard demonstrates HERA building HERA - all development tasks, sprints, and metrics are stored in the same universal 6-table architecture:
+            This dashboard demonstrates HERA building HERA - all development tasks, sprints, and
+            metrics are stored in the same universal 6-table architecture:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             <div className="bg-white/50 p-3 rounded-lg">
@@ -561,7 +587,9 @@ export function HERADevelopmentDashboard() {
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
               <strong className="text-purple-900">universal_transactions</strong>
-              <p className="text-purple-700 mt-1">Work logs as transaction_type='development_work'</p>
+              <p className="text-purple-700 mt-1">
+                Work logs as transaction_type='development_work'
+              </p>
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
               <strong className="text-purple-900">core_dynamic_data</strong>

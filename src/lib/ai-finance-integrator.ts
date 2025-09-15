@@ -202,9 +202,7 @@ export class AIFinanceIntegrator {
       valueChange: number
     }>
   }): Promise<string> {
-    const totalValueChange = adjustmentData.items.reduce(
-      (sum, item) => sum + item.valueChange, 0
-    )
+    const totalValueChange = adjustmentData.items.reduce((sum, item) => sum + item.valueChange, 0)
 
     const transactionData: BusinessTransactionEvent = {
       organization_id: this.organizationId,
@@ -265,18 +263,20 @@ export class AIFinanceIntegrator {
       // Insert transaction - AI trigger will automatically process it
       const { data, error } = await supabase
         .from('universal_transactions')
-        .insert([{
-          organization_id: transactionData.organization_id,
-          transaction_type: transactionData.transaction_type,
-          smart_code: transactionData.smart_code,
-          reference_number: transactionData.reference_number,
-          total_amount: transactionData.total_amount,
-          transaction_metadata: transactionData.transaction_metadata,
-          source_module: transactionData.source_module,
-          source_document_id: transactionData.source_document_id,
-          transaction_date: new Date().toISOString(),
-          status: 'active'
-        }])
+        .insert([
+          {
+            organization_id: transactionData.organization_id,
+            transaction_type: transactionData.transaction_type,
+            smart_code: transactionData.smart_code,
+            reference_number: transactionData.reference_number,
+            total_amount: transactionData.total_amount,
+            transaction_metadata: transactionData.transaction_metadata,
+            source_module: transactionData.source_module,
+            source_document_id: transactionData.source_document_id,
+            transaction_date: new Date().toISOString(),
+            status: 'active'
+          }
+        ])
         .select('id')
         .single()
 
@@ -303,12 +303,11 @@ export class AIFinanceIntegrator {
     transactionMetadata: Record<string, any>
   ): Promise<AIClassificationResult | null> {
     try {
-      const { data, error } = await supabase
-        .rpc('ai_classify_transaction', {
-          p_smart_code: smartCode,
-          p_transaction_data: transactionMetadata,
-          p_organization_id: this.organizationId
-        })
+      const { data, error } = await supabase.rpc('ai_classify_transaction', {
+        p_smart_code: smartCode,
+        p_transaction_data: transactionMetadata,
+        p_organization_id: this.organizationId
+      })
 
       if (error) {
         console.error('AI Classification Error:', error)
@@ -333,7 +332,7 @@ export class AIFinanceIntegrator {
       // Validate balanced entry
       const totalDebits = journalEntries.reduce((sum, entry) => sum + entry.debit_amount, 0)
       const totalCredits = journalEntries.reduce((sum, entry) => sum + entry.credit_amount, 0)
-      
+
       if (Math.abs(totalDebits - totalCredits) > 0.01) {
         throw new Error(`Unbalanced journal entry: Debits ${totalDebits}, Credits ${totalCredits}`)
       }
@@ -352,9 +351,7 @@ export class AIFinanceIntegrator {
         ai_generated: false
       }))
 
-      const { error } = await supabase
-        .from('universal_transaction_lines')
-        .insert(journalLines)
+      const { error } = await supabase.from('universal_transaction_lines').insert(journalLines)
 
       if (error) {
         throw new Error(`Failed to create journal entries: ${error.message}`)
@@ -363,7 +360,7 @@ export class AIFinanceIntegrator {
       // Update transaction status
       await supabase
         .from('universal_transactions')
-        .update({ 
+        .update({
           posting_status: 'manually_posted',
           gl_posted_at: new Date().toISOString(),
           total_debit_amount: totalDebits,
@@ -387,14 +384,14 @@ export class AIFinanceIntegrator {
     userCorrection?: AIGLMapping
   ): Promise<void> {
     try {
-      await supabase
-        .from('ai_posting_feedback')
-        .insert([{
+      await supabase.from('ai_posting_feedback').insert([
+        {
           transaction_id: transactionId,
           feedback_type: feedbackType,
           user_correction: userCorrection,
           created_at: new Date().toISOString()
-        }])
+        }
+      ])
     } catch (error) {
       console.error('Feedback Error:', error)
     }
@@ -409,11 +406,10 @@ export class AIFinanceIntegrator {
    */
   async getPostingMetrics(daysBack: number = 30): Promise<AIPostingMetrics | null> {
     try {
-      const { data, error } = await supabase
-        .rpc('get_ai_posting_metrics', {
-          p_organization_id: this.organizationId,
-          p_days_back: daysBack
-        })
+      const { data, error } = await supabase.rpc('get_ai_posting_metrics', {
+        p_organization_id: this.organizationId,
+        p_days_back: daysBack
+      })
 
       if (error) {
         console.error('Metrics Error:', error)
@@ -432,11 +428,10 @@ export class AIFinanceIntegrator {
    */
   async getSmartCodePerformance(daysBack: number = 30): Promise<SmartCodePerformance[]> {
     try {
-      const { data, error } = await supabase
-        .rpc('get_smart_code_performance', {
-          p_organization_id: this.organizationId,
-          p_days_back: daysBack
-        })
+      const { data, error } = await supabase.rpc('get_smart_code_performance', {
+        p_organization_id: this.organizationId,
+        p_days_back: daysBack
+      })
 
       if (error) {
         console.error('Smart Code Performance Error:', error)
@@ -457,7 +452,8 @@ export class AIFinanceIntegrator {
     try {
       const { data, error } = await supabase
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           id,
           transaction_type,
           smart_code,
@@ -466,7 +462,8 @@ export class AIFinanceIntegrator {
           ai_confidence_score,
           ai_suggested_mapping,
           created_at
-        `)
+        `
+        )
         .eq('organization_id', this.organizationId)
         .eq('posting_status', 'pending_review')
         .order('created_at', { ascending: false })
@@ -492,10 +489,9 @@ export class AIFinanceIntegrator {
    */
   static async setupOrganization(organizationId: string): Promise<boolean> {
     try {
-      const { data, error } = await supabase
-        .rpc('setup_ai_finance_integration', {
-          p_organization_id: organizationId
-        })
+      const { data, error } = await supabase.rpc('setup_ai_finance_integration', {
+        p_organization_id: organizationId
+      })
 
       if (error) {
         console.error('Setup Error:', error)
@@ -512,15 +508,19 @@ export class AIFinanceIntegrator {
   /**
    * Test AI Classification (Development)
    */
-  async testAIClassification(testCases: Array<{
-    smart_code: string
-    transaction_data: Record<string, any>
-    expected_accounts?: string[]
-  }>): Promise<Array<{
-    smart_code: string
-    classification: AIClassificationResult | null
-    test_passed: boolean
-  }>> {
+  async testAIClassification(
+    testCases: Array<{
+      smart_code: string
+      transaction_data: Record<string, any>
+      expected_accounts?: string[]
+    }>
+  ): Promise<
+    Array<{
+      smart_code: string
+      classification: AIClassificationResult | null
+      test_passed: boolean
+    }>
+  > {
     const results = []
 
     for (const testCase of testCases) {
@@ -561,9 +561,7 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
  */
 export function calculatePostingAccuracy(metrics: AIPostingMetrics): number {
   if (metrics.total_transactions === 0) return 0
-  return Math.round(
-    (metrics.auto_posted_count / metrics.total_transactions) * 100
-  )
+  return Math.round((metrics.auto_posted_count / metrics.total_transactions) * 100)
 }
 
 /**

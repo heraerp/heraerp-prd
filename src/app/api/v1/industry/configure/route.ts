@@ -6,12 +6,21 @@ const HERA_SYSTEM_ORG = '719dfed1-09b4-4ca8-bfda-f682460de945'
 
 interface IndustryConfigurationRequest {
   organization_id: string
-  industry_type: 'restaurant' | 'healthcare' | 'manufacturing' | 'professional' | 'retail' | 'legal' | 'education'
+  industry_type:
+    | 'restaurant'
+    | 'healthcare'
+    | 'manufacturing'
+    | 'professional'
+    | 'retail'
+    | 'legal'
+    | 'education'
   configuration_options: {
     business_model: string
     deployment_mode: '24_hour_rapid' | 'phased_rollout' | 'pilot_program'
     template_customization_level: 'standard' | 'customized' | 'fully_bespoke'
-    integration_requirements?: Array<'accounting' | 'pos' | 'inventory' | 'crm' | 'hr' | 'compliance'>
+    integration_requirements?: Array<
+      'accounting' | 'pos' | 'inventory' | 'crm' | 'hr' | 'compliance'
+    >
     compliance_frameworks?: Array<string>
     localization_requirements?: Array<string>
   }
@@ -94,8 +103,21 @@ interface IndustryConfigurationResponse {
 // Industry-specific configuration templates
 const INDUSTRY_TEMPLATES = {
   restaurant: {
-    business_models: ['quick_service', 'casual_dining', 'fine_dining', 'food_truck', 'catering', 'delivery_only'],
-    core_modules: ['POS', 'Inventory', 'Recipe_Management', 'Labor_Scheduling', 'Financial_Reporting'],
+    business_models: [
+      'quick_service',
+      'casual_dining',
+      'fine_dining',
+      'food_truck',
+      'catering',
+      'delivery_only'
+    ],
+    core_modules: [
+      'POS',
+      'Inventory',
+      'Recipe_Management',
+      'Labor_Scheduling',
+      'Financial_Reporting'
+    ],
     sap_equivalents: ['SAP_Retail', 'SAP_S4HANA_Restaurant', 'SAP_ByDesign'],
     compliance_frameworks: ['FDA_Food_Safety', 'Local_Health_Department', 'IRS_Restaurant_Tax'],
     key_integrations: ['pos', 'inventory', 'accounting', 'hr'],
@@ -103,8 +125,21 @@ const INDUSTRY_TEMPLATES = {
     template_count: 25
   },
   healthcare: {
-    business_models: ['hospital', 'clinic', 'dental_practice', 'specialty_practice', 'medical_device', 'pharmacy'],
-    core_modules: ['Patient_Management', 'Billing', 'Insurance_Claims', 'Inventory', 'Compliance_Tracking'],
+    business_models: [
+      'hospital',
+      'clinic',
+      'dental_practice',
+      'specialty_practice',
+      'medical_device',
+      'pharmacy'
+    ],
+    core_modules: [
+      'Patient_Management',
+      'Billing',
+      'Insurance_Claims',
+      'Inventory',
+      'Compliance_Tracking'
+    ],
     sap_equivalents: ['SAP_Healthcare', 'SAP_S4HANA_for_Healthcare', 'SAP_Patient_Management'],
     compliance_frameworks: ['HIPAA', 'FDA_Medical_Device', 'CMS_Medicare', 'Joint_Commission'],
     key_integrations: ['emr', 'billing', 'insurance', 'inventory', 'compliance'],
@@ -112,8 +147,20 @@ const INDUSTRY_TEMPLATES = {
     template_count: 35
   },
   manufacturing: {
-    business_models: ['discrete_manufacturing', 'process_manufacturing', 'make_to_order', 'make_to_stock', 'engineer_to_order'],
-    core_modules: ['Production_Planning', 'Quality_Management', 'Supply_Chain', 'Asset_Management', 'Cost_Accounting'],
+    business_models: [
+      'discrete_manufacturing',
+      'process_manufacturing',
+      'make_to_order',
+      'make_to_stock',
+      'engineer_to_order'
+    ],
+    core_modules: [
+      'Production_Planning',
+      'Quality_Management',
+      'Supply_Chain',
+      'Asset_Management',
+      'Cost_Accounting'
+    ],
     sap_equivalents: ['SAP_PP', 'SAP_QM', 'SAP_MM', 'SAP_PM', 'SAP_CO'],
     compliance_frameworks: ['ISO_9001', 'ISO_14001', 'OSHA', 'FDA_Manufacturing'],
     key_integrations: ['erp', 'mes', 'quality', 'maintenance', 'accounting'],
@@ -121,8 +168,20 @@ const INDUSTRY_TEMPLATES = {
     template_count: 45
   },
   professional: {
-    business_models: ['consulting', 'accounting_firm', 'law_firm', 'engineering_firm', 'marketing_agency'],
-    core_modules: ['Project_Management', 'Time_Tracking', 'Client_Billing', 'Document_Management', 'CRM'],
+    business_models: [
+      'consulting',
+      'accounting_firm',
+      'law_firm',
+      'engineering_firm',
+      'marketing_agency'
+    ],
+    core_modules: [
+      'Project_Management',
+      'Time_Tracking',
+      'Client_Billing',
+      'Document_Management',
+      'CRM'
+    ],
     sap_equivalents: ['SAP_PS', 'SAP_CRM', 'SAP_Document_Management', 'SAP_Time_Management'],
     compliance_frameworks: ['SOX_Compliance', 'Professional_Standards', 'Client_Confidentiality'],
     key_integrations: ['crm', 'project_management', 'document_management', 'accounting'],
@@ -131,7 +190,13 @@ const INDUSTRY_TEMPLATES = {
   },
   retail: {
     business_models: ['brick_and_mortar', 'ecommerce', 'omnichannel', 'franchise', 'wholesale'],
-    core_modules: ['Inventory_Management', 'POS', 'Customer_Management', 'Supply_Chain', 'Marketing'],
+    core_modules: [
+      'Inventory_Management',
+      'POS',
+      'Customer_Management',
+      'Supply_Chain',
+      'Marketing'
+    ],
     sap_equivalents: ['SAP_Retail', 'SAP_Customer_Engagement', 'SAP_Supply_Chain'],
     compliance_frameworks: ['PCI_DSS', 'Consumer_Protection', 'Sales_Tax_Compliance'],
     key_integrations: ['pos', 'ecommerce', 'inventory', 'crm', 'marketing'],
@@ -140,10 +205,12 @@ const INDUSTRY_TEMPLATES = {
   }
 }
 
-async function configureIndustryDeployment(request: IndustryConfigurationRequest): Promise<IndustryConfigurationResponse> {
+async function configureIndustryDeployment(
+  request: IndustryConfigurationRequest
+): Promise<IndustryConfigurationResponse> {
   const configurationId = `industry_config_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   const industryTemplate = INDUSTRY_TEMPLATES[request.industry_type]
-  
+
   if (!industryTemplate) {
     throw new Error(`Unsupported industry type: ${request.industry_type}`)
   }
@@ -151,7 +218,7 @@ async function configureIndustryDeployment(request: IndustryConfigurationRequest
   try {
     // Step 1: Copy industry templates from HERA System Organization
     const templateCopyResult = await copyIndustryTemplates(
-      request.organization_id, 
+      request.organization_id,
       request.industry_type,
       request.configuration_options.template_customization_level
     )
@@ -202,13 +269,16 @@ async function configureIndustryDeployment(request: IndustryConfigurationRequest
       go_live_checklist: goLiveChecklist,
       support_framework: generateSupportFramework(request.industry_type, industryTemplate)
     }
-
   } catch (error) {
     throw new Error(`Industry configuration failed: ${(error as Error).message}`)
   }
 }
 
-async function copyIndustryTemplates(organizationId: string, industryType: string, customizationLevel: string) {
+async function copyIndustryTemplates(
+  organizationId: string,
+  industryType: string,
+  customizationLevel: string
+) {
   // Get all templates for the industry from HERA System Organization
   const { data: industryTemplates } = await supabase
     .from('core_entities')
@@ -222,7 +292,7 @@ async function copyIndustryTemplates(organizationId: string, industryType: strin
 
   // Copy templates using the template copy API
   const templateCodes = industryTemplates.map(t => t.entity_code)
-  
+
   const copyResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/templates`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -255,7 +325,11 @@ async function copyIndustryTemplates(organizationId: string, industryType: strin
   }
 }
 
-async function configureIndustryAdapters(organizationId: string, industryType: string, options: any) {
+async function configureIndustryAdapters(
+  organizationId: string,
+  industryType: string,
+  options: any
+) {
   // Create industry-specific adapter configuration
   const adapterConfig = {
     industry_type: industryType,
@@ -268,30 +342,36 @@ async function configureIndustryAdapters(organizationId: string, industryType: s
   // Store adapter configuration
   const { data: adapterEntity } = await supabase
     .from('core_entities')
-    .insert([{
-      organization_id: organizationId,
-      entity_type: 'industry_adapter',
-      entity_name: `${industryType.toUpperCase()} Industry Adapter`,
-      entity_code: `ADAPTER-${industryType.toUpperCase()}-001`,
-      smart_code: `HERA.${getIndustryCode(industryType)}.ADAPTER.ENT.CONFIGURATION.v1`,
-      smart_code_status: 'PROD',
-      status: 'active',
-      metadata: {
-        adapter_type: 'industry_configuration',
-        industry_template: INDUSTRY_TEMPLATES[industryType],
-        configuration: adapterConfig,
-        deployment_ready: true
+    .insert([
+      {
+        organization_id: organizationId,
+        entity_type: 'industry_adapter',
+        entity_name: `${industryType.toUpperCase()} Industry Adapter`,
+        entity_code: `ADAPTER-${industryType.toUpperCase()}-001`,
+        smart_code: `HERA.${getIndustryCode(industryType)}.ADAPTER.ENT.CONFIGURATION.v1`,
+        smart_code_status: 'PROD',
+        status: 'active',
+        metadata: {
+          adapter_type: 'industry_configuration',
+          industry_template: INDUSTRY_TEMPLATES[industryType],
+          configuration: adapterConfig,
+          deployment_ready: true
+        }
       }
-    }])
+    ])
     .select()
     .single()
 
   return adapterEntity
 }
 
-function generateDeploymentPlan(industryType: string, deploymentMode: string, industryTemplate: any) {
+function generateDeploymentPlan(
+  industryType: string,
+  deploymentMode: string,
+  industryTemplate: any
+) {
   const baseHours = industryTemplate.implementation_hours
-  
+
   let totalHours = baseHours
   if (deploymentMode === 'phased_rollout') totalHours *= 1.5
   if (deploymentMode === 'pilot_program') totalHours *= 0.75
@@ -382,7 +462,11 @@ function generateDeploymentPlan(industryType: string, deploymentMode: string, in
   }
 }
 
-function generateSAPReplacementAnalysis(industryType: string, sapMigration: any, industryTemplate: any) {
+function generateSAPReplacementAnalysis(
+  industryType: string,
+  sapMigration: any,
+  industryTemplate: any
+) {
   const sapModules = sapMigration?.sap_modules_to_replace || industryTemplate.sap_equivalents
 
   const moduleReplacements = sapModules.map((sapModule: string) => ({
@@ -400,27 +484,47 @@ function generateSAPReplacementAnalysis(industryType: string, sapMigration: any,
   }
 }
 
-function generateGoLiveChecklist(industryType: string, validationRequirements: any, industryTemplate: any) {
+function generateGoLiveChecklist(
+  industryType: string,
+  validationRequirements: any,
+  industryTemplate: any
+) {
   const technicalValidation = [
     {
       checkpoint: 'Schema Deployment Validation',
       status: 'PENDING' as const,
-      validation_criteria: ['All 6 universal tables deployed', 'Proper indexing configured', 'RLS policies active']
+      validation_criteria: [
+        'All 6 universal tables deployed',
+        'Proper indexing configured',
+        'RLS policies active'
+      ]
     },
     {
       checkpoint: 'Template Configuration Validation',
       status: 'PENDING' as const,
-      validation_criteria: ['Industry templates copied', 'Smart codes validated', 'Dynamic data configured']
+      validation_criteria: [
+        'Industry templates copied',
+        'Smart codes validated',
+        'Dynamic data configured'
+      ]
     },
     {
       checkpoint: 'Integration Testing',
       status: 'PENDING' as const,
-      validation_criteria: ['External APIs responding', 'Data synchronization working', 'Error handling tested']
+      validation_criteria: [
+        'External APIs responding',
+        'Data synchronization working',
+        'Error handling tested'
+      ]
     },
     {
       checkpoint: 'Performance Benchmarking',
       status: 'PENDING' as const,
-      validation_criteria: ['Sub-second response times', 'Concurrent user testing', 'Load testing completed']
+      validation_criteria: [
+        'Sub-second response times',
+        'Concurrent user testing',
+        'Load testing completed'
+      ]
     }
   ]
 
@@ -428,25 +532,43 @@ function generateGoLiveChecklist(industryType: string, validationRequirements: a
     {
       process: 'Core Business Workflows',
       status: 'PENDING' as const,
-      acceptance_criteria: ['End-to-end process testing', 'Business rule validation', 'Exception handling verified']
+      acceptance_criteria: [
+        'End-to-end process testing',
+        'Business rule validation',
+        'Exception handling verified'
+      ]
     },
     {
       process: 'Reporting and Analytics',
       status: 'PENDING' as const,
-      acceptance_criteria: ['Standard reports generating', 'Custom dashboards working', 'Data accuracy verified']
+      acceptance_criteria: [
+        'Standard reports generating',
+        'Custom dashboards working',
+        'Data accuracy verified'
+      ]
     },
     {
       process: 'User Access and Security',
       status: 'PENDING' as const,
-      acceptance_criteria: ['User roles configured', 'Permissions testing passed', 'Audit trails working']
+      acceptance_criteria: [
+        'User roles configured',
+        'Permissions testing passed',
+        'Audit trails working'
+      ]
     }
   ]
 
-  const complianceValidation = (industryTemplate.compliance_frameworks || []).map((framework: string) => ({
-    framework,
-    status: 'PENDING' as const,
-    compliance_requirements: [`${framework} requirements verified`, 'Audit trail compliance', 'Documentation complete']
-  }))
+  const complianceValidation = (industryTemplate.compliance_frameworks || []).map(
+    (framework: string) => ({
+      framework,
+      status: 'PENDING' as const,
+      compliance_requirements: [
+        `${framework} requirements verified`,
+        'Audit trail compliance',
+        'Documentation complete'
+      ]
+    })
+  )
 
   return {
     technical_validation: technicalValidation,
@@ -481,10 +603,13 @@ function generateSupportFramework(industryType: string, industryTemplate: any) {
   }
 }
 
-async function storeConfigurationRecord(configurationId: string, request: IndustryConfigurationRequest, results: any) {
-  await supabase
-    .from('universal_transactions')
-    .insert([{
+async function storeConfigurationRecord(
+  configurationId: string,
+  request: IndustryConfigurationRequest,
+  results: any
+) {
+  await supabase.from('universal_transactions').insert([
+    {
       organization_id: request.organization_id,
       transaction_type: 'industry_configuration',
       transaction_code: configurationId,
@@ -502,18 +627,19 @@ async function storeConfigurationRecord(configurationId: string, request: Indust
         configuration_request: request,
         deployment_results: results
       }
-    }])
+    }
+  ])
 }
 
 function getIndustryCode(industryType: string): string {
   const industryCodeMap: Record<string, string> = {
-    'restaurant': 'REST',
-    'healthcare': 'HLTH',
-    'manufacturing': 'MFG',
-    'professional': 'PROF',
-    'retail': 'RETAIL',
-    'legal': 'LEGAL',
-    'education': 'EDU'
+    restaurant: 'REST',
+    healthcare: 'HLTH',
+    manufacturing: 'MFG',
+    professional: 'PROF',
+    retail: 'RETAIL',
+    legal: 'LEGAL',
+    education: 'EDU'
   }
   return industryCodeMap[industryType] || 'PROF'
 }
@@ -533,11 +659,10 @@ export async function POST(request: NextRequest) {
 
     const result = await configureIndustryDeployment(body)
     return NextResponse.json(result)
-
   } catch (error) {
     console.error('Industry configuration error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Industry configuration failed',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -554,21 +679,13 @@ export async function GET() {
     description: 'HERA Industry Configuration Engine - 24-Hour ERP Implementation',
     supported_industries: Object.keys(INDUSTRY_TEMPLATES),
     industry_details: INDUSTRY_TEMPLATES,
-    deployment_modes: [
-      '24_hour_rapid',
-      'phased_rollout',
-      'pilot_program'
-    ],
-    customization_levels: [
-      'standard',
-      'customized', 
-      'fully_bespoke'
-    ],
+    deployment_modes: ['24_hour_rapid', 'phased_rollout', 'pilot_program'],
+    customization_levels: ['standard', 'customized', 'fully_bespoke'],
     sap_replacement_capabilities: {
-      'implementation_time': '24 hours vs SAP 12-21 months',
-      'cost_savings': '90% lower cost ($290K vs $2.9M)',
-      'functionality_parity': '100% + additional capabilities',
-      'modules_replaced': 'All major SAP modules with enhanced features'
+      implementation_time: '24 hours vs SAP 12-21 months',
+      cost_savings: '90% lower cost ($290K vs $2.9M)',
+      functionality_parity: '100% + additional capabilities',
+      modules_replaced: 'All major SAP modules with enhanced features'
     },
     example_request: {
       organization_id: 'uuid-here',

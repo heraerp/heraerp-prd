@@ -21,7 +21,7 @@ interface UniversalRule {
   rule_id: string
   smart_code: string // HERA.UNIV.CONFIG.<FAMILY>.<TYPE>.<VERSION>
   status: 'active' | 'inactive' | 'draft'
-  
+
   scope: {
     organization_id: string
     branches?: string[]
@@ -30,7 +30,7 @@ interface UniversalRule {
     customers?: string[] // IDs or segment smart codes
     channels?: string[]
   }
-  
+
   conditions: {
     effective_from: string
     effective_to?: string
@@ -40,13 +40,13 @@ interface UniversalRule {
     min_lead_minutes?: number
     // ... family-specific conditions
   }
-  
+
   priority: number // Higher wins
-  
+
   payload: {
     // Family-specific configuration
   }
-  
+
   metadata: {
     created_by: string
     created_at: string
@@ -68,30 +68,36 @@ interface UniversalRule {
 ## Rule Families
 
 ### Booking & Scheduling
+
 - `HERA.UNIV.CONFIG.BOOKING.AVAILABILITY.V1`
 - `HERA.UNIV.CONFIG.BOOKING.NO_SHOW.V1`
 - `HERA.UNIV.CONFIG.BOOKING.SLOT_FILTER.V1`
 
 ### Notifications
+
 - `HERA.UNIV.CONFIG.REMINDER.APPOINTMENT.V1`
 - `HERA.UNIV.CONFIG.NOTIFICATION.SMS.V1`
 - `HERA.UNIV.CONFIG.NOTIFICATION.EMAIL.V1`
 
 ### Pricing & Discounts
+
 - `HERA.UNIV.CONFIG.PRICING.DISCOUNT.V1`
 - `HERA.UNIV.CONFIG.PRICING.SURGE.V1`
 - `HERA.UNIV.CONFIG.PRICING.MEMBERSHIP.V1`
 
 ### Financial
+
 - `HERA.UNIV.CONFIG.TAX.RULE.V1`
 - `HERA.UNIV.CONFIG.PAYMENT.TERMS.V1`
 - `HERA.UNIV.CONFIG.CREDIT.LIMIT.V1`
 
 ### Inventory
+
 - `HERA.UNIV.CONFIG.INVENTORY.RESERVATION.V1`
 - `HERA.UNIV.CONFIG.INVENTORY.REORDER.V1`
 
 ### UI/UX
+
 - `HERA.UNIV.CONFIG.UI.EXPERIMENT.V1`
 - `HERA.UNIV.CONFIG.UI.FEATURE_FLAG.V1`
 
@@ -101,19 +107,19 @@ interface UniversalRule {
 function resolveRules(context: Context, family: string): Rule[] {
   // 1. Fetch cached rules for org + family
   const candidates = RULE_CACHE.fetch(context.organization_id, family)
-  
+
   // 2. Filter by scope
   const inScope = candidates.filter(r => inScopeMatch(r.scope, context))
-  
+
   // 3. Filter by time conditions
   const activeNow = inScope.filter(r => timeMatch(r.conditions, context.now))
-  
+
   // 4. Filter by business conditions
   const conditionOK = activeNow.filter(r => conditionsMatch(r.conditions, context))
-  
+
   // 5. Sort by priority, specificity, version
   const ordered = conditionOK.sort(byPrioritySpecificityVersion)
-  
+
   // 6. Apply family-specific composition
   return composeByFamily(ordered, family)
 }
@@ -122,6 +128,7 @@ function resolveRules(context: Context, family: string): Rule[] {
 ## API Usage
 
 ### Query Rules
+
 ```typescript
 // Get applicable rules
 const rules = await universalConfig.resolve({
@@ -140,6 +147,7 @@ const rules = await universalConfig.resolve({
 ```
 
 ### Make Decisions
+
 ```typescript
 // Get decision based on rules
 const decision = await universalConfig.decide({
@@ -179,6 +187,7 @@ const decision = await universalConfig.decide({
 ## Integration Guide
 
 See implementation files:
+
 - `/src/lib/universal-config/universal-config-service.ts` - Core service
 - `/src/lib/universal-config/rule-resolver.ts` - Resolution engine
 - `/src/lib/universal-config/rule-families/` - Family definitions

@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  CheckCircle, 
-  AlertCircle, 
-  Clock, 
-  Users, 
+import {
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  Users,
   Activity,
   Zap,
   Star,
@@ -38,12 +38,12 @@ interface StatusIndicatorProps {
   text?: string
 }
 
-export function StatusIndicator({ 
-  status, 
-  size = 'md', 
-  animated = true, 
-  showText = false, 
-  text 
+export function StatusIndicator({
+  status,
+  size = 'md',
+  animated = true,
+  showText = false,
+  text
 }: StatusIndicatorProps) {
   const sizeClasses = {
     sm: 'w-2 h-2',
@@ -61,14 +61,12 @@ export function StatusIndicator({
 
   return (
     <div className="flex items-center space-x-2">
-      <div 
+      <div
         className={`rounded-full ${sizeClasses[size]} ${colors[status]} ${
           animated && status === 'success' ? 'animate-pulse' : ''
-        } ${animated && status === 'loading' ? 'animate-spin' : ''}`} 
+        } ${animated && status === 'loading' ? 'animate-spin' : ''}`}
       />
-      {showText && text && (
-        <span className="text-sm text-gray-600">{text}</span>
-      )}
+      {showText && text && <span className="text-sm text-gray-600">{text}</span>}
     </div>
   )
 }
@@ -96,15 +94,13 @@ export function PulseIndicator({ active, color = 'green', size = 'md' }: PulseIn
 
   return (
     <div className="relative">
-      <div 
+      <div
         className={`rounded-full ${sizeClasses[size]} ${colors[color]} ${
           active ? 'animate-pulse' : 'opacity-50'
-        }`} 
+        }`}
       />
       {active && (
-        <div 
-          className={`absolute inset-0 rounded-full ${colors[color]} animate-ping opacity-75`} 
-        />
+        <div className={`absolute inset-0 rounded-full ${colors[color]} animate-ping opacity-75`} />
       )}
     </div>
   )
@@ -118,10 +114,10 @@ interface AnimatedCounterProps {
   className?: string
 }
 
-export function AnimatedCounter({ 
-  value, 
-  duration = 1000, 
-  prefix = '', 
+export function AnimatedCounter({
+  value,
+  duration = 1000,
+  prefix = '',
   suffix = '',
   className = ''
 }: AnimatedCounterProps) {
@@ -135,13 +131,13 @@ export function AnimatedCounter({
       if (!startTime) startTime = currentTime
       const elapsed = currentTime - startTime
       const progress = Math.min(elapsed / duration, 1)
-      
+
       // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4)
       const currentValue = Math.floor(startValue + (value - startValue) * easeOutQuart)
-      
+
       setDisplayValue(currentValue)
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate)
       }
@@ -152,7 +148,9 @@ export function AnimatedCounter({
 
   return (
     <span className={className}>
-      {prefix}{displayValue.toLocaleString()}{suffix}
+      {prefix}
+      {displayValue.toLocaleString()}
+      {suffix}
     </span>
   )
 }
@@ -165,12 +163,12 @@ interface FloatingNotificationProps {
   onClose?: () => void
 }
 
-export function FloatingNotification({ 
-  show, 
-  message, 
-  type = 'info', 
+export function FloatingNotification({
+  show,
+  message,
+  type = 'info',
   duration = 3000,
-  onClose 
+  onClose
 }: FloatingNotificationProps) {
   const [isVisible, setIsVisible] = useState(show)
 
@@ -206,11 +204,11 @@ export function FloatingNotification({
           initial={{ opacity: 0, y: -50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -50, scale: 0.9 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 500, 
+          transition={{
+            type: 'spring',
+            stiffness: 500,
             damping: 30,
-            mass: 1 
+            mass: 1
           }}
           className={`fixed top-4 right-4 z-50 flex items-center space-x-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm ${colors[type]}`}
         >
@@ -231,10 +229,10 @@ interface ProgressRingProps {
   color?: string
 }
 
-export function ProgressRing({ 
-  progress, 
-  size = 40, 
-  strokeWidth = 3, 
+export function ProgressRing({
+  progress,
+  size = 40,
+  strokeWidth = 3,
   className = '',
   showPercentage = false,
   color = '#3b82f6'
@@ -246,11 +244,7 @@ export function ProgressRing({
 
   return (
     <div className={`relative ${className}`}>
-      <svg
-        width={size}
-        height={size}
-        className="transform -rotate-90"
-      >
+      <svg width={size} height={size} className="transform -rotate-90">
         {/* Background circle */}
         <circle
           cx={size / 2}
@@ -276,9 +270,7 @@ export function ProgressRing({
       </svg>
       {showPercentage && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-semibold text-gray-700">
-            {Math.round(progress)}%
-          </span>
+          <span className="text-xs font-semibold text-gray-700">{Math.round(progress)}%</span>
         </div>
       )}
     </div>
@@ -314,9 +306,7 @@ export function LoadingSpinner({ size = 'md', color = '#3b82f6', message }: Load
           />
         </svg>
       </div>
-      {message && (
-        <p className="text-sm text-gray-600 animate-pulse">{message}</p>
-      )}
+      {message && <p className="text-sm text-gray-600 animate-pulse">{message}</p>}
     </div>
   )
 }
@@ -331,10 +321,10 @@ interface MetricCardProps {
   animated?: boolean
 }
 
-export function MetricCard({ 
-  title, 
-  value, 
-  change, 
+export function MetricCard({
+  title,
+  value,
+  change,
   trend = 'neutral',
   icon,
   color = 'from-blue-500 to-indigo-600',
@@ -351,41 +341,45 @@ export function MetricCard({
   return (
     <motion.div
       className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 cursor-pointer"
-      whileHover={{ 
-        scale: animated ? 1.02 : 1, 
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)' 
+      whileHover={{
+        scale: animated ? 1.02 : 1,
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
       <div className="flex items-center justify-between mb-4">
         {icon && (
-          <div className={`w-12 h-12 bg-gradient-to-br ${color} rounded-2xl flex items-center justify-center shadow-lg`}>
+          <div
+            className={`w-12 h-12 bg-gradient-to-br ${color} rounded-2xl flex items-center justify-center shadow-lg`}
+          >
             {icon}
           </div>
         )}
         {change !== undefined && trendIcon[trend]}
       </div>
-      
+
       <div className="space-y-2">
         <p className="text-sm font-medium text-gray-600">{title}</p>
         <div className="flex items-end space-x-2">
           {typeof value === 'number' ? (
-            <AnimatedCounter 
-              value={value} 
-              className="text-3xl font-bold text-gray-900"
-            />
+            <AnimatedCounter value={value} className="text-3xl font-bold text-gray-900" />
           ) : (
             <span className="text-3xl font-bold text-gray-900">{value}</span>
           )}
           {change !== undefined && (
-            <span className={`text-sm font-medium ${
-              trend === 'up' ? 'text-green-600' : 
-              trend === 'down' ? 'text-red-600' : 
-              'text-gray-600'
-            }`}>
-              {change > 0 ? '+' : ''}{change}%
+            <span
+              className={`text-sm font-medium ${
+                trend === 'up'
+                  ? 'text-green-600'
+                  : trend === 'down'
+                    ? 'text-red-600'
+                    : 'text-gray-600'
+              }`}
+            >
+              {change > 0 ? '+' : ''}
+              {change}%
             </span>
           )}
         </div>
@@ -408,11 +402,11 @@ interface HeartbeatIndicatorProps {
   size?: number
 }
 
-export function HeartbeatIndicator({ 
-  active, 
-  rate = 1000, 
-  color = '#ef4444', 
-  size = 20 
+export function HeartbeatIndicator({
+  active,
+  rate = 1000,
+  color = '#ef4444',
+  size = 20
 }: HeartbeatIndicatorProps) {
   const [pulse, setPulse] = useState(false)
 
@@ -429,11 +423,8 @@ export function HeartbeatIndicator({
 
   return (
     <div className="flex items-center space-x-2">
-      <motion.div
-        animate={{ scale: pulse ? 1.3 : 1 }}
-        transition={{ duration: 0.1 }}
-      >
-        <Heart 
+      <motion.div animate={{ scale: pulse ? 1.3 : 1 }} transition={{ duration: 0.1 }}>
+        <Heart
           className={`w-${size / 4} h-${size / 4}`}
           style={{ color, fill: pulse ? color : 'transparent' }}
         />
@@ -445,14 +436,14 @@ export function HeartbeatIndicator({
               key={i}
               className="w-1 h-4 rounded-full"
               style={{ backgroundColor: color }}
-              animate={{ 
+              animate={{
                 scaleY: pulse ? [1, 2, 1] : 1,
                 opacity: pulse ? [0.5, 1, 0.5] : 0.3
               }}
-              transition={{ 
-                duration: 0.2, 
+              transition={{
+                duration: 0.2,
                 delay: i * 0.05,
-                ease: "easeInOut"
+                ease: 'easeInOut'
               }}
             />
           ))}
@@ -470,10 +461,10 @@ interface GlowButtonProps {
   disabled?: boolean
 }
 
-export function GlowButton({ 
-  children, 
-  onClick, 
-  className = '', 
+export function GlowButton({
+  children,
+  onClick,
+  className = '',
   glowColor = 'rgba(59, 130, 246, 0.5)',
   disabled = false
 }: GlowButtonProps) {
@@ -497,7 +488,7 @@ export function GlowButton({
       }}
     >
       {children}
-      
+
       {/* Glow effect */}
       <motion.div
         className="absolute inset-0 rounded-xl"

@@ -9,10 +9,10 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EnterpriseCard } from './EnterpriseCard'
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Users, 
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
   DollarSign,
   Activity,
   Target,
@@ -30,18 +30,18 @@ export const DashboardSection: React.FC<{
   collapsible?: boolean
   defaultCollapsed?: boolean
   className?: string
-}> = ({ 
-  title, 
-  subtitle, 
-  actions, 
-  children, 
+}> = ({
+  title,
+  subtitle,
+  actions,
+  children,
   icon,
   collapsible = false,
   defaultCollapsed = false,
-  className 
+  className
 }) => {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
-  
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -51,19 +51,13 @@ export const DashboardSection: React.FC<{
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {icon && (
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-              {icon}
-            </div>
-          )}
+          {icon && <div className="p-2 rounded-lg bg-primary/10 text-primary">{icon}</div>}
           <div>
             <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-            {subtitle && (
-              <p className="text-sm text-muted-foreground">{subtitle}</p>
-            )}
+            {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {actions}
           {collapsible && (
@@ -81,7 +75,7 @@ export const DashboardSection: React.FC<{
           )}
         </div>
       </div>
-      
+
       <AnimatePresence>
         {!isCollapsed && (
           <motion.div
@@ -128,9 +122,9 @@ export const KPICard: React.FC<{
     md: { padding: 'p-6', value: 'text-3xl', title: 'text-base' },
     lg: { padding: 'p-8', value: 'text-4xl', title: 'text-lg' }
   }
-  
+
   const config = sizeConfig[size]
-  
+
   return (
     <EnterpriseCard
       glassIntensity={glassIntensity}
@@ -143,41 +137,31 @@ export const KPICard: React.FC<{
     >
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <h3 className={cn('font-medium text-muted-foreground', config.title)}>
-            {title}
-          </h3>
-          {icon && (
-            <div className="text-muted-foreground opacity-50">
-              {icon}
-            </div>
-          )}
+          <h3 className={cn('font-medium text-muted-foreground', config.title)}>{title}</h3>
+          {icon && <div className="text-muted-foreground opacity-50">{icon}</div>}
         </div>
-        
+
         <div className="flex items-end justify-between gap-4">
           <div className="space-y-1">
-            <div className={cn('font-bold tabular-nums', config.value)}>
-              {value}
-            </div>
-            
+            <div className={cn('font-bold tabular-nums', config.value)}>{value}</div>
+
             {change && (
-              <div className={cn(
-                'flex items-center gap-1 text-sm font-medium',
-                change.trend === 'up' && 'text-green-600',
-                change.trend === 'down' && 'text-red-600',
-                change.trend === 'neutral' && 'text-gray-600'
-              )}>
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-sm font-medium',
+                  change.trend === 'up' && 'text-green-600',
+                  change.trend === 'down' && 'text-red-600',
+                  change.trend === 'neutral' && 'text-gray-600'
+                )}
+              >
                 {change.trend === 'up' && <TrendingUp className="w-3 h-3" />}
                 {change.trend === 'down' && <TrendingDown className="w-3 h-3" />}
                 <span>{change.value}%</span>
               </div>
             )}
           </div>
-          
-          {chart && (
-            <div className="w-24 h-12 opacity-50">
-              {chart}
-            </div>
-          )}
+
+          {chart && <div className="w-24 h-12 opacity-50">{chart}</div>}
         </div>
       </div>
     </EnterpriseCard>
@@ -192,21 +176,14 @@ export const ActivityItem: React.FC<{
   timestamp: string
   variant?: 'default' | 'success' | 'warning' | 'danger'
   onClick?: () => void
-}> = ({
-  icon,
-  title,
-  description,
-  timestamp,
-  variant = 'default',
-  onClick
-}) => {
+}> = ({ icon, title, description, timestamp, variant = 'default', onClick }) => {
   const variantStyles = {
     default: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
     success: 'bg-green-100 dark:bg-green-900/30 text-green-600',
     warning: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600',
     danger: 'bg-red-100 dark:bg-red-900/30 text-red-600'
   }
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -218,24 +195,22 @@ export const ActivityItem: React.FC<{
       onClick={onClick}
     >
       {icon && (
-        <div className={cn(
-          'w-8 h-8 rounded-full flex items-center justify-center shrink-0',
-          variantStyles[variant]
-        )}>
+        <div
+          className={cn(
+            'w-8 h-8 rounded-full flex items-center justify-center shrink-0',
+            variantStyles[variant]
+          )}
+        >
           {icon}
         </div>
       )}
-      
+
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium">{title}</p>
-        {description && (
-          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
       </div>
-      
-      <time className="text-xs text-muted-foreground shrink-0">
-        {timestamp}
-      </time>
+
+      <time className="text-xs text-muted-foreground shrink-0">{timestamp}</time>
     </motion.div>
   )
 }
@@ -248,15 +223,12 @@ export const ChartPlaceholder: React.FC<{
 }> = ({ type = 'line', height = '300px', loading = false }) => {
   if (loading) {
     return (
-      <div 
-        className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg"
-        style={{ height }}
-      />
+      <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" style={{ height }} />
     )
   }
-  
+
   return (
-    <div 
+    <div
       className="flex items-center justify-center bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-dashed border-gray-300 dark:border-gray-600"
       style={{ height }}
     >
@@ -279,17 +251,9 @@ export const MetricTile: React.FC<{
   format?: (value: any) => string
   color?: string
   className?: string
-}> = ({
-  label,
-  value,
-  icon,
-  trend,
-  format,
-  color,
-  className
-}) => {
+}> = ({ label, value, icon, trend, format, color, className }) => {
   const formattedValue = format ? format(value) : value
-  
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -301,28 +265,22 @@ export const MetricTile: React.FC<{
       )}
     >
       <div className="flex items-start justify-between mb-2">
-        <span className="text-sm font-medium text-muted-foreground">
-          {label}
-        </span>
-        {icon && (
-          <div className="text-muted-foreground opacity-50">
-            {icon}
-          </div>
-        )}
+        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+        {icon && <div className="text-muted-foreground opacity-50">{icon}</div>}
       </div>
-      
+
       <div className="space-y-1">
-        <div className="text-2xl font-bold tabular-nums">
-          {formattedValue}
-        </div>
-        
+        <div className="text-2xl font-bold tabular-nums">{formattedValue}</div>
+
         {trend !== undefined && (
-          <div className={cn(
-            'text-xs font-medium flex items-center gap-1',
-            trend > 0 && 'text-green-600',
-            trend < 0 && 'text-red-600',
-            trend === 0 && 'text-gray-600'
-          )}>
+          <div
+            className={cn(
+              'text-xs font-medium flex items-center gap-1',
+              trend > 0 && 'text-green-600',
+              trend < 0 && 'text-red-600',
+              trend === 0 && 'text-gray-600'
+            )}
+          >
             {trend > 0 && '↑'}
             {trend < 0 && '↓'}
             {Math.abs(trend)}%
@@ -352,34 +310,35 @@ export const ProgressIndicator: React.FC<{
   animate = true
 }) => {
   const percentage = Math.round((value / max) * 100)
-  
+
   const variantColors = {
     default: 'bg-blue-500',
     success: 'bg-green-500',
     warning: 'bg-amber-500',
     danger: 'bg-red-500'
   }
-  
+
   const sizeConfig = {
     sm: { height: 'h-1', text: 'text-xs' },
     md: { height: 'h-2', text: 'text-sm' },
     lg: { height: 'h-3', text: 'text-base' }
   }
-  
+
   const config = sizeConfig[size]
-  
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <span className={cn('font-medium', config.text)}>{label}</span>
-        {showPercentage && (
-          <span className={cn('tabular-nums', config.text)}>
-            {percentage}%
-          </span>
-        )}
+        {showPercentage && <span className={cn('tabular-nums', config.text)}>{percentage}%</span>}
       </div>
-      
-      <div className={cn('w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden', config.height)}>
+
+      <div
+        className={cn(
+          'w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden',
+          config.height
+        )}
+      >
         <motion.div
           initial={animate ? { width: 0 } : false}
           animate={{ width: `${percentage}%` }}
@@ -402,25 +361,19 @@ export const DashboardEmptyState: React.FC<{
   }
 }> = ({ icon = <Activity />, title, description, action }) => {
   return (
-    <EnterpriseCard 
-      className="py-12"
-      glassIntensity="subtle"
-      animateOnMount
-    >
+    <EnterpriseCard className="py-12" glassIntensity="subtle" animateOnMount>
       <div className="text-center space-y-3">
         <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto text-gray-400">
           {icon}
         </div>
-        
+
         <div className="space-y-1">
           <h3 className="text-lg font-medium">{title}</h3>
           {description && (
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              {description}
-            </p>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">{description}</p>
           )}
         </div>
-        
+
         {action && (
           <button
             onClick={action.onClick}
@@ -443,6 +396,11 @@ const ChevronDown: React.FC<{ className?: string }> = ({ className }) => (
 
 const TrendingDown: React.FC<{ className?: string }> = ({ className }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+    />
   </svg>
 )

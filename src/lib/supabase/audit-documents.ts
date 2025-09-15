@@ -56,8 +56,10 @@ class AuditDocumentService {
     audit_year: string
     due_date: string
   }): Promise<DocumentRequisition> {
-    const requisitionCode = `REQ-${data.audit_year}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
-    
+    const requisitionCode = `REQ-${data.audit_year}-${Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, '0')}`
+
     // Insert into core_entities table (HERA universal architecture)
     // NOTE: organization_id represents the audit client (each GSPU client gets their own org)
     const { data: requisition, error } = await supabase
@@ -91,9 +93,7 @@ class AuditDocumentService {
       { entity_id: requisition.id, field_name: 'client_id', field_value: data.client_id }
     ]
 
-    await supabase
-      .from('core_dynamic_data')
-      .insert(dynamicDataEntries)
+    await supabase.from('core_dynamic_data').insert(dynamicDataEntries)
 
     return requisition as any
   }
@@ -101,25 +101,29 @@ class AuditDocumentService {
   /**
    * Create all 31 GSPU documents for a requisition
    */
-  async createGSPUDocuments(requisitionId: string, organizationId: string, clientId: string): Promise<AuditDocument[]> {
+  async createGSPUDocuments(
+    requisitionId: string,
+    organizationId: string,
+    clientId: string
+  ): Promise<AuditDocument[]> {
     const documents = [
       // Section A: Company Formation Documents
       { code: 'A.1', name: 'Commercial registration certificate', priority: 'high' },
       { code: 'A.2', name: 'Memorandum of Association', priority: 'high' },
-      { code: 'A.3', name: 'Shareholders\' CPR copy', priority: 'medium' },
-      { code: 'A.4', name: 'Shareholders\' Passport copy', priority: 'medium' },
-      
+      { code: 'A.3', name: "Shareholders' CPR copy", priority: 'medium' },
+      { code: 'A.4', name: "Shareholders' Passport copy", priority: 'medium' },
+
       // Section B: Financial Documents
       { code: 'B.1', name: 'Audited Financial Statements (Prior Year)', priority: 'critical' },
       { code: 'B.2', name: 'Financial Statements (Current Year)', priority: 'critical' },
       { code: 'B.3', name: 'Trial Balance (Current Year)', priority: 'high' },
-      
+
       // Section C: Audit Planning Documents
       { code: 'C.1', name: 'Audit Materiality Check', priority: 'high' },
       { code: 'C.2', name: 'Audit Timeline for execution', priority: 'medium' },
       { code: 'C.3', name: 'Sampling percentage based on materiality', priority: 'medium' },
       { code: 'C.4', name: 'Working papers and query documentation', priority: 'low' },
-      
+
       // Section D: Audit Execution Documents (17 items)
       { code: 'D.1', name: 'Revenue documentation', priority: 'critical' },
       { code: 'D.2', name: 'Other income details', priority: 'medium' },
@@ -138,12 +142,12 @@ class AuditDocumentService {
       { code: 'D.15', name: 'Accrued expenses calculation basis', priority: 'medium' },
       { code: 'D.16', name: 'Facility letters for short-term borrowings', priority: 'high' },
       { code: 'D.17', name: 'Loan documentation', priority: 'high' },
-      
+
       // Section E: VAT Documentation
       { code: 'E.1', name: 'VAT registration certificate', priority: 'high' },
       { code: 'E.2', name: 'Quarterly VAT filings', priority: 'high' },
       { code: 'E.3', name: 'VAT calculation details', priority: 'medium' },
-      
+
       // Section F: Related Parties Documentation
       { code: 'F.1', name: 'Related party details and relationships', priority: 'high' },
       { code: 'F.2', name: 'Outstanding balances with related parties', priority: 'high' },
@@ -212,7 +216,9 @@ class AuditDocumentService {
       pending: documents.filter(d => d.status === 'pending').length,
       received: documents.filter(d => d.status === 'received').length,
       approved: documents.filter(d => d.status === 'approved').length,
-      completion_percentage: Math.round((documents.filter(d => d.status === 'approved').length / documents.length) * 100)
+      completion_percentage: Math.round(
+        (documents.filter(d => d.status === 'approved').length / documents.length) * 100
+      )
     }
 
     return {
@@ -246,7 +252,7 @@ class AuditDocumentService {
 
     // Store additional data in core_dynamic_data
     const dynamicDataEntries = []
-    
+
     if (notes) {
       dynamicDataEntries.push({
         entity_id: documentId,
@@ -272,30 +278,26 @@ class AuditDocumentService {
     }
 
     if (dynamicDataEntries.length > 0) {
-      await supabase
-        .from('core_dynamic_data')
-        .upsert(dynamicDataEntries, {
-          onConflict: 'entity_id,field_name'
-        })
+      await supabase.from('core_dynamic_data').upsert(dynamicDataEntries, {
+        onConflict: 'entity_id,field_name'
+      })
     }
 
     // Create universal transaction for audit trail
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: updatedDoc.organization_id,
-        transaction_type: 'document_status_update',
-        smart_code: 'HERA.AUD.DOC.TXN.STATUS.v1',
-        reference_number: documentId,
-        total_amount: 0,
-        metadata: {
-          document_code: updatedDoc.entity_code,
-          document_name: updatedDoc.entity_name,
-          previous_status: 'pending', // In production, get from database
-          new_status: status,
-          notes: notes
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      organization_id: updatedDoc.organization_id,
+      transaction_type: 'document_status_update',
+      smart_code: 'HERA.AUD.DOC.TXN.STATUS.v1',
+      reference_number: documentId,
+      total_amount: 0,
+      metadata: {
+        document_code: updatedDoc.entity_code,
+        document_name: updatedDoc.entity_name,
+        previous_status: 'pending', // In production, get from database
+        new_status: status,
+        notes: notes
+      }
+    })
 
     return updatedDoc as any
   }
@@ -317,30 +319,29 @@ class AuditDocumentService {
     if (error) throw error
 
     // Store sent date
-    await supabase
-      .from('core_dynamic_data')
-      .upsert({
+    await supabase.from('core_dynamic_data').upsert(
+      {
         entity_id: requisitionId,
         field_name: 'sent_date',
         field_value: new Date().toISOString()
-      }, {
+      },
+      {
         onConflict: 'entity_id,field_name'
-      })
+      }
+    )
 
     // Create universal transaction
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: updatedReq.organization_id,
-        transaction_type: 'requisition_sent',
-        smart_code: 'HERA.AUD.DOC.TXN.SEND.v1',
-        reference_number: requisitionId,
-        total_amount: 0,
-        metadata: {
-          client_id: updatedReq.metadata.client_id,
-          total_documents: 31
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      organization_id: updatedReq.organization_id,
+      transaction_type: 'requisition_sent',
+      smart_code: 'HERA.AUD.DOC.TXN.SEND.v1',
+      reference_number: requisitionId,
+      total_amount: 0,
+      metadata: {
+        client_id: updatedReq.metadata.client_id,
+        total_documents: 31
+      }
+    })
 
     return updatedReq as any
   }
@@ -356,27 +357,24 @@ class AuditDocumentService {
     const fileExt = file.name.split('.').pop()
     const fileName = `${organizationId}/${documentId}/${Date.now()}.${fileExt}`
 
-    const { data, error } = await supabase.storage
-      .from('audit-documents')
-      .upload(fileName, file)
+    const { data, error } = await supabase.storage.from('audit-documents').upload(fileName, file)
 
     if (error) throw error
 
     // Get public URL
-    const { data: urlData } = supabase.storage
-      .from('audit-documents')
-      .getPublicUrl(fileName)
+    const { data: urlData } = supabase.storage.from('audit-documents').getPublicUrl(fileName)
 
     // Store file reference in core_dynamic_data
-    await supabase
-      .from('core_dynamic_data')
-      .upsert({
+    await supabase.from('core_dynamic_data').upsert(
+      {
         entity_id: documentId,
         field_name: 'file_url',
         field_value: urlData.publicUrl
-      }, {
+      },
+      {
         onConflict: 'entity_id,field_name'
-      })
+      }
+    )
 
     return urlData.publicUrl
   }

@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 interface TooltipProps {
   children: React.ReactNode
@@ -10,8 +10,8 @@ interface TooltipProps {
   delayDuration?: number
 }
 
-const TooltipProvider: React.FC<{ children: React.ReactNode; delayDuration?: number }> = ({ 
-  children 
+const TooltipProvider: React.FC<{ children: React.ReactNode; delayDuration?: number }> = ({
+  children
 }) => {
   return <>{children}</>
 }
@@ -25,7 +25,7 @@ const TooltipTrigger = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
 >(({ className, children, asChild, ...props }, ref) => {
   const [showTooltip, setShowTooltip] = React.useState(false)
-  
+
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children as any, {
       ...props,
@@ -42,10 +42,10 @@ const TooltipTrigger = React.forwardRef<
         if (children.props?.onMouseLeave) {
           children.props.onMouseLeave(e)
         }
-      },
+      }
     })
   }
-  
+
   return (
     <div
       ref={ref}
@@ -58,11 +58,11 @@ const TooltipTrigger = React.forwardRef<
     </div>
   )
 })
-TooltipTrigger.displayName = "TooltipTrigger"
+TooltipTrigger.displayName = 'TooltipTrigger'
 
 const TooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { 
+  React.HTMLAttributes<HTMLDivElement> & {
     side?: 'top' | 'right' | 'bottom' | 'left'
     sideOffset?: number
   }
@@ -71,9 +71,9 @@ const TooltipContent = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "z-50 overflow-hidden rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white shadow-md",
-        "absolute pointer-events-none opacity-0 transition-opacity duration-300",
-        "group-hover:opacity-100",
+        'z-50 overflow-hidden rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white shadow-md',
+        'absolute pointer-events-none opacity-0 transition-opacity duration-300',
+        'group-hover:opacity-100',
         side === 'right' && 'left-full top-1/2 -translate-y-1/2 ml-2',
         side === 'left' && 'right-full top-1/2 -translate-y-1/2 mr-2',
         side === 'top' && 'bottom-full left-1/2 -translate-x-1/2 mb-2',
@@ -87,6 +87,6 @@ const TooltipContent = React.forwardRef<
     </div>
   )
 })
-TooltipContent.displayName = "TooltipContent"
+TooltipContent.displayName = 'TooltipContent'
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

@@ -4,7 +4,13 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -36,32 +42,38 @@ interface COAAccount {
 const INDUSTRY_TEMPLATES = {
   RESTAURANT: {
     name: 'Restaurant & Food Service',
-    description: 'Complete chart of accounts for restaurants with food cost tracking, tips, and hospitality-specific accounts',
+    description:
+      'Complete chart of accounts for restaurants with food cost tracking, tips, and hospitality-specific accounts',
     account_count: 85
   },
   SALON: {
     name: 'Beauty & Personal Care',
-    description: 'Specialized accounts for salons including service revenue, product sales, and beauty industry specifics',
+    description:
+      'Specialized accounts for salons including service revenue, product sales, and beauty industry specifics',
     account_count: 78
   },
   HEALTHCARE: {
     name: 'Healthcare & Medical',
-    description: 'Medical practice accounts including patient receivables, insurance, and healthcare-specific expenses',
+    description:
+      'Medical practice accounts including patient receivables, insurance, and healthcare-specific expenses',
     account_count: 92
   },
   RETAIL: {
     name: 'Retail & E-commerce',
-    description: 'Retail-focused accounts with inventory management, online sales, and customer loyalty programs',
+    description:
+      'Retail-focused accounts with inventory management, online sales, and customer loyalty programs',
     account_count: 88
   },
   MANUFACTURING: {
     name: 'Manufacturing & Production',
-    description: 'Production-focused accounts including work-in-progress, raw materials, and manufacturing overhead',
+    description:
+      'Production-focused accounts including work-in-progress, raw materials, and manufacturing overhead',
     account_count: 110
   },
   PROFESSIONAL_SERVICES: {
     name: 'Professional Services',
-    description: 'Service business accounts with time billing, project tracking, and professional service specifics',
+    description:
+      'Service business accounts with time billing, project tracking, and professional service specifics',
     account_count: 75
   }
 }
@@ -82,7 +94,11 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
 
   // Load template preview when industry/template changes
   useEffect(() => {
-    if (coaData.load_type === 'template' && industryCode && INDUSTRY_TEMPLATES[industryCode as keyof typeof INDUSTRY_TEMPLATES]) {
+    if (
+      coaData.load_type === 'template' &&
+      industryCode &&
+      INDUSTRY_TEMPLATES[industryCode as keyof typeof INDUSTRY_TEMPLATES]
+    ) {
       loadTemplatePreview()
     }
   }, [coaData.load_type, industryCode])
@@ -96,9 +112,9 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
         country: data.organizationBasics.country,
         currency: data.organizationBasics.base_currency_code
       })
-      
+
       setPreviewAccounts(template.accounts || [])
-      
+
       // Update wizard data
       onChange({
         chartOfAccounts: {
@@ -107,7 +123,6 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
           accounts: template.accounts
         }
       })
-      
     } catch (error) {
       console.error('Failed to load COA template:', error)
     } finally {
@@ -142,22 +157,26 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
         // Parse CSV - basic implementation
         const lines = text.split('\n')
         const headers = lines[0].split(',').map(h => h.trim())
-        
-        accounts = lines.slice(1).filter(line => line.trim()).map(line => {
-          const values = line.split(',').map(v => v.trim())
-          const account: any = {}
-          headers.forEach((header, index) => {
-            account[header] = values[index] || ''
+
+        accounts = lines
+          .slice(1)
+          .filter(line => line.trim())
+          .map(line => {
+            const values = line.split(',').map(v => v.trim())
+            const account: any = {}
+            headers.forEach((header, index) => {
+              account[header] = values[index] || ''
+            })
+            return account as COAAccount
           })
-          return account as COAAccount
-        })
       }
 
       // Validate uploaded accounts
       const validatedAccounts = accounts.map(account => ({
         ...account,
         allow_posting: account.allow_posting ?? true,
-        smart_code: account.smart_code || `HERA.${industryCode}.COA.ACCOUNT.GL.${account.account_type}.v1`
+        smart_code:
+          account.smart_code || `HERA.${industryCode}.COA.ACCOUNT.GL.${account.account_type}.v1`
       }))
 
       setPreviewAccounts(validatedAccounts)
@@ -167,7 +186,6 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
           accounts: validatedAccounts
         }
       })
-
     } catch (error) {
       console.error('Failed to parse file:', error)
     } finally {
@@ -203,8 +221,9 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
 
     const csvContent = [
       'entity_code,entity_name,parent_entity_code,account_type,account_subtype,allow_posting,natural_balance,ifrs_classification,smart_code',
-      ...sampleCOA.map(acc => 
-        `${acc.entity_code},${acc.entity_name},${acc.parent_entity_code},${acc.account_type},${acc.account_subtype},${acc.allow_posting},${acc.natural_balance},${acc.ifrs_classification},${acc.smart_code}`
+      ...sampleCOA.map(
+        acc =>
+          `${acc.entity_code},${acc.entity_name},${acc.parent_entity_code},${acc.account_type},${acc.account_subtype},${acc.allow_posting},${acc.natural_balance},${acc.ifrs_classification},${acc.smart_code}`
       )
     ].join('\n')
 
@@ -223,7 +242,9 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
     })
   }
 
-  const templateInfo = industryCode ? INDUSTRY_TEMPLATES[industryCode as keyof typeof INDUSTRY_TEMPLATES] : null
+  const templateInfo = industryCode
+    ? INDUSTRY_TEMPLATES[industryCode as keyof typeof INDUSTRY_TEMPLATES]
+    : null
 
   return (
     <div className="space-y-6">
@@ -244,8 +265,8 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
       {/* Load Type Selection */}
       <div className="space-y-4">
         <Label className="text-sm font-medium">Chart of Accounts Source</Label>
-        <RadioGroup 
-          value={coaData.load_type} 
+        <RadioGroup
+          value={coaData.load_type}
           onValueChange={handleLoadTypeChange}
           className="space-y-3"
         >
@@ -266,11 +287,11 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <span>Industry Template</span>
-              {templateInfo && <Badge variant="secondary">{templateInfo.account_count} accounts</Badge>}
+              {templateInfo && (
+                <Badge variant="secondary">{templateInfo.account_count} accounts</Badge>
+              )}
             </CardTitle>
-            <CardDescription>
-              {templateInfo?.description}
-            </CardDescription>
+            <CardDescription>{templateInfo?.description}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {industryCode && templateInfo ? (
@@ -334,11 +355,7 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
                   onChange={handleFileUpload}
                   disabled={loading}
                 />
-                <Button
-                  variant="outline"
-                  onClick={downloadSampleFile}
-                  size="sm"
-                >
+                <Button variant="outline" onClick={downloadSampleFile} size="sm">
                   <Download className="h-4 w-4 mr-2" />
                   Sample
                 </Button>
@@ -352,11 +369,21 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
             <div className="p-3 border rounded bg-blue-50 dark:bg-blue-950/30 text-sm">
               <h4 className="font-medium mb-2">Required Fields:</h4>
               <ul className="list-disc list-inside space-y-1 text-xs">
-                <li><code>entity_code</code> - Account code (e.g., 1100000)</li>
-                <li><code>entity_name</code> - Account name (e.g., Cash and Bank)</li>
-                <li><code>account_type</code> - ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE</li>
-                <li><code>natural_balance</code> - DEBIT or CREDIT</li>
-                <li><code>allow_posting</code> - true/false</li>
+                <li>
+                  <code>entity_code</code> - Account code (e.g., 1100000)
+                </li>
+                <li>
+                  <code>entity_name</code> - Account name (e.g., Cash and Bank)
+                </li>
+                <li>
+                  <code>account_type</code> - ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE
+                </li>
+                <li>
+                  <code>natural_balance</code> - DEBIT or CREDIT
+                </li>
+                <li>
+                  <code>allow_posting</code> - true/false
+                </li>
               </ul>
             </div>
           </CardContent>

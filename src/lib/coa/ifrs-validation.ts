@@ -22,7 +22,6 @@ export interface IFRSRollupResult {
 }
 
 export class IFRSValidator {
-  
   /**
    * Validate IFRS compliance for a Chart of Accounts
    */
@@ -53,7 +52,9 @@ export class IFRSValidator {
 
       // Validate account level hierarchy
       if (account.account_level && (account.account_level < 1 || account.account_level > 5)) {
-        errors.push(`Account ${account.entity_code}: Invalid account level ${account.account_level}. Must be 1-5`)
+        errors.push(
+          `Account ${account.entity_code}: Invalid account level ${account.account_level}. Must be 1-5`
+        )
         validationScore -= 3
       }
 
@@ -61,7 +62,9 @@ export class IFRSValidator {
       if (account.parent_account && account.parent_account !== '') {
         const parentExists = accounts.some(acc => acc.entity_code === account.parent_account)
         if (!parentExists) {
-          errors.push(`Account ${account.entity_code}: Parent account '${account.parent_account}' not found`)
+          errors.push(
+            `Account ${account.entity_code}: Parent account '${account.parent_account}' not found`
+          )
           validationScore -= 5
         }
       }
@@ -81,7 +84,9 @@ export class IFRSValidator {
       }
 
       if (expectedTypes[firstDigit] && account.account_type !== expectedTypes[firstDigit]) {
-        errors.push(`Account ${account.entity_code}: Account type '${account.account_type}' doesn't match numbering structure. Expected '${expectedTypes[firstDigit]}'`)
+        errors.push(
+          `Account ${account.entity_code}: Account type '${account.account_type}' doesn't match numbering structure. Expected '${expectedTypes[firstDigit]}'`
+        )
         validationScore -= 3
       }
 
@@ -89,32 +94,65 @@ export class IFRSValidator {
       if (account.ifrs_statement) {
         const validStatements = ['SFP', 'SPL', 'SCE', 'SCF', 'NOTES']
         if (!validStatements.includes(account.ifrs_statement)) {
-          errors.push(`Account ${account.entity_code}: Invalid IFRS statement '${account.ifrs_statement}'. Must be one of: ${validStatements.join(', ')}`)
+          errors.push(
+            `Account ${account.entity_code}: Invalid IFRS statement '${account.ifrs_statement}'. Must be one of: ${validStatements.join(', ')}`
+          )
           validationScore -= 2
         }
 
         // Check statement mapping consistency
-        if ((firstDigit === '1' || firstDigit === '2' || firstDigit === '3') && account.ifrs_statement !== 'SFP') {
-          warnings.push(`Account ${account.entity_code}: Balance sheet account should map to SFP statement`)
+        if (
+          (firstDigit === '1' || firstDigit === '2' || firstDigit === '3') &&
+          account.ifrs_statement !== 'SFP'
+        ) {
+          warnings.push(
+            `Account ${account.entity_code}: Balance sheet account should map to SFP statement`
+          )
           validationScore -= 1
         }
-        if ((firstDigit === '4' || firstDigit === '5' || firstDigit === '6' || firstDigit === '7' || firstDigit === '8') && account.ifrs_statement !== 'SPL') {
-          warnings.push(`Account ${account.entity_code}: Income statement account should map to SPL statement`)
+        if (
+          (firstDigit === '4' ||
+            firstDigit === '5' ||
+            firstDigit === '6' ||
+            firstDigit === '7' ||
+            firstDigit === '8') &&
+          account.ifrs_statement !== 'SPL'
+        ) {
+          warnings.push(
+            `Account ${account.entity_code}: Income statement account should map to SPL statement`
+          )
           validationScore -= 1
         }
       }
 
       // Validate normal balance
-      const debitAccounts = ['assets', 'cost_of_sales', 'direct_expenses', 'indirect_expenses', 'taxes_extraordinary', 'statistical']
+      const debitAccounts = [
+        'assets',
+        'cost_of_sales',
+        'direct_expenses',
+        'indirect_expenses',
+        'taxes_extraordinary',
+        'statistical'
+      ]
       const expectedBalance = debitAccounts.includes(account.account_type) ? 'debit' : 'credit'
       if (account.normal_balance && account.normal_balance !== expectedBalance) {
-        warnings.push(`Account ${account.entity_code}: Normal balance '${account.normal_balance}' may be incorrect. Expected '${expectedBalance}'`)
+        warnings.push(
+          `Account ${account.entity_code}: Normal balance '${account.normal_balance}' may be incorrect. Expected '${expectedBalance}'`
+        )
         validationScore -= 1
       }
 
       // Validate header accounts
-      if (account.is_header && account.entity_code && !account.entity_code.endsWith('000') && !account.entity_code.endsWith('00') && !account.entity_code.endsWith('0')) {
-        warnings.push(`Account ${account.entity_code}: Marked as header but doesn't follow header naming convention`)
+      if (
+        account.is_header &&
+        account.entity_code &&
+        !account.entity_code.endsWith('000') &&
+        !account.entity_code.endsWith('00') &&
+        !account.entity_code.endsWith('0')
+      ) {
+        warnings.push(
+          `Account ${account.entity_code}: Marked as header but doesn't follow header naming convention`
+        )
         validationScore -= 1
       }
     })
@@ -141,17 +179,22 @@ export class IFRSValidator {
   /**
    * Generate IFRS-compliant rollup calculations
    */
-  static generateIFRSRollup(accounts: any[], balances: { [accountCode: string]: number } = {}): IFRSRollupResult[] {
+  static generateIFRSRollup(
+    accounts: any[],
+    balances: { [accountCode: string]: number } = {}
+  ): IFRSRollupResult[] {
     // Sort accounts by presentation order
-    const sortedAccounts = [...accounts].sort((a, b) => (a.presentation_order || 0) - (b.presentation_order || 0))
-    
+    const sortedAccounts = [...accounts].sort(
+      (a, b) => (a.presentation_order || 0) - (b.presentation_order || 0)
+    )
+
     // Build hierarchy map
     const accountMap = new Map<string, any>()
     const childrenMap = new Map<string, string[]>()
-    
+
     sortedAccounts.forEach(account => {
       accountMap.set(account.entity_code, account)
-      
+
       if (account.parent_account && account.parent_account !== '') {
         if (!childrenMap.has(account.parent_account)) {
           childrenMap.set(account.parent_account, [])
@@ -179,7 +222,7 @@ export class IFRSValidator {
     const buildRollupTree = (accountCode: string): IFRSRollupResult => {
       const account = accountMap.get(accountCode)!
       const children = childrenMap.get(accountCode) || []
-      
+
       return {
         account_code: accountCode,
         account_name: account.entity_name,
@@ -233,7 +276,9 @@ export class IFRSValidator {
         const parent = accountMap.get(account.parent_account)
         if (parent) {
           if (parent.account_level >= account.account_level) {
-            errors.push(`Account ${account.entity_code}: Level ${account.account_level} should be greater than parent ${parent.entity_code} level ${parent.account_level}`)
+            errors.push(
+              `Account ${account.entity_code}: Level ${account.account_level} should be greater than parent ${parent.entity_code} level ${parent.account_level}`
+            )
           }
         }
       }
@@ -242,7 +287,9 @@ export class IFRSValidator {
       if (account.rollup_account && account.rollup_account !== account.parent_account) {
         const rollupAccount = accountMap.get(account.rollup_account)
         if (!rollupAccount) {
-          errors.push(`Account ${account.entity_code}: Rollup account '${account.rollup_account}' not found`)
+          errors.push(
+            `Account ${account.entity_code}: Rollup account '${account.rollup_account}' not found`
+          )
         }
       }
     })

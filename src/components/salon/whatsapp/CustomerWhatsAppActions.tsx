@@ -5,7 +5,14 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Gift, MessageCircle, Users, Send, Calendar, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
 import { whatsAppCampaignService } from '@/lib/salon/whatsapp-campaign-service'
@@ -30,7 +37,10 @@ interface CustomerWhatsAppActionsProps {
   organizationId: string
 }
 
-export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWhatsAppActionsProps) {
+export function CustomerWhatsAppActions({
+  customer,
+  organizationId
+}: CustomerWhatsAppActionsProps) {
   const [sendingBirthday, setSendingBirthday] = useState(false)
   const [sendingWinback, setSendingWinback] = useState(false)
   const [showPreview, setShowPreview] = useState<'birthday' | 'winback' | null>(null)
@@ -70,7 +80,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
 
       // In production, this would send via WhatsApp API
       console.log('📱 Sending birthday message:', messageData)
-      
+
       setResult({
         type: 'success',
         message: 'Birthday special sent successfully!'
@@ -105,7 +115,7 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
 
       // In production, this would send via WhatsApp API
       console.log('📱 Sending win-back message:', messageData)
-      
+
       setResult({
         type: 'success',
         message: 'Win-back offer sent successfully!'
@@ -146,14 +156,15 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <MessageCircle className="w-5 h-5 text-green-500" />
-        <span className="text-sm font-semibold !text-gray-900 dark:!text-white">WhatsApp Actions</span>
+        <span className="text-sm font-semibold !text-gray-900 dark:!text-white">
+          WhatsApp Actions
+        </span>
       </div>
 
       {result && (
-        <Alert className={cn(
-          "mb-4",
-          result.type === 'success' ? "border-green-500" : "border-red-500"
-        )}>
+        <Alert
+          className={cn('mb-4', result.type === 'success' ? 'border-green-500' : 'border-red-500')}
+        >
           <AlertDescription className="flex items-center gap-2">
             {result.type === 'success' ? (
               <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -200,18 +211,16 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Send Birthday Special</DialogTitle>
-                  <DialogDescription>
-                    Preview the birthday message before sending
-                  </DialogDescription>
+                  <DialogDescription>Preview the birthday message before sending</DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="mt-4">
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getBirthdayPreview()}
                     </pre>
                   </div>
-                  
+
                   <div className="flex justify-end gap-2 mt-4">
                     <Button variant="outline" onClick={() => setShowPreview(null)}>
                       Cancel
@@ -264,18 +273,16 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Send Win-back Offer</DialogTitle>
-                  <DialogDescription>
-                    Preview the win-back message before sending
-                  </DialogDescription>
+                  <DialogDescription>Preview the win-back message before sending</DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="mt-4">
                   <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                     <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
                       {getWinbackPreview()}
                     </pre>
                   </div>
-                  
+
                   <div className="flex justify-end gap-2 mt-4">
                     <Button variant="outline" onClick={() => setShowPreview(null)}>
                       Cancel
@@ -297,19 +304,11 @@ export function CustomerWhatsAppActions({ customer, organizationId }: CustomerWh
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-2">
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="text-xs flex items-center gap-1"
-        >
+        <Button variant="outline" size="sm" className="text-xs flex items-center gap-1">
           <Calendar className="w-3 h-3" />
           Schedule Follow-up
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="text-xs flex items-center gap-1"
-        >
+        <Button variant="outline" size="sm" className="text-xs flex items-center gap-1">
           <MessageCircle className="w-3 h-3" />
           Custom Message
         </Button>

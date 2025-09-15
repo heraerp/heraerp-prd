@@ -1,7 +1,7 @@
 /**
  * Fiscal Close Operations Checklist Component
  * Smart Code: HERA.FIN.UI.CLOSE.CHECKLIST.v1
- * 
+ *
  * 15-item checklist for year-end closing operations
  */
 
@@ -35,7 +35,14 @@ export interface ChecklistItem {
   id: string
   title: string
   description: string
-  category: 'validation' | 'subledger' | 'reconciliation' | 'accruals' | 'closing' | 'reporting' | 'archive'
+  category:
+    | 'validation'
+    | 'subledger'
+    | 'reconciliation'
+    | 'accruals'
+    | 'closing'
+    | 'reporting'
+    | 'archive'
   status: 'pending' | 'in_progress' | 'completed' | 'skipped'
   required: boolean
   icon: React.ElementType
@@ -71,7 +78,7 @@ const DEFAULT_CHECKLIST_ITEMS: ChecklistItem[] = [
     icon: Shield,
     artifacts: ['COA validation report']
   },
-  
+
   // Subledger Freeze
   {
     id: 'YEC-03',
@@ -93,7 +100,7 @@ const DEFAULT_CHECKLIST_ITEMS: ChecklistItem[] = [
     icon: FileText,
     artifacts: ['Unposted journals report']
   },
-  
+
   // Reconciliation
   {
     id: 'YEC-05',
@@ -135,7 +142,7 @@ const DEFAULT_CHECKLIST_ITEMS: ChecklistItem[] = [
     icon: Package,
     artifacts: ['Inventory reconciliation', 'COGS analysis']
   },
-  
+
   // Accruals & Deferrals
   {
     id: 'YEC-09',
@@ -147,7 +154,7 @@ const DEFAULT_CHECKLIST_ITEMS: ChecklistItem[] = [
     icon: Clock,
     artifacts: ['Accruals journal', 'Deferrals schedule']
   },
-  
+
   // Closing Process
   {
     id: 'YEC-10',
@@ -189,7 +196,7 @@ const DEFAULT_CHECKLIST_ITEMS: ChecklistItem[] = [
     icon: CheckCircle2,
     artifacts: ['Approval documentation']
   },
-  
+
   // Final Steps
   {
     id: 'YEC-14',
@@ -262,12 +269,14 @@ export function FiscalCloseChecklist({
           <div className="space-y-4">
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span>{completedCount} of {items.length} completed</span>
+                <span>
+                  {completedCount} of {items.length} completed
+                </span>
                 <span>{Math.round(progressPercentage)}%</span>
               </div>
               <Progress value={progressPercentage} className="h-2" />
             </div>
-            
+
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
@@ -280,19 +289,17 @@ export function FiscalCloseChecklist({
 
       {/* Checklist Items */}
       <div className="space-y-4">
-        {items.map((item) => {
+        {items.map(item => {
           const Icon = item.icon
           return (
-            <Card key={item.id} className={cn(
-              'transition-all',
-              item.status === 'completed' && 'opacity-75'
-            )}>
+            <Card
+              key={item.id}
+              className={cn('transition-all', item.status === 'completed' && 'opacity-75')}
+            >
               <CardContent className="p-4">
                 <div className="flex items-start space-x-4">
-                  <div className="mt-1">
-                    {getStatusIcon(item.status)}
-                  </div>
-                  
+                  <div className="mt-1">{getStatusIcon(item.status)}</div>
+
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
@@ -305,25 +312,23 @@ export function FiscalCloseChecklist({
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {item.description}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
                       </div>
-                      
-                      <Badge 
-                        variant="secondary" 
+
+                      <Badge
+                        variant="secondary"
                         className={cn('ml-4', getCategoryColor(item.category))}
                       >
                         {item.category}
                       </Badge>
                     </div>
-                    
+
                     {item.artifacts && item.artifacts.length > 0 && (
                       <div className="text-xs text-muted-foreground">
                         <span className="font-medium">Artifacts:</span> {item.artifacts.join(', ')}
                       </div>
                     )}
-                    
+
                     <div className="flex items-center gap-4 pt-2">
                       <Button
                         size="sm"
@@ -333,7 +338,7 @@ export function FiscalCloseChecklist({
                       >
                         Start
                       </Button>
-                      
+
                       <Button
                         size="sm"
                         variant={item.status === 'completed' ? 'default' : 'outline'}
@@ -341,7 +346,7 @@ export function FiscalCloseChecklist({
                       >
                         {item.status === 'completed' ? 'Completed' : 'Mark Complete'}
                       </Button>
-                      
+
                       {!item.required && (
                         <Button
                           size="sm"

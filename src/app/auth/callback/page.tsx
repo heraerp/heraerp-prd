@@ -18,7 +18,7 @@ export default function AuthCallback() {
     const handleAuthCallback = async () => {
       try {
         console.log('🔄 Auth callback: processing URL...')
-        
+
         // Check if we have auth tokens in the URL hash
         const hashParams = new URLSearchParams(window.location.hash.substring(1))
         const accessToken = hashParams.get('access_token')
@@ -27,9 +27,9 @@ export default function AuthCallback() {
         const error = hashParams.get('error')
         const errorDescription = hashParams.get('error_description')
 
-        console.log('🔄 Auth callback:', { 
-          code: !!code, 
-          error, 
+        console.log('🔄 Auth callback:', {
+          code: !!code,
+          error,
           error_description: errorDescription,
           hasAccessToken: !!accessToken,
           hasRefreshToken: !!refreshToken
@@ -46,7 +46,7 @@ export default function AuthCallback() {
         // If we have tokens in the hash, set the session
         if (accessToken && refreshToken) {
           console.log('✅ Found auth tokens in URL hash, setting session...')
-          
+
           const { data, error: sessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken
@@ -63,10 +63,10 @@ export default function AuthCallback() {
             console.log('✅ Session established successfully')
             setStatus('success')
             setMessage('Authentication successful! Redirecting...')
-            
+
             // Clear the URL hash
             window.history.replaceState({}, document.title, window.location.pathname)
-            
+
             // Small delay to show success message
             setTimeout(() => {
               router.push('/select-app')
@@ -78,9 +78,9 @@ export default function AuthCallback() {
         // If we have a code, exchange it for a session
         if (code) {
           console.log('✅ Found auth code, exchanging for session...')
-          
+
           const { data, error: codeError } = await supabase.auth.exchangeCodeForSession(code)
-          
+
           if (codeError) {
             console.error('Code exchange error:', codeError)
             setStatus('error')
@@ -92,7 +92,7 @@ export default function AuthCallback() {
             console.log('✅ Code exchange successful')
             setStatus('success')
             setMessage('Authentication successful! Redirecting...')
-            
+
             setTimeout(() => {
               router.push('/dashboard')
             }, 1000)
@@ -114,7 +114,7 @@ export default function AuthCallback() {
           console.log('✅ Found existing session')
           setStatus('success')
           setMessage('Authentication successful! Redirecting...')
-          
+
           setTimeout(() => {
             router.push('/dashboard')
           }, 1000)
@@ -125,12 +125,11 @@ export default function AuthCallback() {
         console.warn('⚠️ No auth code or tokens provided')
         setStatus('error')
         setMessage('No authentication data provided. Please try logging in again.')
-        
+
         // Redirect to login with error
         setTimeout(() => {
           router.push('/login?error=no_session')
         }, 2000)
-
       } catch (error) {
         console.error('Auth callback error:', error)
         setStatus('error')
@@ -159,12 +158,8 @@ export default function AuthCallback() {
               <>
                 <div className="space-y-4">
                   <Loader2 className="w-8 h-8 mx-auto animate-spin text-blue-600" />
-                  <h1 className="text-xl font-semibold text-gray-900">
-                    Completing Authentication
-                  </h1>
-                  <p className="text-gray-600">
-                    Please wait while we sign you in...
-                  </p>
+                  <h1 className="text-xl font-semibold text-gray-900">Completing Authentication</h1>
+                  <p className="text-gray-600">Please wait while we sign you in...</p>
                 </div>
               </>
             )}
@@ -185,9 +180,7 @@ export default function AuthCallback() {
               <>
                 <div className="space-y-4">
                   <AlertCircle className="w-8 h-8 mx-auto text-red-600" />
-                  <h1 className="text-xl font-semibold text-red-900">
-                    Authentication Failed
-                  </h1>
+                  <h1 className="text-xl font-semibold text-red-900">Authentication Failed</h1>
                   <p className="text-gray-600">{message}</p>
                   <button
                     onClick={handleManualRedirect}

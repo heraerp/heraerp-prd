@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   FileText,
   Download,
   Calendar,
@@ -49,7 +49,7 @@ export default function ReportsPage() {
     accounts: 0,
     activities: 0
   })
-  
+
   const supabase = createClientComponentClient()
 
   useEffect(() => {
@@ -68,9 +68,10 @@ export default function ReportsPage() {
       if (oppsError) throw oppsError
 
       // Calculate total revenue from opportunities
-      const totalRevenue = opps?.reduce((sum, opp) => {
-        return sum + (opp.metadata?.amount || 0)
-      }, 0) || 0
+      const totalRevenue =
+        opps?.reduce((sum, opp) => {
+          return sum + (opp.metadata?.amount || 0)
+        }, 0) || 0
 
       // Load accounts count
       const { count: accountCount } = await supabase
@@ -182,21 +183,31 @@ export default function ReportsPage() {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'sales': return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'pipeline': return 'from-[#ec7f37] to-[#be4f0c]'
-      case 'activity': return 'from-purple-500 to-purple-600'
-      case 'forecast': return 'from-emerald-500 to-green-600'
-      case 'custom': return 'from-blue-500 to-blue-600'
-      default: return 'from-gray-500 to-gray-600'
+      case 'sales':
+        return 'from-[#FF5A09] to-[#ec7f37]'
+      case 'pipeline':
+        return 'from-[#ec7f37] to-[#be4f0c]'
+      case 'activity':
+        return 'from-purple-500 to-purple-600'
+      case 'forecast':
+        return 'from-emerald-500 to-green-600'
+      case 'custom':
+        return 'from-blue-500 to-blue-600'
+      default:
+        return 'from-gray-500 to-gray-600'
     }
   }
 
   const getStatusColor = (status?: string) => {
     switch (status) {
-      case 'ready': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'generating': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'scheduled': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'ready':
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      case 'generating':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+      case 'scheduled':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
     }
   }
 
@@ -205,31 +216,31 @@ export default function ReportsPage() {
   })
 
   const quickStats = [
-    { 
-      label: 'Total Revenue', 
-      value: `₹${(stats.totalRevenue / 10000000).toFixed(1)} Cr`, 
-      icon: DollarSign, 
+    {
+      label: 'Total Revenue',
+      value: `₹${(stats.totalRevenue / 10000000).toFixed(1)} Cr`,
+      icon: DollarSign,
       color: 'from-[#FF5A09] to-[#ec7f37]',
       change: '+12.5%'
     },
-    { 
-      label: 'Active Opportunities', 
-      value: stats.opportunities, 
-      icon: Target, 
+    {
+      label: 'Active Opportunities',
+      value: stats.opportunities,
+      icon: Target,
       color: 'from-[#ec7f37] to-[#be4f0c]',
       change: '+8%'
     },
-    { 
-      label: 'Total Accounts', 
-      value: stats.accounts, 
-      icon: Building2, 
+    {
+      label: 'Total Accounts',
+      value: stats.accounts,
+      icon: Building2,
       color: 'from-purple-500 to-purple-600',
       change: '+15%'
     },
-    { 
-      label: 'Activities This Month', 
-      value: stats.activities, 
-      icon: Activity, 
+    {
+      label: 'Activities This Month',
+      value: stats.activities,
+      icon: Activity,
       color: 'from-[#be4f0c] to-[#FF5A09]',
       change: '+22%'
     }
@@ -248,7 +259,7 @@ export default function ReportsPage() {
             <Calendar className="h-5 w-5" />
             <span>Schedule Report</span>
           </button>
-          <button 
+          <button
             onClick={() => setIsGenerating(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
           >
@@ -284,7 +295,7 @@ export default function ReportsPage() {
       <div className="flex flex-col sm:flex-row gap-4">
         <select
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={e => setSelectedCategory(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Categories</option>
@@ -297,7 +308,7 @@ export default function ReportsPage() {
 
         <select
           value={selectedPeriod}
-          onChange={(e) => setSelectedPeriod(e.target.value)}
+          onChange={e => setSelectedPeriod(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="week">Last Week</option>
@@ -315,7 +326,7 @@ export default function ReportsPage() {
 
       {/* Reports Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredReports.map((report) => {
+        {filteredReports.map(report => {
           const Icon = report.icon
           return (
             <div key={report.id} className="relative group">
@@ -323,7 +334,9 @@ export default function ReportsPage() {
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${getCategoryColor(report.category)}`}>
+                    <div
+                      className={`p-3 rounded-xl bg-gradient-to-br ${getCategoryColor(report.category)}`}
+                    >
                       <Icon className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -332,7 +345,9 @@ export default function ReportsPage() {
                     </div>
                   </div>
                   {report.status && (
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}
+                    >
                       {report.status}
                     </span>
                   )}

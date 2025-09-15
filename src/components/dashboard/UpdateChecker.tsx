@@ -18,15 +18,15 @@ export function UpdateChecker() {
         cache: 'no-cache',
         headers: {
           'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          Pragma: 'no-cache'
         }
       })
-      
+
       if (response.ok) {
         const data = await response.json()
         const serverVersion = data.version
         const currentVersion = APP_VERSION.current
-        
+
         if (serverVersion !== currentVersion) {
           setUpdateAvailable(true)
           // Clear all caches to ensure fresh content
@@ -63,13 +63,13 @@ export function UpdateChecker() {
         <RefreshCw className={`h-4 w-4 ${isChecking ? 'animate-spin' : ''}`} />
         Check for Updates
       </Button>
-      
+
       {lastCheck && (
         <span className="text-xs text-muted-foreground">
           Last checked: {lastCheck.toLocaleTimeString()}
         </span>
       )}
-      
+
       {updateAvailable && (
         <Button
           size="sm"

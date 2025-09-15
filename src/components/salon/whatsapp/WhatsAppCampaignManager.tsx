@@ -1,12 +1,29 @@
 'use client'
 
 import React, { useState } from 'react'
-import { MessageCircle, Send, Users, Calendar, Gift, DollarSign, AlertCircle, ChevronRight, Filter, BarChart } from 'lucide-react'
+import {
+  MessageCircle,
+  Send,
+  Users,
+  Calendar,
+  Gift,
+  DollarSign,
+  AlertCircle,
+  ChevronRight,
+  Filter,
+  BarChart
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { formatDate } from '@/lib/date-utils'
 
@@ -30,7 +47,11 @@ interface WhatsAppCampaignManagerProps {
   onCampaignRun?: (campaignId: string) => void
 }
 
-export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCampaignRun }: WhatsAppCampaignManagerProps) {
+export function WhatsAppCampaignManager({
+  organizationId,
+  onCampaignCreate,
+  onCampaignRun
+}: WhatsAppCampaignManagerProps) {
   const [selectedCampaignType, setSelectedCampaignType] = useState<string>('all')
   const [campaigns, setCampaigns] = useState<Campaign[]>([
     {
@@ -43,7 +64,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
       sent: 12,
       failed: 0,
       lastRun: new Date(Date.now() - 86400000),
-      cost: 0.60
+      cost: 0.6
     },
     {
       id: '2',
@@ -67,7 +88,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
       sent: 298,
       failed: 6,
       lastRun: new Date(),
-      cost: 14.90
+      cost: 14.9
     },
     {
       id: '4',
@@ -95,19 +116,32 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Active</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+            Active
+          </Badge>
+        )
       case 'scheduled':
-        return <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Scheduled</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+            Scheduled
+          </Badge>
+        )
       case 'completed':
-        return <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400">Completed</Badge>
+        return (
+          <Badge className="bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400">
+            Completed
+          </Badge>
+        )
       default:
         return <Badge>Draft</Badge>
     }
   }
 
-  const filteredCampaigns = selectedCampaignType === 'all' 
-    ? campaigns 
-    : campaigns.filter(c => c.type === selectedCampaignType)
+  const filteredCampaigns =
+    selectedCampaignType === 'all'
+      ? campaigns
+      : campaigns.filter(c => c.type === selectedCampaignType)
 
   const totalStats = {
     totalSent: campaigns.reduce((sum, c) => sum + c.sent, 0),
@@ -211,9 +245,10 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
         {filteredCampaigns.map(campaign => {
           const campaignType = campaignTypes[campaign.type]
           const Icon = campaignType.icon
-          const successRate = campaign.sent > 0 
-            ? ((campaign.sent - campaign.failed) / campaign.sent * 100).toFixed(1) 
-            : '0'
+          const successRate =
+            campaign.sent > 0
+              ? (((campaign.sent - campaign.failed) / campaign.sent) * 100).toFixed(1)
+              : '0'
 
           return (
             <Card
@@ -226,13 +261,15 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4">
-                  <div className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center bg-gray-800",
-                    campaignType.color.replace('text-', 'bg-').replace('500', '500/20')
-                  )}>
-                    <Icon className={cn("w-6 h-6", campaignType.color)} />
+                  <div
+                    className={cn(
+                      'w-12 h-12 rounded-xl flex items-center justify-center bg-gray-800',
+                      campaignType.color.replace('text-', 'bg-').replace('500', '500/20')
+                    )}
+                  >
+                    <Icon className={cn('w-6 h-6', campaignType.color)} />
                   </div>
-                  
+
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <h3 className="font-semibold text-lg !text-gray-900 dark:!text-white">
@@ -240,11 +277,11 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                       </h3>
                       {getStatusBadge(campaign.status)}
                     </div>
-                    
+
                     <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-3">
                       {campaign.targetAudience}
                     </p>
-                    
+
                     <div className="flex items-center gap-6 text-sm">
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-gray-400" />
@@ -252,7 +289,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                           {campaign.totalRecipients} recipients
                         </span>
                       </div>
-                      
+
                       {campaign.sent > 0 && (
                         <div className="flex items-center gap-2">
                           <Send className="w-4 h-4 text-gray-400" />
@@ -261,7 +298,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                           </span>
                         </div>
                       )}
-                      
+
                       {campaign.cost > 0 && (
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-4 h-4 text-gray-400" />
@@ -270,7 +307,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                           </span>
                         </div>
                       )}
-                      
+
                       {campaign.scheduled && campaign.status === 'scheduled' && (
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-gray-400" />
@@ -279,7 +316,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                           </span>
                         </div>
                       )}
-                      
+
                       {campaign.lastRun && campaign.status === 'active' && (
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-gray-400" />
@@ -295,7 +332,7 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation()
                     onCampaignRun?.(campaign.id)
                   }}
@@ -313,7 +350,11 @@ export function WhatsAppCampaignManager({ organizationId, onCampaignCreate, onCa
         <Card className="p-12 bg-gray-800/50 border-gray-700 text-center">
           <MessageCircle className="w-12 h-12 text-gray-600 mx-auto mb-4" />
           <p className="text-lg !text-gray-600 dark:!text-gray-400">
-            No {selectedCampaignType === 'all' ? '' : campaignTypes[selectedCampaignType]?.label.toLowerCase()} campaigns found
+            No{' '}
+            {selectedCampaignType === 'all'
+              ? ''
+              : campaignTypes[selectedCampaignType]?.label.toLowerCase()}{' '}
+            campaigns found
           </p>
           <p className="text-sm !text-gray-500 dark:!text-gray-500 mt-2">
             Create your first campaign to start engaging with customers

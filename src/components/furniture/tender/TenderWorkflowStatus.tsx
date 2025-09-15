@@ -130,20 +130,20 @@ export default function TenderWorkflowStatus({
                   {/* Stage icon */}
                   <div
                     className={cn(
-                      "relative z-10 w-16 h-16 rounded-xl flex items-center justify-center transition-all",
-                      isCompleted && "bg-green-600/20 border-2 border-green-600",
-                      isActive && "bg-amber-600/20 border-2 border-amber-600 animate-pulse",
-                      isFailed && "bg-red-600/20 border-2 border-red-600",
-                      stage.status === 'pending' && "bg-gray-700/50 border-2 border-gray-600"
+                      'relative z-10 w-16 h-16 rounded-xl flex items-center justify-center transition-all',
+                      isCompleted && 'bg-green-600/20 border-2 border-green-600',
+                      isActive && 'bg-amber-600/20 border-2 border-amber-600 animate-pulse',
+                      isFailed && 'bg-red-600/20 border-2 border-red-600',
+                      stage.status === 'pending' && 'bg-gray-700/50 border-2 border-gray-600'
                     )}
                   >
                     <Icon
                       className={cn(
-                        "h-6 w-6",
-                        isCompleted && "text-green-400",
-                        isActive && "text-amber-400",
-                        isFailed && "text-red-400",
-                        stage.status === 'pending' && "text-gray-500"
+                        'h-6 w-6',
+                        isCompleted && 'text-green-400',
+                        isActive && 'text-amber-400',
+                        isFailed && 'text-red-400',
+                        stage.status === 'pending' && 'text-gray-500'
                       )}
                     />
                   </div>
@@ -154,8 +154,8 @@ export default function TenderWorkflowStatus({
                       <div>
                         <h4
                           className={cn(
-                            "font-semibold text-lg",
-                            stage.status === 'pending' ? "text-gray-500" : "text-white"
+                            'font-semibold text-lg',
+                            stage.status === 'pending' ? 'text-gray-500' : 'text-white'
                           )}
                         >
                           {stage.name}
@@ -172,10 +172,13 @@ export default function TenderWorkflowStatus({
                       {/* Status badge */}
                       <Badge
                         variant={
-                          isCompleted ? "default" :
-                          isActive ? "secondary" :
-                          isFailed ? "destructive" :
-                          "outline"
+                          isCompleted
+                            ? 'default'
+                            : isActive
+                              ? 'secondary'
+                              : isFailed
+                                ? 'destructive'
+                                : 'outline'
                         }
                       >
                         {stage.status}

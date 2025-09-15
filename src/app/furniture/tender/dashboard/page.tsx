@@ -132,7 +132,7 @@ export default function TenderDashboardPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-white">Performance Overview</h2>
           <StatCardGrid>
-            {dashboardStats.map((stat) => (
+            {dashboardStats.map(stat => (
               <FurnitureStatCard key={stat.label} {...stat} />
             ))}
           </StatCardGrid>
@@ -176,7 +176,7 @@ export default function TenderDashboardPage() {
               <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
                 <h3 className="text-lg font-semibold text-white mb-4">Win Rate by Wood Type</h3>
                 <div className="space-y-3">
-                  {winRateByCategory.map((item) => (
+                  {winRateByCategory.map(item => (
                     <div key={item.category} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-400">{item.category}</span>
@@ -221,13 +221,15 @@ export default function TenderDashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="grid grid-cols-2 gap-2 mt-4">
-                  {competitorAnalysis.map((item) => (
+                  {competitorAnalysis.map(item => (
                     <div key={item.name} className="flex items-center gap-2">
                       <div
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
-                      <span className="text-xs text-gray-400">{item.name}: {item.share}%</span>
+                      <span className="text-xs text-gray-400">
+                        {item.name}: {item.share}%
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -243,7 +245,8 @@ export default function TenderDashboardPage() {
                 <div className="flex-1">
                   <h4 className="font-semibold text-white">Upcoming Tender Closures</h4>
                   <p className="text-sm text-gray-300 mt-1">
-                    3 tenders closing in the next 7 days. KFD/2025/WOOD/001 requires immediate attention for bid submission.
+                    3 tenders closing in the next 7 days. KFD/2025/WOOD/001 requires immediate
+                    attention for bid submission.
                   </p>
                   <div className="flex gap-2 mt-3">
                     <Button size="sm" variant="secondary">
@@ -300,7 +303,7 @@ export default function TenderDashboardPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg bg-gray-700/30">
                   <p className="text-sm text-gray-400">Prediction Accuracy</p>

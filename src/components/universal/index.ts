@@ -1,6 +1,6 @@
 /**
  * Universal HERA Components
- * 
+ *
  * A collection of battle-tested components and patterns learned from
  * building the restaurant management system. These components avoid
  * common pitfalls and provide consistent, high-quality implementations.
@@ -58,7 +58,7 @@ export {
 
 /**
  * Common Usage Patterns:
- * 
+ *
  * 1. Wrap your app with Universal Auth Provider:
  * ```tsx
  * <UniversalAuthProvider config={{
@@ -69,7 +69,7 @@ export {
  *   <YourApp />
  * </UniversalAuthProvider>
  * ```
- * 
+ *
  * 2. Create API client with retry and caching:
  * ```tsx
  * const api = createUniversalAPIClient({
@@ -78,7 +78,7 @@ export {
  *   cache: { ttl: 30000 }
  * })
  * ```
- * 
+ *
  * 3. Build forms with consistent styling:
  * ```tsx
  * <UniversalForm onSubmit={handleSubmit}>
@@ -95,7 +95,7 @@ export {
  *   </UniversalButton>
  * </UniversalForm>
  * ```
- * 
+ *
  * 4. Add error boundaries and loading states:
  * ```tsx
  * <UniversalErrorBoundary>

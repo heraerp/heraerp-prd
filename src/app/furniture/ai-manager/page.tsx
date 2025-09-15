@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Furniture AI Manager
  * Smart Code: HERA.FURNITURE.AI.MANAGER.v1
- * 
+ *
  * AI-powered business intelligence and management system
  * Natural language business operations for furniture manufacturers
  */
@@ -23,7 +23,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { 
+import {
   Brain,
   Send,
   Loader2,
@@ -243,7 +243,7 @@ export default function FurnitureAIManagerPage() {
   const router = useRouter()
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  
+
   const [messages, setMessages] = useState<AIMessage[]>([
     {
       id: '1',
@@ -264,7 +264,7 @@ What would you like to know about your business today?`,
       actionable: true
     }
   ])
-  
+
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [activeCategory, setActiveCategory] = useState('overview')
@@ -273,7 +273,7 @@ What would you like to know about your business today?`,
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  
+
   // Auto-scroll to bottom
   useEffect(() => {
     const scrollToBottom = () => {
@@ -287,36 +287,36 @@ What would you like to know about your business today?`,
         }
       }
     }
-    
+
     const timer = setTimeout(() => {
       requestAnimationFrame(scrollToBottom)
     }, 50)
-    
+
     return () => clearTimeout(timer)
   }, [messages])
-  
+
   // Simulate real-time metric updates
   useEffect(() => {
     const interval = setInterval(() => {
       // In production, this would fetch real data
       // For now, we'll just slightly modify the metrics
     }, 30000) // Update every 30 seconds
-    
+
     return () => clearInterval(interval)
   }, [])
-  
+
   const processAIQuery = async (text: string) => {
     setLoading(true)
-    
+
     const userMessage: AIMessage = {
       id: Date.now().toString(),
       type: 'user',
       content: text,
       timestamp: new Date()
     }
-    
+
     setMessages(prev => [...prev, userMessage])
-    
+
     try {
       // Call the AI manager API
       const response = await fetch('/api/v1/furniture/ai-manager', {
@@ -335,13 +335,13 @@ What would you like to know about your business today?`,
           useMCP: useMCP
         })
       })
-      
+
       if (!response.ok) {
         throw new Error('Failed to process query')
       }
-      
+
       const data = await response.json()
-      
+
       const assistantMessage: AIMessage = {
         id: Date.now().toString(),
         type: data.type || 'assistant',
@@ -354,24 +354,27 @@ What would you like to know about your business today?`,
         recommendations: data.recommendations,
         visualData: data.visualData
       }
-      
+
       setMessages(prev => [...prev, assistantMessage])
-      
+
       // If there are critical insights, add them as separate messages
       if (data.insights && data.insights.length > 0) {
         data.insights.forEach((insight: any, index: number) => {
-          setTimeout(() => {
-            const insightMessage: AIMessage = {
-              id: `insight-${Date.now()}-${index}`,
-              type: 'insight',
-              content: insight.content,
-              timestamp: new Date(),
-              category: insight.category,
-              priority: insight.priority,
-              actionable: true
-            }
-            setMessages(prev => [...prev, insightMessage])
-          }, 500 * (index + 1))
+          setTimeout(
+            () => {
+              const insightMessage: AIMessage = {
+                id: `insight-${Date.now()}-${index}`,
+                type: 'insight',
+                content: insight.content,
+                timestamp: new Date(),
+                category: insight.category,
+                priority: insight.priority,
+                actionable: true
+              }
+              setMessages(prev => [...prev, insightMessage])
+            },
+            500 * (index + 1)
+          )
         })
       }
     } catch (error) {
@@ -389,66 +392,75 @@ What would you like to know about your business today?`,
       inputRef.current?.focus()
     }
   }
-  
+
   const handleQuickInsight = (query: string) => {
     processAIQuery(query)
   }
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || loading) return
-    
+
     await processAIQuery(input.trim())
   }
-  
+
   const renderMetricCard = (metric: BusinessMetric) => (
-    <Card key={metric.id} className="bg-gray-800/50 border-gray-700 hover:border-gray-600 transition-all">
+    <Card
+      key={metric.id}
+      className="bg-gray-800/50 border-gray-700 hover:border-gray-600 transition-all"
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <p className="text-xs text-gray-400">{metric.label}</p>
             <p className="text-2xl font-bold">{metric.value}</p>
-            <div className={cn(
-              "flex items-center gap-1 text-xs",
-              metric.trend === 'up' ? 'text-green-500' : 
-              metric.trend === 'down' ? 'text-red-500' : 
-              'text-gray-500'
-            )}>
-              {metric.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : 
-               metric.trend === 'down' ? <TrendingDown className="h-3 w-3" /> : 
-               <Activity className="h-3 w-3" />}
+            <div
+              className={cn(
+                'flex items-center gap-1 text-xs',
+                metric.trend === 'up'
+                  ? 'text-green-500'
+                  : metric.trend === 'down'
+                    ? 'text-red-500'
+                    : 'text-gray-500'
+              )}
+            >
+              {metric.trend === 'up' ? (
+                <TrendingUp className="h-3 w-3" />
+              ) : metric.trend === 'down' ? (
+                <TrendingDown className="h-3 w-3" />
+              ) : (
+                <Activity className="h-3 w-3" />
+              )}
               <span>{Math.abs(metric.change)}%</span>
             </div>
           </div>
-          <div className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
-            metric.color.replace('text', 'bg').replace('500', '500/20')
-          )}>
-            <metric.icon className={cn("h-5 w-5", metric.color)} />
+          <div
+            className={cn(
+              'w-10 h-10 rounded-lg flex items-center justify-center',
+              metric.color.replace('text', 'bg').replace('500', '500/20')
+            )}
+          >
+            <metric.icon className={cn('h-5 w-5', metric.color)} />
           </div>
         </div>
       </CardContent>
     </Card>
   )
-  
+
   const renderMessage = (message: AIMessage) => {
     const isUser = message.type === 'user'
     const isInsight = message.type === 'insight'
     const isSystem = message.type === 'system'
-    
+
     return (
-      <div
-        key={message.id}
-        className={cn(
-          "flex gap-3",
-          isUser ? "justify-end" : "justify-start"
-        )}
-      >
+      <div key={message.id} className={cn('flex gap-3', isUser ? 'justify-end' : 'justify-start')}>
         {!isUser && (
-          <div className={cn(
-            "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-            isInsight ? "bg-yellow-500/20" : "bg-blue-500/20"
-          )}>
+          <div
+            className={cn(
+              'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+              isInsight ? 'bg-yellow-500/20' : 'bg-blue-500/20'
+            )}
+          >
             {isInsight ? (
               <Lightbulb className="h-4 w-4 text-yellow-500" />
             ) : (
@@ -456,33 +468,37 @@ What would you like to know about your business today?`,
             )}
           </div>
         )}
-        
-        <div className={cn(
-          "max-w-[80%] rounded-lg p-4",
-          isUser ? "bg-blue-600 text-white" : 
-          isInsight ? "bg-yellow-500/10 border border-yellow-500/30" :
-          isSystem ? "bg-purple-500/10 border border-purple-500/30" :
-          "bg-gray-700"
-        )}>
+
+        <div
+          className={cn(
+            'max-w-[80%] rounded-lg p-4',
+            isUser
+              ? 'bg-blue-600 text-white'
+              : isInsight
+                ? 'bg-yellow-500/10 border border-yellow-500/30'
+                : isSystem
+                  ? 'bg-purple-500/10 border border-purple-500/30'
+                  : 'bg-gray-700'
+          )}
+        >
           {message.priority && !isUser && (
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className={cn(
-                "mb-2",
-                message.priority === 'high' ? "border-red-500 text-red-500" :
-                message.priority === 'medium' ? "border-yellow-500 text-yellow-500" :
-                "border-green-500 text-green-500"
+                'mb-2',
+                message.priority === 'high'
+                  ? 'border-red-500 text-red-500'
+                  : message.priority === 'medium'
+                    ? 'border-yellow-500 text-yellow-500'
+                    : 'border-green-500 text-green-500'
               )}
             >
               {message.priority.toUpperCase()} PRIORITY
             </Badge>
           )}
-          
-          <p className={cn(
-            "whitespace-pre-wrap",
-            isInsight && "font-medium"
-          )}>{message.content}</p>
-          
+
+          <p className={cn('whitespace-pre-wrap', isInsight && 'font-medium')}>{message.content}</p>
+
           {message.metrics && message.metrics.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-3">
               {message.metrics.map((metric, i) => (
@@ -490,23 +506,24 @@ What would you like to know about your business today?`,
                   <p className="text-xs text-gray-400">{metric.label}</p>
                   <p className="text-lg font-bold flex items-center gap-2">
                     {metric.value}
-                    {metric.trend && (
-                      metric.trend === 'up' ? 
-                        <TrendingUp className="h-4 w-4 text-green-500" /> : 
+                    {metric.trend &&
+                      (metric.trend === 'up' ? (
+                        <TrendingUp className="h-4 w-4 text-green-500" />
+                      ) : (
                         <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
+                      ))}
                   </p>
                 </div>
               ))}
             </div>
           )}
-          
+
           {message.recommendations && message.recommendations.length > 0 && (
             <div className="mt-4 space-y-2">
               <p className="text-sm font-medium text-gray-300">Recommendations:</p>
               {message.recommendations.map((rec, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="bg-black/20 rounded p-3 hover:bg-black/30 transition-colors cursor-pointer"
                 >
                   <div className="flex items-start justify-between">
@@ -514,13 +531,15 @@ What would you like to know about your business today?`,
                       <p className="text-sm font-medium">{rec.title}</p>
                       <p className="text-xs text-gray-400 mt-1">{rec.description}</p>
                     </div>
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className={cn(
-                        "text-xs",
-                        rec.impact === 'high' ? "border-green-500 text-green-500" :
-                        rec.impact === 'medium' ? "border-yellow-500 text-yellow-500" :
-                        "border-gray-500 text-gray-500"
+                        'text-xs',
+                        rec.impact === 'high'
+                          ? 'border-green-500 text-green-500'
+                          : rec.impact === 'medium'
+                            ? 'border-yellow-500 text-yellow-500'
+                            : 'border-gray-500 text-gray-500'
                       )}
                     >
                       {rec.impact} impact
@@ -530,7 +549,7 @@ What would you like to know about your business today?`,
               ))}
             </div>
           )}
-          
+
           {message.visualData && (
             <div className="mt-4 bg-black/20 rounded p-3">
               <p className="text-xs text-gray-400 mb-2">Data Visualization</p>
@@ -541,7 +560,7 @@ What would you like to know about your business today?`,
             </div>
           )}
         </div>
-        
+
         {isUser && (
           <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
             <Users className="h-4 w-4" />
@@ -590,25 +609,22 @@ What would you like to know about your business today?`,
                 variant="outline"
                 size="sm"
                 onClick={() => setUseMCP(!useMCP)}
-                className={cn(
-                  "gap-2",
-                  useMCP ? "bg-green-500/10 hover:bg-green-500/20" : ""
-                )}
+                className={cn('gap-2', useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : '')}
               >
-                <Zap className={cn("h-4 w-4", useMCP && "text-green-500")} />
+                <Zap className={cn('h-4 w-4', useMCP && 'text-green-500')} />
                 {useMCP ? 'MCP Mode' : 'API Mode'}
               </Button>
             </>
           }
         />
-        
+
         {/* Business Metrics Dashboard */}
         {showMetrics && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {BUSINESS_METRICS.map(metric => renderMetricCard(metric))}
           </div>
         )}
-        
+
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Chat Area */}
@@ -631,12 +647,12 @@ What would you like to know about your business today?`,
                   ))}
                 </div>
               </div>
-              
+
               {/* Messages */}
               <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
                 <div className="space-y-4">
                   {messages.map(message => renderMessage(message))}
-                  
+
                   {loading && (
                     <div className="flex gap-3 justify-start">
                       <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
@@ -652,7 +668,7 @@ What would you like to know about your business today?`,
                   )}
                 </div>
               </ScrollArea>
-              
+
               {/* Input */}
               <form onSubmit={handleSubmit} className="p-4 border-t border-gray-700">
                 <div className="flex gap-2">
@@ -660,7 +676,7 @@ What would you like to know about your business today?`,
                     ref={inputRef}
                     placeholder="Ask me anything about your business..."
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={e => setInput(e.target.value)}
                     disabled={loading}
                     className="flex-1 bg-gray-900/50 border-gray-600"
                   />
@@ -675,7 +691,7 @@ What would you like to know about your business today?`,
               </form>
             </Card>
           </div>
-          
+
           {/* Side Panel */}
           <div className="space-y-4">
             {/* Quick Insights */}
@@ -695,13 +711,13 @@ What would you like to know about your business today?`,
                     onClick={() => handleQuickInsight(insight.query)}
                     className="w-full justify-start gap-2 hover:bg-gray-700"
                   >
-                    <insight.icon className={cn("h-4 w-4", insight.color)} />
+                    <insight.icon className={cn('h-4 w-4', insight.color)} />
                     <span className="text-xs">{insight.label}</span>
                   </Button>
                 ))}
               </CardContent>
             </Card>
-            
+
             {/* AI Capabilities */}
             <Card className="bg-gray-800/50 border-gray-700">
               <CardHeader className="pb-3">
@@ -735,7 +751,7 @@ What would you like to know about your business today?`,
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Active Alerts */}
             <Card className="bg-gray-800/50 border-gray-700">
               <CardHeader className="pb-3">
@@ -765,7 +781,7 @@ What would you like to know about your business today?`,
                 </Alert>
               </CardContent>
             </Card>
-            
+
             {/* Help */}
             <Card className="bg-gray-800/50 border-gray-700">
               <CardHeader className="pb-3">

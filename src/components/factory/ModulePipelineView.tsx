@@ -3,84 +3,89 @@
  * Shows pipeline stages in a horizontal timeline per module
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import React from 'react'
+import { motion } from 'framer-motion'
+import {
+  Clock,
+  CheckCircle,
+  XCircle,
   AlertTriangle,
   Loader2,
   ChevronRight,
   Info,
   MoreVertical
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from '@/components/ui/tooltip';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Progress } from '@/components/ui/progress';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Progress } from '@/components/ui/progress'
 
 interface ModulePipelineViewProps {
-  moduleData: Map<string, any>;
-  moduleInfo: Record<string, any>;
-  stageOrder: string[];
-  transactions: any[];
-  transactionLines: Map<string, any[]>;
-  filters: any;
-  onSelectModule: (module: string) => void;
-  onOpenGuardrail: (data: any) => void;
+  moduleData: Map<string, any>
+  moduleInfo: Record<string, any>
+  stageOrder: string[]
+  transactions: any[]
+  transactionLines: Map<string, any[]>
+  filters: any
+  onSelectModule: (module: string) => void
+  onOpenGuardrail: (data: any) => void
 }
 
 const stageIcons = {
-  'PLAN': Clock,
-  'BUILD': CheckCircle,
-  'TEST': CheckCircle,
-  'COMPLY': CheckCircle,
-  'RELEASE': CheckCircle,
-};
+  PLAN: Clock,
+  BUILD: CheckCircle,
+  TEST: CheckCircle,
+  COMPLY: CheckCircle,
+  RELEASE: CheckCircle
+}
 
 const getStageStatus = (stage: any[]): 'pending' | 'running' | 'passed' | 'failed' | 'partial' => {
-  if (!stage || stage.length === 0) return 'pending';
-  
-  const statuses = stage.map(txn => txn.transaction_status);
-  if (statuses.some(s => s === 'failed')) return 'failed';
-  if (statuses.some(s => s === 'running')) return 'running';
-  if (statuses.every(s => s === 'passed')) return 'passed';
-  return 'partial';
-};
+  if (!stage || stage.length === 0) return 'pending'
+
+  const statuses = stage.map(txn => txn.transaction_status)
+  if (statuses.some(s => s === 'failed')) return 'failed'
+  if (statuses.some(s => s === 'running')) return 'running'
+  if (statuses.every(s => s === 'passed')) return 'passed'
+  return 'partial'
+}
 
 const getStageColor = (status: string) => {
   switch (status) {
-    case 'passed': return 'bg-green-500';
-    case 'failed': return 'bg-red-500';
-    case 'running': return 'bg-blue-500';
-    case 'partial': return 'bg-orange-500';
-    default: return 'bg-gray-300 dark:bg-gray-700';
+    case 'passed':
+      return 'bg-green-500'
+    case 'failed':
+      return 'bg-red-500'
+    case 'running':
+      return 'bg-blue-500'
+    case 'partial':
+      return 'bg-orange-500'
+    default:
+      return 'bg-gray-300 dark:bg-gray-700'
   }
-};
+}
 
 const getStageIcon = (status: string) => {
   switch (status) {
-    case 'passed': return CheckCircle;
-    case 'failed': return XCircle;
-    case 'running': return Loader2;
-    case 'partial': return AlertTriangle;
-    default: return Clock;
+    case 'passed':
+      return CheckCircle
+    case 'failed':
+      return XCircle
+    case 'running':
+      return Loader2
+    case 'partial':
+      return AlertTriangle
+    default:
+      return Clock
   }
-};
+}
 
 export function ModulePipelineView({
   moduleData,
@@ -90,50 +95,51 @@ export function ModulePipelineView({
   transactionLines,
   filters,
   onSelectModule,
-  onOpenGuardrail,
+  onOpenGuardrail
 }: ModulePipelineViewProps) {
-  const filteredModules = Array.from(moduleData.entries()).filter(([code]) => 
-    filters.modules.length === 0 || filters.modules.includes(code)
-  );
+  const filteredModules = Array.from(moduleData.entries()).filter(
+    ([code]) => filters.modules.length === 0 || filters.modules.includes(code)
+  )
 
   return (
     <div className="space-y-4">
       {filteredModules.map(([moduleCode, data], idx) => {
-        const info = moduleInfo[moduleCode] || { name: moduleCode, icon: Clock, color: 'gray' };
-        const Icon = info.icon;
+        const info = moduleInfo[moduleCode] || { name: moduleCode, icon: Clock, color: 'gray' }
+        const Icon = info.icon
 
         // Calculate module-level metrics
-        let totalDuration = 0;
-        let totalCoverage = 0;
-        let coverageCount = 0;
-        let hasFailures = false;
+        let totalDuration = 0
+        let totalCoverage = 0
+        let coverageCount = 0
+        let hasFailures = false
 
         data.stages.forEach((stageTxns: any[]) => {
           stageTxns.forEach(txn => {
-            const lines = transactionLines.get(txn.id) || [];
+            const lines = transactionLines.get(txn.id) || []
             lines.forEach(line => {
               if ((line.metadata as any)?.duration_ms) {
-                totalDuration += line.metadata.duration_ms;
+                totalDuration += line.metadata.duration_ms
               }
               if ((line.metadata as any)?.coverage) {
-                totalCoverage += line.metadata.coverage;
-                coverageCount++;
+                totalCoverage += line.metadata.coverage
+                coverageCount++
               }
-            });
+            })
             if (txn.transaction_status === 'failed') {
-              hasFailures = true;
+              hasFailures = true
             }
-          });
-        });
+          })
+        })
 
-        const avgCoverage = coverageCount > 0 ? (totalCoverage / coverageCount * 100) : 0;
-        const formattedDuration = totalDuration > 60000 
-          ? `${Math.round(totalDuration / 60000)}m`
-          : `${Math.round(totalDuration / 1000)}s`;
+        const avgCoverage = coverageCount > 0 ? (totalCoverage / coverageCount) * 100 : 0
+        const formattedDuration =
+          totalDuration > 60000
+            ? `${Math.round(totalDuration / 60000)}m`
+            : `${Math.round(totalDuration / 1000)}s`
 
         // Skip if show failed only and no failures
         if (filters.showFailedOnly && !hasFailures) {
-          return null;
+          return null
         }
 
         return (
@@ -143,23 +149,22 @@ export function ModulePipelineView({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
           >
-            <Card className={cn(
-              "overflow-hidden",
-              hasFailures && "border-red-200 dark:border-red-800"
-            )}>
+            <Card
+              className={cn('overflow-hidden', hasFailures && 'border-red-200 dark:border-red-800')}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-10 h-10 rounded-lg flex items-center justify-center",
-                      `bg-${info.color}-100 dark:bg-${info.color}-900/20`
-                    )}>
-                      <Icon className={cn("w-5 h-5", `text-${info.color}-600`)} />
+                    <div
+                      className={cn(
+                        'w-10 h-10 rounded-lg flex items-center justify-center',
+                        `bg-${info.color}-100 dark:bg-${info.color}-900/20`
+                      )}
+                    >
+                      <Icon className={cn('w-5 h-5', `text-${info.color}-600`)} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        {info.name}
-                      </h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">{info.name}</h3>
                       <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
                         <span>Module: {moduleCode}</span>
                         <span>Duration: {formattedDuration}</span>
@@ -175,18 +180,18 @@ export function ModulePipelineView({
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => onOpenGuardrail({
-                              open: true,
-                              moduleCode,
-                              transactions: Array.from(data.stages.values()).flat(),
-                            })}
+                            onClick={() =>
+                              onOpenGuardrail({
+                                open: true,
+                                moduleCode,
+                                transactions: Array.from(data.stages.values()).flat()
+                              })
+                            }
                           >
                             <Info className="w-4 h-4" />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>
-                          View guardrail details
-                        </TooltipContent>
+                        <TooltipContent>View guardrail details</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
 
@@ -200,12 +205,8 @@ export function ModulePipelineView({
                         <DropdownMenuItem onClick={() => onSelectModule(moduleCode)}>
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          Download Report
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          View Artifacts
-                        </DropdownMenuItem>
+                        <DropdownMenuItem>Download Report</DropdownMenuItem>
+                        <DropdownMenuItem>View Artifacts</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -221,19 +222,23 @@ export function ModulePipelineView({
                   {/* Stage nodes */}
                   <div className="relative grid grid-cols-5 gap-0">
                     {stageOrder.map((stage, stageIdx) => {
-                      const stageTxns = data.stages.get(stage) || [];
-                      const status = getStageStatus(stageTxns);
-                      const StageIcon = getStageIcon(status);
-                      const isRunning = status === 'running';
+                      const stageTxns = data.stages.get(stage) || []
+                      const status = getStageStatus(stageTxns)
+                      const StageIcon = getStageIcon(status)
+                      const isRunning = status === 'running'
 
                       return (
                         <div key={stage} className="relative">
                           {/* Connection line */}
                           {stageIdx > 0 && (
-                            <div className={cn(
-                              "absolute top-6 -left-1/2 right-1/2 h-0.5",
-                              status !== 'pending' ? getStageColor(status) : 'bg-gray-300 dark:bg-gray-700'
-                            )} />
+                            <div
+                              className={cn(
+                                'absolute top-6 -left-1/2 right-1/2 h-0.5',
+                                status !== 'pending'
+                                  ? getStageColor(status)
+                                  : 'bg-gray-300 dark:bg-gray-700'
+                              )}
+                            />
                           )}
 
                           {/* Stage node */}
@@ -243,16 +248,18 @@ export function ModulePipelineView({
                                 <TooltipTrigger>
                                   <motion.div
                                     className={cn(
-                                      "w-12 h-12 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-lg cursor-pointer",
+                                      'w-12 h-12 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-lg cursor-pointer',
                                       getStageColor(status)
                                     )}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
                                   >
-                                    <StageIcon className={cn(
-                                      "w-6 h-6 text-white",
-                                      isRunning && "animate-spin"
-                                    )} />
+                                    <StageIcon
+                                      className={cn(
+                                        'w-6 h-6 text-white',
+                                        isRunning && 'animate-spin'
+                                      )}
+                                    />
                                   </motion.div>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -288,20 +295,22 @@ export function ModulePipelineView({
                             )}
                           </div>
                         </div>
-                      );
+                      )
                     })}
                   </div>
 
                   {/* Progress bar for running stages */}
-                  {Array.from(data.stages.entries()).some(([_, txns]) => 
+                  {Array.from(data.stages.entries()).some(([_, txns]) =>
                     txns.some(t => t.transaction_status === 'running')
                   ) && (
                     <div className="mt-4">
-                      <Progress 
+                      <Progress
                         value={
-                          (Array.from(data.stages.entries()).filter(([_, txns]) => 
+                          (Array.from(data.stages.entries()).filter(([_, txns]) =>
                             txns.some(t => t.transaction_status === 'passed')
-                          ).length / stageOrder.length) * 100
+                          ).length /
+                            stageOrder.length) *
+                          100
                         }
                         className="h-2"
                       />
@@ -316,7 +325,7 @@ export function ModulePipelineView({
                       <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
                         Coverage Trend
                       </p>
-                      <Badge variant={avgCoverage >= 85 ? "default" : "destructive"}>
+                      <Badge variant={avgCoverage >= 85 ? 'default' : 'destructive'}>
                         {avgCoverage.toFixed(1)}%
                       </Badge>
                     </div>
@@ -327,8 +336,12 @@ export function ModulePipelineView({
                           <div
                             key={idx}
                             className={cn(
-                              "flex-1 rounded-t",
-                              cov >= 85 ? "bg-green-500" : cov >= 60 ? "bg-orange-500" : "bg-red-500"
+                              'flex-1 rounded-t',
+                              cov >= 85
+                                ? 'bg-green-500'
+                                : cov >= 60
+                                  ? 'bg-orange-500'
+                                  : 'bg-red-500'
                             )}
                             style={{ height: `${cov}%` }}
                           />
@@ -340,7 +353,7 @@ export function ModulePipelineView({
               </CardContent>
             </Card>
           </motion.div>
-        );
+        )
       })}
 
       {filteredModules.length === 0 && (
@@ -351,5 +364,5 @@ export function ModulePipelineView({
         </Card>
       )}
     </div>
-  );
+  )
 }

@@ -14,7 +14,7 @@ import {
   type OrganizationId,
   type EntityId,
   type TransactionId
-} from '@/lib/dna-sdk-stub';
+} from '@/lib/dna-sdk-stub'
 
 // WhatsApp-specific smart codes as constants
 export const WHATSAPP_SMART_CODES = {
@@ -27,19 +27,19 @@ export const WHATSAPP_SMART_CODES = {
   CAMPAIGN_CREATE: createSmartCode('HERA.WHATSAPP.CAMPAIGN.OUTBOUND.v1'),
   PAYMENT_LINK: createSmartCode('HERA.AR.PAYMENT.LINK.SHARE.v1'),
   CUSTOMER_WHATSAPP: createSmartCode('HERA.CRM.CUSTOMER.WHATSAPP.v1')
-} as const;
+} as const
 
 export class WhatsAppDNAClient {
-  private client: HeraDNAClient;
-  private orgId: OrganizationId;
+  private client: HeraDNAClient
+  private orgId: OrganizationId
 
   constructor(organizationId: OrganizationId) {
-    this.orgId = organizationId;
+    this.orgId = organizationId
     this.client = new HeraDNAClient({
       organizationId,
       enableRuntimeGates: true,
       enableAudit: true
-    });
+    })
   }
 
   /**
@@ -50,12 +50,12 @@ export class WhatsAppDNAClient {
     const existing = await this.client.queryEntities({
       entityType: 'customer',
       filters: {
-        'entity_code': phoneNumber
+        entity_code: phoneNumber
       }
-    });
+    })
 
     if (existing.length > 0) {
-      return existing[0].id;
+      return existing[0].id
     }
 
     // Create new customer
@@ -68,9 +68,9 @@ export class WhatsAppDNAClient {
         msisdn: phoneNumber,
         channel: 'whatsapp'
       }
-    });
+    })
 
-    return customer.id;
+    return customer.id
   }
 
   /**
@@ -92,27 +92,27 @@ export class WhatsAppDNAClient {
         status: 'open',
         created_at: new Date().toISOString()
       })
-      .build();
+      .build()
 
-    return thread.id;
+    return thread.id
   }
 
   /**
    * Send WhatsApp message
    */
   async sendMessage(params: {
-    threadId: TransactionId;
-    direction: 'inbound' | 'outbound';
-    text?: string;
-    media?: Array<{ url: string; mime: string }>;
-    interactive?: any;
-    channelMsgId?: string;
-    cost?: number;
+    threadId: TransactionId
+    direction: 'inbound' | 'outbound'
+    text?: string
+    media?: Array<{ url: string; mime: string }>
+    interactive?: any
+    channelMsgId?: string
+    cost?: number
   }): Promise<EntityId> {
     // Determine smart code based on message type
-    let smartCode = WHATSAPP_SMART_CODES.MESSAGE_TEXT;
-    if (params.media) smartCode = WHATSAPP_SMART_CODES.MESSAGE_MEDIA;
-    if (params.interactive) smartCode = WHATSAPP_SMART_CODES.MESSAGE_INTERACTIVE;
+    let smartCode = WHATSAPP_SMART_CODES.MESSAGE_TEXT
+    if (params.media) smartCode = WHATSAPP_SMART_CODES.MESSAGE_MEDIA
+    if (params.interactive) smartCode = WHATSAPP_SMART_CODES.MESSAGE_INTERACTIVE
 
     const message = await DNA.transactionLine(this.orgId)
       .forTransaction(params.threadId)
@@ -129,22 +129,18 @@ export class WhatsAppDNAClient {
         status: params.direction === 'outbound' ? 'sent' : 'received',
         timestamp: new Date().toISOString()
       })
-      .build();
+      .build()
 
     // Update thread metadata
-    await this.updateThreadLastMessage(params.threadId, params);
+    await this.updateThreadLastMessage(params.threadId, params)
 
-    return message.id;
+    return message.id
   }
 
   /**
    * Add internal note to thread
    */
-  async addNote(
-    threadId: TransactionId,
-    noteText: string,
-    authorId?: EntityId
-  ): Promise<EntityId> {
+  async addNote(threadId: TransactionId, noteText: string, authorId?: EntityId): Promise<EntityId> {
     const note = await DNA.transactionLine(this.orgId)
       .forTransaction(threadId)
       .type('INTERNAL_NOTE')
@@ -155,20 +151,20 @@ export class WhatsAppDNAClient {
         author_entity_id: authorId,
         created_at: new Date().toISOString()
       })
-      .build();
+      .build()
 
-    return note.id;
+    return note.id
   }
 
   /**
    * Register WhatsApp template
    */
   async registerTemplate(params: {
-    name: string;
-    language: string;
-    body: string;
-    variables?: string[];
-    category?: string;
+    name: string
+    language: string
+    body: string
+    variables?: string[]
+    category?: string
   }): Promise<EntityId> {
     const template = await this.client.createEntity({
       entityType: 'msg_template',
@@ -179,7 +175,7 @@ export class WhatsAppDNAClient {
         language: params.language,
         category: params.category || 'marketing'
       }
-    });
+    })
 
     // Store template body
     await this.client.setDynamicField(
@@ -187,7 +183,7 @@ export class WhatsAppDNAClient {
       'body',
       params.body,
       createSmartCode('HERA.WHATSAPP.TEMPLATE.BODY.v1')
-    );
+    )
 
     // Store variables if present
     if (params.variables && params.variables.length > 0) {
@@ -196,20 +192,20 @@ export class WhatsAppDNAClient {
         'variables',
         params.variables,
         createSmartCode('HERA.WHATSAPP.TEMPLATE.VARS.v1')
-      );
+      )
     }
 
-    return template.id;
+    return template.id
   }
 
   /**
    * Create campaign
    */
   async createCampaign(params: {
-    name: string;
-    templateId: EntityId;
-    audienceQuery: string;
-    scheduleAt?: Date;
+    name: string
+    templateId: EntityId
+    audienceQuery: string
+    scheduleAt?: Date
   }): Promise<TransactionId> {
     const campaign = await DNA.transaction(this.orgId)
       .type('CAMPAIGN')
@@ -220,7 +216,7 @@ export class WhatsAppDNAClient {
         schedule_at: (params.scheduleAt || new Date()).toISOString(),
         status: 'scheduled'
       })
-      .build();
+      .build()
 
     // Store audience query
     await this.client.setTransactionField(
@@ -228,9 +224,9 @@ export class WhatsAppDNAClient {
       'audience_query',
       params.audienceQuery,
       createSmartCode('HERA.WHATSAPP.CAMPAIGN.AUDIENCE.v1')
-    );
+    )
 
-    return campaign.id;
+    return campaign.id
   }
 
   /**
@@ -240,7 +236,7 @@ export class WhatsAppDNAClient {
     await this.client.updateTransactionMetadata(threadId, {
       is_pinned: shouldPin,
       pinned_at: shouldPin ? new Date().toISOString() : null
-    });
+    })
   }
 
   /**
@@ -250,45 +246,46 @@ export class WhatsAppDNAClient {
     await this.client.updateTransactionMetadata(threadId, {
       is_archived: shouldArchive,
       archived_at: shouldArchive ? new Date().toISOString() : null
-    });
+    })
   }
 
   /**
    * Get conversations with messages
    */
-  async getConversations(filters?: {
-    status?: 'open' | 'pending' | 'resolved';
-    search?: string;
-  }) {
+  async getConversations(filters?: { status?: 'open' | 'pending' | 'resolved'; search?: string }) {
     const threads = await this.client.queryTransactions({
       transactionType: 'MESSAGE_THREAD',
-      filters: filters?.status ? {
-        'metadata.status': filters.status
-      } : undefined,
+      filters: filters?.status
+        ? {
+            'metadata.status': filters.status
+          }
+        : undefined,
       includeLines: true
-    });
+    })
 
     // Format for UI
     return threads.map(thread => {
-      const messages = thread.lines?.filter(line => line.lineType === 'MESSAGE') || [];
-      const lastMessage = messages[messages.length - 1];
-      
+      const messages = thread.lines?.filter(line => line.lineType === 'MESSAGE') || []
+      const lastMessage = messages[messages.length - 1]
+
       return {
         id: thread.id,
-        entity_name: (thread.metadata as any)?.display_name || (thread.metadata as any)?.phone_number || 'Unknown',
+        entity_name:
+          (thread.metadata as any)?.display_name ||
+          (thread.metadata as any)?.phone_number ||
+          'Unknown',
         entity_code: (thread.metadata as any)?.phone_number || '',
         metadata: thread.metadata,
         lastMessage: lastMessage || null,
         messages,
-        unreadCount: messages.filter(m => 
-          m.lineData?.direction === 'inbound' && 
-          m.lineData?.status !== 'read'
+        unreadCount: messages.filter(
+          m => m.lineData?.direction === 'inbound' && m.lineData?.status !== 'read'
         ).length,
         isPinned: (thread.metadata as any)?.is_pinned || false,
         isArchived: (thread.metadata as any)?.is_archived || false,
         updated_at: (thread.metadata as any)?.last_message_at || thread.createdAt
-      };
-    });
+      }
+    })
   }
 
   /**
@@ -302,11 +299,11 @@ export class WhatsAppDNAClient {
       last_message_at: new Date().toISOString(),
       last_message_direction: message.direction,
       last_message_preview: message.text?.substring(0, 100)
-    });
+    })
   }
 }
 
 // Export convenience function
 export function createWhatsAppClient(organizationId: string): WhatsAppDNAClient {
-  return new WhatsAppDNAClient(createOrganizationId(organizationId));
+  return new WhatsAppDNAClient(createOrganizationId(organizationId))
 }

@@ -30,10 +30,12 @@ export async function GET(request: NextRequest) {
     const orderIds = orders.map(order => order.id)
     const { data: orderLines, error: linesError } = await supabaseAdmin
       .from('universal_transaction_lines')
-      .select(`
+      .select(
+        `
         *,
         menu_item:core_entities!universal_transaction_lines_entity_id_fkey(entity_name)
-      `)
+      `
+      )
       .in('transaction_id', orderIds)
 
     if (linesError) {
@@ -57,7 +59,7 @@ export async function GET(request: NextRequest) {
         menu_item_name: line.menu_item?.entity_name || 'Unknown Item',
         quantity: line.quantity || 0,
         unit_price: line.unit_price || 0,
-        line_total: line.line_total || (line.quantity * line.unit_price) || 0,
+        line_total: line.line_total || line.quantity * line.unit_price || 0,
         special_instructions: null,
         modifications: []
       }))
@@ -86,13 +88,9 @@ export async function GET(request: NextRequest) {
       data: ordersWithDetails,
       count: ordersWithDetails.length
     })
-
   } catch (error) {
     console.error('Restaurant orders API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -108,7 +106,7 @@ export async function PUT(request: NextRequest) {
     // Update order status
     const { error: updateError } = await supabaseAdmin
       .from('universal_transactions')
-      .update({ 
+      .update({
         status,
         updated_at: new Date().toISOString()
       })
@@ -127,13 +125,9 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'Order status updated successfully'
     })
-
   } catch (error) {
     console.error('Update order status error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -145,17 +139,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
 
-    const {
-      customer_id,
-      table_id,
-      order_type,
-      items,
-      special_notes,
-      server_name
-    } = body
+    const { customer_id, table_id, order_type, items, special_notes, server_name } = body
 
     // Calculate total
-    const total_amount = items.reduce((sum: number, item: any) => sum + (item.quantity * item.unit_price), 0)
+    const total_amount = items.reduce(
+      (sum: number, item: any) => sum + item.quantity * item.unit_price,
+      0
+    )
 
     // Generate reference number and transaction number
     const reference_number = `ORD-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`
@@ -190,7 +180,11 @@ export async function POST(request: NextRequest) {
     if (transactionError) {
       console.error('Error creating order transaction:', transactionError)
       return NextResponse.json(
-        { success: false, message: 'Failed to create order', error: transactionError.message || transactionError },
+        {
+          success: false,
+          message: 'Failed to create order',
+          error: transactionError.message || transactionError
+        },
         { status: 500 }
       )
     }
@@ -198,8 +192,12 @@ export async function POST(request: NextRequest) {
     // Create order line items with required fields
     const lineItems = items.map((item: any, index: number) => {
       // Only use entity_id if it's a valid UUID format
-      const isUUID = item.menu_item_id && item.menu_item_id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
-      
+      const isUUID =
+        item.menu_item_id &&
+        item.menu_item_id.match(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        )
+
       return {
         transaction_id: transaction.id,
         organization_id: organizationId,
@@ -225,7 +223,11 @@ export async function POST(request: NextRequest) {
     if (linesError) {
       console.error('Error creating order lines:', linesError)
       return NextResponse.json(
-        { success: false, message: 'Failed to create order items', error: linesError.message || linesError },
+        {
+          success: false,
+          message: 'Failed to create order items',
+          error: linesError.message || linesError
+        },
         { status: 500 }
       )
     }
@@ -240,7 +242,7 @@ export async function POST(request: NextRequest) {
       .eq('transaction_type', 'journal_entry')
       .ilike('reference_number', `JE-${reference_number}%`)
       .limit(1)
-    
+
     const journalEntry = journalEntries && journalEntries.length > 0 ? journalEntries[0] : null
 
     return NextResponse.json({
@@ -263,11 +265,14 @@ export async function POST(request: NextRequest) {
       },
       message: `Restaurant order created successfully${journalEntry ? ' with automatic GL posting' : ''}`
     })
-
   } catch (error) {
     console.error('Create order error:', error)
     return NextResponse.json(
-      { success: false, message: 'Internal server error', error: error instanceof Error ? error.message : String(error) },
+      {
+        success: false,
+        message: 'Internal server error',
+        error: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }

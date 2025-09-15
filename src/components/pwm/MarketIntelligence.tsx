@@ -1,25 +1,33 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scrollarea';
-import { BarChart3, Globe, Newspaper, TrendingUp, TrendingDown, Minus, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scrollarea'
+import {
+  BarChart3,
+  Globe,
+  Newspaper,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  AlertCircle
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface MarketIntelligenceProps {
-  organizationId: string;
+  organizationId: string
 }
 
 interface MarketEvent {
-  id: string;
-  type: 'economic' | 'earnings' | 'geopolitical' | 'regulatory';
-  title: string;
-  impact: 'high' | 'medium' | 'low';
-  sentiment: 'positive' | 'negative' | 'neutral';
-  time: string;
-  description: string;
-  affectedSectors: string[];
+  id: string
+  type: 'economic' | 'earnings' | 'geopolitical' | 'regulatory'
+  title: string
+  impact: 'high' | 'medium' | 'low'
+  sentiment: 'positive' | 'negative' | 'neutral'
+  time: string
+  description: string
+  affectedSectors: string[]
 }
 
 export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) {
@@ -30,8 +38,8 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
     { name: 'DOW', value: 37863.45, change: 234.56, changePercent: 0.062 },
     { name: 'FTSE 100', value: 7682.34, change: 12.45, changePercent: 0.016 },
     { name: 'DAX', value: 16751.23, change: -89.12, changePercent: -0.053 },
-    { name: 'Nikkei', value: 33445.67, change: 456.78, changePercent: 0.138 },
-  ];
+    { name: 'Nikkei', value: 33445.67, change: 456.78, changePercent: 0.138 }
+  ]
 
   const marketEvents: MarketEvent[] = [
     {
@@ -74,7 +82,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
       description: 'SEC announces stricter cryptocurrency trading rules',
       affectedSectors: ['Cryptocurrency', 'Finance']
     }
-  ];
+  ]
 
   const aiSynthesis = {
     marketSentiment: 'Cautiously Optimistic',
@@ -86,35 +94,35 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
     ],
     recommendation: 'Maintain current allocation with slight tilt toward growth equities',
     confidence: 0.82
-  };
+  }
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
       case 'high':
-        return 'bg-red-500/20 text-red-300 border-red-500/30';
+        return 'bg-red-500/20 text-red-300 border-red-500/30'
       case 'medium':
-        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
       case 'low':
-        return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+        return 'bg-slate-500/20 text-slate-300 border-slate-500/30'
       default:
-        return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+        return 'bg-slate-500/20 text-slate-300 border-slate-500/30'
     }
-  };
+  }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'economic':
-        return <BarChart3 className="h-4 w-4" />;
+        return <BarChart3 className="h-4 w-4" />
       case 'earnings':
-        return <TrendingUp className="h-4 w-4" />;
+        return <TrendingUp className="h-4 w-4" />
       case 'geopolitical':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       case 'regulatory':
-        return <AlertCircle className="h-4 w-4" />;
+        return <AlertCircle className="h-4 w-4" />
       default:
-        return <Newspaper className="h-4 w-4" />;
+        return <Newspaper className="h-4 w-4" />
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -132,26 +140,28 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
 
         {/* Market Indices */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-          {marketIndices.map((index) => (
-            <div 
+          {marketIndices.map(index => (
+            <div
               key={index.name}
               className="p-3 rounded-lg bg-slate-800/50 border border-slate-700/50"
             >
               <p className="text-xs text-slate-400 mb-1">{index.name}</p>
-              <p className="text-lg font-bold text-white mb-1">
-                {index.value.toLocaleString()}
-              </p>
-              <div className={cn(
-                "flex items-center gap-1 text-sm",
-                index.change >= 0 ? "text-emerald-400" : "text-red-400"
-              )}>
+              <p className="text-lg font-bold text-white mb-1">{index.value.toLocaleString()}</p>
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-sm',
+                  index.change >= 0 ? 'text-emerald-400' : 'text-red-400'
+                )}
+              >
                 {index.change >= 0 ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
                 <span>
-                  {index.change >= 0 ? '+' : ''}{index.change} ({index.changePercent >= 0 ? '+' : ''}{(index.changePercent * 100).toFixed(2)}%)
+                  {index.change >= 0 ? '+' : ''}
+                  {index.change} ({index.changePercent >= 0 ? '+' : ''}
+                  {(index.changePercent * 100).toFixed(2)}%)
                 </span>
               </div>
             </div>
@@ -168,17 +178,20 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
               </span>
               AI Market Synthesis
             </h4>
-            <Badge variant="outline" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+            <Badge
+              variant="outline"
+              className="bg-purple-500/20 text-purple-300 border-purple-500/30"
+            >
               {(aiSynthesis.confidence * 100).toFixed(0)}% confidence
             </Badge>
           </div>
-          
+
           <div className="space-y-3">
             <div>
               <p className="text-sm text-slate-400">Market Sentiment</p>
               <p className="text-lg font-semibold text-white">{aiSynthesis.marketSentiment}</p>
             </div>
-            
+
             <div>
               <p className="text-sm text-slate-400 mb-2">Key Themes</p>
               <div className="space-y-1">
@@ -190,7 +203,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
                 ))}
               </div>
             </div>
-            
+
             <div className="pt-3 border-t border-slate-700/50">
               <p className="text-sm font-medium text-emerald-400">
                 💡 {aiSynthesis.recommendation}
@@ -203,24 +216,26 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
       {/* Market Events Feed */}
       <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
         <h3 className="text-lg font-semibold text-white mb-4">Market Events & Impact</h3>
-        
+
         <ScrollArea className="h-96">
           <div className="space-y-4">
-            {marketEvents.map((event) => (
-              <div 
+            {marketEvents.map(event => (
+              <div
                 key={event.id}
                 className="p-4 rounded-xl border bg-slate-800/30 border-slate-700/50"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-start gap-3">
-                    <div className={cn(
-                      "p-2 rounded-lg",
-                      event.sentiment === 'positive' 
-                        ? "bg-emerald-500/20 text-emerald-400"
-                        : event.sentiment === 'negative'
-                        ? "bg-red-500/20 text-red-400"
-                        : "bg-slate-500/20 text-slate-400"
-                    )}>
+                    <div
+                      className={cn(
+                        'p-2 rounded-lg',
+                        event.sentiment === 'positive'
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : event.sentiment === 'negative'
+                            ? 'bg-red-500/20 text-red-400'
+                            : 'bg-slate-500/20 text-slate-400'
+                      )}
+                    >
                       {getTypeIcon(event.type)}
                     </div>
                     <div className="flex-1">
@@ -228,15 +243,15 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
                       <p className="text-sm text-slate-400">{event.description}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className={cn("ml-3", getImpactColor(event.impact))}>
+                  <Badge variant="outline" className={cn('ml-3', getImpactColor(event.impact))}>
                     {event.impact} impact
                   </Badge>
                 </div>
-                
+
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center gap-2">
-                    {event.affectedSectors.map((sector) => (
-                      <Badge 
+                    {event.affectedSectors.map(sector => (
+                      <Badge
                         key={sector}
                         variant="outline"
                         className="text-xs bg-slate-700/50 text-slate-300 border-slate-600"
@@ -253,5 +268,5 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
         </ScrollArea>
       </Card>
     </div>
-  );
+  )
 }

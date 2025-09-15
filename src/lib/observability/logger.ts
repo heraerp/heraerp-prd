@@ -41,7 +41,7 @@ export class HeraLogger {
     const formats = [
       winston.format.timestamp(),
       winston.format.errors({ stack: true }),
-      winston.format.json(),
+      winston.format.json()
     ]
 
     // Add colorization in development
@@ -56,14 +56,14 @@ export class HeraLogger {
       defaultMeta: {
         service: 'hera-enterprise',
         version: process.env.HERA_VERSION || '1.0.0',
-        environment: process.env.NODE_ENV || 'development',
+        environment: process.env.NODE_ENV || 'development'
       },
       transports: [
         new winston.transports.Console({
           handleExceptions: true,
-          handleRejections: true,
-        }),
-      ],
+          handleRejections: true
+        })
+      ]
     })
   }
 
@@ -110,7 +110,7 @@ export class HeraLogger {
       // Ensure sensitive data is not logged
       ...(meta?.password && { password: '[REDACTED]' }),
       ...(meta?.api_key && { api_key: '[REDACTED]' }),
-      ...(meta?.token && { token: '[REDACTED]' }),
+      ...(meta?.token && { token: '[REDACTED]' })
     }
 
     this.logger.log(level, message, logData)
@@ -136,7 +136,7 @@ export class HeraLogger {
       ...meta,
       error_message: error?.message || String(error),
       error_stack: error?.stack,
-      error_type: error?.constructor?.name || 'Error',
+      error_type: error?.constructor?.name || 'Error'
     }
     this.logWithContext('error', message, errorMeta, requestId)
   }
@@ -144,7 +144,7 @@ export class HeraLogger {
   /**
    * Specialized loggers
    */
-  
+
   logGuardrailBlock(params: {
     requestId: string
     table: string
@@ -152,14 +152,18 @@ export class HeraLogger {
     payload: any
     fixes_available: number
   }) {
-    this.info('Guardrail validation blocked', {
-      component: 'guardrail',
-      table: params.table,
-      reason: params.reason,
-      payload_size: JSON.stringify(params.payload).length,
-      fixes_available: params.fixes_available,
-      guardrail_id: uuidv4(),
-    }, params.requestId)
+    this.info(
+      'Guardrail validation blocked',
+      {
+        component: 'guardrail',
+        table: params.table,
+        reason: params.reason,
+        payload_size: JSON.stringify(params.payload).length,
+        fixes_available: params.fixes_available,
+        guardrail_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   logGuardrailAutofix(params: {
@@ -168,14 +172,18 @@ export class HeraLogger {
     fixes: any[]
     confidence: number
   }) {
-    this.info('Guardrail auto-fix applied', {
-      component: 'guardrail',
-      table: params.table,
-      fixes_count: params.fixes.length,
-      fix_types: params.fixes.map(f => f.fix_type),
-      confidence: params.confidence,
-      autofix_id: uuidv4(),
-    }, params.requestId)
+    this.info(
+      'Guardrail auto-fix applied',
+      {
+        component: 'guardrail',
+        table: params.table,
+        fixes_count: params.fixes.length,
+        fix_types: params.fixes.map(f => f.fix_type),
+        confidence: params.confidence,
+        autofix_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   logUCRDecision(params: {
@@ -185,14 +193,18 @@ export class HeraLogger {
     evaluationTime: number
     conditionsEvaluated: number
   }) {
-    this.info('UCR rule evaluated', {
-      component: 'ucr',
-      rule_id: params.ruleId,
-      decision_type: params.decision.type,
-      evaluation_time_ms: params.evaluationTime,
-      conditions_evaluated: params.conditionsEvaluated,
-      ucr_decision_id: uuidv4(),
-    }, params.requestId)
+    this.info(
+      'UCR rule evaluated',
+      {
+        component: 'ucr',
+        rule_id: params.ruleId,
+        decision_type: params.decision.type,
+        evaluation_time_ms: params.evaluationTime,
+        conditions_evaluated: params.conditionsEvaluated,
+        ucr_decision_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   logAPIRequest(params: {
@@ -203,18 +215,21 @@ export class HeraLogger {
     duration: number
     organizationId?: string
   }) {
-    const level = params.statusCode >= 500 ? 'error' 
-      : params.statusCode >= 400 ? 'warn' 
-      : 'info'
+    const level = params.statusCode >= 500 ? 'error' : params.statusCode >= 400 ? 'warn' : 'info'
 
-    this.logWithContext(level, 'API request completed', {
-      component: 'api',
-      http_method: params.method,
-      http_path: params.path,
-      http_status: params.statusCode,
-      response_time_ms: params.duration,
-      api_request_id: params.requestId,
-    }, params.requestId)
+    this.logWithContext(
+      level,
+      'API request completed',
+      {
+        component: 'api',
+        http_method: params.method,
+        http_path: params.path,
+        http_status: params.statusCode,
+        response_time_ms: params.duration,
+        api_request_id: params.requestId
+      },
+      params.requestId
+    )
   }
 
   logReportGeneration(params: {
@@ -227,17 +242,22 @@ export class HeraLogger {
     error?: string
   }) {
     const level = params.success ? 'info' : 'error'
-    
-    this.logWithContext(level, 'Report generation completed', {
-      component: 'reporting',
-      report_type: params.reportType,
-      report_period: params.period,
-      generation_time_ms: params.duration,
-      data_rows: params.dataRows,
-      success: params.success,
-      error: params.error,
-      report_id: uuidv4(),
-    }, params.requestId)
+
+    this.logWithContext(
+      level,
+      'Report generation completed',
+      {
+        component: 'reporting',
+        report_type: params.reportType,
+        report_period: params.period,
+        generation_time_ms: params.duration,
+        data_rows: params.dataRows,
+        success: params.success,
+        error: params.error,
+        report_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   logSecurityEvent(params: {
@@ -246,13 +266,17 @@ export class HeraLogger {
     userId?: string
     details: any
   }) {
-    this.warn('Security event', {
-      component: 'security',
-      security_event_type: params.eventType,
-      user_id: params.userId,
-      event_details: params.details,
-      security_event_id: uuidv4(),
-    }, params.requestId)
+    this.warn(
+      'Security event',
+      {
+        component: 'security',
+        security_event_type: params.eventType,
+        user_id: params.userId,
+        event_details: params.details,
+        security_event_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   logDatabaseQuery(params: {
@@ -264,16 +288,21 @@ export class HeraLogger {
     error?: string
   }) {
     const level = params.error ? 'error' : params.duration > 1000 ? 'warn' : 'debug'
-    
-    this.logWithContext(level, 'Database query executed', {
-      component: 'database',
-      db_operation: params.operation,
-      db_table: params.table,
-      db_duration_ms: params.duration,
-      db_rows_affected: params.rowsAffected,
-      db_error: params.error,
-      query_id: uuidv4(),
-    }, params.requestId)
+
+    this.logWithContext(
+      level,
+      'Database query executed',
+      {
+        component: 'database',
+        db_operation: params.operation,
+        db_table: params.table,
+        db_duration_ms: params.duration,
+        db_rows_affected: params.rowsAffected,
+        db_error: params.error,
+        query_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   /**
@@ -298,28 +327,28 @@ export class HeraLogger {
       audit_id: uuidv4(),
       organization_id: params.organizationId,
       user_id: params.userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     })
   }
 
   /**
    * Performance logger
    */
-  performance(params: {
-    requestId: string
-    operation: string
-    duration: number
-    metadata?: any
-  }) {
+  performance(params: { requestId: string; operation: string; duration: number; metadata?: any }) {
     const level = params.duration > 5000 ? 'warn' : 'debug'
-    
-    this.logWithContext(level, 'Performance measurement', {
-      component: 'performance',
-      perf_operation: params.operation,
-      perf_duration_ms: params.duration,
-      perf_metadata: params.metadata,
-      performance_id: uuidv4(),
-    }, params.requestId)
+
+    this.logWithContext(
+      level,
+      'Performance measurement',
+      {
+        component: 'performance',
+        perf_operation: params.operation,
+        perf_duration_ms: params.duration,
+        perf_metadata: params.metadata,
+        performance_id: uuidv4()
+      },
+      params.requestId
+    )
   }
 
   /**

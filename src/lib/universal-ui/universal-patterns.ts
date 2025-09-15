@@ -1,6 +1,6 @@
 /**
  * Universal UI Patterns - Common configurations that work across ALL industries
- * 
+ *
  * This file demonstrates the true universality of HERA's UI system.
  * The SAME patterns work for healthcare, restaurant, retail, manufacturing, etc.
  * Only the metadata configuration changes - the components remain identical.
@@ -36,7 +36,7 @@ export const universalFormPatterns = {
       layout: { col_span: 12 }
     }
   },
-  
+
   // Date/time fields - universal across all transactions
   dateTimeFields: {
     date: {
@@ -64,7 +64,7 @@ export const universalFormPatterns = {
       }
     }
   },
-  
+
   // Money/amount fields - work for any financial transaction
   moneyFields: {
     amount: {
@@ -88,7 +88,7 @@ export const universalFormPatterns = {
       layout: { col_span: 2 }
     }
   },
-  
+
   // Selection fields - entity relationships
   relationshipFields: {
     customer: {
@@ -116,7 +116,7 @@ export const universalFormPatterns = {
       layout: { col_span: 6 }
     }
   },
-  
+
   // Status and workflow fields
   statusFields: {
     status: {
@@ -175,7 +175,7 @@ export const universalGridPatterns = {
       filterable: true
     }
   },
-  
+
   // Date columns - universal time tracking
   dateColumns: {
     created: {
@@ -197,7 +197,7 @@ export const universalGridPatterns = {
       sortable: true
     }
   },
-  
+
   // Amount columns - financial data
   amountColumns: {
     total: {
@@ -221,7 +221,7 @@ export const universalGridPatterns = {
       aggregation: 'sum' as const
     }
   },
-  
+
   // Status columns - workflow states
   statusColumns: {
     status: {
@@ -282,7 +282,7 @@ export const universalActionPatterns = {
       smart_code: 'HERA.UI.ACTION.VIEW.v1'
     }
   },
-  
+
   // Workflow actions - universal business processes
   workflow: {
     approve: {
@@ -312,7 +312,7 @@ export const universalActionPatterns = {
       smart_code: 'HERA.UI.ACTION.SUBMIT.v1'
     }
   },
-  
+
   // Export/report actions
   export: {
     pdf: {
@@ -357,7 +357,7 @@ export const universalWidgetPatterns = {
       calculations
     }
   }),
-  
+
   // Form widget for data entry
   formWidget: (title: string, fields: FormField[]): Widget => ({
     id: 'form-widget',
@@ -367,7 +367,7 @@ export const universalWidgetPatterns = {
     config: { fields },
     layout: { position: { row: 1, col: 0 }, size: { width: 12, height: 2 } }
   }),
-  
+
   // Grid widget for listings
   gridWidget: (title: string, columns: GridColumn[], filters?: any[]): Widget => ({
     id: 'grid-widget',
@@ -382,12 +382,14 @@ export const universalWidgetPatterns = {
       }
     },
     layout: { position: { row: 2, col: 0 }, size: { width: 12, height: 4 } },
-    data_source: filters ? {
-      type: 'entities',
-      filters
-    } : undefined
+    data_source: filters
+      ? {
+          type: 'entities',
+          filters
+        }
+      : undefined
   }),
-  
+
   // Chart widget for analytics
   chartWidget: (title: string, chartType: string, series: any[]): Widget => ({
     id: 'chart-widget',
@@ -400,7 +402,7 @@ export const universalWidgetPatterns = {
     },
     layout: { position: { row: 3, col: 0 }, size: { width: 8, height: 3 } }
   }),
-  
+
   // Timeline widget for history
   timelineWidget: (title: string): Widget => ({
     id: 'timeline-widget',
@@ -476,7 +478,7 @@ export function createUniversalDetailView(
       layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 2 } }
     }
   ]
-  
+
   // Add related grids
   relatedGrids?.forEach((grid, index) => {
     widgets.push({
@@ -488,13 +490,11 @@ export function createUniversalDetailView(
       layout: { position: { row: 2 + index * 2, col: 0 }, size: { width: 12, height: 2 } },
       data_source: {
         type: 'relationships',
-        filters: [
-          { field: 'relationship_type', operator: 'equals', value: grid.relationship }
-        ]
+        filters: [{ field: 'relationship_type', operator: 'equals', value: grid.relationship }]
       }
     })
   })
-  
+
   return {
     id: `${entityType}-detail-view`,
     smart_code: `HERA.UI.DETAIL.${entityType.toUpperCase()}.v1`,
@@ -506,7 +506,7 @@ export function createUniversalDetailView(
 
 /**
  * Example: How ANY business can use these patterns
- * 
+ *
  * // For a veterinary clinic:
  * const petListView = createUniversalListView('pet', 'Pets', [
  *   universalGridPatterns.entityColumns.name,
@@ -514,7 +514,7 @@ export function createUniversalDetailView(
  *   { field: 'owner_name', header: 'Owner', type: 'entity_link' },
  *   universalGridPatterns.dateColumns.created
  * ])
- * 
+ *
  * // For a law firm:
  * const caseListView = createUniversalListView('legal_case', 'Cases', [
  *   { field: 'case_number', header: 'Case #', type: 'text' },
@@ -522,7 +522,7 @@ export function createUniversalDetailView(
  *   { field: 'client_name', header: 'Client', type: 'entity_link' },
  *   universalGridPatterns.statusColumns.status
  * ])
- * 
+ *
  * // For a gym:
  * const memberListView = createUniversalListView('member', 'Members', [
  *   universalGridPatterns.entityColumns.name,
@@ -530,6 +530,6 @@ export function createUniversalDetailView(
  *   { field: 'expiry_date', header: 'Expires', type: 'date' },
  *   universalGridPatterns.statusColumns.status
  * ])
- * 
+ *
  * ALL use the SAME grid widget, just different metadata!
  */

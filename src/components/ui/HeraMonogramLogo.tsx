@@ -13,21 +13,21 @@ const sizeMap = {
   xl: { width: 160, height: 64, fontSize: 48 }
 }
 
-export function HeraMonogramLogo({ 
-  className = '', 
+export function HeraMonogramLogo({
+  className = '',
   size = 'lg',
   variant = 'gradient'
 }: HeraMonogramLogoProps) {
   const { width, height, fontSize } = sizeMap[size]
-  
+
   const gradientId = `heraMonogram-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
-    <svg 
-      width={width} 
-      height={height} 
-      viewBox={`0 0 ${width} ${height}`} 
-      fill="none" 
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -39,7 +39,7 @@ export function HeraMonogramLogo({
           <stop offset="100%" style={{ stopColor: '#6366f1' }} />
         </linearGradient>
       </defs>
-      
+
       {/* HERA lettermark */}
       <text
         x="50%"
@@ -47,7 +47,13 @@ export function HeraMonogramLogo({
         fontFamily="'Inter', -apple-system, sans-serif"
         fontSize={fontSize}
         fontWeight="900"
-        fill={variant === 'gradient' ? `url(#${gradientId})` : variant === 'outline' ? 'none' : '#6366f1'}
+        fill={
+          variant === 'gradient'
+            ? `url(#${gradientId})`
+            : variant === 'outline'
+              ? 'none'
+              : '#6366f1'
+        }
         stroke={variant === 'outline' ? '#6366f1' : 'none'}
         strokeWidth={variant === 'outline' ? '1.5' : '0'}
         textAnchor="middle"
@@ -61,22 +67,22 @@ export function HeraMonogramLogo({
 }
 
 // Stylized version with custom letterforms
-export function HeraStylizedMonogram({ 
-  className = '', 
+export function HeraStylizedMonogram({
+  className = '',
   size = 'lg',
   variant = 'gradient'
 }: HeraMonogramLogoProps) {
   const { width, height, fontSize } = sizeMap[size]
-  
+
   const gradientId = `heraStylized-${Math.random().toString(36).substr(2, 9)}`
   const spacing = fontSize * 0.6
-  
+
   return (
-    <svg 
-      width={width} 
-      height={height} 
-      viewBox={`0 0 ${width} ${height}`} 
-      fill="none" 
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -86,8 +92,8 @@ export function HeraStylizedMonogram({
           <stop offset="100%" style={{ stopColor: '#06b6d4' }} />
         </linearGradient>
       </defs>
-      
-      <g transform={`translate(${width/2}, ${height/2})`}>
+
+      <g transform={`translate(${width / 2}, ${height / 2})`}>
         {/* H - with distinctive crossbar */}
         <g transform={`translate(${-spacing * 1.5}, 0)`}>
           <path
@@ -105,7 +111,7 @@ export function HeraStylizedMonogram({
             fill="none"
           />
         </g>
-        
+
         {/* E - modern interpretation */}
         <g transform={`translate(${-spacing * 0.5}, 0)`}>
           <path
@@ -125,7 +131,7 @@ export function HeraStylizedMonogram({
             fill="none"
           />
         </g>
-        
+
         {/* R - with distinctive leg */}
         <g transform={`translate(${spacing * 0.5}, 0)`}>
           <path
@@ -145,7 +151,7 @@ export function HeraStylizedMonogram({
             fill="none"
           />
         </g>
-        
+
         {/* A - distinctive peak */}
         <g transform={`translate(${spacing * 1.5}, 0)`}>
           <path
@@ -169,21 +175,21 @@ export function HeraStylizedMonogram({
 }
 
 // Minimalist geometric version
-export function HeraGeometricMonogram({ 
-  className = '', 
+export function HeraGeometricMonogram({
+  className = '',
   size = 'lg',
   variant = 'gradient'
 }: HeraMonogramLogoProps) {
   const { width, height, fontSize } = sizeMap[size]
-  
+
   const gradientId = `heraGeometric-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
-    <svg 
-      width={width} 
-      height={height} 
-      viewBox={`0 0 ${width} ${height}`} 
-      fill="none" 
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -193,7 +199,7 @@ export function HeraGeometricMonogram({
           <stop offset="100%" style={{ stopColor: '#a855f7' }} />
         </linearGradient>
       </defs>
-      
+
       {/* HERA in custom geometric letterforms */}
       <text
         x="50%"
@@ -209,7 +215,7 @@ export function HeraGeometricMonogram({
       >
         HERA
       </text>
-      
+
       {/* Accent line */}
       <rect
         x={width * 0.1}
@@ -224,22 +230,22 @@ export function HeraGeometricMonogram({
 }
 
 // Stacked version for square formats
-export function HeraStackedMonogram({ 
-  className = '', 
+export function HeraStackedMonogram({
+  className = '',
   size = 'lg',
   variant = 'gradient'
 }: HeraMonogramLogoProps) {
   const { width, height, fontSize } = sizeMap[size]
   const squareSize = Math.max(width, height)
-  
+
   const gradientId = `heraStacked-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
-    <svg 
-      width={squareSize} 
-      height={squareSize} 
-      viewBox={`0 0 ${squareSize} ${squareSize}`} 
-      fill="none" 
+    <svg
+      width={squareSize}
+      height={squareSize}
+      viewBox={`0 0 ${squareSize} ${squareSize}`}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
@@ -249,9 +255,9 @@ export function HeraStackedMonogram({
           <stop offset="100%" style={{ stopColor: '#06b6d4' }} />
         </linearGradient>
       </defs>
-      
+
       {/* Stacked letters */}
-      <g transform={`translate(${squareSize/2}, ${squareSize/2})`}>
+      <g transform={`translate(${squareSize / 2}, ${squareSize / 2})`}>
         {['H', 'E', 'R', 'A'].map((letter, index) => (
           <text
             key={letter}
@@ -268,7 +274,7 @@ export function HeraStackedMonogram({
           </text>
         ))}
       </g>
-      
+
       {/* Border frame */}
       <rect
         x="2"

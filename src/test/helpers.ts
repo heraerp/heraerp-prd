@@ -38,14 +38,14 @@ export function createMockSupabaseChain(): MockChain {
     or: jest.fn(),
     neq: jest.fn(),
     is: jest.fn(),
-    not: jest.fn(),
+    not: jest.fn()
   }
 
   // Make each method return the chain for chaining, except terminal methods
   const terminalMethods = ['single', 'limit']
   Object.keys(mockChain).forEach(key => {
     if (!terminalMethods.includes(key)) {
-      (mockChain as any)[key].mockReturnThis()
+      ;(mockChain as any)[key].mockReturnThis()
     }
   })
 
@@ -54,16 +54,16 @@ export function createMockSupabaseChain(): MockChain {
 
 export function createMockSupabase() {
   const mockChain = createMockSupabaseChain()
-  
+
   const mockSupabase = {
     from: jest.fn((tableName: string) => {
       // Return a fresh chain for each table
       return mockChain
     }),
     auth: {
-      getUser: jest.fn().mockResolvedValue({ 
-        data: { user: { id: 'test-user' } }, 
-        error: null 
+      getUser: jest.fn().mockResolvedValue({
+        data: { user: { id: 'test-user' } },
+        error: null
       })
     },
     rpc: jest.fn(),
@@ -77,27 +77,25 @@ export function createMockSupabase() {
 
 export function setupSupabaseMocks() {
   const { mockSupabase, mockChain } = createMockSupabase()
-  
+
   // Mock both versions of Supabase
   jest.doMock('@supabase/supabase-js', () => ({
     createClient: jest.fn(() => mockSupabase)
   }))
-  
+
   jest.doMock('@supabase/ssr', () => ({
     createServerClient: jest.fn(() => mockSupabase)
   }))
-  
+
   return { mockSupabase, mockChain }
 }
 
 // Helper to set up a successful query response
 export function mockSuccessfulQuery(mockChain: MockChain, data: any) {
   // For limit queries (lists)
-  mockChain.limit.mockImplementation(() => 
-    Promise.resolve({ data, error: null })
-  )
+  mockChain.limit.mockImplementation(() => Promise.resolve({ data, error: null }))
   // For single queries
-  mockChain.single.mockImplementation(() => 
+  mockChain.single.mockImplementation(() =>
     Promise.resolve({ data: Array.isArray(data) ? data[0] : data, error: null })
   )
   // Also handle direct resolution for chains that might not use limit/single
@@ -108,10 +106,10 @@ export function mockSuccessfulQuery(mockChain: MockChain, data: any) {
 
 // Helper to set up an error response
 export function mockErrorQuery(mockChain: MockChain, error: string) {
-  mockChain.limit.mockImplementation(() => 
+  mockChain.limit.mockImplementation(() =>
     Promise.resolve({ data: null, error: { message: error } })
   )
-  mockChain.single.mockImplementation(() => 
+  mockChain.single.mockImplementation(() =>
     Promise.resolve({ data: null, error: { message: error } })
   )
 }
@@ -125,7 +123,7 @@ export function resetSupabaseMocks() {
 // Helper for complex multi-table queries
 export function createMockSupabaseMultiTable() {
   const chains = new Map<string, MockChain>()
-  
+
   const mockSupabase = {
     from: jest.fn((tableName: string) => {
       if (!chains.has(tableName)) {
@@ -134,9 +132,9 @@ export function createMockSupabaseMultiTable() {
       return chains.get(tableName)!
     }),
     auth: {
-      getUser: jest.fn().mockResolvedValue({ 
-        data: { user: { id: 'test-user' } }, 
-        error: null 
+      getUser: jest.fn().mockResolvedValue({
+        data: { user: { id: 'test-user' } },
+        error: null
       })
     },
     rpc: jest.fn(),

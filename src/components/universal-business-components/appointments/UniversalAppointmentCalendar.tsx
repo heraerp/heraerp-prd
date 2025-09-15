@@ -1,13 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { 
-  Calendar,
-  Clock,
-  User,
-  Plus,
-  Search
-} from 'lucide-react'
+import { Calendar, Clock, User, Plus, Search } from 'lucide-react'
 
 export interface UniversalAppointment {
   id: string
@@ -67,7 +61,13 @@ const INDUSTRY_CONFIGS: Record<string, IndustryConfig> = {
     name: 'Jewelry Store',
     icon: '💎',
     primaryColor: '#8B5CF6',
-    serviceTypes: ['Design Consultation', 'Jewelry Appraisal', 'Repair Service', 'Custom Design', 'Ring Sizing'],
+    serviceTypes: [
+      'Design Consultation',
+      'Jewelry Appraisal',
+      'Repair Service',
+      'Custom Design',
+      'Ring Sizing'
+    ],
     appointmentLabels: { singular: 'Consultation', plural: 'Consultations' },
     statusLabels: {
       draft: 'Draft',
@@ -88,7 +88,13 @@ const INDUSTRY_CONFIGS: Record<string, IndustryConfig> = {
     name: 'Healthcare',
     icon: '🏥',
     primaryColor: '#10B981',
-    serviceTypes: ['General Checkup', 'Specialist Consultation', 'Laboratory Test', 'Vaccination', 'Follow-up'],
+    serviceTypes: [
+      'General Checkup',
+      'Specialist Consultation',
+      'Laboratory Test',
+      'Vaccination',
+      'Follow-up'
+    ],
     appointmentLabels: { singular: 'Appointment', plural: 'Appointments' },
     statusLabels: {
       draft: 'Draft',
@@ -188,11 +194,12 @@ export function UniversalAppointmentCalendar({
   // Filter appointments
   const filteredAppointments = useMemo(() => {
     return appointments.filter(appointment => {
-      const matchesSearch = !searchTerm || 
+      const matchesSearch =
+        !searchTerm ||
         appointment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appointment.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appointment.service_type.toLowerCase().includes(searchTerm.toLowerCase())
-      
+
       return matchesSearch
     })
   }, [appointments, searchTerm])
@@ -245,7 +252,7 @@ export function UniversalAppointmentCalendar({
           type="text"
           placeholder="Search appointments..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={e => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
@@ -264,7 +271,7 @@ export function UniversalAppointmentCalendar({
               No {config.appointmentLabels.plural} Found
             </h3>
             {!readonly && (
-              <button 
+              <button
                 onClick={() => onSlotClick?.('', '')}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center space-x-2 mx-auto"
               >
@@ -274,21 +281,21 @@ export function UniversalAppointmentCalendar({
             )}
           </div>
         ) : (
-          filteredAppointments.map((appointment) => (
-            <div 
-              key={appointment.id} 
+          filteredAppointments.map(appointment => (
+            <div
+              key={appointment.id}
               className="bg-white rounded-lg border p-4 cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => onAppointmentClick?.(appointment)}
             >
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-lg font-semibold text-gray-900 flex-1">
-                  {appointment.title}
-                </h3>
-                <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(appointment.status)}`}>
+                <h3 className="text-lg font-semibold text-gray-900 flex-1">{appointment.title}</h3>
+                <span
+                  className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor(appointment.status)}`}
+                >
                   {config.statusLabels[appointment.status]}
                 </span>
               </div>
-              
+
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-2 flex-shrink-0" />
@@ -296,7 +303,9 @@ export function UniversalAppointmentCalendar({
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
-                  <span>{appointment.start_time} - {appointment.end_time}</span>
+                  <span>
+                    {appointment.start_time} - {appointment.end_time}
+                  </span>
                 </div>
               </div>
 
@@ -314,12 +323,8 @@ export function UniversalAppointmentCalendar({
       <div className="bg-white rounded-lg border p-4">
         <div className="grid gap-4 md:grid-cols-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-blue-600">
-              {filteredAppointments.length}
-            </div>
-            <div className="text-sm text-gray-600">
-              Total {config.appointmentLabels.plural}
-            </div>
+            <div className="text-2xl font-bold text-blue-600">{filteredAppointments.length}</div>
+            <div className="text-sm text-gray-600">Total {config.appointmentLabels.plural}</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-600">
@@ -329,7 +334,10 @@ export function UniversalAppointmentCalendar({
           </div>
           <div>
             <div className="text-2xl font-bold text-orange-600">
-              {filteredAppointments.filter(a => a.priority === 'high' || a.priority === 'urgent').length}
+              {
+                filteredAppointments.filter(a => a.priority === 'high' || a.priority === 'urgent')
+                  .length
+              }
             </div>
             <div className="text-sm text-gray-600">High Priority</div>
           </div>

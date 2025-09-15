@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   DollarSign,
   TrendingUp,
   TrendingDown,
@@ -24,18 +24,18 @@ import {
   PieChart,
   BarChart3
 } from 'lucide-react'
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  BarChart, 
-  Bar, 
-  PieChart as RePieChart, 
-  Pie, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart as RePieChart,
+  Pie,
   Cell,
   LineChart,
   Line,
@@ -56,20 +56,37 @@ interface MetricCardProps {
   subValue?: string
 }
 
-function MetricCard({ title, value, change, changeLabel, icon: Icon, gradient, trend, subValue }: MetricCardProps) {
+function MetricCard({
+  title,
+  value,
+  change,
+  changeLabel,
+  icon: Icon,
+  gradient,
+  trend,
+  subValue
+}: MetricCardProps) {
   const isPositive = change ? change >= 0 : trend === 'up'
 
   return (
     <div className="relative group">
-      <div className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
+      <div
+        className={`absolute -inset-0.5 bg-gradient-to-r ${gradient} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300`}
+      />
       <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
         <div className="flex items-start justify-between mb-4">
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
             <Icon className="h-6 w-6 text-white" />
           </div>
           {change !== undefined && (
-            <div className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
-              {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+            <div
+              className={`flex items-center space-x-1 text-sm font-medium ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}
+            >
+              {isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
               <span>{Math.abs(change)}%</span>
             </div>
           )}
@@ -85,7 +102,7 @@ function MetricCard({ title, value, change, changeLabel, icon: Icon, gradient, t
 
 export default function FinanceDashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false)
-  
+
   // Financial data with instant loading
   const [cashflowData] = useState([
     { month: 'Jan', inflow: 68, outflow: 52, net: 16 },
@@ -123,9 +140,21 @@ export default function FinanceDashboard() {
   ])
 
   const [pendingTransactions] = useState([
-    { type: 'Receivable', customer: 'Enterprise Client A', amount: 15.5, daysOverdue: 12, status: 'overdue' },
+    {
+      type: 'Receivable',
+      customer: 'Enterprise Client A',
+      amount: 15.5,
+      daysOverdue: 12,
+      status: 'overdue'
+    },
     { type: 'Payable', vendor: 'Network Equipment Ltd', amount: 8.2, dueIn: 5, status: 'upcoming' },
-    { type: 'Receivable', customer: 'Corporate Bundle B', amount: 12.8, daysOverdue: 0, status: 'current' },
+    {
+      type: 'Receivable',
+      customer: 'Corporate Bundle B',
+      amount: 12.8,
+      daysOverdue: 0,
+      status: 'current'
+    },
     { type: 'Payable', vendor: 'Electricity Board', amount: 4.5, dueIn: 10, status: 'upcoming' }
   ])
 
@@ -163,7 +192,10 @@ export default function FinanceDashboard() {
   // Calculate totals
   const totalRevenue = revenueBreakdown.reduce((sum, item) => sum + item.value, 0)
   const totalProfit = profitCenters.reduce((sum, center) => sum + center.profit, 0)
-  const avgMargin = (totalProfit / profitCenters.reduce((sum, center) => sum + center.revenue, 0) * 100).toFixed(1)
+  const avgMargin = (
+    (totalProfit / profitCenters.reduce((sum, center) => sum + center.revenue, 0)) *
+    100
+  ).toFixed(1)
 
   return (
     <div className="space-y-6">
@@ -176,7 +208,7 @@ export default function FinanceDashboard() {
           <p className="text-white/60 mt-1">Real-time financial insights and performance metrics</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -252,9 +284,9 @@ export default function FinanceDashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
                 <YAxis stroke="rgba(255,255,255,0.5)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
@@ -287,9 +319,9 @@ export default function FinanceDashboard() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0,0,0,0.8)', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0,0,0,0.8)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px'
                   }}
@@ -298,7 +330,7 @@ export default function FinanceDashboard() {
               </RePieChart>
             </ResponsiveContainer>
             <div className="mt-4 space-y-2">
-              {revenueBreakdown.map((item) => (
+              {revenueBreakdown.map(item => (
                 <div key={item.name} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
@@ -323,7 +355,7 @@ export default function FinanceDashboard() {
               <TrendingUp className="h-5 w-5 text-[#fff685]" />
             </div>
             <div className="space-y-4">
-              {profitCenters.map((center) => (
+              {profitCenters.map(center => (
                 <div key={center.name} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-white">{center.name}</span>
@@ -358,28 +390,33 @@ export default function FinanceDashboard() {
               <Calculator className="h-5 w-5 text-purple-400" />
             </div>
             <div className="space-y-4">
-              {costCenters.map((center) => (
+              {costCenters.map(center => (
                 <div key={center.name}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-white">{center.name}</span>
-                    <span className={`text-sm font-medium ${
-                      center.variance >= 0 ? 'text-emerald-400' : 'text-red-400'
-                    }`}>
-                      {center.variance >= 0 ? '+' : ''}{center.variance}%
+                    <span
+                      className={`text-sm font-medium ${
+                        center.variance >= 0 ? 'text-emerald-400' : 'text-red-400'
+                      }`}
+                    >
+                      {center.variance >= 0 ? '+' : ''}
+                      {center.variance}%
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="flex-1 h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div 
+                      <div
                         className={`h-full rounded-full transition-all duration-500 ${
-                          center.variance >= 0 
-                            ? 'bg-gradient-to-r from-emerald-400 to-green-500' 
+                          center.variance >= 0
+                            ? 'bg-gradient-to-r from-emerald-400 to-green-500'
                             : 'bg-gradient-to-r from-red-400 to-rose-500'
                         }`}
                         style={{ width: `${(center.actual / center.budget) * 100}%` }}
                       />
                     </div>
-                    <span className="text-xs text-white/60">₹{center.actual}/{center.budget} Cr</span>
+                    <span className="text-xs text-white/60">
+                      ₹{center.actual}/{center.budget} Cr
+                    </span>
                   </div>
                 </div>
               ))}
@@ -423,14 +460,20 @@ export default function FinanceDashboard() {
                     <td className="py-4 text-white/80">{txn.customer || txn.vendor}</td>
                     <td className="py-4 text-white text-right">₹{txn.amount} Cr</td>
                     <td className="py-4 text-center">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        txn.status === 'overdue' ? 'bg-red-500/20 text-red-400' :
-                        txn.status === 'upcoming' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-emerald-500/20 text-emerald-400'
-                      }`}>
-                        {txn.status === 'overdue' ? `${txn.daysOverdue}d overdue` :
-                         txn.status === 'upcoming' ? `Due in ${txn.dueIn}d` :
-                         'Current'}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          txn.status === 'overdue'
+                            ? 'bg-red-500/20 text-red-400'
+                            : txn.status === 'upcoming'
+                              ? 'bg-yellow-500/20 text-yellow-400'
+                              : 'bg-emerald-500/20 text-emerald-400'
+                        }`}
+                      >
+                        {txn.status === 'overdue'
+                          ? `${txn.daysOverdue}d overdue`
+                          : txn.status === 'upcoming'
+                            ? `Due in ${txn.dueIn}d`
+                            : 'Current'}
                       </span>
                     </td>
                     <td className="py-4 text-right">

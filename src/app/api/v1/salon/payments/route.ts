@@ -38,7 +38,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url)
   const organizationId = searchParams.get('organization_id')
   const type = searchParams.get('type') // all, payments, refunds, cancellations
-  const startDate = searchParams.get('start_date') || new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
+  const startDate =
+    searchParams.get('start_date') ||
+    new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
   const endDate = searchParams.get('end_date') || new Date().toISOString().split('T')[0]
   const paymentMethod = searchParams.get('payment_method')
   const status = searchParams.get('status')
@@ -62,7 +64,8 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 
     // Filter by transaction type
     if (type === 'payments') {
-      query = query.in('transaction_type', ['payment', 'sale', 'appointment'])
+      query = query
+        .in('transaction_type', ['payment', 'sale', 'appointment'])
         .not('metadata->payment_status', 'eq', 'refunded')
         .not('metadata->payment_status', 'eq', 'cancelled')
     } else if (type === 'refunds') {
@@ -115,7 +118,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 // POST: Create payment transaction (including refunds)
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const body = await request.json()
-  const { 
+  const {
     organizationId,
     transactionType, // payment, refund
     originalTransactionId, // for refunds
@@ -132,10 +135,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   } = body
 
   if (!organizationId || !transactionType || !amount) {
-    return NextResponse.json(
-      { success: false, error: 'Required fields missing' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Required fields missing' }, { status: 400 })
   }
 
   try {
@@ -147,7 +147,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
         .select('*')
         .eq('id', originalTransactionId)
         .single()
-      
+
       originalTransaction = original
     }
 
@@ -286,7 +286,11 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
 })
 
 // Helper function to calculate payment analytics
-async function calculatePaymentAnalytics(organizationId: string, startDate: string, endDate: string) {
+async function calculatePaymentAnalytics(
+  organizationId: string,
+  startDate: string,
+  endDate: string
+) {
   const { data: transactions } = await supabase
     .from('universal_transactions')
     .select('*')
@@ -318,9 +322,17 @@ async function calculatePaymentAnalytics(organizationId: string, startDate: stri
   })
 
   // Calculate period comparison
-  const daysInPeriod = Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
-  const prevStartDate = new Date(new Date(startDate).setDate(new Date(startDate).getDate() - daysInPeriod)).toISOString().split('T')[0]
-  const prevEndDate = new Date(new Date(startDate).setDate(new Date(startDate).getDate() - 1)).toISOString().split('T')[0]
+  const daysInPeriod = Math.ceil(
+    (new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
+  )
+  const prevStartDate = new Date(
+    new Date(startDate).setDate(new Date(startDate).getDate() - daysInPeriod)
+  )
+    .toISOString()
+    .split('T')[0]
+  const prevEndDate = new Date(new Date(startDate).setDate(new Date(startDate).getDate() - 1))
+    .toISOString()
+    .split('T')[0]
 
   const { data: prevTransactions } = await supabase
     .from('universal_transactions')
@@ -350,7 +362,11 @@ async function calculatePaymentAnalytics(organizationId: string, startDate: stri
 }
 
 // Helper function to get payment methods summary
-async function getPaymentMethodsSummary(organizationId: string, startDate: string, endDate: string) {
+async function getPaymentMethodsSummary(
+  organizationId: string,
+  startDate: string,
+  endDate: string
+) {
   const { data: transactions } = await supabase
     .from('universal_transactions')
     .select('*')
@@ -361,7 +377,7 @@ async function getPaymentMethodsSummary(organizationId: string, startDate: strin
     .gte('transaction_date', startDate)
     .lte('transaction_date', endDate)
 
-  const methodsSummary: { [key: string]: { count: number, amount: number } } = {}
+  const methodsSummary: { [key: string]: { count: number; amount: number } } = {}
   let totalAmount = 0
 
   transactions?.forEach(txn => {
@@ -375,12 +391,14 @@ async function getPaymentMethodsSummary(organizationId: string, startDate: strin
   })
 
   // Convert to array with percentages
-  return Object.entries(methodsSummary).map(([method, data]) => ({
-    method,
-    count: data.count,
-    amount: data.amount,
-    percentage: totalAmount > 0 ? (data.amount / totalAmount) * 100 : 0
-  })).sort((a, b) => b.amount - a.amount)
+  return Object.entries(methodsSummary)
+    .map(([method, data]) => ({
+      method,
+      count: data.count,
+      amount: data.amount,
+      percentage: totalAmount > 0 ? (data.amount / totalAmount) * 100 : 0
+    }))
+    .sort((a, b) => b.amount - a.amount)
 }
 
 // Helper function for daily cash reconciliation

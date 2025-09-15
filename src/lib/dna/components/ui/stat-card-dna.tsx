@@ -7,17 +7,17 @@ import { cn } from '@/lib/utils'
 
 /**
  * HERA DNA Stat Card Component
- * 
+ *
  * A reusable statistics card component that automatically handles dark mode text visibility
  * using the !important modifier to override global CSS rules.
- * 
+ *
  * Features:
  * - Automatic dark mode text visibility fix
  * - Consistent styling across all stat cards
  * - Icon support with gradient backgrounds
  * - Optional trend indicators
  * - Responsive design
- * 
+ *
  * @example
  * ```tsx
  * <StatCardDNA
@@ -64,45 +64,49 @@ export function StatCardDNA({
   }[changeType]
 
   return (
-    <Card className={cn(
-      "backdrop-blur-xl bg-white/95 dark:bg-slate-900/95",
-      "border-purple-200/50 dark:border-purple-800/50",
-      "shadow-lg hover:shadow-xl transition-shadow",
-      className
-    )}>
+    <Card
+      className={cn(
+        'backdrop-blur-xl bg-white/95 dark:bg-slate-900/95',
+        'border-purple-200/50 dark:border-purple-800/50',
+        'shadow-lg hover:shadow-xl transition-shadow',
+        className
+      )}
+    >
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className={cn(
-              "text-sm font-medium text-gray-600 dark:text-gray-300",
-              "uppercase tracking-wide",
-              titleClassName
-            )}>
+            <p
+              className={cn(
+                'text-sm font-medium text-gray-600 dark:text-gray-300',
+                'uppercase tracking-wide',
+                titleClassName
+              )}
+            >
               {title}
             </p>
-            <p className={cn(
-              "text-3xl font-bold mt-2",
-              "!text-gray-900 dark:!text-gray-100", // Force text visibility with !important
-              valueClassName
-            )}>
+            <p
+              className={cn(
+                'text-3xl font-bold mt-2',
+                '!text-gray-900 dark:!text-gray-100', // Force text visibility with !important
+                valueClassName
+              )}
+            >
               {typeof value === 'number' ? value.toLocaleString() : value}
             </p>
             {change && (
-              <p className={cn(
-                "text-xs mt-1 font-medium",
-                changeColorClass,
-                changeClassName
-              )}>
+              <p className={cn('text-xs mt-1 font-medium', changeColorClass, changeClassName)}>
                 {change}
               </p>
             )}
           </div>
           {Icon && (
-            <div className={cn(
-              "w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg",
-              "bg-gradient-to-br",
-              iconGradient
-            )}>
+            <div
+              className={cn(
+                'w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg',
+                'bg-gradient-to-br',
+                iconGradient
+              )}
+            >
               <Icon className="w-7 h-7 text-white" />
             </div>
           )}
@@ -114,7 +118,7 @@ export function StatCardDNA({
 
 /**
  * HERA DNA Mini Stat Card Component
- * 
+ *
  * A smaller variant of the stat card for compact displays
  */
 export function MiniStatCardDNA({
@@ -135,37 +139,34 @@ export function MiniStatCardDNA({
   titleClassName?: string
 }) {
   return (
-    <div className={cn(
-      "flex items-center justify-between p-4",
-      "bg-white/80 dark:bg-slate-900/80 rounded-lg",
-      "border border-gray-200 dark:border-gray-700",
-      className
-    )}>
+    <div
+      className={cn(
+        'flex items-center justify-between p-4',
+        'bg-white/80 dark:bg-slate-900/80 rounded-lg',
+        'border border-gray-200 dark:border-gray-700',
+        className
+      )}
+    >
       <div>
-        <p className={cn(
-          "text-sm text-gray-600 dark:text-gray-400",
-          titleClassName
-        )}>
-          {title}
-        </p>
-        <p className={cn(
-          "text-2xl font-bold mt-1",
-          "!text-gray-900 dark:!text-gray-100", // Force text visibility
-          valueClassName
-        )}>
+        <p className={cn('text-sm text-gray-600 dark:text-gray-400', titleClassName)}>{title}</p>
+        <p
+          className={cn(
+            'text-2xl font-bold mt-1',
+            '!text-gray-900 dark:!text-gray-100', // Force text visibility
+            valueClassName
+          )}
+        >
           {typeof value === 'number' ? value.toLocaleString() : value}
         </p>
       </div>
-      {Icon && (
-        <Icon className={cn("w-8 h-8", iconColor)} />
-      )}
+      {Icon && <Icon className={cn('w-8 h-8', iconColor)} />}
     </div>
   )
 }
 
 /**
  * HERA DNA Stat Card Grid
- * 
+ *
  * A responsive grid container for stat cards
  */
 export function StatCardGrid({
@@ -186,15 +187,7 @@ export function StatCardGrid({
     6: 'grid-cols-1 md:grid-cols-3 lg:grid-cols-6'
   }[columns]
 
-  return (
-    <div className={cn(
-      "grid gap-4",
-      gridCols,
-      className
-    )}>
-      {children}
-    </div>
-  )
+  return <div className={cn('grid gap-4', gridCols, className)}>{children}</div>
 }
 
 // Export all components

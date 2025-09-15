@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
     const filter = searchParams.get('filter') || 'all'
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
@@ -22,7 +19,8 @@ export async function GET(request: NextRequest) {
     // Build query
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         id,
         transaction_code,
         transaction_date,
@@ -33,7 +31,8 @@ export async function GET(request: NextRequest) {
         description,
         metadata,
         created_at
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .like('smart_code', 'HERA.ERP.FI.%')
 
@@ -59,7 +58,9 @@ export async function GET(request: NextRequest) {
     // Calculate stats
     const stats = {
       total: transactions?.length || 0,
-      pending: transactions?.filter(t => ['pending', 'validated'].includes(t.transaction_status)).length || 0,
+      pending:
+        transactions?.filter(t => ['pending', 'validated'].includes(t.transaction_status)).length ||
+        0,
       posted: transactions?.filter(t => t.transaction_status === 'posted').length || 0,
       error: transactions?.filter(t => t.transaction_status === 'error').length || 0,
       processing: transactions?.filter(t => t.transaction_status === 'posting').length || 0
@@ -71,9 +72,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Queue API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }

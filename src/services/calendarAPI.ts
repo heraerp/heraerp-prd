@@ -1,9 +1,9 @@
 // HERA Universal Calendar API Service
 // Handles all calendar operations using HERA 6-table architecture
 
-import { 
-  UniversalResource, 
-  UniversalAppointment, 
+import {
+  UniversalResource,
+  UniversalAppointment,
   AppointmentLine,
   ResourceAvailability,
   SchedulingConflict,
@@ -110,7 +110,10 @@ export class CalendarAPI {
    * Update resource
    * Updates core_entities + core_dynamic_data
    */
-  async updateResource(resourceId: string, updates: Partial<UniversalResource>): Promise<UniversalResource> {
+  async updateResource(
+    resourceId: string,
+    updates: Partial<UniversalResource>
+  ): Promise<UniversalResource> {
     const response = await fetch(`${this.baseUrl}/resources/${resourceId}`, {
       method: 'PUT',
       headers: this.getHeaders(),
@@ -174,7 +177,9 @@ export class CalendarAPI {
   /**
    * Get single appointment with resource allocations
    */
-  async getAppointment(appointmentId: string): Promise<UniversalAppointment & { resource_allocations: AppointmentLine[] }> {
+  async getAppointment(
+    appointmentId: string
+  ): Promise<UniversalAppointment & { resource_allocations: AppointmentLine[] }> {
     const response = await fetch(`${this.baseUrl}/appointments/${appointmentId}`, {
       headers: this.getHeaders()
     })
@@ -205,7 +210,9 @@ export class CalendarAPI {
 
     // Generate reference number if not provided
     if (!appointment.reference_number) {
-      appointment.reference_number = this.generateReferenceNumber(appointment.transaction_type || 'appointment')
+      appointment.reference_number = this.generateReferenceNumber(
+        appointment.transaction_type || 'appointment'
+      )
     }
 
     const response = await fetch(`${this.baseUrl}/appointments`, {
@@ -235,7 +242,7 @@ export class CalendarAPI {
    * Update appointment
    */
   async updateAppointment(
-    appointmentId: string, 
+    appointmentId: string,
     updates: Partial<UniversalAppointment>,
     resourceAllocations?: Partial<AppointmentLine>[]
   ): Promise<UniversalAppointment> {
@@ -461,7 +468,7 @@ export class CalendarAPI {
     }>
   ): Promise<{
     created: UniversalAppointment[]
-    errors: Array<{ index: number, error: string }>
+    errors: Array<{ index: number; error: string }>
   }> {
     const response = await fetch(`${this.baseUrl}/appointments/bulk`, {
       method: 'POST',
@@ -486,7 +493,7 @@ export class CalendarAPI {
     }>
   ): Promise<{
     updated: UniversalAppointment[]
-    errors: Array<{ appointment_id: string, error: string }>
+    errors: Array<{ appointment_id: string; error: string }>
   }> {
     const response = await fetch(`${this.baseUrl}/appointments/bulk-update`, {
       method: 'PUT',
@@ -525,12 +532,10 @@ export class CalendarAPI {
         }
       })
     }
-    
-    const eventSource = new EventSource(
-      `${this.baseUrl}/subscribe?${params}`
-    )
 
-    eventSource.onmessage = (event) => {
+    const eventSource = new EventSource(`${this.baseUrl}/subscribe?${params}`)
+
+    eventSource.onmessage = event => {
       callback(JSON.parse(event.data))
     }
 
@@ -547,7 +552,7 @@ export class CalendarAPI {
   async exportToExternalCalendar(
     format: 'ical' | 'google' | 'outlook',
     appointmentIds: string[]
-  ): Promise<{ export_url: string, expires_at: Date }> {
+  ): Promise<{ export_url: string; expires_at: Date }> {
     const response = await fetch(`${this.baseUrl}/export/${format}`, {
       method: 'POST',
       headers: this.getHeaders(),
@@ -571,17 +576,17 @@ export class CalendarAPI {
   ): Promise<{
     imported_count: number
     skipped_count: number
-    errors: Array<{ row: number, error: string }>
+    errors: Array<{ row: number; error: string }>
   }> {
     const formData = new FormData()
     formData.append('source', source)
-    
+
     if (typeof data === 'string') {
       formData.append('data', data)
     } else {
       formData.append('file', data)
     }
-    
+
     if (mapping) {
       formData.append('mapping', JSON.stringify(mapping))
     }
@@ -589,7 +594,7 @@ export class CalendarAPI {
     const response = await fetch(`${this.baseUrl}/import`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.securityContext.user_id}`,
+        Authorization: `Bearer ${this.securityContext.user_id}`,
         'X-Organization-ID': this.organizationId
       },
       body: formData
@@ -607,7 +612,7 @@ export class CalendarAPI {
   private getHeaders(): Record<string, string> {
     return {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.securityContext.user_id}`,
+      Authorization: `Bearer ${this.securityContext.user_id}`,
       'X-Organization-ID': this.organizationId,
       'X-User-Role': this.securityContext.user_role,
       'X-Resource-Access-Level': this.securityContext.resource_access_level

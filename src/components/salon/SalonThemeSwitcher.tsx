@@ -8,7 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
 export default function SalonThemeSwitcher() {
@@ -27,7 +27,7 @@ export default function SalonThemeSwitcher() {
   const switchTheme = (theme: 'light' | 'dark') => {
     // Save preference
     localStorage.setItem('salon-theme-preference', theme)
-    
+
     // Navigate to appropriate page
     if (theme === 'dark' && !pathname.includes('salon-data')) {
       router.push('/salon-data')
@@ -39,16 +39,12 @@ export default function SalonThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="icon"
           className="fixed top-4 right-20 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-200 dark:border-gray-700"
         >
-          {currentTheme === 'dark' ? (
-            <Moon className="h-5 w-5" />
-          ) : (
-            <Sun className="h-5 w-5" />
-          )}
+          {currentTheme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

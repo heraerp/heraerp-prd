@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Building2,
   Plus,
   Search,
@@ -47,7 +47,7 @@ export default function AccountsPage() {
   const [selectedSegment, setSelectedSegment] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [isCreating, setIsCreating] = useState(false)
-  
+
   // Sample accounts data
   const [accounts] = useState<Account[]>([
     {
@@ -176,35 +176,64 @@ export default function AccountsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'inactive': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'prospect': return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'active':
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      case 'inactive':
+        return 'bg-red-500/20 text-red-400 border-red-500/30'
+      case 'prospect':
+        return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
     }
   }
 
   const getSegmentColor = (segment: string) => {
     switch (segment) {
-      case 'Enterprise': return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'SMB': return 'from-[#ec7f37] to-[#be4f0c]'
-      case 'Startup': return 'from-[#be4f0c] to-[#FF5A09]'
-      default: return 'from-gray-500 to-gray-600'
+      case 'Enterprise':
+        return 'from-[#FF5A09] to-[#ec7f37]'
+      case 'SMB':
+        return 'from-[#ec7f37] to-[#be4f0c]'
+      case 'Startup':
+        return 'from-[#be4f0c] to-[#FF5A09]'
+      default:
+        return 'from-gray-500 to-gray-600'
     }
   }
 
   const filteredAccounts = accounts.filter(account => {
-    const matchesSearch = account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         account.industry.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      account.industry.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesSegment = selectedSegment === 'all' || account.segment === selectedSegment
     const matchesStatus = selectedStatus === 'all' || account.status === selectedStatus
     return matchesSearch && matchesSegment && matchesStatus
   })
 
   const stats = [
-    { label: 'Total Accounts', value: accounts.length, icon: Building2, color: 'from-[#FF5A09] to-[#ec7f37]' },
-    { label: 'Active Accounts', value: accounts.filter(a => a.status === 'active').length, icon: CheckCircle, color: 'from-emerald-500 to-green-600' },
-    { label: 'Total Revenue', value: `₹${(accounts.reduce((sum, a) => sum + a.revenue, 0) / 100000000).toFixed(0)}Cr`, icon: DollarSign, color: 'from-[#ec7f37] to-[#be4f0c]' },
-    { label: 'Avg Deal Size', value: '₹9.4L', icon: TrendingUp, color: 'from-[#be4f0c] to-[#FF5A09]' }
+    {
+      label: 'Total Accounts',
+      value: accounts.length,
+      icon: Building2,
+      color: 'from-[#FF5A09] to-[#ec7f37]'
+    },
+    {
+      label: 'Active Accounts',
+      value: accounts.filter(a => a.status === 'active').length,
+      icon: CheckCircle,
+      color: 'from-emerald-500 to-green-600'
+    },
+    {
+      label: 'Total Revenue',
+      value: `₹${(accounts.reduce((sum, a) => sum + a.revenue, 0) / 100000000).toFixed(0)}Cr`,
+      icon: DollarSign,
+      color: 'from-[#ec7f37] to-[#be4f0c]'
+    },
+    {
+      label: 'Avg Deal Size',
+      value: '₹9.4L',
+      icon: TrendingUp,
+      color: 'from-[#be4f0c] to-[#FF5A09]'
+    }
   ]
 
   return (
@@ -215,7 +244,7 @@ export default function AccountsPage() {
           <h1 className="text-3xl font-bold text-white">Accounts</h1>
           <p className="text-white/60 mt-1">Manage your customer accounts and relationships</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsCreating(true)}
           className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
@@ -254,14 +283,14 @@ export default function AccountsPage() {
             type="text"
             placeholder="Search accounts..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
-        
+
         <select
           value={selectedSegment}
-          onChange={(e) => setSelectedSegment(e.target.value)}
+          onChange={e => setSelectedSegment(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Segments</option>
@@ -272,7 +301,7 @@ export default function AccountsPage() {
 
         <select
           value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          onChange={e => setSelectedStatus(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Status</option>
@@ -289,14 +318,16 @@ export default function AccountsPage() {
 
       {/* Accounts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredAccounts.map((account) => (
+        {filteredAccounts.map(account => (
           <div key={account.id} className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
             <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start space-x-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-br ${getSegmentColor(account.segment)}`}>
+                  <div
+                    className={`p-3 rounded-xl bg-gradient-to-br ${getSegmentColor(account.segment)}`}
+                  >
                     <Building2 className="h-6 w-6 text-white" />
                   </div>
                   <div>
@@ -305,7 +336,9 @@ export default function AccountsPage() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(account.status)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(account.status)}`}
+                  >
                     {account.status}
                   </span>
                   <button className="text-white/40 hover:text-white transition-colors">
@@ -316,13 +349,11 @@ export default function AccountsPage() {
 
               {/* Rating */}
               <div className="flex items-center space-x-1 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map(star => (
                   <Star
                     key={star}
                     className={`h-4 w-4 ${
-                      star <= account.rating
-                        ? 'text-[#FF5A09] fill-[#FF5A09]'
-                        : 'text-white/20'
+                      star <= account.rating ? 'text-[#FF5A09] fill-[#FF5A09]' : 'text-white/20'
                     }`}
                   />
                 ))}

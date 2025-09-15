@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalAI, aiHelpers, AI_SMART_CODES, type UniversalAIRequest } from '@/lib/ai/universal-ai'
+import {
+  universalAI,
+  aiHelpers,
+  AI_SMART_CODES,
+  type UniversalAIRequest
+} from '@/lib/ai/universal-ai'
 
 // HERA Universal AI API Endpoint
 // Intelligently routes AI requests to optimal providers with fallback
@@ -11,12 +16,15 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!action) {
-      return NextResponse.json({
-        success: false,
-        error: 'Action is required',
-        smart_code: 'HERA.AI.ERROR.MISSING_ACTION.v1',
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Action is required',
+          smart_code: 'HERA.AI.ERROR.MISSING_ACTION.v1',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
 
     // Route to specific AI helper functions
@@ -24,12 +32,15 @@ export async function POST(request: NextRequest) {
       case 'generate_ca_questions':
         const { topic, difficulty = 'medium', count = 5 } = requestData
         if (!topic) {
-          return NextResponse.json({
-            success: false,
-            error: 'Topic is required for question generation',
-            smart_code: 'HERA.AI.ERROR.MISSING_TOPIC.v1',
-            timestamp: new Date().toISOString()
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Topic is required for question generation',
+              smart_code: 'HERA.AI.ERROR.MISSING_TOPIC.v1',
+              timestamp: new Date().toISOString()
+            },
+            { status: 400 }
+          )
         }
 
         const questionsResult = await aiHelpers.generateCAQuestions(topic, difficulty, count)
@@ -38,12 +49,15 @@ export async function POST(request: NextRequest) {
       case 'analyze_student_performance':
         const { student_data } = requestData
         if (!student_data) {
-          return NextResponse.json({
-            success: false,
-            error: 'Student data is required for performance analysis',
-            smart_code: 'HERA.AI.ERROR.MISSING_DATA.v1',
-            timestamp: new Date().toISOString()
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Student data is required for performance analysis',
+              smart_code: 'HERA.AI.ERROR.MISSING_DATA.v1',
+              timestamp: new Date().toISOString()
+            },
+            { status: 400 }
+          )
         }
 
         const analysisResult = await aiHelpers.analyzeStudentPerformance(student_data)
@@ -52,12 +66,15 @@ export async function POST(request: NextRequest) {
       case 'generate_quiz_feedback':
         const { quiz_result } = requestData
         if (!quiz_result) {
-          return NextResponse.json({
-            success: false,
-            error: 'Quiz result is required for feedback generation',
-            smart_code: 'HERA.AI.ERROR.MISSING_QUIZ_DATA.v1',
-            timestamp: new Date().toISOString()
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Quiz result is required for feedback generation',
+              smart_code: 'HERA.AI.ERROR.MISSING_QUIZ_DATA.v1',
+              timestamp: new Date().toISOString()
+            },
+            { status: 400 }
+          )
         }
 
         const feedbackResult = await aiHelpers.generateQuizFeedback(quiz_result)
@@ -66,12 +83,15 @@ export async function POST(request: NextRequest) {
       case 'generate_business_insights':
         const { business_data } = requestData
         if (!business_data) {
-          return NextResponse.json({
-            success: false,
-            error: 'Business data is required for insights generation',
-            smart_code: 'HERA.AI.ERROR.MISSING_BUSINESS_DATA.v1',
-            timestamp: new Date().toISOString()
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Business data is required for insights generation',
+              smart_code: 'HERA.AI.ERROR.MISSING_BUSINESS_DATA.v1',
+              timestamp: new Date().toISOString()
+            },
+            { status: 400 }
+          )
         }
 
         const insightsResult = await aiHelpers.generateBusinessInsights(business_data)
@@ -93,12 +113,15 @@ export async function POST(request: NextRequest) {
         }
 
         if (!aiRequest.prompt) {
-          return NextResponse.json({
-            success: false,
-            error: 'Prompt is required for custom AI requests',
-            smart_code: 'HERA.AI.ERROR.MISSING_PROMPT.v1',
-            timestamp: new Date().toISOString()
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Prompt is required for custom AI requests',
+              smart_code: 'HERA.AI.ERROR.MISSING_PROMPT.v1',
+              timestamp: new Date().toISOString()
+            },
+            { status: 400 }
+          )
         }
 
         const customResult = await universalAI.processRequest(aiRequest)
@@ -108,12 +131,15 @@ export async function POST(request: NextRequest) {
         // Process multiple AI requests in batch
         const { requests } = requestData
         if (!requests || !Array.isArray(requests)) {
-          return NextResponse.json({
-            success: false,
-            error: 'Requests array is required for batch processing',
-            smart_code: 'HERA.AI.ERROR.MISSING_BATCH_DATA.v1',
-            timestamp: new Date().toISOString()
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Requests array is required for batch processing',
+              smart_code: 'HERA.AI.ERROR.MISSING_BATCH_DATA.v1',
+              timestamp: new Date().toISOString()
+            },
+            { status: 400 }
+          )
         }
 
         const batchResults = await universalAI.processBatch(requests)
@@ -129,31 +155,36 @@ export async function POST(request: NextRequest) {
         })
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: [
-            'generate_ca_questions',
-            'analyze_student_performance', 
-            'generate_quiz_feedback',
-            'generate_business_insights',
-            'custom_request',
-            'batch_request'
-          ],
-          smart_code: 'HERA.AI.ERROR.UNKNOWN_ACTION.v1',
-          timestamp: new Date().toISOString()
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: [
+              'generate_ca_questions',
+              'analyze_student_performance',
+              'generate_quiz_feedback',
+              'generate_business_insights',
+              'custom_request',
+              'batch_request'
+            ],
+            smart_code: 'HERA.AI.ERROR.UNKNOWN_ACTION.v1',
+            timestamp: new Date().toISOString()
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('Universal AI API Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal AI processing error',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      smart_code: 'HERA.AI.ERROR.INTERNAL.v1',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal AI processing error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        smart_code: 'HERA.AI.ERROR.INTERNAL.v1',
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -185,7 +216,7 @@ export async function GET(request: NextRequest) {
             available_actions: [
               'generate_ca_questions',
               'analyze_student_performance',
-              'generate_quiz_feedback', 
+              'generate_quiz_feedback',
               'generate_business_insights',
               'custom_request',
               'batch_request'
@@ -231,14 +262,16 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString()
         })
     }
-
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to process AI status request',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      smart_code: 'HERA.AI.ERROR.STATUS.v1',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to process AI status request',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        smart_code: 'HERA.AI.ERROR.STATUS.v1',
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    )
   }
 }

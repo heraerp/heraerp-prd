@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { 
-  Scissors, 
-  IceCream2, 
-  UtensilsCrossed, 
-  Stethoscope, 
+import {
+  Scissors,
+  IceCream2,
+  UtensilsCrossed,
+  Stethoscope,
   Factory,
   Store,
   Briefcase,
@@ -52,7 +52,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 // Demo apps data - comprehensive list
@@ -78,7 +84,7 @@ const demoApps = [
     ],
     demoUrl: '/salon-data',
     docsUrl: '/docs/salon-guide',
-    stats: { 
+    stats: {
       activeUsers: '2,456',
       transactionsProcessed: '124K',
       rating: 4.8,
@@ -235,7 +241,7 @@ const demoApps = [
     id: 'universal-ui',
     title: 'Universal UI Components',
     shortTitle: 'UI Demo',
-    description: 'Explore HERA\'s universal UI component library with live examples',
+    description: "Explore HERA's universal UI component library with live examples",
     icon: Palette,
     category: 'Developer Tools',
     tags: ['Components', 'Design System', 'Glassmorphism', 'Templates'],
@@ -347,26 +353,26 @@ const stats = [
 
 // Coming soon apps
 const comingSoonApps = [
-  { 
-    title: 'Education Management', 
+  {
+    title: 'Education Management',
     icon: GraduationCap,
     description: 'Student enrollment, course management, and grading',
     category: 'Education'
   },
-  { 
-    title: 'Logistics & Shipping', 
+  {
+    title: 'Logistics & Shipping',
     icon: Package,
     description: 'Fleet management, route optimization, and tracking',
     category: 'Logistics'
   },
-  { 
-    title: 'Hotel Management', 
+  {
+    title: 'Hotel Management',
     icon: Building,
     description: 'Room booking, housekeeping, and guest services',
     category: 'Hospitality'
   },
-  { 
-    title: 'Agricultural Operations', 
+  {
+    title: 'Agricultural Operations',
     icon: Layers,
     description: 'Farm management, crop tracking, and supply chain',
     category: 'Agriculture'
@@ -387,9 +393,10 @@ export default function DemoAppsPage() {
 
   // Filter demo apps based on search and category
   const filteredApps = demoApps.filter(app => {
-    const matchesSearch = app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         app.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    const matchesSearch =
+      app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     const matchesCategory = selectedCategory === 'all' || app.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -422,29 +429,38 @@ export default function DemoAppsPage() {
                 </p>
               </div>
             </div>
-            
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Home
               </Link>
-              <Link href="/docs" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/docs"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Documentation
               </Link>
-              <Link href="/pricing" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors">
+              <Link
+                href="/pricing"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+              >
                 Pricing
               </Link>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="!text-slate-700 dark:!text-slate-200 border-slate-300/50 hover:border-slate-300"
                 onClick={() => setShowRequestForm(true)}
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Request Demo
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white dark:!text-white shadow-lg shadow-blue-600/25"
               >
                 Get Started
@@ -479,8 +495,8 @@ export default function DemoAppsPage() {
               <Link href="/pricing" className="block py-2 text-slate-700 dark:text-slate-300">
                 Pricing
               </Link>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full"
                 onClick={() => {
                   setMobileMenuOpen(false)
@@ -503,7 +519,9 @@ export default function DemoAppsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 sm:space-y-8">
             {/* Animated Badge */}
-            <div className={`inline-flex transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+            <div
+              className={`inline-flex transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
+            >
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-50 animate-pulse"></div>
                 <Badge className="relative px-4 py-2 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-blue-600/20 backdrop-blur-sm">
@@ -514,11 +532,13 @@ export default function DemoAppsPage() {
                 </Badge>
               </div>
             </div>
-            
+
             {/* Main Title */}
-            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold transition-all duration-700 delay-100 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <h1
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold transition-all duration-700 delay-100 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+            >
               <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white bg-clip-text text-transparent">
                 Experience HERA
               </span>
@@ -527,11 +547,13 @@ export default function DemoAppsPage() {
                 Through Live Demos
               </span>
             </h1>
-            
+
             {/* Subtitle */}
-            <p className={`text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto transition-all duration-700 delay-200 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <p
+              className={`text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto transition-all duration-700 delay-200 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+            >
               Explore fully-functional business applications built on HERA's universal architecture.
               Each demo is a real implementation you can try, customize, and deploy.
             </p>
@@ -553,9 +575,7 @@ export default function DemoAppsPage() {
                 <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
                   {stat.value}
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  {stat.label}
-                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -573,23 +593,23 @@ export default function DemoAppsPage() {
                 type="text"
                 placeholder="Search demo apps by name, category, or features..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-12 pr-4 py-4 text-base rounded-2xl border-slate-200/50 dark:border-slate-700/50 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600/50"
               />
             </div>
 
             {/* Category Filters */}
             <div className="flex flex-wrap gap-3 justify-center">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <Button
                   key={category.id}
-                  variant={selectedCategory === category.id ? "default" : "outline"}
+                  variant={selectedCategory === category.id ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setSelectedCategory(category.id)}
                   className={
                     selectedCategory === category.id
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 !text-white border-0"
-                      : "bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50"
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 !text-white border-0'
+                      : 'bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50'
                   }
                 >
                   {category.name}
@@ -628,10 +648,15 @@ export default function DemoAppsPage() {
                   <div className={`h-2 bg-gradient-to-r ${app.color}`} />
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between mb-3">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm`}>
+                      <div
+                        className={`p-3 rounded-xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm`}
+                      >
                         <app.icon className="w-6 h-6 text-slate-700 dark:text-slate-300" />
                       </div>
-                      <Badge variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                      <Badge
+                        variant="secondary"
+                        className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                      >
                         {app.status === 'live' ? 'Live' : 'Beta'}
                       </Badge>
                     </div>
@@ -657,7 +682,7 @@ export default function DemoAppsPage() {
                         <span>{app.stats.setupTime}</span>
                       </div>
                     </div>
-                    <Button 
+                    <Button
                       className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white"
                       onClick={() => router.push(app.demoUrl)}
                     >
@@ -701,18 +726,28 @@ export default function DemoAppsPage() {
                     style={{ transitionDelay: `${index * 50}ms` }}
                   >
                     <Card className="h-full overflow-hidden bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-white/50 dark:border-slate-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
-                      <div className={`h-1 bg-gradient-to-r ${app.color} transition-all duration-300 group-hover:h-2`} />
+                      <div
+                        className={`h-1 bg-gradient-to-r ${app.color} transition-all duration-300 group-hover:h-2`}
+                      />
                       <CardHeader>
                         <div className="flex items-start justify-between mb-4">
-                          <div className={`p-4 rounded-2xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm shadow-lg`}>
+                          <div
+                            className={`p-4 rounded-2xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm shadow-lg`}
+                          >
                             <app.icon className="w-8 h-8 text-slate-700 dark:text-slate-300" />
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            <Badge variant="secondary" className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                            <Badge
+                              variant="secondary"
+                              className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                            >
                               {app.category}
                             </Badge>
                             {app.status === 'beta' && (
-                              <Badge variant="outline" className="text-xs border-orange-300 text-orange-700 dark:text-orange-300">
+                              <Badge
+                                variant="outline"
+                                className="text-xs border-orange-300 text-orange-700 dark:text-orange-300"
+                              >
                                 Beta
                               </Badge>
                             )}
@@ -728,7 +763,9 @@ export default function DemoAppsPage() {
                       <CardContent className="space-y-4">
                         {/* Features */}
                         <div className="space-y-2">
-                          <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">Key Features</p>
+                          <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+                            Key Features
+                          </p>
                           <div className="flex flex-wrap gap-1">
                             {app.features.slice(0, 3).map((feature, idx) => (
                               <Badge key={idx} variant="outline" className="text-xs py-0.5 px-2">
@@ -736,7 +773,10 @@ export default function DemoAppsPage() {
                               </Badge>
                             ))}
                             {app.features.length > 3 && (
-                              <Badge variant="outline" className="text-xs py-0.5 px-2 bg-slate-50 dark:bg-slate-800">
+                              <Badge
+                                variant="outline"
+                                className="text-xs py-0.5 px-2 bg-slate-50 dark:bg-slate-800"
+                              >
                                 +{app.features.length - 3} more
                               </Badge>
                             )}
@@ -770,7 +810,7 @@ export default function DemoAppsPage() {
 
                         {/* Actions */}
                         <div className="space-y-2">
-                          <Button 
+                          <Button
                             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white shadow-lg hover:shadow-xl transition-all duration-300"
                             onClick={() => router.push(app.demoUrl)}
                           >
@@ -778,8 +818,8 @@ export default function DemoAppsPage() {
                             Launch Demo
                           </Button>
                           <div className="flex gap-2">
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               className="flex-1"
                               onClick={() => router.push(app.docsUrl)}
@@ -787,8 +827,8 @@ export default function DemoAppsPage() {
                               <FileText className="w-3 h-3 mr-1" />
                               Docs
                             </Button>
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               className="flex-1"
                               onClick={() => window.open(app.demoUrl, '_blank')}
@@ -817,10 +857,12 @@ export default function DemoAppsPage() {
                   >
                     <Card className="overflow-hidden bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-white/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
                       <div className="flex items-center gap-6 p-6">
-                        <div className={`p-4 rounded-2xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm shrink-0`}>
+                        <div
+                          className={`p-4 rounded-2xl bg-gradient-to-br ${app.bgColor} ${app.darkBgColor} backdrop-blur-sm shrink-0`}
+                        >
                           <app.icon className="w-8 h-8 text-slate-700 dark:text-slate-300" />
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-4 mb-2">
                             <div>
@@ -841,7 +883,7 @@ export default function DemoAppsPage() {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-6 mt-3">
                             <div className="flex flex-wrap gap-2 flex-1">
                               {app.tags.map((tag, idx) => (
@@ -850,9 +892,9 @@ export default function DemoAppsPage() {
                                 </Badge>
                               ))}
                             </div>
-                            
+
                             <div className="flex gap-2 shrink-0">
-                              <Button 
+                              <Button
                                 size="sm"
                                 className="bg-gradient-to-r from-blue-600 to-indigo-600"
                                 onClick={() => router.push(app.demoUrl)}
@@ -860,7 +902,7 @@ export default function DemoAppsPage() {
                                 <Play className="w-3 h-3 mr-1" />
                                 Try Demo
                               </Button>
-                              <Button 
+                              <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => router.push(app.docsUrl)}
@@ -889,7 +931,7 @@ export default function DemoAppsPage() {
               <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Try adjusting your search or filters
               </p>
-              <Button 
+              <Button
                 variant="outline"
                 onClick={() => {
                   setSearchQuery('')
@@ -914,7 +956,7 @@ export default function DemoAppsPage() {
               Next-generation demo apps in development
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {comingSoonApps.map((app, index) => (
               <div
@@ -937,7 +979,10 @@ export default function DemoAppsPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Badge variant="outline" className="w-full justify-center py-1 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600">
+                    <Badge
+                      variant="outline"
+                      className="w-full justify-center py-1 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600"
+                    >
                       {app.category}
                     </Badge>
                   </CardContent>
@@ -950,12 +995,13 @@ export default function DemoAppsPage() {
 
       {/* Request Demo Form Modal */}
       {showRequestForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={() => setShowRequestForm(false)}
         >
-          <div 
+          <div
             className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-6 max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -973,28 +1019,20 @@ export default function DemoAppsPage() {
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Your Name
                 </label>
-                <Input 
-                  type="text" 
-                  placeholder="John Doe"
-                  className="w-full"
-                />
+                <Input type="text" placeholder="John Doe" className="w-full" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Email
                 </label>
-                <Input 
-                  type="email" 
-                  placeholder="john@company.com"
-                  className="w-full"
-                />
+                <Input type="email" placeholder="john@company.com" className="w-full" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Industry/App Type
                 </label>
-                <Input 
-                  type="text" 
+                <Input
+                  type="text"
                   placeholder="e.g. Hotel Management, Logistics"
                   className="w-full"
                 />
@@ -1003,15 +1041,15 @@ export default function DemoAppsPage() {
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Description
                 </label>
-                <textarea 
+                <textarea
                   placeholder="Tell us about your business needs..."
                   className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600/50"
                   rows={3}
                 />
               </div>
-              <Button 
+              <Button
                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 !text-white"
-                onClick={(e) => {
+                onClick={e => {
                   e.preventDefault()
                   setShowRequestForm(false)
                 }}
@@ -1034,19 +1072,19 @@ export default function DemoAppsPage() {
             <p className="text-lg md:text-xl text-slate-300 mb-8">
               Start with a demo, customize it to your needs, and deploy in minutes
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-white text-slate-900 hover:bg-slate-100 !text-slate-900 px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={() => router.push('/auth/signup')}
               >
                 Get Started Free
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="border-white !text-white hover:bg-white hover:!text-slate-900 px-8 py-6 text-lg"
                 onClick={() => setShowRequestForm(true)}
               >
@@ -1054,7 +1092,7 @@ export default function DemoAppsPage() {
                 <MessageSquare className="w-5 h-5 ml-2" />
               </Button>
             </div>
-            
+
             <p className="mt-6 text-sm text-slate-400">
               No credit card required • 14-day free trial • Deploy instantly
             </p>
@@ -1067,9 +1105,16 @@ export default function DemoAppsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-              © 2025 HERA ERP. All rights reserved. • 
-              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white"> Privacy</Link> • 
-              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white"> Terms</Link>
+              © 2025 HERA ERP. All rights reserved. •
+              <Link href="/privacy" className="hover:text-slate-900 dark:hover:text-white">
+                {' '}
+                Privacy
+              </Link>{' '}
+              •
+              <Link href="/terms" className="hover:text-slate-900 dark:hover:text-white">
+                {' '}
+                Terms
+              </Link>
             </p>
           </div>
         </div>

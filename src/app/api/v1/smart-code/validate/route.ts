@@ -28,36 +28,127 @@ interface SmartCodeValidationResponse {
 }
 
 // Smart code format: HERA.{MODULE}.{SUB}.{FUNCTION}.{TYPE}.{VERSION}
-const SMART_CODE_PATTERN = /^HERA\.([A-Z]{2,6})\.([A-Z]{2,6})\.([A-Z]{2,6})\.([A-Z]{2,6})\.v([0-9]+)$/
+const SMART_CODE_PATTERN =
+  /^HERA\.([A-Z]{2,6})\.([A-Z]{2,6})\.([A-Z]{2,6})\.([A-Z]{2,6})\.v([0-9]+)$/
 
 // Valid modules from HERA system
 const VALID_MODULES = [
-  'FIN', 'INV', 'CRM', 'HR', 'SCM', 'SLS', 'PROJ', 'REPT', 'AUDT', 'AI',
-  'REST', 'HLTH', 'MFG', 'PROF', 'SYSTEM', 'LEGAL', 'EDU', 'RETAIL'
+  'FIN',
+  'INV',
+  'CRM',
+  'HR',
+  'SCM',
+  'SLS',
+  'PROJ',
+  'REPT',
+  'AUDT',
+  'AI',
+  'REST',
+  'HLTH',
+  'MFG',
+  'PROF',
+  'SYSTEM',
+  'LEGAL',
+  'EDU',
+  'RETAIL'
 ]
 
 const VALID_SUB_MODULES = [
-  'GL', 'AR', 'AP', 'FA', 'RCV', 'ISS', 'ADJ', 'VAL', 'CUS', 'VEN', 'LEA',
-  'PAY', 'BEN', 'ATT', 'PUR', 'ORD', 'SHP', 'QTY', 'OPP', 'QUO', 'TSK',
-  'MIL', 'FIN', 'OPR', 'SAL', 'AUD', 'RPT', 'AI', 'ML', 'TEMPLATE', 'ENGINE',
-  'ADAPTER', 'IMPL', 'ENT', 'TXN', 'DAG', 'VAL'
+  'GL',
+  'AR',
+  'AP',
+  'FA',
+  'RCV',
+  'ISS',
+  'ADJ',
+  'VAL',
+  'CUS',
+  'VEN',
+  'LEA',
+  'PAY',
+  'BEN',
+  'ATT',
+  'PUR',
+  'ORD',
+  'SHP',
+  'QTY',
+  'OPP',
+  'QUO',
+  'TSK',
+  'MIL',
+  'FIN',
+  'OPR',
+  'SAL',
+  'AUD',
+  'RPT',
+  'AI',
+  'ML',
+  'TEMPLATE',
+  'ENGINE',
+  'ADAPTER',
+  'IMPL',
+  'ENT',
+  'TXN',
+  'DAG',
+  'VAL'
 ]
 
 const VALID_FUNCTIONS = [
-  'ENT', 'TXN', 'RPT', 'VAL', 'CFG', 'API', 'UI', 'DAG', 'ML', 'AI',
-  'CALC', 'PROC', 'FLOW', 'RULE', 'TEMP', 'IMPL', 'TEST', 'DOC'
+  'ENT',
+  'TXN',
+  'RPT',
+  'VAL',
+  'CFG',
+  'API',
+  'UI',
+  'DAG',
+  'ML',
+  'AI',
+  'CALC',
+  'PROC',
+  'FLOW',
+  'RULE',
+  'TEMP',
+  'IMPL',
+  'TEST',
+  'DOC'
 ]
 
 const VALID_TYPES = [
-  'CREATE', 'READ', 'UPDATE', 'DELETE', 'LIST', 'SEARCH', 'CALC', 'PROC',
-  'VAL', 'CFG', 'SYNC', 'BATCH', 'REAL', 'SCHED', 'TEMP', 'BOM', 'PRC',
-  'HEALTH', 'REST', 'MFG', 'ORDER', 'PAYMENT', 'CUSTOMER', 'PRODUCT',
-  'FRAMEWORK', 'DAG_CALC', 'VALIDATION', 'RESTAURANT', 'MANUFACTURING'
+  'CREATE',
+  'READ',
+  'UPDATE',
+  'DELETE',
+  'LIST',
+  'SEARCH',
+  'CALC',
+  'PROC',
+  'VAL',
+  'CFG',
+  'SYNC',
+  'BATCH',
+  'REAL',
+  'SCHED',
+  'TEMP',
+  'BOM',
+  'PRC',
+  'HEALTH',
+  'REST',
+  'MFG',
+  'ORDER',
+  'PAYMENT',
+  'CUSTOMER',
+  'PRODUCT',
+  'FRAMEWORK',
+  'DAG_CALC',
+  'VALIDATION',
+  'RESTAURANT',
+  'MANUFACTURING'
 ]
 
 function validateL1Syntax(smartCode: string): { valid: boolean; errors: string[]; metadata?: any } {
   const errors: string[] = []
-  
+
   if (!smartCode) {
     errors.push('Smart code is required')
     return { valid: false, errors }
@@ -65,7 +156,9 @@ function validateL1Syntax(smartCode: string): { valid: boolean; errors: string[]
 
   const match = smartCode.match(SMART_CODE_PATTERN)
   if (!match) {
-    errors.push('Invalid smart code format. Expected: HERA.{MODULE}.{SUB}.{FUNCTION}.{TYPE}.{VERSION}')
+    errors.push(
+      'Invalid smart code format. Expected: HERA.{MODULE}.{SUB}.{FUNCTION}.{TYPE}.{VERSION}'
+    )
     return { valid: false, errors }
   }
 
@@ -76,11 +169,15 @@ function validateL1Syntax(smartCode: string): { valid: boolean; errors: string[]
   }
 
   if (!VALID_SUB_MODULES.includes(subModule)) {
-    errors.push(`Invalid sub-module '${subModule}'. Valid sub-modules: ${VALID_SUB_MODULES.join(', ')}`)
+    errors.push(
+      `Invalid sub-module '${subModule}'. Valid sub-modules: ${VALID_SUB_MODULES.join(', ')}`
+    )
   }
 
   if (!VALID_FUNCTIONS.includes(functionType)) {
-    errors.push(`Invalid function type '${functionType}'. Valid functions: ${VALID_FUNCTIONS.join(', ')}`)
+    errors.push(
+      `Invalid function type '${functionType}'. Valid functions: ${VALID_FUNCTIONS.join(', ')}`
+    )
   }
 
   if (!VALID_TYPES.includes(entityType)) {
@@ -95,17 +192,23 @@ function validateL1Syntax(smartCode: string): { valid: boolean; errors: string[]
   return {
     valid: errors.length === 0,
     errors,
-    metadata: errors.length === 0 ? {
-      module,
-      sub_module: subModule,
-      function_type: functionType,
-      entity_type: entityType,
-      version: `v${version}`
-    } : undefined
+    metadata:
+      errors.length === 0
+        ? {
+            module,
+            sub_module: subModule,
+            function_type: functionType,
+            entity_type: entityType,
+            version: `v${version}`
+          }
+        : undefined
   }
 }
 
-async function validateL2Semantic(smartCode: string, organizationId?: string): Promise<{ valid: boolean; errors: string[]; warnings: string[] }> {
+async function validateL2Semantic(
+  smartCode: string,
+  organizationId?: string
+): Promise<{ valid: boolean; errors: string[]; warnings: string[] }> {
   const errors: string[] = []
   const warnings: string[] = []
 
@@ -132,11 +235,11 @@ async function validateL2Semantic(smartCode: string, organizationId?: string): P
 
       // Validate module and sub-module compatibility
       const moduleSubModuleRules: Record<string, string[]> = {
-        'REST': ['CRM', 'INV', 'FIN', 'GL', 'REPT'],
-        'HLTH': ['CRM', 'PAT', 'TRT', 'BIL', 'SCH'],
-        'MFG': ['INV', 'BOM', 'RTG', 'WO', 'QC'],
-        'FIN': ['GL', 'AR', 'AP', 'FA', 'RPT'],
-        'SYSTEM': ['TEMPLATE', 'ENGINE', 'ADAPTER', 'IMPL']
+        REST: ['CRM', 'INV', 'FIN', 'GL', 'REPT'],
+        HLTH: ['CRM', 'PAT', 'TRT', 'BIL', 'SCH'],
+        MFG: ['INV', 'BOM', 'RTG', 'WO', 'QC'],
+        FIN: ['GL', 'AR', 'AP', 'FA', 'RPT'],
+        SYSTEM: ['TEMPLATE', 'ENGINE', 'ADAPTER', 'IMPL']
       }
 
       if (moduleSubModuleRules[module] && !moduleSubModuleRules[module].includes(subModule)) {
@@ -148,7 +251,6 @@ async function validateL2Semantic(smartCode: string, organizationId?: string): P
         warnings.push(`Entity type '${parts[4]}' may not be suitable for transaction functions`)
       }
     }
-
   } catch (error) {
     errors.push('Error during semantic validation: ' + (error as Error).message)
   }
@@ -156,7 +258,12 @@ async function validateL2Semantic(smartCode: string, organizationId?: string): P
   return { valid: errors.length === 0, errors, warnings }
 }
 
-function validateL3Performance(smartCode: string): { valid: boolean; errors: string[]; warnings: string[]; metrics: any } {
+function validateL3Performance(smartCode: string): {
+  valid: boolean
+  errors: string[]
+  warnings: string[]
+  metrics: any
+} {
   const errors: string[] = []
   const warnings: string[] = []
   const startTime = Date.now()
@@ -192,14 +299,17 @@ function validateL3Performance(smartCode: string): { valid: boolean; errors: str
   }
 }
 
-async function validateL4Integration(smartCode: string, organizationId?: string): Promise<{ valid: boolean; errors: string[]; warnings: string[] }> {
+async function validateL4Integration(
+  smartCode: string,
+  organizationId?: string
+): Promise<{ valid: boolean; errors: string[]; warnings: string[] }> {
   const errors: string[] = []
   const warnings: string[] = []
 
   try {
     // Check for integration dependencies
     const parts = smartCode.split('.')
-    
+
     if (parts.length >= 5) {
       const module = parts[1]
       const functionType = parts[3]
@@ -240,7 +350,6 @@ async function validateL4Integration(smartCode: string, organizationId?: string)
         }
       }
     }
-
   } catch (error) {
     errors.push('Error during integration validation: ' + (error as Error).message)
   }
@@ -276,7 +385,11 @@ export async function POST(request: NextRequest) {
     }
 
     // L2 Semantic Validation
-    if (validation_level === 'L2_SEMANTIC' || validation_level === 'L3_PERFORMANCE' || validation_level === 'L4_INTEGRATION') {
+    if (
+      validation_level === 'L2_SEMANTIC' ||
+      validation_level === 'L3_PERFORMANCE' ||
+      validation_level === 'L4_INTEGRATION'
+    ) {
       const l2Result = await validateL2Semantic(smart_code, organization_id)
       response.errors.push(...l2Result.errors)
       response.warnings.push(...l2Result.warnings)
@@ -307,7 +420,9 @@ export async function POST(request: NextRequest) {
       response.warnings.push(...l4Result.warnings)
 
       if (!l4Result.valid) {
-        response.suggestions.push('Ensure all required system components and dependencies are available')
+        response.suggestions.push(
+          'Ensure all required system components and dependencies are available'
+        )
         return NextResponse.json(response, { status: 400 })
       }
     }
@@ -322,15 +437,16 @@ export async function POST(request: NextRequest) {
     if (response.warnings.length === 0) {
       response.suggestions.push('Smart code validation passed successfully')
     } else {
-      response.suggestions.push('Smart code is valid but consider addressing warnings for optimal performance')
+      response.suggestions.push(
+        'Smart code is valid but consider addressing warnings for optimal performance'
+      )
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('Smart code validation error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error during validation',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -352,13 +468,13 @@ export async function GET() {
         target_time: '<10ms'
       },
       {
-        level: 'L2_SEMANTIC', 
+        level: 'L2_SEMANTIC',
         description: 'Business logic and semantic validation',
         target_time: '<50ms'
       },
       {
         level: 'L3_PERFORMANCE',
-        description: 'Performance and efficiency validation', 
+        description: 'Performance and efficiency validation',
         target_time: '<100ms'
       },
       {

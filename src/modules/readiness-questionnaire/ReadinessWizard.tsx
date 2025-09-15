@@ -1,7 +1,7 @@
 /**
  * HERA ERP Readiness Questionnaire Wizard
  * Smart Code: HERA.ERP.READINESS.WIZARD.COMPONENT.V1
- * 
+ *
  * One-question-at-a-time glassmorphism wizard with Framer Motion animations
  */
 
@@ -9,11 +9,11 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  CheckCircle, 
-  Clock, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle,
+  Clock,
   Target,
   AlertCircle,
   Lightbulb,
@@ -56,15 +56,20 @@ interface QuestionComponentProps {
 }
 
 // Individual question components
-const TextQuestion: React.FC<QuestionComponentProps> = ({ question, value, onChange, validation }) => (
+const TextQuestion: React.FC<QuestionComponentProps> = ({
+  question,
+  value,
+  onChange,
+  validation
+}) => (
   <div className="space-y-4">
     <Input
       value={(value as string) || ''}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       placeholder="Type your answer..."
       className={cn(
-        "text-lg p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400",
-        validation.errors.length > 0 && "border-red-400 dark:border-red-600"
+        'text-lg p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        validation.errors.length > 0 && 'border-red-400 dark:border-red-600'
       )}
     />
     {validation.errors.length > 0 && (
@@ -76,15 +81,20 @@ const TextQuestion: React.FC<QuestionComponentProps> = ({ question, value, onCha
   </div>
 )
 
-const TextareaQuestion: React.FC<QuestionComponentProps> = ({ question, value, onChange, validation }) => (
+const TextareaQuestion: React.FC<QuestionComponentProps> = ({
+  question,
+  value,
+  onChange,
+  validation
+}) => (
   <div className="space-y-4">
     <Textarea
       value={(value as string) || ''}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       placeholder="Share your thoughts in detail..."
       className={cn(
-        "text-lg p-4 min-h-[120px] bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400",
-        validation.errors.length > 0 && "border-red-400 dark:border-red-600"
+        'text-lg p-4 min-h-[120px] bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
+        validation.errors.length > 0 && 'border-red-400 dark:border-red-600'
       )}
       rows={5}
     />
@@ -98,21 +108,19 @@ const TextareaQuestion: React.FC<QuestionComponentProps> = ({ question, value, o
 )
 
 const SelectQuestion: React.FC<QuestionComponentProps> = ({ question, value, onChange }) => (
-  <RadioGroup
-    value={(value as string) || ''}
-    onValueChange={onChange}
-    className="space-y-3"
-  >
-    {question.options?.map((option) => (
+  <RadioGroup value={(value as string) || ''} onValueChange={onChange} className="space-y-3">
+    {question.options?.map(option => (
       <div key={option.code} className="flex items-center space-x-3">
         <RadioGroupItem value={option.code} id={option.code} />
-        <Label 
-          htmlFor={option.code} 
+        <Label
+          htmlFor={option.code}
           className="text-base font-medium cursor-pointer flex-1 p-3 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-300 dark:border-gray-600 hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all text-gray-900 dark:text-white"
         >
           {option.label}
           {option.description && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-normal">{option.description}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-normal">
+              {option.description}
+            </div>
           )}
         </Label>
       </div>
@@ -122,7 +130,7 @@ const SelectQuestion: React.FC<QuestionComponentProps> = ({ question, value, onC
 
 const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value, onChange }) => {
   const currentValues = (value as string[]) || []
-  
+
   const handleChange = (optionCode: string, checked: boolean) => {
     if (checked) {
       onChange([...currentValues, optionCode])
@@ -133,20 +141,22 @@ const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value
 
   return (
     <div className="space-y-3">
-      {question.options?.map((option) => (
+      {question.options?.map(option => (
         <div key={option.code} className="flex items-start space-x-3">
           <Checkbox
             id={option.code}
             checked={currentValues.includes(option.code)}
-            onCheckedChange={(checked) => handleChange(option.code, !!checked)}
+            onCheckedChange={checked => handleChange(option.code, !!checked)}
           />
-          <Label 
+          <Label
             htmlFor={option.code}
             className="text-base font-medium cursor-pointer flex-1 p-3 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-gray-300 dark:border-gray-600 hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all text-gray-900 dark:text-white"
           >
             {option.label}
             {option.description && (
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-normal">{option.description}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 font-normal">
+                {option.description}
+              </div>
             )}
           </Label>
         </div>
@@ -158,13 +168,13 @@ const MultiSelectQuestion: React.FC<QuestionComponentProps> = ({ question, value
 const YesNoQuestion: React.FC<QuestionComponentProps> = ({ question, value, onChange }) => (
   <RadioGroup
     value={value?.toString() || ''}
-    onValueChange={(val) => onChange(val === 'true')}
+    onValueChange={val => onChange(val === 'true')}
     className="flex gap-6 justify-center"
   >
     <div className="flex items-center space-x-3">
       <RadioGroupItem value="true" id="yes" />
-      <Label 
-        htmlFor="yes" 
+      <Label
+        htmlFor="yes"
         className="text-lg font-semibold cursor-pointer px-8 py-4 rounded-lg bg-green-100 dark:bg-green-900/50 backdrop-blur-sm border-2 border-green-300 dark:border-green-700 hover:bg-green-200 dark:hover:bg-green-900/70 transition-all text-green-900 dark:text-green-100"
       >
         Yes
@@ -172,8 +182,8 @@ const YesNoQuestion: React.FC<QuestionComponentProps> = ({ question, value, onCh
     </div>
     <div className="flex items-center space-x-3">
       <RadioGroupItem value="false" id="no" />
-      <Label 
-        htmlFor="no" 
+      <Label
+        htmlFor="no"
         className="text-lg font-semibold cursor-pointer px-8 py-4 rounded-lg bg-red-100 dark:bg-red-900/50 backdrop-blur-sm border-2 border-red-300 dark:border-red-700 hover:bg-red-200 dark:hover:bg-red-900/70 transition-all text-red-900 dark:text-red-100"
       >
         No
@@ -182,16 +192,21 @@ const YesNoQuestion: React.FC<QuestionComponentProps> = ({ question, value, onCh
   </RadioGroup>
 )
 
-const NumberQuestion: React.FC<QuestionComponentProps> = ({ question, value, onChange, validation }) => (
+const NumberQuestion: React.FC<QuestionComponentProps> = ({
+  question,
+  value,
+  onChange,
+  validation
+}) => (
   <div className="space-y-4">
     <Input
       type="number"
       value={(value as number)?.toString() || ''}
-      onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : 0)}
+      onChange={e => onChange(e.target.value ? parseInt(e.target.value) : 0)}
       placeholder="Enter a number..."
       className={cn(
-        "text-lg p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-center text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-semibold",
-        validation.errors.length > 0 && "border-red-400 dark:border-red-600"
+        'text-lg p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-gray-300 dark:border-gray-600 text-center text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-semibold',
+        validation.errors.length > 0 && 'border-red-400 dark:border-red-600'
       )}
     />
     {validation.errors.length > 0 && (
@@ -203,16 +218,12 @@ const NumberQuestion: React.FC<QuestionComponentProps> = ({ question, value, onC
   </div>
 )
 
-export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ 
-  template, 
-  session, 
-  api 
-}) => {
+export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, session, api }) => {
   const [currentValue, setCurrentValue] = useState<AnswerValue>()
-  const [validation, setValidation] = useState<ValidationResult>({ 
-    isValid: true, 
-    errors: [], 
-    warnings: [] 
+  const [validation, setValidation] = useState<ValidationResult>({
+    isValid: true,
+    errors: [],
+    warnings: []
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showInsights, setShowInsights] = useState(false)
@@ -239,10 +250,11 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
   // Validate current answer
   useEffect(() => {
     if (currentQuestion && currentQuestion.required) {
-      const isEmpty = !currentValue || 
+      const isEmpty =
+        !currentValue ||
         (Array.isArray(currentValue) && currentValue.length === 0) ||
         (typeof currentValue === 'string' && currentValue.trim() === '')
-      
+
       setValidation({
         isValid: !isEmpty,
         errors: isEmpty ? ['This field is required'] : [],
@@ -266,7 +278,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
           smart_code: currentQuestion.smart_code
         })
       }
-      
+
       if (session.current_index < allQuestions.length - 1) {
         await api.next()
       } else {
@@ -317,7 +329,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
 
   const getCurrentSection = () => {
     if (!currentQuestion) return null
-    return template.sections.find(section => 
+    return template.sections.find(section =>
       section.questions.some(q => q.id === currentQuestion.id)
     )
   }
@@ -342,7 +354,9 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
               >
                 <CheckCircle className="w-10 h-10 text-green-600" />
               </motion.div>
-              <CardTitle className="text-3xl font-bold text-gray-900 dark:text-white">Assessment Complete!</CardTitle>
+              <CardTitle className="text-3xl font-bold text-gray-900 dark:text-white">
+                Assessment Complete!
+              </CardTitle>
               <p className="text-lg text-gray-700 dark:text-gray-300 font-medium">
                 Thank you for completing the ERP Readiness Assessment
               </p>
@@ -353,16 +367,20 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
                   <div className="text-4xl font-bold text-blue-700 dark:text-blue-400 mb-2">
                     {progress.current}
                   </div>
-                  <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">Questions Answered</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Questions Answered
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-green-700 dark:text-green-400 mb-2">
                     {Math.round(Math.random() * 30 + 70)}%
                   </div>
-                  <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">Readiness Score</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                    Readiness Score
+                  </div>
                 </div>
               </div>
-              
+
               {session.ai_insights && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -372,17 +390,22 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <Lightbulb className="w-6 h-6 text-blue-700 dark:text-blue-400" />
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">AI Insights</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      AI Insights
+                    </h3>
                   </div>
                   <p className="text-gray-700 dark:text-gray-300 font-medium">
-                    Based on your responses, we'll generate detailed insights and recommendations
-                    to help you prepare for ERP implementation.
+                    Based on your responses, we'll generate detailed insights and recommendations to
+                    help you prepare for ERP implementation.
                   </p>
                 </motion.div>
               )}
 
               <div className="flex justify-center pt-6">
-                <Button size="lg" className="px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                <Button
+                  size="lg"
+                  className="px-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                >
                   View Detailed Report
                   <TrendingUp className="w-5 h-5 ml-2" />
                 </Button>
@@ -412,11 +435,14 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
               </p>
             </div>
           </div>
-          <Badge variant="secondary" className="text-sm bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-800 font-semibold">
+          <Badge
+            variant="secondary"
+            className="text-sm bg-blue-100 dark:bg-blue-900/50 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-800 font-semibold"
+          >
             {progress.current} of {progress.total}
           </Badge>
         </div>
-        
+
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-700 dark:text-gray-300 font-medium">Progress</span>
@@ -434,15 +460,15 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
             initial={{ opacity: 0, x: 50, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -50, scale: 0.9 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 300, 
+            transition={{
+              type: 'spring',
+              stiffness: 300,
               damping: 30,
               opacity: { duration: 0.2 }
             }}
             className="max-w-4xl mx-auto"
           >
-            <Card 
+            <Card
               className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-white/20 dark:border-gray-700 shadow-2xl"
               style={{
                 background: `
@@ -466,19 +492,23 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
               <CardHeader className="pb-8">
                 {currentSection && (
                   <div className="flex items-center gap-2 mb-4">
-                    <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-800 font-semibold">
+                    <Badge
+                      variant="outline"
+                      className="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-800 font-semibold"
+                    >
                       {currentSection.title}
                     </Badge>
                     <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                      Section {template.sections.indexOf(currentSection) + 1} of {template.sections.length}
+                      Section {template.sections.indexOf(currentSection) + 1} of{' '}
+                      {template.sections.length}
                     </div>
                   </div>
                 )}
-                
+
                 <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
                   {currentQuestion.prompt}
                 </CardTitle>
-                
+
                 {currentQuestion.help_text && (
                   <motion.p
                     initial={{ opacity: 0 }}
@@ -493,7 +523,9 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
                 {currentQuestion.required && (
                   <div className="flex items-center gap-2 mt-4">
                     <Target className="w-4 h-4 text-red-600 dark:text-red-500" />
-                    <span className="text-sm text-red-700 dark:text-red-400 font-semibold">Required</span>
+                    <span className="text-sm text-red-700 dark:text-red-400 font-semibold">
+                      Required
+                    </span>
                   </div>
                 )}
               </CardHeader>
@@ -521,7 +553,9 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
 
                   <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
                     <Clock className="w-4 h-4" />
-                    <span>~{Math.max(1, allQuestions.length - progress.current)} min remaining</span>
+                    <span>
+                      ~{Math.max(1, allQuestions.length - progress.current)} min remaining
+                    </span>
                   </div>
 
                   <Button
@@ -533,7 +567,7 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({
                       <>
                         <motion.div
                           animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                         >
                           <Clock className="w-4 h-4" />
                         </motion.div>

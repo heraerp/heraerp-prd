@@ -9,19 +9,46 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  LineChart, Line, AreaChart, Area, BarChart, Bar, 
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts'
-import { 
-  TrendingUp, TrendingDown, DollarSign, Calendar,
-  Download, RefreshCw, AlertTriangle, CheckCircle,
-  BarChart3, PieChart as PieChartIcon, Activity,
-  ArrowUpRight, ArrowDownRight
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Calendar,
+  Download,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle,
+  BarChart3,
+  PieChart as PieChartIcon,
+  Activity,
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react'
 
 // ================================================================================
@@ -67,7 +94,10 @@ interface CashflowLineItem {
 // MAIN DASHBOARD COMPONENT
 // ================================================================================
 
-export default function CashflowDashboard({ organizationId, currency = 'AED' }: CashflowDashboardProps) {
+export default function CashflowDashboard({
+  organizationId,
+  currency = 'AED'
+}: CashflowDashboardProps) {
   const [currentStatement, setCurrentStatement] = useState<CashflowStatement | null>(null)
   const [historicalData, setHistoricalData] = useState<any[]>([])
   const [trendAnalysis, setTrendAnalysis] = useState<any>(null)
@@ -92,11 +122,11 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
       const statementResponse = await fetch(
         `/api/v1/cashflow?action=generate_statement&organization_id=${organizationId}&start_date=${startDate}&end_date=${endDate}&method=${selectedMethod}&currency=${currency}`
       )
-      
+
       if (!statementResponse.ok) {
         throw new Error('Failed to load cashflow statement')
       }
-      
+
       const statementData = await statementResponse.json()
       setCurrentStatement(statementData.data)
 
@@ -104,16 +134,15 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
       const trendsResponse = await fetch(
         `/api/v1/cashflow?action=analyze_trends&organization_id=${organizationId}&periods=6&currency=${currency}`
       )
-      
+
       if (trendsResponse.ok) {
         const trendsData = await trendsResponse.json()
         setTrendAnalysis(trendsData.data)
-        
+
         // Transform trend data for charts
         const chartData = trendsData.data.trend_analysis.periods_analyzed
         setHistoricalData(Array.isArray(chartData) ? chartData : [])
       }
-
     } catch (err: any) {
       setError(err.message)
       console.error('Error loading cashflow data:', err)
@@ -171,7 +200,7 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
 
     // Create CSV content
     const csvContent = generateCashflowCSV(currentStatement)
-    
+
     // Download CSV
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -237,7 +266,10 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
             </SelectContent>
           </Select>
 
-          <Select value={selectedMethod} onValueChange={(value) => setSelectedMethod(value as 'direct' | 'indirect')}>
+          <Select
+            value={selectedMethod}
+            onValueChange={value => setSelectedMethod(value as 'direct' | 'indirect')}
+          >
             <SelectTrigger className="w-[140px]">
               <BarChart3 className="h-4 w-4 mr-2" />
               <SelectValue />
@@ -272,7 +304,7 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
               icon={<Activity className="h-5 w-5" />}
               color="blue"
             />
-            
+
             <CashflowMetricCard
               title="Investing Cash Flow"
               value={currentStatement.investing_activities.find(a => a.is_total)?.amount || 0}
@@ -281,7 +313,7 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
               icon={<TrendingUp className="h-5 w-5" />}
               color="green"
             />
-            
+
             <CashflowMetricCard
               title="Financing Cash Flow"
               value={currentStatement.financing_activities.find(a => a.is_total)?.amount || 0}
@@ -290,7 +322,7 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
               icon={<BarChart3 className="h-5 w-5" />}
               color="purple"
             />
-            
+
             <CashflowMetricCard
               title="Cash Position"
               value={currentStatement.cash_ending}
@@ -351,11 +383,13 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
                     </div>
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <p className="text-sm text-blue-600 dark:text-blue-400">Net Change</p>
-                      <p className={`text-2xl font-bold ${
-                        currentStatement.net_change_in_cash >= 0 
-                          ? 'text-green-600 dark:text-green-400' 
-                          : 'text-red-600 dark:text-red-400'
-                      }`}>
+                      <p
+                        className={`text-2xl font-bold ${
+                          currentStatement.net_change_in_cash >= 0
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-red-600 dark:text-red-400'
+                        }`}
+                      >
                         {formatCurrency(currentStatement.net_change_in_cash)}
                       </p>
                     </div>
@@ -414,17 +448,21 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {generateCashflowInsights(currentStatement, trendAnalysis).map((insight, index) => (
-                        <div key={index} className={`p-3 rounded-lg border-l-4 ${insight.color}`}>
-                          <div className="flex items-start gap-2">
-                            {insight.icon}
-                            <div>
-                              <p className="font-medium">{insight.title}</p>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">{insight.description}</p>
+                      {generateCashflowInsights(currentStatement, trendAnalysis).map(
+                        (insight, index) => (
+                          <div key={index} className={`p-3 rounded-lg border-l-4 ${insight.color}`}>
+                            <div className="flex items-start gap-2">
+                              {insight.icon}
+                              <div>
+                                <p className="font-medium">{insight.title}</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  {insight.description}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -438,7 +476,11 @@ export default function CashflowDashboard({ organizationId, currency = 'AED' }: 
 
             {/* Trends Tab */}
             <TabsContent value="trends">
-              <CashflowTrends organizationId={organizationId} currency={currency} historicalData={historicalData} />
+              <CashflowTrends
+                organizationId={organizationId}
+                currency={currency}
+                historicalData={historicalData}
+              />
             </TabsContent>
           </Tabs>
         </>
@@ -460,7 +502,14 @@ interface CashflowMetricCardProps {
   color: 'blue' | 'green' | 'purple' | 'amber'
 }
 
-function CashflowMetricCard({ title, value, currency, trend, icon, color }: CashflowMetricCardProps) {
+function CashflowMetricCard({
+  title,
+  value,
+  currency,
+  trend,
+  icon,
+  color
+}: CashflowMetricCardProps) {
   const colorClasses = {
     blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
     green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
@@ -494,19 +543,29 @@ function CashflowMetricCard({ title, value, currency, trend, icon, color }: Cash
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
-              <p className={`text-2xl font-bold ${
-                value >= 0 ? 'text-gray-900 dark:text-gray-100' : 'text-red-600 dark:text-red-400'
-              }`}>
+              <p
+                className={`text-2xl font-bold ${
+                  value >= 0 ? 'text-gray-900 dark:text-gray-100' : 'text-red-600 dark:text-red-400'
+                }`}
+              >
                 {formatCurrency(value)}
               </p>
             </div>
           </div>
-          
+
           {trend && (
             <div className="text-right">
               {trend === 'increasing' && <ArrowUpRight className="h-5 w-5 text-green-600" />}
               {trend === 'decreasing' && <ArrowDownRight className="h-5 w-5 text-red-600" />}
-              <Badge variant={trend === 'increasing' ? 'default' : trend === 'decreasing' ? 'destructive' : 'secondary'}>
+              <Badge
+                variant={
+                  trend === 'increasing'
+                    ? 'default'
+                    : trend === 'decreasing'
+                      ? 'destructive'
+                      : 'secondary'
+                }
+              >
                 {trend}
               </Badge>
             </div>
@@ -518,7 +577,7 @@ function CashflowMetricCard({ title, value, currency, trend, icon, color }: Cash
 }
 
 // ================================================================================
-// CATEGORY CARD COMPONENT  
+// CATEGORY CARD COMPONENT
 // ================================================================================
 
 interface CashflowCategoryCardProps {
@@ -557,33 +616,48 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
       <CardHeader className={`${headerColors[color]} -m-6 mb-6 p-6 rounded-t-lg`}>
         <CardTitle className="flex items-center justify-between">
           <span>{title}</span>
-          <span className={`text-lg font-bold ${
-            totalAmount >= 0 ? 'text-gray-900 dark:text-gray-100' : 'text-red-600 dark:text-red-400'
-          }`}>
+          <span
+            className={`text-lg font-bold ${
+              totalAmount >= 0
+                ? 'text-gray-900 dark:text-gray-100'
+                : 'text-red-600 dark:text-red-400'
+            }`}
+          >
             {formatCurrency(totalAmount)}
           </span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {activities.filter(a => !a.is_total).map((activity, index) => (
-          <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800 last:border-0">
-            <div>
-              <p className={`font-medium ${activity.is_subtotal ? 'text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}>
-                {activity.description}
-              </p>
-              {activity.account_code && (
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Account: {activity.account_code}
+        {activities
+          .filter(a => !a.is_total)
+          .map((activity, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-800 last:border-0"
+            >
+              <div>
+                <p
+                  className={`font-medium ${activity.is_subtotal ? 'text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}
+                >
+                  {activity.description}
                 </p>
-              )}
+                {activity.account_code && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Account: {activity.account_code}
+                  </p>
+                )}
+              </div>
+              <p
+                className={`font-semibold ${
+                  activity.amount >= 0
+                    ? 'text-gray-900 dark:text-gray-100'
+                    : 'text-red-600 dark:text-red-400'
+                } ${activity.is_subtotal ? 'text-lg' : ''}`}
+              >
+                {formatCurrency(activity.amount)}
+              </p>
             </div>
-            <p className={`font-semibold ${
-              activity.amount >= 0 ? 'text-gray-900 dark:text-gray-100' : 'text-red-600 dark:text-red-400'
-            } ${activity.is_subtotal ? 'text-lg' : ''}`}>
-              {formatCurrency(activity.amount)}
-            </p>
-          </div>
-        ))}
+          ))}
       </CardContent>
     </Card>
   )
@@ -611,11 +685,14 @@ function CashflowForecast({ organizationId, currency }: CashflowForecastProps) {
       const response = await fetch(
         `/api/v1/cashflow?action=generate_forecast&organization_id=${organizationId}&forecast_months=12&currency=${currency}`
       )
-      
+
       if (response.ok) {
         const data = await response.json()
         const chartData = data.data.map((statement: any, index: number) => ({
-          month: new Date(statement.period_start).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+          month: new Date(statement.period_start).toLocaleDateString('en-US', {
+            month: 'short',
+            year: 'numeric'
+          }),
           operating: statement.operating_activities.find((a: any) => a.is_total)?.amount || 0,
           investing: statement.investing_activities.find((a: any) => a.is_total)?.amount || 0,
           financing: statement.financing_activities.find((a: any) => a.is_total)?.amount || 0,
@@ -650,20 +727,57 @@ function CashflowForecast({ organizationId, currency }: CashflowForecastProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={Array.isArray(forecastData) ? forecastData : (forecastData && typeof forecastData === 'object' ? Object.values(forecastData as any) : [])}>
+            <LineChart
+              data={
+                Array.isArray(forecastData)
+                  ? forecastData
+                  : forecastData && typeof forecastData === 'object'
+                    ? Object.values(forecastData as any)
+                    : []
+              }
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip formatter={(value: any) => [new Intl.NumberFormat('en-AE', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 0
-              }).format(value), '']} />
+              <Tooltip
+                formatter={(value: any) => [
+                  new Intl.NumberFormat('en-AE', {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 0
+                  }).format(value),
+                  ''
+                ]}
+              />
               <Legend />
-              <Line type="monotone" dataKey="operating" stroke="#3b82f6" strokeWidth={2} name="Operating CF" />
-              <Line type="monotone" dataKey="investing" stroke="#10b981" strokeWidth={2} name="Investing CF" />
-              <Line type="monotone" dataKey="financing" stroke="#8b5cf6" strokeWidth={2} name="Financing CF" />
-              <Line type="monotone" dataKey="cash_position" stroke="#f59e0b" strokeWidth={3} name="Cash Position" />
+              <Line
+                type="monotone"
+                dataKey="operating"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                name="Operating CF"
+              />
+              <Line
+                type="monotone"
+                dataKey="investing"
+                stroke="#10b981"
+                strokeWidth={2}
+                name="Investing CF"
+              />
+              <Line
+                type="monotone"
+                dataKey="financing"
+                stroke="#8b5cf6"
+                strokeWidth={2}
+                name="Financing CF"
+              />
+              <Line
+                type="monotone"
+                dataKey="cash_position"
+                stroke="#f59e0b"
+                strokeWidth={3}
+                name="Cash Position"
+              />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
@@ -694,19 +808,56 @@ function CashflowTrends({ organizationId, currency, historicalData }: CashflowTr
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
-            <AreaChart data={Array.isArray(historicalData) ? historicalData : (historicalData && typeof historicalData === 'object' ? Object.values(historicalData as any) : [])}>
+            <AreaChart
+              data={
+                Array.isArray(historicalData)
+                  ? historicalData
+                  : historicalData && typeof historicalData === 'object'
+                    ? Object.values(historicalData as any)
+                    : []
+              }
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="period" />
               <YAxis />
-              <Tooltip formatter={(value: any) => [new Intl.NumberFormat('en-AE', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 0
-              }).format(value), '']} />
+              <Tooltip
+                formatter={(value: any) => [
+                  new Intl.NumberFormat('en-AE', {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 0
+                  }).format(value),
+                  ''
+                ]}
+              />
               <Legend />
-              <Area type="monotone" dataKey="operating_cf" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} name="Operating CF" />
-              <Area type="monotone" dataKey="investing_cf" stackId="2" stroke="#10b981" fill="#10b981" fillOpacity={0.6} name="Investing CF" />
-              <Area type="monotone" dataKey="financing_cf" stackId="3" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} name="Financing CF" />
+              <Area
+                type="monotone"
+                dataKey="operating_cf"
+                stackId="1"
+                stroke="#3b82f6"
+                fill="#3b82f6"
+                fillOpacity={0.6}
+                name="Operating CF"
+              />
+              <Area
+                type="monotone"
+                dataKey="investing_cf"
+                stackId="2"
+                stroke="#10b981"
+                fill="#10b981"
+                fillOpacity={0.6}
+                name="Investing CF"
+              />
+              <Area
+                type="monotone"
+                dataKey="financing_cf"
+                stackId="3"
+                stroke="#8b5cf6"
+                fill="#8b5cf6"
+                fillOpacity={0.6}
+                name="Financing CF"
+              />
             </AreaChart>
           </ResponsiveContainer>
         </CardContent>
@@ -733,10 +884,10 @@ function getCashflowBreakdownData(statement: CashflowStatement) {
 
 function generateCashflowInsights(statement: CashflowStatement, trendAnalysis: any) {
   const insights = []
-  
+
   const operatingCF = statement.operating_activities.find(a => a.is_total)?.amount || 0
   const netChange = statement.net_change_in_cash
-  
+
   if (operatingCF > 0) {
     insights.push({
       icon: <CheckCircle className="h-5 w-5 text-green-600" />,
@@ -748,11 +899,12 @@ function generateCashflowInsights(statement: CashflowStatement, trendAnalysis: a
     insights.push({
       icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
       title: 'Negative Operating Cash Flow',
-      description: 'Your business is using cash for operations. Consider reviewing revenue and costs.',
+      description:
+        'Your business is using cash for operations. Consider reviewing revenue and costs.',
       color: 'border-red-500 bg-red-50 dark:bg-red-900/20'
     })
   }
-  
+
   if (netChange > 0) {
     insights.push({
       icon: <TrendingUp className="h-5 w-5 text-blue-600" />,
@@ -761,7 +913,7 @@ function generateCashflowInsights(statement: CashflowStatement, trendAnalysis: a
       color: 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
     })
   }
-  
+
   if (statement.cash_ending < 0) {
     insights.push({
       icon: <AlertTriangle className="h-5 w-5 text-red-600" />,

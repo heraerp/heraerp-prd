@@ -1,92 +1,104 @@
-"use client";
+'use client'
 
-import { useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Trash2, Plus, ExternalLink } from "lucide-react";
+import { useState, useTransition } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Trash2, Plus, ExternalLink } from 'lucide-react'
 
 type Props = {
-  slug: string;
-  current: { 
-    subdomain?: string; 
-    domains?: string[]; 
-    previewBase: string;
-    organizationName: string;
-  };
-  onSave: (payload: { slug: string; subdomain: string; domains: string[] }) => Promise<{ ok: boolean; error?: string }>;
-};
+  slug: string
+  current: {
+    subdomain?: string
+    domains?: string[]
+    previewBase: string
+    organizationName: string
+  }
+  onSave: (payload: {
+    slug: string
+    subdomain: string
+    domains: string[]
+  }) => Promise<{ ok: boolean; error?: string }>
+}
 
 export default function SubdomainSettingsForm({ slug, current, onSave }: Props) {
-  const [subdomain, setSubdomain] = useState(current.subdomain ?? "");
-  const [domains, setDomains] = useState<string[]>(current.domains ?? []);
-  const [domainDraft, setDomainDraft] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [saving, startSaving] = useTransition();
+  const [subdomain, setSubdomain] = useState(current.subdomain ?? '')
+  const [domains, setDomains] = useState<string[]>(current.domains ?? [])
+  const [domainDraft, setDomainDraft] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [saving, startSaving] = useTransition()
 
   // Generate preview URLs (use http for local development)
-  const protocol = current.previewBase.includes('lvh.me') || current.previewBase.includes('localhost') ? 'http' : 'https';
-  const previewUrl = subdomain ? `${protocol}://${subdomain}.${current.previewBase}/salon-data` : null;
-  const currentUrl = current.subdomain ? `${protocol}://${current.subdomain}.${current.previewBase}/salon-data` : null;
+  const protocol =
+    current.previewBase.includes('lvh.me') || current.previewBase.includes('localhost')
+      ? 'http'
+      : 'https'
+  const previewUrl = subdomain
+    ? `${protocol}://${subdomain}.${current.previewBase}/salon-data`
+    : null
+  const currentUrl = current.subdomain
+    ? `${protocol}://${current.subdomain}.${current.previewBase}/salon-data`
+    : null
 
   const handleAddDomain = () => {
-    if (!domainDraft.trim()) return;
-    
+    if (!domainDraft.trim()) return
+
     // Basic domain validation
-    const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const domainPattern =
+      /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
     if (!domainPattern.test(domainDraft.trim())) {
-      setError("Invalid domain format");
-      return;
+      setError('Invalid domain format')
+      return
     }
 
     if (domains.includes(domainDraft.trim())) {
-      setError("Domain already added");
-      return;
+      setError('Domain already added')
+      return
     }
 
-    setDomains([...domains, domainDraft.trim()]);
-    setDomainDraft("");
-    setError("");
-  };
+    setDomains([...domains, domainDraft.trim()])
+    setDomainDraft('')
+    setError('')
+  }
 
   const handleRemoveDomain = (domain: string) => {
-    setDomains(domains.filter(d => d !== domain));
-  };
+    setDomains(domains.filter(d => d !== domain))
+  }
 
   const handleSave = () => {
     if (!subdomain.trim()) {
-      setError("Subdomain is required");
-      return;
+      setError('Subdomain is required')
+      return
     }
 
     startSaving(async () => {
       try {
-        setError("");
-        setSuccess(false);
-        
-        const result = await onSave({ 
-          slug, 
-          subdomain: subdomain.trim().toLowerCase(), 
-          domains 
-        });
-        
+        setError('')
+        setSuccess(false)
+
+        const result = await onSave({
+          slug,
+          subdomain: subdomain.trim().toLowerCase(),
+          domains
+        })
+
         if (result.ok) {
-          setSuccess(true);
+          setSuccess(true)
           // Clear success message after 3 seconds
-          setTimeout(() => setSuccess(false), 3000);
+          setTimeout(() => setSuccess(false), 3000)
         } else {
-          setError(result.error || "Failed to save settings");
+          setError(result.error || 'Failed to save settings')
         }
       } catch (err) {
-        setError("An unexpected error occurred");
-        console.error('Save error:', err);
+        setError('An unexpected error occurred')
+        console.error('Save error:', err)
       }
-    });
-  };
+    })
+  }
 
   const handleSubdomainChange = (value: string) => {
     // Auto-format: lowercase, replace spaces/special chars with hyphens
@@ -94,14 +106,15 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
       .toLowerCase()
       .replace(/[^a-z0-9-]/g, '-')
       .replace(/--+/g, '-')
-      .replace(/^-+|-+$/g, '');
-    
-    setSubdomain(formatted);
-    setError("");
-  };
+      .replace(/^-+|-+$/g, '')
 
-  const isChanged = subdomain !== (current.subdomain ?? "") || 
-                   JSON.stringify(domains) !== JSON.stringify(current.domains ?? []);
+    setSubdomain(formatted)
+    setError('')
+  }
+
+  const isChanged =
+    subdomain !== (current.subdomain ?? '') ||
+    JSON.stringify(domains) !== JSON.stringify(current.domains ?? [])
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -119,9 +132,9 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
               <code className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded !text-gray-900 dark:!text-gray-100">
                 {current.subdomain}
               </code>
-              <a 
-                href={currentUrl} 
-                target="_blank" 
+              <a
+                href={currentUrl}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="!text-blue-600 dark:!text-blue-400 hover:!text-blue-800 dark:hover:!text-blue-300 flex items-center gap-1"
               >
@@ -144,12 +157,14 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
         <CardContent className="space-y-4">
           {/* Subdomain Input */}
           <div className="space-y-2">
-            <Label htmlFor="subdomain" className="!text-gray-700 dark:!text-gray-300">Subdomain *</Label>
+            <Label htmlFor="subdomain" className="!text-gray-700 dark:!text-gray-300">
+              Subdomain *
+            </Label>
             <div className="flex items-center gap-2">
               <Input
                 id="subdomain"
                 value={subdomain}
-                onChange={(e) => handleSubdomainChange(e.target.value)}
+                onChange={e => handleSubdomainChange(e.target.value)}
                 placeholder="my-organization"
                 className="flex-1 !text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
               />
@@ -159,7 +174,10 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
             </div>
             {previewUrl && (
               <p className="text-xs !text-gray-500 dark:!text-gray-400 mt-1">
-                Preview: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded !text-gray-900 dark:!text-gray-100">{previewUrl}</code>
+                Preview:{' '}
+                <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded !text-gray-900 dark:!text-gray-100">
+                  {previewUrl}
+                </code>
               </p>
             )}
           </div>
@@ -170,19 +188,19 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
             <div className="flex gap-2">
               <Input
                 value={domainDraft}
-                onChange={(e) => setDomainDraft(e.target.value)}
+                onChange={e => setDomainDraft(e.target.value)}
                 placeholder="salon.mycompany.com"
                 className="flex-1 !text-gray-900 dark:!text-gray-100 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddDomain();
+                    e.preventDefault()
+                    handleAddDomain()
                   }
                 }}
               />
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={handleAddDomain}
                 disabled={!domainDraft.trim()}
                 className="!text-gray-900 dark:!text-gray-100 border-gray-300 dark:border-gray-600"
@@ -190,11 +208,14 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
                 <Plus className="h-4 w-4 !text-gray-900 dark:!text-gray-100" />
               </Button>
             </div>
-            
+
             {domains.length > 0 && (
               <div className="space-y-2 mt-2">
                 {domains.map((domain, index) => (
-                  <div key={index} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded p-2">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded p-2"
+                  >
                     <code className="text-sm !text-gray-900 dark:!text-gray-100">{domain}</code>
                     <Button
                       variant="ghost"
@@ -232,22 +253,22 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
 
       {/* Actions */}
       <div className="flex gap-2">
-        <Button 
+        <Button
           onClick={handleSave}
           disabled={saving || !isChanged || !subdomain.trim()}
           className="min-w-24 bg-blue-600 hover:bg-blue-700 !text-white"
         >
-          {saving ? "Saving..." : "Save Changes"}
+          {saving ? 'Saving...' : 'Save Changes'}
         </Button>
-        
+
         {isChanged && (
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
-              setSubdomain(current.subdomain ?? "");
-              setDomains(current.domains ?? []);
-              setError("");
-              setSuccess(false);
+              setSubdomain(current.subdomain ?? '')
+              setDomains(current.domains ?? [])
+              setError('')
+              setSuccess(false)
             }}
             disabled={saving}
             className="!text-gray-900 dark:!text-gray-100 border-gray-300 dark:border-gray-600"
@@ -257,5 +278,5 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
         )}
       </div>
     </div>
-  );
+  )
 }

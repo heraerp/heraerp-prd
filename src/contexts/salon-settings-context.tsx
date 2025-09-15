@@ -4,7 +4,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 // Default organization ID for development
-const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+const DEFAULT_ORG_ID =
+  process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
 
 interface SalonSettings {
   business_info: {
@@ -112,7 +113,7 @@ interface SalonSettingsProviderProps {
 export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
-  
+
   const [settings, setSettings] = useState<SalonSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -123,10 +124,10 @@ export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) 
     try {
       setLoading(true)
       setError(null)
-      
+
       const response = await fetch(`/api/v1/salon/settings?organization_id=${organizationId}`)
       const data = await response.json()
-      
+
       if (data.success) {
         setSettings(data.settings)
       } else {
@@ -152,7 +153,7 @@ export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) 
       })
 
       const data = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to save settings')
       }
@@ -166,7 +167,10 @@ export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) 
     }
   }
 
-  const updateSettingsSection = async (section: keyof SalonSettings, data: any): Promise<boolean> => {
+  const updateSettingsSection = async (
+    section: keyof SalonSettings,
+    data: any
+  ): Promise<boolean> => {
     try {
       const response = await fetch('/api/v1/salon/settings', {
         method: 'PATCH',
@@ -179,7 +183,7 @@ export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) 
       })
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(result.error || 'Failed to update settings section')
       }

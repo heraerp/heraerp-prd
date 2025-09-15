@@ -2,13 +2,13 @@
  * KPI Cards for Factory Dashboard
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Clock, TrendingUp, Shield, FileCheck, Calendar } from 'lucide-react';
-import type { KPISet } from '@/lib/types/factory';
+import React from 'react'
+import { motion } from 'framer-motion'
+import { Clock, TrendingUp, Shield, FileCheck, Calendar } from 'lucide-react'
+import type { KPISet } from '@/lib/types/factory'
 
 interface KpiCardsProps {
-  kpis: KPISet;
+  kpis: KPISet
 }
 
 export function KpiCards({ kpis }: KpiCardsProps) {
@@ -58,13 +58,10 @@ export function KpiCards({ kpis }: KpiCardsProps) {
       target: 'Open period',
       isGood: kpis.fiscalAligned
     }
-  ];
+  ]
 
   return (
-    <div 
-      className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4" 
-      aria-label="KPI Cards"
-    >
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4" aria-label="KPI Cards">
       {cards.map((card, index) => (
         <motion.div
           key={card.title}
@@ -75,7 +72,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
         >
           {/* Background gradient */}
           <div className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-10`} />
-          
+
           {/* Content */}
           <div className="relative p-4">
             <div className="flex items-start justify-between mb-2">
@@ -91,11 +88,9 @@ export function KpiCards({ kpis }: KpiCardsProps) {
                 <card.icon className="w-5 h-5 text-white" />
               </div>
             </div>
-            
+
             <div className="space-y-1">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {card.subtitle}
-              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{card.subtitle}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   Target: {card.target}
@@ -111,5 +106,5 @@ export function KpiCards({ kpis }: KpiCardsProps) {
         </motion.div>
       ))}
     </div>
-  );
+  )
 }

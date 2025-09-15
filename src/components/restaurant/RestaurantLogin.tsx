@@ -17,7 +17,7 @@ export function RestaurantLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     try {
       const result = await login(email, password)
       if (!result.success) {
@@ -64,12 +64,14 @@ export function RestaurantLogin() {
 
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                  <Label htmlFor="email" className="text-gray-700 font-medium">
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     className="mt-2 h-12 border-orange-200 focus:border-orange-400 focus:ring-orange-400/20"
                     placeholder="your@email.com"
                     required
@@ -77,12 +79,14 @@ export function RestaurantLogin() {
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
+                  <Label htmlFor="password" className="text-gray-700 font-medium">
+                    Password
+                  </Label>
                   <Input
                     id="password"
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     className="mt-2 h-12 border-orange-200 focus:border-orange-400 focus:ring-orange-400/20"
                     placeholder="••••••••"
                     required
@@ -109,9 +113,7 @@ export function RestaurantLogin() {
             {/* Demo Credentials */}
             <div className="mt-8 pt-6 border-t border-orange-100">
               <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200/50">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                  Try Demo Account
-                </h3>
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Try Demo Account</h3>
                 <div className="space-y-2 text-sm text-gray-700">
                   <div className="flex justify-between">
                     <span className="text-gray-500">Restaurant:</span>
@@ -143,7 +145,8 @@ export function RestaurantLogin() {
             {/* HERA Attribution */}
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-400">
-                Powered by <span className="font-semibold text-gray-600">HERA Universal Platform</span>
+                Powered by{' '}
+                <span className="font-semibold text-gray-600">HERA Universal Platform</span>
               </p>
               <p className="text-xs text-gray-400 mt-1">
                 One platform, infinite business possibilities

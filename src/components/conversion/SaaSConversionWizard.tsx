@@ -5,14 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  CheckCircle, 
-  Building2, 
-  Globe, 
-  CreditCard, 
+import {
+  CheckCircle,
+  Building2,
+  Globe,
+  CreditCard,
   Rocket,
   ArrowRight,
   ArrowLeft,
@@ -69,14 +75,14 @@ const subscriptionPlans = [
   },
   {
     id: 'professional',
-    name: 'Professional', 
+    name: 'Professional',
     monthlyPrice: 149,
     yearlyPrice: 1490,
     popular: true,
     description: 'Most popular choice for growing businesses',
     features: [
       '15 users included',
-      '100GB storage', 
+      '100GB storage',
       'Advanced reports & analytics',
       'API access',
       'Third-party integrations',
@@ -114,7 +120,11 @@ const subscriptionPlans = [
   }
 ]
 
-export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSConversionWizardProps) {
+export function SaaSConversionWizard({
+  demoModule,
+  onComplete,
+  onCancel
+}: SaaSConversionWizardProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [conversionData, setConversionData] = useState<ConversionData>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -162,29 +172,35 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
 
         return (
           <div key={step.id} className="flex items-center">
-            <div className={`
+            <div
+              className={`
               flex items-center justify-center w-12 h-12 rounded-full border-2 
-              ${isActive ? 'border-blue-500 bg-blue-500 text-white' : 
-                isCompleted ? 'border-green-500 bg-green-500 text-white' : 
-                'border-gray-300 bg-white text-gray-400'}
+              ${
+                isActive
+                  ? 'border-blue-500 bg-blue-500 text-white'
+                  : isCompleted
+                    ? 'border-green-500 bg-green-500 text-white'
+                    : 'border-gray-300 bg-white text-gray-400'
+              }
               transition-all duration-300
-            `}>
-              {isCompleted ? (
-                <CheckCircle className="w-6 h-6" />
-              ) : (
-                <Icon className="w-6 h-6" />
-              )}
+            `}
+            >
+              {isCompleted ? <CheckCircle className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
             </div>
-            
+
             <div className="ml-3 mr-8">
-              <div className={`text-sm font-medium ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
+              <div
+                className={`text-sm font-medium ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}
+              >
                 Step {step.id}
               </div>
-              <div className={`text-xs ${isActive ? 'text-blue-500' : isCompleted ? 'text-green-500' : 'text-gray-400'}`}>
+              <div
+                className={`text-xs ${isActive ? 'text-blue-500' : isCompleted ? 'text-green-500' : 'text-gray-400'}`}
+              >
                 {step.name}
               </div>
             </div>
-            
+
             {index < steps.length - 1 && (
               <div className={`w-16 h-0.5 ${isCompleted ? 'bg-green-500' : 'bg-gray-300'} mr-8`} />
             )}
@@ -212,7 +228,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
             <Input
               id="companyName"
               value={conversionData.companyName || ''}
-              onChange={(e) => updateData({ companyName: e.target.value })}
+              onChange={e => updateData({ companyName: e.target.value })}
               placeholder="Your Company Ltd"
               className="mt-1"
             />
@@ -222,7 +238,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
             <Input
               id="ownerName"
               value={conversionData.ownerName || ''}
-              onChange={(e) => updateData({ ownerName: e.target.value })}
+              onChange={e => updateData({ ownerName: e.target.value })}
               placeholder="John Smith"
               className="mt-1"
             />
@@ -236,7 +252,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
               id="businessEmail"
               type="email"
               value={conversionData.businessEmail || ''}
-              onChange={(e) => updateData({ businessEmail: e.target.value })}
+              onChange={e => updateData({ businessEmail: e.target.value })}
               placeholder="owner@yourcompany.com"
               className="mt-1"
             />
@@ -246,7 +262,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
             <Input
               id="phone"
               value={conversionData.phone || ''}
-              onChange={(e) => updateData({ phone: e.target.value })}
+              onChange={e => updateData({ phone: e.target.value })}
               placeholder="+1 (555) 123-4567"
               className="mt-1"
             />
@@ -256,7 +272,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="employees">Number of Employees</Label>
-            <Select onValueChange={(value) => updateData({ employees: value })}>
+            <Select onValueChange={value => updateData({ employees: value })}>
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select range" />
               </SelectTrigger>
@@ -271,7 +287,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
           </div>
           <div>
             <Label htmlFor="revenue">Monthly Revenue</Label>
-            <Select onValueChange={(value) => updateData({ monthlyRevenue: value })}>
+            <Select onValueChange={value => updateData({ monthlyRevenue: value })}>
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select range" />
               </SelectTrigger>
@@ -307,7 +323,9 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
             <Input
               id="subdomain"
               value={conversionData.subdomain || ''}
-              onChange={(e) => updateData({ subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
+              onChange={e =>
+                updateData({ subdomain: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })
+              }
               placeholder="yourcompany"
               className="rounded-r-none"
             />
@@ -322,7 +340,9 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
 
         {conversionData.subdomain && (
           <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Your Production URL:</h4>
+            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+              Your Production URL:
+            </h4>
             <div className="text-lg font-mono bg-white dark:bg-gray-800 p-3 rounded border">
               https://{conversionData.subdomain}.heraerp.com
             </div>
@@ -355,28 +375,30 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {subscriptionPlans.map((plan) => (
-          <Card 
+        {subscriptionPlans.map(plan => (
+          <Card
             key={plan.id}
             className={`relative cursor-pointer transition-all duration-200 hover:shadow-xl ${
-              conversionData.plan?.type === plan.id 
-                ? 'border-2 border-blue-500 shadow-lg' 
+              conversionData.plan?.type === plan.id
+                ? 'border-2 border-blue-500 shadow-lg'
                 : 'border border-gray-200 dark:border-gray-700'
             }`}
-            onClick={() => updateData({ 
-              plan: { 
-                type: plan.id, 
-                billing: 'monthly', 
-                price: plan.monthlyPrice 
-              } 
-            })}
+            onClick={() =>
+              updateData({
+                plan: {
+                  type: plan.id,
+                  billing: 'monthly',
+                  price: plan.monthlyPrice
+                }
+              })
+            }
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <Badge className="bg-blue-500 text-white px-4 py-1">Most Popular</Badge>
               </div>
             )}
-            
+
             <CardContent className="p-6">
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
@@ -449,18 +471,18 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
         if (taskIndex < conversionTasks.length) {
           const task = conversionTasks[taskIndex]
           setCurrentTask(task.name)
-          
+
           const increment = 100 / conversionTasks.length
           const targetProgress = (taskIndex + 1) * increment
-          
+
           const progressInterval = setInterval(() => {
             currentProgress += 2
             setProgress(Math.min(currentProgress, targetProgress))
-            
+
             if (currentProgress >= targetProgress) {
               clearInterval(progressInterval)
               taskIndex++
-              
+
               if (taskIndex < conversionTasks.length) {
                 setTimeout(runNextTask, 500)
               } else {
@@ -481,19 +503,19 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
       <Card className="max-w-2xl mx-auto text-center">
         <CardContent className="p-12">
           <div className="w-24 h-24 mx-auto mb-6 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          
+
           <h3 className="text-2xl font-bold mb-4">Converting Your Demo to Production</h3>
           <p className="text-gray-600 dark:text-gray-400 mb-8">{currentTask}</p>
-          
+
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
-            <div 
+            <div
               className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          
+
           <p className="text-sm text-gray-500">{Math.round(progress)}% Complete</p>
-          
+
           <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">What's happening:</h4>
             <ul className="text-sm text-blue-700 dark:text-blue-300 text-left space-y-1">
@@ -523,7 +545,8 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
               <CreditCard className="w-16 h-16 mx-auto text-blue-500 mb-4" />
               <h3 className="text-xl font-bold mb-4">Payment Setup</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Payment integration will be configured here.<br />
+                Payment integration will be configured here.
+                <br />
                 For now, we'll proceed with the conversion process.
               </p>
             </CardContent>
@@ -539,7 +562,9 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return conversionData.companyName && conversionData.ownerName && conversionData.businessEmail
+        return (
+          conversionData.companyName && conversionData.ownerName && conversionData.businessEmail
+        )
       case 2:
         return conversionData.subdomain && conversionData.subdomain.length >= 3
       case 3:
@@ -554,9 +579,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
   if (currentStep === 5) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 py-8">
-        <div className="container mx-auto px-4">
-          {renderCurrentStep()}
-        </div>
+        <div className="container mx-auto px-4">{renderCurrentStep()}</div>
       </div>
     )
   }
@@ -574,24 +597,18 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
         </div>
 
         {renderStepIndicator()}
-        
-        <div className="mb-8">
-          {renderCurrentStep()}
-        </div>
+
+        <div className="mb-8">{renderCurrentStep()}</div>
 
         {currentStep < 5 && (
           <div className="flex justify-center gap-4">
             {currentStep > 1 && (
-              <Button
-                variant="outline"
-                onClick={prevStep}
-                className="px-8"
-              >
+              <Button variant="outline" onClick={prevStep} className="px-8">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Previous
               </Button>
             )}
-            
+
             <Button
               onClick={canProceed() ? nextStep : undefined}
               disabled={!canProceed()}
@@ -601,11 +618,7 @@ export function SaaSConversionWizard({ demoModule, onComplete, onCancel }: SaaSC
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
 
-            <Button
-              variant="ghost"
-              onClick={onCancel}
-              className="px-8"
-            >
+            <Button variant="ghost" onClick={onCancel} className="px-8">
               Cancel
             </Button>
           </div>

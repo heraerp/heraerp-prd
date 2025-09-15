@@ -8,16 +8,13 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -28,13 +25,13 @@ export async function GET(
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Get organization details
@@ -45,10 +42,7 @@ export async function GET(
       .single()
 
     if (orgError || !org) {
-      return NextResponse.json(
-        { error: 'Organization not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Organization not found' }, { status: 404 })
     }
 
     // Check if user has access to this organization
@@ -63,10 +57,7 @@ export async function GET(
       .single()
 
     if (membershipError || !membership) {
-      return NextResponse.json(
-        { error: 'Access denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
     // Get organization entity for additional metadata
@@ -80,14 +71,16 @@ export async function GET(
     // Get installed apps
     const { data: apps } = await supabase
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         *,
         app:to_entity_id(
           entity_name,
           entity_code,
           metadata
         )
-      `)
+      `
+      )
       .eq('from_entity_id', id)
       .eq('relationship_type', 'has_installed')
 
@@ -102,35 +95,29 @@ export async function GET(
         permissions: (membership.metadata as any)?.permissions,
         joined_at: (membership.metadata as any)?.joined_at
       },
-      installed_apps: apps?.map(app => ({
-        id: app.to_entity_id,
-        name: app.app?.entity_name,
-        code: app.app?.entity_code,
-        status: (app.metadata as any)?.status,
-        installed_at: (app.metadata as any)?.installed_at,
-        config: (app.metadata as any)?.config
-      })) || []
+      installed_apps:
+        apps?.map(app => ({
+          id: app.to_entity_id,
+          name: app.app?.entity_name,
+          code: app.app?.entity_code,
+          status: (app.metadata as any)?.status,
+          installed_at: (app.metadata as any)?.installed_at,
+          config: (app.metadata as any)?.config
+        })) || []
     })
-
   } catch (error) {
     console.error('Get organization error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -141,13 +128,13 @@ export async function PUT(
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Check if user has admin/owner access to this organization
@@ -163,10 +150,7 @@ export async function PUT(
 
     const userRole = membership?.metadata?.role
     if (!userRole || !['owner', 'admin'].includes(userRole)) {
-      return NextResponse.json(
-        { error: 'Insufficient permissions' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
     }
 
     // Get request body
@@ -180,7 +164,7 @@ export async function PUT(
 
     if (Object.keys(updates).length > 0) {
       updates.updated_at = new Date().toISOString()
-      
+
       const { error: updateError } = await supabase
         .from('core_organizations')
         .update(updates)
@@ -224,12 +208,8 @@ export async function PUT(
       success: true,
       message: 'Organization updated successfully'
     })
-
   } catch (error) {
     console.error('Update organization error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

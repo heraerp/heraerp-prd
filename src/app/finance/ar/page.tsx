@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   ArrowUpRight,
   Search,
   Filter,
@@ -26,7 +26,18 @@ import {
   Send,
   CreditCard
 } from 'lucide-react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts'
 
 // India Vision Organization ID
 const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
@@ -208,11 +219,16 @@ export default function AccountsReceivablePage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'paid': return 'bg-emerald-500/20 text-emerald-400'
-      case 'partial': return 'bg-yellow-500/20 text-yellow-400'
-      case 'pending': return 'bg-blue-500/20 text-blue-400'
-      case 'overdue': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+      case 'paid':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'partial':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'pending':
+        return 'bg-blue-500/20 text-blue-400'
+      case 'overdue':
+        return 'bg-red-500/20 text-red-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
     }
   }
 
@@ -227,7 +243,7 @@ export default function AccountsReceivablePage() {
           <p className="text-white/60 mt-1">Manage customer invoices and receivables</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -289,8 +305,12 @@ export default function AccountsReceivablePage() {
                   <span className="text-xs text-[#00DDFF] font-medium">23% of revenue</span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Total Receivable</h3>
-                <p className="text-2xl font-bold text-white">₹{(arMetrics.totalReceivable / 10000000).toFixed(1)} Cr</p>
-                <p className="text-xs text-white/40 mt-1">{arMetrics.customerCount} active customers</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(arMetrics.totalReceivable / 10000000).toFixed(1)} Cr
+                </p>
+                <p className="text-xs text-white/40 mt-1">
+                  {arMetrics.customerCount} active customers
+                </p>
               </div>
             </div>
 
@@ -304,7 +324,9 @@ export default function AccountsReceivablePage() {
                   <span className="text-xs text-yellow-400 font-medium">Action needed</span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Overdue Amount</h3>
-                <p className="text-2xl font-bold text-white">₹{(arMetrics.overdueAmount / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(arMetrics.overdueAmount / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">28 overdue invoices</p>
               </div>
             </div>
@@ -319,7 +341,9 @@ export default function AccountsReceivablePage() {
                   <TrendingUp className="h-4 w-4 text-emerald-400" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Avg Collection Days</h3>
-                <p className="text-2xl font-bold text-white">{arMetrics.averageCollectionDays} days</p>
+                <p className="text-2xl font-bold text-white">
+                  {arMetrics.averageCollectionDays} days
+                </p>
                 <p className="text-xs text-white/40 mt-1">Below target</p>
               </div>
             </div>
@@ -331,19 +355,24 @@ export default function AccountsReceivablePage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Receivables Aging Analysis</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">
+                  Receivables Aging Analysis
+                </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={agingData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="range" stroke="rgba(255,255,255,0.5)" />
-                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${(value/10000000).toFixed(0)}Cr`} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <YAxis
+                      stroke="rgba(255,255,255,0.5)"
+                      tickFormatter={value => `₹${(value / 10000000).toFixed(0)}Cr`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
-                      formatter={(value: any) => `₹${(value/10000000).toFixed(1)} Cr`}
+                      formatter={(value: any) => `₹${(value / 10000000).toFixed(1)} Cr`}
                     />
                     <Bar dataKey="amount" fill="#00DDFF" radius={[8, 8, 0, 0]} />
                   </BarChart>
@@ -371,25 +400,28 @@ export default function AccountsReceivablePage() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
-                      formatter={(value: any) => `₹${(value/10000000).toFixed(1)} Cr`}
+                      formatter={(value: any) => `₹${(value / 10000000).toFixed(1)} Cr`}
                     />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
-                  {categoryData.map((item) => (
+                  {categoryData.map(item => (
                     <div key={item.name} className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
                         <span className="text-sm text-white/80">{item.name}</span>
                       </div>
                       <span className="text-sm font-medium text-white">
-                        ₹{(item.value/10000000).toFixed(1)} Cr
+                        ₹{(item.value / 10000000).toFixed(1)} Cr
                       </span>
                     </div>
                   ))}
@@ -410,14 +442,14 @@ export default function AccountsReceivablePage() {
                 type="text"
                 placeholder="Search customers..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
               />
             </div>
-            
+
             <select
               value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              onChange={e => setSelectedStatus(e.target.value)}
               className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#00DDFF] transition-colors"
             >
               <option value="all">All Status</option>
@@ -434,7 +466,7 @@ export default function AccountsReceivablePage() {
 
           {/* Customers List */}
           <div className="space-y-4">
-            {customers.map((customer) => (
+            {customers.map(customer => (
               <div key={customer.id} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -442,19 +474,25 @@ export default function AccountsReceivablePage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <Building2 className="h-5 w-5 text-[#00DDFF]" />
-                        <h3 className="text-lg font-semibold text-white">{customer.customerName}</h3>
+                        <h3 className="text-lg font-semibold text-white">
+                          {customer.customerName}
+                        </h3>
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60">
                           {customer.customerCode}
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          customer.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' :
-                          customer.status === 'on-hold' ? 'bg-yellow-500/20 text-yellow-400' :
-                          'bg-red-500/20 text-red-400'
-                        }`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            customer.status === 'active'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : customer.status === 'on-hold'
+                                ? 'bg-yellow-500/20 text-yellow-400'
+                                : 'bg-red-500/20 text-red-400'
+                          }`}
+                        >
                           {customer.status}
                         </span>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div>
                           <p className="text-xs text-white/60 mb-1">Total Receivable</p>
@@ -464,7 +502,9 @@ export default function AccountsReceivablePage() {
                         </div>
                         <div>
                           <p className="text-xs text-white/60 mb-1">Overdue</p>
-                          <p className={`text-lg font-semibold ${customer.overdueAmount > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                          <p
+                            className={`text-lg font-semibold ${customer.overdueAmount > 0 ? 'text-red-400' : 'text-emerald-400'}`}
+                          >
                             ₹{(customer.overdueAmount / 10000000).toFixed(2)} Cr
                           </p>
                         </div>
@@ -476,7 +516,9 @@ export default function AccountsReceivablePage() {
                         </div>
                         <div>
                           <p className="text-xs text-white/60 mb-1">Payment Terms</p>
-                          <p className="text-lg font-semibold text-white">{customer.paymentTerms}</p>
+                          <p className="text-lg font-semibold text-white">
+                            {customer.paymentTerms}
+                          </p>
                         </div>
                       </div>
 
@@ -495,7 +537,7 @@ export default function AccountsReceivablePage() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <button className="ml-4 text-white/40 hover:text-white transition-colors">
                       <MoreVertical className="h-5 w-5" />
                     </button>
@@ -517,11 +559,11 @@ export default function AccountsReceivablePage() {
                 type="text"
                 placeholder="Search invoices..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#00DDFF] transition-colors"
               />
             </div>
-            
+
             <button className="flex items-center space-x-2 px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors">
               <Calendar className="h-5 w-5" />
               <span>Date Range</span>
@@ -540,22 +582,28 @@ export default function AccountsReceivablePage() {
               <table className="w-full">
                 <thead className="bg-white/5 border-b border-white/10">
                   <tr>
-                    <th className="text-left py-4 pl-6 text-sm font-medium text-white/60">Invoice #</th>
+                    <th className="text-left py-4 pl-6 text-sm font-medium text-white/60">
+                      Invoice #
+                    </th>
                     <th className="text-left py-4 text-sm font-medium text-white/60">Customer</th>
                     <th className="text-left py-4 text-sm font-medium text-white/60">Date</th>
                     <th className="text-left py-4 text-sm font-medium text-white/60">Due Date</th>
                     <th className="text-right py-4 text-sm font-medium text-white/60">Amount</th>
                     <th className="text-center py-4 text-sm font-medium text-white/60">Status</th>
-                    <th className="text-right py-4 pr-6 text-sm font-medium text-white/60">Actions</th>
+                    <th className="text-right py-4 pr-6 text-sm font-medium text-white/60">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {invoices.map((invoice) => (
+                  {invoices.map(invoice => (
                     <tr key={invoice.id} className="hover:bg-white/5 transition-colors">
                       <td className="py-4 pl-6">
                         <div className="flex items-center space-x-2">
                           <FileText className="h-4 w-4 text-white/40" />
-                          <span className="font-mono text-sm text-white">{invoice.invoiceNumber}</span>
+                          <span className="font-mono text-sm text-white">
+                            {invoice.invoiceNumber}
+                          </span>
                         </div>
                       </td>
                       <td className="py-4">
@@ -568,7 +616,11 @@ export default function AccountsReceivablePage() {
                         {new Date(invoice.invoiceDate).toLocaleDateString()}
                       </td>
                       <td className="py-4">
-                        <span className={invoice.status === 'overdue' ? 'text-red-400' : 'text-white/80'}>
+                        <span
+                          className={
+                            invoice.status === 'overdue' ? 'text-red-400' : 'text-white/80'
+                          }
+                        >
                           {new Date(invoice.dueDate).toLocaleDateString()}
                         </span>
                       </td>
@@ -576,7 +628,9 @@ export default function AccountsReceivablePage() {
                         ₹{(invoice.amount / 100000).toFixed(2)} L
                       </td>
                       <td className="py-4 text-center">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(invoice.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(invoice.status)}`}
+                        >
                           {invoice.status}
                         </span>
                       </td>

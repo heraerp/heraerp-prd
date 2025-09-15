@@ -1,10 +1,6 @@
 import React from 'react'
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       {/* Auth Header */}
@@ -23,12 +19,10 @@ export default function AuthLayout({
           </div>
         </div>
       </header>
-      
+
       {/* Auth Content */}
-      <main className="flex-1">
-        {children}
-      </main>
-      
+      <main className="flex-1">{children}</main>
+
       {/* Auth Footer */}
       <footer className="py-8 text-center text-sm text-gray-500">
         <p>© 2025 HERA. Enterprise ERP for Everyone.</p>

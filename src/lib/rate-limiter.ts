@@ -8,9 +8,9 @@ import { rateLimitError } from './api-error-handler'
 import { apiLogger } from './logger'
 
 interface RateLimitConfig {
-  windowMs: number      // Time window in milliseconds
-  maxRequests: number   // Max requests per window
-  keyPrefix?: string    // Prefix for rate limit keys
+  windowMs: number // Time window in milliseconds
+  maxRequests: number // Max requests per window
+  keyPrefix?: string // Prefix for rate limit keys
   skipSuccessfulRequests?: boolean
   skipFailedRequests?: boolean
 }
@@ -32,7 +32,7 @@ class InMemoryRateLimitStore implements RateLimitStore {
     const resetTime = now + windowMs
 
     const current = this.store.get(key)
-    
+
     if (!current || current.resetTime <= now) {
       this.store.set(key, { count: 1, resetTime })
       return 1
@@ -172,12 +172,8 @@ export const rateLimiters = {
 /**
  * Rate limiting middleware
  */
-export function withRateLimit(
-  limiter: RateLimiter = rateLimiters.api
-) {
-  return function <T extends (...args: any[]) => Promise<any>>(
-    handler: T
-  ): T {
+export function withRateLimit(limiter: RateLimiter = rateLimiters.api) {
+  return function <T extends (...args: any[]) => Promise<any>>(handler: T): T {
     return (async (...args: Parameters<T>) => {
       const request = args[0] as NextRequest
       await limiter.check(request)

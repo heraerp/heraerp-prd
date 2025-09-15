@@ -6,10 +6,20 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { 
-  CheckCircle, XCircle, AlertTriangle, TrendingUp, 
-  Shield, Zap, Code, Database, Globe, DollarSign,
-  RefreshCw, FileText, GitBranch
+import {
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  TrendingUp,
+  Shield,
+  Zap,
+  Code,
+  Database,
+  Globe,
+  DollarSign,
+  RefreshCw,
+  FileText,
+  GitBranch
 } from 'lucide-react'
 
 interface QualityMetrics {
@@ -73,7 +83,7 @@ export function QualityDashboard() {
           dynamic: 47
         }
       }
-      
+
       setMetrics(mockMetrics)
       setLastCheck(new Date())
     } catch (error) {
@@ -104,10 +114,11 @@ export function QualityDashboard() {
   }
 
   const overallScore = Math.round(
-    (metrics.codeQuality.score + 
-     metrics.security.score + 
-     metrics.performance.score + 
-     metrics.architecture.compliance) / 4
+    (metrics.codeQuality.score +
+      metrics.security.score +
+      metrics.performance.score +
+      metrics.architecture.compliance) /
+      4
   )
 
   return (
@@ -147,8 +158,16 @@ export function QualityDashboard() {
               <span className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
                 {overallScore}%
               </span>
-              <Badge variant={overallScore >= 90 ? 'default' : overallScore >= 70 ? 'secondary' : 'destructive'}>
-                {overallScore >= 90 ? 'Excellent' : overallScore >= 70 ? 'Good' : 'Needs Improvement'}
+              <Badge
+                variant={
+                  overallScore >= 90 ? 'default' : overallScore >= 70 ? 'secondary' : 'destructive'
+                }
+              >
+                {overallScore >= 90
+                  ? 'Excellent'
+                  : overallScore >= 70
+                    ? 'Good'
+                    : 'Needs Improvement'}
               </Badge>
             </div>
             <Progress value={overallScore} className="h-2" />
@@ -170,7 +189,9 @@ export function QualityDashboard() {
             {metrics.codeQuality.issues.length > 0 && (
               <div className="mt-2 space-y-1">
                 {metrics.codeQuality.issues.map((issue, i) => (
-                  <p key={i} className="text-xs text-muted-foreground">• {issue}</p>
+                  <p key={i} className="text-xs text-muted-foreground">
+                    • {issue}
+                  </p>
                 ))}
               </div>
             )}
@@ -187,8 +208,8 @@ export function QualityDashboard() {
             <div className="text-2xl font-bold">{metrics.security.score}%</div>
             <Progress value={metrics.security.score} className="h-1 mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
-              {metrics.security.vulnerabilities === 0 
-                ? 'No vulnerabilities found' 
+              {metrics.security.vulnerabilities === 0
+                ? 'No vulnerabilities found'
                 : `${metrics.security.vulnerabilities} vulnerabilities`}
             </p>
           </CardContent>
@@ -220,8 +241,8 @@ export function QualityDashboard() {
             <div className="text-2xl font-bold">{metrics.architecture.compliance}%</div>
             <Progress value={metrics.architecture.compliance} className="h-1 mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
-              {metrics.architecture.violations.length === 0 
-                ? 'Universal architecture compliant' 
+              {metrics.architecture.violations.length === 0
+                ? 'Universal architecture compliant'
                 : `${metrics.architecture.violations.length} violations`}
             </p>
           </CardContent>
@@ -235,13 +256,25 @@ export function QualityDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {metrics.currency.hardcoded === 0 ? '100%' : 
-                Math.round((metrics.currency.dynamic / (metrics.currency.dynamic + metrics.currency.hardcoded)) * 100) + '%'}
+              {metrics.currency.hardcoded === 0
+                ? '100%'
+                : Math.round(
+                    (metrics.currency.dynamic /
+                      (metrics.currency.dynamic + metrics.currency.hardcoded)) *
+                      100
+                  ) + '%'}
             </div>
-            <Progress 
-              value={metrics.currency.hardcoded === 0 ? 100 : 
-                Math.round((metrics.currency.dynamic / (metrics.currency.dynamic + metrics.currency.hardcoded)) * 100)} 
-              className="h-1 mt-2" 
+            <Progress
+              value={
+                metrics.currency.hardcoded === 0
+                  ? 100
+                  : Math.round(
+                      (metrics.currency.dynamic /
+                        (metrics.currency.dynamic + metrics.currency.hardcoded)) *
+                        100
+                    )
+              }
+              className="h-1 mt-2"
             />
             <div className="mt-2 space-y-1 text-xs text-muted-foreground">
               <p>• Dynamic: {metrics.currency.dynamic}</p>
@@ -272,7 +305,7 @@ export function QualityDashboard() {
       </div>
 
       {/* Action Items */}
-      {(metrics.codeQuality.issues.length > 0 || 
+      {(metrics.codeQuality.issues.length > 0 ||
         metrics.architecture.violations.length > 0 ||
         metrics.currency.hardcoded > 0) && (
         <Alert>

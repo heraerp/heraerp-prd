@@ -7,17 +7,17 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Upload, 
-  FileText, 
-  X, 
-  CheckCircle, 
+import {
+  Upload,
+  FileText,
+  X,
+  CheckCircle,
   AlertCircle,
   Paperclip,
   File,
@@ -39,12 +39,12 @@ interface UploadedFile {
   type: string
 }
 
-export function DocumentUploadModal({ 
-  documentId, 
-  documentName, 
+export function DocumentUploadModal({
+  documentId,
+  documentName,
   documentCode,
   onUploadComplete,
-  children 
+  children
 }: DocumentUploadModalProps) {
   const [open, setOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -82,10 +82,10 @@ export function DocumentUploadModal({
 
   const handleFiles = (files: FileList) => {
     const newFiles: UploadedFile[] = []
-    
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      
+
       // Validate file type (allow PDFs, images, and common document formats)
       const allowedTypes = [
         'application/pdf',
@@ -97,18 +97,18 @@ export function DocumentUploadModal({
         'application/vnd.ms-excel',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       ]
-      
+
       if (!allowedTypes.includes(file.type)) {
         setError(`File type not allowed: ${file.name}`)
         continue
       }
-      
+
       // Validate file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
         setError(`File too large: ${file.name} (max 10MB)`)
         continue
       }
-      
+
       newFiles.push({
         id: `file_${Date.now()}_${i}`,
         name: file.name,
@@ -116,7 +116,7 @@ export function DocumentUploadModal({
         type: file.type
       })
     }
-    
+
     setUploadedFiles(prev => [...prev, ...newFiles])
     setError(null)
   }
@@ -164,13 +164,13 @@ export function DocumentUploadModal({
       }
 
       onUploadComplete?.(uploadData)
-      
+
       // Reset form
       setUploadedFiles([])
       setNotes('')
       setUploadProgress(0)
       setOpen(false)
-      
+
       // You could show a success toast here
       console.log('Documents uploaded successfully:', uploadData)
     } catch (error) {
@@ -184,16 +184,17 @@ export function DocumentUploadModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Upload Documents</DialogTitle>
           <DialogDescription>
             {documentName ? (
               <>
-                Upload files for: <strong>{documentCode} - {documentName}</strong>
+                Upload files for:{' '}
+                <strong>
+                  {documentCode} - {documentName}
+                </strong>
               </>
             ) : (
               'Select and upload your audit documents'
@@ -205,9 +206,7 @@ export function DocumentUploadModal({
           {/* Drop Zone */}
           <div
             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-              dragActive 
-                ? 'border-blue-500 bg-blue-50' 
-                : 'border-gray-300 hover:border-gray-400'
+              dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -215,9 +214,7 @@ export function DocumentUploadModal({
             onDrop={handleDrop}
           >
             <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 mb-2">
-              Drag and drop files here, or click to browse
-            </p>
+            <p className="text-gray-600 mb-2">Drag and drop files here, or click to browse</p>
             <p className="text-sm text-gray-500 mb-4">
               Supported formats: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX (Max 10MB)
             </p>
@@ -252,7 +249,7 @@ export function DocumentUploadModal({
             <div className="space-y-2">
               <Label>Selected Files ({uploadedFiles.length})</Label>
               <div className="space-y-2 max-h-48 overflow-y-auto">
-                {uploadedFiles.map((file) => (
+                {uploadedFiles.map(file => (
                   <div
                     key={file.id}
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
@@ -285,7 +282,7 @@ export function DocumentUploadModal({
               id="notes"
               placeholder="Add any relevant notes or comments about these documents..."
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               rows={3}
               disabled={isUploading}
             />
@@ -310,17 +307,10 @@ export function DocumentUploadModal({
 
         {/* Actions */}
         <div className="flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={isUploading}
-          >
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={isUploading}>
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={uploadedFiles.length === 0 || isUploading}
-          >
+          <Button onClick={handleSubmit} disabled={uploadedFiles.length === 0 || isUploading}>
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

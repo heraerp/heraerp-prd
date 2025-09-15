@@ -1,7 +1,7 @@
 /**
  * 🔐 HERA COA and Document Number Enforcement System
  * Smart Code: HERA.CORE.ENFORCEMENT.COA.DOCUMENT.v1
- * 
+ *
  * Ensures ALL transactions always use proper COA and document numbering
  */
 
@@ -54,7 +54,7 @@ export class COADocumentEnforcer {
       })
 
       const result = await response.json()
-      
+
       if (!result.success || !result.data || result.data.length === 0) {
         return {
           valid: false,
@@ -68,23 +68,26 @@ export class COADocumentEnforcer {
       const requiredAccounts = this.getRequiredAccountsByBusinessType()
       const existingAccounts = await this.getExistingGLAccounts()
       const missingAccounts = requiredAccounts.filter(
-        req => !existingAccounts.some(existing => 
-          existing.entity_code.startsWith(req.prefix)
-        )
+        req => !existingAccounts.some(existing => existing.entity_code.startsWith(req.prefix))
       )
 
       return {
         valid: missingAccounts.length === 0,
-        errors: missingAccounts.length > 0 ? 
-          [`Missing required account categories: ${missingAccounts.map(m => m.name).join(', ')}`] : [],
+        errors:
+          missingAccounts.length > 0
+            ? [
+                `Missing required account categories: ${missingAccounts.map(m => m.name).join(', ')}`
+              ]
+            : [],
         missing_accounts: missingAccounts.map(m => m.name),
         organization_has_coa: true
       }
-
     } catch (error) {
       return {
         valid: false,
-        errors: [`COA validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
+        errors: [
+          `COA validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        ],
         missing_accounts: [],
         organization_has_coa: false
       }
@@ -102,7 +105,7 @@ export class COADocumentEnforcer {
     const day = String(date.getDate()).padStart(2, '0')
 
     const config = this.getDocumentNumberConfig(transactionType)
-    
+
     let transactionNumber: string
     let referenceNumber: string
 
@@ -152,7 +155,7 @@ export class COADocumentEnforcer {
   /**
    * 🔐 ENFORCE: Validate GL accounts in transaction lines
    */
-  async validateGLAccountsInLines(lineItems: any[]): Promise<{valid: boolean, errors: string[]}> {
+  async validateGLAccountsInLines(lineItems: any[]): Promise<{ valid: boolean; errors: string[] }> {
     const errors: string[] = []
 
     for (const line of lineItems) {
@@ -166,7 +169,9 @@ export class COADocumentEnforcer {
       if (line.gl_account_code) {
         const accountExists = await this.validateGLAccountExists(line.gl_account_code)
         if (!accountExists) {
-          errors.push(`Line ${line.line_number || 'unknown'}: GL account ${line.gl_account_code} not found in COA`)
+          errors.push(
+            `Line ${line.line_number || 'unknown'}: GL account ${line.gl_account_code} not found in COA`
+          )
         }
       }
 
@@ -174,7 +179,9 @@ export class COADocumentEnforcer {
       if (line.entity_id) {
         const entityIsGLAccount = await this.validateEntityIsGLAccount(line.entity_id)
         if (!entityIsGLAccount) {
-          errors.push(`Line ${line.line_number || 'unknown'}: Entity ${line.entity_id} is not a GL account`)
+          errors.push(
+            `Line ${line.line_number || 'unknown'}: Entity ${line.entity_id} is not a GL account`
+          )
         }
       }
     }
@@ -188,7 +195,11 @@ export class COADocumentEnforcer {
   /**
    * 🔐 ENFORCE: Auto-assign GL accounts based on smart codes
    */
-  async autoAssignGLAccounts(transactionType: string, smartCode: string, lineItems: any[]): Promise<any[]> {
+  async autoAssignGLAccounts(
+    transactionType: string,
+    smartCode: string,
+    lineItems: any[]
+  ): Promise<any[]> {
     const enhancedLines = []
 
     for (const line of lineItems) {
@@ -198,12 +209,12 @@ export class COADocumentEnforcer {
       // Auto-assign if not provided
       if (!glAccountCode && !entityId) {
         const autoAssignment = await this.determineGLAccountFromSmartCode(
-          transactionType, 
-          smartCode, 
+          transactionType,
+          smartCode,
           line.description || '',
           line.line_type || 'DEBIT'
         )
-        
+
         glAccountCode = autoAssignment.account_code
         entityId = autoAssignment.entity_id
       }
@@ -247,7 +258,10 @@ export class COADocumentEnforcer {
       ]
     }
 
-    return [...universal, ...(businessSpecific[this.businessType as keyof typeof businessSpecific] || [])]
+    return [
+      ...universal,
+      ...(businessSpecific[this.businessType as keyof typeof businessSpecific] || [])
+    ]
   }
 
   private async getExistingGLAccounts() {
@@ -277,7 +291,9 @@ export class COADocumentEnforcer {
       receipt: { prefix: 'RCP', sequence: 'sequential', format: 'RCP-YYYYMM-NNN', zeropad: 3 }
     }
 
-    return configs[transactionType] || { prefix: 'DOC', sequence: 'timestamp', format: 'DOC-timestamp' }
+    return (
+      configs[transactionType] || { prefix: 'DOC', sequence: 'timestamp', format: 'DOC-timestamp' }
+    )
   }
 
   private getNextSequence(type: string, year: number): string {
@@ -355,37 +371,37 @@ export class COADocumentEnforcer {
   }
 
   private async determineGLAccountFromSmartCode(
-    transactionType: string, 
-    smartCode: string, 
-    description: string, 
+    transactionType: string,
+    smartCode: string,
+    description: string,
     lineType: string
   ) {
     // Smart code-based GL account determination
     const smartCodeMappings = {
       'HERA.SALON.SALE': {
-        'DEBIT': { account_code: '1100000', account_type: 'cash' },
-        'CREDIT': { account_code: '4110000', account_type: 'service_revenue' }
+        DEBIT: { account_code: '1100000', account_type: 'cash' },
+        CREDIT: { account_code: '4110000', account_type: 'service_revenue' }
       },
       'HERA.RESTAURANT.SALE': {
-        'DEBIT': { account_code: '1100000', account_type: 'cash' },
-        'CREDIT': { account_code: '4110000', account_type: 'food_sales' }
+        DEBIT: { account_code: '1100000', account_type: 'cash' },
+        CREDIT: { account_code: '4110000', account_type: 'food_sales' }
       },
       'HERA.EXPENSE': {
-        'DEBIT': { account_code: '5130000', account_type: 'operating_expense' },
-        'CREDIT': { account_code: '2100000', account_type: 'accounts_payable' }
+        DEBIT: { account_code: '5130000', account_type: 'operating_expense' },
+        CREDIT: { account_code: '2100000', account_type: 'accounts_payable' }
       }
     }
 
     // Find matching smart code pattern
     const smartCodePrefix = smartCode.split('.').slice(0, 3).join('.')
     const mapping = smartCodeMappings[smartCodePrefix as keyof typeof smartCodeMappings]
-    
+
     if (mapping && mapping[lineType as keyof typeof mapping]) {
       const accountInfo = mapping[lineType as keyof typeof mapping] as any
-      
+
       // Find the actual entity_id for this account
       const accountEntity = await this.findGLAccountByCode(accountInfo.account_code)
-      
+
       return {
         account_code: accountInfo.account_code,
         entity_id: accountEntity?.id || null,
@@ -415,7 +431,7 @@ export class COADocumentEnforcer {
     const firstDigit = accountCode.charAt(0)
     const mapping = {
       '1': 'asset',
-      '2': 'liability', 
+      '2': 'liability',
       '3': 'equity',
       '4': 'revenue',
       '5': 'expense'
@@ -440,7 +456,7 @@ export async function enforceTransactionStandards(
   enhancedLines: any[]
 }> {
   const enforcer = new COADocumentEnforcer(organizationId, businessType)
-  
+
   // 1. Validate COA exists
   const coaValidation = await enforcer.validateCOAExists()
   if (!coaValidation.valid) {

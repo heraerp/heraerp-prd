@@ -1,0 +1,37 @@
+{
+  "header": {
+    "transaction_type": "pos_order",
+    "transaction_code": "POS-DXB-TIP-0001",
+    "transaction_date": "2025-09-15T12:00:00Z",
+    "smart_code": "HERA.SALON.POS.TXN.SALE.EXCL_TIP.v1",
+    "status": "posted",
+    "organization_id": "00000000-0000-0000-0000-000000000001",
+    "currency_code": "AED",
+    "total_amount": 120.00,
+    "reference_entity_id": null,
+    "metadata": { "stylist_slug": "stylist:STY001" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "service",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 100.00,
+      "line_amount": 100.00,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.SERVICE.LINE.v1",
+      "metadata": { "service_slug": "service:HAIRCUT_BASIC" }
+    },
+    {
+      "line_number": 2,
+      "line_type": "fee",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 20.00,
+      "line_amount": 20.00,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.TIP.LINE.v1"
+    }
+  ]
+}

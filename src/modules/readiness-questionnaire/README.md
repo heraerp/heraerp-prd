@@ -48,7 +48,7 @@ import { ReadinessWizard, createReadinessTemplate } from '@/modules/readiness-qu
 
 export default function MyQuestionnairePage() {
   const template = createReadinessTemplate('your-org-id')
-  
+
   return <ReadinessWizard template={template} session={session} api={api} />
 }
 ```
@@ -76,7 +76,7 @@ const api = questionnaireService.createSessionAPI(session)
 The system supports 6 different question types:
 
 - **Text**: Short text responses
-- **Textarea**: Long-form text responses  
+- **Textarea**: Long-form text responses
 - **Select**: Single choice from options
 - **Multiselect**: Multiple choices from options
 - **YesNo**: Boolean questions with styled UI
@@ -97,14 +97,15 @@ The questionnaire includes AI-powered analysis that provides:
 The UI features advanced glassmorphism effects:
 
 ```css
-background: linear-gradient(135deg, 
-  rgba(255, 255, 255, 0.25) 0%, 
+background: linear-gradient(
+  135deg,
+  rgba(255, 255, 255, 0.25) 0%,
   rgba(255, 255, 255, 0.1) 50%,
   rgba(255, 255, 255, 0.05) 100%
 );
 backdrop-filter: blur(20px) saturate(180%);
 border: 1px solid rgba(255, 255, 255, 0.3);
-box-shadow: 
+box-shadow:
   0 8px 32px rgba(147, 51, 234, 0.15),
   0 4px 16px rgba(0, 0, 0, 0.1),
   inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -156,7 +157,7 @@ const SMART_CODES = {
 ## 🌟 Key Benefits
 
 - **Zero Schema Changes**: Uses existing Sacred Six Tables
-- **Universal Architecture**: Compatible with all HERA systems  
+- **Universal Architecture**: Compatible with all HERA systems
 - **Type-Safe**: Complete TypeScript coverage
 - **Mobile-First**: Responsive design for all devices
 - **AI-Enhanced**: Intelligent insights and recommendations

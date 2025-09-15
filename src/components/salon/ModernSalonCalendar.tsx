@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
+import {
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -31,7 +31,13 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -57,50 +63,53 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
   ]
 
   // Sample events with service types
-  const events = useMemo(() => [
-    {
-      id: '1',
-      title: 'Brazilian Blowout - Sarah J.',
-      start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      end: new Date(Date.now() + 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000).toISOString(),
-      backgroundColor: '#8b5cf6',
-      extendedProps: {
-        service: 'brazilian',
-        stylist: 'Rocky',
-        client: 'Sarah Johnson',
-        vip: 'platinum',
-        price: 'AED 500'
+  const events = useMemo(
+    () => [
+      {
+        id: '1',
+        title: 'Brazilian Blowout - Sarah J.',
+        start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        end: new Date(Date.now() + 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000).toISOString(),
+        backgroundColor: '#8b5cf6',
+        extendedProps: {
+          service: 'brazilian',
+          stylist: 'Rocky',
+          client: 'Sarah Johnson',
+          vip: 'platinum',
+          price: 'AED 500'
+        }
+      },
+      {
+        id: '2',
+        title: 'Premium Cut & Style - Emma D.',
+        start: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+        end: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000 + 1.5 * 60 * 60 * 1000).toISOString(),
+        backgroundColor: '#14b8a6',
+        extendedProps: {
+          service: 'cut',
+          stylist: 'Vinay',
+          client: 'Emma Davis',
+          vip: 'gold',
+          price: 'AED 150'
+        }
+      },
+      {
+        id: '3',
+        title: 'Bridal Package - Aisha K.',
+        start: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        end: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 6 * 60 * 60 * 1000).toISOString(),
+        backgroundColor: '#ec4899',
+        extendedProps: {
+          service: 'bridal',
+          stylist: 'Sophia',
+          client: 'Aisha Khan',
+          vip: 'regular',
+          price: 'AED 800'
+        }
       }
-    },
-    {
-      id: '2',
-      title: 'Premium Cut & Style - Emma D.',
-      start: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-      end: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000 + 1.5 * 60 * 60 * 1000).toISOString(),
-      backgroundColor: '#14b8a6',
-      extendedProps: {
-        service: 'cut',
-        stylist: 'Vinay',
-        client: 'Emma Davis',
-        vip: 'gold',
-        price: 'AED 150'
-      }
-    },
-    {
-      id: '3',
-      title: 'Bridal Package - Aisha K.',
-      start: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-      end: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 6 * 60 * 60 * 1000).toISOString(),
-      backgroundColor: '#ec4899',
-      extendedProps: {
-        service: 'bridal',
-        stylist: 'Sophia',
-        client: 'Aisha Khan',
-        vip: 'regular',
-        price: 'AED 800'
-      }
-    }
-  ], [])
+    ],
+    []
+  )
 
   // Quick stats
   const todayStats = {
@@ -111,7 +120,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       {/* Modern Header */}
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -137,15 +146,24 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             {/* View Switcher */}
             <Tabs value={selectedView} onValueChange={(v: any) => setSelectedView(v)}>
               <TabsList className="bg-gray-100 dark:bg-gray-900">
-                <TabsTrigger value="day" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+                <TabsTrigger
+                  value="day"
+                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+                >
                   <CalendarDays className="w-4 h-4 mr-2" />
                   Day
                 </TabsTrigger>
-                <TabsTrigger value="week" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+                <TabsTrigger
+                  value="week"
+                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+                >
                   <Grid3x3 className="w-4 h-4 mr-2" />
                   Week
                 </TabsTrigger>
-                <TabsTrigger value="month" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">
+                <TabsTrigger
+                  value="month"
+                  className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800"
+                >
                   <Calendar className="w-4 h-4 mr-2" />
                   Month
                 </TabsTrigger>
@@ -161,7 +179,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
               <Input
                 placeholder="Search appointments..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-9 w-64 rounded-lg"
               />
             </div>
@@ -180,7 +198,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             </Button>
 
             {/* New Appointment Button */}
-            <Button 
+            <Button
               onClick={onNewBooking}
               className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg"
             >
@@ -196,7 +214,9 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             <div className="flex flex-wrap items-center gap-4">
               {/* Stylist Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Stylist:</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Stylist:
+                </span>
                 <Select value={selectedStylist} onValueChange={setSelectedStylist}>
                   <SelectTrigger className="w-48 rounded-lg">
                     <SelectValue />
@@ -206,7 +226,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                       <SelectItem key={stylist.id} value={stylist.id}>
                         <div className="flex items-center gap-2">
                           <Avatar className="w-5 h-5">
-                            <AvatarFallback className={cn(stylist.color, "text-white text-xs")}>
+                            <AvatarFallback className={cn(stylist.color, 'text-white text-xs')}>
                               {stylist.avatar}
                             </AvatarFallback>
                           </Avatar>
@@ -215,13 +235,13 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                             <Badge
                               variant="outline"
                               className={cn(
-                                "ml-auto text-xs",
-                                stylist.available 
-                                  ? "border-green-500 text-green-700" 
-                                  : "border-gray-400 text-gray-600"
+                                'ml-auto text-xs',
+                                stylist.available
+                                  ? 'border-green-500 text-green-700'
+                                  : 'border-gray-400 text-gray-600'
                               )}
                             >
-                              {stylist.available ? "Available" : "Busy"}
+                              {stylist.available ? 'Available' : 'Busy'}
                             </Badge>
                           )}
                         </div>
@@ -233,7 +253,9 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
               {/* Service Type Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Service:</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Service:
+                </span>
                 <Select defaultValue="all">
                   <SelectTrigger className="w-48 rounded-lg">
                     <SelectValue />
@@ -270,7 +292,9 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
               {/* VIP Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Client Type:</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Client Type:
+                </span>
                 <Select defaultValue="all">
                   <SelectTrigger className="w-48 rounded-lg">
                     <SelectValue />
@@ -304,8 +328,12 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-pink-700 dark:text-pink-300">Today's Bookings</p>
-                <p className="text-2xl font-bold text-pink-900 dark:text-pink-100">{todayStats.appointments}</p>
+                <p className="text-sm font-medium text-pink-700 dark:text-pink-300">
+                  Today's Bookings
+                </p>
+                <p className="text-2xl font-bold text-pink-900 dark:text-pink-100">
+                  {todayStats.appointments}
+                </p>
               </div>
               <Calendar className="w-8 h-8 text-pink-600 opacity-50" />
             </div>
@@ -317,7 +345,9 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-purple-700 dark:text-purple-300">Revenue</p>
-                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{todayStats.revenue}</p>
+                <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                  {todayStats.revenue}
+                </p>
               </div>
               <Sparkles className="w-8 h-8 text-purple-600 opacity-50" />
             </div>
@@ -328,8 +358,12 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-amber-700 dark:text-amber-300">New Clients</p>
-                <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">{todayStats.newClients}</p>
+                <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                  New Clients
+                </p>
+                <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
+                  {todayStats.newClients}
+                </p>
               </div>
               <Users className="w-8 h-8 text-amber-600 opacity-50" />
             </div>
@@ -340,8 +374,12 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">VIP Clients</p>
-                <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">{todayStats.vipClients}</p>
+                <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                  VIP Clients
+                </p>
+                <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
+                  {todayStats.vipClients}
+                </p>
               </div>
               <Crown className="w-8 h-8 text-emerald-600 opacity-50" />
             </div>
@@ -352,10 +390,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
       {/* Main Calendar */}
       <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 overflow-hidden">
         <CardContent className="p-0">
-          <SimpleCalendar
-            events={events}
-            className="modern-salon-calendar"
-          />
+          <SimpleCalendar events={events} className="modern-salon-calendar" />
         </CardContent>
       </Card>
 

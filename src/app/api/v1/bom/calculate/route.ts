@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
-
 interface BOMCalculationRequest {
   organization_id: string
   bom_data: {
@@ -13,7 +12,7 @@ interface BOMCalculationRequest {
   }
   cost_components?: {
     include_materials?: boolean
-    include_labor?: boolean  
+    include_labor?: boolean
     include_overhead?: boolean
     include_subcontracting?: boolean
     cost_center_allocation?: boolean
@@ -91,14 +90,16 @@ interface BOMCalculationResponse {
 async function calculateStandardCost(bomData: any, organizationId: string): Promise<any> {
   try {
     const supabase = getSupabaseAdmin()
-    
+
     // Get BOM template for the item
     const { data: bomTemplate } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'bom_template')
       .ilike('smart_code', '%BOM%')
@@ -124,17 +125,23 @@ async function calculateStandardCost(bomData: any, organizationId: string): Prom
         // Get component costs from core_entities
         const { data: componentEntities } = await supabase
           .from('core_entities')
-          .select(`
+          .select(
+            `
             *,
             dynamic_data:core_dynamic_data(*)
-          `)
+          `
+          )
           .eq('organization_id', organizationId)
           .eq('entity_type', 'product')
 
         for (const entity of componentEntities || []) {
-          const standardCost = entity.dynamic_data?.find((d: any) => d.field_name === 'standard_cost')?.field_value_number || 0
+          const standardCost =
+            entity.dynamic_data?.find((d: any) => d.field_name === 'standard_cost')
+              ?.field_value_number || 0
           const quantity = bomData.quantity || 1
-          const wasteFactor = entity.dynamic_data?.find((d: any) => d.field_name === 'waste_factor')?.field_value_number || 0
+          const wasteFactor =
+            entity.dynamic_data?.find((d: any) => d.field_name === 'waste_factor')
+              ?.field_value_number || 0
 
           const componentCost = standardCost * quantity * (1 + wasteFactor)
           materialCost += componentCost
@@ -156,7 +163,7 @@ async function calculateStandardCost(bomData: any, organizationId: string): Prom
     for (const rule of calculationRules) {
       if (rule.rule === 'total_labor_cost') {
         // Extract labor calculation from formula
-        const laborRate = 25.00 // This would come from work center master data
+        const laborRate = 25.0 // This would come from work center master data
         const setupTime = 0.5 // hours
         const runTime = bomData.quantity * 0.1 // hours per unit
 
@@ -204,7 +211,6 @@ async function calculateStandardCost(bomData: any, organizationId: string): Prom
         }
       }
     }
-
   } catch (error) {
     throw new Error(`Standard cost calculation failed: ${(error as Error).message}`)
   }
@@ -214,14 +220,16 @@ async function calculateStandardCost(bomData: any, organizationId: string): Prom
 async function calculateActualCost(bomData: any, organizationId: string): Promise<any> {
   try {
     const supabase = getSupabaseAdmin()
-    
+
     // Get actual transaction costs from universal_transactions
     const { data: actualTransactions } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         lines:universal_transaction_lines(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('transaction_type', 'material_receipt')
       .gte('transaction_date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) // Last 30 days
@@ -229,7 +237,7 @@ async function calculateActualCost(bomData: any, organizationId: string): Promis
     // Calculate moving average actual costs
     let actualMaterialCost = 0
     let actualLaborCost = 0
-    
+
     const materialComponents = []
     for (const transaction of actualTransactions || []) {
       for (const line of transaction.lines || []) {
@@ -274,26 +282,29 @@ async function calculateActualCost(bomData: any, organizationId: string): Promis
         },
         labor: {
           total: actualLaborCost,
-          operations: [{
-            operation_id: 'ACT-001',
-            operation_name: 'Actual Labor',
-            time_hours: actualLaborCost / 25, // Assuming $25/hour
-            rate_per_hour: 25,
-            total_cost: actualLaborCost
-          }]
+          operations: [
+            {
+              operation_id: 'ACT-001',
+              operation_name: 'Actual Labor',
+              time_hours: actualLaborCost / 25, // Assuming $25/hour
+              rate_per_hour: 25,
+              total_cost: actualLaborCost
+            }
+          ]
         },
         overhead: {
           total: actualOverheadCost,
-          allocations: [{
-            cost_center: 'CC-ACTUAL',
-            allocation_base: 'Actual Material + Labor',
-            rate: 0.12,
-            total_cost: actualOverheadCost
-          }]
+          allocations: [
+            {
+              cost_center: 'CC-ACTUAL',
+              allocation_base: 'Actual Material + Labor',
+              rate: 0.12,
+              total_cost: actualOverheadCost
+            }
+          ]
         }
       }
     }
-
   } catch (error) {
     throw new Error(`Actual cost calculation failed: ${(error as Error).message}`)
   }
@@ -314,7 +325,7 @@ async function calculateVarianceAnalysis(standardCost: any, actualCost: any): Pr
   const actMaterialCost = actualCost.cost_breakdown.materials.total
   variances.material_price_variance = actMaterialCost - stdMaterialCost
 
-  // Labor variances  
+  // Labor variances
   const stdLaborCost = standardCost.cost_breakdown.labor.total
   const actLaborCost = actualCost.cost_breakdown.labor.total
   variances.labor_rate_variance = actLaborCost - stdLaborCost
@@ -325,19 +336,20 @@ async function calculateVarianceAnalysis(standardCost: any, actualCost: any): Pr
   variances.overhead_variance = actOverheadCost - stdOverheadCost
 
   return {
-    total_variance: (actualCost.total_cost - standardCost.total_cost),
+    total_variance: actualCost.total_cost - standardCost.total_cost,
     variance_breakdown: variances,
-    variance_percentage: ((actualCost.total_cost - standardCost.total_cost) / standardCost.total_cost) * 100
+    variance_percentage:
+      ((actualCost.total_cost - standardCost.total_cost) / standardCost.total_cost) * 100
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body: BOMCalculationRequest = await request.json()
-    const { 
-      organization_id, 
-      bom_data, 
-      cost_components = {}, 
+    const {
+      organization_id,
+      bom_data,
+      cost_components = {},
       sap_compatibility = {},
       calculation_options = {}
     } = body
@@ -404,32 +416,36 @@ export async function POST(request: NextRequest) {
     const supabase = getSupabaseAdmin()
     const { data: calculationRecord } = await supabase
       .from('universal_transactions')
-      .insert([{
-        organization_id,
-        transaction_type: 'bom_calculation',
-        transaction_code: calculationId,
-        reference_number: bom_data.item_id,
-        transaction_date: new Date().toISOString(),
-        total_amount: calculationResult.total_cost,
-        smart_code: 'HERA.SYSTEM.FIN.TXN.BOM_CALC.v1',
-        business_context: {
-          calculation_type: bom_data.calculation_type,
-          costing_method: bom_data.costing_method,
-          sap_equivalent: 'Product Cost Management (PC)'
-        },
-        ai_insights: {
-          cost_optimization_suggestions: generateCostOptimizationSuggestions(calculationResult),
-          variance_alerts: calculationResult.variance_analysis ? generateVarianceAlerts(calculationResult.variance_analysis) : null
-        },
-        metadata: {
-          calculation_parameters: bom_data,
-          performance_metrics: {
-            calculation_time_ms: calculationTime,
-            sap_vs_hera_speed: `HERA: ${calculationTime}ms vs SAP: ~30-60 seconds`,
-            real_time_capability: true
+      .insert([
+        {
+          organization_id,
+          transaction_type: 'bom_calculation',
+          transaction_code: calculationId,
+          reference_number: bom_data.item_id,
+          transaction_date: new Date().toISOString(),
+          total_amount: calculationResult.total_cost,
+          smart_code: 'HERA.SYSTEM.FIN.TXN.BOM_CALC.v1',
+          business_context: {
+            calculation_type: bom_data.calculation_type,
+            costing_method: bom_data.costing_method,
+            sap_equivalent: 'Product Cost Management (PC)'
+          },
+          ai_insights: {
+            cost_optimization_suggestions: generateCostOptimizationSuggestions(calculationResult),
+            variance_alerts: calculationResult.variance_analysis
+              ? generateVarianceAlerts(calculationResult.variance_analysis)
+              : null
+          },
+          metadata: {
+            calculation_parameters: bom_data,
+            performance_metrics: {
+              calculation_time_ms: calculationTime,
+              sap_vs_hera_speed: `HERA: ${calculationTime}ms vs SAP: ~30-60 seconds`,
+              real_time_capability: true
+            }
           }
         }
-      }])
+      ])
       .select()
 
     const response: BOMCalculationResponse = {
@@ -448,11 +464,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('BOM calculation error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'BOM calculation failed',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -467,28 +482,18 @@ export async function GET() {
     description: 'HERA BOM Calculation Engine - SAP PC Module Equivalent',
     sap_modules_replaced: [
       'SAP PC (Product Cost Management)',
-      'SAP ML (Material Ledger)', 
+      'SAP ML (Material Ledger)',
       'SAP CO-PA (Profitability Analysis)',
       'SAP Universal Journal'
     ],
-    calculation_types: [
-      'standard_cost',
-      'actual_cost', 
-      'planned_cost',
-      'variance_analysis'
-    ],
-    costing_methods: [
-      'direct_materials',
-      'activity_based',
-      'full_absorption',
-      'marginal_costing'
-    ],
+    calculation_types: ['standard_cost', 'actual_cost', 'planned_cost', 'variance_analysis'],
+    costing_methods: ['direct_materials', 'activity_based', 'full_absorption', 'marginal_costing'],
     hera_advantages: {
-      'real_time_calculation': 'Instant results vs SAP 30-60 seconds',
-      'no_period_end_processing': 'Continuous costing vs monthly/quarterly SAP runs',
-      'unified_data_model': 'Single source of truth vs multiple SAP tables',
-      'automatic_variance_analysis': 'Built-in vs separate SAP CO-PA setup',
-      'unlimited_cost_components': 'Dynamic fields vs rigid SAP structures'
+      real_time_calculation: 'Instant results vs SAP 30-60 seconds',
+      no_period_end_processing: 'Continuous costing vs monthly/quarterly SAP runs',
+      unified_data_model: 'Single source of truth vs multiple SAP tables',
+      automatic_variance_analysis: 'Built-in vs separate SAP CO-PA setup',
+      unlimited_cost_components: 'Dynamic fields vs rigid SAP structures'
     },
     example_request: {
       organization_id: 'uuid-here',
@@ -517,21 +522,30 @@ export async function GET() {
 
 function generateCostOptimizationSuggestions(calculationResult: any): string[] {
   const suggestions = []
-  
-  const materialPercentage = (calculationResult.cost_breakdown.materials.total / calculationResult.total_cost) * 100
-  const laborPercentage = (calculationResult.cost_breakdown.labor.total / calculationResult.total_cost) * 100
-  const overheadPercentage = (calculationResult.cost_breakdown.overhead.total / calculationResult.total_cost) * 100
+
+  const materialPercentage =
+    (calculationResult.cost_breakdown.materials.total / calculationResult.total_cost) * 100
+  const laborPercentage =
+    (calculationResult.cost_breakdown.labor.total / calculationResult.total_cost) * 100
+  const overheadPercentage =
+    (calculationResult.cost_breakdown.overhead.total / calculationResult.total_cost) * 100
 
   if (materialPercentage > 70) {
-    suggestions.push('High material cost percentage - consider supplier negotiations or alternative materials')
+    suggestions.push(
+      'High material cost percentage - consider supplier negotiations or alternative materials'
+    )
   }
-  
+
   if (laborPercentage > 40) {
-    suggestions.push('High labor cost percentage - consider process automation or efficiency improvements')
+    suggestions.push(
+      'High labor cost percentage - consider process automation or efficiency improvements'
+    )
   }
-  
+
   if (overheadPercentage > 25) {
-    suggestions.push('High overhead allocation - review cost center assignments and allocation methods')
+    suggestions.push(
+      'High overhead allocation - review cost center assignments and allocation methods'
+    )
   }
 
   return suggestions
@@ -539,15 +553,17 @@ function generateCostOptimizationSuggestions(calculationResult: any): string[] {
 
 function generateVarianceAlerts(varianceAnalysis: any): string[] {
   const alerts = []
-  
+
   if (Math.abs(varianceAnalysis.variance_percentage) > 10) {
-    alerts.push(`High total variance: ${varianceAnalysis.variance_percentage.toFixed(2)}% - requires investigation`)
+    alerts.push(
+      `High total variance: ${varianceAnalysis.variance_percentage.toFixed(2)}% - requires investigation`
+    )
   }
-  
+
   if (varianceAnalysis.variance_breakdown.material_price_variance > 0) {
     alerts.push('Unfavorable material price variance detected')
   }
-  
+
   if (varianceAnalysis.variance_breakdown.labor_rate_variance > 0) {
     alerts.push('Unfavorable labor rate variance detected')
   }

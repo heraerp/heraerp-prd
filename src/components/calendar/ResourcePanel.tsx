@@ -9,7 +9,7 @@ import {
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
+  SheetTitle
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Users,
   Plus,
   Search,
@@ -35,7 +35,7 @@ import {
   Activity
 } from 'lucide-react'
 
-import { 
+import {
   ResourceManagerProps,
   UniversalResource,
   ResourceUtilization
@@ -61,7 +61,6 @@ export function ResourcePanel({
   is_open: boolean
   on_close: () => void
 }) {
-
   // ==================== STATE MANAGEMENT ====================
   const [activeTab, setActiveTab] = useState('list')
   const [searchQuery, setSearchQuery] = useState('')
@@ -78,12 +77,14 @@ export function ResourcePanel({
   // ==================== COMPUTED VALUES ====================
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      const matchesSearch = resource.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           resource.entity_code.toLowerCase().includes(searchQuery.toLowerCase())
-      
-      const matchesType = selectedResourceType === 'all' || resource.resource_type === selectedResourceType
+      const matchesSearch =
+        resource.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        resource.entity_code.toLowerCase().includes(searchQuery.toLowerCase())
+
+      const matchesType =
+        selectedResourceType === 'all' || resource.resource_type === selectedResourceType
       const matchesStatus = selectedStatus === 'all' || resource.status === selectedStatus
-      
+
       return matchesSearch && matchesType && matchesStatus
     })
   }, [resources, searchQuery, selectedResourceType, selectedStatus])
@@ -98,7 +99,7 @@ export function ResourcePanel({
     const active = resources.filter(r => r.status === 'active').length
     const maintenance = resources.filter(r => r.status === 'maintenance').length
     const inactive = resources.filter(r => r.status === 'inactive').length
-    
+
     return { total, active, maintenance, inactive }
   }, [resources])
 
@@ -133,19 +134,19 @@ export function ResourcePanel({
 
   const loadUtilizationData = async () => {
     if (!show_utilization) return
-    
+
     setLoading(true)
     try {
       const endDate = new Date()
       const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
-      
+
       const utilization = await calendarAPI.getResourceUtilization(
         resources.map(r => r.entity_id),
         startDate,
         endDate,
         'week'
       )
-      
+
       setUtilizationData(utilization)
     } catch (error) {
       console.error('Failed to load utilization data:', error)
@@ -163,21 +164,31 @@ export function ResourcePanel({
   // ==================== RENDER HELPERS ====================
   const getResourceIcon = (resourceType: string) => {
     switch (resourceType) {
-      case 'STAFF': return <Users className="h-4 w-4" />
-      case 'EQUIPMENT': return <Wrench className="h-4 w-4" />
-      case 'ROOM': return <MapPin className="h-4 w-4" />
-      case 'VEHICLE': return <Activity className="h-4 w-4" />
-      case 'VIRTUAL': return <Settings className="h-4 w-4" />
-      default: return <Users className="h-4 w-4" />
+      case 'STAFF':
+        return <Users className="h-4 w-4" />
+      case 'EQUIPMENT':
+        return <Wrench className="h-4 w-4" />
+      case 'ROOM':
+        return <MapPin className="h-4 w-4" />
+      case 'VEHICLE':
+        return <Activity className="h-4 w-4" />
+      case 'VIRTUAL':
+        return <Settings className="h-4 w-4" />
+      default:
+        return <Users className="h-4 w-4" />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'maintenance': return 'bg-orange-100 text-orange-800'
-      case 'inactive': return 'bg-gray-100 text-gray-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'active':
+        return 'bg-green-100 text-green-800'
+      case 'maintenance':
+        return 'bg-orange-100 text-orange-800'
+      case 'inactive':
+        return 'bg-gray-100 text-gray-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -187,7 +198,7 @@ export function ResourcePanel({
 
   const renderResourceCard = (resource: UniversalResource) => {
     const utilization = getUtilizationForResource(resource.entity_id)
-    
+
     return (
       <Card key={resource.entity_id} className="mb-4">
         <CardHeader className="pb-3">
@@ -201,20 +212,16 @@ export function ResourcePanel({
                 </CardDescription>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Badge className={getStatusColor(resource.status)} variant="secondary">
                 {resource.status}
               </Badge>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setEditingResource(resource)}
-              >
+
+              <Button variant="ghost" size="sm" onClick={() => setEditingResource(resource)}>
                 <Pencil className="h-4 w-4" />
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -225,7 +232,7 @@ export function ResourcePanel({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-3">
           {/* Resource Details */}
           <div className="grid grid-cols-2 gap-4 text-sm">
@@ -239,13 +246,13 @@ export function ResourcePanel({
                 <span className="font-medium">Location:</span> {resource.location}
               </div>
             )}
-            
+
             {resource.cost_per_hour && (
               <div>
                 <span className="font-medium">Cost/Hour:</span> ${resource.cost_per_hour}
               </div>
             )}
-            
+
             {resource.skills && resource.skills.length > 0 && (
               <div className="col-span-2">
                 <span className="font-medium">Skills:</span>
@@ -264,7 +271,7 @@ export function ResourcePanel({
               </div>
             )}
           </div>
-          
+
           {/* Utilization */}
           {show_utilization && utilization && (
             <div className="space-y-2">
@@ -272,26 +279,27 @@ export function ResourcePanel({
                 <span className="font-medium">Utilization (30 days)</span>
                 <span>{Math.round(utilization.utilization_percentage)}%</span>
               </div>
-              <Progress 
-                value={utilization.utilization_percentage} 
-                className="h-2"
-              />
+              <Progress value={utilization.utilization_percentage} className="h-2" />
               <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
                 <div>
                   <span className="font-medium">{utilization.appointments_count}</span> appointments
                 </div>
                 <div>
-                  <span className="font-medium">{Math.round(utilization.total_booked_hours)}</span> hours booked
+                  <span className="font-medium">{Math.round(utilization.total_booked_hours)}</span>{' '}
+                  hours booked
                 </div>
                 {utilization.revenue_generated && (
                   <div>
-                    <span className="font-medium">${utilization.revenue_generated.toLocaleString()}</span> revenue
+                    <span className="font-medium">
+                      ${utilization.revenue_generated.toLocaleString()}
+                    </span>{' '}
+                    revenue
                   </div>
                 )}
               </div>
             </div>
           )}
-          
+
           {/* Smart Code */}
           <div className="text-xs text-gray-500">
             <code>{resource.smart_code}</code>
@@ -316,14 +324,15 @@ export function ResourcePanel({
       )
     }
 
-    const avgUtilization = utilizationData.reduce((sum, u) => sum + u.utilization_percentage, 0) / utilizationData.length
+    const avgUtilization =
+      utilizationData.reduce((sum, u) => sum + u.utilization_percentage, 0) / utilizationData.length
     const totalRevenue = utilizationData.reduce((sum, u) => sum + (u.revenue_generated || 0), 0)
     const totalAppointments = utilizationData.reduce((sum, u) => sum + u.appointments_count, 0)
-    
+
     const topPerformers = utilizationData
       .sort((a, b) => b.utilization_percentage - a.utilization_percentage)
       .slice(0, 5)
-    
+
     const underUtilized = utilizationData
       .filter(u => u.utilization_percentage < 50)
       .sort((a, b) => a.utilization_percentage - b.utilization_percentage)
@@ -339,14 +348,14 @@ export function ResourcePanel({
               <div className="text-sm text-gray-600">Avg Utilization</div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold">{totalAppointments}</div>
               <div className="text-sm text-gray-600">Total Appointments</div>
             </CardContent>
           </Card>
-          
+
           {totalRevenue > 0 && (
             <Card>
               <CardContent className="p-4 text-center">
@@ -365,13 +374,13 @@ export function ResourcePanel({
             </CardHeader>
             <CardContent className="space-y-3">
               {topPerformers.map(utilization => (
-                <div key={utilization.resource_entity_id} className="flex items-center justify-between">
+                <div
+                  key={utilization.resource_entity_id}
+                  className="flex items-center justify-between"
+                >
                   <span className="font-medium">{utilization.resource_name}</span>
                   <div className="flex items-center space-x-2">
-                    <Progress 
-                      value={utilization.utilization_percentage} 
-                      className="w-20 h-2"
-                    />
+                    <Progress value={utilization.utilization_percentage} className="w-20 h-2" />
                     <span className="text-sm w-12 text-right">
                       {Math.round(utilization.utilization_percentage)}%
                     </span>
@@ -393,13 +402,13 @@ export function ResourcePanel({
             </CardHeader>
             <CardContent className="space-y-3">
               {underUtilized.map(utilization => (
-                <div key={utilization.resource_entity_id} className="flex items-center justify-between">
+                <div
+                  key={utilization.resource_entity_id}
+                  className="flex items-center justify-between"
+                >
                   <span className="font-medium">{utilization.resource_name}</span>
                   <div className="flex items-center space-x-2">
-                    <Progress 
-                      value={utilization.utilization_percentage} 
-                      className="w-20 h-2"
-                    />
+                    <Progress value={utilization.utilization_percentage} className="w-20 h-2" />
                     <span className="text-sm w-12 text-right text-orange-600">
                       {Math.round(utilization.utilization_percentage)}%
                     </span>
@@ -424,9 +433,7 @@ export function ResourcePanel({
               <span>Resource Management</span>
               <Badge variant="outline">{industry_type}</Badge>
             </SheetTitle>
-            <SheetDescription>
-              Manage calendar resources for {organization_id}
-            </SheetDescription>
+            <SheetDescription>Manage calendar resources for {organization_id}</SheetDescription>
           </SheetHeader>
 
           <div className="mt-6">
@@ -446,7 +453,9 @@ export function ResourcePanel({
               </Card>
               <Card>
                 <CardContent className="p-3 text-center">
-                  <div className="text-lg font-bold text-orange-600">{resourceStats.maintenance}</div>
+                  <div className="text-lg font-bold text-orange-600">
+                    {resourceStats.maintenance}
+                  </div>
                   <div className="text-xs text-gray-600">Maintenance</div>
                 </CardContent>
               </Card>
@@ -462,11 +471,9 @@ export function ResourcePanel({
               <div className="flex items-center justify-between mb-4">
                 <TabsList>
                   <TabsTrigger value="list">Resources</TabsTrigger>
-                  {show_analytics && (
-                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                  )}
+                  {show_analytics && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
                 </TabsList>
-                
+
                 <Button onClick={() => setIsCreateModalOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add Resource
@@ -481,26 +488,28 @@ export function ResourcePanel({
                     <Input
                       placeholder="Search resources..."
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={e => setSearchQuery(e.target.value)}
                       className="pl-10"
                     />
                   </div>
-                  
+
                   <div className="flex space-x-2">
                     <select
                       value={selectedResourceType}
-                      onChange={(e) => setSelectedResourceType(e.target.value)}
+                      onChange={e => setSelectedResourceType(e.target.value)}
                       className="px-3 py-2 border rounded-md text-sm"
                     >
                       <option value="all">All Types</option>
                       {resourceTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
                       ))}
                     </select>
-                    
+
                     <select
                       value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
+                      onChange={e => setSelectedStatus(e.target.value)}
                       className="px-3 py-2 border rounded-md text-sm"
                     >
                       <option value="all">All Status</option>

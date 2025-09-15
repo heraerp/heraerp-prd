@@ -1,7 +1,7 @@
 /**
  * HERA CRM Import/Export API Endpoint
  * Handles data migration and bulk operations
- * 
+ *
  * Project Manager Task: Data Import/Export Backend
  */
 
@@ -31,7 +31,11 @@ export async function POST(request: NextRequest) {
 
       case 'import_opportunities': {
         const { opportunities, template } = data
-        const result = await importExportService.importOpportunities(opportunities, template, options)
+        const result = await importExportService.importOpportunities(
+          opportunities,
+          template,
+          options
+        )
         return NextResponse.json(result)
       }
 
@@ -55,16 +59,16 @@ export async function POST(request: NextRequest) {
       case 'dry_run_import': {
         const { importData, template, entityType } = data
         let result
-        
+
         if (entityType === 'contact') {
-          result = await importExportService.importContacts(importData, template, { 
-            ...options, 
-            dryRun: true 
+          result = await importExportService.importContacts(importData, template, {
+            ...options,
+            dryRun: true
           })
         } else if (entityType === 'opportunity') {
-          result = await importExportService.importOpportunities(importData, template, { 
-            ...options, 
-            dryRun: true 
+          result = await importExportService.importOpportunities(importData, template, {
+            ...options,
+            dryRun: true
           })
         } else {
           return NextResponse.json(
@@ -72,22 +76,19 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        
+
         return NextResponse.json(result)
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('CRM Import/Export API error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
       },
       { status: 500 }
     )
@@ -118,7 +119,7 @@ export async function GET(request: NextRequest) {
       case 'export_sample': {
         // Generate sample CSV for download
         const entityType = searchParams.get('entityType') as 'contact' | 'opportunity' | 'task'
-        
+
         let sampleData: any[]
         switch (entityType) {
           case 'contact':
@@ -165,9 +166,7 @@ export async function GET(request: NextRequest) {
         const headers = Object.keys(sampleData[0] || {})
         const csvLines = [
           headers.map(h => `"${h}"`).join(','),
-          ...sampleData.map(item => 
-            headers.map(h => `"${item[h] || ''}"`).join(',')
-          )
+          ...sampleData.map(item => headers.map(h => `"${item[h] || ''}"`).join(','))
         ]
         const csvContent = csvLines.join('\n')
 
@@ -180,17 +179,14 @@ export async function GET(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('CRM Import/Export API error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
       },
       { status: 500 }
     )

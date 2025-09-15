@@ -17,35 +17,44 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'convert_legacy_crm':
         return await convertLegacyCRMData(data, organization_id)
-      
+
       case 'convert_and_import':
         return await convertAndImportToCRM(data, organization_id)
-      
+
       case 'analyze_structure':
         return await analyzeLegacyStructure(data)
-      
+
       case 'smart_analysis':
         return await performSmartAnalysis(data, organization_id)
-      
+
       case 'preview_mapping':
         return await previewMapping(data, organization_id)
-      
+
       case 'validate_data':
         return await validateLegacyData(data)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: ['convert_legacy_crm', 'convert_and_import', 'analyze_structure', 'smart_analysis', 'preview_mapping', 'validate_data']
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: [
+              'convert_legacy_crm',
+              'convert_and_import',
+              'analyze_structure',
+              'smart_analysis',
+              'preview_mapping',
+              'validate_data'
+            ]
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Legacy CRM Conversion API error:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         message: 'Legacy data conversion failed',
         error: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -59,10 +68,13 @@ export async function POST(request: NextRequest) {
  */
 async function convertLegacyCRMData(legacyData: LegacyCRMRecord[], organizationId?: string) {
   if (!legacyData || !Array.isArray(legacyData)) {
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid data format. Expected array of legacy CRM records.'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid data format. Expected array of legacy CRM records.'
+      },
+      { status: 400 }
+    )
   }
 
   const converter = new HERALegacyCRMConverter(organizationId)
@@ -91,22 +103,28 @@ async function convertLegacyCRMData(legacyData: LegacyCRMRecord[], organizationI
  */
 async function convertAndImportToCRM(legacyData: LegacyCRMRecord[], organizationId?: string) {
   if (!legacyData || !Array.isArray(legacyData)) {
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid data format. Expected array of legacy CRM records.'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid data format. Expected array of legacy CRM records.'
+      },
+      { status: 400 }
+    )
   }
 
   const converter = new HERALegacyCRMConverter(organizationId)
-  
+
   try {
     // 1. Convert to HERA Universal format
     const universalMapping = await converter.convertLegacyCRMData(legacyData)
     const conversionLog = converter.getConversionLog()
-    
+
     // 2. Import to live HERA database
-    const importResults = await importToHERADatabase(universalMapping, organizationId || 'imported_crm_org')
-    
+    const importResults = await importToHERADatabase(
+      universalMapping,
+      organizationId || 'imported_crm_org'
+    )
+
     return NextResponse.json({
       success: true,
       data: {
@@ -124,18 +142,20 @@ async function convertAndImportToCRM(legacyData: LegacyCRMRecord[], organization
         transaction_lines_created: importResults.transaction_lines_imported,
         database_status: importResults.success ? 'imported' : 'failed'
       },
-      message: importResults.success 
+      message: importResults.success
         ? 'Legacy CRM data successfully converted and imported to HERA CRM'
         : 'Conversion succeeded but database import failed'
     })
-    
   } catch (error) {
     console.error('Convert and import error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to convert and import legacy data',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to convert and import legacy data',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -162,7 +182,7 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
     if (isDemoMode) {
       // Demo mode - simulate successful import
       console.log('🎯 Running in DEMO MODE - Simulating database import')
-      
+
       results.organizations_imported = universalMapping.core_organizations.length
       results.entities_imported = universalMapping.core_entities.length
       results.dynamic_data_imported = universalMapping.core_dynamic_data.length
@@ -170,14 +190,14 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
       results.transactions_imported = universalMapping.universal_transactions.length
       results.transaction_lines_imported = universalMapping.universal_transaction_lines.length
       results.success = true
-      
+
       console.log(`🎯 DEMO: Simulated import of ${results.entities_imported} entities`)
       return results
     }
 
     // Production mode - actual database import
     results.demo_mode = false
-    
+
     // Import Organizations
     for (const org of universalMapping.core_organizations) {
       try {
@@ -245,10 +265,9 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
     }
 
     results.success = results.errors.length === 0
-    
+
     console.log(`🎯 HERA Database Import Complete:`, results)
     return results
-
   } catch (error) {
     console.error('Database import failed:', error)
     results.errors.push(`Database import failed: ${error}`)
@@ -261,15 +280,18 @@ async function importToHERADatabase(universalMapping: any, organizationId: strin
  */
 async function performSmartAnalysis(legacyData: LegacyCRMRecord[], organizationId?: string) {
   if (!legacyData || !Array.isArray(legacyData) || legacyData.length === 0) {
-    return NextResponse.json({
-      success: false,
-      error: 'No data provided for smart analysis'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'No data provided for smart analysis'
+      },
+      { status: 400 }
+    )
   }
 
   try {
     const converter = new HERALegacyCRMConverter(organizationId)
-    
+
     // This will trigger the smart mapping engine analysis
     const sampleConversion = await converter.convertLegacyCRMData(legacyData.slice(0, 5))
     const intelligentMapping = converter.getIntelligentMapping()
@@ -283,20 +305,27 @@ async function performSmartAnalysis(legacyData: LegacyCRMRecord[], organizationI
         ai_insights: {
           // JSON Structure Analysis
           json_complexity: intelligentMapping?.json_structure_analysis.nested_objects.length || 0,
-          recommended_storage_strategies: intelligentMapping?.json_structure_analysis.recommended_storage || [],
-          
+          recommended_storage_strategies:
+            intelligentMapping?.json_structure_analysis.recommended_storage || [],
+
           // Relationship Detection
-          detected_relationships: intelligentMapping?.relationship_detection.detected_relationships.length || 0,
-          foreign_key_patterns: intelligentMapping?.relationship_detection.foreign_key_patterns.length || 0,
-          
+          detected_relationships:
+            intelligentMapping?.relationship_detection.detected_relationships.length || 0,
+          foreign_key_patterns:
+            intelligentMapping?.relationship_detection.foreign_key_patterns.length || 0,
+
           // Business Context
-          industry_detected: intelligentMapping?.business_context_analysis.industry_detection || 'general_business',
-          data_quality_score: intelligentMapping?.business_context_analysis.data_quality_assessment.completeness_score || 0.8,
-          
+          industry_detected:
+            intelligentMapping?.business_context_analysis.industry_detection || 'general_business',
+          data_quality_score:
+            intelligentMapping?.business_context_analysis.data_quality_assessment
+              .completeness_score || 0.8,
+
           // Confidence Scores
           overall_confidence: intelligentMapping?.confidence_scores.overall_confidence || 0.85,
-          json_confidence: intelligentMapping?.confidence_scores.json_analysis_confidence || 0.90,
-          relationship_confidence: intelligentMapping?.confidence_scores.relationship_confidence || 0.80,
+          json_confidence: intelligentMapping?.confidence_scores.json_analysis_confidence || 0.9,
+          relationship_confidence:
+            intelligentMapping?.confidence_scores.relationship_confidence || 0.8,
           mapping_confidence: intelligentMapping?.confidence_scores.mapping_confidence || 0.85
         },
         processing_recommendations: [
@@ -309,14 +338,16 @@ async function performSmartAnalysis(legacyData: LegacyCRMRecord[], organizationI
       conversion_log: conversionLog,
       message: 'AI-powered smart analysis completed successfully'
     })
-
   } catch (error) {
     console.error('Smart analysis error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to perform smart analysis',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to perform smart analysis',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -325,20 +356,23 @@ async function performSmartAnalysis(legacyData: LegacyCRMRecord[], organizationI
  */
 async function analyzeLegacyStructure(legacyData: LegacyCRMRecord[]) {
   if (!legacyData || !Array.isArray(legacyData) || legacyData.length === 0) {
-    return NextResponse.json({
-      success: false,
-      error: 'No data provided for analysis'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'No data provided for analysis'
+      },
+      { status: 400 }
+    )
   }
 
   const sample = legacyData[0]
   const allFields = Object.keys(sample)
-  
+
   // Analyze field types and patterns
   const fieldAnalysis = allFields.map(field => {
     const values = legacyData.slice(0, 10).map(record => record[field as keyof LegacyCRMRecord])
     const nonEmptyValues = values.filter(v => v !== null && v !== undefined && v !== '')
-    
+
     return {
       field_name: field,
       sample_values: nonEmptyValues.slice(0, 3),
@@ -384,16 +418,19 @@ async function analyzeLegacyStructure(legacyData: LegacyCRMRecord[]) {
  */
 async function previewMapping(legacyData: LegacyCRMRecord[], organizationId?: string) {
   if (!legacyData || legacyData.length === 0) {
-    return NextResponse.json({
-      success: false,
-      error: 'No data provided for preview'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'No data provided for preview'
+      },
+      { status: 400 }
+    )
   }
 
   // Take first record for preview
   const sampleRecord = legacyData[0]
   const converter = new HERALegacyCRMConverter(organizationId)
-  
+
   // Convert just the sample record
   const previewMapping = await converter.convertLegacyCRMData([sampleRecord])
 
@@ -420,10 +457,13 @@ async function previewMapping(legacyData: LegacyCRMRecord[], organizationId?: st
  */
 async function validateLegacyData(legacyData: LegacyCRMRecord[]) {
   if (!legacyData || !Array.isArray(legacyData)) {
-    return NextResponse.json({
-      success: false,
-      error: 'Invalid data format for validation'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Invalid data format for validation'
+      },
+      { status: 400 }
+    )
   }
 
   const validationResults = {
@@ -436,17 +476,17 @@ async function validateLegacyData(legacyData: LegacyCRMRecord[]) {
 
   legacyData.forEach((record, index) => {
     const recordErrors = []
-    
+
     // Required field validation
     if (!record.id) recordErrors.push('Missing ID')
     if (!record.company_name) recordErrors.push('Missing company name')
     if (!record.created_at) recordErrors.push('Missing created_at timestamp')
-    
+
     // Data type validation
     if (record.amount && isNaN(Number(record.amount))) {
       recordErrors.push('Invalid amount format')
     }
-    
+
     // Date validation
     if (record.next_call_date && isNaN(Date.parse(record.next_call_date))) {
       recordErrors.push('Invalid next_call_date format')
@@ -472,7 +512,10 @@ async function validateLegacyData(legacyData: LegacyCRMRecord[]) {
       })
     }
 
-    if (record.contact_no_promoter_1 && !/^\d+$/.test(record.contact_no_promoter_1.replace(/[+\-\s()]/g, ''))) {
+    if (
+      record.contact_no_promoter_1 &&
+      !/^\d+$/.test(record.contact_no_promoter_1.replace(/[+\-\s()]/g, ''))
+    ) {
       validationResults.data_quality_issues.push({
         record_index: index,
         issue: 'Invalid phone number format',
@@ -505,18 +548,23 @@ async function validateLegacyData(legacyData: LegacyCRMRecord[]) {
  */
 function suggestHERAMapping(fieldName: string, sampleValue: any): string {
   const field = fieldName.toLowerCase()
-  
+
   if (field.includes('id')) return 'core_entities.entity_id'
   if (field.includes('company') || field.includes('name')) return 'core_entities.entity_name'
-  if (field.includes('amount') || field.includes('value')) return 'universal_transactions.total_amount'
+  if (field.includes('amount') || field.includes('value'))
+    return 'universal_transactions.total_amount'
   if (field.includes('date')) return 'universal_transactions.transaction_date or core_dynamic_data'
-  if (field.includes('contact') || field.includes('phone')) return 'core_dynamic_data (contact info)'
-  if (field.includes('sector') || field.includes('industry')) return 'core_dynamic_data (classification)'
+  if (field.includes('contact') || field.includes('phone'))
+    return 'core_dynamic_data (contact info)'
+  if (field.includes('sector') || field.includes('industry'))
+    return 'core_dynamic_data (classification)'
   if (field.includes('status')) return 'core_entities.status'
   if (field.includes('custom') || field.includes('fields')) return 'core_dynamic_data (JSON)'
-  if (field.includes('promoter') || field.includes('designation')) return 'core_entities (contact) + core_dynamic_data'
-  if (field.includes('country') || field.includes('state') || field.includes('city')) return 'core_organizations or core_dynamic_data'
-  
+  if (field.includes('promoter') || field.includes('designation'))
+    return 'core_entities (contact) + core_dynamic_data'
+  if (field.includes('country') || field.includes('state') || field.includes('city'))
+    return 'core_organizations or core_dynamic_data'
+
   return 'core_dynamic_data (generic field)'
 }
 
@@ -534,7 +582,7 @@ export async function GET(request: NextRequest) {
     supported_formats: ['Legacy CRM CSV exports', 'JSON format', 'Custom field mapping'],
     hera_universal_tables: [
       'core_organizations',
-      'core_entities', 
+      'core_entities',
       'core_dynamic_data',
       'core_relationships',
       'universal_transactions',

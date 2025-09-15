@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { 
+import {
   Building2,
   Users,
   Target,
@@ -38,12 +38,42 @@ export function CRMLayout({ children }: CRMLayoutProps) {
 
   const navigation: NavItem[] = [
     { name: 'Dashboard', href: '/crm/dashboard', icon: LayoutDashboard },
-    { name: 'Accounts', href: '/crm/accounts', icon: Building2, badge: '324', badgeColor: 'bg-[#FF5A09]' },
-    { name: 'Contacts', href: '/crm/contacts', icon: Users, badge: '1,248', badgeColor: 'bg-[#ec7f37]' },
-    { name: 'Opportunities', href: '/crm/opportunities', icon: Target, badge: '89', badgeColor: 'bg-[#be4f0c]' },
+    {
+      name: 'Accounts',
+      href: '/crm/accounts',
+      icon: Building2,
+      badge: '324',
+      badgeColor: 'bg-[#FF5A09]'
+    },
+    {
+      name: 'Contacts',
+      href: '/crm/contacts',
+      icon: Users,
+      badge: '1,248',
+      badgeColor: 'bg-[#ec7f37]'
+    },
+    {
+      name: 'Opportunities',
+      href: '/crm/opportunities',
+      icon: Target,
+      badge: '89',
+      badgeColor: 'bg-[#be4f0c]'
+    },
     { name: 'Leads', href: '/crm/leads', icon: UserPlus, badge: '156', badgeColor: 'bg-[#FF5A09]' },
-    { name: 'Campaigns', href: '/crm/campaigns', icon: Megaphone, badge: '12', badgeColor: 'bg-[#ec7f37]' },
-    { name: 'Cases', href: '/crm/cases', icon: Headphones, badge: '45', badgeColor: 'bg-[#be4f0c]' },
+    {
+      name: 'Campaigns',
+      href: '/crm/campaigns',
+      icon: Megaphone,
+      badge: '12',
+      badgeColor: 'bg-[#ec7f37]'
+    },
+    {
+      name: 'Cases',
+      href: '/crm/cases',
+      icon: Headphones,
+      badge: '45',
+      badgeColor: 'bg-[#be4f0c]'
+    },
     { name: 'Activities', href: '/crm/activities', icon: Activity },
     { name: 'Reports', href: '/crm/reports', icon: FileText },
     { name: 'Settings', href: '/crm/settings', icon: Settings }
@@ -63,11 +93,15 @@ export function CRMLayout({ children }: CRMLayoutProps) {
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg"
       >
-        {isMobileMenuOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
+        {isMobileMenuOpen ? (
+          <X className="h-5 w-5 text-white" />
+        ) : (
+          <Menu className="h-5 w-5 text-white" />
+        )}
       </button>
 
       {/* Sidebar - Desktop */}
-      <div 
+      <div
         className={`hidden lg:flex fixed inset-y-0 left-0 z-50 flex-col transition-all duration-300 ${
           isExpanded ? 'w-64' : 'w-20'
         }`}
@@ -76,7 +110,7 @@ export function CRMLayout({ children }: CRMLayoutProps) {
       >
         {/* Glassmorphism effect */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#FF5A09]/20 via-[#ec7f37]/10 to-[#be4f0c]/20 backdrop-blur-xl border-r border-white/10" />
-        
+
         {/* Navigation */}
         <div className="relative flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
           {/* Logo */}
@@ -97,7 +131,7 @@ export function CRMLayout({ children }: CRMLayoutProps) {
 
           {/* Navigation Items */}
           <nav className="flex-1 px-2 space-y-1">
-            {navigation.map((item) => {
+            {navigation.map(item => {
               const isActive = pathname === item.href
               return (
                 <Link
@@ -109,16 +143,20 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                       : 'text-white/70 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <item.icon className={`${
-                    isExpanded ? 'mr-3' : 'mx-auto'
-                  } h-5 w-5 flex-shrink-0 transition-all duration-200 ${
-                    isActive ? 'text-[#FF5A09]' : 'text-white/70 group-hover:text-white'
-                  }`} />
+                  <item.icon
+                    className={`${
+                      isExpanded ? 'mr-3' : 'mx-auto'
+                    } h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                      isActive ? 'text-[#FF5A09]' : 'text-white/70 group-hover:text-white'
+                    }`}
+                  />
                   {isExpanded && (
                     <>
                       <span className="flex-1">{item.name}</span>
                       {item.badge && (
-                        <span className={`ml-auto px-2 py-0.5 text-xs font-medium rounded-full text-white ${item.badgeColor}`}>
+                        <span
+                          className={`ml-auto px-2 py-0.5 text-xs font-medium rounded-full text-white ${item.badgeColor}`}
+                        >
                           {item.badge}
                         </span>
                       )}
@@ -142,7 +180,9 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                         <span className="text-xs text-white/70">{stat.label}</span>
                         <div className="flex items-center space-x-1">
                           <span className="text-xs font-medium text-white">{stat.value}</span>
-                          <span className={`text-xs ${stat.positive ? 'text-emerald-400' : 'text-red-400'}`}>
+                          <span
+                            className={`text-xs ${stat.positive ? 'text-emerald-400' : 'text-red-400'}`}
+                          >
                             {stat.change}
                           </span>
                         </div>
@@ -178,7 +218,7 @@ export function CRMLayout({ children }: CRMLayoutProps) {
 
             {/* Navigation Items */}
             <nav className="flex-1 px-2 space-y-1">
-              {navigation.map((item) => {
+              {navigation.map(item => {
                 const isActive = pathname === item.href
                 return (
                   <Link
@@ -191,12 +231,16 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                         : 'text-white/70 hover:text-white hover:bg-white/5'
                     }`}
                   >
-                    <item.icon className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-200 ${
-                      isActive ? 'text-[#FF5A09]' : 'text-white/70 group-hover:text-white'
-                    }`} />
+                    <item.icon
+                      className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                        isActive ? 'text-[#FF5A09]' : 'text-white/70 group-hover:text-white'
+                      }`}
+                    />
                     <span className="flex-1">{item.name}</span>
                     {item.badge && (
-                      <span className={`ml-auto px-2 py-0.5 text-xs font-medium rounded-full text-white ${item.badgeColor}`}>
+                      <span
+                        className={`ml-auto px-2 py-0.5 text-xs font-medium rounded-full text-white ${item.badgeColor}`}
+                      >
                         {item.badge}
                       </span>
                     )}
@@ -209,12 +253,12 @@ export function CRMLayout({ children }: CRMLayoutProps) {
       </div>
 
       {/* Main Content */}
-      <div className={`transition-all duration-300 ${
-        isExpanded ? 'lg:pl-64' : 'lg:pl-20'
-      } pt-14 lg:pt-0`}>
-        <main className="p-6">
-          {children}
-        </main>
+      <div
+        className={`transition-all duration-300 ${
+          isExpanded ? 'lg:pl-64' : 'lg:pl-20'
+        } pt-14 lg:pt-0`}
+      >
+        <main className="p-6">{children}</main>
       </div>
     </div>
   )

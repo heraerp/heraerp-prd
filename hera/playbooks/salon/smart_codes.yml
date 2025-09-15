@@ -1,0 +1,13 @@
+smart_code: HERA.SYSTEM.SMART_CODE.REGISTRY_OVERLAY.CORE.v1
+allocations:
+  - { code: HERA.SALON.APPOINTMENT.BOOKED.v1,           status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.APPOINTMENT.CHECKIN.v1,          status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.APPOINTMENT.COMPLETE.v1,         status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.APPOINTMENT.CANCELLED.v1,        status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.APPOINTMENT.NO_SHOW.v1,          status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.COMMS.SMS.CONFIRMATION.v1,       status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.COMMS.SMS.REMINDER.v1,           status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.POS.TXN.SALE.v1,                 status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.POS.TXN.SALE.INCL_TIP.v1,        status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.POS.TXN.SALE.EXCL_TIP.v1,        status: active,   owner: salon@yourco }
+  - { code: HERA.SALON.POS.PAYMENT.RECEIVED.v1,         status: active,   owner: salon@yourco }

@@ -51,15 +51,21 @@ export default function AuthLandingPage() {
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
             One Platform.
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"> Infinite Business.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              {' '}
+              Infinite Business.
+            </span>
           </h1>
           <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-            HERA's revolutionary 6-table architecture handles any business complexity. 
-            From restaurants to healthcare, manufacturing to services - all on one universal platform.
+            HERA's revolutionary 6-table architecture handles any business complexity. From
+            restaurants to healthcare, manufacturing to services - all on one universal platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/how-it-works">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8"
+              >
                 See Live Demos
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -83,11 +89,12 @@ export default function AuthLandingPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Multi-Organization</h3>
               <p className="text-slate-600">
-                Manage multiple businesses from one account. Each with its own subdomain and complete isolation.
+                Manage multiple businesses from one account. Each with its own subdomain and
+                complete isolation.
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
@@ -95,11 +102,12 @@ export default function AuthLandingPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Instant Apps</h3>
               <p className="text-slate-600">
-                Install pre-built apps for your industry in seconds. CRM, inventory, accounting - all integrated.
+                Install pre-built apps for your industry in seconds. CRM, inventory, accounting -
+                all integrated.
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="hover:shadow-lg transition-shadow">
             <CardContent className="p-6">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
@@ -107,7 +115,8 @@ export default function AuthLandingPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Enterprise Security</h3>
               <p className="text-slate-600">
-                Bank-grade security with complete data isolation between organizations. Your data is always safe.
+                Bank-grade security with complete data isolation between organizations. Your data is
+                always safe.
               </p>
             </CardContent>
           </Card>

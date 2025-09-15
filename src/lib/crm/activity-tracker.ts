@@ -1,7 +1,7 @@
 /**
  * HERA CRM Activity Tracker & Audit Trail System
  * Comprehensive activity logging and audit trail for production CRM
- * 
+ *
  * Project Manager Task: Activity History and Audit Trail (Task #8)
  */
 
@@ -15,20 +15,39 @@ export interface ActivityEvent {
   user_name: string
   user_email: string
   organization_id: string
-  
+
   // Activity details
-  action_type: 'create' | 'update' | 'delete' | 'view' | 'export' | 'import' | 'email' | 'call' | 'meeting' | 'note'
-  entity_type: 'contact' | 'opportunity' | 'task' | 'document' | 'email' | 'call' | 'meeting' | 'note' | 'import_batch'
+  action_type:
+    | 'create'
+    | 'update'
+    | 'delete'
+    | 'view'
+    | 'export'
+    | 'import'
+    | 'email'
+    | 'call'
+    | 'meeting'
+    | 'note'
+  entity_type:
+    | 'contact'
+    | 'opportunity'
+    | 'task'
+    | 'document'
+    | 'email'
+    | 'call'
+    | 'meeting'
+    | 'note'
+    | 'import_batch'
   entity_id: string
   entity_name: string
-  
+
   // Change tracking
   changes?: Array<{
     field: string
     old_value: any
     new_value: any
   }>
-  
+
   // Context and metadata
   description: string
   category: 'data_change' | 'communication' | 'document' | 'system' | 'integration'
@@ -37,12 +56,12 @@ export interface ActivityEvent {
   ip_address?: string
   user_agent?: string
   session_id?: string
-  
+
   // Related entities
   related_contacts?: string[]
   related_opportunities?: string[]
   related_tasks?: string[]
-  
+
   // Additional metadata
   metadata?: {
     [key: string]: any
@@ -308,7 +327,7 @@ export class ActivityTracker {
       // In production, this would query the actual database
       // For now, return demo activity data
       const demoActivities = this.generateDemoActivities()
-      
+
       let filteredActivities = demoActivities
 
       // Apply filters
@@ -343,15 +362,18 @@ export class ActivityTracker {
 
       if (filters.search_query) {
         const query = filters.search_query.toLowerCase()
-        filteredActivities = filteredActivities.filter(a =>
-          a.description.toLowerCase().includes(query) ||
-          a.entity_name.toLowerCase().includes(query) ||
-          a.user_name.toLowerCase().includes(query)
+        filteredActivities = filteredActivities.filter(
+          a =>
+            a.description.toLowerCase().includes(query) ||
+            a.entity_name.toLowerCase().includes(query) ||
+            a.user_name.toLowerCase().includes(query)
         )
       }
 
       // Sort by timestamp descending
-      filteredActivities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      filteredActivities.sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      )
 
       // Apply pagination
       const paginatedActivities = filteredActivities.slice(offset, offset + limit)
@@ -377,14 +399,17 @@ export class ActivityTracker {
   async getActivitySummary(days = 30): Promise<ActivitySummary> {
     try {
       const endDate = new Date()
-      const startDate = new Date(endDate.getTime() - (days * 24 * 60 * 60 * 1000))
+      const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000)
 
-      const { activities } = await this.getActivityHistory({
-        date_range: {
-          start: startDate.toISOString().split('T')[0],
-          end: endDate.toISOString().split('T')[0]
-        }
-      }, 1000) // Get more activities for summary
+      const { activities } = await this.getActivityHistory(
+        {
+          date_range: {
+            start: startDate.toISOString().split('T')[0],
+            end: endDate.toISOString().split('T')[0]
+          }
+        },
+        1000
+      ) // Get more activities for summary
 
       const summary: ActivitySummary = {
         total_activities: activities.length,
@@ -398,20 +423,23 @@ export class ActivityTracker {
       // Calculate summaries
       activities.forEach(activity => {
         // By type
-        summary.activities_by_type[activity.action_type] = 
+        summary.activities_by_type[activity.action_type] =
           (summary.activities_by_type[activity.action_type] || 0) + 1
 
         // By user
-        summary.activities_by_user[activity.user_name] = 
+        summary.activities_by_user[activity.user_name] =
           (summary.activities_by_user[activity.user_name] || 0) + 1
 
         // By category
-        summary.activities_by_category[activity.category] = 
+        summary.activities_by_category[activity.category] =
           (summary.activities_by_category[activity.category] || 0) + 1
       })
 
       // Most active entities
-      const entityCounts: Record<string, { entity_type: string; entity_name: string; count: number }> = {}
+      const entityCounts: Record<
+        string,
+        { entity_type: string; entity_name: string; count: number }
+      > = {}
       activities.forEach(activity => {
         const key = `${activity.entity_type}:${activity.entity_id}`
         if (!entityCounts[key]) {
@@ -478,22 +506,30 @@ export class ActivityTracker {
       } else {
         // Convert to CSV
         const headers = [
-          'timestamp', 'user_name', 'action_type', 'entity_type', 
-          'entity_name', 'description', 'category', 'severity'
+          'timestamp',
+          'user_name',
+          'action_type',
+          'entity_type',
+          'entity_name',
+          'description',
+          'category',
+          'severity'
         ]
-        
+
         const csvContent = [
           headers.join(','),
-          ...activities.map(activity => [
-            activity.timestamp,
-            `"${activity.user_name}"`,
-            activity.action_type,
-            activity.entity_type,
-            `"${activity.entity_name}"`,
-            `"${activity.description}"`,
-            activity.category,
-            activity.severity
-          ].join(','))
+          ...activities.map(activity =>
+            [
+              activity.timestamp,
+              `"${activity.user_name}"`,
+              activity.action_type,
+              activity.entity_type,
+              `"${activity.entity_name}"`,
+              `"${activity.description}"`,
+              activity.category,
+              activity.severity
+            ].join(',')
+          )
         ].join('\n')
 
         return {
@@ -504,9 +540,9 @@ export class ActivityTracker {
       }
     } catch (error) {
       console.error('Export error:', error)
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Export failed' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Export failed'
       }
     }
   }
@@ -548,23 +584,23 @@ export class ActivityTracker {
       ]
 
       if (activity.changes) {
-        dynamicFields.push({ 
-          field_name: 'changes', 
-          field_value: JSON.stringify(activity.changes) 
+        dynamicFields.push({
+          field_name: 'changes',
+          field_value: JSON.stringify(activity.changes)
         })
       }
 
       if (activity.related_contacts) {
-        dynamicFields.push({ 
-          field_name: 'related_contacts', 
-          field_value: JSON.stringify(activity.related_contacts) 
+        dynamicFields.push({
+          field_name: 'related_contacts',
+          field_value: JSON.stringify(activity.related_contacts)
         })
       }
 
       if (activity.metadata) {
-        dynamicFields.push({ 
-          field_name: 'activity_metadata', 
-          field_value: JSON.stringify(activity.metadata) 
+        dynamicFields.push({
+          field_name: 'activity_metadata',
+          field_value: JSON.stringify(activity.metadata)
         })
       }
 
@@ -612,7 +648,9 @@ export class ActivityTracker {
     for (let i = 0; i < 50; i++) {
       const daysBack = Math.floor(Math.random() * 7)
       const hoursBack = Math.floor(Math.random() * 24)
-      const timestamp = new Date(now.getTime() - (daysBack * 24 * 60 * 60 * 1000) - (hoursBack * 60 * 60 * 1000))
+      const timestamp = new Date(
+        now.getTime() - daysBack * 24 * 60 * 60 * 1000 - hoursBack * 60 * 60 * 1000
+      )
 
       const actions = ['create', 'update', 'view', 'delete', 'email', 'call'] as const
       const entities = ['contact', 'opportunity', 'task', 'document'] as const
@@ -651,9 +689,9 @@ export class ActivityTracker {
 
 // Factory function to create activity tracker
 export function createActivityTracker(
-  organizationId: string, 
-  userId: string, 
-  userName: string, 
+  organizationId: string,
+  userId: string,
+  userName: string,
   userEmail: string
 ): ActivityTracker {
   return new ActivityTracker(organizationId, userId, userName, userEmail)

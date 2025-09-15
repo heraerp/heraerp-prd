@@ -12,12 +12,12 @@ interface DocMetaProps {
   createdAt?: string
 }
 
-export default function DocMeta({ 
-  lastUpdated, 
-  author, 
-  readingTime, 
+export default function DocMeta({
+  lastUpdated,
+  author,
+  readingTime,
   editUrl,
-  createdAt 
+  createdAt
 }: DocMetaProps) {
   const formatDate = (dateString: string) => {
     try {
@@ -47,9 +47,7 @@ export default function DocMeta({
       {author && (
         <div className="flex items-center gap-2">
           <User className="h-4 w-4" />
-          <span>
-            {typeof author === 'string' ? author : author.name}
-          </span>
+          <span>{typeof author === 'string' ? author : author.name}</span>
         </div>
       )}
 
@@ -81,9 +79,9 @@ export default function DocMeta({
       {editUrl && (
         <div className="ml-auto">
           <Button asChild variant="ghost" size="sm">
-            <Link 
-              href={editUrl} 
-              target="_blank" 
+            <Link
+              href={editUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"
             >

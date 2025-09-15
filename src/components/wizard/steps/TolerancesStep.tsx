@@ -40,18 +40,18 @@ export const TolerancesStep: React.FC<TolerancesStepProps> = ({
           <CardContent className="space-y-4">
             <div>
               <Label>User Posting Limit ({data.organizationBasics.base_currency_code})</Label>
-              <Input 
-                type="number" 
-                value={tolerancesData.user_posting_limit} 
-                onChange={(e) => updateField('user_posting_limit', parseFloat(e.target.value))}
+              <Input
+                type="number"
+                value={tolerancesData.user_posting_limit}
+                onChange={e => updateField('user_posting_limit', parseFloat(e.target.value))}
               />
             </div>
             <div>
               <Label>Approval Required Above ({data.organizationBasics.base_currency_code})</Label>
-              <Input 
-                type="number" 
-                value={tolerancesData.require_approval_above} 
-                onChange={(e) => updateField('require_approval_above', parseFloat(e.target.value))}
+              <Input
+                type="number"
+                value={tolerancesData.require_approval_above}
+                onChange={e => updateField('require_approval_above', parseFloat(e.target.value))}
               />
             </div>
           </CardContent>
@@ -64,11 +64,11 @@ export const TolerancesStep: React.FC<TolerancesStepProps> = ({
           <CardContent className="space-y-4">
             <div>
               <Label>Payment Tolerance Amount ({data.organizationBasics.base_currency_code})</Label>
-              <Input 
-                type="number" 
+              <Input
+                type="number"
                 step="0.01"
-                value={tolerancesData.payment_tolerance_amount} 
-                onChange={(e) => updateField('payment_tolerance_amount', parseFloat(e.target.value))}
+                value={tolerancesData.payment_tolerance_amount}
+                onChange={e => updateField('payment_tolerance_amount', parseFloat(e.target.value))}
               />
             </div>
           </CardContent>
@@ -81,13 +81,13 @@ export const TolerancesStep: React.FC<TolerancesStepProps> = ({
           <CardContent className="space-y-4">
             <div>
               <Label>AI Confidence Threshold (0.0 - 1.0)</Label>
-              <Input 
-                type="number" 
+              <Input
+                type="number"
                 step="0.01"
                 min="0"
                 max="1"
-                value={tolerancesData.ai_confidence_threshold} 
-                onChange={(e) => updateField('ai_confidence_threshold', parseFloat(e.target.value))}
+                value={tolerancesData.ai_confidence_threshold}
+                onChange={e => updateField('ai_confidence_threshold', parseFloat(e.target.value))}
               />
               <p className="text-xs text-muted-foreground mt-1">
                 Minimum confidence required for auto-posting
@@ -102,9 +102,9 @@ export const TolerancesStep: React.FC<TolerancesStepProps> = ({
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-2">
-              <Switch 
+              <Switch
                 checked={tolerancesData.allow_negative_inventory}
-                onCheckedChange={(checked) => updateField('allow_negative_inventory', checked)}
+                onCheckedChange={checked => updateField('allow_negative_inventory', checked)}
               />
               <Label>Allow Negative Inventory</Label>
             </div>

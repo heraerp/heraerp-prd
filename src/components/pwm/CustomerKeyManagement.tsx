@@ -19,8 +19,8 @@ import {
   Sparkles,
   CheckCircle
 } from 'lucide-react'
-import { 
-  generateSimpleCustomerKey, 
+import {
+  generateSimpleCustomerKey,
   generateCustomerKeyBundle,
   exportCustomerKeys,
   CustomerKeyBundle
@@ -57,7 +57,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
 
   const downloadKey = (format: 'json' | 'paper') => {
     if (!keyBundle) return
-    
+
     const exported = exportCustomerKeys(keyBundle, format)
     const blob = new Blob([exported as string], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
@@ -78,7 +78,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={keyMode} onValueChange={(v) => setKeyMode(v as any)}>
+          <Tabs value={keyMode} onValueChange={v => setKeyMode(v as any)}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="automatic">
                 <Shield className="h-4 w-4 mr-2" />
@@ -101,8 +101,8 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
                 <AlertDescription>
                   <strong>Recommended for most users</strong>
                   <br />
-                  Your data is automatically encrypted using enterprise-grade security.
-                  No key management required.
+                  Your data is automatically encrypted using enterprise-grade security. No key
+                  management required.
                 </AlertDescription>
               </Alert>
 
@@ -155,8 +155,8 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
-                  Generate your own encryption key for additional security.
-                  You must save this key - we cannot recover it for you.
+                  Generate your own encryption key for additional security. You must save this key -
+                  we cannot recover it for you.
                 </AlertDescription>
               </Alert>
 
@@ -173,11 +173,7 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <label className="text-sm font-medium">Your Encryption Key</label>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowKey(!showKey)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => setShowKey(!showKey)}>
                         {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                     </div>
@@ -244,8 +240,8 @@ export function CustomerKeyManagement({ organizationId }: CustomerKeyManagementP
               <Alert>
                 <Shield className="h-4 w-4" />
                 <AlertDescription>
-                  Advanced key management with RSA-4096 encryption.
-                  Suitable for users with cryptographic expertise.
+                  Advanced key management with RSA-4096 encryption. Suitable for users with
+                  cryptographic expertise.
                 </AlertDescription>
               </Alert>
 

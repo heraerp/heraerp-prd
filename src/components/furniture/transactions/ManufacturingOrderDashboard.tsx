@@ -1,104 +1,110 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Factory, 
-  Package, 
-  Clock, 
-  CheckCircle, 
-  AlertCircle, 
+import React, { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Factory,
+  Package,
+  Clock,
+  CheckCircle,
+  AlertCircle,
   ChevronRight,
   Wrench,
   TrendingUp,
   Calendar
-} from 'lucide-react';
-import { universalApi } from '@/lib/universal-api';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+} from 'lucide-react'
+import { universalApi } from '@/lib/universal-api'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { formatDate } from '@/lib/date-utils'
-;
 
 interface ManufacturingOrder {
-  id: string;
-  transaction_code: string;
-  product_id: string;
-  product_name: string;
-  quantity_to_produce: number;
-  quantity_completed: number;
-  target_completion_date: string;
-  status: string;
-  progress_percent: number;
-  material_status: 'available' | 'partial' | 'shortage';
-  sales_order_id?: string;
+  id: string
+  transaction_code: string
+  product_id: string
+  product_name: string
+  quantity_to_produce: number
+  quantity_completed: number
+  target_completion_date: string
+  status: string
+  progress_percent: number
+  material_status: 'available' | 'partial' | 'shortage'
+  sales_order_id?: string
 }
 
 interface ProductionStatus {
-  planned: number;
-  in_progress: number;
-  quality_check: number;
-  completed: number;
-  total: number;
+  planned: number
+  in_progress: number
+  quality_check: number
+  completed: number
+  total: number
 }
 
 export function ManufacturingOrderDashboard() {
-  const [orders, setOrders] = useState<ManufacturingOrder[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<ManufacturingOrder | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [orders, setOrders] = useState<ManufacturingOrder[]>([])
+  const [selectedOrder, setSelectedOrder] = useState<ManufacturingOrder | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [activeTab, setActiveTab] = useState('all')
   const [productionStatus, setProductionStatus] = useState<ProductionStatus>({
     planned: 0,
     in_progress: 0,
     quality_check: 0,
     completed: 0,
     total: 0
-  });
+  })
 
   useEffect(() => {
-    loadManufacturingOrders();
-  }, []);
+    loadManufacturingOrders()
+  }, [])
 
   const loadManufacturingOrders = async () => {
     try {
-      setLoading(true);
-      
+      setLoading(true)
+
       // Load manufacturing orders
       const ordersData = await universalApi.read({
         table: 'universal_transactions',
         filter: { transaction_type: 'manufacturing_order' }
-      });
-      
-      const formattedOrders: ManufacturingOrder[] = [];
+      })
+
+      const formattedOrders: ManufacturingOrder[] = []
       const statusCounts: ProductionStatus = {
         planned: 0,
         in_progress: 0,
         quality_check: 0,
         completed: 0,
         total: 0
-      };
-      
+      }
+
       for (const order of ordersData.data || []) {
         // Get product details
         const productData = await universalApi.read({
           table: 'core_entities',
           filter: { id: order.reference_entity_id }
-        });
-        
-        const product = productData.data?.[0];
-        const metadata = order.metadata || {};
-        const status = metadata.status || 'planned';
-        const quantityCompleted = metadata.quantity_completed || 0;
-        const quantityToProduced = metadata.quantity_to_produce || 0;
-        
+        })
+
+        const product = productData.data?.[0]
+        const metadata = order.metadata || {}
+        const status = metadata.status || 'planned'
+        const quantityCompleted = metadata.quantity_completed || 0
+        const quantityToProduced = metadata.quantity_to_produce || 0
+
         // Count by status
-        statusCounts[status as keyof ProductionStatus]++;
-        statusCounts.total++;
-        
+        statusCounts[status as keyof ProductionStatus]++
+        statusCounts.total++
+
         formattedOrders.push({
           id: order.id,
           transaction_code: order.transaction_code,
@@ -108,57 +114,59 @@ export function ManufacturingOrderDashboard() {
           quantity_completed: quantityCompleted,
           target_completion_date: metadata.target_completion_date,
           status: status,
-          progress_percent: quantityToProduced > 0 ? (quantityCompleted / quantityToProduced) * 100 : 0,
+          progress_percent:
+            quantityToProduced > 0 ? (quantityCompleted / quantityToProduced) * 100 : 0,
           material_status: await checkMaterialAvailability(order.id),
           sales_order_id: metadata.sales_order_id
-        });
+        })
       }
-      
-      setOrders(formattedOrders);
-      setProductionStatus(statusCounts);
-      
-    } catch (err) {
-      console.error('Error loading manufacturing orders:', err);
-      setError('Failed to load manufacturing orders');
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const checkMaterialAvailability = async (orderId: string): Promise<'available' | 'partial' | 'shortage'> => {
+      setOrders(formattedOrders)
+      setProductionStatus(statusCounts)
+    } catch (err) {
+      console.error('Error loading manufacturing orders:', err)
+      setError('Failed to load manufacturing orders')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const checkMaterialAvailability = async (
+    orderId: string
+  ): Promise<'available' | 'partial' | 'shortage'> => {
     // In a real implementation, this would check inventory levels against BOM requirements
     // For demo purposes, we'll return a random status
-    const statuses: ('available' | 'partial' | 'shortage')[] = ['available', 'partial', 'shortage'];
-    return statuses[Math.floor(Math.random() * statuses.length)];
-  };
+    const statuses: ('available' | 'partial' | 'shortage')[] = ['available', 'partial', 'shortage']
+    return statuses[Math.floor(Math.random() * statuses.length)]
+  }
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case 'planned':
-        return 'secondary';
+        return 'secondary'
       case 'in_progress':
-        return 'default';
+        return 'default'
       case 'quality_check':
-        return 'outline';
+        return 'outline'
       case 'completed':
-        return 'success';
+        return 'success'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
+  }
 
   const getMaterialStatusBadge = (status: string) => {
     switch (status) {
       case 'available':
-        return <Badge variant="success">Materials Available</Badge>;
+        return <Badge variant="success">Materials Available</Badge>
       case 'partial':
-        return <Badge variant="secondary">Partial Materials</Badge>;
+        return <Badge variant="secondary">Partial Materials</Badge>
       case 'shortage':
-        return <Badge variant="destructive">Material Shortage</Badge>;
+        return <Badge variant="destructive">Material Shortage</Badge>
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline">Unknown</Badge>
     }
-  };
+  }
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
@@ -172,19 +180,19 @@ export function ManufacturingOrderDashboard() {
             status: newStatus
           }
         }
-      });
-      
+      })
+
       // Refresh the list
-      await loadManufacturingOrders();
+      await loadManufacturingOrders()
     } catch (err) {
-      console.error('Error updating order status:', err);
+      console.error('Error updating order status:', err)
     }
-  };
+  }
 
   const filteredOrders = orders.filter(order => {
-    if (activeTab === 'all') return true;
-    return order.status === activeTab;
-  });
+    if (activeTab === 'all') return true
+    return order.status === activeTab
+  })
 
   return (
     <div className="space-y-6">
@@ -202,30 +210,35 @@ export function ManufacturingOrderDashboard() {
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">In Progress</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">{productionStatus.in_progress}</div>
-            <Progress value={(productionStatus.in_progress / productionStatus.total) * 100} className="mt-2" />
+            <Progress
+              value={(productionStatus.in_progress / productionStatus.total) * 100}
+              className="mt-2"
+            />
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">Quality Check</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{productionStatus.quality_check}</div>
+            <div className="text-2xl font-bold text-orange-600">
+              {productionStatus.quality_check}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               <AlertCircle className="w-3 h-3 inline mr-1" />
               Awaiting inspection
             </p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">Completed</CardTitle>
@@ -239,7 +252,7 @@ export function ManufacturingOrderDashboard() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Manufacturing Orders Table */}
       <Card>
         <CardHeader>
@@ -257,7 +270,7 @@ export function ManufacturingOrderDashboard() {
               <TabsTrigger value="quality_check">Quality Check</TabsTrigger>
               <TabsTrigger value="completed">Completed</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value={activeTab}>
               {loading ? (
                 <div className="text-center py-8 text-muted-foreground">
@@ -292,10 +305,7 @@ export function ManufacturingOrderDashboard() {
                           <div className="text-sm">
                             {order.quantity_completed} / {order.quantity_to_produce}
                           </div>
-                          <Progress 
-                            value={order.progress_percent} 
-                            className="w-20 h-2 mt-1"
-                          />
+                          <Progress value={order.progress_percent} className="w-20 h-2 mt-1" />
                         </TableCell>
                         <TableCell>
                           <span className="text-sm font-medium">
@@ -310,9 +320,7 @@ export function ManufacturingOrderDashboard() {
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          {getMaterialStatusBadge(order.material_status)}
-                        </TableCell>
+                        <TableCell>{getMaterialStatusBadge(order.material_status)}</TableCell>
                         <TableCell>
                           <Badge variant={getStatusBadgeColor(order.status)}>
                             {order.status.replace('_', ' ')}
@@ -363,7 +371,7 @@ export function ManufacturingOrderDashboard() {
               )}
             </TabsContent>
           </Tabs>
-          
+
           {error && (
             <Alert variant="destructive" className="mt-4">
               <AlertCircle className="h-4 w-4" />
@@ -372,7 +380,7 @@ export function ManufacturingOrderDashboard() {
           )}
         </CardContent>
       </Card>
-      
+
       {/* Selected Order Details */}
       {selectedOrder && (
         <Card>
@@ -402,12 +410,10 @@ export function ManufacturingOrderDashboard() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Sales Order</p>
-                <p className="font-medium">
-                  {selectedOrder.sales_order_id || 'Stock Production'}
-                </p>
+                <p className="font-medium">{selectedOrder.sales_order_id || 'Stock Production'}</p>
               </div>
             </div>
-            
+
             <div className="pt-4 border-t">
               <h4 className="font-medium mb-2">Production Timeline</h4>
               <div className="space-y-2">
@@ -439,5 +445,5 @@ export function ManufacturingOrderDashboard() {
         </Card>
       )}
     </div>
-  );
+  )
 }

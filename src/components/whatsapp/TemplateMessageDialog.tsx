@@ -7,14 +7,14 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -154,11 +154,11 @@ export function TemplateMessageDialog({
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [variables, setVariables] = useState<Record<string, string>>({})
   const [sending, setSending] = useState(false)
-  
+
   const handleTemplateSelect = (templateId: string) => {
     const template = templates.find(t => t.id === templateId)
     setSelectedTemplate(template || null)
-    
+
     // Initialize variables
     if (template) {
       const vars: Record<string, string> = {}
@@ -176,13 +176,13 @@ export function TemplateMessageDialog({
       setVariables(vars)
     }
   }
-  
+
   const handleSend = async () => {
     if (!selectedTemplate) return
-    
+
     try {
       setSending(true)
-      
+
       // Build template payload
       const templatePayload = {
         name: selectedTemplate.name,
@@ -199,13 +199,13 @@ export function TemplateMessageDialog({
             }))
           }))
       }
-      
+
       await onSend({
         template: templatePayload,
         smart_code: selectedTemplate.smart_code,
         category: selectedTemplate.category
       })
-      
+
       onOpenChange(false)
       setSelectedTemplate(null)
       setVariables({})
@@ -215,15 +215,15 @@ export function TemplateMessageDialog({
       setSending(false)
     }
   }
-  
+
   const renderPreview = () => {
     if (!selectedTemplate) return null
-    
+
     return (
       <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 space-y-2">
         {selectedTemplate.components.map((component, idx) => {
           let text = component.text
-          
+
           // Replace variables with actual values
           if (component.variables) {
             component.variables.forEach((_, index) => {
@@ -231,25 +231,19 @@ export function TemplateMessageDialog({
               text = text.replace(`{{${index + 1}}}`, value)
             })
           }
-          
+
           return (
             <div key={idx}>
-              {component.type === 'HEADER' && (
-                <p className="font-semibold">{text}</p>
-              )}
-              {component.type === 'BODY' && (
-                <p className="text-sm">{text}</p>
-              )}
-              {component.type === 'FOOTER' && (
-                <p className="text-xs text-gray-500">{text}</p>
-              )}
+              {component.type === 'HEADER' && <p className="font-semibold">{text}</p>}
+              {component.type === 'BODY' && <p className="text-sm">{text}</p>}
+              {component.type === 'FOOTER' && <p className="text-xs text-gray-500">{text}</p>}
             </div>
           )
         })}
       </div>
     )
   }
-  
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -259,7 +253,7 @@ export function TemplateMessageDialog({
             Send a pre-approved template message to {customerName} ({phoneNumber})
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           {/* Template Selection */}
           <div className="space-y-2">
@@ -275,25 +269,19 @@ export function TemplateMessageDialog({
                 <SelectItem value="appointment_reminder">
                   Appointment Reminder (Transactional)
                 </SelectItem>
-                <SelectItem value="service_reopen">
-                  Service Message (Utility)
-                </SelectItem>
-                <SelectItem value="feedback_request">
-                  Feedback Request (Marketing)
-                </SelectItem>
-                <SelectItem value="promotional_offer">
-                  Special Offer (Marketing)
-                </SelectItem>
+                <SelectItem value="service_reopen">Service Message (Utility)</SelectItem>
+                <SelectItem value="feedback_request">Feedback Request (Marketing)</SelectItem>
+                <SelectItem value="promotional_offer">Special Offer (Marketing)</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Variables Input */}
           {selectedTemplate && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Template Variables</Label>
-                {selectedTemplate.components.map((component) => 
+                {selectedTemplate.components.map(component =>
                   component.variables?.map((variable, index) => (
                     <div key={`${component.type}_${index}`} className="space-y-1">
                       <Label className="text-sm text-gray-600">
@@ -302,20 +290,24 @@ export function TemplateMessageDialog({
                       {variable === 'name' ? (
                         <Input
                           value={variables[`${component.type}_${index}`] || ''}
-                          onChange={(e) => setVariables({
-                            ...variables,
-                            [`${component.type}_${index}`]: e.target.value
-                          })}
+                          onChange={e =>
+                            setVariables({
+                              ...variables,
+                              [`${component.type}_${index}`]: e.target.value
+                            })
+                          }
                           placeholder={`Enter ${variable}`}
                           disabled
                         />
                       ) : variable.includes('service') || variable === 'stylist' ? (
                         <Select
                           value={variables[`${component.type}_${index}`] || ''}
-                          onValueChange={(value) => setVariables({
-                            ...variables,
-                            [`${component.type}_${index}`]: value
-                          })}
+                          onValueChange={value =>
+                            setVariables({
+                              ...variables,
+                              [`${component.type}_${index}`]: value
+                            })
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder={`Select ${variable}`} />
@@ -341,50 +333,51 @@ export function TemplateMessageDialog({
                       ) : (
                         <Input
                           value={variables[`${component.type}_${index}`] || ''}
-                          onChange={(e) => setVariables({
-                            ...variables,
-                            [`${component.type}_${index}`]: e.target.value
-                          })}
+                          onChange={e =>
+                            setVariables({
+                              ...variables,
+                              [`${component.type}_${index}`]: e.target.value
+                            })
+                          }
                           placeholder={`Enter ${variable}`}
-                          type={variable.includes('date') ? 'date' : variable.includes('time') ? 'time' : 'text'}
+                          type={
+                            variable.includes('date')
+                              ? 'date'
+                              : variable.includes('time')
+                                ? 'time'
+                                : 'text'
+                          }
                         />
                       )}
                     </div>
                   ))
                 )}
               </div>
-              
+
               {/* Preview */}
               <div className="space-y-2">
                 <Label>Message Preview</Label>
                 {renderPreview()}
               </div>
-              
+
               {/* Category Info */}
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   This is a <strong>{selectedTemplate.category}</strong> template.
-                  {selectedTemplate.category === 'MARKETING' && 
+                  {selectedTemplate.category === 'MARKETING' &&
                     ' Customer must have opted-in to receive marketing messages.'}
                 </AlertDescription>
               </Alert>
             </div>
           )}
         </div>
-        
+
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={sending}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={sending}>
             Cancel
           </Button>
-          <Button
-            onClick={handleSend}
-            disabled={!selectedTemplate || sending}
-          >
+          <Button onClick={handleSend} disabled={!selectedTemplate || sending}>
             <Send className="w-4 h-4 mr-2" />
             Send Template
           </Button>

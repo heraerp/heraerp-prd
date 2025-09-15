@@ -8,9 +8,9 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   Calendar,
-  Factory, 
+  Factory,
   Package,
   Clock,
   AlertTriangle,
@@ -23,8 +23,16 @@ import {
   Users
 } from 'lucide-react'
 import Link from 'next/link'
-import { useDemoOrganization, OrganizationInfo, OrganizationLoading } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters, universalSorters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useDemoOrganization,
+  OrganizationInfo,
+  OrganizationLoading
+} from '@/lib/dna/patterns/demo-org-pattern'
+import {
+  useUniversalData,
+  universalFilters,
+  universalSorters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { cn } from '@/lib/utils'
 
 export default function ProductionPlanning() {
@@ -41,9 +49,7 @@ export default function ProductionPlanning() {
   // Load sales orders for demand planning
   const { data: salesOrders } = useUniversalData({
     table: 'universal_transactions',
-    filter: (t) => 
-      t.transaction_type === 'sales_order' &&
-      t.smart_code?.includes('FURNITURE.SALES'),
+    filter: t => t.transaction_type === 'sales_order' && t.smart_code?.includes('FURNITURE.SALES'),
     sort: universalSorters.byCreatedDesc,
     organizationId,
     enabled: !!organizationId
@@ -70,13 +76,16 @@ export default function ProductionPlanning() {
   }
 
   // Calculate demand from sales orders
-  const demandByProduct = salesOrders.reduce((acc, order) => {
-    const productId = order.source_entity_id
-    if (productId) {
-      acc[productId] = (acc[productId] || 0) + (order.total_amount || 0)
-    }
-    return acc
-  }, {} as Record<string, number>)
+  const demandByProduct = salesOrders.reduce(
+    (acc, order) => {
+      const productId = order.source_entity_id
+      if (productId) {
+        acc[productId] = (acc[productId] || 0) + (order.total_amount || 0)
+      }
+      return acc
+    },
+    {} as Record<string, number>
+  )
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -84,9 +93,7 @@ export default function ProductionPlanning() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white">
-              Production Planning
-            </h1>
+            <h1 className="text-3xl font-bold text-white">Production Planning</h1>
             <p className="text-gray-400 mt-1">
               Plan and schedule production based on demand and capacity
             </p>
@@ -177,12 +184,15 @@ export default function ProductionPlanning() {
                   </Button>
                 </div>
                 <div className="space-y-4">
-                  {products.map((product) => {
+                  {products.map(product => {
                     const demand = demandByProduct[product.id] || 0
                     const hasOrders = demand > 0
 
                     return (
-                      <div key={product.id} className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
+                      <div
+                        key={product.id}
+                        className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50"
+                      >
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium text-white">{product.entity_name}</p>
@@ -190,15 +200,25 @@ export default function ProductionPlanning() {
                           </div>
                           <div className="text-right">
                             <p className="text-lg font-semibold text-white">{demand} units</p>
-                            <Badge className={hasOrders ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}>
+                            <Badge
+                              className={
+                                hasOrders
+                                  ? 'bg-green-500/10 text-green-400'
+                                  : 'bg-gray-500/10 text-gray-400'
+                              }
+                            >
                               {hasOrders ? 'Active Demand' : 'No Demand'}
                             </Badge>
                           </div>
                         </div>
                         {hasOrders && (
                           <div className="mt-3 flex gap-2">
-                            <Button variant="outline" size="sm">Plan Production</Button>
-                            <Button variant="ghost" size="sm">View Orders</Button>
+                            <Button variant="outline" size="sm">
+                              Plan Production
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              View Orders
+                            </Button>
                           </div>
                         )}
                       </div>
@@ -214,12 +234,17 @@ export default function ProductionPlanning() {
               <div className="p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">Work Center Capacity</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {workCenters.map((center) => (
-                    <div key={center.id} className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
+                  {workCenters.map(center => (
+                    <div
+                      key={center.id}
+                      className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50"
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <p className="font-medium text-white">{center.entity_name}</p>
-                          <p className="text-sm text-gray-400">{(center.metadata as any)?.location || 'Shop Floor'}</p>
+                          <p className="text-sm text-gray-400">
+                            {(center.metadata as any)?.location || 'Shop Floor'}
+                          </p>
                         </div>
                         <Factory className="h-5 w-5 text-gray-400" />
                       </div>
@@ -247,10 +272,15 @@ export default function ProductionPlanning() {
           <TabsContent value="materials" className="space-y-4">
             <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Material Requirements Planning</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">
+                  Material Requirements Planning
+                </h2>
                 <div className="space-y-4">
-                  {rawMaterials.map((material) => (
-                    <div key={material.id} className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
+                  {rawMaterials.map(material => (
+                    <div
+                      key={material.id}
+                      className="p-4 bg-gray-900/50 rounded-lg border border-gray-700/50"
+                    >
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium text-white">{material.entity_name}</p>
@@ -259,9 +289,12 @@ export default function ProductionPlanning() {
                         <div className="text-right">
                           <p className="text-sm text-gray-400">Current Stock</p>
                           <p className="text-lg font-semibold text-white">
-                            {material.entity_code?.includes('TEAK') ? '250' : 
-                             material.entity_code?.includes('LEATHER') ? '150' : '5000'} 
-                            {' '}{(material.metadata as any)?.unit || 'units'}
+                            {material.entity_code?.includes('TEAK')
+                              ? '250'
+                              : material.entity_code?.includes('LEATHER')
+                                ? '150'
+                                : '5000'}{' '}
+                            {(material.metadata as any)?.unit || 'units'}
                           </p>
                         </div>
                       </div>
@@ -294,7 +327,7 @@ export default function ProductionPlanning() {
               </div>
             </Link>
           </Card>
-          
+
           <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30">
             <Link href="/furniture/production">
               <div className="flex flex-col items-center text-center gap-2">
@@ -303,14 +336,14 @@ export default function ProductionPlanning() {
               </div>
             </Link>
           </Card>
-          
+
           <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30">
             <div className="flex flex-col items-center text-center gap-2">
               <Users className="h-8 w-8 text-purple-500" />
               <span className="text-sm font-medium text-gray-300">Workforce</span>
             </div>
           </Card>
-          
+
           <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30">
             <div className="flex flex-col items-center text-center gap-2">
               <CheckCircle className="h-8 w-8 text-green-500" />

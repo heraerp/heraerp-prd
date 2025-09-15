@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -11,7 +11,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { RotateCcw, Zap } from 'lucide-react'
 
@@ -25,13 +25,13 @@ export function DemoResetButton({ onReset, className = '' }: DemoResetButtonProp
 
   const handleReset = async () => {
     setIsResetting(true)
-    
+
     try {
       // Clear any localStorage data
       if (typeof window !== 'undefined') {
         const keysToKeep = ['auth-token', 'user-preferences']
         const allKeys = Object.keys(localStorage)
-        
+
         allKeys.forEach(key => {
           if (!keysToKeep.includes(key) && key.includes('crm')) {
             localStorage.removeItem(key)
@@ -48,7 +48,6 @@ export function DemoResetButton({ onReset, className = '' }: DemoResetButtonProp
       setTimeout(() => {
         window.location.reload()
       }, 500)
-
     } catch (error) {
       console.error('Error resetting demo:', error)
     } finally {
@@ -59,8 +58,8 @@ export function DemoResetButton({ onReset, className = '' }: DemoResetButtonProp
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           className={`bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200 ${className}`}
           disabled={isResetting}
@@ -86,7 +85,8 @@ export function DemoResetButton({ onReset, className = '' }: DemoResetButtonProp
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-2">
             <p>
-              This will reset the CRM demo to its original state with fresh TechVantage Solutions data:
+              This will reset the CRM demo to its original state with fresh TechVantage Solutions
+              data:
             </p>
             <ul className="list-disc list-inside text-sm space-y-1 text-slate-600">
               <li>5 professional contacts with realistic business scenarios</li>
@@ -101,10 +101,7 @@ export function DemoResetButton({ onReset, className = '' }: DemoResetButtonProp
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={handleReset}
-            className="bg-emerald-600 hover:bg-emerald-700"
-          >
+          <AlertDialogAction onClick={handleReset} className="bg-emerald-600 hover:bg-emerald-700">
             Reset Demo Data
           </AlertDialogAction>
         </AlertDialogFooter>

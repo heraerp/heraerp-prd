@@ -4,10 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { Play, Download, File, FileText, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import {
-  Dialog,
-  DialogContent,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
 interface MediaMessageProps {
@@ -34,14 +31,14 @@ export function MediaMessage({
   onDownload
 }: MediaMessageProps) {
   const [showPreview, setShowPreview] = useState(false)
-  
+
   const formatFileSize = (bytes?: number) => {
     if (!bytes) return ''
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
     return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i]
   }
-  
+
   const getFileIcon = () => {
     if (fileName) {
       const ext = fileName.split('.').pop()?.toLowerCase()
@@ -60,32 +57,26 @@ export function MediaMessage({
     }
     return <File className="w-8 h-8 text-gray-500" />
   }
-  
+
   if (type === 'image') {
     return (
       <>
-        <div className={cn("relative cursor-pointer", className)}>
-          <div 
+        <div className={cn('relative cursor-pointer', className)}>
+          <div
             className="relative rounded-lg overflow-hidden max-w-xs"
             onClick={() => setShowPreview(true)}
           >
             {url ? (
-              <img
-                src={url}
-                alt="Image"
-                className="w-full h-auto max-h-64 object-cover"
-              />
+              <img src={url} alt="Image" className="w-full h-auto max-h-64 object-cover" />
             ) : (
               <div className="w-64 h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                 <span className="text-gray-500">Loading image...</span>
               </div>
             )}
           </div>
-          {caption && (
-            <p className="mt-2 text-sm">{caption}</p>
-          )}
+          {caption && <p className="mt-2 text-sm">{caption}</p>}
         </div>
-        
+
         {/* Image Preview Dialog */}
         <Dialog open={showPreview} onOpenChange={setShowPreview}>
           <DialogContent className="max-w-4xl p-0 bg-black">
@@ -116,10 +107,10 @@ export function MediaMessage({
       </>
     )
   }
-  
+
   if (type === 'video') {
     return (
-      <div className={cn("relative", className)}>
+      <div className={cn('relative', className)}>
         <div className="relative rounded-lg overflow-hidden max-w-xs bg-black">
           {thumbnail ? (
             <div className="relative">
@@ -145,41 +136,40 @@ export function MediaMessage({
             </div>
           )}
         </div>
-        {caption && (
-          <p className="mt-2 text-sm">{caption}</p>
-        )}
+        {caption && <p className="mt-2 text-sm">{caption}</p>}
       </div>
     )
   }
-  
+
   if (type === 'document') {
     return (
-      <div className={cn("flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-xs", className)}>
+      <div
+        className={cn(
+          'flex items-center gap-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-xs',
+          className
+        )}
+      >
         {getFileIcon()}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{fileName || 'Document'}</p>
           <p className="text-xs text-gray-500">{formatFileSize(fileSize)}</p>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="flex-shrink-0"
-          onClick={onDownload}
-        >
+        <Button variant="ghost" size="icon" className="flex-shrink-0" onClick={onDownload}>
           <Download className="w-4 h-4" />
         </Button>
       </div>
     )
   }
-  
+
   if (type === 'audio') {
     return (
-      <div className={cn("flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-xs", className)}>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="flex-shrink-0"
-        >
+      <div
+        className={cn(
+          'flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-xs',
+          className
+        )}
+      >
+        <Button variant="ghost" size="icon" className="flex-shrink-0">
           <Play className="w-4 h-4" />
         </Button>
         <div className="flex-1">
@@ -189,6 +179,6 @@ export function MediaMessage({
       </div>
     )
   }
-  
+
   return null
 }

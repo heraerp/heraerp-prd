@@ -10,16 +10,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { 
-  Database, 
-  Play, 
-  Table, 
-  Code, 
-  Shield, 
-  AlertCircle, 
+import {
+  Database,
+  Play,
+  Table,
+  Code,
+  Shield,
+  AlertCircle,
   CheckCircle,
   RefreshCw,
   Download,
@@ -37,47 +43,86 @@ import { cn } from '@/lib/utils'
 
 // Sacred 6 Tables
 const SACRED_TABLES = [
-  { 
-    name: 'core_organizations', 
+  {
+    name: 'core_organizations',
     description: 'Multi-tenant organization management',
     color: 'blue',
     icon: Shield,
     columns: ['id', 'organization_name', 'organization_code', 'created_at', 'status', 'settings']
   },
-  { 
-    name: 'core_entities', 
+  {
+    name: 'core_entities',
     description: 'All business objects (customers, products, GL accounts)',
     color: 'purple',
     icon: Database,
-    columns: ['id', 'organization_id', 'entity_type', 'entity_name', 'entity_code', 'smart_code', 'status']
+    columns: [
+      'id',
+      'organization_id',
+      'entity_type',
+      'entity_name',
+      'entity_code',
+      'smart_code',
+      'status'
+    ]
   },
-  { 
-    name: 'core_dynamic_data', 
+  {
+    name: 'core_dynamic_data',
     description: 'Unlimited custom fields without schema changes',
     color: 'green',
     icon: Code,
-    columns: ['id', 'entity_id', 'organization_id', 'field_name', 'field_value_text', 'field_value_number', 'field_value_date']
+    columns: [
+      'id',
+      'entity_id',
+      'organization_id',
+      'field_name',
+      'field_value_text',
+      'field_value_number',
+      'field_value_date'
+    ]
   },
-  { 
-    name: 'core_relationships', 
+  {
+    name: 'core_relationships',
     description: 'Entity connections, hierarchies, and workflows',
     color: 'orange',
     icon: ChevronRight,
-    columns: ['id', 'organization_id', 'from_entity_id', 'to_entity_id', 'relationship_type', 'smart_code']
+    columns: [
+      'id',
+      'organization_id',
+      'from_entity_id',
+      'to_entity_id',
+      'relationship_type',
+      'smart_code'
+    ]
   },
-  { 
-    name: 'universal_transactions', 
+  {
+    name: 'universal_transactions',
     description: 'All business transaction headers',
     color: 'red',
     icon: FileText,
-    columns: ['id', 'organization_id', 'transaction_type', 'transaction_date', 'transaction_code', 'total_amount', 'smart_code']
+    columns: [
+      'id',
+      'organization_id',
+      'transaction_type',
+      'transaction_date',
+      'transaction_code',
+      'total_amount',
+      'smart_code'
+    ]
   },
-  { 
-    name: 'universal_transaction_lines', 
+  {
+    name: 'universal_transaction_lines',
     description: 'Transaction line items and details',
     color: 'indigo',
     icon: Table,
-    columns: ['id', 'transaction_id', 'line_number', 'line_entity_id', 'quantity', 'unit_price', 'line_amount']
+    columns: [
+      'id',
+      'transaction_id',
+      'line_number',
+      'line_entity_id',
+      'quantity',
+      'unit_price',
+      'line_amount'
+    ]
   }
 ]
 
@@ -86,7 +131,8 @@ const QUERY_TEMPLATES = {
   'Select All': (table: string) => `SELECT * FROM ${table} LIMIT 100;`,
   'Count Records': (table: string) => `SELECT COUNT(*) as total_records FROM ${table};`,
   'Recent Records': (table: string) => `SELECT * FROM ${table} ORDER BY created_at DESC LIMIT 20;`,
-  'By Organization': (table: string) => `SELECT * FROM ${table} WHERE organization_id = 'YOUR_ORG_ID' LIMIT 50;`,
+  'By Organization': (table: string) =>
+    `SELECT * FROM ${table} WHERE organization_id = 'YOUR_ORG_ID' LIMIT 50;`,
   'Schema Info': (table: string) => `SELECT column_name, data_type, is_nullable 
 FROM information_schema.columns 
 WHERE table_name = '${table}' 
@@ -216,13 +262,13 @@ export default function SQLEditorPage() {
 
   const exportResults = () => {
     if (!results?.data) return
-    
+
     const csv = [
       Object.keys(results.data[0]).join(','),
-      ...results.data.map((row: any) => 
-        Object.values(row).map(v => 
-          typeof v === 'string' ? `"${v}"` : v
-        ).join(',')
+      ...results.data.map((row: any) =>
+        Object.values(row)
+          .map(v => (typeof v === 'string' ? `"${v}"` : v))
+          .join(',')
       )
     ].join('\n')
 
@@ -250,7 +296,9 @@ export default function SQLEditorPage() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               HERA SQL Editor
             </h1>
-            <p className="text-slate-600 mt-1">Query and manage the sacred 6-table universal architecture</p>
+            <p className="text-slate-600 mt-1">
+              Query and manage the sacred 6-table universal architecture
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <Button
@@ -263,12 +311,10 @@ export default function SQLEditorPage() {
               Test Connection
             </Button>
             <div className="flex items-center gap-2">
-              <Label htmlFor="read-only" className="text-sm">Read Only</Label>
-              <Switch
-                id="read-only"
-                checked={readOnly}
-                onCheckedChange={setReadOnly}
-              />
+              <Label htmlFor="read-only" className="text-sm">
+                Read Only
+              </Label>
+              <Switch id="read-only" checked={readOnly} onCheckedChange={setReadOnly} />
               {readOnly ? (
                 <Lock className="h-4 w-4 text-green-600" />
               ) : (
@@ -288,27 +334,31 @@ export default function SQLEditorPage() {
                 <CardDescription>Click to explore</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                {SACRED_TABLES.map((table) => {
+                {SACRED_TABLES.map(table => {
                   const Icon = table.icon
                   return (
                     <button
                       key={table.name}
                       onClick={() => setSelectedTable(table.name)}
                       className={cn(
-                        "w-full text-left p-3 rounded-lg transition-all",
-                        "hover:bg-slate-100 group",
-                        selectedTable === table.name && "bg-blue-50 border-blue-200 border"
+                        'w-full text-left p-3 rounded-lg transition-all',
+                        'hover:bg-slate-100 group',
+                        selectedTable === table.name && 'bg-blue-50 border-blue-200 border'
                       )}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={cn(
-                          "p-2 rounded-lg",
-                          selectedTable === table.name ? "bg-blue-100" : "bg-slate-100"
-                        )}>
-                          <Icon className={cn(
-                            "h-4 w-4",
-                            selectedTable === table.name ? "text-blue-600" : "text-slate-600"
-                          )} />
+                        <div
+                          className={cn(
+                            'p-2 rounded-lg',
+                            selectedTable === table.name ? 'bg-blue-100' : 'bg-slate-100'
+                          )}
+                        >
+                          <Icon
+                            className={cn(
+                              'h-4 w-4',
+                              selectedTable === table.name ? 'text-blue-600' : 'text-slate-600'
+                            )}
+                          />
                         </div>
                         <div className="flex-1">
                           <h3 className="font-medium text-sm">{table.name}</h3>
@@ -339,7 +389,7 @@ export default function SQLEditorPage() {
                 <CardTitle className="text-lg">Quick Templates</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {Object.keys(QUERY_TEMPLATES).map((template) => (
+                {Object.keys(QUERY_TEMPLATES).map(template => (
                   <Button
                     key={template}
                     variant="outline"
@@ -370,12 +420,7 @@ export default function SQLEditorPage() {
                     <div className="flex items-center justify-between">
                       <CardTitle>Query Editor</CardTitle>
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={copyQuery}
-                          disabled={!query}
-                        >
+                        <Button variant="outline" size="sm" onClick={copyQuery} disabled={!query}>
                           <Copy className="h-4 w-4" />
                         </Button>
                         <Button
@@ -401,7 +446,7 @@ export default function SQLEditorPage() {
                   <CardContent>
                     <Textarea
                       value={query}
-                      onChange={(e) => setQuery(e.target.value)}
+                      onChange={e => setQuery(e.target.value)}
                       placeholder="Enter your SQL query here..."
                       className="font-mono text-sm h-64 bg-slate-900 text-slate-100 border-slate-700"
                       spellCheck={false}
@@ -437,11 +482,7 @@ export default function SQLEditorPage() {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <CardTitle>Query Results</CardTitle>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={exportResults}
-                        >
+                        <Button variant="outline" size="sm" onClick={exportResults}>
                           <Download className="h-4 w-4 mr-2" />
                           Export CSV
                         </Button>
@@ -452,11 +493,12 @@ export default function SQLEditorPage() {
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="border-b">
-                              {results.data.length > 0 && Object.keys(results.data[0]).map((key) => (
-                                <th key={key} className="text-left p-2 font-medium">
-                                  {key}
-                                </th>
-                              ))}
+                              {results.data.length > 0 &&
+                                Object.keys(results.data[0]).map(key => (
+                                  <th key={key} className="text-left p-2 font-medium">
+                                    {key}
+                                  </th>
+                                ))}
                             </tr>
                           </thead>
                           <tbody>
@@ -467,7 +509,9 @@ export default function SQLEditorPage() {
                                     {value === null ? (
                                       <span className="text-slate-400">NULL</span>
                                     ) : typeof value === 'object' ? (
-                                      <pre className="text-xs">{JSON.stringify(value, null, 2)}</pre>
+                                      <pre className="text-xs">
+                                        {JSON.stringify(value, null, 2)}
+                                      </pre>
                                     ) : (
                                       String(value)
                                     )}

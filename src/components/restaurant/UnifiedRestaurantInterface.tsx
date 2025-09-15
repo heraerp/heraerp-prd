@@ -36,10 +36,10 @@ import {
   Star
 } from 'lucide-react'
 import { formatDate } from '@/lib/date-utils'
-import { 
-  StatusIndicator, 
-  PulseIndicator, 
-  AnimatedCounter, 
+import {
+  StatusIndicator,
+  PulseIndicator,
+  AnimatedCounter,
   MetricCard,
   HeartbeatIndicator,
   GlowButton
@@ -76,7 +76,7 @@ export function UnifiedRestaurantInterface() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const [isClient, setIsClient] = useState(false)
-  
+
   // Real-time stats (would come from API)
   const [liveStats, setLiveStats] = useState({
     tablesOccupied: 12,
@@ -111,7 +111,7 @@ export function UnifiedRestaurantInterface() {
         setSearchQuery('')
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
@@ -185,7 +185,11 @@ export function UnifiedRestaurantInterface() {
   const getQuickActions = (viewId: string) => {
     const actions = {
       tables: [
-        { label: 'Floor Plan', action: () => navigateTo('/restaurant/table-management'), icon: <MapPin className="w-4 h-4" /> },
+        {
+          label: 'Floor Plan',
+          action: () => navigateTo('/restaurant/table-management'),
+          icon: <MapPin className="w-4 h-4" />
+        },
         { label: 'Combine Tables', action: () => {}, icon: <Plus className="w-4 h-4" /> }
       ],
       orders: [
@@ -194,7 +198,7 @@ export function UnifiedRestaurantInterface() {
       ],
       reservations: [
         { label: 'New Reservation', action: () => {}, icon: <Plus className="w-4 h-4" /> },
-        { label: 'Today\'s Schedule', action: () => {}, icon: <Calendar className="w-4 h-4" /> }
+        { label: "Today's Schedule", action: () => {}, icon: <Calendar className="w-4 h-4" /> }
       ]
     }
     return actions[viewId as keyof typeof actions] || []
@@ -207,13 +211,17 @@ export function UnifiedRestaurantInterface() {
   const occupancyRate = Math.round((liveStats.tablesOccupied / liveStats.totalTables) * 100)
 
   return (
-    <div className={`min-h-screen transition-all duration-300 ${
-      darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
-    }`}>
+    <div
+      className={`min-h-screen transition-all duration-300 ${
+        darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
+      }`}
+    >
       {/* Header - Jobs-inspired minimal header */}
-      <header className={`sticky top-0 z-50 backdrop-blur-xl ${
-        darkMode ? 'bg-gray-900/80 border-gray-800' : 'bg-white/80 border-gray-200/50'
-      } border-b`}>
+      <header
+        className={`sticky top-0 z-50 backdrop-blur-xl ${
+          darkMode ? 'bg-gray-900/80 border-gray-800' : 'bg-white/80 border-gray-200/50'
+        } border-b`}
+      >
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Left: Restaurant branding */}
@@ -222,7 +230,9 @@ export function UnifiedRestaurantInterface() {
                 <ChefHat className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h1
+                  className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}
+                >
                   {organization?.organization_name || 'Restaurant'}
                 </h1>
                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -234,16 +244,18 @@ export function UnifiedRestaurantInterface() {
             {/* Center: Search - Jobs loved search */}
             <div className="flex-1 max-w-md mx-8">
               <div className="relative">
-                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-                  darkMode ? 'text-gray-400' : 'text-gray-500'
-                }`} />
+                <Search
+                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
+                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}
+                />
                 <Input
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search everything... ⌘K"
                   className={`pl-10 pr-4 py-2 rounded-full border-0 shadow-sm transition-all ${
-                    darkMode 
-                      ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700' 
+                    darkMode
+                      ? 'bg-gray-800 text-white placeholder-gray-400 focus:bg-gray-700'
                       : 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-white focus:shadow-md'
                   }`}
                   onFocus={() => setIsCommandPaletteOpen(true)}
@@ -256,18 +268,16 @@ export function UnifiedRestaurantInterface() {
               {/* Live connection indicator */}
               <div className="flex items-center space-x-2">
                 <PulseIndicator active={true} color="green" size="sm" />
-                <span className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <span
+                  className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                >
                   Live
                 </span>
                 <HeartbeatIndicator active={true} rate={2000} size={12} />
               </div>
 
               {/* Notifications */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="relative"
-              >
+              <Button variant="ghost" size="sm" className="relative">
                 <Bell className="w-4 h-4" />
                 {liveStats.activeOrders > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
@@ -277,21 +287,17 @@ export function UnifiedRestaurantInterface() {
               </Button>
 
               {/* Theme toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setDarkMode(!darkMode)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setDarkMode(!darkMode)}>
                 {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </Button>
 
               {/* Fullscreen toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsFullscreen(!isFullscreen)}
-              >
-                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              <Button variant="ghost" size="sm" onClick={() => setIsFullscreen(!isFullscreen)}>
+                {isFullscreen ? (
+                  <Minimize2 className="w-4 h-4" />
+                ) : (
+                  <Maximize2 className="w-4 h-4" />
+                )}
               </Button>
 
               {/* User menu */}
@@ -322,7 +328,7 @@ export function UnifiedRestaurantInterface() {
               color="from-blue-500 to-indigo-600"
               animated={true}
             />
-            
+
             <MetricCard
               title="Today's Revenue"
               value={liveStats.todayRevenue}
@@ -332,7 +338,7 @@ export function UnifiedRestaurantInterface() {
               color="from-green-500 to-emerald-600"
               animated={true}
             />
-            
+
             <MetricCard
               title="Active Orders"
               value={liveStats.activeOrders}
@@ -342,7 +348,7 @@ export function UnifiedRestaurantInterface() {
               color="from-orange-500 to-red-600"
               animated={true}
             />
-            
+
             <MetricCard
               title="Guest Rating"
               value={liveStats.customerSatisfaction}
@@ -357,7 +363,7 @@ export function UnifiedRestaurantInterface() {
 
         {/* Unified Views Grid - Jobs-style simplicity */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {unifiedViews.map((view) => (
+          {unifiedViews.map(view => (
             <Card
               key={view.id}
               className={`p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
@@ -380,7 +386,9 @@ export function UnifiedRestaurantInterface() {
               }}
             >
               <div className="flex items-start justify-between mb-6">
-                <div className={`w-14 h-14 bg-gradient-to-br ${view.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                <div
+                  className={`w-14 h-14 bg-gradient-to-br ${view.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}
+                >
                   {view.icon}
                   <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
@@ -395,9 +403,7 @@ export function UnifiedRestaurantInterface() {
                 <h3 className="text-xl font-semibold text-gray-900 group-hover:text-gray-800">
                   {view.title}
                 </h3>
-                <p className="text-gray-600 group-hover:text-gray-700">
-                  {view.subtitle}
-                </p>
+                <p className="text-gray-600 group-hover:text-gray-700">{view.subtitle}</p>
               </div>
 
               {/* Quick Actions */}
@@ -406,16 +412,14 @@ export function UnifiedRestaurantInterface() {
                   <div
                     key={index}
                     className="flex items-center justify-between p-3 bg-white/50 rounded-lg hover:bg-white/70 transition-colors group/action"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation()
                       action.action()
                     }}
                   >
                     <div className="flex items-center space-x-3">
                       {action.icon}
-                      <span className="text-sm font-medium text-gray-700">
-                        {action.label}
-                      </span>
+                      <span className="text-sm font-medium text-gray-700">{action.label}</span>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-400 group-hover/action:text-gray-600 group-hover/action:translate-x-1 transition-all" />
                   </div>
@@ -429,16 +433,16 @@ export function UnifiedRestaurantInterface() {
         </div>
 
         {/* Bottom Status Bar - Minimal but informative */}
-        <div className={`mt-12 p-4 rounded-2xl ${
-          darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white/50 border-gray-200'
-        } backdrop-blur-xl border`}>
+        <div
+          className={`mt-12 p-4 rounded-2xl ${
+            darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white/50 border-gray-200'
+          } backdrop-blur-xl border`}
+        >
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <StatusIndicator status="success" size="sm" animated={true} />
-                <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
-                  Connected
-                </span>
+                <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>Connected</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Users className="w-4 h-4 text-blue-500" />
@@ -449,7 +453,8 @@ export function UnifiedRestaurantInterface() {
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-purple-500" />
                 <span className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
-                  <AnimatedCounter value={liveStats.avgWaitTime} />min avg wait
+                  <AnimatedCounter value={liveStats.avgWaitTime} />
+                  min avg wait
                 </span>
               </div>
             </div>
@@ -471,7 +476,7 @@ export function UnifiedRestaurantInterface() {
                 <Command className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search or jump to..."
                   className="pl-10 border-0 focus:ring-0 text-lg"
                   autoFocus
@@ -484,7 +489,7 @@ export function UnifiedRestaurantInterface() {
                 <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Navigate
                 </div>
-                {unifiedViews.map((view) => (
+                {unifiedViews.map(view => (
                   <div
                     key={view.id}
                     className="flex items-center space-x-3 px-3 py-2 hover:bg-gray-100 rounded cursor-pointer"

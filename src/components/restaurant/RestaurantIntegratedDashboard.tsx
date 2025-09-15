@@ -50,7 +50,7 @@ export function RestaurantIntegratedDashboard() {
     },
     {
       name: 'Auto-Journal Engine',
-      status: 'active', 
+      status: 'active',
       description: '85% automated GL posting for all transactions',
       icon: <Zap className="w-5 h-5" />,
       smartCode: 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1'
@@ -189,9 +189,7 @@ export function RestaurantIntegratedDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {heraIntegrations.map((integration, index) => (
                 <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    {integration.icon}
-                  </div>
+                  <div className="p-2 bg-green-100 rounded-lg">{integration.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold">{integration.name}</h3>
@@ -326,8 +324,8 @@ export function RestaurantIntegratedDashboard() {
           <Alert className="mt-6 border-green-200 bg-green-50">
             <CheckCircle className="h-4 w-4 text-green-600" />
             <AlertDescription className="text-green-800">
-              This module is fully integrated with HERA Universal System. 
-              All transactions are automatically posted to GL accounts and tracked in real-time.
+              This module is fully integrated with HERA Universal System. All transactions are
+              automatically posted to GL accounts and tracked in real-time.
             </AlertDescription>
           </Alert>
         )}

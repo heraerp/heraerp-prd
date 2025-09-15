@@ -16,16 +16,17 @@ interface SimpleTourProviderProps {
   autoStart?: boolean
 }
 
-export function SimpleTourProvider({ 
-  children, 
-  industryKey, 
-  autoStart = false 
+export function SimpleTourProvider({
+  children,
+  industryKey,
+  autoStart = false
 }: SimpleTourProviderProps) {
-  
   const handleStartTour = async (industry: string) => {
     console.log(`🎪 Tour would start for: ${industry}`)
     // Placeholder for tour functionality
-    alert(`Welcome to HERA ${industry} Tour! 🚀\n\nFull guided tours will be available soon.\nFor now, explore the interface to discover all features.`)
+    alert(
+      `Welcome to HERA ${industry} Tour! 🚀\n\nFull guided tours will be available soon.\nFor now, explore the interface to discover all features.`
+    )
   }
 
   const contextValue: SimpleTourContextType = {
@@ -34,11 +35,7 @@ export function SimpleTourProvider({
     currentIndustry: industryKey
   }
 
-  return (
-    <SimpleTourContext.Provider value={contextValue}>
-      {children}
-    </SimpleTourContext.Provider>
-  )
+  return <SimpleTourContext.Provider value={contextValue}>{children}</SimpleTourContext.Provider>
 }
 
 export function useSimpleTour() {
@@ -50,18 +47,8 @@ export function useSimpleTour() {
 }
 
 // Simple tour element wrapper
-export function SimpleTourElement({ 
-  children, 
-  tourId 
-}: { 
-  children: ReactNode
-  tourId: string 
-}) {
-  return (
-    <div data-tour={tourId}>
-      {children}
-    </div>
-  )
+export function SimpleTourElement({ children, tourId }: { children: ReactNode; tourId: string }) {
+  return <div data-tour={tourId}>{children}</div>
 }
 
 // Export compatible names for existing code

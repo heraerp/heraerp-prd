@@ -19,13 +19,13 @@ export function transformToUIAppointment(data: {
   relationships: any[]
 }): UIAppointment {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -42,14 +42,15 @@ export function transformToUIAppointment(data: {
 
 export function filterAppointment(items: UIAppointment[], searchTerm: string): UIAppointment[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.date?.toLowerCase().includes(term) ||
-    item.time?.toLowerCase().includes(term) ||
-    item.duration?.toLowerCase().includes(term) ||
-    item.notes?.toLowerCase().includes(term) ||
-    item.status?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.date?.toLowerCase().includes(term) ||
+      item.time?.toLowerCase().includes(term) ||
+      item.duration?.toLowerCase().includes(term) ||
+      item.notes?.toLowerCase().includes(term) ||
+      item.status?.toLowerCase().includes(term)
   )
 }

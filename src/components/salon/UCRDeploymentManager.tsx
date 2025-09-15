@@ -38,13 +38,9 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
@@ -57,7 +53,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from '@/components/ui/dialog'
 import { Progress } from '@/components/ui/progress'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -83,7 +79,12 @@ interface Approval {
   notes?: string
 }
 
-export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCRDeploymentManagerProps) {
+export function UCRDeploymentManager({
+  ruleId,
+  rule,
+  testResults,
+  onClose
+}: UCRDeploymentManagerProps) {
   const { currentOrganization } = useMultiOrgAuth()
   const { getRule, deployRule, validateRule, getAuditLog, simulateRule } = useUCRMCP()
   const { toast } = useToast()
@@ -92,13 +93,13 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
   const [activeTab, setActiveTab] = useState('overview')
   const [deploying, setDeploying] = useState(false)
   const [deploymentProgress, setDeploymentProgress] = useState(0)
-  
+
   // Deployment settings
   const [deploymentScope, setDeploymentScope] = useState<DeploymentScope>({
     apps: ['salon'],
     locations: ['all']
   })
-  const [effectiveFrom, setEffectiveFrom] = useState(formatDate(new Date(), 'yyyy-MM-dd\'T\'HH:mm'))
+  const [effectiveFrom, setEffectiveFrom] = useState(formatDate(new Date(), "yyyy-MM-dd'T'HH:mm"))
   const [effectiveTo, setEffectiveTo] = useState('')
   const [deploymentNotes, setDeploymentNotes] = useState('')
   const [requiresApproval, setRequiresApproval] = useState(true)
@@ -142,9 +143,8 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
   const loadDeploymentHistory = async () => {
     try {
       const events = await getAuditLog(ruleId)
-      const deployments = events.filter((e: any) => 
-        e.transaction_type === 'ucr_deployment' || 
-        e.smart_code?.includes('DEPLOY')
+      const deployments = events.filter(
+        (e: any) => e.transaction_type === 'ucr_deployment' || e.smart_code?.includes('DEPLOY')
       )
       setDeploymentHistory(deployments)
     } catch (err) {
@@ -166,10 +166,10 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
     setApprovals([...approvals, approval])
     setChecklist({ ...checklist, approved: true })
     setShowApprovalDialog(false)
-    
+
     toast({
       title: 'Approval Recorded',
-      description: 'Your approval has been recorded successfully',
+      description: 'Your approval has been recorded successfully'
     })
   }
 
@@ -245,7 +245,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
 
       toast({
         title: 'Deployment Successful!',
-        description: `Rule is now active in production`,
+        description: `Rule is now active in production`
       })
 
       // Refresh deployment history
@@ -253,7 +253,6 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
         loadDeploymentHistory()
         if (onClose) onClose()
       }, 1500)
-
     } catch (err: any) {
       setDeploymentProgress(0)
       toast({
@@ -270,7 +269,9 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
     if (!currentRule) return null
 
     const hasTestResults = testResults && testResults.passed > 0
-    const testPassRate = hasTestResults ? (testResults.passed / (testResults.passed + testResults.failed)) * 100 : 0
+    const testPassRate = hasTestResults
+      ? (testResults.passed / (testResults.passed + testResults.failed)) * 100
+      : 0
 
     return (
       <div className="space-y-6">
@@ -299,9 +300,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               </div>
               <div>
                 <Label className="text-sm text-gray-600">Version</Label>
-                <Badge variant="outline">
-                  v{(currentRule.metadata as any)?.rule_version || 1}
-                </Badge>
+                <Badge variant="outline">v{(currentRule.metadata as any)?.rule_version || 1}</Badge>
               </div>
             </div>
           </CardContent>
@@ -340,7 +339,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                 <div>
                   <p className="font-medium">Test Results</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {hasTestResults 
+                    {hasTestResults
                       ? `${testPassRate.toFixed(0)}% tests passing`
                       : 'No test results available'}
                   </p>
@@ -375,7 +374,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                 <AlertCircle className="w-4 h-4" />
                 <AlertTitle>Testing Recommended</AlertTitle>
                 <AlertDescription>
-                  {!hasTestResults 
+                  {!hasTestResults
                     ? 'Consider running tests before deployment to ensure rule behavior.'
                     : 'Some tests are failing. Review and fix issues before deployment.'}
                 </AlertDescription>
@@ -397,9 +396,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <MapPin className="w-5 h-5" />
               Deployment Scope
             </CardTitle>
-            <CardDescription>
-              Choose where this rule will be active
-            </CardDescription>
+            <CardDescription>Choose where this rule will be active</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -409,7 +406,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                   <div key={app} className="flex items-center gap-2">
                     <Checkbox
                       checked={deploymentScope.apps.includes(app)}
-                      onCheckedChange={(checked) => {
+                      onCheckedChange={checked => {
                         if (checked) {
                           setDeploymentScope({
                             ...deploymentScope,
@@ -423,9 +420,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                         }
                       }}
                     />
-                    <Label className="font-normal capitalize">
-                      {app.replace('_', ' ')}
-                    </Label>
+                    <Label className="font-normal capitalize">{app.replace('_', ' ')}</Label>
                   </div>
                 ))}
               </div>
@@ -437,10 +432,12 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <Label>Locations</Label>
               <Select
                 value={deploymentScope.locations[0]}
-                onValueChange={(value) => setDeploymentScope({
-                  ...deploymentScope,
-                  locations: [value]
-                })}
+                onValueChange={value =>
+                  setDeploymentScope({
+                    ...deploymentScope,
+                    locations: [value]
+                  })
+                }
               >
                 <SelectTrigger className="mt-2">
                   <SelectValue />
@@ -457,8 +454,8 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
             <Alert>
               <Info className="w-4 h-4" />
               <AlertDescription>
-                The rule will be active in {deploymentScope.apps.length} application(s) 
-                across {deploymentScope.locations[0] === 'all' ? 'all' : 'selected'} locations.
+                The rule will be active in {deploymentScope.apps.length} application(s) across{' '}
+                {deploymentScope.locations[0] === 'all' ? 'all' : 'selected'} locations.
               </AlertDescription>
             </Alert>
           </CardContent>
@@ -471,9 +468,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <CalendarClock className="w-5 h-5" />
               Deployment Schedule
             </CardTitle>
-            <CardDescription>
-              When should this rule become active?
-            </CardDescription>
+            <CardDescription>When should this rule become active?</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -483,9 +478,9 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                   id="effective_from"
                   type="datetime-local"
                   value={effectiveFrom}
-                  onChange={(e) => setEffectiveFrom(e.target.value)}
+                  onChange={e => setEffectiveFrom(e.target.value)}
                   className="mt-2"
-                  min={formatDate(new Date(), 'yyyy-MM-dd\'T\'HH:mm')}
+                  min={formatDate(new Date(), "yyyy-MM-dd'T'HH:mm")}
                 />
               </div>
               <div>
@@ -494,13 +489,11 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                   id="effective_to"
                   type="datetime-local"
                   value={effectiveTo}
-                  onChange={(e) => setEffectiveTo(e.target.value)}
+                  onChange={e => setEffectiveTo(e.target.value)}
                   className="mt-2"
                   min={effectiveFrom}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Leave empty for permanent deployment
-                </p>
+                <p className="text-xs text-gray-500 mt-1">Leave empty for permanent deployment</p>
               </div>
             </div>
 
@@ -509,21 +502,25 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEffectiveFrom(formatDate(new Date(), 'yyyy-MM-dd\'T\'HH:mm'))}
+                onClick={() => setEffectiveFrom(formatDate(new Date(), "yyyy-MM-dd'T'HH:mm"))}
               >
                 Deploy Now
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEffectiveFrom(formatDate(addDays(new Date(), 1), 'yyyy-MM-dd\'T\'09:00'))}
+                onClick={() =>
+                  setEffectiveFrom(formatDate(addDays(new Date(), 1), "yyyy-MM-dd'T'09:00"))
+                }
               >
                 Tomorrow 9 AM
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEffectiveFrom(formatDate(addDays(new Date(), 7), 'yyyy-MM-dd\'T\'09:00'))}
+                onClick={() =>
+                  setEffectiveFrom(formatDate(addDays(new Date(), 7), "yyyy-MM-dd'T'09:00"))
+                }
               >
                 Next Week
               </Button>
@@ -542,7 +539,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
           <CardContent>
             <Textarea
               value={deploymentNotes}
-              onChange={(e) => setDeploymentNotes(e.target.value)}
+              onChange={e => setDeploymentNotes(e.target.value)}
               placeholder="Describe what's changing and why..."
               rows={4}
               className="w-full"
@@ -571,9 +568,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div>
                 <Label htmlFor="requires_approval">Require Approval</Label>
-                <p className="text-sm text-gray-500">
-                  Manager approval needed before deployment
-                </p>
+                <p className="text-sm text-gray-500">Manager approval needed before deployment</p>
               </div>
               <Switch
                 id="requires_approval"
@@ -599,10 +594,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
             <div className="flex items-center justify-between">
               <CardTitle>Approvals</CardTitle>
               {requiresApproval && (
-                <Button
-                  onClick={() => setShowApprovalDialog(true)}
-                  size="sm"
-                >
+                <Button onClick={() => setShowApprovalDialog(true)} size="sm">
                   <UserCheck className="w-4 h-4 mr-2" />
                   Add Approval
                 </Button>
@@ -613,7 +605,10 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
             {approvals.length > 0 ? (
               <div className="space-y-3">
                 {approvals.map((approval, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg"
+                  >
                     <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
@@ -623,11 +618,10 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Approved on {formatDate(new Date(approval.approved_at), 'MMM dd, yyyy HH:mm')}
+                        Approved on{' '}
+                        {formatDate(new Date(approval.approved_at), 'MMM dd, yyyy HH:mm')}
                       </p>
-                      {approval.notes && (
-                        <p className="text-sm mt-1">{approval.notes}</p>
-                      )}
+                      {approval.notes && <p className="text-sm mt-1">{approval.notes}</p>}
                     </div>
                   </div>
                 ))}
@@ -653,9 +647,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <Shield className="w-5 h-5" />
               Pre-deployment Checklist
             </CardTitle>
-            <CardDescription>
-              Ensure all items are checked before deployment
-            </CardDescription>
+            <CardDescription>Ensure all items are checked before deployment</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -669,14 +661,14 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                 <div key={key} className="flex items-center gap-3">
                   <Checkbox
                     checked={checklist[key as keyof typeof checklist]}
-                    onCheckedChange={(checked) => setChecklist({
-                      ...checklist,
-                      [key]: checked as boolean
-                    })}
+                    onCheckedChange={checked =>
+                      setChecklist({
+                        ...checklist,
+                        [key]: checked as boolean
+                      })
+                    }
                   />
-                  <Label className="font-normal cursor-pointer">
-                    {label}
-                  </Label>
+                  <Label className="font-normal cursor-pointer">{label}</Label>
                 </div>
               ))}
             </div>
@@ -704,20 +696,20 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <Clock className="w-5 h-5" />
               Deployment History
             </CardTitle>
-            <CardDescription>
-              Previous deployments and rollbacks
-            </CardDescription>
+            <CardDescription>Previous deployments and rollbacks</CardDescription>
           </CardHeader>
           <CardContent>
             {deploymentHistory.length > 0 ? (
               <div className="space-y-4">
                 {deploymentHistory.map((event, index) => (
                   <div key={index} className="flex items-start gap-3 pb-4 border-b last:border-0">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      event.status === 'completed' 
-                        ? 'bg-green-100 dark:bg-green-900/30' 
-                        : 'bg-yellow-100 dark:bg-yellow-900/30'
-                    }`}>
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        event.status === 'completed'
+                          ? 'bg-green-100 dark:bg-green-900/30'
+                          : 'bg-yellow-100 dark:bg-yellow-900/30'
+                      }`}
+                    >
                       {event.status === 'completed' ? (
                         <CheckCircle className="w-4 h-4 text-green-600" />
                       ) : (
@@ -742,9 +734,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
                         ))}
                       </div>
                     </div>
-                    {index === 0 && (
-                      <Badge className="bg-green-100 text-green-800">Current</Badge>
-                    )}
+                    {index === 0 && <Badge className="bg-green-100 text-green-800">Current</Badge>}
                   </div>
                 ))}
               </div>
@@ -752,9 +742,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <div className="text-center py-8">
                 <Clock className="w-12 h-12 mx-auto text-gray-400 mb-3" />
                 <p className="text-gray-500">No deployment history</p>
-                <p className="text-sm text-gray-400 mt-1">
-                  This will be the first deployment
-                </p>
+                <p className="text-sm text-gray-400 mt-1">This will be the first deployment</p>
               </div>
             )}
           </CardContent>
@@ -820,9 +808,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               </div>
               <div>
                 <CardTitle>Deploy Rule to Production</CardTitle>
-                <CardDescription>
-                  {currentRule.title || currentRule.entity_name}
-                </CardDescription>
+                <CardDescription>{currentRule.title || currentRule.entity_name}</CardDescription>
               </div>
             </div>
             <Button
@@ -892,21 +878,13 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
         </TabsList>
 
         <div className="mt-6">
-          <TabsContent value="overview">
-            {renderOverview()}
-          </TabsContent>
+          <TabsContent value="overview">{renderOverview()}</TabsContent>
 
-          <TabsContent value="settings">
-            {renderDeploymentSettings()}
-          </TabsContent>
+          <TabsContent value="settings">{renderDeploymentSettings()}</TabsContent>
 
-          <TabsContent value="approvals">
-            {renderApprovals()}
-          </TabsContent>
+          <TabsContent value="approvals">{renderApprovals()}</TabsContent>
 
-          <TabsContent value="history">
-            {renderHistory()}
-          </TabsContent>
+          <TabsContent value="history">{renderHistory()}</TabsContent>
         </div>
       </Tabs>
 
@@ -915,15 +893,14 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add Approval</DialogTitle>
-            <DialogDescription>
-              Approve this rule for deployment to production
-            </DialogDescription>
+            <DialogDescription>Approve this rule for deployment to production</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <Alert>
               <Info className="w-4 h-4" />
               <AlertDescription>
-                By approving, you confirm that this rule has been reviewed and is ready for production use.
+                By approving, you confirm that this rule has been reviewed and is ready for
+                production use.
               </AlertDescription>
             </Alert>
             <div>
@@ -931,7 +908,7 @@ export function UCRDeploymentManager({ ruleId, rule, testResults, onClose }: UCR
               <Textarea
                 id="approval_notes"
                 value={deploymentNotes}
-                onChange={(e) => setDeploymentNotes(e.target.value)}
+                onChange={e => setDeploymentNotes(e.target.value)}
                 placeholder="Add any notes about this approval..."
                 rows={3}
                 className="mt-2"

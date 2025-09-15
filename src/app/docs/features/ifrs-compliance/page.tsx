@@ -4,8 +4,8 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
-import { 
-  Globe, 
+import {
+  Globe,
   Shield,
   FileText,
   CheckCircle2,
@@ -25,60 +25,85 @@ export default function IFRSComplianceDoc() {
       <nav className="docs-sidebar">
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">IFRS Compliance</h3>
-          <a href="#overview" className="docs-nav-link">Overview</a>
-          <a href="#standards" className="docs-nav-link">Standards Coverage</a>
-          <a href="#implementation" className="docs-nav-link">Implementation</a>
-          <a href="#field-mapping" className="docs-nav-link">Field Mapping</a>
-          <a href="#reporting" className="docs-nav-link">Financial Reporting</a>
-          <a href="#consolidation" className="docs-nav-link">Consolidation</a>
-          <a href="#audit" className="docs-nav-link">Audit Support</a>
+          <a href="#overview" className="docs-nav-link">
+            Overview
+          </a>
+          <a href="#standards" className="docs-nav-link">
+            Standards Coverage
+          </a>
+          <a href="#implementation" className="docs-nav-link">
+            Implementation
+          </a>
+          <a href="#field-mapping" className="docs-nav-link">
+            Field Mapping
+          </a>
+          <a href="#reporting" className="docs-nav-link">
+            Financial Reporting
+          </a>
+          <a href="#consolidation" className="docs-nav-link">
+            Consolidation
+          </a>
+          <a href="#audit" className="docs-nav-link">
+            Audit Support
+          </a>
         </div>
-        
+
         <div className="docs-nav-section">
           <h3 className="docs-nav-section-title">Related Topics</h3>
-          <Link href="/docs/features/chart-of-accounts" className="docs-nav-link">Chart of Accounts</Link>
-          <Link href="/docs/features/auto-journal" className="docs-nav-link">Auto-Journal Engine</Link>
-          <Link href="/docs/features/budgeting" className="docs-nav-link">Budgeting System</Link>
+          <Link href="/docs/features/chart-of-accounts" className="docs-nav-link">
+            Chart of Accounts
+          </Link>
+          <Link href="/docs/features/auto-journal" className="docs-nav-link">
+            Auto-Journal Engine
+          </Link>
+          <Link href="/docs/features/budgeting" className="docs-nav-link">
+            Budgeting System
+          </Link>
         </div>
       </nav>
-      
+
       <main className="docs-main">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Link href="/docs" className="hover:text-accent-fg">Docs</Link>
+            <Link href="/docs" className="hover:text-accent-fg">
+              Docs
+            </Link>
             <span>/</span>
-            <Link href="/docs/features" className="hover:text-accent-fg">Features</Link>
+            <Link href="/docs/features" className="hover:text-accent-fg">
+              Features
+            </Link>
             <span>/</span>
             <span>IFRS Compliance</span>
           </div>
-          
+
           <h1>IFRS Compliance</h1>
           <p className="text-xl text-muted-foreground mt-2">
             Built-in International Financial Reporting Standards compliance for global businesses
           </p>
         </div>
-        
+
         <div className="docs-note docs-note-success mb-8">
           <div className="flex items-start gap-3">
             <Award className="w-5 h-5 mt-0.5 flex-shrink-0" />
             <div>
               <strong>Industry First</strong>
               <p className="text-sm mt-1">
-                HERA is the first ERP system with built-in IFRS compliance by default. Every Chart of Accounts 
-                generated includes complete IFRS lineage automatically - no additional cost or configuration.
+                HERA is the first ERP system with built-in IFRS compliance by default. Every Chart
+                of Accounts generated includes complete IFRS lineage automatically - no additional
+                cost or configuration.
               </p>
             </div>
           </div>
         </div>
-        
+
         <section id="overview" className="mb-12">
           <h2>Overview</h2>
           <p className="mb-6">
-            HERA's IFRS compliance system ensures that every financial transaction and report meets international 
-            standards. With automatic classification, statement mapping, and consolidation support, HERA delivers 
-            enterprise-grade compliance without complexity.
+            HERA's IFRS compliance system ensures that every financial transaction and report meets
+            international standards. With automatic classification, statement mapping, and
+            consolidation support, HERA delivers enterprise-grade compliance without complexity.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="docs-card">
               <div className="flex items-center gap-3 mb-3">
@@ -86,38 +111,42 @@ export default function IFRSComplianceDoc() {
                 <h3 className="font-semibold">Global Standards</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Full compliance with IFRS as issued by IASB, covering all major standards and interpretations
+                Full compliance with IFRS as issued by IASB, covering all major standards and
+                interpretations
               </p>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-center gap-3 mb-3">
                 <Shield className="w-6 h-6 text-accent-fg" />
                 <h3 className="font-semibold">Automatic Compliance</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Every account created includes mandatory IFRS fields with intelligent default mappings
+                Every account created includes mandatory IFRS fields with intelligent default
+                mappings
               </p>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-center gap-3 mb-3">
                 <FileText className="w-6 h-6 text-accent-fg" />
                 <h3 className="font-semibold">Complete Reporting</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Generate IFRS-compliant financial statements with proper classifications and disclosures
+                Generate IFRS-compliant financial statements with proper classifications and
+                disclosures
               </p>
             </div>
           </div>
         </section>
-        
+
         <section id="standards" className="mb-12">
           <h2>Standards Coverage</h2>
           <p className="mb-6">
-            HERA supports all major IFRS standards with built-in classification and measurement rules:
+            HERA supports all major IFRS standards with built-in classification and measurement
+            rules:
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Core Standards</h4>
@@ -144,7 +173,7 @@ export default function IFRSComplianceDoc() {
                 </li>
               </ul>
             </div>
-            
+
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Advanced Standards</h4>
               <ul className="space-y-2 text-sm">
@@ -172,16 +201,16 @@ export default function IFRSComplianceDoc() {
             </div>
           </div>
         </section>
-        
+
         <section id="field-mapping" className="mb-12">
           <h2>IFRS Field Structure</h2>
           <p className="mb-6">
             Every GL account in HERA includes 11 mandatory IFRS fields for complete compliance:
           </p>
-          
+
           <div className="docs-card mb-6">
             <pre className="text-sm bg-canvas-inset p-4 rounded overflow-x-auto">
-{`{
+              {`{
   // Classification Fields
   "ifrs_classification": "Assets",              // Primary category
   "ifrs_sub_classification": "Current Assets",  // Secondary category
@@ -200,9 +229,10 @@ export default function IFRSComplianceDoc() {
   // Measurement & Recognition
   "measurement_basis": "Historical Cost",       // Fair value, amortized cost
   "consolidation_method": "Full"                // Full, equity, none
-}`}</pre>
+}`}
+            </pre>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Classification Hierarchy</h4>
@@ -214,28 +244,38 @@ export default function IFRSComplianceDoc() {
                 <div className="pl-16">Level 5: Specific bank account</div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Statement Types</h4>
               <ul className="space-y-2 text-sm">
-                <li><strong>SFP</strong> - Statement of Financial Position</li>
-                <li><strong>SPL</strong> - Statement of Profit or Loss</li>
-                <li><strong>SCE</strong> - Statement of Changes in Equity</li>
-                <li><strong>SCF</strong> - Statement of Cash Flows</li>
-                <li><strong>NOTES</strong> - Notes to Financial Statements</li>
+                <li>
+                  <strong>SFP</strong> - Statement of Financial Position
+                </li>
+                <li>
+                  <strong>SPL</strong> - Statement of Profit or Loss
+                </li>
+                <li>
+                  <strong>SCE</strong> - Statement of Changes in Equity
+                </li>
+                <li>
+                  <strong>SCF</strong> - Statement of Cash Flows
+                </li>
+                <li>
+                  <strong>NOTES</strong> - Notes to Financial Statements
+                </li>
               </ul>
             </div>
           </div>
         </section>
-        
+
         <section id="implementation" className="mb-12">
           <h2>Implementation Examples</h2>
-          
+
           <div className="space-y-6">
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Creating IFRS-Compliant Account</h4>
               <pre className="text-sm bg-canvas-inset p-3 rounded overflow-x-auto">
-{`// Create account with IFRS fields
+                {`// Create account with IFRS fields
 const account = await universalApi.createEntity({
   entity_type: 'gl_account',
   entity_code: '1510',
@@ -253,13 +293,14 @@ await universalApi.bulkSetDynamicFields(account.id, {
   statement_order: 130,
   measurement_basis: 'Amortized Cost',
   expected_credit_loss_rate: 0.02
-})`}</pre>
+})`}
+              </pre>
             </div>
-            
+
             <div className="docs-card">
               <h4 className="font-semibold mb-3">Generating IFRS Statements</h4>
               <pre className="text-sm bg-canvas-inset p-3 rounded overflow-x-auto">
-{`// Generate Statement of Financial Position
+                {`// Generate Statement of Financial Position
 const sofp = await universalApi.generateIFRSStatement({
   organizationId: 'org-123',
   statementType: 'SFP',
@@ -284,19 +325,20 @@ const sofp = await universalApi.generateIFRSStatement({
       ]
     }
   }
-}`}</pre>
+}`}
+              </pre>
             </div>
           </div>
         </section>
-        
+
         <section id="reporting" className="mb-12">
           <h2>Financial Reporting</h2>
-          
+
           <div className="docs-note docs-note-info mb-6">
-            HERA automatically generates all required IFRS financial statements with proper formatting,
-            comparatives, and note references.
+            HERA automatically generates all required IFRS financial statements with proper
+            formatting, comparatives, and note references.
           </div>
-          
+
           <div className="grid gap-4">
             <div className="docs-card">
               <div className="flex items-start gap-4">
@@ -312,7 +354,7 @@ const sofp = await universalApi.generateIFRSStatement({
                 </div>
               </div>
             </div>
-            
+
             <div className="docs-card">
               <div className="flex items-start gap-4">
                 <FileText className="w-6 h-6 text-accent-fg flex-shrink-0 mt-1" />
@@ -329,13 +371,14 @@ const sofp = await universalApi.generateIFRSStatement({
             </div>
           </div>
         </section>
-        
+
         <section id="consolidation" className="mb-12">
           <h2>Group Consolidation</h2>
           <p className="mb-6">
-            HERA supports complex group structures with automatic consolidation and elimination entries:
+            HERA supports complex group structures with automatic consolidation and elimination
+            entries:
           </p>
-          
+
           <div className="docs-card">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -343,19 +386,25 @@ const sofp = await universalApi.generateIFRSStatement({
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-accent-fg" />
-                    <span><strong>Full Consolidation</strong> - Subsidiaries (&gt;50%)</span>
+                    <span>
+                      <strong>Full Consolidation</strong> - Subsidiaries (&gt;50%)
+                    </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Briefcase className="w-4 h-4 text-attention-fg" />
-                    <span><strong>Equity Method</strong> - Associates (20-50%)</span>
+                    <span>
+                      <strong>Equity Method</strong> - Associates (20-50%)
+                    </span>
                   </li>
                   <li className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-success-fg" />
-                    <span><strong>Fair Value</strong> - Investments (&lt;20%)</span>
+                    <span>
+                      <strong>Fair Value</strong> - Investments (&lt;20%)
+                    </span>
                   </li>
                 </ul>
               </div>
-              
+
               <div>
                 <h4 className="font-semibold mb-3">Automatic Eliminations</h4>
                 <ul className="space-y-2 text-sm">
@@ -369,13 +418,13 @@ const sofp = await universalApi.generateIFRSStatement({
             </div>
           </div>
         </section>
-        
+
         <section id="audit" className="mb-12">
           <h2>Audit Support</h2>
           <p className="mb-6">
             Complete audit trail and documentation support for IFRS compliance verification:
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="docs-card text-center">
               <Shield className="w-8 h-8 text-accent-fg mx-auto mb-2" />
@@ -384,7 +433,7 @@ const sofp = await universalApi.generateIFRSStatement({
                 Every transaction tracked with user, timestamp, and changes
               </p>
             </div>
-            
+
             <div className="docs-card text-center">
               <Database className="w-8 h-8 text-success-fg mx-auto mb-2" />
               <h4 className="font-semibold mb-1">Data Integrity</h4>
@@ -392,7 +441,7 @@ const sofp = await universalApi.generateIFRSStatement({
                 Immutable transaction history with version control
               </p>
             </div>
-            
+
             <div className="docs-card text-center">
               <FileText className="w-8 h-8 text-attention-fg mx-auto mb-2" />
               <h4 className="font-semibold mb-1">Documentation</h4>
@@ -402,7 +451,7 @@ const sofp = await universalApi.generateIFRSStatement({
             </div>
           </div>
         </section>
-        
+
         <section className="mb-12">
           <h2>Industry Recognition</h2>
           <div className="docs-card bg-success-emphasis text-white">
@@ -422,12 +471,15 @@ const sofp = await universalApi.generateIFRSStatement({
             </div>
           </div>
         </section>
-        
+
         <section>
           <h2>Next Steps</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Link href="/docs/features/chart-of-accounts" className="docs-card hover:border-accent-fg transition-colors">
+            <Link
+              href="/docs/features/chart-of-accounts"
+              className="docs-card hover:border-accent-fg transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Chart of Accounts</h4>
@@ -438,8 +490,11 @@ const sofp = await universalApi.generateIFRSStatement({
                 <ArrowRight className="w-5 h-5 text-accent-fg" />
               </div>
             </Link>
-            
-            <Link href="/showcase/financial" className="docs-card hover:border-accent-fg transition-colors">
+
+            <Link
+              href="/showcase/financial"
+              className="docs-card hover:border-accent-fg transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Live Demo</h4>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Headphones,
   Plus,
   Search,
@@ -64,7 +64,7 @@ export default function CasesPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [cases, setCases] = useState<Case[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  
+
   // Sample case relations (in real app, would come from relationships table)
   const [caseRelations] = useState<Record<string, CaseRelation>>({
     'CASE-INF-001': {
@@ -111,61 +111,85 @@ export default function CasesPage() {
 
   const getTypeIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'technical': return AlertTriangle
-      case 'billing': return Tag
-      case 'service request': return Headphones
-      case 'complaint': return AlertCircle
-      default: return MessageSquare
+      case 'technical':
+        return AlertTriangle
+      case 'billing':
+        return Tag
+      case 'service request':
+        return Headphones
+      case 'complaint':
+        return AlertCircle
+      default:
+        return MessageSquare
     }
   }
 
   const getTypeColor = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'technical': return 'from-red-500 to-orange-600'
-      case 'billing': return 'from-[#FF5A09] to-[#ec7f37]'
-      case 'service request': return 'from-[#ec7f37] to-[#be4f0c]'
-      case 'complaint': return 'from-purple-500 to-purple-600'
-      default: return 'from-gray-500 to-gray-600'
+      case 'technical':
+        return 'from-red-500 to-orange-600'
+      case 'billing':
+        return 'from-[#FF5A09] to-[#ec7f37]'
+      case 'service request':
+        return 'from-[#ec7f37] to-[#be4f0c]'
+      case 'complaint':
+        return 'from-purple-500 to-purple-600'
+      default:
+        return 'from-gray-500 to-gray-600'
     }
   }
 
   const getPriorityColor = (priority: string) => {
     switch (priority?.toLowerCase()) {
-      case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      case 'medium': return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
-      case 'low': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'high':
+        return 'bg-red-500/20 text-red-400 border-red-500/30'
+      case 'medium':
+        return 'bg-[#FF5A09]/20 text-[#FF5A09] border-[#FF5A09]/30'
+      case 'low':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
     }
   }
 
   const getPriorityIcon = (priority: string) => {
     switch (priority?.toLowerCase()) {
-      case 'high': return ArrowUp
-      case 'medium': return Minus
-      case 'low': return ArrowDown
-      default: return Minus
+      case 'high':
+        return ArrowUp
+      case 'medium':
+        return Minus
+      case 'low':
+        return ArrowDown
+      default:
+        return Minus
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
-      case 'open': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'in progress': return 'bg-[#ec7f37]/20 text-[#ec7f37] border-[#ec7f37]/30'
-      case 'resolved': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-      case 'closed': return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
-      case 'escalated': return 'bg-red-500/20 text-red-400 border-red-500/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'open':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+      case 'in progress':
+        return 'bg-[#ec7f37]/20 text-[#ec7f37] border-[#ec7f37]/30'
+      case 'resolved':
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      case 'closed':
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      case 'escalated':
+        return 'bg-red-500/20 text-red-400 border-red-500/30'
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
     }
   }
 
   const calculateSLAStatus = (kase: Case) => {
     if (kase.metadata?.resolved_date) return 'resolved'
-    
+
     const slaHours = parseInt(kase.metadata?.sla || '24')
     const openedDate = new Date(kase.metadata?.opened_date || kase.created_at)
     const now = new Date()
     const hoursElapsed = (now.getTime() - openedDate.getTime()) / (1000 * 60 * 60)
-    
+
     if (hoursElapsed > slaHours) return 'breached'
     if (hoursElapsed > slaHours * 0.8) return 'at-risk'
     return 'on-track'
@@ -173,50 +197,57 @@ export default function CasesPage() {
 
   const getSLAStatusColor = (status: string) => {
     switch (status) {
-      case 'breached': return 'text-red-400'
-      case 'at-risk': return 'text-yellow-400'
-      case 'on-track': return 'text-emerald-400'
-      case 'resolved': return 'text-blue-400'
-      default: return 'text-gray-400'
+      case 'breached':
+        return 'text-red-400'
+      case 'at-risk':
+        return 'text-yellow-400'
+      case 'on-track':
+        return 'text-emerald-400'
+      case 'resolved':
+        return 'text-blue-400'
+      default:
+        return 'text-gray-400'
     }
   }
 
   const filteredCases = cases.filter(kase => {
-    const matchesSearch = kase.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         kase.metadata?.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      kase.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      kase.metadata?.description?.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesType = selectedType === 'all' || kase.metadata?.type === selectedType
-    const matchesPriority = selectedPriority === 'all' || kase.metadata?.priority === selectedPriority
+    const matchesPriority =
+      selectedPriority === 'all' || kase.metadata?.priority === selectedPriority
     const matchesStatus = selectedStatus === 'all' || kase.metadata?.status === selectedStatus
     return matchesSearch && matchesType && matchesPriority && matchesStatus
   })
 
   const stats = [
-    { 
-      label: 'Open Cases', 
-      value: cases.filter(c => c.metadata?.status === 'Open').length, 
-      icon: AlertCircle, 
-      color: 'from-yellow-500 to-orange-600' 
+    {
+      label: 'Open Cases',
+      value: cases.filter(c => c.metadata?.status === 'Open').length,
+      icon: AlertCircle,
+      color: 'from-yellow-500 to-orange-600'
     },
-    { 
-      label: 'In Progress', 
-      value: cases.filter(c => c.metadata?.status === 'In Progress').length, 
-      icon: Clock, 
-      color: 'from-[#FF5A09] to-[#ec7f37]' 
+    {
+      label: 'In Progress',
+      value: cases.filter(c => c.metadata?.status === 'In Progress').length,
+      icon: Clock,
+      color: 'from-[#FF5A09] to-[#ec7f37]'
     },
-    { 
-      label: 'Resolved Today', 
+    {
+      label: 'Resolved Today',
       value: cases.filter(c => {
         const resolvedDate = c.metadata?.resolved_date
         return resolvedDate && new Date(resolvedDate).toDateString() === new Date().toDateString()
-      }).length, 
-      icon: CheckCircle, 
-      color: 'from-emerald-500 to-green-600' 
+      }).length,
+      icon: CheckCircle,
+      color: 'from-emerald-500 to-green-600'
     },
-    { 
-      label: 'Avg Resolution', 
-      value: '6.2h', 
-      icon: Timer, 
-      color: 'from-[#be4f0c] to-[#FF5A09]' 
+    {
+      label: 'Avg Resolution',
+      value: '6.2h',
+      icon: Timer,
+      color: 'from-[#be4f0c] to-[#FF5A09]'
     }
   ]
 
@@ -236,7 +267,7 @@ export default function CasesPage() {
           <h1 className="text-3xl font-bold text-white">Support Cases</h1>
           <p className="text-white/60 mt-1">Manage customer support tickets and service requests</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsCreating(true)}
           className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-white font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
@@ -277,14 +308,14 @@ export default function CasesPage() {
             type="text"
             placeholder="Search cases..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-[#FF5A09] transition-colors"
           />
         </div>
-        
+
         <select
           value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
+          onChange={e => setSelectedType(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Types</option>
@@ -296,7 +327,7 @@ export default function CasesPage() {
 
         <select
           value={selectedPriority}
-          onChange={(e) => setSelectedPriority(e.target.value)}
+          onChange={e => setSelectedPriority(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Priorities</option>
@@ -307,7 +338,7 @@ export default function CasesPage() {
 
         <select
           value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
+          onChange={e => setSelectedStatus(e.target.value)}
           className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#FF5A09] transition-colors"
         >
           <option value="all">All Status</option>
@@ -321,12 +352,12 @@ export default function CasesPage() {
 
       {/* Cases List */}
       <div className="space-y-4">
-        {filteredCases.map((kase) => {
+        {filteredCases.map(kase => {
           const TypeIcon = getTypeIcon(kase.metadata?.type || '')
           const PriorityIcon = getPriorityIcon(kase.metadata?.priority || '')
           const slaStatus = calculateSLAStatus(kase)
           const relation = caseRelations[kase.entity_code] || {}
-          
+
           return (
             <div key={kase.id} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
@@ -337,7 +368,9 @@ export default function CasesPage() {
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-4">
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${getTypeColor(kase.metadata?.type || '')}`}>
+                        <div
+                          className={`p-3 rounded-xl bg-gradient-to-br ${getTypeColor(kase.metadata?.type || '')}`}
+                        >
                           <TypeIcon className="h-5 w-5 text-white" />
                         </div>
                         <div>
@@ -346,11 +379,15 @@ export default function CasesPage() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium border flex items-center space-x-1 ${getPriorityColor(kase.metadata?.priority || '')}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium border flex items-center space-x-1 ${getPriorityColor(kase.metadata?.priority || '')}`}
+                        >
                           <PriorityIcon className="h-3 w-3" />
                           <span>{kase.metadata?.priority}</span>
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(kase.metadata?.status || '')}`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(kase.metadata?.status || '')}`}
+                        >
                           {kase.metadata?.status}
                         </span>
                       </div>
@@ -379,7 +416,9 @@ export default function CasesPage() {
                       </div>
                       <div>
                         <p className="text-xs text-white/60 mb-1">SLA</p>
-                        <div className={`flex items-center space-x-1 text-sm font-medium ${getSLAStatusColor(slaStatus)}`}>
+                        <div
+                          className={`flex items-center space-x-1 text-sm font-medium ${getSLAStatusColor(slaStatus)}`}
+                        >
                           <Timer className="h-3 w-3" />
                           <span>{kase.metadata?.sla || '24 hours'}</span>
                         </div>
@@ -395,12 +434,19 @@ export default function CasesPage() {
                       <div className="flex items-center space-x-4 text-xs text-white/60">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
-                          <span>Opened: {kase.metadata?.opened_date ? new Date(kase.metadata.opened_date).toLocaleString() : 'N/A'}</span>
+                          <span>
+                            Opened:{' '}
+                            {kase.metadata?.opened_date
+                              ? new Date(kase.metadata.opened_date).toLocaleString()
+                              : 'N/A'}
+                          </span>
                         </div>
                         {kase.metadata?.resolved_date && (
                           <div className="flex items-center space-x-1">
                             <CheckCircle className="h-3 w-3 text-emerald-400" />
-                            <span>Resolved: {new Date(kase.metadata.resolved_date).toLocaleString()}</span>
+                            <span>
+                              Resolved: {new Date(kase.metadata.resolved_date).toLocaleString()}
+                            </span>
                           </div>
                         )}
                       </div>

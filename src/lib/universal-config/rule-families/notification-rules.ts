@@ -1,7 +1,7 @@
 /**
  * HERA Universal Configuration - Notification Rules Family
  * Smart Code: HERA.UNIV.CONFIG.NOTIFICATION.*
- * 
+ *
  * Manages notification triggers, templates, delivery methods, and customer preferences
  */
 
@@ -22,7 +22,7 @@ export interface NotificationContext extends Context {
 }
 
 // Notification trigger types
-export type NotificationTrigger = 
+export type NotificationTrigger =
   | 'booking_confirmed'
   | 'booking_reminder'
   | 'booking_cancelled'
@@ -42,10 +42,10 @@ export type NotificationTrigger =
 // Notification rule payload types
 export interface NotificationPayload {
   enabled: boolean
-  
+
   // Delivery channels
   channels: NotificationChannel[]
-  
+
   // Timing configuration
   send_immediately?: boolean
   delay_minutes?: number
@@ -53,25 +53,25 @@ export interface NotificationPayload {
     start_time: string
     end_time: string
   }
-  
+
   // Templates per channel
   templates: {
     [K in NotificationChannel]?: NotificationTemplate
   }
-  
+
   // Reminder configuration
   reminders?: {
     intervals: number[] // Minutes before appointment
     channels: NotificationChannel[]
   }
-  
+
   // Rate limiting
   rate_limit?: {
     max_per_hour?: number
     max_per_day?: number
     max_per_week?: number
   }
-  
+
   // Customer segment overrides
   segment_overrides?: {
     [segment: string]: {
@@ -80,19 +80,19 @@ export interface NotificationPayload {
       enabled?: boolean
     }
   }
-  
+
   // A/B testing
   variants?: NotificationVariant[]
-  
+
   // Delivery preferences
   respect_quiet_hours: boolean
   respect_opt_out: boolean
   fallback_channel?: NotificationChannel
-  
+
   // Tracking
   track_opens?: boolean
   track_clicks?: boolean
-  
+
   // Custom data
   custom_data?: Record<string, any>
 }
@@ -103,24 +103,24 @@ export interface NotificationTemplate {
   subject?: string // For email
   body: string
   variables?: string[] // Available template variables
-  
+
   // Rich content (email/push)
   html_body?: string
   attachments?: string[]
   images?: string[]
-  
+
   // SMS specific
   sender_id?: string
-  
+
   // Push specific
   title?: string
   icon?: string
   action_url?: string
-  
+
   // WhatsApp specific
   template_name?: string // Pre-approved template
   template_params?: string[]
-  
+
   // Localization
   translations?: {
     [locale: string]: {
@@ -143,7 +143,7 @@ export interface NotificationVariant {
 export const NotificationRuleFamily = {
   // Family identifier
   family: 'HERA.UNIV.CONFIG.NOTIFICATION',
-  
+
   // Sub-families for specific notification scenarios
   subFamilies: {
     BOOKING: 'HERA.UNIV.CONFIG.NOTIFICATION.BOOKING.v1',
@@ -155,12 +155,12 @@ export const NotificationRuleFamily = {
     FEEDBACK: 'HERA.UNIV.CONFIG.NOTIFICATION.FEEDBACK.v1',
     CUSTOM: 'HERA.UNIV.CONFIG.NOTIFICATION.CUSTOM.v1'
   },
-  
+
   // Default conditions
   defaultConditions: {
     effective_from: new Date().toISOString()
   },
-  
+
   // Default payload values
   defaultPayload: {
     enabled: true,
@@ -172,17 +172,17 @@ export const NotificationRuleFamily = {
       max_per_day: 10
     }
   },
-  
+
   // Validation function
   validate: (rule: UniversalRule): string[] => {
     const errors: string[] = []
     const payload = rule.payload as NotificationPayload
-    
+
     // Validate channels
     if (!payload.channels || payload.channels.length === 0) {
       errors.push('At least one channel must be specified')
     }
-    
+
     // Validate templates
     if (payload.templates) {
       for (const channel of payload.channels) {
@@ -191,20 +191,22 @@ export const NotificationRuleFamily = {
         }
       }
     }
-    
+
     // Validate delay
     if (payload.delay_minutes !== undefined && payload.delay_minutes < 0) {
       errors.push('delay_minutes must be positive')
     }
-    
+
     // Validate batch window times
     if (payload.batch_window) {
-      if (!isValidTimeFormat(payload.batch_window.start_time) || 
-          !isValidTimeFormat(payload.batch_window.end_time)) {
+      if (
+        !isValidTimeFormat(payload.batch_window.start_time) ||
+        !isValidTimeFormat(payload.batch_window.end_time)
+      ) {
         errors.push('Invalid batch window time format (use HH:MM)')
       }
     }
-    
+
     // Validate rate limits
     if (payload.rate_limit) {
       const limits = ['max_per_hour', 'max_per_day', 'max_per_week'] as const
@@ -215,16 +217,16 @@ export const NotificationRuleFamily = {
         }
       }
     }
-    
+
     return errors
   },
-  
+
   // Merge strategy
   mergeStrategy: 'combine', // Combine templates from multiple rules
-  
+
   // Context requirements
   requiredContext: ['trigger_event'],
-  
+
   // Sample templates
   templates: {
     bookingConfirmation: {
@@ -262,7 +264,13 @@ We look forward to seeing you!`,
 </ul>
 <p>We look forward to seeing you!</p>
 </body></html>`,
-            variables: ['customer_name', 'service_name', 'appointment_date', 'appointment_time', 'specialist_name']
+            variables: [
+              'customer_name',
+              'service_name',
+              'appointment_date',
+              'appointment_time',
+              'specialist_name'
+            ]
           },
           sms: {
             body: 'Hi {{customer_name}}, your {{service_name}} booking on {{appointment_date}} at {{appointment_time}} is confirmed. See you soon!',
@@ -273,7 +281,7 @@ We look forward to seeing you!`,
         respect_opt_out: true
       }
     },
-    
+
     appointmentReminder: {
       smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.REMINDER.v1',
       status: 'active',
@@ -304,7 +312,7 @@ We look forward to seeing you!`,
         respect_opt_out: true
       }
     },
-    
+
     loyaltyPointsEarned: {
       smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.LOYALTY.v1',
       status: 'active',
@@ -339,7 +347,7 @@ You have enough points to redeem rewards! Check them out in your account.
         respect_opt_out: true
       }
     },
-    
+
     feedbackRequest: {
       smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.FEEDBACK.v1',
       status: 'active',
@@ -381,7 +389,7 @@ Thank you!`,
         respect_opt_out: true
       }
     },
-    
+
     // A/B testing example
     promotionalWithVariants: {
       smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.MARKETING.v1',
@@ -417,7 +425,7 @@ Thank you!`,
             variant_id: 'personal_tone',
             weight: 0.5,
             template_overrides: {
-              subject: '{{customer_name}}, here\'s your exclusive 20% discount',
+              subject: "{{customer_name}}, here's your exclusive 20% discount",
               body: 'Hi {{customer_name}}, as a valued customer, enjoy 20% off your favorite service!'
             }
           }
@@ -439,10 +447,12 @@ function isValidTimeFormat(time: string): boolean {
 
 // Type guard
 export function isNotificationPayload(payload: any): payload is NotificationPayload {
-  return payload && 
+  return (
+    payload &&
     typeof payload.enabled === 'boolean' &&
     Array.isArray(payload.channels) &&
     payload.channels.length > 0
+  )
 }
 
 // Export types

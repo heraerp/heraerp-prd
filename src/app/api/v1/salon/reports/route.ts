@@ -61,7 +61,9 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url)
   const organizationId = searchParams.get('organization_id')
   const reportType = searchParams.get('type')
-  const startDate = searchParams.get('start_date') || new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
+  const startDate =
+    searchParams.get('start_date') ||
+    new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
   const endDate = searchParams.get('end_date') || new Date().toISOString().split('T')[0]
 
   if (!organizationId) {
@@ -105,10 +107,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
     })
   } catch (error) {
     console.error('Error fetching reports:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch reports' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: 'Failed to fetch reports' }, { status: 500 })
   }
 })
 
@@ -125,7 +124,7 @@ async function getRevenueReport(organizationId: string, startDate: string, endDa
 
   // Group by date
   const dailyRevenue: { [key: string]: RevenueData } = {}
-  
+
   transactions?.forEach(txn => {
     const date = txn.transaction_date.split('T')[0]
     if (!dailyRevenue[date]) {
@@ -136,7 +135,7 @@ async function getRevenueReport(organizationId: string, startDate: string, endDa
         average_ticket: 0
       }
     }
-    
+
     dailyRevenue[date].revenue += txn.total_amount || 0
     if (txn.transaction_type === 'appointment') {
       dailyRevenue[date].appointments += 1
@@ -151,13 +150,24 @@ async function getRevenueReport(organizationId: string, startDate: string, endDa
 
   // Calculate totals and trends
   const totalRevenue = Object.values(dailyRevenue).reduce((sum, day) => sum + day.revenue, 0)
-  const totalAppointments = Object.values(dailyRevenue).reduce((sum, day) => sum + day.appointments, 0)
-  
+  const totalAppointments = Object.values(dailyRevenue).reduce(
+    (sum, day) => sum + day.appointments,
+    0
+  )
+
   // Get previous period for comparison
-  const daysInPeriod = Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
-  const prevStartDate = new Date(new Date(startDate).setDate(new Date(startDate).getDate() - daysInPeriod)).toISOString().split('T')[0]
-  const prevEndDate = new Date(new Date(startDate).setDate(new Date(startDate).getDate() - 1)).toISOString().split('T')[0]
-  
+  const daysInPeriod = Math.ceil(
+    (new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
+  )
+  const prevStartDate = new Date(
+    new Date(startDate).setDate(new Date(startDate).getDate() - daysInPeriod)
+  )
+    .toISOString()
+    .split('T')[0]
+  const prevEndDate = new Date(new Date(startDate).setDate(new Date(startDate).getDate() - 1))
+    .toISOString()
+    .split('T')[0]
+
   const { data: prevTransactions } = await supabase
     .from('universal_transactions')
     .select('total_amount')
@@ -181,7 +191,11 @@ async function getRevenueReport(organizationId: string, startDate: string, endDa
   }
 }
 
-async function getServicePerformanceReport(organizationId: string, startDate: string, endDate: string) {
+async function getServicePerformanceReport(
+  organizationId: string,
+  startDate: string,
+  endDate: string
+) {
   // Fetch all services
   const { data: services } = await supabase
     .from('core_entities')
@@ -213,7 +227,7 @@ async function getServicePerformanceReport(organizationId: string, startDate: st
         percentage_of_total: 0
       }
     }
-    
+
     serviceStats[serviceName].bookings += 1
     serviceStats[serviceName].revenue += apt.total_amount || 0
     totalRevenue += apt.total_amount || 0
@@ -239,7 +253,11 @@ async function getServicePerformanceReport(organizationId: string, startDate: st
   }
 }
 
-async function getStaffPerformanceReport(organizationId: string, startDate: string, endDate: string) {
+async function getStaffPerformanceReport(
+  organizationId: string,
+  startDate: string,
+  endDate: string
+) {
   // Fetch all staff
   const { data: staff } = await supabase
     .from('core_entities')
@@ -258,7 +276,7 @@ async function getStaffPerformanceReport(organizationId: string, startDate: stri
 
   // Analyze staff performance
   const staffStats: { [key: string]: StaffPerformance } = {}
-  
+
   // Get commission rate from settings
   const { data: settings } = await supabase
     .from('core_entities')
@@ -281,15 +299,17 @@ async function getStaffPerformanceReport(organizationId: string, startDate: stri
         commission_earned: 0
       }
     }
-    
+
     staffStats[staffName].appointments += 1
     staffStats[staffName].revenue += apt.total_amount || 0
     staffStats[staffName].commission_earned += (apt.total_amount || 0) * (commissionRate / 100)
   })
 
   // Calculate productivity (appointments per working day)
-  const workingDays = Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
-  
+  const workingDays = Math.ceil(
+    (new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
+  )
+
   Object.values(staffStats).forEach(stat => {
     stat.productivity_rate = stat.appointments / workingDays
     stat.average_rating = 4.5 + Math.random() * 0.5 // Placeholder - would come from review system
@@ -310,7 +330,11 @@ async function getStaffPerformanceReport(organizationId: string, startDate: stri
   }
 }
 
-async function getClientAnalyticsReport(organizationId: string, startDate: string, endDate: string) {
+async function getClientAnalyticsReport(
+  organizationId: string,
+  startDate: string,
+  endDate: string
+) {
   // Fetch all clients
   const { data: clients } = await supabase
     .from('core_entities')
@@ -319,7 +343,8 @@ async function getClientAnalyticsReport(organizationId: string, startDate: strin
     .eq('entity_type', 'customer')
 
   // Separate new vs existing clients
-  const newClients = clients?.filter(c => c.created_at >= startDate && c.created_at <= endDate) || []
+  const newClients =
+    clients?.filter(c => c.created_at >= startDate && c.created_at <= endDate) || []
   const existingClients = clients?.filter(c => c.created_at < startDate) || []
 
   // Fetch client transactions
@@ -332,8 +357,8 @@ async function getClientAnalyticsReport(organizationId: string, startDate: strin
     .lte('transaction_date', endDate)
 
   // Analyze client spending
-  const clientSpending: { [key: string]: { name: string, spent: number, visits: number } } = {}
-  
+  const clientSpending: { [key: string]: { name: string; spent: number; visits: number } } = {}
+
   transactions?.forEach(txn => {
     const clientName = (txn.metadata as any)?.customer_name || 'Unknown Client'
     if (!clientSpending[clientName]) {
@@ -347,7 +372,8 @@ async function getClientAnalyticsReport(organizationId: string, startDate: strin
   const totalSpent = Object.values(clientSpending).reduce((sum, c) => sum + c.spent, 0)
   const totalVisits = Object.values(clientSpending).reduce((sum, c) => sum + c.visits, 0)
   const activeClients = Object.keys(clientSpending).length
-  const retentionRate = existingClients.length > 0 ? (activeClients / existingClients.length) * 100 : 0
+  const retentionRate =
+    existingClients.length > 0 ? (activeClients / existingClients.length) * 100 : 0
 
   // Get top spenders
   const topSpenders = Object.values(clientSpending)
@@ -371,7 +397,8 @@ async function getClientAnalyticsReport(organizationId: string, startDate: strin
     },
     segments: {
       vip_clients: topSpenders.filter(c => c.total_spent > 5000).length,
-      regular_clients: topSpenders.filter(c => c.total_spent > 1000 && c.total_spent <= 5000).length,
+      regular_clients: topSpenders.filter(c => c.total_spent > 1000 && c.total_spent <= 5000)
+        .length,
       new_clients: newClients.length,
       inactive_clients: (clients?.length || 0) - activeClients
     }
@@ -396,9 +423,9 @@ async function getInventoryReport(organizationId: string) {
     const minStock = (product.metadata as any)?.min_stock || 10
     const price = (product.metadata as any)?.retail_price || 0
     const cost = (product.metadata as any)?.cost || 0
-    
+
     totalValue += stock * cost
-    
+
     if (stock <= minStock) {
       lowStockCount += 1
     }
@@ -423,8 +450,8 @@ async function getInventoryReport(organizationId: string) {
     .eq('line_type', 'product')
 
   // Calculate top selling products
-  const productSales: { [key: string]: { name: string, units: number, revenue: number } } = {}
-  
+  const productSales: { [key: string]: { name: string; units: number; revenue: number } } = {}
+
   salesTransactions?.forEach(line => {
     const productName = line.description || 'Unknown Product'
     if (!productSales[productName]) {
@@ -459,7 +486,11 @@ async function getInventoryReport(organizationId: string) {
   }
 }
 
-async function getFinancialSummaryReport(organizationId: string, startDate: string, endDate: string) {
+async function getFinancialSummaryReport(
+  organizationId: string,
+  startDate: string,
+  endDate: string
+) {
   // Fetch all transactions
   const { data: transactions } = await supabase
     .from('universal_transactions')
@@ -478,12 +509,13 @@ async function getFinancialSummaryReport(organizationId: string, startDate: stri
   transactions?.forEach(txn => {
     if (['appointment', 'sale', 'payment'].includes(txn.transaction_type)) {
       totalRevenue += txn.total_amount || 0
-      revenueByType[txn.transaction_type] = (revenueByType[txn.transaction_type] || 0) + (txn.total_amount || 0)
-      
+      revenueByType[txn.transaction_type] =
+        (revenueByType[txn.transaction_type] || 0) + (txn.total_amount || 0)
+
       // Track payment methods
       const method = (txn.metadata as any)?.payment_method || 'cash'
       paymentMethods[method] = (paymentMethods[method] || 0) + (txn.total_amount || 0)
-      
+
       // Calculate tax (5% UAE VAT)
       totalTax += (txn.total_amount || 0) * 0.05
     } else if (['expense', 'purchase'].includes(txn.transaction_type)) {

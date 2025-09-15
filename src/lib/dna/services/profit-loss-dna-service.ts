@@ -1,19 +1,19 @@
 /**
  * HERA Universal Profit & Loss DNA Service
  * Smart Code: HERA.FIN.PL.ENGINE.v1
- * 
+ *
  * Factory service for creating industry-optimized P&L reporting services
  * that work with HERA's universal 6-table architecture.
  */
 
-import { UniversalAPIClient } from '@/lib/universal-api';
+import { UniversalAPIClient } from '@/lib/universal-api'
 
 // Core P&L DNA Configuration
 export const PROFIT_LOSS_DNA_CONFIG = {
   component_id: 'HERA.FIN.PL.ENGINE.v1',
   component_name: 'Universal Profit & Loss Engine',
   version: '1.0.0',
-  
+
   // Core capabilities of the P&L DNA
   capabilities: [
     'Daily P&L Generation',
@@ -28,7 +28,7 @@ export const PROFIT_LOSS_DNA_CONFIG = {
     'YTD Performance Tracking',
     'Integration with Trial Balance DNA'
   ],
-  
+
   // Industry-specific configurations
   industries: {
     salon: {
@@ -119,7 +119,7 @@ export const PROFIT_LOSS_DNA_CONFIG = {
         expense_breakdown: 'HERA.SALON.PL.EXPENSE.BREAKDOWN.v1'
       }
     },
-    
+
     restaurant: {
       name: 'Restaurant & Food Service',
       revenue_structure: {
@@ -167,7 +167,7 @@ export const PROFIT_LOSS_DNA_CONFIG = {
         food_cost_analysis: 'HERA.REST.PL.FOOD.COST.v1'
       }
     },
-    
+
     healthcare: {
       name: 'Healthcare & Medical Services',
       revenue_structure: {
@@ -213,54 +213,54 @@ export const PROFIT_LOSS_DNA_CONFIG = {
       }
     }
   }
-};
+}
 
 // TypeScript interfaces
 export interface PLLineItem {
-  account_code: string;
-  account_name: string;
-  section_type: 'Revenue' | 'COGS' | 'Operating Expenses' | 'Other Income' | 'Other Expenses';
-  subsection: string;
-  current_amount: number;
-  prior_amount?: number;
-  ytd_amount?: number;
-  budget_amount?: number;
-  variance_amount?: number;
-  variance_percentage?: number;
+  account_code: string
+  account_name: string
+  section_type: 'Revenue' | 'COGS' | 'Operating Expenses' | 'Other Income' | 'Other Expenses'
+  subsection: string
+  current_amount: number
+  prior_amount?: number
+  ytd_amount?: number
+  budget_amount?: number
+  variance_amount?: number
+  variance_percentage?: number
 }
 
 export interface PLSummaryMetrics {
-  total_revenue: number;
-  gross_profit: number;
-  gross_margin: number;
-  operating_income: number;
-  operating_margin: number;
-  ebitda: number;
-  ebitda_margin: number;
-  net_income: number;
-  net_margin: number;
+  total_revenue: number
+  gross_profit: number
+  gross_margin: number
+  operating_income: number
+  operating_margin: number
+  ebitda: number
+  ebitda_margin: number
+  net_income: number
+  net_margin: number
 }
 
 export interface PLReport {
-  organization_id: string;
-  organization_name: string;
-  report_date: string;
-  industry_type: string;
-  line_items: PLLineItem[];
-  summary_metrics: PLSummaryMetrics;
-  key_ratios: Record<string, number>;
-  performance_indicators: string[];
+  organization_id: string
+  organization_name: string
+  report_date: string
+  industry_type: string
+  line_items: PLLineItem[]
+  summary_metrics: PLSummaryMetrics
+  key_ratios: Record<string, number>
+  performance_indicators: string[]
 }
 
 // Industry-specific P&L service interface
 export interface IndustryPLService {
-  generateDailyPL(date?: Date): Promise<PLReport>;
-  generateMonthlyPL(year: number, month: number): Promise<PLReport>;
-  generateYearlyPL(year: number): Promise<PLReport>;
-  calculateMargins(report: PLReport): PLSummaryMetrics;
-  analyzeExpenseRatios(report: PLReport): Record<string, number>;
-  detectAnomalies(report: PLReport): string[];
-  generateInsights(report: PLReport): string[];
+  generateDailyPL(date?: Date): Promise<PLReport>
+  generateMonthlyPL(year: number, month: number): Promise<PLReport>
+  generateYearlyPL(year: number): Promise<PLReport>
+  calculateMargins(report: PLReport): PLSummaryMetrics
+  analyzeExpenseRatios(report: PLReport): Record<string, number>
+  detectAnomalies(report: PLReport): string[]
+  generateInsights(report: PLReport): string[]
 }
 
 // Base P&L Service Implementation
@@ -279,13 +279,13 @@ export class BasePLService implements IndustryPLService {
         entity_type: 'gl_account',
         entity_code: { startsWith: ['4', '5', '6', '7', '8'] }
       }
-    });
+    })
 
     // Get journal entries for the day
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    const startOfDay = new Date(date)
+    startOfDay.setHours(0, 0, 0, 0)
+    const endOfDay = new Date(date)
+    endOfDay.setHours(23, 59, 59, 999)
 
     const { data: transactions } = await this.universalApi.query('universal_transactions', {
       filters: {
@@ -293,11 +293,11 @@ export class BasePLService implements IndustryPLService {
         transaction_type: 'journal_entry',
         transaction_date: { between: [startOfDay, endOfDay] }
       }
-    });
+    })
 
     // Process and categorize line items
-    const lineItems = this.processLineItems(glAccounts, transactions);
-    const summaryMetrics = this.calculateMargins({ line_items: lineItems } as PLReport);
+    const lineItems = this.processLineItems(glAccounts, transactions)
+    const summaryMetrics = this.calculateMargins({ line_items: lineItems } as PLReport)
 
     return {
       organization_id: this.organizationId,
@@ -308,50 +308,50 @@ export class BasePLService implements IndustryPLService {
       summary_metrics: summaryMetrics,
       key_ratios: this.calculateKeyRatios(summaryMetrics),
       performance_indicators: this.generatePerformanceIndicators(summaryMetrics)
-    };
+    }
   }
 
   async generateMonthlyPL(year: number, month: number): Promise<PLReport> {
     // Similar implementation for monthly P&L
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
-    
+    const startDate = new Date(year, month - 1, 1)
+    const endDate = new Date(year, month, 0)
+
     // Aggregate daily data for the month
     // Implementation would follow similar pattern
-    
-    return {} as PLReport;
+
+    return {} as PLReport
   }
 
   async generateYearlyPL(year: number): Promise<PLReport> {
     // Yearly P&L aggregation
-    return {} as PLReport;
+    return {} as PLReport
   }
 
   calculateMargins(report: PLReport): PLSummaryMetrics {
     const revenue = report.line_items
       .filter(item => item.section_type === 'Revenue')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     const cogs = report.line_items
       .filter(item => item.section_type === 'COGS')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     const opex = report.line_items
       .filter(item => item.section_type === 'Operating Expenses')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     const otherIncome = report.line_items
       .filter(item => item.section_type === 'Other Income')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     const otherExpenses = report.line_items
       .filter(item => item.section_type === 'Other Expenses')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
-    const grossProfit = revenue - cogs;
-    const operatingIncome = grossProfit - opex;
-    const ebitda = operatingIncome + otherIncome;
-    const netIncome = ebitda - otherExpenses;
+    const grossProfit = revenue - cogs
+    const operatingIncome = grossProfit - opex
+    const ebitda = operatingIncome + otherIncome
+    const netIncome = ebitda - otherExpenses
 
     return {
       total_revenue: revenue,
@@ -363,87 +363,94 @@ export class BasePLService implements IndustryPLService {
       ebitda_margin: revenue > 0 ? (ebitda / revenue) * 100 : 0,
       net_income: netIncome,
       net_margin: revenue > 0 ? (netIncome / revenue) * 100 : 0
-    };
+    }
   }
 
   analyzeExpenseRatios(report: PLReport): Record<string, number> {
-    const revenue = report.summary_metrics.total_revenue;
-    const ratios: Record<string, number> = {};
+    const revenue = report.summary_metrics.total_revenue
+    const ratios: Record<string, number> = {}
 
     // Calculate expense ratios by category
     const expenseCategories = report.line_items
       .filter(item => item.section_type === 'Operating Expenses')
-      .reduce((acc, item) => {
-        acc[item.subsection] = (acc[item.subsection] || 0) + item.current_amount;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, item) => {
+          acc[item.subsection] = (acc[item.subsection] || 0) + item.current_amount
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
     Object.entries(expenseCategories).forEach(([category, amount]) => {
-      ratios[`${category}_ratio`] = revenue > 0 ? (amount / revenue) * 100 : 0;
-    });
+      ratios[`${category}_ratio`] = revenue > 0 ? (amount / revenue) * 100 : 0
+    })
 
-    return ratios;
+    return ratios
   }
 
   detectAnomalies(report: PLReport): string[] {
-    const anomalies: string[] = [];
-    const metrics = report.summary_metrics;
-    const industryMetrics = this.industryConfig.key_metrics;
+    const anomalies: string[] = []
+    const metrics = report.summary_metrics
+    const industryMetrics = this.industryConfig.key_metrics
 
     // Check against industry benchmarks
     if (metrics.gross_margin < industryMetrics.service_gross_margin_target - 10) {
-      anomalies.push('Gross margin significantly below industry target');
+      anomalies.push('Gross margin significantly below industry target')
     }
 
     if (metrics.net_margin < 0) {
-      anomalies.push('Negative net income - business is operating at a loss');
+      anomalies.push('Negative net income - business is operating at a loss')
     }
 
     // Check expense ratios
-    const expenseRatios = this.analyzeExpenseRatios(report);
-    if (expenseRatios['Payroll & Benefits_ratio'] > industryMetrics.staff_cost_percentage_target + 5) {
-      anomalies.push('Staff costs exceed industry benchmark');
+    const expenseRatios = this.analyzeExpenseRatios(report)
+    if (
+      expenseRatios['Payroll & Benefits_ratio'] >
+      industryMetrics.staff_cost_percentage_target + 5
+    ) {
+      anomalies.push('Staff costs exceed industry benchmark')
     }
 
-    return anomalies;
+    return anomalies
   }
 
   generateInsights(report: PLReport): string[] {
-    const insights: string[] = [];
-    const metrics = report.summary_metrics;
+    const insights: string[] = []
+    const metrics = report.summary_metrics
 
     // Revenue insights
     if (metrics.total_revenue > 0) {
-      insights.push(`Daily revenue: ${this.formatCurrency(metrics.total_revenue)}`);
+      insights.push(`Daily revenue: ${this.formatCurrency(metrics.total_revenue)}`)
     }
 
     // Profitability insights
     if (metrics.net_margin >= 15) {
-      insights.push('Excellent profitability - exceeding industry standards');
+      insights.push('Excellent profitability - exceeding industry standards')
     } else if (metrics.net_margin >= 10) {
-      insights.push('Good profitability - meeting targets');
+      insights.push('Good profitability - meeting targets')
     } else if (metrics.net_margin >= 5) {
-      insights.push('Moderate profitability - opportunities for improvement');
+      insights.push('Moderate profitability - opportunities for improvement')
     } else {
-      insights.push('Low profitability - cost optimization needed');
+      insights.push('Low profitability - cost optimization needed')
     }
 
     // Expense insights
-    const expenseRatios = this.analyzeExpenseRatios(report);
-    const highestExpense = Object.entries(expenseRatios)
-      .sort(([, a], [, b]) => b - a)[0];
-    
+    const expenseRatios = this.analyzeExpenseRatios(report)
+    const highestExpense = Object.entries(expenseRatios).sort(([, a], [, b]) => b - a)[0]
+
     if (highestExpense) {
-      insights.push(`Highest expense category: ${highestExpense[0]} at ${highestExpense[1].toFixed(1)}% of revenue`);
+      insights.push(
+        `Highest expense category: ${highestExpense[0]} at ${highestExpense[1].toFixed(1)}% of revenue`
+      )
     }
 
-    return insights;
+    return insights
   }
 
   protected processLineItems(accounts: any[], transactions: any[]): PLLineItem[] {
     // Process GL accounts and transactions to create line items
     // This would aggregate transaction amounts by account
-    return [];
+    return []
   }
 
   protected calculateKeyRatios(metrics: PLSummaryMetrics): Record<string, number> {
@@ -452,120 +459,122 @@ export class BasePLService implements IndustryPLService {
       operating_margin: metrics.operating_margin,
       net_margin: metrics.net_margin,
       ebitda_margin: metrics.ebitda_margin
-    };
+    }
   }
 
   protected generatePerformanceIndicators(metrics: PLSummaryMetrics): string[] {
-    const indicators: string[] = [];
-    
+    const indicators: string[] = []
+
     if (metrics.net_income > 0) {
-      indicators.push('profitable');
+      indicators.push('profitable')
     } else {
-      indicators.push('loss-making');
+      indicators.push('loss-making')
     }
 
     if (metrics.gross_margin > 70) {
-      indicators.push('high-margin');
+      indicators.push('high-margin')
     } else if (metrics.gross_margin > 50) {
-      indicators.push('moderate-margin');
+      indicators.push('moderate-margin')
     } else {
-      indicators.push('low-margin');
+      indicators.push('low-margin')
     }
 
-    return indicators;
+    return indicators
   }
 
   protected formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
-    }).format(amount);
+    }).format(amount)
   }
 }
 
 // Salon-specific P&L Service
 export class SalonPLService extends BasePLService {
   constructor(universalApi: UniversalAPIClient, organizationId: string) {
-    super(universalApi, organizationId, PROFIT_LOSS_DNA_CONFIG.industries.salon);
+    super(universalApi, organizationId, PROFIT_LOSS_DNA_CONFIG.industries.salon)
   }
 
   generateInsights(report: PLReport): string[] {
-    const baseInsights = super.generateInsights(report);
-    const salonInsights: string[] = [];
+    const baseInsights = super.generateInsights(report)
+    const salonInsights: string[] = []
 
     // Salon-specific insights
     const serviceRevenue = report.line_items
       .filter(item => item.subsection === 'Service Revenue')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     const productRevenue = report.line_items
       .filter(item => item.subsection === 'Product Revenue')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
-    const totalRevenue = report.summary_metrics.total_revenue;
+    const totalRevenue = report.summary_metrics.total_revenue
 
     if (totalRevenue > 0) {
-      const serviceMix = (serviceRevenue / totalRevenue) * 100;
-      const productMix = (productRevenue / totalRevenue) * 100;
-      
-      salonInsights.push(`Service revenue mix: ${serviceMix.toFixed(1)}%`);
-      salonInsights.push(`Product revenue mix: ${productMix.toFixed(1)}%`);
+      const serviceMix = (serviceRevenue / totalRevenue) * 100
+      const productMix = (productRevenue / totalRevenue) * 100
+
+      salonInsights.push(`Service revenue mix: ${serviceMix.toFixed(1)}%`)
+      salonInsights.push(`Product revenue mix: ${productMix.toFixed(1)}%`)
 
       if (productMix < 20) {
-        salonInsights.push('Consider promoting retail products to increase revenue');
+        salonInsights.push('Consider promoting retail products to increase revenue')
       }
     }
 
     // Staff productivity
     const staffCosts = report.line_items
       .filter(item => item.subsection === 'Payroll & Benefits')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     if (staffCosts > 0 && serviceRevenue > 0) {
-      const staffProductivity = serviceRevenue / staffCosts;
-      salonInsights.push(`Staff productivity ratio: ${staffProductivity.toFixed(2)}x`);
-      
+      const staffProductivity = serviceRevenue / staffCosts
+      salonInsights.push(`Staff productivity ratio: ${staffProductivity.toFixed(2)}x`)
+
       if (staffProductivity < 2) {
-        salonInsights.push('Staff productivity below target - review scheduling or pricing');
+        salonInsights.push('Staff productivity below target - review scheduling or pricing')
       }
     }
 
-    return [...baseInsights, ...salonInsights];
+    return [...baseInsights, ...salonInsights]
   }
 }
 
 // Restaurant-specific P&L Service
 export class RestaurantPLService extends BasePLService {
   constructor(universalApi: UniversalAPIClient, organizationId: string) {
-    super(universalApi, organizationId, PROFIT_LOSS_DNA_CONFIG.industries.restaurant);
+    super(universalApi, organizationId, PROFIT_LOSS_DNA_CONFIG.industries.restaurant)
   }
 
   generateInsights(report: PLReport): string[] {
-    const baseInsights = super.generateInsights(report);
-    const restaurantInsights: string[] = [];
+    const baseInsights = super.generateInsights(report)
+    const restaurantInsights: string[] = []
 
     // Calculate prime cost (COGS + Labor)
     const cogs = report.line_items
       .filter(item => item.section_type === 'COGS')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
     const laborCosts = report.line_items
       .filter(item => item.subsection === 'Labor Costs')
-      .reduce((sum, item) => sum + item.current_amount, 0);
+      .reduce((sum, item) => sum + item.current_amount, 0)
 
-    const primeCost = cogs + laborCosts;
-    const revenue = report.summary_metrics.total_revenue;
+    const primeCost = cogs + laborCosts
+    const revenue = report.summary_metrics.total_revenue
 
     if (revenue > 0) {
-      const primeCostPercentage = (primeCost / revenue) * 100;
-      restaurantInsights.push(`Prime cost: ${primeCostPercentage.toFixed(1)}%`);
-      
+      const primeCostPercentage = (primeCost / revenue) * 100
+      restaurantInsights.push(`Prime cost: ${primeCostPercentage.toFixed(1)}%`)
+
       if (primeCostPercentage > 60) {
-        restaurantInsights.push('Prime cost exceeds target - review food costs and labor efficiency');
+        restaurantInsights.push(
+          'Prime cost exceeds target - review food costs and labor efficiency'
+        )
       }
     }
 
-    return [...baseInsights, ...restaurantInsights];
+    return [...baseInsights, ...restaurantInsights]
   }
 }
 
@@ -577,28 +586,36 @@ export function createPLService(
 ): IndustryPLService {
   switch (industryType) {
     case 'salon':
-      return new SalonPLService(universalApi, organizationId);
+      return new SalonPLService(universalApi, organizationId)
     case 'restaurant':
-      return new RestaurantPLService(universalApi, organizationId);
+      return new RestaurantPLService(universalApi, organizationId)
     case 'healthcare':
       // Would create HealthcarePLService
-      return new BasePLService(universalApi, organizationId, PROFIT_LOSS_DNA_CONFIG.industries.healthcare);
+      return new BasePLService(
+        universalApi,
+        organizationId,
+        PROFIT_LOSS_DNA_CONFIG.industries.healthcare
+      )
     default:
-      return new BasePLService(universalApi, organizationId, PROFIT_LOSS_DNA_CONFIG.industries[industryType] || {});
+      return new BasePLService(
+        universalApi,
+        organizationId,
+        PROFIT_LOSS_DNA_CONFIG.industries[industryType] || {}
+      )
   }
 }
 
 // React hook for P&L data
 export function useProfitLossData(organizationId: string, industryType: string, date?: Date) {
-  const universalApi = new UniversalAPIClient();
-  const plService = createPLService(universalApi, organizationId, industryType);
-  
+  const universalApi = new UniversalAPIClient()
+  const plService = createPLService(universalApi, organizationId, industryType)
+
   // This would be implemented with React Query or similar
   // to fetch and cache P&L data
-  
+
   return {
     plService,
     generateDailyReport: () => plService.generateDailyPL(date),
     generateMonthlyReport: (year: number, month: number) => plService.generateMonthlyPL(year, month)
-  };
+  }
 }

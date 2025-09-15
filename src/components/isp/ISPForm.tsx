@@ -57,7 +57,9 @@ export function ISPSelect({ label, error, options, className = '', ...props }: I
         }}
         {...props}
       >
-        <option value="" className="bg-slate-900">Select {label}</option>
+        <option value="" className="bg-slate-900">
+          Select {label}
+        </option>
         {options.map(option => (
           <option key={option.value} value={option.value} className="bg-slate-900">
             {option.label}
@@ -86,13 +88,13 @@ export function ISPTextarea({ label, error, className = '', ...props }: ISPTexta
   )
 }
 
-export function ISPButton({ 
-  children, 
-  variant = 'primary', 
-  className = '', 
-  ...props 
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { 
-  variant?: 'primary' | 'secondary' | 'danger' 
+export function ISPButton({
+  children,
+  variant = 'primary',
+  className = '',
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary' | 'danger'
 }) {
   const variants = {
     primary: 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-white hover:shadow-[#00DDFF]/50',

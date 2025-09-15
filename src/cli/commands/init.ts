@@ -12,7 +12,7 @@ export function registerInit(cmd: Command) {
     .option('--write-config', 'Write local CLI config', false)
     .option('--interactive', 'Interactive mode', true)
     .option('--json', 'Output JSON', false)
-    .action(async (opts) => {
+    .action(async opts => {
       const parsed = InitInputSchema.safeParse(opts)
       if (!parsed.success) {
         console.error('Invalid input:', parsed.error.flatten())
@@ -43,7 +43,9 @@ export function registerInit(cmd: Command) {
 
         // Org verification (if provided)
         if (input.org) {
-          const r = await client.query('SELECT id FROM core_organizations WHERE id = $1', [input.org])
+          const r = await client.query('SELECT id FROM core_organizations WHERE id = $1', [
+            input.org
+          ])
           if (r.rowCount === 0) {
             console.error('Organization not found')
             await client.end()
@@ -52,7 +54,9 @@ export function registerInit(cmd: Command) {
           output.organization_id = input.org
         } else {
           // Try to pick a default org if exists
-          const r = await client.query('SELECT id FROM core_organizations ORDER BY created_at ASC LIMIT 1')
+          const r = await client.query(
+            'SELECT id FROM core_organizations ORDER BY created_at ASC LIMIT 1'
+          )
           if (r.rowCount > 0) output.organization_id = r.rows[0].id
         }
 
@@ -71,7 +75,11 @@ export function registerInit(cmd: Command) {
           const config = {
             organization_id: output.organization_id,
             output_format: 'table',
-            guardrails: { enforce_smart_codes: true, enforce_multi_tenancy: true, enforce_gl_balance: true }
+            guardrails: {
+              enforce_smart_codes: true,
+              enforce_multi_tenancy: true,
+              enforce_gl_balance: true
+            }
           }
           fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
           output.config_written = true
@@ -87,7 +95,11 @@ export function registerInit(cmd: Command) {
       }
 
       if (opts.json) console.log(JSON.stringify(validated.data, null, 2))
-      else console.log('HERA initialized for org', validated.data.organization_id, `(${validated.data.connection_status})`)
+      else
+        console.log(
+          'HERA initialized for org',
+          validated.data.organization_id,
+          `(${validated.data.connection_status})`
+        )
     })
 }
-

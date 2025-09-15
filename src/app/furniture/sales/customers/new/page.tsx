@@ -3,7 +3,18 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Building2, User, Mail, Phone, MapPin, CreditCard, FileText, AlertCircle, Save } from 'lucide-react'
+import {
+  ArrowLeft,
+  Building2,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  CreditCard,
+  FileText,
+  AlertCircle,
+  Save
+} from 'lucide-react'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import { universalApi } from '@/lib/universal-api'
 
@@ -11,27 +22,27 @@ interface CustomerFormData {
   // Core entity fields
   entity_name: string
   entity_code: string
-  
+
   // Contact information
   email: string
   phone: string
   mobile: string
-  
+
   // Address
   address: string
   city: string
   state: string
   pincode: string
-  
+
   // Business information
   gstin: string
   pan_number: string
   contact_person: string
-  
+
   // Financial
   credit_limit: string
   payment_terms: string
-  
+
   // Additional
   notes: string
 }
@@ -39,7 +50,7 @@ interface CustomerFormData {
 export default function NewCustomerPage() {
   const router = useRouter()
   const { organizationId, orgLoading } = useDemoOrganization()
-  
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState<CustomerFormData>({
@@ -60,7 +71,9 @@ export default function NewCustomerPage() {
     notes: ''
   })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
@@ -75,21 +88,21 @@ export default function NewCustomerPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     if (!formData.entity_name) {
       setError('Please enter customer name')
       return
     }
-    
+
     setLoading(true)
-    
+
     try {
       // Set organization context
       universalApi.setOrganizationId(organizationId!)
-      
+
       // Generate customer code if not provided
       const customerCode = formData.entity_code || generateCustomerCode()
-      
+
       // Create the customer entity
       const customerData = {
         entity_type: 'customer' as const,
@@ -103,35 +116,51 @@ export default function NewCustomerPage() {
           created_at: new Date().toISOString()
         }
       }
-      
+
       const customer = await universalApi.createEntity(customerData)
-      
+
       // Now create all the dynamic data fields
       const dynamicFields = [
         // Contact Information
         { field_name: 'email', field_value_text: formData.email, field_type: 'text' as const },
         { field_name: 'phone', field_value_text: formData.phone, field_type: 'text' as const },
         { field_name: 'mobile', field_value_text: formData.mobile, field_type: 'text' as const },
-        { field_name: 'contact_person', field_value_text: formData.contact_person, field_type: 'text' as const },
-        
+        {
+          field_name: 'contact_person',
+          field_value_text: formData.contact_person,
+          field_type: 'text' as const
+        },
+
         // Address
         { field_name: 'address', field_value_text: formData.address, field_type: 'text' as const },
         { field_name: 'city', field_value_text: formData.city, field_type: 'text' as const },
         { field_name: 'state', field_value_text: formData.state, field_type: 'text' as const },
         { field_name: 'pincode', field_value_text: formData.pincode, field_type: 'text' as const },
-        
+
         // Business Information
         { field_name: 'gstin', field_value_text: formData.gstin, field_type: 'text' as const },
-        { field_name: 'pan_number', field_value_text: formData.pan_number, field_type: 'text' as const },
-        
+        {
+          field_name: 'pan_number',
+          field_value_text: formData.pan_number,
+          field_type: 'text' as const
+        },
+
         // Financial
-        { field_name: 'credit_limit', field_value_number: formData.credit_limit ? parseFloat(formData.credit_limit) : 0, field_type: 'number' as const },
-        { field_name: 'payment_terms', field_value_text: formData.payment_terms, field_type: 'text' as const },
-        
+        {
+          field_name: 'credit_limit',
+          field_value_number: formData.credit_limit ? parseFloat(formData.credit_limit) : 0,
+          field_type: 'number' as const
+        },
+        {
+          field_name: 'payment_terms',
+          field_value_text: formData.payment_terms,
+          field_type: 'text' as const
+        },
+
         // Additional
         { field_name: 'notes', field_value_text: formData.notes, field_type: 'text' as const }
       ]
-      
+
       // Save all dynamic fields
       for (const field of dynamicFields) {
         if (field.field_value_text || field.field_value_number) {
@@ -143,7 +172,7 @@ export default function NewCustomerPage() {
           )
         }
       }
-      
+
       // Navigate to the customers list
       router.push('/furniture/sales/customers')
     } catch (err) {
@@ -200,7 +229,7 @@ export default function NewCustomerPage() {
             <Building2 className="h-5 w-5 text-gray-400 mr-2" />
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">Basic Information</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -249,9 +278,11 @@ export default function NewCustomerPage() {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
             <Phone className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Contact Information</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+              Contact Information
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -300,7 +331,7 @@ export default function NewCustomerPage() {
             <MapPin className="h-5 w-5 text-gray-400 mr-2" />
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">Address</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -360,9 +391,11 @@ export default function NewCustomerPage() {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
             <CreditCard className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Business Information</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+              Business Information
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -431,9 +464,11 @@ export default function NewCustomerPage() {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <div className="flex items-center mb-4">
             <FileText className="h-5 w-5 text-gray-400 mr-2" />
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Additional Information</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+              Additional Information
+            </h2>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Notes

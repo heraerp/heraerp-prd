@@ -12,13 +12,13 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
-  Database, 
-  Play, 
-  Table, 
-  Code, 
-  Shield, 
-  AlertCircle, 
+import {
+  Database,
+  Play,
+  Table,
+  Code,
+  Shield,
+  AlertCircle,
   CheckCircle,
   RefreshCw,
   Download,
@@ -70,7 +70,8 @@ const UNIVERSAL_FUNCTIONS = [
       {
         name: 'create_entity_with_data',
         description: 'Create entity with dynamic data in one operation',
-        signature: 'create_entity_with_data(org_id UUID, type TEXT, name TEXT, fields JSONB) RETURNS UUID',
+        signature:
+          'create_entity_with_data(org_id UUID, type TEXT, name TEXT, fields JSONB) RETURNS UUID',
         example: `SELECT create_entity_with_data(
   'YOUR_ORG_ID',
   'customer',
@@ -167,7 +168,7 @@ const MANAGEMENT_QUERIES = {
 FROM pg_tables 
 WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
 ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;`,
-    
+
     'Active Connections': `SELECT 
   pid,
   usename,
@@ -191,7 +192,7 @@ FROM pg_stat_statements
 ORDER BY mean_time DESC
 LIMIT 10;`
   },
-  
+
   'Index Management': {
     'Missing Indexes': `SELECT 
   schemaname,
@@ -207,7 +208,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
     FROM pg_indexes 
     WHERE schemaname = pg_stats.schemaname
   );`,
-    
+
     'Unused Indexes': `SELECT 
   schemaname,
   tablename,
@@ -218,7 +219,7 @@ WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
 FROM pg_stat_user_indexes
 WHERE idx_scan = 0
 ORDER BY schemaname, tablename;`,
-    
+
     'Index Usage': `SELECT 
   schemaname,
   tablename,
@@ -228,14 +229,14 @@ ORDER BY schemaname, tablename;`,
 FROM pg_stat_user_indexes
 ORDER BY idx_scan DESC;`
   },
-  
+
   'Performance Tuning': {
     'Cache Hit Ratio': `SELECT 
   sum(heap_blks_read) as heap_read,
   sum(heap_blks_hit)  as heap_hit,
   sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as cache_hit_ratio
 FROM pg_statio_user_tables;`,
-    
+
     'Table Bloat': `SELECT
   current_database() AS db,
   schemaname,
@@ -324,7 +325,7 @@ export default function SQLManagerPage() {
   const filteredFunctions = UNIVERSAL_FUNCTIONS.map(category => ({
     ...category,
     functions: category.functions.filter(
-      func => 
+      func =>
         func.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         func.description.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -336,10 +337,10 @@ export default function SQLManagerPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white">
-              HERA SQL Manager
-            </h1>
-            <p className="text-slate-400 mt-1">Advanced database management with universal functions</p>
+            <h1 className="text-4xl font-bold text-white">HERA SQL Manager</h1>
+            <p className="text-slate-400 mt-1">
+              Advanced database management with universal functions
+            </p>
           </div>
           <Badge className="bg-green-500/20 text-green-400 border-green-500/50">
             <Activity className="h-4 w-4 mr-2" />
@@ -379,7 +380,7 @@ export default function SQLManagerPage() {
                     <Input
                       placeholder="Search functions..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className="pl-10 bg-slate-700 border-slate-600 text-white"
                     />
                   </div>
@@ -387,7 +388,7 @@ export default function SQLManagerPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {filteredFunctions.map((category) => {
+                  {filteredFunctions.map(category => {
                     const Icon = category.icon
                     return (
                       <div
@@ -395,28 +396,32 @@ export default function SQLManagerPage() {
                         className="bg-slate-700/50 rounded-lg border border-slate-600 p-4"
                       >
                         <div className="flex items-center gap-3 mb-4">
-                          <div className={cn(
-                            "p-2 rounded-lg",
-                            category.color === 'blue' && "bg-blue-500/20",
-                            category.color === 'purple' && "bg-purple-500/20",
-                            category.color === 'green' && "bg-green-500/20",
-                            category.color === 'orange' && "bg-orange-500/20",
-                            category.color === 'red' && "bg-red-500/20"
-                          )}>
-                            <Icon className={cn(
-                              "h-5 w-5",
-                              category.color === 'blue' && "text-blue-400",
-                              category.color === 'purple' && "text-purple-400",
-                              category.color === 'green' && "text-green-400",
-                              category.color === 'orange' && "text-orange-400",
-                              category.color === 'red' && "text-red-400"
-                            )} />
+                          <div
+                            className={cn(
+                              'p-2 rounded-lg',
+                              category.color === 'blue' && 'bg-blue-500/20',
+                              category.color === 'purple' && 'bg-purple-500/20',
+                              category.color === 'green' && 'bg-green-500/20',
+                              category.color === 'orange' && 'bg-orange-500/20',
+                              category.color === 'red' && 'bg-red-500/20'
+                            )}
+                          >
+                            <Icon
+                              className={cn(
+                                'h-5 w-5',
+                                category.color === 'blue' && 'text-blue-400',
+                                category.color === 'purple' && 'text-purple-400',
+                                category.color === 'green' && 'text-green-400',
+                                category.color === 'orange' && 'text-orange-400',
+                                category.color === 'red' && 'text-red-400'
+                              )}
+                            />
                           </div>
                           <h3 className="text-lg font-semibold text-white">{category.category}</h3>
                         </div>
-                        
+
                         <div className="space-y-3">
-                          {category.functions.map((func) => (
+                          {category.functions.map(func => (
                             <div
                               key={func.name}
                               className="bg-slate-800/50 rounded-lg p-3 border border-slate-600"
@@ -533,7 +538,7 @@ export default function SQLManagerPage() {
               <CardContent>
                 <Textarea
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={e => setQuery(e.target.value)}
                   placeholder="Enter your SQL query here..."
                   className="font-mono text-sm h-96 bg-slate-900 text-slate-100 border-slate-700"
                   spellCheck={false}
@@ -564,13 +569,13 @@ export default function SQLManagerPage() {
                       onClick={() => {
                         const csv = [
                           Object.keys(results.data[0]).join(','),
-                          ...results.data.map((row: any) => 
-                            Object.values(row).map(v => 
-                              typeof v === 'string' ? `"${v}"` : v
-                            ).join(',')
+                          ...results.data.map((row: any) =>
+                            Object.values(row)
+                              .map(v => (typeof v === 'string' ? `"${v}"` : v))
+                              .join(',')
                           )
                         ].join('\n')
-                        
+
                         const blob = new Blob([csv], { type: 'text/csv' })
                         const url = URL.createObjectURL(blob)
                         const a = document.createElement('a')
@@ -593,11 +598,12 @@ export default function SQLManagerPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-slate-700">
-                          {results.data.length > 0 && Object.keys(results.data[0]).map((key) => (
-                            <th key={key} className="text-left p-2 font-medium text-slate-300">
-                              {key}
-                            </th>
-                          ))}
+                          {results.data.length > 0 &&
+                            Object.keys(results.data[0]).map(key => (
+                              <th key={key} className="text-left p-2 font-medium text-slate-300">
+                                {key}
+                              </th>
+                            ))}
                         </tr>
                       </thead>
                       <tbody>

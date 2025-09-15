@@ -7,12 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { getHeraApi } from '@/lib/hera-api'
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  Users, 
-  Package, 
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Users,
+  Package,
   ShoppingCart,
   AlertCircle,
   ArrowUpRight,
@@ -34,17 +34,17 @@ interface KPICardProps {
   className?: string
 }
 
-const KPICard: React.FC<KPICardProps> = ({ 
-  title, 
-  value, 
-  change, 
+const KPICard: React.FC<KPICardProps> = ({
+  title,
+  value,
+  change,
   changeLabel,
-  icon, 
+  icon,
   trend,
-  className 
+  className
 }) => {
   return (
-    <Card className={cn("hover:shadow-lg transition-shadow", className)}>
+    <Card className={cn('hover:shadow-lg transition-shadow', className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div className="h-4 w-4 text-muted-foreground">{icon}</div>
@@ -58,10 +58,9 @@ const KPICard: React.FC<KPICardProps> = ({
             ) : (
               <ArrowDownRight className="mr-1 h-3 w-3 text-red-500" />
             )}
-            <span className={cn(
-              trend === 'up' ? 'text-emerald-600' : 'text-red-600'
-            )}>
-              {change > 0 ? '+' : ''}{change}%
+            <span className={cn(trend === 'up' ? 'text-emerald-600' : 'text-red-600')}>
+              {change > 0 ? '+' : ''}
+              {change}%
             </span>
             {changeLabel && <span className="ml-1">{changeLabel}</span>}
           </div>
@@ -83,15 +82,14 @@ export function DemoDashboard() {
   const loadDashboardData = async () => {
     try {
       const heraApi = getHeraApi()
-      
+
       // Load KPIs
       const kpiData = await heraApi.getDashboardData()
       setKpis(kpiData)
-      
+
       // Load recent transactions
       const transactions = await heraApi.getTransactions(10)
       setRecentTransactions(transactions)
-      
     } catch (error) {
       console.error('Error loading dashboard data:', error)
     } finally {
@@ -125,9 +123,7 @@ export function DemoDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome to Mario's Italian Restaurant
-          </p>
+          <p className="text-muted-foreground">Welcome to Mario's Italian Restaurant</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="text-xs">
@@ -144,15 +140,12 @@ export function DemoDashboard() {
         <KPICard
           title="Today's Revenue"
           value={formatCurrency(kpis?.revenue?.today || 0)}
-          change={calculateChange(
-            kpis?.revenue?.today || 0, 
-            kpis?.revenue?.yesterday || 0
-          )}
+          change={calculateChange(kpis?.revenue?.today || 0, kpis?.revenue?.yesterday || 0)}
           changeLabel="from yesterday"
           icon={<DollarSign />}
           trend={kpis?.revenue?.today > kpis?.revenue?.yesterday ? 'up' : 'down'}
         />
-        
+
         <KPICard
           title="Active Customers"
           value={kpis?.customers?.activeToday || 0}
@@ -161,7 +154,7 @@ export function DemoDashboard() {
           icon={<Users />}
           trend="up"
         />
-        
+
         <KPICard
           title="Table Occupancy"
           value={`${Math.round((kpis?.operations?.occupancyRate || 0) * 100)}%`}
@@ -170,7 +163,7 @@ export function DemoDashboard() {
           trend="up"
           className="bg-emerald-50 dark:bg-emerald-950"
         />
-        
+
         <KPICard
           title="Average Order"
           value={formatCurrency(kpis?.operations?.avgOrderValue || 0)}
@@ -215,7 +208,7 @@ export function DemoDashboard() {
               </div>
               <Progress value={(kpis?.operations?.kitchenEfficiency || 0) * 100} />
             </div>
-            
+
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm">Staff Productivity</span>
@@ -225,7 +218,7 @@ export function DemoDashboard() {
               </div>
               <Progress value={(kpis?.staff?.productivityScore || 0) * 100} />
             </div>
-            
+
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm">Labor Cost</span>
@@ -233,8 +226,8 @@ export function DemoDashboard() {
                   {Math.round((kpis?.staff?.laborCost || 0) * 100)}%
                 </span>
               </div>
-              <Progress 
-                value={(kpis?.staff?.laborCost || 0) * 100} 
+              <Progress
+                value={(kpis?.staff?.laborCost || 0) * 100}
                 className="[&>div]:bg-amber-500"
               />
             </div>
@@ -249,26 +242,26 @@ export function DemoDashboard() {
           <TabsTrigger value="alerts">Alerts</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="transactions" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Recent Transactions</CardTitle>
-              <CardDescription>
-                Latest sales and purchase activity
-              </CardDescription>
+              <CardDescription>Latest sales and purchase activity</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentTransactions.slice(0, 5).map((transaction) => (
+                {recentTransactions.slice(0, 5).map(transaction => (
                   <div key={transaction.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "p-2 rounded-full",
-                        transaction.transaction_type === 'sale' 
-                          ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-950"
-                          : "bg-blue-100 text-blue-600 dark:bg-blue-950"
-                      )}>
+                      <div
+                        className={cn(
+                          'p-2 rounded-full',
+                          transaction.transaction_type === 'sale'
+                            ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950'
+                            : 'bg-blue-100 text-blue-600 dark:bg-blue-950'
+                        )}
+                      >
                         {transaction.transaction_type === 'sale' ? (
                           <Receipt className="h-4 w-4" />
                         ) : (
@@ -276,9 +269,7 @@ export function DemoDashboard() {
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-medium">
-                          {transaction.transaction_code}
-                        </p>
+                        <p className="text-sm font-medium">{transaction.transaction_code}</p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(transaction.transaction_date).toLocaleString()}
                         </p>
@@ -295,14 +286,14 @@ export function DemoDashboard() {
                   </div>
                 ))}
               </div>
-              
+
               <Button variant="outline" className="w-full mt-4">
                 View All Transactions
               </Button>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="alerts">
           <Card>
             <CardHeader>
@@ -319,9 +310,11 @@ export function DemoDashboard() {
                       {kpis?.inventory?.lowStockAlerts || 0} items below reorder point
                     </p>
                   </div>
-                  <Button size="sm" variant="outline">Review</Button>
+                  <Button size="sm" variant="outline">
+                    Review
+                  </Button>
                 </div>
-                
+
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
                   <div className="flex-1">
@@ -330,9 +323,11 @@ export function DemoDashboard() {
                       {kpis?.inventory?.expiringAlerts || 0} items expiring soon
                     </p>
                   </div>
-                  <Button size="sm" variant="outline">Review</Button>
+                  <Button size="sm" variant="outline">
+                    Review
+                  </Button>
                 </div>
-                
+
                 <div className="flex items-start gap-3">
                   <CreditCard className="h-5 w-5 text-blue-500 mt-0.5" />
                   <div className="flex-1">
@@ -341,13 +336,15 @@ export function DemoDashboard() {
                       {formatCurrency(kpis?.financial?.accountsReceivable || 0)} outstanding
                     </p>
                   </div>
-                  <Button size="sm" variant="outline">Collect</Button>
+                  <Button size="sm" variant="outline">
+                    Collect
+                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="inventory">
           <Card>
             <CardHeader>
@@ -365,12 +362,10 @@ export function DemoDashboard() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Turnover Rate</p>
-                    <p className="text-2xl font-bold">
-                      {kpis?.inventory?.turnoverRate || 0}x
-                    </p>
+                    <p className="text-2xl font-bold">{kpis?.inventory?.turnoverRate || 0}x</p>
                   </div>
                 </div>
-                
+
                 <div className="pt-4">
                   <h4 className="text-sm font-medium mb-3">Stock Levels by Category</h4>
                   <div className="space-y-2">
@@ -388,7 +383,7 @@ export function DemoDashboard() {
                     </div>
                   </div>
                 </div>
-                
+
                 <Button variant="outline" className="w-full">
                   Manage Inventory
                 </Button>

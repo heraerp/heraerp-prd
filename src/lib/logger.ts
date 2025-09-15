@@ -42,7 +42,7 @@ export class Logger {
       message,
       ...context
     }
-    
+
     if (process.env.NODE_ENV === 'production') {
       // JSON format for production (easier to parse)
       return JSON.stringify(baseLog)
@@ -75,11 +75,14 @@ export class Logger {
     if (this.shouldLog(LogLevel.ERROR)) {
       const errorContext: LogContext = {
         ...context,
-        error: error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        } : error
+        error:
+          error instanceof Error
+            ? {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+              }
+            : error
       }
       console.error(this.formatMessage(LogLevel.ERROR, message, errorContext))
     }
@@ -88,14 +91,17 @@ export class Logger {
   fatal(message: string, error?: Error | unknown, context?: LogContext): void {
     const errorContext: LogContext = {
       ...context,
-      error: error instanceof Error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      } : error
+      error:
+        error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack
+            }
+          : error
     }
     console.error(this.formatMessage(LogLevel.FATAL, message, errorContext))
-    
+
     // In production, you might want to send this to an alerting service
     if (process.env.NODE_ENV === 'production') {
       // TODO: Send to monitoring service (e.g., Sentry, DataDog)
@@ -106,7 +112,7 @@ export class Logger {
   startTimer(operation: string, context?: LogContext): () => void {
     const startTime = Date.now()
     this.debug(`Starting operation: ${operation}`, context)
-    
+
     return () => {
       const duration = Date.now() - startTime
       this.info(`Completed operation: ${operation}`, {

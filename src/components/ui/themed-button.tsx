@@ -12,7 +12,7 @@ export interface ThemedButtonProps extends ButtonProps {
 export const ThemedButton = React.forwardRef<HTMLButtonElement, ThemedButtonProps>(
   ({ className, variant = 'default', gradient = false, ...props }, ref) => {
     const theme = useModuleTheme()
-    
+
     if (gradient && variant === 'default') {
       return (
         <Button
@@ -26,15 +26,8 @@ export const ThemedButton = React.forwardRef<HTMLButtonElement, ThemedButtonProp
         />
       )
     }
-    
-    return (
-      <Button
-        ref={ref}
-        className={className}
-        variant={variant}
-        {...props}
-      />
-    )
+
+    return <Button ref={ref} className={className} variant={variant} {...props} />
   }
 )
 

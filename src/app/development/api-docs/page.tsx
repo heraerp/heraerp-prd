@@ -10,12 +10,12 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Book, 
-  Code, 
-  Search, 
-  Copy, 
-  CheckCircle, 
+import {
+  Book,
+  Code,
+  Search,
+  Copy,
+  CheckCircle,
   Zap,
   Database,
   GitBranch,
@@ -66,17 +66,17 @@ export default function APIDocsPage() {
               <h1 className="text-2xl font-light text-white mb-2">HERA API Documentation</h1>
               <p className="text-gray-300 text-sm">Developer Reference Portal</p>
             </div>
-            
+
             <div className="space-y-4">
               <Input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleLogin()}
                 className="bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20"
                 placeholder="Enter developer access code"
               />
-              
+
               <Button
                 onClick={handleLogin}
                 className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white border-0 py-3 rounded-xl font-medium"
@@ -99,12 +99,14 @@ export default function APIDocsPage() {
         endpoint: '/api/v1/smart-code/validate',
         method: 'POST',
         icon: CheckCircle,
-        description: 'Validates smart codes using 4-level validation system (L1-L4) with performance benchmarks',
+        description:
+          'Validates smart codes using 4-level validation system (L1-L4) with performance benchmarks',
         sapEquivalent: 'SAP Data Quality Management + Validation Framework',
         performanceBenchmark: '< 50ms for L2_SEMANTIC validation',
         request: {
           smart_code: 'string (required) - Smart code to validate',
-          validation_level: 'enum (optional) - L1_SYNTAX | L2_SEMANTIC | L3_PERFORMANCE | L4_INTEGRATION',
+          validation_level:
+            'enum (optional) - L1_SYNTAX | L2_SEMANTIC | L3_PERFORMANCE | L4_INTEGRATION',
           organization_id: 'string (optional) - Organization context for validation'
         },
         response: {
@@ -130,7 +132,8 @@ export default function APIDocsPage() {
         endpoint: '/api/v1/smart-code/generate',
         method: 'POST',
         icon: Zap,
-        description: 'Generates industry-specific smart codes with automatic validation and similar code detection',
+        description:
+          'Generates industry-specific smart codes with automatic validation and similar code detection',
         sapEquivalent: 'SAP Code Generation Framework + Business Object Builder',
         performanceBenchmark: '< 100ms with auto-validation',
         request: {
@@ -165,7 +168,8 @@ export default function APIDocsPage() {
         endpoint: '/api/v1/validation/4-level',
         method: 'POST',
         icon: Layers,
-        description: 'Comprehensive validation engine supporting entities, transactions, BOMs, pricing, and DAGs',
+        description:
+          'Comprehensive validation engine supporting entities, transactions, BOMs, pricing, and DAGs',
         sapEquivalent: 'SAP Data Quality Management + Process Validation + Performance Testing',
         performanceBenchmark: 'L1:<10ms, L2:<50ms, L3:<100ms, L4:<200ms',
         request: {
@@ -203,7 +207,8 @@ export default function APIDocsPage() {
         endpoint: '/api/v1/dag/execute',
         method: 'POST',
         icon: GitBranch,
-        description: 'Universal workflow processing with intelligent dependency resolution and parallel execution',
+        description:
+          'Universal workflow processing with intelligent dependency resolution and parallel execution',
         sapEquivalent: 'SAP Workflow Engine + Business Process Management + Parallel Processing',
         performanceBenchmark: '< 100ms for complex DAGs with parallel optimization',
         request: {
@@ -251,7 +256,8 @@ export default function APIDocsPage() {
         endpoint: '/api/v1/templates',
         method: 'GET/POST',
         icon: Database,
-        description: 'Complete template lifecycle management with copy, customize, and validation capabilities',
+        description:
+          'Complete template lifecycle management with copy, customize, and validation capabilities',
         sapEquivalent: 'SAP Template Management + Configuration + Transport System',
         performanceBenchmark: '< 200ms for template operations',
         request: {
@@ -285,7 +291,8 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
         endpoint: '/api/v1/bom/calculate',
         method: 'POST',
         icon: BarChart3,
-        description: 'SAP PC Module equivalent with real-time costing, variance analysis, and optimization',
+        description:
+          'SAP PC Module equivalent with real-time costing, variance analysis, and optimization',
         sapEquivalent: 'SAP PC (Product Cost Management) + Material Ledger + CO-PA',
         performanceBenchmark: '< 200ms vs SAP 30-60 seconds',
         request: {
@@ -321,7 +328,8 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
         endpoint: '/api/v1/pricing/calculate',
         method: 'POST',
         icon: TrendingUp,
-        description: 'SAP CO-PA + SD Pricing equivalent with dynamic pricing and profitability analysis',
+        description:
+          'SAP CO-PA + SD Pricing equivalent with dynamic pricing and profitability analysis',
         sapEquivalent: 'SAP CO-PA + SD Pricing + Condition Technique + CRM Pricing',
         performanceBenchmark: '< 150ms vs SAP 5-10 minutes',
         request: {
@@ -356,7 +364,8 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
         endpoint: '/api/v1/industry/configure',
         method: 'POST',
         icon: Settings,
-        description: '24-hour ERP implementation with complete SAP migration and industry-specific deployment',
+        description:
+          '24-hour ERP implementation with complete SAP migration and industry-specific deployment',
         sapEquivalent: 'SAP Implementation + Industry Solutions + Migration Tools',
         performanceBenchmark: '24 hours vs SAP 12-21 months (95% faster)',
         request: {
@@ -390,15 +399,17 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
 
   const filteredDocs = (docs: any[]) => {
     if (!searchTerm) return docs
-    return docs.filter(doc => 
-      doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.endpoint.toLowerCase().includes(searchTerm.toLowerCase())
+    return docs.filter(
+      doc =>
+        doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.endpoint.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }
 
-  const selectedDoc = [...apiDocumentation.phase1, ...apiDocumentation.phase2]
-    .find(doc => doc.id === selectedEndpoint)
+  const selectedDoc = [...apiDocumentation.phase1, ...apiDocumentation.phase2].find(
+    doc => doc.id === selectedEndpoint
+  )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-950 to-slate-900 text-white">
@@ -420,7 +431,7 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   placeholder="Search APIs..."
                   className="pl-10 bg-white/10 border-white/20 text-white placeholder-white/50 w-64"
                 />
@@ -441,12 +452,16 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
               <CardContent className="space-y-2">
                 <Tabs defaultValue="phase1" className="space-y-4">
                   <TabsList className="grid w-full grid-cols-2 bg-white/10">
-                    <TabsTrigger value="phase1" className="text-xs">Phase 1</TabsTrigger>
-                    <TabsTrigger value="phase2" className="text-xs">Phase 2</TabsTrigger>
+                    <TabsTrigger value="phase1" className="text-xs">
+                      Phase 1
+                    </TabsTrigger>
+                    <TabsTrigger value="phase2" className="text-xs">
+                      Phase 2
+                    </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="phase1" className="space-y-2">
-                    {filteredDocs(apiDocumentation.phase1).map((doc) => {
+                    {filteredDocs(apiDocumentation.phase1).map(doc => {
                       const Icon = doc.icon
                       return (
                         <button
@@ -471,7 +486,7 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                   </TabsContent>
 
                   <TabsContent value="phase2" className="space-y-2">
-                    {filteredDocs(apiDocumentation.phase2).map((doc) => {
+                    {filteredDocs(apiDocumentation.phase2).map(doc => {
                       const Icon = doc.icon
                       return (
                         <button
@@ -553,7 +568,7 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                       <p className="text-sm text-gray-300">{selectedDoc.performanceBenchmark}</p>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="bg-amber-500/10 border-amber-500/20">
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-2 mb-2">
@@ -611,7 +626,9 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                         <span>Example Usage</span>
                       </CardTitle>
                       <Button
-                        onClick={() => copyToClipboard(selectedDoc.example, `example-${selectedDoc.id}`)}
+                        onClick={() =>
+                          copyToClipboard(selectedDoc.example, `example-${selectedDoc.id}`)
+                        }
                         variant="outline"
                         size="sm"
                         className="bg-white/10 border-white/20 text-white hover:bg-white/20"
@@ -646,11 +663,18 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
         .shake {
           animation: shake 0.6s ease-in-out;
         }
-        
+
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          25% {
+            transform: translateX(-5px);
+          }
+          75% {
+            transform: translateX(5px);
+          }
         }
       `}</style>
     </div>

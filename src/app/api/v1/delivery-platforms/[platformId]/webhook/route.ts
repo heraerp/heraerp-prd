@@ -18,7 +18,7 @@ interface DeliveryPlatformOrder {
     street: string
     city: string
     postal_code: string
-    coordinates?: { lat: number, lng: number }
+    coordinates?: { lat: number; lng: number }
     instructions?: string
   }
   items: Array<{
@@ -63,19 +63,22 @@ const platformParsers = {
       street: payload.delivery_address?.street_address || '',
       city: payload.delivery_address?.city || '',
       postal_code: payload.delivery_address?.postal_code || '',
-      coordinates: payload.delivery_address?.coordinates ? {
-        lat: payload.delivery_address.coordinates.latitude,
-        lng: payload.delivery_address.coordinates.longitude
-      } : undefined,
+      coordinates: payload.delivery_address?.coordinates
+        ? {
+            lat: payload.delivery_address.coordinates.latitude,
+            lng: payload.delivery_address.coordinates.longitude
+          }
+        : undefined,
       instructions: payload.delivery_notes || ''
     },
-    items: payload.items?.map((item: any) => ({
-      name: item.name,
-      quantity: item.quantity,
-      unit_price: item.price / 100, // Deliveroo uses cents
-      modifications: item.modifications?.map((mod: any) => mod.name) || [],
-      special_instructions: item.special_instructions || ''
-    })) || [],
+    items:
+      payload.items?.map((item: any) => ({
+        name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price / 100, // Deliveroo uses cents
+        modifications: item.modifications?.map((mod: any) => mod.name) || [],
+        special_instructions: item.special_instructions || ''
+      })) || [],
     totals: {
       subtotal: payload.subtotal / 100,
       delivery_fee: payload.delivery_fee / 100,
@@ -108,19 +111,23 @@ const platformParsers = {
       street: payload.deliveryAddress?.completeAddress || '',
       city: payload.deliveryAddress?.city || '',
       postal_code: payload.deliveryAddress?.pincode || '',
-      coordinates: payload.deliveryAddress?.lat && payload.deliveryAddress?.lng ? {
-        lat: payload.deliveryAddress.lat,
-        lng: payload.deliveryAddress.lng
-      } : undefined,
+      coordinates:
+        payload.deliveryAddress?.lat && payload.deliveryAddress?.lng
+          ? {
+              lat: payload.deliveryAddress.lat,
+              lng: payload.deliveryAddress.lng
+            }
+          : undefined,
       instructions: payload.deliveryInstructions || ''
     },
-    items: payload.orderItems?.map((item: any) => ({
-      name: item.name,
-      quantity: item.quantity,
-      unit_price: item.price,
-      modifications: item.addons?.map((addon: any) => addon.name) || [],
-      special_instructions: item.cookingInstructions || ''
-    })) || [],
+    items:
+      payload.orderItems?.map((item: any) => ({
+        name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        modifications: item.addons?.map((addon: any) => addon.name) || [],
+        special_instructions: item.cookingInstructions || ''
+      })) || [],
     totals: {
       subtotal: payload.itemTotal || 0,
       delivery_fee: payload.deliveryCharge || 0,
@@ -153,21 +160,26 @@ const platformParsers = {
       street: payload.delivery_address?.street_address_1 || '',
       city: payload.delivery_address?.city || '',
       postal_code: payload.delivery_address?.postal_code || '',
-      coordinates: payload.delivery_address?.latitude && payload.delivery_address?.longitude ? {
-        lat: payload.delivery_address.latitude,
-        lng: payload.delivery_address.longitude
-      } : undefined,
+      coordinates:
+        payload.delivery_address?.latitude && payload.delivery_address?.longitude
+          ? {
+              lat: payload.delivery_address.latitude,
+              lng: payload.delivery_address.longitude
+            }
+          : undefined,
       instructions: payload.special_delivery_instructions || ''
     },
-    items: payload.cart?.items?.map((item: any) => ({
-      name: item.title,
-      quantity: item.quantity,
-      unit_price: item.price / 100, // Uber Eats uses cents
-      modifications: item.selected_modifier_groups?.flatMap((group: any) => 
-        group.selected_items?.map((mod: any) => mod.title) || []
-      ) || [],
-      special_instructions: item.special_instructions || ''
-    })) || [],
+    items:
+      payload.cart?.items?.map((item: any) => ({
+        name: item.title,
+        quantity: item.quantity,
+        unit_price: item.price / 100, // Uber Eats uses cents
+        modifications:
+          item.selected_modifier_groups?.flatMap(
+            (group: any) => group.selected_items?.map((mod: any) => mod.title) || []
+          ) || [],
+        special_instructions: item.special_instructions || ''
+      })) || [],
     totals: {
       subtotal: payload.cart?.subtotal / 100,
       delivery_fee: payload.cart?.delivery_fee / 100,
@@ -195,51 +207,56 @@ const platformParsers = {
 // Status mapping helpers
 function mapSwiggyStatus(status: string): DeliveryPlatformOrder['status'] {
   const statusMap: Record<string, DeliveryPlatformOrder['status']> = {
-    'PLACED': 'confirmed',
-    'ACCEPTED': 'confirmed',
-    'FOOD_PREPARATION': 'preparing',
-    'READY_FOR_PICKUP': 'ready',
-    'OUT_FOR_DELIVERY': 'picked_up',
-    'DELIVERED': 'delivered',
-    'CANCELLED': 'cancelled'
+    PLACED: 'confirmed',
+    ACCEPTED: 'confirmed',
+    FOOD_PREPARATION: 'preparing',
+    READY_FOR_PICKUP: 'ready',
+    OUT_FOR_DELIVERY: 'picked_up',
+    DELIVERED: 'delivered',
+    CANCELLED: 'cancelled'
   }
   return statusMap[status] || 'confirmed'
 }
 
 function mapUberEatsStatus(status: string): DeliveryPlatformOrder['status'] {
   const statusMap: Record<string, DeliveryPlatformOrder['status']> = {
-    'created': 'confirmed',
-    'accepted': 'confirmed',
-    'denied': 'cancelled',
-    'finished': 'preparing',
-    'ready_for_pickup': 'ready',
-    'courier_assigned': 'picked_up',
-    'delivered': 'delivered',
-    'cancelled': 'cancelled'
+    created: 'confirmed',
+    accepted: 'confirmed',
+    denied: 'cancelled',
+    finished: 'preparing',
+    ready_for_pickup: 'ready',
+    courier_assigned: 'picked_up',
+    delivered: 'delivered',
+    cancelled: 'cancelled'
   }
   return statusMap[status] || 'confirmed'
 }
 
 // Verify webhook signature for security (Steve Jobs: "Privacy is a fundamental human right")
-function verifyWebhookSignature(payload: string, signature: string, secret: string, platform: string): boolean {
+function verifyWebhookSignature(
+  payload: string,
+  signature: string,
+  secret: string,
+  platform: string
+): boolean {
   if (!secret || !signature) return false
-  
+
   try {
     let expectedSignature = ''
-    
+
     switch (platform) {
       case 'deliveroo':
         expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
         return `sha256=${expectedSignature}` === signature
-        
+
       case 'swiggy':
         expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
         return expectedSignature === signature
-        
+
       case 'ubereats':
         expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
         return `sha256=${expectedSignature}` === signature
-        
+
       default:
         return true // Allow generic webhooks for development
     }
@@ -260,13 +277,14 @@ export async function POST(
   try {
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
     const platformId = params.platformId
-    
+
     console.log(`🚀 Webhook: Receiving order from platform ${platformId}`)
 
     // Get platform configuration
     const { data: platform, error: platformError } = await supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
@@ -274,7 +292,8 @@ export async function POST(
           field_value_boolean,
           field_type
         )
-      `)
+      `
+      )
       .eq('id', platformId)
       .eq('organization_id', organizationId)
       .eq('entity_type', 'delivery_platform')
@@ -282,21 +301,19 @@ export async function POST(
 
     if (platformError || !platform) {
       console.error('❌ Platform not found:', platformError)
-      return NextResponse.json(
-        { success: false, message: 'Platform not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, message: 'Platform not found' }, { status: 404 })
     }
 
     // Extract platform properties
-    const platformProps = platform.dynamic_data?.reduce((acc: any, prop: any) => {
-      let value = prop.field_value
-      if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
-        value = prop.field_value_boolean
-      }
-      acc[prop.field_name] = value
-      return acc
-    }, {}) || {}
+    const platformProps =
+      platform.dynamic_data?.reduce((acc: any, prop: any) => {
+        let value = prop.field_value
+        if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
+          value = prop.field_value_boolean
+        }
+        acc[prop.field_name] = value
+        return acc
+      }, {}) || {}
 
     // Check if platform is active
     if (!platformProps.is_active) {
@@ -306,19 +323,23 @@ export async function POST(
 
     // Get request body and headers
     const body = await request.text()
-    const signature = request.headers.get('x-signature') || 
-                     request.headers.get('x-swiggy-signature') || 
-                     request.headers.get('x-uber-signature') || ''
+    const signature =
+      request.headers.get('x-signature') ||
+      request.headers.get('x-swiggy-signature') ||
+      request.headers.get('x-uber-signature') ||
+      ''
 
     // Verify webhook signature
     if (platformProps.secret_key) {
-      const isValid = verifyWebhookSignature(body, signature, platformProps.secret_key, platformProps.platform_type)
+      const isValid = verifyWebhookSignature(
+        body,
+        signature,
+        platformProps.secret_key,
+        platformProps.platform_type
+      )
       if (!isValid && process.env.NODE_ENV === 'production') {
         console.error('❌ Invalid webhook signature')
-        return NextResponse.json(
-          { success: false, message: 'Invalid signature' },
-          { status: 401 }
-        )
+        return NextResponse.json({ success: false, message: 'Invalid signature' }, { status: 401 })
       }
     }
 
@@ -328,22 +349,21 @@ export async function POST(
       webhookData = JSON.parse(body)
     } catch (error) {
       console.error('❌ Invalid JSON payload:', error)
-      return NextResponse.json(
-        { success: false, message: 'Invalid JSON payload' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'Invalid JSON payload' }, { status: 400 })
     }
 
     // Handle different webhook events
     const eventType = webhookData.event_type || webhookData.type || 'order_placed'
-    
+
     if (!['order_placed', 'order_confirmed', 'order_updated'].includes(eventType)) {
       console.log(`ℹ️ Ignoring webhook event: ${eventType}`)
       return NextResponse.json({ success: true, message: 'Event ignored' })
     }
 
     // Parse order using platform-specific parser
-    const parser = platformParsers[platformProps.platform_type as keyof typeof platformParsers] || platformParsers.generic
+    const parser =
+      platformParsers[platformProps.platform_type as keyof typeof platformParsers] ||
+      platformParsers.generic
     const parsedOrder = parser(eventType === 'order_updated' ? webhookData.order : webhookData)
 
     // Check if order already exists
@@ -357,10 +377,10 @@ export async function POST(
 
     if (existingOrder && eventType !== 'order_updated') {
       console.log(`ℹ️ Order ${parsedOrder.platform_order_id} already exists`)
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         message: 'Order already exists',
-        order_id: existingOrder.id 
+        order_id: existingOrder.id
       })
     }
 
@@ -379,32 +399,32 @@ export async function POST(
         delivery_platform_id: platformId,
         platform_name: parsedOrder.platform_name,
         platform_order_id: parsedOrder.platform_order_id,
-        
+
         // Fulfillment Type
         fulfillment_type: 'delivery',
-        
+
         // Customer Information
         customer_name: parsedOrder.customer.name,
         customer_phone: parsedOrder.customer.phone,
         customer_email: parsedOrder.customer.email,
-        
+
         // Delivery Information
         delivery_address: JSON.stringify(parsedOrder.delivery_address),
         delivery_instructions: parsedOrder.delivery_info.delivery_instructions,
         estimated_delivery_time: parsedOrder.delivery_info.estimated_delivery_time,
         contact_free_delivery: parsedOrder.delivery_info.contact_free,
-        
+
         // Financial Information
         subtotal: parsedOrder.totals.subtotal,
         delivery_fee: parsedOrder.totals.delivery_fee,
         platform_fee: parsedOrder.totals.platform_fee,
         platform_commission: parsedOrder.totals.total * (platformProps.commission_rate || 0.15),
-        
+
         // Payment Information
         payment_method: parsedOrder.payment.method,
         payment_status: parsedOrder.payment.status,
         payment_transaction_id: parsedOrder.payment.transaction_id,
-        
+
         // Platform-specific data
         platform_data: JSON.stringify(webhookData)
       }
@@ -488,17 +508,18 @@ export async function POST(
     }
 
     // Update platform sync status
-    await supabaseAdmin
-      .from('core_dynamic_data')
-      .upsert({
+    await supabaseAdmin.from('core_dynamic_data').upsert(
+      {
         organization_id: organizationId,
         entity_id: platformId,
         field_name: 'last_sync_at',
         field_value: new Date().toISOString(),
         field_type: 'text'
-      }, {
+      },
+      {
         onConflict: 'organization_id,entity_id,field_name'
-      })
+      }
+    )
 
     const response = {
       success: true,
@@ -510,25 +531,21 @@ export async function POST(
     }
 
     return NextResponse.json(response, { status: existingOrder ? 200 : 201 })
-
   } catch (error) {
     console.error('❌ Webhook processing error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
 // Helper function to map platform status to HERA status
 function mapPlatformStatusToHERA(platformStatus: DeliveryPlatformOrder['status']): string {
   const statusMap: Record<DeliveryPlatformOrder['status'], string> = {
-    'confirmed': 'pending',
-    'preparing': 'processing',
-    'ready': 'approved',
-    'picked_up': 'processing',
-    'delivered': 'completed',
-    'cancelled': 'cancelled'
+    confirmed: 'pending',
+    preparing: 'processing',
+    ready: 'approved',
+    picked_up: 'processing',
+    delivered: 'completed',
+    cancelled: 'cancelled'
   }
   return statusMap[platformStatus] || 'pending'
 }
@@ -544,15 +561,15 @@ export async function GET(
   const { searchParams } = new URL(request.url)
   const challenge = searchParams.get('hub.challenge')
   const verify_token = searchParams.get('hub.verify_token')
-  
+
   // Return challenge for webhook verification
   if (challenge && verify_token) {
     console.log(`✅ Webhook verification for platform ${params.platformId}`)
-    return new Response(challenge, { 
+    return new Response(challenge, {
       status: 200,
       headers: { 'Content-Type': 'text/plain' }
     })
   }
-  
+
   return NextResponse.json({ success: true, message: 'Webhook endpoint active' })
 }

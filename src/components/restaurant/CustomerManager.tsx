@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
+import {
   UniversalForm,
   UniversalInput,
   UniversalTextarea,
@@ -19,23 +19,13 @@ import {
 } from '@/components/universal'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Search,
-  Phone,
-  Mail,
-  MapPin,
-  Calendar,
-  User
-} from 'lucide-react'
+import { Plus, Edit, Trash2, Search, Phone, Mail, MapPin, Calendar, User } from 'lucide-react'
 
 // Customer interface using HERA universal pattern
 interface Customer {
   id: string
-  entity_name: string  // Customer name
-  entity_code: string  // Customer code (e.g., CUST_001)
+  entity_name: string // Customer name
+  entity_code: string // Customer code (e.g., CUST_001)
   email: string
   phone: string
   address: string
@@ -56,7 +46,7 @@ const api = createUniversalAPIClient({
   baseUrl: '/api/v1',
   retries: { maxRetries: 3, retryDelay: 1000 },
   cache: { ttl: 30000 }, // 30 second cache
-  onError: (error) => console.error('Customer API Error:', error)
+  onError: error => console.error('Customer API Error:', error)
 })
 
 interface CustomerFormProps {
@@ -68,7 +58,7 @@ interface CustomerFormProps {
 function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps) {
   const isEditing = !!customer
   const { isLoading, withLoading } = useLoadingState()
-  
+
   const { values, errors, setValue, validate, reset } = useFormState({
     entity_name: customer?.entity_name || '',
     entity_code: customer?.entity_code || '',
@@ -84,11 +74,13 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
   // Auto-generate customer code from name
   useEffect(() => {
     if (values.entity_name && !values.entity_code && !isEditing) {
-      const code = 'CUST_' + values.entity_name
-        .toUpperCase()
-        .replace(/[^A-Z0-9\s]/g, '')
-        .replace(/\s+/g, '_')
-        .substring(0, 15)
+      const code =
+        'CUST_' +
+        values.entity_name
+          .toUpperCase()
+          .replace(/[^A-Z0-9\s]/g, '')
+          .replace(/\s+/g, '_')
+          .substring(0, 15)
       setValue('entity_code', code)
     }
   }, [values.entity_name, values.entity_code, isEditing, setValue])
@@ -102,7 +94,7 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validate(validationRules)) {
       return
     }
@@ -157,17 +149,17 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
               name="entity_name"
               label="Customer Name"
               value={values.entity_name}
-              onChange={(value) => setValue('entity_name', value)}
+              onChange={value => setValue('entity_name', value)}
               error={errors.entity_name}
               required
               placeholder="John Doe"
             />
-            
+
             <UniversalInput
               name="entity_code"
               label="Customer Code"
               value={values.entity_code}
-              onChange={(value) => setValue('entity_code', value)}
+              onChange={value => setValue('entity_code', value)}
               error={errors.entity_code}
               required
               placeholder="CUST_JOHN_DOE"
@@ -182,17 +174,17 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
               label="Email"
               type="email"
               value={values.email}
-              onChange={(value) => setValue('email', value)}
+              onChange={value => setValue('email', value)}
               error={errors.email}
               placeholder="john@example.com"
             />
-            
+
             <UniversalInput
               name="phone"
               label="Phone Number"
               type="tel"
               value={values.phone}
-              onChange={(value) => setValue('phone', value)}
+              onChange={value => setValue('phone', value)}
               error={errors.phone}
               required
               placeholder="(555) 123-4567"
@@ -206,32 +198,32 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
               name="address"
               label="Street Address"
               value={values.address}
-              onChange={(value) => setValue('address', value)}
+              onChange={value => setValue('address', value)}
               placeholder="123 Main Street"
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <UniversalInput
                 name="city"
                 label="City"
                 value={values.city}
-                onChange={(value) => setValue('city', value)}
+                onChange={value => setValue('city', value)}
                 placeholder="New York"
               />
-              
+
               <UniversalInput
                 name="state"
                 label="State"
                 value={values.state}
-                onChange={(value) => setValue('state', value)}
+                onChange={value => setValue('state', value)}
                 placeholder="NY"
               />
-              
+
               <UniversalInput
                 name="zip_code"
                 label="ZIP Code"
                 value={values.zip_code}
-                onChange={(value) => setValue('zip_code', value)}
+                onChange={value => setValue('zip_code', value)}
                 placeholder="10001"
               />
             </div>
@@ -243,26 +235,18 @@ function CustomerForm({ customer, onCustomerSaved, onClose }: CustomerFormProps)
             name="notes"
             label="Notes"
             value={values.notes}
-            onChange={(value) => setValue('notes', value)}
+            onChange={value => setValue('notes', value)}
             rows={3}
             placeholder="Special preferences, dietary restrictions, etc."
           />
         </UniversalFieldGroup>
 
         <div className="flex gap-3 pt-4 border-t border-gray-200">
-          <UniversalButton
-            type="submit"
-            loading={isLoading}
-            className="flex-1"
-          >
+          <UniversalButton type="submit" loading={isLoading} className="flex-1">
             {isEditing ? 'Update Customer' : 'Add Customer'}
           </UniversalButton>
-          
-          <UniversalButton
-            variant="secondary"
-            onClick={onClose}
-            disabled={isLoading}
-          >
+
+          <UniversalButton variant="secondary" onClick={onClose} disabled={isLoading}>
             Cancel
           </UniversalButton>
         </div>
@@ -309,7 +293,7 @@ export function CustomerManager() {
         total_spent: entity.properties?.total_spent || 0,
         last_order_date: entity.properties?.last_order_date || null
       }))
-      
+
       setCustomers(transformedCustomers)
       setFilteredCustomers(transformedCustomers)
     }
@@ -336,10 +320,11 @@ export function CustomerManager() {
     if (!searchTerm) {
       setFilteredCustomers(customers)
     } else {
-      const filtered = customers.filter(customer =>
-        customer.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.phone.includes(searchTerm)
+      const filtered = customers.filter(
+        customer =>
+          customer.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.phone.includes(searchTerm)
       )
       setFilteredCustomers(filtered)
     }
@@ -375,7 +360,7 @@ export function CustomerManager() {
                   type="text"
                   placeholder="Search customers..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                 />
               </div>
@@ -394,11 +379,7 @@ export function CustomerManager() {
 
         {/* Error Display */}
         {error && (
-          <UniversalErrorDisplay
-            message={error}
-            onDismiss={clearError}
-            onRetry={loadCustomers}
-          />
+          <UniversalErrorDisplay message={error} onDismiss={clearError} onRetry={loadCustomers} />
         )}
 
         {/* Loading State */}
@@ -408,8 +389,11 @@ export function CustomerManager() {
           <>
             {/* Customers Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCustomers.map((customer) => (
-                <Card key={customer.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              {filteredCustomers.map(customer => (
+                <Card
+                  key={customer.id}
+                  className="overflow-hidden hover:shadow-lg transition-shadow"
+                >
                   <div className="p-6">
                     {/* Customer Header */}
                     <div className="flex items-start justify-between mb-4">
@@ -417,9 +401,7 @@ export function CustomerManager() {
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">
                           {customer.entity_name}
                         </h3>
-                        <p className="text-sm text-gray-500">
-                          {customer.entity_code}
-                        </p>
+                        <p className="text-sm text-gray-500">{customer.entity_code}</p>
                       </div>
                       <Badge variant={customer.status === 'active' ? 'default' : 'secondary'}>
                         {customer.status}
@@ -434,16 +416,18 @@ export function CustomerManager() {
                           <span>{customer.email}</span>
                         </div>
                       )}
-                      
+
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Phone className="w-4 h-4" />
                         <span>{customer.phone}</span>
                       </div>
-                      
+
                       {customer.address && (
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <MapPin className="w-4 h-4" />
-                          <span>{customer.city}, {customer.state}</span>
+                          <span>
+                            {customer.city}, {customer.state}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -451,7 +435,9 @@ export function CustomerManager() {
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
                       <div className="text-center">
-                        <p className="text-lg font-semibold text-gray-900">{customer.total_orders}</p>
+                        <p className="text-lg font-semibold text-gray-900">
+                          {customer.total_orders}
+                        </p>
                         <p className="text-xs text-gray-500">Orders</p>
                       </div>
                       <div className="text-center">
@@ -482,7 +468,7 @@ export function CustomerManager() {
                         <Pencil className="w-4 h-4 mr-2" />
                         Edit
                       </button>
-                      
+
                       <button
                         type="button"
                         className="px-3 py-1.5 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 hover:text-red-700 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center"
@@ -506,10 +492,9 @@ export function CustomerManager() {
                   {searchTerm ? 'No customers found' : 'No customers yet'}
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  {searchTerm 
+                  {searchTerm
                     ? 'Try adjusting your search terms'
-                    : 'Add your first customer to get started'
-                  }
+                    : 'Add your first customer to get started'}
                 </p>
                 {!searchTerm && (
                   <UniversalButton onClick={() => setShowAddForm(true)}>
@@ -523,10 +508,7 @@ export function CustomerManager() {
 
         {/* Add Customer Form */}
         {showAddForm && (
-          <CustomerForm
-            onCustomerSaved={loadCustomers}
-            onClose={() => setShowAddForm(false)}
-          />
+          <CustomerForm onCustomerSaved={loadCustomers} onClose={() => setShowAddForm(false)} />
         )}
 
         {/* Pencil Customer Form */}
@@ -545,19 +527,23 @@ export function CustomerManager() {
               Universal Customer Management
             </h3>
             <p className="text-sm text-blue-800 mb-4">
-              This customer system demonstrates HERA's universal entity pattern with dynamic properties:
+              This customer system demonstrates HERA's universal entity pattern with dynamic
+              properties:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-700">
               <div className="bg-white/50 p-3 rounded-lg">
-                <strong>core_entities</strong><br />
+                <strong>core_entities</strong>
+                <br />
                 Customers stored as entities with type "customer"
               </div>
               <div className="bg-white/50 p-3 rounded-lg">
-                <strong>core_dynamic_data</strong><br />
+                <strong>core_dynamic_data</strong>
+                <br />
                 Contact info, preferences as flexible properties
               </div>
               <div className="bg-white/50 p-3 rounded-lg">
-                <strong>universal_transactions</strong><br />
+                <strong>universal_transactions</strong>
+                <br />
                 Order history linked through entity relationships
               </div>
             </div>

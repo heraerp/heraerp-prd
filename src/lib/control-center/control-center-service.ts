@@ -1,7 +1,7 @@
 /**
  * HERA Control Center Service
  * Smart Code: HERA.CONTROL.CENTER.SERVICE.v1
- * 
+ *
  * Core service for the Master Control Center MCP
  */
 
@@ -95,7 +95,7 @@ export class HERAControlCenterService {
    */
   async runSystemHealthCheck(): Promise<SystemReport> {
     const healthChecks: HealthCheckResult[] = []
-    
+
     // Run all health checks in parallel
     const checks = [
       this.checkDatabaseHealth(),
@@ -139,17 +139,17 @@ export class HERAControlCenterService {
     try {
       // Check if all sacred tables exist
       const tablesExist = await this.verifySacredTables()
-      
+
       // Check table sizes and performance
       const performanceMetrics = await this.getDatabaseMetrics()
-      
+
       const score = tablesExist ? 95 : 0
-      
+
       return {
         component: 'Database',
         status: this.getHealthStatus(score),
         score,
-        message: tablesExist 
+        message: tablesExist
           ? 'All sacred tables present and healthy'
           : 'Sacred tables missing or corrupted',
         metrics: performanceMetrics,
@@ -173,12 +173,12 @@ export class HERAControlCenterService {
     try {
       const apiPath = path.join(process.cwd(), 'src/app/api')
       const endpoints = await this.scanAPIEndpoints(apiPath)
-      
+
       // Check each endpoint for compliance
       const compliance = await this.checkAPICompliance(endpoints)
-      
+
       const score = (compliance.compliant / compliance.total) * 100
-      
+
       return {
         component: 'API',
         status: this.getHealthStatus(score),
@@ -209,11 +209,11 @@ export class HERAControlCenterService {
     try {
       const componentsPath = path.join(process.cwd(), 'src/components')
       const components = await this.scanUIComponents(componentsPath)
-      
+
       // Check DNA pattern compliance
       const dnaCompliant = components.filter(c => c.includes('dna') || c.includes('DNA')).length
       const score = (dnaCompliant / components.length) * 100
-      
+
       return {
         component: 'UI Components',
         status: this.getHealthStatus(score),
@@ -244,10 +244,10 @@ export class HERAControlCenterService {
     try {
       // Run type check
       const { stdout, stderr } = await execAsync('npm run type-check')
-      
+
       const hasErrors = stderr.includes('error')
       const score = hasErrors ? 50 : 100
-      
+
       return {
         component: 'Build System',
         status: this.getHealthStatus(score),
@@ -330,7 +330,7 @@ export class HERAControlCenterService {
     try {
       const docsPath = path.join(process.cwd(), 'docs')
       const docs = await this.scanDirectory(docsPath, '.md')
-      
+
       const requiredDocs = [
         'README.md',
         'ARCHITECTURE.md',
@@ -339,9 +339,7 @@ export class HERAControlCenterService {
         'SECURITY.md'
       ]
 
-      const missing = requiredDocs.filter(doc => 
-        !docs.some(d => d.includes(doc))
-      )
+      const missing = requiredDocs.filter(doc => !docs.some(d => d.includes(doc)))
 
       const score = ((requiredDocs.length - missing.length) / requiredDocs.length) * 100
 
@@ -349,9 +347,10 @@ export class HERAControlCenterService {
         component: 'Documentation',
         status: this.getHealthStatus(score),
         score: Math.round(score),
-        message: missing.length > 0 
-          ? `Missing ${missing.length} required documents`
-          : 'All required documentation present',
+        message:
+          missing.length > 0
+            ? `Missing ${missing.length} required documents`
+            : 'All required documentation present',
         metrics: {
           totalDocs: docs.length,
           requiredDocs: requiredDocs.length,
@@ -420,7 +419,9 @@ export class HERAControlCenterService {
     // Violation-based recommendations
     const criticalViolations = violations.filter(v => v.severity === 'CRITICAL')
     if (criticalViolations.length > 0) {
-      recommendations.push(`Fix ${criticalViolations.length} critical guardrail violations immediately`)
+      recommendations.push(
+        `Fix ${criticalViolations.length} critical guardrail violations immediately`
+      )
     }
 
     // Performance recommendations
@@ -437,26 +438,21 @@ export class HERAControlCenterService {
    */
   async checkDeploymentReadiness(): Promise<boolean> {
     const report = await this.runSystemHealthCheck()
-    
+
     // Deployment requires:
     // 1. Overall health > 80%
     // 2. No critical violations
     // 3. All sacred tables present
     // 4. Build passing
-    
+
     const criticalViolations = report.guardrailViolations.filter(
       v => v.severity === 'CRITICAL'
     ).length
 
-    const buildHealthy = report.healthChecks.find(
-      h => h.component === 'Build System'
-    )?.status === 'healthy'
+    const buildHealthy =
+      report.healthChecks.find(h => h.component === 'Build System')?.status === 'healthy'
 
-    return (
-      report.overallHealth >= 80 &&
-      criticalViolations === 0 &&
-      buildHealthy
-    )
+    return report.overallHealth >= 80 && criticalViolations === 0 && buildHealthy
   }
 
   // Helper methods
@@ -505,14 +501,14 @@ export class HERAControlCenterService {
 
   private async scanDirectory(dir: string, pattern: string): Promise<string[]> {
     const results: string[] = []
-    
+
     async function scan(currentDir: string) {
       try {
         const entries = await fs.readdir(currentDir, { withFileTypes: true })
-        
+
         for (const entry of entries) {
           const fullPath = path.join(currentDir, entry.name)
-          
+
           if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
             await scan(fullPath)
           } else if (entry.isFile() && entry.name.includes(pattern)) {
@@ -523,7 +519,7 @@ export class HERAControlCenterService {
         // Ignore permission errors
       }
     }
-    
+
     await scan(dir)
     return results
   }

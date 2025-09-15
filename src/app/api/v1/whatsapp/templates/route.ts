@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { 
+import {
   registerTemplate,
   createCampaign,
   sendCampaignMessage
@@ -11,9 +11,11 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -67,20 +69,16 @@ export async function POST(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: 'Invalid action', available_actions: [
-            'registerTemplate',
-            'createCampaign',
-            'sendCampaignMessage'
-          ]},
+          {
+            error: 'Invalid action',
+            available_actions: ['registerTemplate', 'createCampaign', 'sendCampaignMessage']
+          },
           { status: 400 }
         )
     }
 
     if (!result.success) {
-      return NextResponse.json(
-        { status: 'error', error: result.error },
-        { status: 500 }
-      )
+      return NextResponse.json({ status: 'error', error: result.error }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -88,7 +86,6 @@ export async function POST(request: NextRequest) {
       action,
       ...result
     })
-
   } catch (error) {
     console.error('WhatsApp Templates API error:', error)
     return NextResponse.json(
@@ -102,9 +99,11 @@ export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -126,10 +125,12 @@ export async function GET(request: NextRequest) {
     // Get all templates
     const { data: templates, error: templatesError } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data!inner(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'msg_template')
       .eq('status', 'active')
@@ -138,20 +139,23 @@ export async function GET(request: NextRequest) {
     if (templatesError) throw templatesError
 
     // Format templates
-    const formattedTemplates = templates?.map(template => {
-      const bodyField = template.core_dynamic_data?.find((d: any) => d.field_name === 'body')
-      const variablesField = template.core_dynamic_data?.find((d: any) => d.field_name === 'variables')
-      
-      return {
-        id: template.id,
-        name: template.entity_name,
-        language: template.business_rules?.language || 'en',
-        category: template.business_rules?.category || 'marketing',
-        body: bodyField?.field_value_text || '',
-        variables: variablesField?.field_value_json || [],
-        created_at: template.created_at
-      }
-    }) || []
+    const formattedTemplates =
+      templates?.map(template => {
+        const bodyField = template.core_dynamic_data?.find((d: any) => d.field_name === 'body')
+        const variablesField = template.core_dynamic_data?.find(
+          (d: any) => d.field_name === 'variables'
+        )
+
+        return {
+          id: template.id,
+          name: template.entity_name,
+          language: template.business_rules?.language || 'en',
+          category: template.business_rules?.category || 'marketing',
+          body: bodyField?.field_value_text || '',
+          variables: variablesField?.field_value_json || [],
+          created_at: template.created_at
+        }
+      }) || []
 
     return NextResponse.json({
       status: 'success',
@@ -160,7 +164,6 @@ export async function GET(request: NextRequest) {
         total: formattedTemplates.length
       }
     })
-
   } catch (error) {
     console.error('WhatsApp Templates API error:', error)
     return NextResponse.json(

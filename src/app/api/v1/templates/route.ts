@@ -6,7 +6,14 @@ const HERA_SYSTEM_ORG = '719dfed1-09b4-4ca8-bfda-f682460de945'
 
 interface TemplateListRequest {
   organization_id?: string
-  template_types?: Array<'bom_template' | 'pricing_template' | 'calculation_engine' | 'validation_engine' | 'industry_adapter' | 'cost_accounting_framework'>
+  template_types?: Array<
+    | 'bom_template'
+    | 'pricing_template'
+    | 'calculation_engine'
+    | 'validation_engine'
+    | 'industry_adapter'
+    | 'cost_accounting_framework'
+  >
   include_system_templates?: boolean
   industry_filter?: Array<'restaurant' | 'healthcare' | 'manufacturing' | 'professional' | 'system'>
 }
@@ -59,17 +66,18 @@ export async function GET(request: NextRequest) {
         description: 'HERA-SPEAR Template Management System',
         available_template_types: [
           'bom_template',
-          'pricing_template', 
+          'pricing_template',
           'calculation_engine',
           'validation_engine',
           'industry_adapter',
           'cost_accounting_framework'
         ],
         sap_equivalent_features: {
-          'cost_accounting_framework': 'Replaces SAP CO Module (Cost Center Accounting, Internal Orders, ABC)',
-          'bom_template': 'Replaces SAP PC Module (Product Cost Management)',
-          'pricing_template': 'Replaces SAP CO-PA (Profitability Analysis)',
-          'calculation_engine': 'Replaces SAP Universal Journal + Material Ledger'
+          cost_accounting_framework:
+            'Replaces SAP CO Module (Cost Center Accounting, Internal Orders, ABC)',
+          bom_template: 'Replaces SAP PC Module (Product Cost Management)',
+          pricing_template: 'Replaces SAP CO-PA (Profitability Analysis)',
+          calculation_engine: 'Replaces SAP Universal Journal + Material Ledger'
         },
         implementation_speed: '24 hours vs SAP 12-21 months',
         cost_savings: '90% lower cost ($290K vs $2.9M)',
@@ -83,9 +91,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build query for templates
-    let query = supabase
-      .from('core_entities')
-      .select(`
+    let query = supabase.from('core_entities').select(`
         id,
         entity_type,
         entity_name,
@@ -105,7 +111,7 @@ export async function GET(request: NextRequest) {
     const orgFilters = []
     if (organizationId) orgFilters.push(organizationId)
     if (includeSystem) orgFilters.push(HERA_SYSTEM_ORG)
-    
+
     if (orgFilters.length > 0) {
       query = query.in('organization_id', orgFilters)
     }
@@ -113,7 +119,7 @@ export async function GET(request: NextRequest) {
     // Template type filter
     const templateTypeFilters = [
       'bom_template',
-      'pricing_template', 
+      'pricing_template',
       'calculation_engine',
       'validation_engine',
       'industry_adapter',
@@ -130,21 +136,30 @@ export async function GET(request: NextRequest) {
     // Industry filter (based on smart code patterns)
     if (industryFilter && industryFilter.length > 0) {
       const industryPatterns = industryFilter.map(industry => {
-        switch(industry) {
-          case 'restaurant': return 'HERA.REST.%'
-          case 'healthcare': return 'HERA.HLTH.%'
-          case 'manufacturing': return 'HERA.MFG.%'
-          case 'system': return 'HERA.SYSTEM.%'
-          default: return 'HERA.PROF.%'
+        switch (industry) {
+          case 'restaurant':
+            return 'HERA.REST.%'
+          case 'healthcare':
+            return 'HERA.HLTH.%'
+          case 'manufacturing':
+            return 'HERA.MFG.%'
+          case 'system':
+            return 'HERA.SYSTEM.%'
+          default:
+            return 'HERA.PROF.%'
         }
       })
-      
+
       // Build OR condition for industry patterns
-      const industryConditions = industryPatterns.map(pattern => `smart_code.ilike.${pattern}`).join(',')
+      const industryConditions = industryPatterns
+        .map(pattern => `smart_code.ilike.${pattern}`)
+        .join(',')
       query = query.or(industryConditions)
     }
 
-    query = query.order('entity_type', { ascending: true }).order('entity_name', { ascending: true })
+    query = query
+      .order('entity_type', { ascending: true })
+      .order('entity_name', { ascending: true })
 
     const { data: templates, error } = await query
 
@@ -184,11 +199,10 @@ export async function GET(request: NextRequest) {
         integration_complexity: 'Zero (unified architecture)'
       }
     })
-
   } catch (error) {
     console.error('Template list error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to retrieve templates',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -219,7 +233,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Template operation error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Template operation failed',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -229,11 +243,11 @@ export async function POST(request: NextRequest) {
 }
 
 async function copyTemplates(request: TemplateCopyRequest) {
-  const { 
-    source_organization_id, 
-    target_organization_id, 
-    template_codes, 
-    copy_options = {} 
+  const {
+    source_organization_id,
+    target_organization_id,
+    template_codes,
+    copy_options = {}
   } = request
 
   const {
@@ -248,21 +262,20 @@ async function copyTemplates(request: TemplateCopyRequest) {
     // Get source templates
     const { data: sourceTemplates, error: fetchError } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(*),
         relationships:core_relationships(*)
-      `)
+      `
+      )
       .eq('organization_id', source_organization_id)
       .in('entity_code', template_codes)
 
     if (fetchError) throw fetchError
 
     if (!sourceTemplates || sourceTemplates.length === 0) {
-      return NextResponse.json(
-        { error: 'No templates found with provided codes' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'No templates found with provided codes' }, { status: 404 })
     }
 
     const copiedTemplates = []
@@ -284,12 +297,18 @@ async function copyTemplates(request: TemplateCopyRequest) {
         // Update smart code if requested
         if (customize_smart_codes && template.smart_code) {
           // Replace organization context in smart code
-          newEntity.smart_code = updateSmartCodeForOrganization(template.smart_code, target_organization_id)
+          newEntity.smart_code = updateSmartCodeForOrganization(
+            template.smart_code,
+            target_organization_id
+          )
         }
 
         // Update metadata organization references
         if (update_organization_references && template.metadata) {
-          newEntity.metadata = updateOrganizationReferences(template.metadata, target_organization_id)
+          newEntity.metadata = updateOrganizationReferences(
+            template.metadata,
+            target_organization_id
+          )
         }
 
         // Insert new entity
@@ -332,7 +351,6 @@ async function copyTemplates(request: TemplateCopyRequest) {
           smart_code: newEntity.smart_code,
           status: 'copied_successfully'
         })
-
       } catch (copyError) {
         errors.push({
           template_code: template.entity_code,
@@ -346,19 +364,22 @@ async function copyTemplates(request: TemplateCopyRequest) {
     if (validation_level && copiedTemplates.length > 0) {
       for (const copied of copiedTemplates) {
         try {
-          const validationResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/validation/4-level`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              organization_id: target_organization_id,
-              validation_target: {
-                type: 'entity',
-                target_id: copied.entity_id,
-                smart_code: copied.smart_code
-              },
-              validation_levels: [validation_level]
-            })
-          })
+          const validationResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/validation/4-level`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                organization_id: target_organization_id,
+                validation_target: {
+                  type: 'entity',
+                  target_id: copied.entity_id,
+                  smart_code: copied.smart_code
+                },
+                validation_levels: [validation_level]
+              })
+            }
+          )
 
           const validation = await validationResponse.json()
           validationResults.push({
@@ -392,10 +413,9 @@ async function copyTemplates(request: TemplateCopyRequest) {
         'Update any hardcoded references to source organization'
       ]
     })
-
   } catch (error) {
     return NextResponse.json(
-      { 
+      {
         error: 'Template copy operation failed',
         details: (error as Error).message
       },
@@ -453,15 +473,13 @@ async function customizeTemplate(request: TemplateCustomizeRequest) {
         switch (fieldUpdate.action) {
           case 'add':
           case 'update':
-            await supabase
-              .from('core_dynamic_data')
-              .upsert({
-                entity_id: template.id,
-                organization_id,
-                field_name: fieldUpdate.field_name,
-                field_type: typeof fieldUpdate.field_value,
-                [`field_value_${typeof fieldUpdate.field_value}`]: fieldUpdate.field_value
-              })
+            await supabase.from('core_dynamic_data').upsert({
+              entity_id: template.id,
+              organization_id,
+              field_name: fieldUpdate.field_name,
+              field_type: typeof fieldUpdate.field_value,
+              [`field_value_${typeof fieldUpdate.field_value}`]: fieldUpdate.field_value
+            })
             break
           case 'remove':
             await supabase
@@ -477,20 +495,23 @@ async function customizeTemplate(request: TemplateCustomizeRequest) {
     // Validate if requested
     let validationResult = undefined
     if (validation_options.validate_after_customization) {
-      const validationResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/validation/4-level`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          organization_id,
-          validation_target: {
-            type: 'entity',
-            target_id: template.id,
-            smart_code: updatedTemplate.smart_code,
-            data: updatedTemplate
-          },
-          validation_levels: [validation_options.validation_level || 'L2_SEMANTIC']
-        })
-      })
+      const validationResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/validation/4-level`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            organization_id,
+            validation_target: {
+              type: 'entity',
+              target_id: template.id,
+              smart_code: updatedTemplate.smart_code,
+              data: updatedTemplate
+            },
+            validation_levels: [validation_options.validation_level || 'L2_SEMANTIC']
+          })
+        }
+      )
 
       validationResult = await validationResponse.json()
     }
@@ -515,10 +536,9 @@ async function customizeTemplate(request: TemplateCustomizeRequest) {
         'Update any dependent templates or configurations'
       ]
     })
-
   } catch (error) {
     return NextResponse.json(
-      { 
+      {
         error: 'Template customization failed',
         details: (error as Error).message
       },
@@ -529,14 +549,15 @@ async function customizeTemplate(request: TemplateCustomizeRequest) {
 
 function getSAPEquivalent(templateType: string): string {
   const sapMappings: Record<string, string> = {
-    'cost_accounting_framework': 'SAP CO Module (CSKS, AUFK, PRPS) - Cost Centers, Internal Orders, Projects',
-    'bom_template': 'SAP PC Module (CS01, CS02, CS03) - BOM Management, Product Costing',
-    'pricing_template': 'SAP CO-PA (KE21N, KE24, KE30) - Profitability Analysis',
-    'calculation_engine': 'SAP Universal Journal (ACDOCA) + Material Ledger (CKM3N)',
-    'validation_engine': 'SAP Data Quality Management + Process Validation',
-    'industry_adapter': 'SAP Industry-Specific Solutions (IS-Retail, IS-Healthcare, etc.)'
+    cost_accounting_framework:
+      'SAP CO Module (CSKS, AUFK, PRPS) - Cost Centers, Internal Orders, Projects',
+    bom_template: 'SAP PC Module (CS01, CS02, CS03) - BOM Management, Product Costing',
+    pricing_template: 'SAP CO-PA (KE21N, KE24, KE30) - Profitability Analysis',
+    calculation_engine: 'SAP Universal Journal (ACDOCA) + Material Ledger (CKM3N)',
+    validation_engine: 'SAP Data Quality Management + Process Validation',
+    industry_adapter: 'SAP Industry-Specific Solutions (IS-Retail, IS-Healthcare, etc.)'
   }
-  
+
   return sapMappings[templateType] || 'SAP Standard Functionality'
 }
 
@@ -549,7 +570,7 @@ function updateSmartCodeForOrganization(smartCode: string, organizationId: strin
 function updateOrganizationReferences(metadata: any, organizationId: string): any {
   // Deep clone and update organization references
   const updated = JSON.parse(JSON.stringify(metadata))
-  
+
   // Update any organization_id references in metadata
   if (updated.organization_references) {
     updated.organization_references = updated.organization_references.map((ref: any) => ({
@@ -557,13 +578,13 @@ function updateOrganizationReferences(metadata: any, organizationId: string): an
       target_organization_id: organizationId
     }))
   }
-  
+
   // Add customization tracking
   updated.customization_info = {
     copied_to_organization: organizationId,
     copied_at: new Date().toISOString(),
     original_metadata_preserved: true
   }
-  
+
   return updated
 }

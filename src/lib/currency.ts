@@ -185,33 +185,33 @@ export function formatCurrency(
 
   // Convert to number
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount
-  
+
   // Handle invalid numbers
   if (isNaN(numAmount)) {
     return formatCurrency(0, currencyCode, options)
   }
 
   const config = getCurrencyConfig(currencyCode)
-  
+
   // Format with appropriate decimal places
   let formatted = numAmount.toFixed(config.decimalPlaces)
-  
+
   // Add thousand separators
   const parts = formatted.split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, config.thousandSeparator)
-  
+
   // Join with decimal separator
   formatted = parts.join(config.decimalSeparator)
-  
+
   // Add currency symbol or code
   if (options?.hideSymbol) {
     return formatted
   }
-  
+
   if (options?.showCode) {
     return `${formatted} ${config.code}`
   }
-  
+
   // Add symbol based on position
   if (config.symbolPosition === 'before') {
     return `${config.symbol}${formatted}`
@@ -227,23 +227,20 @@ export function formatCurrency(
  */
 export function parseCurrency(value: string, currencyCode: string = 'USD'): number {
   if (!value) return 0
-  
+
   const config = getCurrencyConfig(currencyCode)
-  
+
   // Remove currency symbol and code
-  let cleaned = value
-    .replace(config.symbol, '')
-    .replace(config.code, '')
-    .trim()
-  
+  let cleaned = value.replace(config.symbol, '').replace(config.code, '').trim()
+
   // Replace thousand separators
   cleaned = cleaned.replace(new RegExp(`\\${config.thousandSeparator}`, 'g'), '')
-  
+
   // Replace decimal separator with standard dot
   if (config.decimalSeparator !== '.') {
     cleaned = cleaned.replace(config.decimalSeparator, '.')
   }
-  
+
   const parsed = parseFloat(cleaned)
   return isNaN(parsed) ? 0 : parsed
 }
@@ -311,6 +308,6 @@ export function getCurrencyInputProps(currencyCode: string = 'USD') {
     decimalSeparator: config.decimalSeparator,
     thousandSeparator: config.thousandSeparator,
     decimalScale: config.decimalPlaces,
-    fixedDecimalScale: true,
+    fixedDecimalScale: true
   }
 }

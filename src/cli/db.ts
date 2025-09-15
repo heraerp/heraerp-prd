@@ -10,4 +10,3 @@ export const getDb = () => {
 export const checkTable = async (client: pg.Client, table: string) => {
   await client.query(`SELECT 1 FROM ${table} LIMIT 1`)
 }
-

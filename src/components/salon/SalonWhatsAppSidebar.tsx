@@ -49,12 +49,30 @@ interface SidebarItem {
 // Main sidebar items (WhatsApp highlighted)
 const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/salon-data', icon: Home },
-  { title: 'Calendar', href: '/salon-data?tab=calendar', icon: Calendar, badge: '12', badgeColor: 'bg-pink-500' },
-  { title: 'Clients', href: '/salon-data/customers', icon: Users, badge: '248', badgeColor: 'bg-purple-500' },
+  {
+    title: 'Calendar',
+    href: '/salon-data?tab=calendar',
+    icon: Calendar,
+    badge: '12',
+    badgeColor: 'bg-pink-500'
+  },
+  {
+    title: 'Clients',
+    href: '/salon-data/customers',
+    icon: Users,
+    badge: '248',
+    badgeColor: 'bg-purple-500'
+  },
   { title: 'Services', href: '/salon-data?tab=services', icon: Scissors },
   { title: 'Team', href: '/salon-data?tab=team', icon: UserPlus },
-  { title: 'WhatsApp', href: '/salon-whatsapp-desktop', icon: MessageCircle, badge: 'New', badgeColor: 'bg-[#00a884]' },
-  { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart },
+  {
+    title: 'WhatsApp',
+    href: '/salon-whatsapp-desktop',
+    icon: MessageCircle,
+    badge: 'New',
+    badgeColor: 'bg-[#00a884]'
+  },
+  { title: 'Analytics', href: '/salon-data/analytics', icon: BarChart }
 ]
 
 // All apps for the modal
@@ -81,16 +99,24 @@ const allApps: SidebarItem[] = [
   { title: 'Gallery', href: '/salon-data/gallery', icon: Camera },
   { title: 'Lounge', href: '/salon-data/lounge', icon: Coffee },
   { title: 'Themes', href: '/salon-data/themes', icon: Palette },
-  { title: 'Automation', href: '/salon-data/automation', icon: Zap },
+  { title: 'Automation', href: '/salon-data/automation', icon: Zap }
 ]
 
 const bottomItems: SidebarItem[] = [
   { title: 'Reports', href: '/salon-data/reports', icon: FileText },
-  { title: 'Settings', href: '/salon-data/settings', icon: Settings },
+  { title: 'Settings', href: '/salon-data/settings', icon: Settings }
 ]
 
 // Apps Modal Component
-function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: () => void; isActive: (href: string) => boolean }) {
+function AppsModal({
+  isOpen,
+  onClose,
+  isActive
+}: {
+  isOpen: boolean
+  onClose: () => void
+  isActive: (href: string) => boolean
+}) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -103,11 +129,8 @@ function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: ()
   return createPortal(
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={onClose} />
+
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-[#202c33]/95 backdrop-blur-xl border border-[#2a3942] rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
@@ -124,41 +147,47 @@ function AppsModal({ isOpen, onClose, isActive }: { isOpen: boolean; onClose: ()
               <X className="h-6 w-6" />
             </button>
           </div>
-          
+
           {/* Apps Grid */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {allApps.map((app) => {
+              {allApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
-                
+
                 return (
                   <Link
                     key={app.href}
                     href={app.href}
                     onClick={onClose}
                     className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group",
-                      "bg-[#2a3942]/30 hover:bg-[#00a884]/20",
-                      "border border-[#2a3942] hover:border-[#00a884]/30",
-                      active && "bg-[#00a884]/20 border-[#00a884]/30"
+                      'flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 group',
+                      'bg-[#2a3942]/30 hover:bg-[#00a884]/20',
+                      'border border-[#2a3942] hover:border-[#00a884]/30',
+                      active && 'bg-[#00a884]/20 border-[#00a884]/30'
                     )}
                   >
-                    <div className={cn(
-                      "w-12 h-12 rounded-xl flex items-center justify-center mb-2",
-                      "bg-gradient-to-br from-[#2a3942] to-[#202c33]",
-                      "group-hover:from-[#00a884] group-hover:to-[#00a884]/80",
-                      active && "from-[#00a884] to-[#00a884]/80"
-                    )}>
-                      <Icon className={cn(
-                        "h-6 w-6",
-                        active ? "text-white" : "text-[#8696a0] group-hover:text-white"
-                      )} />
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center mb-2',
+                        'bg-gradient-to-br from-[#2a3942] to-[#202c33]',
+                        'group-hover:from-[#00a884] group-hover:to-[#00a884]/80',
+                        active && 'from-[#00a884] to-[#00a884]/80'
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          'h-6 w-6',
+                          active ? 'text-white' : 'text-[#8696a0] group-hover:text-white'
+                        )}
+                      />
                     </div>
-                    <span className={cn(
-                      "text-xs font-medium text-center",
-                      active ? "text-[#00a884]" : "text-[#8696a0] group-hover:text-white"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-xs font-medium text-center',
+                        active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-white'
+                      )}
+                    >
                       {app.title}
                     </span>
                   </Link>
@@ -197,44 +226,50 @@ export default function SalonWhatsAppSidebar() {
       {/* Navigation Items */}
       <nav className="flex-1 overflow-y-auto py-1">
         <div className="space-y-0">
-          {sidebarItems.map((item) => {
+          {sidebarItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
             const displayTitle = item.title
-            
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 transition-all duration-200 group relative",
+                  'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? "bg-[#00a884]/20 text-white border-r-4 border-[#00a884]"
-                    : "text-[#8696a0] hover:text-white hover:bg-[#2a3942]"
+                    ? 'bg-[#00a884]/20 text-white border-r-4 border-[#00a884]'
+                    : 'text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
                 )}
               >
                 <div className="relative">
-                  <Icon className={cn(
-                    "h-5 w-5",
-                    active ? "text-[#00a884]" : "text-[#8696a0] group-hover:text-[#00a884]"
-                  )} />
-                  
+                  <Icon
+                    className={cn(
+                      'h-5 w-5',
+                      active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-[#00a884]'
+                    )}
+                  />
+
                   {/* Badge indicator */}
                   {item.badge && (
-                    <span className={cn(
-                      "absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center",
-                      item.badgeColor || "bg-[#8696a0]"
-                    )}>
+                    <span
+                      className={cn(
+                        'absolute -top-2 -right-2 text-[9px] px-1 py-0.5 rounded-full text-white min-w-[16px] text-center',
+                        item.badgeColor || 'bg-[#8696a0]'
+                      )}
+                    >
                       {item.badge}
                     </span>
                   )}
                 </div>
-                
+
                 {/* Text label */}
-                <span className={cn(
-                  "text-[9px] mt-0.5 font-medium text-center leading-tight",
-                  active ? "text-[#00a884]" : "text-[#8696a0] group-hover:text-[#aebac1]"
-                )}>
+                <span
+                  className={cn(
+                    'text-[9px] mt-0.5 font-medium text-center leading-tight',
+                    active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-[#aebac1]'
+                  )}
+                >
                   {displayTitle}
                 </span>
 
@@ -243,27 +278,32 @@ export default function SalonWhatsAppSidebar() {
                   <p className="font-medium">{item.title}</p>
                   {item.badge && (
                     <p className="text-xs text-[#8696a0] mt-1">
-                      {item.badge} {item.title === 'Reviews' ? 'rating' : item.title === 'Customers' ? 'total' : 'new'}
+                      {item.badge}{' '}
+                      {item.title === 'Reviews'
+                        ? 'rating'
+                        : item.title === 'Customers'
+                          ? 'total'
+                          : 'new'}
                     </p>
                   )}
                 </div>
               </Link>
             )
           })}
-          
+
           {/* More Apps Button */}
           <button
             onClick={() => setShowAppsModal(true)}
             className={cn(
-              "flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative",
-              "text-[#8696a0] hover:text-white hover:bg-[#2a3942]"
+              'flex flex-col items-center justify-center py-2 w-full transition-all duration-200 group relative',
+              'text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
             )}
           >
             <Grid3x3 className="h-5 w-5 text-[#8696a0] group-hover:text-[#00a884]" />
             <span className="text-[9px] mt-0.5 font-medium text-center leading-tight text-[#8696a0] group-hover:text-[#aebac1]">
               More
             </span>
-            
+
             {/* Tooltip */}
             <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
@@ -276,31 +316,35 @@ export default function SalonWhatsAppSidebar() {
 
         {/* Bottom Items */}
         <div className="space-y-0">
-          {bottomItems.map((item) => {
+          {bottomItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
-            
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center py-2 transition-all duration-200 group relative",
+                  'flex flex-col items-center justify-center py-2 transition-all duration-200 group relative',
                   active
-                    ? "bg-[#00a884]/20 text-white border-r-4 border-[#00a884]"
-                    : "text-[#8696a0] hover:text-white hover:bg-[#2a3942]"
+                    ? 'bg-[#00a884]/20 text-white border-r-4 border-[#00a884]'
+                    : 'text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
                 )}
               >
-                <Icon className={cn(
-                  "h-5 w-5",
-                  active ? "text-[#00a884]" : "text-[#8696a0] group-hover:text-[#00a884]"
-                )} />
-                
+                <Icon
+                  className={cn(
+                    'h-5 w-5',
+                    active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-[#00a884]'
+                  )}
+                />
+
                 {/* Text label */}
-                <span className={cn(
-                  "text-[9px] mt-0.5 font-medium text-center leading-tight",
-                  active ? "text-[#00a884]" : "text-[#8696a0] group-hover:text-[#aebac1]"
-                )}>
+                <span
+                  className={cn(
+                    'text-[9px] mt-0.5 font-medium text-center leading-tight',
+                    active ? 'text-[#00a884]' : 'text-[#8696a0] group-hover:text-[#aebac1]'
+                  )}
+                >
                   {item.title}
                 </span>
 
@@ -321,7 +365,7 @@ export default function SalonWhatsAppSidebar() {
             <span className="text-white text-sm font-semibold">S</span>
           </div>
           <span className="text-[10px] text-[#8696a0] mt-1 font-medium">Admin</span>
-          
+
           {/* Tooltip */}
           <div className="absolute left-full ml-2 px-3 py-2 bg-[#111b21] border border-[#2a3942] text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 bottom-2">
             <p className="font-medium">Salon Admin</p>
@@ -329,12 +373,12 @@ export default function SalonWhatsAppSidebar() {
           </div>
         </div>
       </div>
-      
+
       {/* Apps Modal Portal */}
-      <AppsModal 
-        isOpen={showAppsModal} 
-        onClose={() => setShowAppsModal(false)} 
-        isActive={isActive} 
+      <AppsModal
+        isOpen={showAppsModal}
+        onClose={() => setShowAppsModal(false)}
+        isActive={isActive}
       />
     </div>
   )

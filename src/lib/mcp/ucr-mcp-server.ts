@@ -1,7 +1,7 @@
 /**
  * HERA UCR MCP Server
  * Smart Code: HERA.MCP.UCR.ORCHESTRATOR.v1
- * 
+ *
  * Model Context Protocol server for Universal Configuration Rules orchestration
  * Integrated directly into the HERA app for rule management without schema changes
  */
@@ -29,19 +29,19 @@ import { parseISO, isAfter, isBefore } from 'date-fns'
 // Tool parameter schemas
 const ListTemplatesSchema = z.object({
   industry: z.string().optional(),
-  module: z.string().optional(),
+  module: z.string().optional()
 })
 
 const CloneTemplateSchema = z.object({
   template_id: z.string(),
   target_smart_code: z.string(),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const GetRuleSchema = z.object({
   rule_id: z.string().optional(),
   smart_code: z.string().optional(),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const ValidateRuleSchema = z.object({
@@ -54,31 +54,33 @@ const ValidateRuleSchema = z.object({
     owner: z.string(),
     version: z.number(),
     schema_version: z.number(),
-    rule_payload: z.any(),
+    rule_payload: z.any()
   }),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const SimulateRuleSchema = z.object({
   rule_id: z.string().optional(),
   draft_rule: z.any().optional(),
-  scenarios: z.array(z.object({
-    scenario_id: z.string(),
-    context: z.any(),
-    expected: z.any(),
-  })),
-  organization_id: z.string().uuid(),
+  scenarios: z.array(
+    z.object({
+      scenario_id: z.string(),
+      context: z.any(),
+      expected: z.any()
+    })
+  ),
+  organization_id: z.string().uuid()
 })
 
 const DiffRulesSchema = z.object({
   base_rule_id: z.string(),
-  new_rule_id: z.string(),
+  new_rule_id: z.string()
 })
 
 const BumpVersionSchema = z.object({
   rule_id: z.string(),
   change_type: z.enum(['minor', 'major']),
-  notes: z.string(),
+  notes: z.string()
 })
 
 const DeployRuleSchema = z.object({
@@ -86,60 +88,62 @@ const DeployRuleSchema = z.object({
   scope: z.object({
     apps: z.array(z.string()).optional(),
     locations: z.array(z.string()).optional(),
-    segments: z.any().optional(),
+    segments: z.any().optional()
   }),
   effective_from: z.string(),
   effective_to: z.string().optional(),
   organization_id: z.string().uuid(),
-  approvals: z.array(z.object({
-    user_id: z.string(),
-    at: z.string(),
-  })),
+  approvals: z.array(
+    z.object({
+      user_id: z.string(),
+      at: z.string()
+    })
+  )
 })
 
 const ScheduleChangeSchema = z.object({
   rule_id: z.string(),
   schedule: z.object({
     cron: z.string().optional(),
-    datetime: z.string().optional(),
+    datetime: z.string().optional()
   }),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const RollbackSchema = z.object({
   rule_id: z.string().optional(),
   smart_code: z.string().optional(),
   to_version: z.number(),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const AuditLogSchema = z.object({
   object_ref: z.string(),
   organization_id: z.string().uuid(),
   from: z.string().optional(),
-  to: z.string().optional(),
+  to: z.string().optional()
 })
 
 const SearchSchema = z.object({
   query: z.string(),
   organization_id: z.string().uuid(),
   tags: z.array(z.string()).optional(),
-  include_deprecated: z.boolean().optional(),
+  include_deprecated: z.boolean().optional()
 })
 
 const ValidatePayloadSchema = z.object({
   payload: z.any(),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const IsPeriodOpenSchema = z.object({
   date: z.string(),
-  organization_id: z.string().uuid(),
+  organization_id: z.string().uuid()
 })
 
 const CheckScopeSchema = z.object({
   organization_id: z.string().uuid(),
-  required_roles: z.array(z.string()),
+  required_roles: z.array(z.string())
 })
 
 // UCR Template library
@@ -156,14 +160,14 @@ const UCR_TEMPLATES = [
         grace_minutes: 15,
         no_show_fee_pct: 100,
         late_cancel_threshold_minutes: 120,
-        late_cancel_fee_pct: 50,
+        late_cancel_fee_pct: 50
       },
       exceptions: [
         { if: { customer_tier: 'VIP' }, then: { late_cancel_fee_pct: 0, no_show_fee_pct: 25 } }
       ],
       calendar_effects: { block_future_bookings_on_no_show: true, blocks_days: 1 },
-      notifications: { channels: ['SMS', 'WHATSAPP'], template: 'SALON_CANCEL_POLICY_V1' },
-    },
+      notifications: { channels: ['SMS', 'WHATSAPP'], template: 'SALON_CANCEL_POLICY_V1' }
+    }
   },
   {
     template_id: 'T_POS_DISCOUNT',
@@ -176,13 +180,13 @@ const UCR_TEMPLATES = [
       definitions: {
         max_discount_pct: 30,
         max_discount_amount: 500,
-        requires_approval_above: 20,
+        requires_approval_above: 20
       },
       exceptions: [
         { if: { staff_role: 'MANAGER' }, then: { max_discount_pct: 50 } },
-        { if: { customer_tier: 'VIP' }, then: { max_discount_pct: 40 } },
-      ],
-    },
+        { if: { customer_tier: 'VIP' }, then: { max_discount_pct: 40 } }
+      ]
+    }
   },
   {
     template_id: 'T_BOOKING_WINDOW',
@@ -195,14 +199,14 @@ const UCR_TEMPLATES = [
       definitions: {
         standard_advance_days: 30,
         vip_advance_days: 90,
-        min_lead_hours: 2,
+        min_lead_hours: 2
       },
       peak_periods: [
         { dates: ['2025-12-24', '2025-12-25'], min_lead_hours: 24 },
-        { dates: ['2025-12-31'], min_lead_hours: 48 },
-      ],
-    },
-  },
+        { dates: ['2025-12-31'], min_lead_hours: 48 }
+      ]
+    }
+  }
 ]
 
 // MCP Server implementation - temporarily disabled due to missing dependencies
@@ -1057,16 +1061,22 @@ class UCRMCPServer {
 // Placeholder export to prevent import errors
 export const ucrMCPServer = {
   run: async () => {
-    console.warn('UCR MCP Server is temporarily disabled - missing @modelcontextprotocol dependencies')
+    console.warn(
+      'UCR MCP Server is temporarily disabled - missing @modelcontextprotocol dependencies'
+    )
     return Promise.resolve()
   },
   handleToolCall: async (toolName: string, args: any) => {
-    console.warn('UCR MCP Server handleToolCall is temporarily disabled - missing @modelcontextprotocol dependencies')
+    console.warn(
+      'UCR MCP Server handleToolCall is temporarily disabled - missing @modelcontextprotocol dependencies'
+    )
     return {
       isError: true,
-      content: [{
-        text: 'MCP server temporarily disabled - missing dependencies'
-      }]
+      content: [
+        {
+          text: 'MCP server temporarily disabled - missing dependencies'
+        }
+      ]
     }
   }
 }

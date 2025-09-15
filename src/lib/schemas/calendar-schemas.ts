@@ -1,7 +1,7 @@
 /**
  * HERA DNA Universal Calendar - JSON Schemas & Validation
  * Smart Code: HERA.SCHEMA.CALENDAR.VALIDATION.v1
- * 
+ *
  * Complete validation schemas for calendar operations using Zod
  */
 
@@ -15,14 +15,18 @@ import { z } from 'zod'
 const uuidSchema = z.string().uuid('Invalid UUID format')
 
 // Smart Code Schema
-const smartCodeSchema = z.string().regex(
-  /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.v\d+$/,
-  'Smart code must follow HERA.INDUSTRY.MODULE.FUNCTION.TYPE.vN format'
-)
+const smartCodeSchema = z
+  .string()
+  .regex(
+    /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.v\d+$/,
+    'Smart code must follow HERA.INDUSTRY.MODULE.FUNCTION.TYPE.vN format'
+  )
 
 // Date/Time Schemas
 const dateTimeSchema = z.union([z.string().datetime(), z.date()])
-const timeSchema = z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Time must be in HH:MM format')
+const timeSchema = z
+  .string()
+  .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Time must be in HH:MM format')
 
 // ====================================================================
 // CALENDAR EVENT SCHEMAS
@@ -40,71 +44,98 @@ export const CalendarEventSchema = z.object({
     smart_code: smartCodeSchema,
     organization_id: uuidSchema,
     event_type: z.enum(['appointment', 'block', 'holiday', 'shift', 'maintenance']),
-    status: z.enum(['draft', 'confirmed', 'pending', 'cancelled', 'completed', 'no_show']).default('confirmed'),
+    status: z
+      .enum(['draft', 'confirmed', 'pending', 'cancelled', 'completed', 'no_show'])
+      .default('confirmed'),
     customer_id: uuidSchema.optional(),
     staff_id: uuidSchema.optional(),
     service_id: uuidSchema.optional(),
     notes: z.string().max(1000, 'Notes too long').optional(),
     metadata: z.record(z.any()).optional()
   }),
-  backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional(),
-  borderColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional(),
-  textColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional(),
+  backgroundColor: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional(),
+  borderColor: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional(),
+  textColor: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional(),
   classNames: z.array(z.string()).optional(),
-  display: z.enum(['auto', 'block', 'list-item', 'background', 'inverse-background', 'none']).optional(),
+  display: z
+    .enum(['auto', 'block', 'list-item', 'background', 'inverse-background', 'none'])
+    .optional(),
   overlap: z.boolean().optional(),
   constraint: z.union([z.string(), z.record(z.any())]).optional()
 })
 
-export const CreateEventSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
-  start: dateTimeSchema,
-  end: dateTimeSchema.optional(),
-  allDay: z.boolean().default(false),
-  resourceId: uuidSchema.optional(),
-  event_type: z.enum(['appointment', 'block', 'holiday', 'shift', 'maintenance']),
-  smart_code: smartCodeSchema,
-  customer_id: uuidSchema.optional(),
-  staff_id: uuidSchema.optional(),
-  service_id: uuidSchema.optional(),
-  notes: z.string().max(1000, 'Notes too long').optional(),
-  metadata: z.record(z.any()).optional()
-}).refine(data => {
-  // If end is provided, it must be after start
-  if (data.end) {
-    const startTime = new Date(data.start).getTime()
-    const endTime = new Date(data.end).getTime()
-    return endTime > startTime
-  }
-  return true
-}, {
-  message: 'End time must be after start time',
-  path: ['end']
-})
+export const CreateEventSchema = z
+  .object({
+    title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
+    start: dateTimeSchema,
+    end: dateTimeSchema.optional(),
+    allDay: z.boolean().default(false),
+    resourceId: uuidSchema.optional(),
+    event_type: z.enum(['appointment', 'block', 'holiday', 'shift', 'maintenance']),
+    smart_code: smartCodeSchema,
+    customer_id: uuidSchema.optional(),
+    staff_id: uuidSchema.optional(),
+    service_id: uuidSchema.optional(),
+    notes: z.string().max(1000, 'Notes too long').optional(),
+    metadata: z.record(z.any()).optional()
+  })
+  .refine(
+    data => {
+      // If end is provided, it must be after start
+      if (data.end) {
+        const startTime = new Date(data.start).getTime()
+        const endTime = new Date(data.end).getTime()
+        return endTime > startTime
+      }
+      return true
+    },
+    {
+      message: 'End time must be after start time',
+      path: ['end']
+    }
+  )
 
 export const UpdateEventSchema = CreateEventSchema.extend({
   id: uuidSchema
-}).partial().required({ id: true })
+})
+  .partial()
+  .required({ id: true })
 
 // ====================================================================
 // CALENDAR RESOURCE SCHEMAS
 // ====================================================================
 
-export const ResourceAvailabilitySchema = z.object({
-  daysOfWeek: z.array(z.number().min(0).max(6)).min(1, 'At least one day must be specified'),
-  startTime: timeSchema,
-  endTime: timeSchema,
-  startRecur: z.string().datetime().optional(),
-  endRecur: z.string().datetime().optional()
-}).refine(data => {
-  // End time must be after start time
-  const startMinutes = parseInt(data.startTime.split(':')[0]) * 60 + parseInt(data.startTime.split(':')[1])
-  const endMinutes = parseInt(data.endTime.split(':')[0]) * 60 + parseInt(data.endTime.split(':')[1])
-  return endMinutes > startMinutes
-}, {
-  message: 'End time must be after start time',
-  path: ['endTime']
-})
+export const ResourceAvailabilitySchema = z
+  .object({
+    daysOfWeek: z.array(z.number().min(0).max(6)).min(1, 'At least one day must be specified'),
+    startTime: timeSchema,
+    endTime: timeSchema,
+    startRecur: z.string().datetime().optional(),
+    endRecur: z.string().datetime().optional()
+  })
+  .refine(
+    data => {
+      // End time must be after start time
+      const startMinutes =
+        parseInt(data.startTime.split(':')[0]) * 60 + parseInt(data.startTime.split(':')[1])
+      const endMinutes =
+        parseInt(data.endTime.split(':')[0]) * 60 + parseInt(data.endTime.split(':')[1])
+      return endMinutes > startMinutes
+    },
+    {
+      message: 'End time must be after start time',
+      path: ['endTime']
+    }
+  )
 
 export const CalendarResourceSchema = z.object({
   id: uuidSchema,
@@ -121,9 +152,18 @@ export const CalendarResourceSchema = z.object({
   }),
   eventOverlap: z.boolean().optional(),
   eventConstraint: z.union([z.string(), z.record(z.any())]).optional(),
-  eventBackgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional(),
-  eventBorderColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional(),
-  eventTextColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional()
+  eventBackgroundColor: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional(),
+  eventBorderColor: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional(),
+  eventTextColor: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional()
 })
 
 export const CreateResourceSchema = z.object({
@@ -138,7 +178,9 @@ export const CreateResourceSchema = z.object({
 
 export const UpdateResourceSchema = CreateResourceSchema.extend({
   id: uuidSchema
-}).partial().required({ id: true })
+})
+  .partial()
+  .required({ id: true })
 
 // ====================================================================
 // CALENDAR VIEW & CONFIG SCHEMAS
@@ -170,7 +212,13 @@ export const CalendarThemeSchema = z.object({
 
 export const CalendarViewConfigSchema = z.object({
   organization_id: uuidSchema,
-  view_type: z.enum(['dayGridMonth', 'timeGridWeek', 'timeGridDay', 'resourceTimeGridDay', 'listWeek']),
+  view_type: z.enum([
+    'dayGridMonth',
+    'timeGridWeek',
+    'timeGridDay',
+    'resourceTimeGridDay',
+    'listWeek'
+  ]),
   business_hours: z.array(BusinessHoursSchema).optional(),
   holidays: z.array(HolidaySchema).optional(),
   theme_colors: CalendarThemeSchema.optional(),
@@ -186,9 +234,13 @@ export const CalendarQuerySchema = z.object({
   start: z.string().datetime().optional(),
   end: z.string().datetime().optional(),
   resource_ids: z.array(uuidSchema).optional(),
-  event_types: z.array(z.enum(['appointment', 'block', 'holiday', 'shift', 'maintenance'])).optional(),
+  event_types: z
+    .array(z.enum(['appointment', 'block', 'holiday', 'shift', 'maintenance']))
+    .optional(),
   smart_codes: z.array(smartCodeSchema).optional(),
-  status: z.array(z.enum(['draft', 'confirmed', 'pending', 'cancelled', 'completed', 'no_show'])).optional(),
+  status: z
+    .array(z.enum(['draft', 'confirmed', 'pending', 'cancelled', 'completed', 'no_show']))
+    .optional(),
   customer_id: uuidSchema.optional(),
   staff_id: uuidSchema.optional(),
   service_id: uuidSchema.optional(),
@@ -210,19 +262,23 @@ export const CalendarApiResponseSchema = z.object({
 })
 
 export const EventsResponseSchema = CalendarApiResponseSchema.extend({
-  data: z.object({
-    events: z.array(CalendarEventSchema),
-    resources: z.array(CalendarResourceSchema).optional(),
-    total_count: z.number().int().min(0),
-    filtered_count: z.number().int().min(0)
-  }).optional()
+  data: z
+    .object({
+      events: z.array(CalendarEventSchema),
+      resources: z.array(CalendarResourceSchema).optional(),
+      total_count: z.number().int().min(0),
+      filtered_count: z.number().int().min(0)
+    })
+    .optional()
 })
 
 export const ResourcesResponseSchema = CalendarApiResponseSchema.extend({
-  data: z.object({
-    resources: z.array(CalendarResourceSchema),
-    total_count: z.number().int().min(0)
-  }).optional()
+  data: z
+    .object({
+      resources: z.array(CalendarResourceSchema),
+      total_count: z.number().int().min(0)
+    })
+    .optional()
 })
 
 // ====================================================================
@@ -231,8 +287,12 @@ export const ResourcesResponseSchema = CalendarApiResponseSchema.extend({
 
 export const CalendarWebhookSchema = z.object({
   event_type: z.enum([
-    'event.created', 'event.updated', 'event.deleted',
-    'resource.created', 'resource.updated', 'resource.deleted'
+    'event.created',
+    'event.updated',
+    'event.deleted',
+    'resource.created',
+    'resource.updated',
+    'resource.deleted'
   ]),
   organization_id: uuidSchema,
   smart_code: smartCodeSchema,
@@ -315,8 +375,13 @@ export const EventTransactionMetadataSchema = z.object({
   deposit_amount: z.number().min(0).optional(),
   recurring_pattern: z.string().optional(),
   parent_appointment_id: uuidSchema.optional(),
-  cancellation_policy: z.enum(['24_hours', '48_hours', '72_hours', 'no_cancellation']).default('24_hours'),
-  color_code: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional()
+  cancellation_policy: z
+    .enum(['24_hours', '48_hours', '72_hours', 'no_cancellation'])
+    .default('24_hours'),
+  color_code: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional()
 })
 
 // Core Entity Metadata for Calendar Resources
@@ -335,37 +400,50 @@ export const ResourceEntityMetadataSchema = z.object({
   years_experience: z.number().int().min(0).optional(),
   booking_lead_time_hours: z.number().int().min(0).default(0),
   cancellation_fee: z.number().min(0).optional(),
-  color_code: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format').optional()
+  color_code: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .optional()
 })
 
 // Dynamic Data Schema for Availability
 export const AvailabilityDynamicDataSchema = z.object({
-  schedule_type: z.enum(['weekly_recurring', 'custom_dates', 'flexible']).default('weekly_recurring'),
+  schedule_type: z
+    .enum(['weekly_recurring', 'custom_dates', 'flexible'])
+    .default('weekly_recurring'),
   timezone: z.string().default('UTC'),
   weekly_hours: z.number().int().min(0).max(168).optional(),
-  schedule: z.array(z.object({
-    day: z.number().int().min(0).max(6),
-    day_name: z.string(),
-    start: timeSchema.optional(),
-    end: timeSchema.optional(),
-    available: z.boolean(),
-    break_start: timeSchema.optional(),
-    break_end: timeSchema.optional(),
-    notes: z.string().optional()
-  })),
-  exceptions: z.array(z.object({
-    date: z.string().date(),
-    available: z.boolean().optional(),
-    start: timeSchema.optional(),
-    end: timeSchema.optional(),
-    reason: z.string().optional()
-  })).optional(),
-  prayer_times: z.object({
-    enabled: z.boolean().default(false),
-    duration_minutes: z.number().int().min(0).max(60).default(15),
-    flexible_timing: z.boolean().default(true),
-    ramadan_adjustments: z.boolean().default(false)
-  }).optional(),
+  schedule: z.array(
+    z.object({
+      day: z.number().int().min(0).max(6),
+      day_name: z.string(),
+      start: timeSchema.optional(),
+      end: timeSchema.optional(),
+      available: z.boolean(),
+      break_start: timeSchema.optional(),
+      break_end: timeSchema.optional(),
+      notes: z.string().optional()
+    })
+  ),
+  exceptions: z
+    .array(
+      z.object({
+        date: z.string().date(),
+        available: z.boolean().optional(),
+        start: timeSchema.optional(),
+        end: timeSchema.optional(),
+        reason: z.string().optional()
+      })
+    )
+    .optional(),
+  prayer_times: z
+    .object({
+      enabled: z.boolean().default(false),
+      duration_minutes: z.number().int().min(0).max(60).default(15),
+      flexible_timing: z.boolean().default(true),
+      ramadan_adjustments: z.boolean().default(false)
+    })
+    .optional(),
   overtime_allowed: z.boolean().default(false),
   weekend_premium: z.number().min(1).default(1.5),
   holiday_premium: z.number().min(1).default(2.0)

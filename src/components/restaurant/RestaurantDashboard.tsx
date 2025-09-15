@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { universalApi } from '@/lib/universal-api'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  TrendingUp, 
-  Clock, 
-  DollarSign, 
+import {
+  TrendingUp,
+  Clock,
+  DollarSign,
   ShoppingCart,
   TableProperties,
   Loader2,
@@ -20,10 +20,10 @@ interface RestaurantDashboardProps {
   isDemoMode?: boolean
 }
 
-export function RestaurantDashboard({ 
-  organizationId, 
+export function RestaurantDashboard({
+  organizationId,
   smartCodes,
-  isDemoMode = false 
+  isDemoMode = false
 }: RestaurantDashboardProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -35,53 +35,56 @@ export function RestaurantDashboard({
     payments: 0,
     tips: 0
   })
-  
+
   useEffect(() => {
     loadDashboardData()
   }, [organizationId])
-  
+
   const loadDashboardData = async () => {
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       // Get today's date
       const today = new Date().toISOString().split('T')[0]
-      
+
       // Get all transactions
       const transactionsResponse = await universalApi.getTransactions()
-      const transactions = Array.isArray(transactionsResponse) 
-        ? transactionsResponse 
+      const transactions = Array.isArray(transactionsResponse)
+        ? transactionsResponse
         : transactionsResponse.data || []
-      
+
       // Filter for today's sales
-      const todaySales = transactions.filter(t => 
-        t.transaction_type === 'sale' && 
-        t.transaction_date && 
-        t.transaction_date.startsWith(today)
+      const todaySales = transactions.filter(
+        t =>
+          t.transaction_type === 'sale' &&
+          t.transaction_date &&
+          t.transaction_date.startsWith(today)
       )
-      
+
       // Filter for today's payments
-      const todayPayments = transactions.filter(t => 
-        t.transaction_type === 'payment' && 
-        t.transaction_date && 
-        t.transaction_date.startsWith(today)
+      const todayPayments = transactions.filter(
+        t =>
+          t.transaction_type === 'payment' &&
+          t.transaction_date &&
+          t.transaction_date.startsWith(today)
       )
-      
+
       // Get tables
       const tablesResponse = await universalApi.getEntities()
-      const entities = Array.isArray(tablesResponse) 
-        ? tablesResponse 
-        : tablesResponse.data || []
+      const entities = Array.isArray(tablesResponse) ? tablesResponse : tablesResponse.data || []
       const tables = entities.filter(e => e.entity_type === 'table')
-      
+
       // Calculate stats
       const revenue = todaySales.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       const orders = todaySales.length
       const avgOrder = orders > 0 ? revenue / orders : 0
       const paymentTotal = todayPayments.reduce((sum, p) => sum + (p.total_amount || 0), 0)
-      const tipTotal = todayPayments.reduce((sum, p) => sum + (((p.metadata as any)?.tip_amount as number) || 0), 0)
-      
+      const tipTotal = todayPayments.reduce(
+        (sum, p) => sum + (((p.metadata as any)?.tip_amount as number) || 0),
+        0
+      )
+
       setStats({
         revenue,
         orders,
@@ -97,7 +100,7 @@ export function RestaurantDashboard({
       setLoading(false)
     }
   }
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -105,7 +108,7 @@ export function RestaurantDashboard({
       </div>
     )
   }
-  
+
   if (error) {
     return (
       <Alert variant="destructive">
@@ -113,7 +116,7 @@ export function RestaurantDashboard({
       </Alert>
     )
   }
-  
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
@@ -129,7 +132,7 @@ export function RestaurantDashboard({
             <p className="text-xs text-muted-foreground">From database</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -142,7 +145,7 @@ export function RestaurantDashboard({
             <p className="text-xs text-muted-foreground">Active orders</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -155,7 +158,7 @@ export function RestaurantDashboard({
             <p className="text-xs text-muted-foreground">Per transaction</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -168,7 +171,7 @@ export function RestaurantDashboard({
             <p className="text-xs text-muted-foreground">In system</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -181,7 +184,7 @@ export function RestaurantDashboard({
             <p className="text-xs text-muted-foreground">Processed</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -195,7 +198,7 @@ export function RestaurantDashboard({
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="text-center text-muted-foreground mt-6">
         <p>Organization ID: {organizationId}</p>
         <p className="text-sm">Using real database data • Sacred Six Tables</p>

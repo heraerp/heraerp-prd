@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   ShoppingCart,
   Plus,
   FileText,
@@ -49,7 +49,7 @@ export default function FurnitureSalesOrders() {
     try {
       setLoading(true)
       universalApi.setOrganizationId(currentOrganization?.id || '')
-      
+
       // Load furniture products for POS
       const productsResponse = await universalApi.read('core_entities', {
         filters: [
@@ -68,8 +68,10 @@ export default function FurnitureSalesOrders() {
               { field: 'field_name', operator: 'in', value: ['selling_price'] }
             ]
           })
-          
-          const price = dynamicResponse.data.find((f: any) => f.field_name === 'selling_price')?.field_value_number || 0
+
+          const price =
+            dynamicResponse.data.find((f: any) => f.field_name === 'selling_price')
+              ?.field_value_number || 0
 
           return {
             id: product.id,
@@ -126,25 +128,28 @@ export default function FurnitureSalesOrders() {
       setRecentOrders(enrichedOrders)
 
       // Calculate stats
-      const activeOrders = ordersResponse.data.filter((o: any) => 
+      const activeOrders = ordersResponse.data.filter((o: any) =>
         ['pending_approval', 'confirmed', 'in_production'].includes(o.status)
       ).length
 
       const currentMonth = new Date().getMonth()
-      const monthlyOrders = ordersResponse.data.filter((o: any) => 
-        new Date(o.transaction_date).getMonth() === currentMonth
-      )
-      
-      const monthlyRevenue = monthlyOrders.reduce((sum: number, o: any) => 
-        sum + (o.total_amount || 0), 0
+      const monthlyOrders = ordersResponse.data.filter(
+        (o: any) => new Date(o.transaction_date).getMonth() === currentMonth
       )
 
-      const avgOrderSize = ordersResponse.data.length > 0 
-        ? ordersResponse.data.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) / ordersResponse.data.length
-        : 0
+      const monthlyRevenue = monthlyOrders.reduce(
+        (sum: number, o: any) => sum + (o.total_amount || 0),
+        0
+      )
 
-      const pendingDelivery = ordersResponse.data.filter((o: any) => 
-        o.status === 'ready_for_delivery'
+      const avgOrderSize =
+        ordersResponse.data.length > 0
+          ? ordersResponse.data.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) /
+            ordersResponse.data.length
+          : 0
+
+      const pendingDelivery = ordersResponse.data.filter(
+        (o: any) => o.status === 'ready_for_delivery'
       ).length
 
       setStats({
@@ -153,7 +158,6 @@ export default function FurnitureSalesOrders() {
         avgOrderSize,
         pendingDelivery
       })
-
     } catch (error) {
       console.error('Failed to load data:', error)
     } finally {
@@ -169,7 +173,10 @@ export default function FurnitureSalesOrders() {
       completed: { variant: 'default' as const, label: 'Completed' },
       delivered: { variant: 'default' as const, label: 'Delivered' }
     }
-    const config = statusConfig[status as keyof typeof statusConfig] || { variant: 'default' as const, label: status }
+    const config = statusConfig[status as keyof typeof statusConfig] || {
+      variant: 'default' as const,
+      label: status
+    }
     return <Badge variant={config.variant}>{config.label}</Badge>
   }
 
@@ -182,9 +189,7 @@ export default function FurnitureSalesOrders() {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
               Sales Orders
             </h1>
-            <p className="text-muted-foreground mt-1">
-              Create and manage furniture sales orders
-            </p>
+            <p className="text-muted-foreground mt-1">Create and manage furniture sales orders</p>
           </div>
           <div className="flex gap-3">
             <Link href="/furniture/sales/proforma">
@@ -220,16 +225,23 @@ export default function FurnitureSalesOrders() {
                   {loading ? (
                     <p className="text-muted-foreground">Loading products...</p>
                   ) : (
-                    furnitureItems.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    furnitureItems.map(item => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      >
                         <div className="flex-1">
                           <p className="font-medium">{item.name}</p>
-                          <p className="text-sm text-muted-foreground">{item.category} • {item.sku}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.category} • {item.sku}
+                          </p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="font-semibold">₹{item.price.toLocaleString('en-IN')}</span>
-                          <Button 
-                            size="sm" 
+                          <span className="font-semibold">
+                            ₹{item.price.toLocaleString('en-IN')}
+                          </span>
+                          <Button
+                            size="sm"
                             onClick={() => setSelectedItems([...selectedItems, item])}
                           >
                             Add
@@ -255,10 +267,12 @@ export default function FurnitureSalesOrders() {
                         </div>
                         <div className="flex items-center gap-3">
                           <span>₹{item.price.toLocaleString('en-IN')}</span>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="ghost"
-                            onClick={() => setSelectedItems(selectedItems.filter((_, i) => i !== index))}
+                            onClick={() =>
+                              setSelectedItems(selectedItems.filter((_, i) => i !== index))
+                            }
                           >
                             Remove
                           </Button>
@@ -272,15 +286,30 @@ export default function FurnitureSalesOrders() {
                     <div className="border-t pt-4 space-y-2">
                       <div className="flex justify-between">
                         <span>Subtotal</span>
-                        <span>₹{selectedItems.reduce((sum, item) => sum + item.price, 0).toLocaleString('en-IN')}</span>
+                        <span>
+                          ₹
+                          {selectedItems
+                            .reduce((sum, item) => sum + item.price, 0)
+                            .toLocaleString('en-IN')}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>GST (18%)</span>
-                        <span>₹{(selectedItems.reduce((sum, item) => sum + item.price, 0) * 0.18).toLocaleString('en-IN')}</span>
+                        <span>
+                          ₹
+                          {(
+                            selectedItems.reduce((sum, item) => sum + item.price, 0) * 0.18
+                          ).toLocaleString('en-IN')}
+                        </span>
                       </div>
                       <div className="flex justify-between font-semibold text-lg">
                         <span>Total</span>
-                        <span>₹{(selectedItems.reduce((sum, item) => sum + item.price, 0) * 1.18).toLocaleString('en-IN')}</span>
+                        <span>
+                          ₹
+                          {(
+                            selectedItems.reduce((sum, item) => sum + item.price, 0) * 1.18
+                          ).toLocaleString('en-IN')}
+                        </span>
                       </div>
                     </div>
                     <Button className="w-full mt-4">Create Order</Button>
@@ -302,7 +331,7 @@ export default function FurnitureSalesOrders() {
                   <ShoppingCart className="h-8 w-8 text-primary opacity-50" />
                 </div>
               </Card>
-              
+
               <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
                 <div className="flex items-center justify-between">
                   <div>
@@ -314,7 +343,7 @@ export default function FurnitureSalesOrders() {
                   <DollarSign className="h-8 w-8 text-green-500 opacity-50" />
                 </div>
               </Card>
-              
+
               <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
                 <div className="flex items-center justify-between">
                   <div>
@@ -326,7 +355,7 @@ export default function FurnitureSalesOrders() {
                   <Package className="h-8 w-8 text-purple-500 opacity-50" />
                 </div>
               </Card>
-              
+
               <Card className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
                 <div className="flex items-center justify-between">
                   <div>
@@ -343,8 +372,11 @@ export default function FurnitureSalesOrders() {
               <h3 className="text-lg font-semibold">Recent Orders</h3>
               <Card className="overflow-hidden bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
                 <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {recentOrders.map((order) => (
-                    <div key={order.id} className="p-4 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors">
+                  {recentOrders.map(order => (
+                    <div
+                      key={order.id}
+                      className="p-4 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-4">
@@ -374,9 +406,7 @@ export default function FurnitureSalesOrders() {
                         <div className="flex items-center gap-4">
                           <div className="text-right">
                             <p className="font-semibold">{order.value}</p>
-                            <div className="mt-1">
-                              {getStatusBadge(order.status)}
-                            </div>
+                            <div className="mt-1">{getStatusBadge(order.status)}</div>
                           </div>
                           <Link href={`/furniture/sales/orders/${order.id}`}>
                             <Button variant="outline" size="sm">
@@ -420,15 +450,21 @@ export default function FurnitureSalesOrders() {
                 </Card>
 
                 <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800">
-                  <h3 className="font-semibold mb-3 text-purple-900 dark:text-purple-100">In Production</h3>
+                  <h3 className="font-semibold mb-3 text-purple-900 dark:text-purple-100">
+                    In Production
+                  </h3>
                   <div className="space-y-2">
-                    <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">₹2.8Cr</p>
+                    <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                      ₹2.8Cr
+                    </p>
                     <p className="text-sm text-purple-700 dark:text-purple-300">12 orders</p>
                   </div>
                 </Card>
 
                 <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
-                  <h3 className="font-semibold mb-3 text-green-900 dark:text-green-100">Completed</h3>
+                  <h3 className="font-semibold mb-3 text-green-900 dark:text-green-100">
+                    Completed
+                  </h3>
                   <div className="space-y-2">
                     <p className="text-2xl font-bold text-green-900 dark:text-green-100">₹5.2Cr</p>
                     <p className="text-sm text-green-700 dark:text-green-300">24 orders</p>

@@ -41,13 +41,13 @@ class RestaurantOfflineService {
         resolve()
       }
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result
 
         // Create stores if they don't exist
         if (!db.objectStoreNames.contains(this.STORES.transactions)) {
-          const transactionStore = db.createObjectStore(this.STORES.transactions, { 
-            keyPath: 'id' 
+          const transactionStore = db.createObjectStore(this.STORES.transactions, {
+            keyPath: 'id'
           })
           transactionStore.createIndex('synced', 'synced', { unique: false })
           transactionStore.createIndex('timestamp', 'timestamp', { unique: false })
@@ -84,7 +84,7 @@ class RestaurantOfflineService {
     }
 
     await this.saveToStore(this.STORES.transactions, transaction)
-    
+
     // Try to sync immediately if online
     if (navigator.onLine) {
       this.syncTransaction(transaction.id)
@@ -153,7 +153,7 @@ class RestaurantOfflineService {
 
       // Call appropriate API based on transaction type
       const response = await this.sendToServer(transaction)
-      
+
       if (response.success) {
         // Mark as synced
         transaction.synced = true
@@ -174,7 +174,7 @@ class RestaurantOfflineService {
   // Send transaction to server
   private async sendToServer(transaction: OfflineTransaction): Promise<any> {
     const endpoint = this.getEndpointForType(transaction.type)
-    
+
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -231,7 +231,7 @@ class RestaurantOfflineService {
   // Cache menu data for offline use
   async cacheMenuData(menuData: any): Promise<void> {
     const items = Array.isArray(menuData) ? menuData : [menuData]
-    
+
     for (const item of items) {
       await this.saveToStore(this.STORES.menu, item)
     }
@@ -258,7 +258,7 @@ class RestaurantOfflineService {
   async createOfflineOrder(orderData: any): Promise<string> {
     // Assign offline ID
     const offlineOrderId = `offline_order_${Date.now()}`
-    
+
     const order = {
       ...orderData,
       id: offlineOrderId,
@@ -275,7 +275,7 @@ class RestaurantOfflineService {
   // Process offline payment
   async processOfflinePayment(paymentData: any): Promise<string> {
     const offlinePaymentId = `offline_payment_${Date.now()}`
-    
+
     const payment = {
       ...paymentData,
       id: offlinePaymentId,
@@ -306,7 +306,7 @@ class RestaurantOfflineService {
       const range = IDBKeyRange.upperBound(cutoffDate)
       const request = index.openCursor(range)
 
-      request.onsuccess = (event) => {
+      request.onsuccess = event => {
         const cursor = (event.target as IDBRequest).result
         if (cursor) {
           if (cursor.value.synced) {
@@ -331,13 +331,14 @@ class RestaurantOfflineService {
   }> {
     const transactions = await this.getUnsyncedTransactions()
     const allTransactions = await this.getAllTransactions()
-    
+
     const pending = transactions.length
     const synced = allTransactions.filter(t => t.synced).length
     const failed = transactions.filter(t => t.retryCount > 3).length
-    const oldestPending = transactions.length > 0 
-      ? new Date(Math.min(...transactions.map(t => t.timestamp.getTime())))
-      : null
+    const oldestPending =
+      transactions.length > 0
+        ? new Date(Math.min(...transactions.map(t => t.timestamp.getTime())))
+        : null
 
     return { pending, synced, failed, oldestPending }
   }
@@ -373,14 +374,20 @@ if (typeof window !== 'undefined') {
   })
 
   // Periodic sync attempt every 5 minutes
-  setInterval(() => {
-    if (navigator.onLine) {
-      offlineService.syncAll()
-    }
-  }, 5 * 60 * 1000)
+  setInterval(
+    () => {
+      if (navigator.onLine) {
+        offlineService.syncAll()
+      }
+    },
+    5 * 60 * 1000
+  )
 
   // Cleanup old transactions daily
-  setInterval(() => {
-    offlineService.cleanupOldTransactions()
-  }, 24 * 60 * 60 * 1000)
+  setInterval(
+    () => {
+      offlineService.cleanupOldTransactions()
+    },
+    24 * 60 * 60 * 1000
+  )
 }

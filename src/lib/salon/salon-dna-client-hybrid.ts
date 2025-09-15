@@ -5,28 +5,30 @@
  */
 
 export interface SalonDashboardData {
-  appointments: number;
-  customers: number;
-  todayRevenue: number;
-  products: number;
-  recentAppointments: any[];
-  topServices: any[];
-  staffMembers: any[];
+  appointments: number
+  customers: number
+  todayRevenue: number
+  products: number
+  recentAppointments: any[]
+  topServices: any[]
+  staffMembers: any[]
 }
 
 export class HybridSalonDNAClient {
-  private organizationId: string;
-  private baseUrl: string;
+  private organizationId: string
+  private baseUrl: string
 
   constructor(organizationId: string, baseUrl?: string) {
     if (!organizationId) {
-      throw new Error('ERROR_ORG_REQUIRED: Organization ID is mandatory');
+      throw new Error('ERROR_ORG_REQUIRED: Organization ID is mandatory')
     }
-    this.organizationId = organizationId;
+    this.organizationId = organizationId
     // Use provided baseUrl or determine based on environment
-    this.baseUrl = baseUrl || (typeof window === 'undefined' 
-      ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
-      : '');
+    this.baseUrl =
+      baseUrl ||
+      (typeof window === 'undefined'
+        ? `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`
+        : '')
   }
 
   /**
@@ -41,19 +43,23 @@ export class HybridSalonDNAClient {
         this.getTodayAppointments(),
         this.getStaffMembers(),
         this.getServices()
-      ]);
+      ])
 
       // Extract values, use empty arrays for failed requests
-      const customersData = customers.status === 'fulfilled' ? customers.value : [];
-      const productsData = products.status === 'fulfilled' ? products.value : [];
-      const appointmentsData = appointments.status === 'fulfilled' ? appointments.value : [];
-      const staffData = staff.status === 'fulfilled' ? staff.value : [];
-      const servicesData = services.status === 'fulfilled' ? services.value : [];
+      const customersData = customers.status === 'fulfilled' ? customers.value : []
+      const productsData = products.status === 'fulfilled' ? products.value : []
+      const appointmentsData = appointments.status === 'fulfilled' ? appointments.value : []
+      const staffData = staff.status === 'fulfilled' ? staff.value : []
+      const servicesData = services.status === 'fulfilled' ? services.value : []
 
       // Calculate today's revenue from appointments with completed/in_progress status
       const todayRevenue = appointmentsData
-        .filter(apt => (apt.metadata as any)?.status === 'completed' || (apt.metadata as any)?.status === 'in_progress')
-        .reduce((sum, apt) => sum + ((apt.metadata as any)?.price || 0), 0);
+        .filter(
+          apt =>
+            (apt.metadata as any)?.status === 'completed' ||
+            (apt.metadata as any)?.status === 'in_progress'
+        )
+        .reduce((sum, apt) => sum + ((apt.metadata as any)?.price || 0), 0)
 
       return {
         appointments: appointmentsData.length,
@@ -63,9 +69,9 @@ export class HybridSalonDNAClient {
         recentAppointments: appointmentsData.slice(0, 4),
         topServices: servicesData.slice(0, 3),
         staffMembers: staffData
-      };
+      }
     } catch (error) {
-      console.error('HybridSalonDNAClient: Error fetching dashboard data:', error);
+      console.error('HybridSalonDNAClient: Error fetching dashboard data:', error)
       // Return default data instead of throwing to prevent app crash
       return {
         appointments: 0,
@@ -75,7 +81,7 @@ export class HybridSalonDNAClient {
         recentAppointments: [],
         topServices: [],
         staffMembers: []
-      };
+      }
     }
   }
 
@@ -84,24 +90,26 @@ export class HybridSalonDNAClient {
    */
   async getCustomers(): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`);
-      
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`
+      )
+
       if (!response.ok) {
-        console.error('Failed to fetch customers - HTTP error:', response.status);
-        return [];
-      }
-      
-      const result = await response.json();
-      
-      if (!result.success) {
-        console.error('Failed to fetch customers:', result.error);
-        return [];
+        console.error('Failed to fetch customers - HTTP error:', response.status)
+        return []
       }
 
-      return (result.data || []).filter((entity: any) => entity.entity_type === 'customer');
+      const result = await response.json()
+
+      if (!result.success) {
+        console.error('Failed to fetch customers:', result.error)
+        return []
+      }
+
+      return (result.data || []).filter((entity: any) => entity.entity_type === 'customer')
     } catch (error) {
-      console.error('Error fetching customers:', error);
-      return [];
+      console.error('Error fetching customers:', error)
+      return []
     }
   }
 
@@ -110,26 +118,28 @@ export class HybridSalonDNAClient {
    */
   async getProducts(): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`);
-      
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`
+      )
+
       if (!response.ok) {
-        console.error('Failed to fetch products - HTTP error:', response.status);
-        return [];
-      }
-      
-      const result = await response.json();
-      
-      if (!result.success) {
-        console.error('Failed to fetch products:', result.error);
-        return [];
+        console.error('Failed to fetch products - HTTP error:', response.status)
+        return []
       }
 
-      return (result.data || []).filter((entity: any) => 
-        entity.entity_type === 'product' || entity.entity_type === 'service'
-      );
+      const result = await response.json()
+
+      if (!result.success) {
+        console.error('Failed to fetch products:', result.error)
+        return []
+      }
+
+      return (result.data || []).filter(
+        (entity: any) => entity.entity_type === 'product' || entity.entity_type === 'service'
+      )
     } catch (error) {
-      console.error('Error fetching products:', error);
-      return [];
+      console.error('Error fetching products:', error)
+      return []
     }
   }
 
@@ -138,33 +148,37 @@ export class HybridSalonDNAClient {
    */
   async getTodayAppointments(): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`);
-      
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`
+      )
+
       if (!response.ok) {
-        console.error('Failed to fetch appointments - HTTP error:', response.status);
-        return [];
-      }
-      
-      const result = await response.json();
-      
-      if (!result.success) {
-        console.error('Failed to fetch appointments:', result.error);
-        return [];
+        console.error('Failed to fetch appointments - HTTP error:', response.status)
+        return []
       }
 
-      const today = new Date().toISOString().split('T')[0];
-      
+      const result = await response.json()
+
+      if (!result.success) {
+        console.error('Failed to fetch appointments:', result.error)
+        return []
+      }
+
+      const today = new Date().toISOString().split('T')[0]
+
       // Filter for appointments with today's date
       const appointments = (result.data || []).filter((entity: any) => {
-        return entity.entity_type === 'appointment' && 
-               (entity.metadata as any)?.appointment_date === today;
-      });
+        return (
+          entity.entity_type === 'appointment' &&
+          (entity.metadata as any)?.appointment_date === today
+        )
+      })
 
-      console.log('Found appointments for today:', appointments.length);
-      return appointments;
+      console.log('Found appointments for today:', appointments.length)
+      return appointments
     } catch (error) {
-      console.error('Error fetching appointments:', error);
-      return [];
+      console.error('Error fetching appointments:', error)
+      return []
     }
   }
 
@@ -173,32 +187,36 @@ export class HybridSalonDNAClient {
    */
   async getStaffMembers(): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`);
-      
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`
+      )
+
       if (!response.ok) {
-        console.error('Failed to fetch staff - HTTP error:', response.status);
-        return [];
-      }
-      
-      const result = await response.json();
-      
-      if (!result.success) {
-        console.error('Failed to fetch staff:', result.error);
-        return [];
+        console.error('Failed to fetch staff - HTTP error:', response.status)
+        return []
       }
 
-      const staff = (result.data || []).filter((entity: any) => entity.entity_type === 'employee');
-      
+      const result = await response.json()
+
+      if (!result.success) {
+        console.error('Failed to fetch staff:', result.error)
+        return []
+      }
+
+      const staff = (result.data || []).filter((entity: any) => entity.entity_type === 'employee')
+
       // Add some enrichment
       return staff.map((member: any) => ({
         ...member,
         rating: 4.5,
-        specialties: (member.metadata as any)?.specialization ? [member.metadata.specialization] : ['General'],
+        specialties: (member.metadata as any)?.specialization
+          ? [member.metadata.specialization]
+          : ['General'],
         available: true
-      }));
+      }))
     } catch (error) {
-      console.error('Error fetching staff:', error);
-      return [];
+      console.error('Error fetching staff:', error)
+      return []
     }
   }
 
@@ -207,32 +225,36 @@ export class HybridSalonDNAClient {
    */
   async getServices(): Promise<any[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`);
-      
+      const response = await fetch(
+        `${this.baseUrl}/api/v1/universal?action=read&table=core_entities&organization_id=${this.organizationId}`
+      )
+
       if (!response.ok) {
-        console.error('Failed to fetch services - HTTP error:', response.status);
-        return [];
-      }
-      
-      const result = await response.json();
-      
-      if (!result.success) {
-        console.error('Failed to fetch services:', result.error);
-        return [];
+        console.error('Failed to fetch services - HTTP error:', response.status)
+        return []
       }
 
-      const services = (result.data || []).filter((entity: any) => entity.entity_type === 'service');
-      
+      const result = await response.json()
+
+      if (!result.success) {
+        console.error('Failed to fetch services:', result.error)
+        return []
+      }
+
+      const services = (result.data || []).filter((entity: any) => entity.entity_type === 'service')
+
       // Add enrichment from metadata
       return services.map((service: any) => ({
         ...service,
         price: (service.metadata as any)?.price || 100,
-        duration: (service.metadata as any)?.duration ? `${service.metadata.duration} minutes` : '60 minutes',
+        duration: (service.metadata as any)?.duration
+          ? `${service.metadata.duration} minutes`
+          : '60 minutes',
         category: (service.metadata as any)?.category || 'General'
-      }));
+      }))
     } catch (error) {
-      console.error('Error fetching services:', error);
-      return [];
+      console.error('Error fetching services:', error)
+      return []
     }
   }
 
@@ -240,19 +262,19 @@ export class HybridSalonDNAClient {
    * Create appointment (MCP-compliant for writes)
    */
   async createAppointment(params: {
-    customerId: string;
-    staffId: string;
-    serviceIds: string[];
-    appointmentDate: Date;
-    appointmentTime: string;
-    notes?: string;
+    customerId: string
+    staffId: string
+    serviceIds: string[]
+    appointmentDate: Date
+    appointmentTime: string
+    notes?: string
   }): Promise<string> {
     // For writes, we should use MCP
     // For now, using Universal API
     const response = await fetch(`${this.baseUrl}/api/v1/universal`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         action: 'create',
@@ -275,14 +297,14 @@ export class HybridSalonDNAClient {
         },
         organization_id: this.organizationId
       })
-    });
+    })
 
-    const result = await response.json();
+    const result = await response.json()
     if (!result.success) {
-      throw new Error(result.error || 'Failed to create appointment');
+      throw new Error(result.error || 'Failed to create appointment')
     }
 
-    return result.data.id;
+    return result.data.id
   }
 
   /**
@@ -294,7 +316,7 @@ export class HybridSalonDNAClient {
     const response = await fetch(`${this.baseUrl}/api/v1/universal`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         action: 'update',
@@ -305,11 +327,11 @@ export class HybridSalonDNAClient {
         },
         organization_id: this.organizationId
       })
-    });
+    })
 
-    const result = await response.json();
+    const result = await response.json()
     if (!result.success) {
-      throw new Error(result.error || 'Failed to update appointment status');
+      throw new Error(result.error || 'Failed to update appointment status')
     }
   }
 }
@@ -317,6 +339,9 @@ export class HybridSalonDNAClient {
 /**
  * Factory function for creating hybrid salon client
  */
-export function createHybridSalonDNAClient(organizationId: string, baseUrl?: string): HybridSalonDNAClient {
-  return new HybridSalonDNAClient(organizationId, baseUrl);
+export function createHybridSalonDNAClient(
+  organizationId: string,
+  baseUrl?: string
+): HybridSalonDNAClient {
+  return new HybridSalonDNAClient(organizationId, baseUrl)
 }

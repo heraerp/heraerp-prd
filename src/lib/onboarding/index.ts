@@ -1,11 +1,15 @@
 /**
  * HERA Universal Onboarding System - Main Export
- * 
+ *
  * Central export point for all onboarding functionality
  */
 
 // Provider and hooks
-export { HeraOnboardingProvider, useOnboarding, useOnboardingConfig } from './HeraOnboardingProvider';
+export {
+  HeraOnboardingProvider,
+  useOnboarding,
+  useOnboardingConfig
+} from './HeraOnboardingProvider'
 
 // Types
 export type {
@@ -19,38 +23,32 @@ export type {
   UseOnboardingReturn,
   StartTourOptions,
   OnboardingState,
-  OnboardingStatus,
-} from './types';
+  OnboardingStatus
+} from './types'
 
 // Tour registry
-export { 
-  registerTour, 
-  getTourByCode, 
+export {
+  registerTour,
+  getTourByCode,
   getAllTours,
   getEnabledTours,
   createMiniTour,
-  getTourStats,
-} from './stepRegistry';
+  getTourStats
+} from './stepRegistry'
 
 // i18n
-export { 
-  defaultMessages, 
-  getMessage, 
+export {
+  defaultMessages,
+  getMessage,
   interpolate,
   validateMessageKeys,
   extractTourMessageKeys,
   detectLanguage,
-  I18nManager,
-} from './i18n';
+  I18nManager
+} from './i18n'
 
 // Themes
-export {
-  lightTheme,
-  darkTheme,
-  highContrastTheme,
-  heraColors,
-  getJoyrideStyles,
-} from './themes';
+export { lightTheme, darkTheme, highContrastTheme, heraColors, getJoyrideStyles } from './themes'
 
 // Guards
 export {
@@ -62,8 +60,8 @@ export {
   awaitMultipleSelectors,
   isSSR,
   prefersReducedMotion,
-  createResizeObserver,
-} from './guards';
+  createResizeObserver
+} from './guards'
 
 // Events
 export {
@@ -73,12 +71,8 @@ export {
   emitTourCompleted,
   emitTourDismissed,
   emitStepError,
-  OnboardingEventEmitter,
-} from './events';
+  OnboardingEventEmitter
+} from './events'
 
 // Transformers
-export {
-  toJoyrideSteps,
-  buildJoyrideStep,
-  applyThemeToJoyride,
-} from './transformers';
+export { toJoyrideSteps, buildJoyrideStep, applyThemeToJoyride } from './transformers'

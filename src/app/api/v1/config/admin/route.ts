@@ -1,10 +1,10 @@
 /**
  * 🔧 HERA Configuration Rules Admin API
- * 
+ *
  * Administrative endpoints for managing configuration rules.
  * Enables creation, update, and deletion of configuration rules
  * with proper authorization and audit trails.
- * 
+ *
  * Features:
  * - CRUD operations for configuration rules
  * - Rule validation and conflict detection
@@ -46,19 +46,25 @@ export async function GET(request: NextRequest) {
     console.log('🔧 Config Admin GET:', { organizationId, ruleId, includeHistory })
 
     if (!organizationId) {
-      return NextResponse.json({
-        success: false,
-        error: 'organization_id is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'organization_id is required'
+        },
+        { status: 400 }
+      )
     }
 
     // Check authorization
     const authCheck = await checkAdminAuthorization(request, organizationId)
     if (!authCheck.authorized) {
-      return NextResponse.json({
-        success: false,
-        error: authCheck.error || 'Unauthorized'
-      }, { status: 403 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: authCheck.error || 'Unauthorized'
+        },
+        { status: 403 }
+      )
     }
 
     if (ruleId) {
@@ -66,14 +72,16 @@ export async function GET(request: NextRequest) {
     } else {
       return await getAllRules(organizationId)
     }
-
   } catch (error) {
     console.error('Config Admin GET error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -85,19 +93,25 @@ export async function POST(request: NextRequest) {
     console.log('🔧 Config Admin POST:', { organization_id, action, ruleCount: rules?.length || 1 })
 
     if (!organization_id) {
-      return NextResponse.json({
-        success: false,
-        error: 'organization_id is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'organization_id is required'
+        },
+        { status: 400 }
+      )
     }
 
     // Check authorization
     const authCheck = await checkAdminAuthorization(request, organization_id)
     if (!authCheck.authorized) {
-      return NextResponse.json({
-        success: false,
-        error: authCheck.error || 'Unauthorized'
-      }, { status: 403 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: authCheck.error || 'Unauthorized'
+        },
+        { status: 403 }
+      )
     }
 
     switch (action) {
@@ -117,20 +131,25 @@ export async function POST(request: NextRequest) {
         return await checkRuleConflicts(body, organization_id)
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: ['create', 'validate', 'check_conflicts']
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+            available_actions: ['create', 'validate', 'check_conflicts']
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('Config Admin POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -142,30 +161,38 @@ export async function PUT(request: NextRequest) {
     console.log('🔧 Config Admin PUT:', { rule_id, organization_id })
 
     if (!rule_id || !organization_id) {
-      return NextResponse.json({
-        success: false,
-        error: 'rule_id and organization_id are required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'rule_id and organization_id are required'
+        },
+        { status: 400 }
+      )
     }
 
     // Check authorization
     const authCheck = await checkAdminAuthorization(request, organization_id)
     if (!authCheck.authorized) {
-      return NextResponse.json({
-        success: false,
-        error: authCheck.error || 'Unauthorized'
-      }, { status: 403 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: authCheck.error || 'Unauthorized'
+        },
+        { status: 403 }
+      )
     }
 
     return await updateRule(rule_id, organization_id, updates, authCheck.userId)
-
   } catch (error) {
     console.error('Config Admin PUT error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -179,30 +206,38 @@ export async function DELETE(request: NextRequest) {
     console.log('🔧 Config Admin DELETE:', { ruleId, organizationId, soft })
 
     if (!ruleId || !organizationId) {
-      return NextResponse.json({
-        success: false,
-        error: 'rule_id and organization_id are required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'rule_id and organization_id are required'
+        },
+        { status: 400 }
+      )
     }
 
     // Check authorization
     const authCheck = await checkAdminAuthorization(request, organizationId)
     if (!authCheck.authorized) {
-      return NextResponse.json({
-        success: false,
-        error: authCheck.error || 'Unauthorized'
-      }, { status: 403 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: authCheck.error || 'Unauthorized'
+        },
+        { status: 403 }
+      )
     }
 
     return await deleteRule(ruleId, organizationId, soft, authCheck.userId)
-
   } catch (error) {
     console.error('Config Admin DELETE error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -216,11 +251,14 @@ async function createRule(rule: ConfigurationRule, userId?: string): Promise<Nex
     // Validate rule
     const validation = validateRuleData(rule)
     if (!validation.valid) {
-      return NextResponse.json({
-        success: false,
-        error: 'Validation failed',
-        details: validation.errors
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Validation failed',
+          details: validation.errors
+        },
+        { status: 400 }
+      )
     }
 
     // Create entity
@@ -244,10 +282,13 @@ async function createRule(rule: ConfigurationRule, userId?: string): Promise<Nex
 
     if (entityError) {
       console.error('Error creating rule entity:', entityError)
-      return NextResponse.json({
-        success: false,
-        error: entityError.message
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: entityError.message
+        },
+        { status: 500 }
+      )
     }
 
     // Create dynamic fields
@@ -300,22 +341,20 @@ async function createRule(rule: ConfigurationRule, userId?: string): Promise<Nex
       ...field
     }))
 
-    const { error: dynamicError } = await supabase
-      .from('core_dynamic_data')
-      .insert(dynamicData)
+    const { error: dynamicError } = await supabase.from('core_dynamic_data').insert(dynamicData)
 
     if (dynamicError) {
       // Rollback entity creation
-      await supabase
-        .from('core_entities')
-        .delete()
-        .eq('id', entity.id)
+      await supabase.from('core_entities').delete().eq('id', entity.id)
 
       console.error('Error creating dynamic fields:', dynamicError)
-      return NextResponse.json({
-        success: false,
-        error: dynamicError.message
-      }, { status: 500 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: dynamicError.message
+        },
+        { status: 500 }
+      )
     }
 
     // Create audit log
@@ -339,20 +378,22 @@ async function createRule(rule: ConfigurationRule, userId?: string): Promise<Nex
       },
       message: 'Configuration rule created successfully'
     })
-
   } catch (error) {
     console.error('Create rule error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Creation failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Creation failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // Update existing rule
 async function updateRule(
-  ruleId: string, 
-  organizationId: string, 
+  ruleId: string,
+  organizationId: string,
   updates: any,
   userId?: string
 ): Promise<NextResponse> {
@@ -371,10 +412,13 @@ async function updateRule(
       .single()
 
     if (fetchError || !existingRule) {
-      return NextResponse.json({
-        success: false,
-        error: 'Rule not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Rule not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Update entity metadata
@@ -403,10 +447,13 @@ async function updateRule(
 
       if (updateError) {
         console.error('Error updating entity:', updateError)
-        return NextResponse.json({
-          success: false,
-          error: updateError.message
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: updateError.message
+          },
+          { status: 500 }
+        )
       }
     }
 
@@ -460,16 +507,14 @@ async function updateRule(
         }
       } else {
         // Create new field
-        const { error } = await supabase
-          .from('core_dynamic_data')
-          .insert({
-            organization_id: organizationId,
-            entity_id: ruleId,
-            field_name: fieldName,
-            field_type: getFieldTypeForValue(value),
-            created_by: userId,
-            ...updateData
-          })
+        const { error } = await supabase.from('core_dynamic_data').insert({
+          organization_id: organizationId,
+          entity_id: ruleId,
+          field_name: fieldName,
+          field_type: getFieldTypeForValue(value),
+          created_by: userId,
+          ...updateData
+        })
 
         if (error) {
           console.error(`Error creating field ${fieldName}:`, error)
@@ -494,13 +539,15 @@ async function updateRule(
       updates,
       message: 'Configuration rule updated successfully'
     })
-
   } catch (error) {
     console.error('Update rule error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Update failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Update failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -530,10 +577,13 @@ async function deleteRule(
 
       if (error) {
         console.error('Error soft deleting rule:', error)
-        return NextResponse.json({
-          success: false,
-          error: error.message
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: error.message
+          },
+          { status: 500 }
+        )
       }
 
       // Create audit log
@@ -551,14 +601,10 @@ async function deleteRule(
         soft_delete: true,
         message: 'Configuration rule soft deleted successfully'
       })
-
     } else {
       // Hard delete - remove entity and related data
       // First delete dynamic data
-      await supabase
-        .from('core_dynamic_data')
-        .delete()
-        .eq('entity_id', ruleId)
+      await supabase.from('core_dynamic_data').delete().eq('entity_id', ruleId)
 
       // Then delete entity
       const { error } = await supabase
@@ -569,10 +615,13 @@ async function deleteRule(
 
       if (error) {
         console.error('Error hard deleting rule:', error)
-        return NextResponse.json({
-          success: false,
-          error: error.message
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: error.message
+          },
+          { status: 500 }
+        )
       }
 
       // Create audit log
@@ -591,13 +640,15 @@ async function deleteRule(
         message: 'Configuration rule permanently deleted'
       })
     }
-
   } catch (error) {
     console.error('Delete rule error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Deletion failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Deletion failed'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -608,7 +659,7 @@ async function checkAdminAuthorization(
 ): Promise<{ authorized: boolean; userId?: string; error?: string }> {
   // In production, implement proper JWT validation and role checking
   // For now, we'll do basic checks
-  
+
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -617,10 +668,9 @@ async function checkAdminAuthorization(
 
     // TODO: Validate JWT token and extract user ID
     // TODO: Check user has admin role for the organization
-    
+
     // Mock authorization for development
     return { authorized: true, userId: 'mock-admin-user' }
-
   } catch (error) {
     console.error('Authorization check error:', error)
     return { authorized: false, error: 'Authorization check failed' }
@@ -680,7 +730,7 @@ async function getRuleDetails(
   return NextResponse.json({
     success: true,
     rule: {
-      id: ruleId,
+      id: ruleId
       // ... rule details
     },
     history: includeHistory ? [] : undefined
@@ -707,11 +757,14 @@ async function createBulkRules(
 
   for (const rule of rules) {
     try {
-      const result = await createRule({
-        ...rule,
-        organization_id: organizationId
-      }, userId)
-      
+      const result = await createRule(
+        {
+          ...rule,
+          organization_id: organizationId
+        },
+        userId
+      )
+
       const data = await result.json()
       if (data.success) {
         results.push(data.rule)
@@ -744,10 +797,7 @@ async function validateRule(rule: any): Promise<NextResponse> {
   })
 }
 
-async function checkRuleConflicts(
-  rule: any,
-  organizationId: string
-): Promise<NextResponse> {
+async function checkRuleConflicts(rule: any, organizationId: string): Promise<NextResponse> {
   // Check for conflicting rules
   // In production, implement logic to detect overlapping conditions
   return NextResponse.json({

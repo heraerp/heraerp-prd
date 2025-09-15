@@ -15,21 +15,21 @@ const RESTAURANT_CONFIG = {
     REFUND: 'HERA.RESTAURANT.FOH.PAYMENT.REFUND.v1',
     TIP_ADDED: 'HERA.RESTAURANT.FOH.PAYMENT.TIP.v1',
     SETTLEMENT: 'HERA.RESTAURANT.FOH.PAYMENT.SETTLEMENT.v1',
-    
+
     // Payment method entities
     PAYMENT_METHOD: 'HERA.RESTAURANT.FOH.PAYMENT.METHOD.v1',
-    
+
     // Transaction line items
     LINE_PAYMENT: 'HERA.RESTAURANT.FOH.PAYMENT.LINE.v1',
     LINE_TIP: 'HERA.RESTAURANT.FOH.PAYMENT.LINE.TIP.v1',
-    LINE_FEE: 'HERA.RESTAURANT.FOH.PAYMENT.LINE.FEE.v1',
+    LINE_FEE: 'HERA.RESTAURANT.FOH.PAYMENT.LINE.FEE.v1'
   }
 }
 
 export default function PaymentsPage() {
   return (
     <div className="container mx-auto p-4 max-w-7xl">
-      <PaymentProcessing 
+      <PaymentProcessing
         organizationId={RESTAURANT_CONFIG.organizationId}
         smartCodes={RESTAURANT_CONFIG.smartCodes}
         isDemoMode={false}

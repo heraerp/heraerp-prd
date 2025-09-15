@@ -47,7 +47,11 @@ export async function POST(req: Request) {
       message = 'Churn rate is 2.1% this month, slightly above target (≤ 2%).'
       priority = 'high'
       pushMetric('Churn rate', 2.1, 'up', 0.3)
-      pushRec('Save offers for at-risk users', 'Offer 10% discount or speed boost to users with >3 tickets in 60 days.', 'high')
+      pushRec(
+        'Save offers for at-risk users',
+        'Offer 10% discount or speed boost to users with >3 tickets in 60 days.',
+        'high'
+      )
       pushInsight('Rising churn in Kozhikode linked to outage cluster last week.', 'high')
     }
 
@@ -76,7 +80,11 @@ export async function POST(req: Request) {
       pushMetric('ARPU', '₹916', 'up', 1.4)
       pushMetric('Network uptime', '99.8%', 'stable')
       pushMetric('Churn rate', '2.3%', 'down', 0.2)
-      pushRec('Onboard agents in new wards', 'Increase presence in underpenetrated panchayats.', 'medium')
+      pushRec(
+        'Onboard agents in new wards',
+        'Increase presence in underpenetrated panchayats.',
+        'medium'
+      )
     }
 
     return NextResponse.json({
@@ -90,16 +98,15 @@ export async function POST(req: Request) {
       insights,
       visualData: { type: 'chart', data: { ts: now, series: [] } },
       smart_code: 'HERA.ISP.AI.MANAGER.API.v1',
-      organizationId,
+      organizationId
     })
   } catch (err: any) {
     return NextResponse.json(
       {
         error: 'Failed to process AI query',
-        details: err?.message || String(err),
+        details: err?.message || String(err)
       },
       { status: 500 }
     )
   }
 }
-

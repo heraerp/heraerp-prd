@@ -38,16 +38,15 @@ export function ISPModal({ isOpen, onClose, title, children, size = 'md' }: ISPM
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-md"
-        onClick={onClose}
-      />
-      
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+
       {/* Modal */}
-      <div className={`relative w-full ${sizeClasses[size]} animate-in fade-in-0 zoom-in-95 duration-300`}>
+      <div
+        className={`relative w-full ${sizeClasses[size]} animate-in fade-in-0 zoom-in-95 duration-300`}
+      >
         {/* Glow effect */}
         <div className="absolute -inset-1 bg-gradient-to-r from-[#00DDFF] via-[#0049B7] to-[#ff1d58] rounded-2xl blur-lg opacity-30" />
-        
+
         {/* Content */}
         <div className="relative bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-[#0049B7]/20 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl">
           {/* Header */}
@@ -62,11 +61,9 @@ export function ISPModal({ isOpen, onClose, title, children, size = 'md' }: ISPM
               <X className="h-5 w-5 text-white/60 group-hover:text-white transition-colors" />
             </button>
           </div>
-          
+
           {/* Body */}
-          <div className="p-6">
-            {children}
-          </div>
+          <div className="p-6">{children}</div>
         </div>
       </div>
     </div>

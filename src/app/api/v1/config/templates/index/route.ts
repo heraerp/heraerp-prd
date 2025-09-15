@@ -31,10 +31,7 @@ export async function GET(request: NextRequest) {
       })
     } catch (error) {
       console.error('Error searching UCR templates:', error)
-      return NextResponse.json(
-        { error: 'Failed to search templates' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to search templates' }, { status: 500 })
     }
   }
 
@@ -47,10 +44,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     // Verify organization exists
@@ -62,10 +56,7 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (orgError || !org) {
-      return NextResponse.json(
-        { error: 'Invalid organization_id' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Invalid organization_id' }, { status: 404 })
     }
 
     const filters = {
@@ -87,10 +78,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching UCR template index:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch template index' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch template index' }, { status: 500 })
   }
 }
 
@@ -134,10 +122,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error updating UCR template index:', error)
-    return NextResponse.json(
-      { error: 'Failed to update template index' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update template index' }, { status: 500 })
   }
 }
-

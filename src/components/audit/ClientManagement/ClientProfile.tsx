@@ -6,14 +6,20 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Building2, 
-  UserCheck, 
-  Shield, 
-  FileText, 
+import {
+  Building2,
+  UserCheck,
+  Shield,
+  FileText,
   AlertTriangle,
   CheckCircle2,
   Clock,
@@ -85,16 +91,15 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
               {mode === 'create' ? 'New Client Engagement' : client.entity_name || 'Client Profile'}
             </h2>
             <p className="text-gray-600">
-              {mode === 'create' ? 'Complete client acceptance process' : 'Manage client information and compliance'}
+              {mode === 'create'
+                ? 'Complete client acceptance process'
+                : 'Manage client information and compliance'}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           {mode !== 'create' && (
-            <Button
-              variant="outline"
-              onClick={() => setEditMode(!editMode)}
-            >
+            <Button variant="outline" onClick={() => setEditMode(!editMode)}>
               <Pencil className="w-4 h-4 mr-2" />
               {editMode ? 'Cancel' : 'Edit'}
             </Button>
@@ -136,18 +141,18 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Input
                     id="entity_name"
                     value={client.entity_name}
-                    onChange={(e) => setClient({ ...client, entity_name: e.target.value })}
+                    onChange={e => setClient({ ...client, entity_name: e.target.value })}
                     disabled={!editMode}
                     placeholder="Enter client name"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="entity_code">Client Code *</Label>
                   <Input
                     id="entity_code"
                     value={client.entity_code}
-                    onChange={(e) => setClient({ ...client, entity_code: e.target.value })}
+                    onChange={e => setClient({ ...client, entity_code: e.target.value })}
                     disabled={!editMode}
                     placeholder="e.g., CLI-2025-001"
                   />
@@ -157,10 +162,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Label htmlFor="client_type">Client Type *</Label>
                   <Select
                     value={(client.metadata as any)?.client_type}
-                    onValueChange={(value) => setClient({
-                      ...client,
-                      metadata: { ...client.metadata!, client_type: value as any }
-                    })}
+                    onValueChange={value =>
+                      setClient({
+                        ...client,
+                        metadata: { ...client.metadata!, client_type: value as any }
+                      })
+                    }
                     disabled={!editMode}
                   >
                     <SelectTrigger>
@@ -180,10 +187,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Input
                     id="industry_code"
                     value={(client.metadata as any)?.industry_code}
-                    onChange={(e) => setClient({
-                      ...client,
-                      metadata: { ...client.metadata!, industry_code: e.target.value }
-                    })}
+                    onChange={e =>
+                      setClient({
+                        ...client,
+                        metadata: { ...client.metadata!, industry_code: e.target.value }
+                      })
+                    }
                     disabled={!editMode}
                     placeholder="Industry classification"
                   />
@@ -197,10 +206,15 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                       id="annual_revenue"
                       type="number"
                       value={(client.metadata as any)?.annual_revenue}
-                      onChange={(e) => setClient({
-                        ...client,
-                        metadata: { ...client.metadata!, annual_revenue: parseFloat(e.target.value) }
-                      })}
+                      onChange={e =>
+                        setClient({
+                          ...client,
+                          metadata: {
+                            ...client.metadata!,
+                            annual_revenue: parseFloat(e.target.value)
+                          }
+                        })
+                      }
                       disabled={!editMode}
                       className="pl-10"
                       placeholder="0.00"
@@ -216,10 +230,15 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                       id="total_assets"
                       type="number"
                       value={(client.metadata as any)?.total_assets}
-                      onChange={(e) => setClient({
-                        ...client,
-                        metadata: { ...client.metadata!, total_assets: parseFloat(e.target.value) }
-                      })}
+                      onChange={e =>
+                        setClient({
+                          ...client,
+                          metadata: {
+                            ...client.metadata!,
+                            total_assets: parseFloat(e.target.value)
+                          }
+                        })
+                      }
                       disabled={!editMode}
                       className="pl-10"
                       placeholder="0.00"
@@ -233,10 +252,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <input
                     type="checkbox"
                     checked={(client.metadata as any)?.public_interest_entity}
-                    onChange={(e) => setClient({
-                      ...client,
-                      metadata: { ...client.metadata!, public_interest_entity: e.target.checked }
-                    })}
+                    onChange={e =>
+                      setClient({
+                        ...client,
+                        metadata: { ...client.metadata!, public_interest_entity: e.target.checked }
+                      })
+                    }
                     disabled={!editMode}
                     className="rounded border-gray-300"
                   />
@@ -262,10 +283,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Label htmlFor="risk_rating">Overall Risk Rating</Label>
                   <Select
                     value={(client.metadata as any)?.risk_rating}
-                    onValueChange={(value) => setClient({
-                      ...client,
-                      metadata: { ...client.metadata!, risk_rating: value as any }
-                    })}
+                    onValueChange={value =>
+                      setClient({
+                        ...client,
+                        metadata: { ...client.metadata!, risk_rating: value as any }
+                      })
+                    }
                     disabled={!editMode}
                   >
                     <SelectTrigger>
@@ -285,10 +308,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Input
                     id="credit_rating"
                     value={independenceChecks.credit_rating}
-                    onChange={(e) => setIndependenceChecks({
-                      ...independenceChecks,
-                      credit_rating: e.target.value
-                    })}
+                    onChange={e =>
+                      setIndependenceChecks({
+                        ...independenceChecks,
+                        credit_rating: e.target.value
+                      })
+                    }
                     disabled={!editMode}
                     placeholder="e.g., A-, BBB+"
                   />
@@ -303,10 +328,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                     min="0"
                     max="10"
                     value={independenceChecks.aml_risk_score}
-                    onChange={(e) => setIndependenceChecks({
-                      ...independenceChecks,
-                      aml_risk_score: parseFloat(e.target.value)
-                    })}
+                    onChange={e =>
+                      setIndependenceChecks({
+                        ...independenceChecks,
+                        aml_risk_score: parseFloat(e.target.value)
+                      })
+                    }
                     disabled={!editMode}
                     placeholder="0.0 - 10.0"
                   />
@@ -317,10 +344,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Input
                     id="previous_auditor"
                     value={(client.metadata as any)?.previous_auditor}
-                    onChange={(e) => setClient({
-                      ...client,
-                      metadata: { ...client.metadata!, previous_auditor: e.target.value }
-                    })}
+                    onChange={e =>
+                      setClient({
+                        ...client,
+                        metadata: { ...client.metadata!, previous_auditor: e.target.value }
+                      })
+                    }
                     disabled={!editMode}
                     placeholder="Name of previous audit firm"
                   />
@@ -339,10 +368,14 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
 
               {/* Risk Indicators */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                <Card className={(client.metadata as any)?.risk_rating === 'high' || (client.metadata as any)?.risk_rating === 'very_high' 
-                  ? "border-red-200 bg-red-50" 
-                  : "border-green-200 bg-green-50"
-                }>
+                <Card
+                  className={
+                    (client.metadata as any)?.risk_rating === 'high' ||
+                    (client.metadata as any)?.risk_rating === 'very_high'
+                      ? 'border-red-200 bg-red-50'
+                      : 'border-green-200 bg-green-50'
+                  }
+                >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -351,9 +384,9 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                           Based on risk assessment and PIE status
                         </p>
                       </div>
-                      {((client.metadata as any)?.risk_rating === 'high' || 
-                        (client.metadata as any)?.risk_rating === 'very_high' || 
-                        (client.metadata as any)?.public_interest_entity) ? (
+                      {(client.metadata as any)?.risk_rating === 'high' ||
+                      (client.metadata as any)?.risk_rating === 'very_high' ||
+                      (client.metadata as any)?.public_interest_entity ? (
                         <AlertCircle className="w-6 h-6 text-red-500" />
                       ) : (
                         <CheckCircle2 className="w-6 h-6 text-green-500" />
@@ -396,10 +429,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Input
                     id="partners_id"
                     value={independenceChecks.partners_id}
-                    onChange={(e) => setIndependenceChecks({
-                      ...independenceChecks,
-                      partners_id: e.target.value
-                    })}
+                    onChange={e =>
+                      setIndependenceChecks({
+                        ...independenceChecks,
+                        partners_id: e.target.value
+                      })
+                    }
                     disabled={!editMode}
                     placeholder="Enter partners ID"
                   />
@@ -409,10 +444,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <Label htmlFor="sijilat_verification">Sijilat Verification Status</Label>
                   <Select
                     value={independenceChecks.sijilat_verification}
-                    onValueChange={(value) => setIndependenceChecks({
-                      ...independenceChecks,
-                      sijilat_verification: value
-                    })}
+                    onValueChange={value =>
+                      setIndependenceChecks({
+                        ...independenceChecks,
+                        sijilat_verification: value
+                      })
+                    }
                     disabled={!editMode}
                   >
                     <SelectTrigger>
@@ -430,17 +467,19 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
               {/* Compliance Checklist */}
               <div className="space-y-3 pt-4">
                 <h4 className="font-medium text-gray-900">Compliance Checklist</h4>
-                
+
                 <div className="space-y-2">
                   <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer">
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
                         checked={independenceChecks.independence_confirmed}
-                        onChange={(e) => setIndependenceChecks({
-                          ...independenceChecks,
-                          independence_confirmed: e.target.checked
-                        })}
+                        onChange={e =>
+                          setIndependenceChecks({
+                            ...independenceChecks,
+                            independence_confirmed: e.target.checked
+                          })
+                        }
                         disabled={!editMode}
                         className="rounded border-gray-300"
                       />
@@ -458,10 +497,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                       <input
                         type="checkbox"
                         checked={independenceChecks.conflict_check_completed}
-                        onChange={(e) => setIndependenceChecks({
-                          ...independenceChecks,
-                          conflict_check_completed: e.target.checked
-                        })}
+                        onChange={e =>
+                          setIndependenceChecks({
+                            ...independenceChecks,
+                            conflict_check_completed: e.target.checked
+                          })
+                        }
                         disabled={!editMode}
                         className="rounded border-gray-300"
                       />
@@ -479,10 +520,12 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                       <input
                         type="checkbox"
                         checked={independenceChecks.compliance_approved}
-                        onChange={(e) => setIndependenceChecks({
-                          ...independenceChecks,
-                          compliance_approved: e.target.checked
-                        })}
+                        onChange={e =>
+                          setIndependenceChecks({
+                            ...independenceChecks,
+                            compliance_approved: e.target.checked
+                          })
+                        }
                         disabled={!editMode}
                         className="rounded border-gray-300"
                       />
@@ -525,9 +568,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                   <p className="text-sm text-gray-500 mt-1">Add previous audit information</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {/* Audit history items would go here */}
-                </div>
+                <div className="space-y-3">{/* Audit history items would go here */}</div>
               )}
             </CardContent>
           </Card>
@@ -572,7 +613,14 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
 
                 <div className="space-y-2">
                   <Label>EQCR Partner</Label>
-                  <Select disabled={!editMode || (!(client.metadata as any)?.public_interest_entity && (client.metadata as any)?.risk_rating !== 'high' && (client.metadata as any)?.risk_rating !== 'very_high')}>
+                  <Select
+                    disabled={
+                      !editMode ||
+                      (!(client.metadata as any)?.public_interest_entity &&
+                        (client.metadata as any)?.risk_rating !== 'high' &&
+                        (client.metadata as any)?.risk_rating !== 'very_high')
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select EQCR partner" />
                     </SelectTrigger>

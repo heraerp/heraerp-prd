@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Authenticated Restaurant Dashboard
  * Smart Code: HERA.RESTAURANT.DASHBOARD.AUTH.v1
- * 
+ *
  * Multi-tenant restaurant dashboard with proper head office and branch hierarchy
  * Can be used by any restaurant group with multiple locations
  */
@@ -19,7 +19,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useRouter } from 'next/navigation'
-import { 
+import {
   Building2,
   Users,
   Shield,
@@ -43,16 +43,12 @@ import { cn } from '@/lib/utils'
 import { universalApi } from '@/lib/universal-api'
 
 export default function AuthenticatedRestaurantDashboard() {
-  const { 
-    currentOrganization, 
-    isAuthenticated, 
-    isLoading,
-    isLoadingOrgs,
-    user 
-  } = useMultiOrgAuth()
-  
+  const { currentOrganization, isAuthenticated, isLoading, isLoadingOrgs, user } = useMultiOrgAuth()
+
   const router = useRouter()
-  const [selectedTab, setSelectedTab] = useState<'overview' | 'orders' | 'branches' | 'settings'>('overview')
+  const [selectedTab, setSelectedTab] = useState<'overview' | 'orders' | 'branches' | 'settings'>(
+    'overview'
+  )
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null)
   const [stats, setStats] = useState({
     todayOrders: 0,
@@ -64,16 +60,16 @@ export default function AuthenticatedRestaurantDashboard() {
     kitchenOrders: []
   })
   const [loading, setLoading] = useState(true)
-  
+
   // Detect organization type and hierarchy
   const isHeadOffice = currentOrganization?.metadata?.type === 'head_office'
   const isBranch = currentOrganization?.metadata?.type === 'branch'
   const parentId = currentOrganization?.metadata?.parentId
-  
+
   // Get accessible organizations based on role
   const getAccessibleOrganizations = async () => {
     if (!currentOrganization) return []
-    
+
     if (isHeadOffice) {
       // Head office can see all branches in the same group
       try {
@@ -92,7 +88,7 @@ export default function AuthenticatedRestaurantDashboard() {
       // Branch can only see itself
       return [currentOrganization]
     }
-    
+
     return [currentOrganization]
   }
 
@@ -108,14 +104,14 @@ export default function AuthenticatedRestaurantDashboard() {
   const loadDashboardData = async () => {
     try {
       setLoading(true)
-      
+
       // Load restaurant dashboard data
       const response = await fetch('/api/v1/restaurant/dashboard', {
         headers: {
           'organization-id': currentOrganization?.id || ''
         }
       })
-      
+
       if (response.ok) {
         const data = await response.json()
         setStats(data)
@@ -183,10 +179,7 @@ export default function AuthenticatedRestaurantDashboard() {
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             No organization context found.
-            <Button 
-              className="mt-4 w-full" 
-              onClick={() => router.push('/auth/organizations')}
-            >
+            <Button className="mt-4 w-full" onClick={() => router.push('/auth/organizations')}>
               Select Organization
             </Button>
           </AlertDescription>
@@ -230,9 +223,7 @@ export default function AuthenticatedRestaurantDashboard() {
                 <Shield className="w-3 h-3 mr-1" />
                 Authenticated
               </Badge>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                {user?.email}
-              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</div>
             </div>
           </div>
         </div>
@@ -243,22 +234,19 @@ export default function AuthenticatedRestaurantDashboard() {
         <Alert className="mb-6 bg-orange-50 border-orange-200 dark:bg-orange-900/10 dark:border-orange-700">
           <Building2 className="h-4 w-4 text-orange-600" />
           <AlertDescription className="text-orange-700 dark:text-orange-300">
-            <strong>Restaurant Management:</strong> 
-            {isHeadOffice 
+            <strong>Restaurant Management:</strong>
+            {isHeadOffice
               ? ` You are viewing the group dashboard. You can monitor all ${accessibleOrgs.length - 1} restaurant locations.`
-              : ` You are viewing your restaurant location. Focus on your local operations and customers.`
-            }
+              : ` You are viewing your restaurant location. Focus on your local operations and customers.`}
           </AlertDescription>
         </Alert>
 
         {/* Navigation Tabs */}
-        <Tabs value={selectedTab} onValueChange={(v) => setSelectedTab(v as any)}>
+        <Tabs value={selectedTab} onValueChange={v => setSelectedTab(v as any)}>
           <TabsList className="bg-gray-100 dark:bg-gray-800 mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
-            {isHeadOffice && (
-              <TabsTrigger value="branches">Locations</TabsTrigger>
-            )}
+            {isHeadOffice && <TabsTrigger value="branches">Locations</TabsTrigger>}
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
@@ -271,13 +259,13 @@ export default function AuthenticatedRestaurantDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Today's Orders</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.todayOrders}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {stats.todayOrders}
+                      </p>
                     </div>
                     <Receipt className="w-8 h-8 text-orange-600" />
                   </div>
-                  {isHeadOffice && (
-                    <p className="text-xs text-gray-500 mt-2">All locations</p>
-                  )}
+                  {isHeadOffice && <p className="text-xs text-gray-500 mt-2">All locations</p>}
                 </CardContent>
               </Card>
 
@@ -286,7 +274,9 @@ export default function AuthenticatedRestaurantDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Today's Revenue</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">${stats.todayRevenue}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        ${stats.todayRevenue}
+                      </p>
                     </div>
                     <DollarSign className="w-8 h-8 text-green-600" />
                   </div>
@@ -328,18 +318,25 @@ export default function AuthenticatedRestaurantDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {stats.popularDishes.map((dish: any, idx: number) => (
-                    <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+                    >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 flex items-center justify-center">
                           <Utensils className="w-5 h-5 text-white" />
                         </div>
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">{dish.name}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{dish.orders} orders</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {dish.orders} orders
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900 dark:text-white">${dish.revenue}</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">
+                          ${dish.revenue}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -358,9 +355,12 @@ export default function AuthenticatedRestaurantDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {stats.kitchenOrders.map((order: any) => (
-                    <div key={order.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div
+                      key={order.id}
+                      className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700"
+                    >
                       <div className="flex items-center gap-3">
-                        <Badge 
+                        <Badge
                           variant={order.status === 'ready' ? 'default' : 'secondary'}
                           className={order.status === 'ready' ? 'bg-green-100 text-green-700' : ''}
                         >
@@ -373,9 +373,7 @@ export default function AuthenticatedRestaurantDashboard() {
                           </p>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {order.time}
-                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">{order.time}</div>
                     </div>
                   ))}
                 </div>
@@ -411,45 +409,53 @@ export default function AuthenticatedRestaurantDashboard() {
           {isHeadOffice && (
             <TabsContent value="branches">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {accessibleOrgs.filter(org => org.id !== currentOrganization.id).map((branch) => (
-                  <Card key={branch.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <MapPin className="w-5 h-5 text-orange-600" />
-                          {branch.organization_name}
-                        </CardTitle>
-                        <Badge variant="outline">{branch.organization_code}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Today's Revenue</p>
-                            <p className="text-lg font-semibold text-gray-900 dark:text-white">$1,625</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Orders</p>
-                            <p className="text-lg font-semibold text-gray-900 dark:text-white">23</p>
-                          </div>
+                {accessibleOrgs
+                  .filter(org => org.id !== currentOrganization.id)
+                  .map(branch => (
+                    <Card key={branch.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="flex items-center gap-2">
+                            <MapPin className="w-5 h-5 text-orange-600" />
+                            {branch.organization_name}
+                          </CardTitle>
+                          <Badge variant="outline">{branch.organization_code}</Badge>
                         </div>
-                        
-                        <Button 
-                          className="w-full"
-                          variant="outline"
-                          onClick={() => {
-                            // Switch to branch view
-                            console.log('Switching to branch:', branch.id)
-                          }}
-                        >
-                          View Location Details
-                          <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Today's Revenue
+                              </p>
+                              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                $1,625
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">Orders</p>
+                              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                23
+                              </p>
+                            </div>
+                          </div>
+
+                          <Button
+                            className="w-full"
+                            variant="outline"
+                            onClick={() => {
+                              // Switch to branch view
+                              console.log('Switching to branch:', branch.id)
+                            }}
+                          >
+                            View Location Details
+                            <ChevronRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
               </div>
             </TabsContent>
           )}
@@ -463,25 +469,30 @@ export default function AuthenticatedRestaurantDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <h3 className="font-medium text-gray-900 dark:text-white mb-2">Organization Type</h3>
+                    <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+                      Organization Type
+                    </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {isHeadOffice ? 'Restaurant Group (Head Office)' : 'Restaurant Location (Branch)'}
+                      {isHeadOffice
+                        ? 'Restaurant Group (Head Office)'
+                        : 'Restaurant Location (Branch)'}
                     </p>
                   </div>
 
                   <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                     <h3 className="font-medium text-gray-900 dark:text-white mb-2">Access Level</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {isHeadOffice 
+                      {isHeadOffice
                         ? 'Full access to all restaurant locations and consolidated reporting'
-                        : 'Access limited to this restaurant location only'
-                      }
+                        : 'Access limited to this restaurant location only'}
                     </p>
                   </div>
 
                   {isHeadOffice && (
                     <div className="p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20">
-                      <h3 className="font-medium text-orange-900 dark:text-orange-200 mb-2">Group Management</h3>
+                      <h3 className="font-medium text-orange-900 dark:text-orange-200 mb-2">
+                        Group Management
+                      </h3>
                       <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
                         <li>• Monitor all restaurant locations</li>
                         <li>• View consolidated financial reports</li>

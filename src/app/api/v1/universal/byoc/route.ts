@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     if (action === 'health') {
       const healthStatus = await byocService.performHealthCheck(applicationId, organizationId)
-      
+
       return NextResponse.json({
         success: true,
         data: {
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     if (action === 'providers') {
       const providers = await byocService.getProviders()
-      
+
       return NextResponse.json({
         success: true,
         data: { providers },
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     if (action === 'active') {
       const configs = mockConfigurations[configKey] || []
       const activeConfig = configs.find(c => c.metadata.isActive)
-      
+
       return NextResponse.json({
         success: true,
         data: activeConfig || null,
@@ -63,25 +63,31 @@ export async function GET(request: NextRequest) {
 
     // Default: return all configurations
     const configurations = mockConfigurations[configKey] || []
-    
+
     // Filter out sensitive data for non-admin users
     const userRole = request.headers.get('x-user-role') || 'user'
     const sanitizedConfigs = configurations.map(config => ({
       ...config,
       encryptedSecrets: userRole === 'admin' ? config.encryptedSecrets : '***REDACTED***',
-      config: userRole === 'admin' ? config.config : Object.keys(config.config).reduce((acc, key) => {
-        // Hide sensitive values for non-admin users
-        const providers = byocService.getProviders()
-        const provider = providers.find((p: any) => p.id === config.provider)
-        const field = provider?.configSchema.find((f: any) => f.name === key)
-        
-        if (field?.sensitive && userRole !== 'admin') {
-          acc[key] = '***HIDDEN***'
-        } else {
-          acc[key] = config.config[key]
-        }
-        return acc
-      }, {} as Record<string, any>)
+      config:
+        userRole === 'admin'
+          ? config.config
+          : Object.keys(config.config).reduce(
+              (acc, key) => {
+                // Hide sensitive values for non-admin users
+                const providers = byocService.getProviders()
+                const provider = providers.find((p: any) => p.id === config.provider)
+                const field = provider?.configSchema.find((f: any) => f.name === key)
+
+                if (field?.sensitive && userRole !== 'admin') {
+                  acc[key] = '***HIDDEN***'
+                } else {
+                  acc[key] = config.config[key]
+                }
+                return acc
+              },
+              {} as Record<string, any>
+            )
     }))
 
     return NextResponse.json({
@@ -92,8 +98,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error in BYOC GET:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -125,8 +131,13 @@ export async function POST(request: NextRequest) {
       }
 
       // Use BYOC service to save configuration
-      const result = await byocService.saveConfiguration(applicationId, organizationId, userId, config)
-      
+      const result = await byocService.saveConfiguration(
+        applicationId,
+        organizationId,
+        userId,
+        config
+      )
+
       if (result.success) {
         // Store in mock storage
         if (!mockConfigurations[configKey]) {
@@ -151,10 +162,7 @@ export async function POST(request: NextRequest) {
           }
         })
       } else {
-        return NextResponse.json(
-          { success: false, error: result.error },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: result.error }, { status: 400 })
       }
     }
 
@@ -167,8 +175,13 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      const result = await byocService.importConfiguration(jsonData, applicationId, organizationId, userId)
-      
+      const result = await byocService.importConfiguration(
+        jsonData,
+        applicationId,
+        organizationId,
+        userId
+      )
+
       if (result.success) {
         // Store in mock storage
         if (!mockConfigurations[configKey]) {
@@ -182,10 +195,7 @@ export async function POST(request: NextRequest) {
           message: 'Configuration imported successfully'
         })
       } else {
-        return NextResponse.json(
-          { success: false, error: result.error },
-          { status: 400 }
-        )
+        return NextResponse.json({ success: false, error: result.error }, { status: 400 })
       }
     }
 
@@ -200,7 +210,7 @@ export async function POST(request: NextRequest) {
 
       const configs = mockConfigurations[configKey] || []
       const config = configs.find(c => c.id === configId)
-      
+
       if (!config) {
         return NextResponse.json(
           { success: false, error: 'Configuration not found' },
@@ -228,8 +238,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error in BYOC POST:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -245,7 +255,10 @@ export async function PUT(request: NextRequest) {
 
     if (!applicationId || !organizationId || !configId || !updates || !userId) {
       return NextResponse.json(
-        { success: false, error: 'applicationId, organizationId, configId, updates, and userId are required' },
+        {
+          success: false,
+          error: 'applicationId, organizationId, configId, updates, and userId are required'
+        },
         { status: 400 }
       )
     }
@@ -276,7 +289,7 @@ export async function PUT(request: NextRequest) {
     if (updates.config) {
       const providers = await byocService.getProviders()
       const provider = providers.find(p => p.id === updatedConfig.provider)
-      
+
       if (provider) {
         const secrets: Record<string, any> = {}
         const regularConfig: Record<string, any> = {}
@@ -313,8 +326,8 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Error in BYOC PUT:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -333,7 +346,10 @@ export async function DELETE(request: NextRequest) {
 
     if (!applicationId || !organizationId || !configId || !userId) {
       return NextResponse.json(
-        { success: false, error: 'applicationId, organizationId, configId, and userId are required' },
+        {
+          success: false,
+          error: 'applicationId, organizationId, configId, and userId are required'
+        },
         { status: 400 }
       )
     }
@@ -350,11 +366,14 @@ export async function DELETE(request: NextRequest) {
     }
 
     const deletedConfig = configs[configIndex]
-    
+
     // Don't allow deletion of active configurations
     if (deletedConfig.metadata.isActive) {
       return NextResponse.json(
-        { success: false, error: 'Cannot delete active configuration. Activate another configuration first.' },
+        {
+          success: false,
+          error: 'Cannot delete active configuration. Activate another configuration first.'
+        },
         { status: 400 }
       )
     }
@@ -375,8 +394,8 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('Error in BYOC DELETE:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

@@ -28,7 +28,8 @@ let mockThreads: Array<BPOCommunicationEntity & { messages?: BPOMessageEntity[] 
         thread_id: 'thread-001',
         sender_id: 'bo-user-1',
         sender_role: 'back-office',
-        message_content: 'Hi Sarah, I\'m processing INV-2024-001 and noticed the PO number format is unusual. Can you confirm this is correct?',
+        message_content:
+          "Hi Sarah, I'm processing INV-2024-001 and noticed the PO number format is unusual. Can you confirm this is correct?",
         message_type: 'query',
         created_at: new Date('2024-08-11T10:30:00'),
         is_read: true
@@ -41,7 +42,8 @@ let mockThreads: Array<BPOCommunicationEntity & { messages?: BPOMessageEntity[] 
         thread_id: 'thread-001',
         sender_id: 'ho-user-1',
         sender_role: 'head-office',
-        message_content: 'Yes, that\'s correct. We changed the PO numbering system in Q3 for better tracking.',
+        message_content:
+          "Yes, that's correct. We changed the PO numbering system in Q3 for better tracking.",
         message_type: 'response',
         created_at: new Date('2024-08-11T10:45:00'),
         is_read: true
@@ -59,10 +61,9 @@ export async function GET(request: NextRequest) {
 
     if (action === 'threads') {
       // Return all threads for user
-      const userThreads = mockThreads.filter(thread => 
-        thread.head_office_user_id === userId || 
-        thread.back_office_user_id === userId ||
-        !userId // Return all if no user filter
+      const userThreads = mockThreads.filter(
+        thread =>
+          thread.head_office_user_id === userId || thread.back_office_user_id === userId || !userId // Return all if no user filter
       )
 
       return NextResponse.json({
@@ -79,10 +80,7 @@ export async function GET(request: NextRequest) {
       // Return specific thread with messages
       const thread = mockThreads.find(t => t.entity_id === threadId)
       if (!thread) {
-        return NextResponse.json(
-          { success: false, error: 'Thread not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ success: false, error: 'Thread not found' }, { status: 404 })
       }
 
       return NextResponse.json({
@@ -100,8 +98,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error retrieving BPO communication:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to retrieve communication data',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -146,14 +144,18 @@ export async function POST(request: NextRequest) {
 
     if (action === 'send_message') {
       // Send message to existing thread
-      const { thread_id, sender_id, sender_role, message_content, message_type = 'text', attachments } = data
+      const {
+        thread_id,
+        sender_id,
+        sender_role,
+        message_content,
+        message_type = 'text',
+        attachments
+      } = data
 
       const thread = mockThreads.find(t => t.entity_id === thread_id)
       if (!thread) {
-        return NextResponse.json(
-          { success: false, error: 'Thread not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ success: false, error: 'Thread not found' }, { status: 404 })
       }
 
       const newMessage: BPOMessageEntity = {
@@ -193,15 +195,12 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Invalid action specified' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Invalid action specified' }, { status: 400 })
   } catch (error) {
     console.error('Error creating BPO communication:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to create communication',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -217,16 +216,13 @@ export async function PUT(request: NextRequest) {
 
     const thread = mockThreads.find(t => t.entity_id === thread_id)
     if (!thread) {
-      return NextResponse.json(
-        { success: false, error: 'Thread not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ success: false, error: 'Thread not found' }, { status: 404 })
     }
 
     if (action === 'mark_read') {
       // Mark messages as read
       const { user_id, user_role } = data
-      
+
       if (thread.messages) {
         thread.messages.forEach(message => {
           if (message.sender_id !== user_id) {
@@ -252,7 +248,7 @@ export async function PUT(request: NextRequest) {
     if (action === 'close_thread') {
       // Close communication thread
       thread.thread_status = 'resolved'
-      
+
       return NextResponse.json({
         success: true,
         message: 'Thread closed successfully'
@@ -262,22 +258,19 @@ export async function PUT(request: NextRequest) {
     if (action === 'update_priority') {
       // Update thread priority
       thread.priority = data.priority
-      
+
       return NextResponse.json({
         success: true,
         message: 'Thread priority updated'
       })
     }
 
-    return NextResponse.json(
-      { success: false, error: 'Invalid action specified' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'Invalid action specified' }, { status: 400 })
   } catch (error) {
     console.error('Error updating BPO communication:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to update communication',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -294,14 +287,12 @@ export async function DELETE(request: NextRequest) {
 
     if (messageId) {
       // Delete specific message
-      const thread = mockThreads.find(t => 
-        t.messages?.some(m => m.entity_id === messageId)
-      )
-      
+      const thread = mockThreads.find(t => t.messages?.some(m => m.entity_id === messageId))
+
       if (thread && thread.messages) {
         thread.messages = thread.messages.filter(m => m.entity_id !== messageId)
         thread.message_count = thread.messages.length
-        
+
         return NextResponse.json({
           success: true,
           message: 'Message deleted successfully'
@@ -312,10 +303,10 @@ export async function DELETE(request: NextRequest) {
     if (threadId) {
       // Delete entire thread
       const threadIndex = mockThreads.findIndex(t => t.entity_id === threadId)
-      
+
       if (threadIndex > -1) {
         mockThreads.splice(threadIndex, 1)
-        
+
         return NextResponse.json({
           success: true,
           message: 'Thread deleted successfully'
@@ -330,8 +321,8 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('Error deleting BPO communication:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to delete communication',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

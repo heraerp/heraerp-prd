@@ -1,7 +1,7 @@
 /**
  * HERA CRM Document Management Service
  * Handles file uploads, document storage, and organization
- * 
+ *
  * Project Manager Priority #4: File Upload & Document Management
  */
 
@@ -199,16 +199,20 @@ export class CRMDocumentService {
 
       if (filter) {
         if (filter.contactId) {
-          filteredDocs = filteredDocs.filter(doc => doc.contactId?.toString() === filter.contactId?.toString())
+          filteredDocs = filteredDocs.filter(
+            doc => doc.contactId?.toString() === filter.contactId?.toString()
+          )
         }
         if (filter.opportunityId) {
-          filteredDocs = filteredDocs.filter(doc => doc.opportunityId?.toString() === filter.opportunityId?.toString())
+          filteredDocs = filteredDocs.filter(
+            doc => doc.opportunityId?.toString() === filter.opportunityId?.toString()
+          )
         }
         if (filter.category) {
           filteredDocs = filteredDocs.filter(doc => doc.category === filter.category)
         }
         if (filter.tags && filter.tags.length > 0) {
-          filteredDocs = filteredDocs.filter(doc => 
+          filteredDocs = filteredDocs.filter(doc =>
             filter.tags!.some(tag => doc.tags.includes(tag))
           )
         }
@@ -240,7 +244,10 @@ export class CRMDocumentService {
   /**
    * Update document metadata
    */
-  async updateDocument(documentId: string, updates: Partial<CRMDocument>): Promise<CRMDocument | null> {
+  async updateDocument(
+    documentId: string,
+    updates: Partial<CRMDocument>
+  ): Promise<CRMDocument | null> {
     try {
       // TODO: Implement HERA API update
       console.log('Updating document:', documentId, updates)
@@ -270,7 +277,7 @@ export class CRMDocumentService {
   private async uploadToLocal(file: File, filename: string): Promise<string> {
     // For demo purposes - in production, this would use proper file storage
     // Convert file to base64 for mock storage
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const reader = new FileReader()
       reader.onload = () => {
         // Mock local storage URL
@@ -329,6 +336,9 @@ export class CRMDocumentService {
 /**
  * Create document service instance
  */
-export const createDocumentService = (organizationId: string, provider?: 'local' | 'supabase' | 'aws' | 's3') => {
+export const createDocumentService = (
+  organizationId: string,
+  provider?: 'local' | 'supabase' | 'aws' | 's3'
+) => {
   return new CRMDocumentService(organizationId, provider)
 }

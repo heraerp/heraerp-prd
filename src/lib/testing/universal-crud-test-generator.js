@@ -1,26 +1,26 @@
 /**
  * Universal CRUD Test Generator for HERA
- * 
+ *
  * Automatically generates and runs comprehensive tests for any CRUD module
  * following HERA's universal 6-table architecture
  */
 
-const fs = require('fs');
-const path = require('path');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+const fs = require('fs')
+const path = require('path')
+const { exec } = require('child_process')
+const { promisify } = require('util')
 
-const execAsync = promisify(exec);
+const execAsync = promisify(exec)
 
 class UniversalCrudTestGenerator {
   constructor(config) {
-    this.config = config;
+    this.config = config
     this.testOutputPath = path.join(
       process.cwd(),
       'tests',
       'generated',
       `${config.moduleName}-crud.test.js`
-    );
+    )
   }
 
   /**
@@ -61,12 +61,16 @@ describe('${this.config.displayName} - Universal CRUD Operations', () => {
 
   describe('CREATE Operations', () => {
     test('should create a new ${this.config.moduleName}', async () => {
-      const createData = ${JSON.stringify(this.config.testData?.createData || {
-        entity_type: this.config.entityType,
-        entity_name: `Test ${this.config.displayName}`,
-        entity_code: `${this.config.entityType.toUpperCase()}-001`,
-        smart_code: `${this.config.smartCodePrefix}.v1`
-      }, null, 6)};
+      const createData = ${JSON.stringify(
+        this.config.testData?.createData || {
+          entity_type: this.config.entityType,
+          entity_name: `Test ${this.config.displayName}`,
+          entity_code: `${this.config.entityType.toUpperCase()}-001`,
+          smart_code: `${this.config.smartCodePrefix}.v1`
+        },
+        null,
+        6
+      )};
 
       const mockResponse = {
         id: '${this.config.moduleName}-123',
@@ -152,10 +156,14 @@ ${this.generateDynamicFieldsTests()}
 
   describe('UPDATE Operations', () => {
     test('should update ${this.config.moduleName} details', async () => {
-      const updateData = ${JSON.stringify(this.config.testData?.updateData || {
-        entity_name: `Updated ${this.config.displayName}`,
-        metadata: { updated: true }
-      }, null, 6)};
+      const updateData = ${JSON.stringify(
+        this.config.testData?.updateData || {
+          entity_name: `Updated ${this.config.displayName}`,
+          metadata: { updated: true }
+        },
+        null,
+        6
+      )};
 
       const mockUpdated = {
         id: '${this.config.moduleName}-123',
@@ -303,9 +311,9 @@ ${this.generateTransactionTests()}
 
       // Verify our test data maps to these tables
       expect(tables).toContain('core_entities'); // For ${this.config.moduleName}
-      ${this.config.dynamicFields.length > 0 ? 'expect(tables).toContain(\'core_dynamic_data\'); // For dynamic fields' : ''}
-      ${this.config.relationships?.length > 0 ? 'expect(tables).toContain(\'core_relationships\'); // For relationships' : ''}
-      ${this.config.transactions?.length > 0 ? 'expect(tables).toContain(\'universal_transactions\'); // For transactions' : ''}
+      ${this.config.dynamicFields.length > 0 ? "expect(tables).toContain('core_dynamic_data'); // For dynamic fields" : ''}
+      ${this.config.relationships?.length > 0 ? "expect(tables).toContain('core_relationships'); // For relationships" : ''}
+      ${this.config.transactions?.length > 0 ? "expect(tables).toContain('universal_transactions'); // For transactions" : ''}
     });
 
     test('should include smart codes in all operations', () => {
@@ -318,18 +326,22 @@ ${this.generateTransactionTests()}
 module.exports = {
   MODULE_CONFIG,
   TEST_ORG_ID
-};`;
+};`
   }
 
   generateDynamicFieldsTests() {
-    if (!this.config.dynamicFields || this.config.dynamicFields.length === 0) return '';
+    if (!this.config.dynamicFields || this.config.dynamicFields.length === 0) return ''
 
-    const fields = this.config.dynamicFields.map(field => `        {
+    const fields = this.config.dynamicFields
+      .map(
+        field => `        {
           entity_id: createdEntityId || '${this.config.moduleName}-123',
           field_name: '${field.name}',
           field_value_${field.type === 'number' ? 'number' : 'text'}: ${JSON.stringify(field.testValue)},
           smart_code: '${field.smartCode}'
-        }`).join(',\n');
+        }`
+      )
+      .join(',\n')
 
     return `
     test('should add dynamic fields to ${this.config.moduleName}', async () => {
@@ -356,18 +368,20 @@ ${fields}
         expect(result).toHaveProperty('data');
         expect(result.data.field_name).toBe(field.field_name);
       }
-    });`;
+    });`
   }
 
   generateDynamicFieldUpdateTests() {
-    const firstField = this.config.dynamicFields?.[0];
-    if (!firstField) return '';
+    const firstField = this.config.dynamicFields?.[0]
+    if (!firstField) return ''
 
     return `
     test('should update dynamic field values', async () => {
-      const newValue = ${firstField.type === 'number' ? 
-        `${firstField.testValue} * 1.5` : 
-        `'Updated ${firstField.testValue}'`};
+      const newValue = ${
+        firstField.type === 'number'
+          ? `${firstField.testValue} * 1.5`
+          : `'Updated ${firstField.testValue}'`
+      };
       
       global.fetch.mockResolvedValueOnce({
         ok: true,
@@ -391,13 +405,13 @@ ${fields}
 
       expect(result).toHaveProperty('data');
       expect(result.data.field_value_${firstField.type === 'number' ? 'number' : 'text'}).toBe(newValue);
-    });`;
+    });`
   }
 
   generateRelationshipTests() {
-    if (!this.config.relationships?.length) return '';
+    if (!this.config.relationships?.length) return ''
 
-    const rel = this.config.relationships[0];
+    const rel = this.config.relationships[0]
     return `
   describe('Relationship Operations', () => {
     test('should create ${rel.type} relationship', async () => {
@@ -421,13 +435,13 @@ ${fields}
       expect(result).toHaveProperty('data');
       expect(result.data.relationship_type).toBe('${rel.type}');
     });
-  });`;
+  });`
   }
 
   generateTransactionTests() {
-    if (!this.config.transactions?.length) return '';
+    if (!this.config.transactions?.length) return ''
 
-    const txn = this.config.transactions[0];
+    const txn = this.config.transactions[0]
     return `
   describe('Transaction Operations', () => {
     test('should create ${txn.type} transaction', async () => {
@@ -442,14 +456,18 @@ ${fields}
         }
       };
 
-      ${txn.hasLineItems ? `const lineItems = [{
+      ${
+        txn.hasLineItems
+          ? `const lineItems = [{
         line_entity_id: '${this.config.moduleName}-123',
         line_number: 1,
         quantity: 1,
         unit_price: 1000.00,
         line_amount: 1000.00,
         smart_code: '${txn.smartCode}.LINE.v1'
-      }];` : 'const lineItems = [];'}
+      }];`
+          : 'const lineItems = [];'
+      }
 
       global.fetch.mockResolvedValueOnce({
         ok: true,
@@ -468,26 +486,26 @@ ${fields}
       expect(result).toHaveProperty('data');
       expect(result.data.transaction_type).toBe('${txn.type}');
     });
-  });`;
+  });`
   }
 
   /**
    * Generate and save the test file
    */
   async generateTestFile() {
-    const content = this.generateTestContent();
-    
+    const content = this.generateTestContent()
+
     // Ensure directory exists
-    const dir = path.dirname(this.testOutputPath);
+    const dir = path.dirname(this.testOutputPath)
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, { recursive: true })
     }
 
     // Write test file
-    fs.writeFileSync(this.testOutputPath, content);
-    
-    console.log(`✅ Generated test file: ${this.testOutputPath}`);
-    return this.testOutputPath;
+    fs.writeFileSync(this.testOutputPath, content)
+
+    console.log(`✅ Generated test file: ${this.testOutputPath}`)
+    return this.testOutputPath
   }
 
   /**
@@ -495,28 +513,28 @@ ${fields}
    */
   async runTests() {
     try {
-      console.log(`🧪 Running tests for ${this.config.displayName}...`);
-      
+      console.log(`🧪 Running tests for ${this.config.displayName}...`)
+
       const { stdout, stderr } = await execAsync(
         `npx jest ${this.testOutputPath} --verbose --no-coverage`
-      );
+      )
 
-      const output = stdout || stderr;
-      const success = !stderr || stderr.includes('PASS');
+      const output = stdout || stderr
+      const success = !stderr || stderr.includes('PASS')
 
       if (success) {
-        console.log(`✅ All tests passed for ${this.config.displayName}`);
+        console.log(`✅ All tests passed for ${this.config.displayName}`)
       } else {
-        console.log(`❌ Some tests failed for ${this.config.displayName}`);
+        console.log(`❌ Some tests failed for ${this.config.displayName}`)
       }
 
-      return { success, output };
+      return { success, output }
     } catch (error) {
-      console.error(`❌ Test execution failed:`, error.message);
-      return { 
-        success: false, 
-        output: error.message || 'Test execution failed' 
-      };
+      console.error(`❌ Test execution failed:`, error.message)
+      return {
+        success: false,
+        output: error.message || 'Test execution failed'
+      }
     }
   }
 
@@ -524,13 +542,13 @@ ${fields}
    * Generate and run tests in one operation
    */
   async generateAndRun() {
-    const testPath = await this.generateTestFile();
-    const testResult = await this.runTests();
-    
+    const testPath = await this.generateTestFile()
+    const testResult = await this.runTests()
+
     return {
       testPath,
       ...testResult
-    };
+    }
   }
 }
 
@@ -600,10 +618,10 @@ function createTestConfig(entityType, options = {}) {
         }
       ]
     }
-  };
+  }
 
-  const defaultConfig = defaults[entityType] || {};
-  
+  const defaultConfig = defaults[entityType] || {}
+
   return {
     moduleName: entityType.toLowerCase().replace(/[^a-z0-9]/g, '-'),
     entityType: entityType,
@@ -612,10 +630,10 @@ function createTestConfig(entityType, options = {}) {
     dynamicFields: [],
     ...defaultConfig,
     ...options
-  };
+  }
 }
 
 module.exports = {
   UniversalCrudTestGenerator,
   createTestConfig
-};
+}

@@ -40,14 +40,14 @@ export interface ContrastReport {
  */
 export const WCAG_STANDARDS = {
   AA: {
-    normal: 4.5,    // Normal text
-    large: 3.0,     // Large text (18pt+ or 14pt+ bold)
-    ui: 3.0         // UI components
+    normal: 4.5, // Normal text
+    large: 3.0, // Large text (18pt+ or 14pt+ bold)
+    ui: 3.0 // UI components
   },
   AAA: {
-    normal: 7.0,    // Normal text
-    large: 4.5,     // Large text
-    ui: 4.5         // UI components
+    normal: 7.0, // Normal text
+    large: 4.5, // Large text
+    ui: 4.5 // UI components
   }
 } as const
 
@@ -187,19 +187,16 @@ export const CRITICAL_CONTRAST_PAIRS: ContrastPair[] = [
  * HERA Contrast Validator Class
  */
 export class HeraContrastValidator {
-  
   /**
    * Convert hex color to sRGB
    */
   private static hexToSrgb(hex: string): number[] {
     const cleanHex = hex.replace('#', '')
     const r = parseInt(cleanHex.slice(0, 2), 16) / 255
-    const g = parseInt(cleanHex.slice(2, 4), 16) / 255  
+    const g = parseInt(cleanHex.slice(2, 4), 16) / 255
     const b = parseInt(cleanHex.slice(4, 6), 16) / 255
-    
-    return [r, g, b].map(c => 
-      c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-    )
+
+    return [r, g, b].map(c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)))
   }
 
   /**
@@ -216,7 +213,7 @@ export class HeraContrastValidator {
   static calculateContrastRatio(foreground: string, background: string): number {
     const L1 = this.getRelativeLuminance(foreground)
     const L2 = this.getRelativeLuminance(background)
-    
+
     const [lighter, darker] = [Math.max(L1, L2), Math.min(L1, L2)]
     return (lighter + 0.05) / (darker + 0.05)
   }
@@ -225,8 +222,8 @@ export class HeraContrastValidator {
    * Check if a contrast ratio meets WCAG requirements
    */
   static checkContrastCompliance(
-    ratio: number, 
-    context: ContrastPair['context'], 
+    ratio: number,
+    context: ContrastPair['context'],
     standard: 'AA' | 'AAA'
   ): boolean {
     const requirement = WCAG_STANDARDS[standard][context]
@@ -236,10 +233,13 @@ export class HeraContrastValidator {
   /**
    * Get contrast grade based on ratio
    */
-  static getContrastGrade(ratio: number, context: ContrastPair['context']): ContrastResult['grade'] {
+  static getContrastGrade(
+    ratio: number,
+    context: ContrastPair['context']
+  ): ContrastResult['grade'] {
     const aaaThreshold = WCAG_STANDARDS.AAA[context]
     const aaThreshold = WCAG_STANDARDS.AA[context]
-    
+
     if (ratio >= aaaThreshold * 1.5) return 'A+'
     if (ratio >= aaaThreshold) return 'A'
     if (ratio >= aaThreshold) return 'B'
@@ -252,7 +252,7 @@ export class HeraContrastValidator {
    */
   static validatePair(pair: ContrastPair): ContrastResult {
     const ratio = this.calculateContrastRatio(pair.foreground, pair.background)
-    
+
     return {
       ratio,
       passes: {
@@ -271,11 +271,9 @@ export class HeraContrastValidator {
    */
   static validateAllPairs(pairs: ContrastPair[] = CRITICAL_CONTRAST_PAIRS): ContrastReport {
     const results = pairs.map(pair => this.validatePair(pair))
-    
-    const passingPairs = results.filter(result => 
-      result.passes.AA && result.grade !== 'F'
-    ).length
-    
+
+    const passingPairs = results.filter(result => result.passes.AA && result.grade !== 'F').length
+
     const failingPairs = results.length - passingPairs
     const passed = failingPairs === 0
 
@@ -283,7 +281,7 @@ export class HeraContrastValidator {
     summary += `📊 Total Pairs: ${results.length}\n`
     summary += `✅ Passing: ${passingPairs}\n`
     summary += `❌ Failing: ${failingPairs}\n`
-    
+
     if (passed) {
       summary += `🎉 All contrast requirements met!`
     } else {
@@ -312,7 +310,7 @@ export class HeraContrastValidator {
       const status = result.passes.AA ? '✅' : '❌'
       const grade = result.grade
       const ratio = result.ratio.toFixed(2)
-      
+
       output += `${status} ${result.label}\n`
       output += `   Ratio: ${ratio}:1 (Grade: ${grade})\n`
       output += `   Colors: ${result.foreground} on ${result.background}\n`
@@ -320,7 +318,7 @@ export class HeraContrastValidator {
     }
 
     output += `\n${report.summary}\n`
-    
+
     if (!report.passed) {
       output += `\n🔧 Recommended Actions:\n`
       report.results
@@ -344,10 +342,10 @@ export class HeraContrastValidator {
    */
   static validateForCLI(): void {
     console.log('🧬 Running HERA DNA Contrast Validation...\n')
-    
+
     const report = this.validateAllPairs()
     console.log(this.generateDetailedReport())
-    
+
     if (!report.passed) {
       console.error('\n❌ Contrast validation failed!')
       console.error('Fix the failing contrast pairs before deploying.\n')
@@ -379,7 +377,7 @@ export class HeraContrastValidator {
         context: 'normal',
         required: 'AA'
       },
-      
+
       // EnterpriseStatsCard numbers (large text)
       {
         foreground: '#0A0E14',
@@ -411,7 +409,7 @@ export function useContrastValidation() {
 
   const validateContrast = useCallback(async (pairs?: ContrastPair[]) => {
     setIsValidating(true)
-    
+
     // Run validation in next tick to prevent blocking UI
     setTimeout(() => {
       const results = HeraContrastValidator.validateAllPairs(pairs)
@@ -422,7 +420,7 @@ export function useContrastValidation() {
 
   const validateDNAComponents = useCallback(async () => {
     setIsValidating(true)
-    
+
     setTimeout(() => {
       const results = HeraContrastValidator.validateDNAComponents()
       setValidationResults(results)
@@ -452,27 +450,23 @@ export const validateContrastForBuild = () => {
 /**
  * Export everything
  */
-export {
-  HeraContrastValidator,
-  CRITICAL_CONTRAST_PAIRS,
-  WCAG_STANDARDS
-}
+export { HeraContrastValidator, CRITICAL_CONTRAST_PAIRS, WCAG_STANDARDS }
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * 1. CLI Validation (package.json):
  * "scripts": {
  *   "check:contrast": "node -e \"require('./src/lib/dna/design-system/contrast-validation-dna').validateContrastForBuild()\""
  * }
- * 
+ *
  * 2. Programmatic Validation:
  * const report = HeraContrastValidator.validateAllPairs()
  * console.log(report.passed) // true/false
- * 
+ *
  * 3. React Component:
  * const { validateDNAComponents, isCompliant } = useContrastValidation()
- * 
+ *
  * 4. Custom Pair Validation:
  * const customPair = { foreground: '#fff', background: '#000', label: 'Custom', context: 'normal', required: 'AA' }
  * const result = HeraContrastValidator.validatePair(customPair)

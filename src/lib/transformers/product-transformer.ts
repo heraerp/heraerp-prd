@@ -21,13 +21,13 @@ export function transformToUIProduct(data: {
   relationships: any[]
 }): UIProduct {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -46,16 +46,17 @@ export function transformToUIProduct(data: {
 
 export function filterProduct(items: UIProduct[], searchTerm: string): UIProduct[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.sku?.toLowerCase().includes(term) ||
-    item.price?.toLowerCase().includes(term) ||
-    item.cost?.toLowerCase().includes(term) ||
-    item.stock_level?.toLowerCase().includes(term) ||
-    item.reorder_point?.toLowerCase().includes(term) ||
-    item.category?.toLowerCase().includes(term) ||
-    item.location?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.sku?.toLowerCase().includes(term) ||
+      item.price?.toLowerCase().includes(term) ||
+      item.cost?.toLowerCase().includes(term) ||
+      item.stock_level?.toLowerCase().includes(term) ||
+      item.reorder_point?.toLowerCase().includes(term) ||
+      item.category?.toLowerCase().includes(term) ||
+      item.location?.toLowerCase().includes(term)
   )
 }

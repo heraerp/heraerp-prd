@@ -1,6 +1,6 @@
 /**
  * HERA Profitability & Cost Accounting API
- * 
+ *
  * Comprehensive API for profit center management, cost accounting,
  * and profitability analysis with BOM integration
  */
@@ -52,7 +52,7 @@ const MOCK_DATA = {
       }
     }
   ],
-  
+
   product_costs: [
     {
       id: 'cost_001',
@@ -63,20 +63,20 @@ const MOCK_DATA = {
       costing_method: 'standard',
       smart_code: 'HERA.COST.PROD.CALC.v1',
       cost_components: {
-        direct_material: 45.50,
-        direct_labor: 22.30,
+        direct_material: 45.5,
+        direct_labor: 22.3,
         manufacturing_overhead: 18.75,
         total_cost: 86.55
       },
       pricing: {
-        selling_price: 125.00,
+        selling_price: 125.0,
         gross_margin: 38.45,
         gross_margin_pct: 30.8
       },
       last_updated: '2024-12-15T10:00:00Z'
     }
   ],
-  
+
   cost_pools: [
     {
       id: 'pool_001',
@@ -86,7 +86,7 @@ const MOCK_DATA = {
       cost_driver: 'machine_hours',
       total_cost: 450000,
       total_driver_units: 3600,
-      rate_per_unit: 125.00,
+      rate_per_unit: 125.0,
       allocation_method: 'activity_based',
       smart_code: 'HERA.COST.POOL.MH.v1',
       status: 'active'
@@ -99,13 +99,13 @@ const MOCK_DATA = {
       cost_driver: 'number_of_setups',
       total_cost: 180000,
       total_driver_units: 120,
-      rate_per_unit: 1500.00,
+      rate_per_unit: 1500.0,
       allocation_method: 'activity_based',
       smart_code: 'HERA.COST.POOL.SETUP.v1',
       status: 'active'
     }
   ],
-  
+
   profitability_analysis: {
     by_product: [
       {
@@ -146,35 +146,44 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'list':
         return listEntities(entityType, organizationId)
-      
+
       case 'get':
         if (!id) {
-          return NextResponse.json({
-            success: false,
-            error: 'ID parameter required for get action'
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'ID parameter required for get action'
+            },
+            { status: 400 }
+          )
         }
         return getEntity(entityType, id, organizationId)
-      
+
       case 'analyze':
         return performAnalysis(searchParams)
-      
+
       case 'calculate_cost':
         return calculateProductCost(searchParams)
-      
+
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action',
-          available_actions: ['list', 'get', 'analyze', 'calculate_cost']
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid action',
+            available_actions: ['list', 'get', 'analyze', 'calculate_cost']
+          },
+          { status: 400 }
+        )
     }
   } catch (error) {
     console.error('Profitability API error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -188,48 +197,57 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'create_profit_center':
         return createProfitCenter(data, organization_id)
-      
+
       case 'create_cost_pool':
         return createCostPool(data, organization_id)
-      
+
       case 'allocate_costs':
         return allocateCosts(data, organization_id)
-      
+
       case 'update_product_cost':
         return updateProductCost(data, organization_id)
-      
+
       case 'run_profitability_analysis':
         return runProfitabilityAnalysis(data, organization_id)
-      
+
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid action',
-          available_actions: [
-            'create_profit_center',
-            'create_cost_pool',
-            'allocate_costs',
-            'update_product_cost',
-            'run_profitability_analysis'
-          ]
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid action',
+            available_actions: [
+              'create_profit_center',
+              'create_cost_pool',
+              'allocate_costs',
+              'update_product_cost',
+              'run_profitability_analysis'
+            ]
+          },
+          { status: 400 }
+        )
     }
   } catch (error) {
     console.error('Profitability API POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // Helper functions
 async function listEntities(entityType: string | null, organizationId: string | null) {
   if (!entityType) {
-    return NextResponse.json({
-      success: false,
-      error: 'entity_type parameter required'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'entity_type parameter required'
+      },
+      { status: 400 }
+    )
   }
 
   // Return mock data for now
@@ -240,11 +258,11 @@ async function listEntities(entityType: string | null, organizationId: string | 
   }
 
   const data = mockResults[entityType] || []
-  
+
   return NextResponse.json({
     success: true,
     entity_type: entityType,
-    data: organizationId 
+    data: organizationId
       ? data.filter((item: any) => item.organization_id === organizationId)
       : data,
     count: data.length,
@@ -254,10 +272,13 @@ async function listEntities(entityType: string | null, organizationId: string | 
 
 async function getEntity(entityType: string | null, id: string, organizationId: string | null) {
   if (!entityType) {
-    return NextResponse.json({
-      success: false,
-      error: 'entity_type parameter required'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'entity_type parameter required'
+      },
+      { status: 400 }
+    )
   }
 
   // Find in mock data
@@ -271,10 +292,13 @@ async function getEntity(entityType: string | null, id: string, organizationId: 
   const entity = entities.find((e: any) => e.id === id)
 
   if (!entity) {
-    return NextResponse.json({
-      success: false,
-      error: 'Entity not found'
-    }, { status: 404 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Entity not found'
+      },
+      { status: 404 }
+    )
   }
 
   return NextResponse.json({
@@ -286,12 +310,15 @@ async function getEntity(entityType: string | null, id: string, organizationId: 
 async function performAnalysis(searchParams: URLSearchParams) {
   const analysisType = searchParams.get('analysis_type')
   const dimension = searchParams.get('dimension')
-  
+
   if (!analysisType) {
-    return NextResponse.json({
-      success: false,
-      error: 'analysis_type parameter required'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'analysis_type parameter required'
+      },
+      { status: 400 }
+    )
   }
 
   // Return mock analysis data
@@ -299,14 +326,15 @@ async function performAnalysis(searchParams: URLSearchParams) {
     analysis_type: analysisType,
     dimension: dimension || 'all',
     period: 'current_month',
-    data: dimension === 'product' 
-      ? MOCK_DATA.profitability_analysis.by_product
-      : dimension === 'customer'
-      ? MOCK_DATA.profitability_analysis.by_customer
-      : {
-        by_product: MOCK_DATA.profitability_analysis.by_product,
-        by_customer: MOCK_DATA.profitability_analysis.by_customer
-      },
+    data:
+      dimension === 'product'
+        ? MOCK_DATA.profitability_analysis.by_product
+        : dimension === 'customer'
+          ? MOCK_DATA.profitability_analysis.by_customer
+          : {
+              by_product: MOCK_DATA.profitability_analysis.by_product,
+              by_customer: MOCK_DATA.profitability_analysis.by_customer
+            },
     summary: {
       total_revenue: 4950000,
       total_costs: 3613000,
@@ -325,12 +353,15 @@ async function performAnalysis(searchParams: URLSearchParams) {
 async function calculateProductCost(searchParams: URLSearchParams) {
   const productId = searchParams.get('product_id')
   const includeBom = searchParams.get('include_bom') === 'true'
-  
+
   if (!productId) {
-    return NextResponse.json({
-      success: false,
-      error: 'product_id parameter required'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'product_id parameter required'
+      },
+      { status: 400 }
+    )
   }
 
   // Mock cost calculation with BOM integration
@@ -342,27 +373,27 @@ async function calculateProductCost(searchParams: URLSearchParams) {
       direct_material: {
         from_bom: true,
         components: [
-          { item: 'Raw Material A', quantity: 2, unit_cost: 15.50, total: 31.00 },
-          { item: 'Component B', quantity: 1, unit_cost: 14.50, total: 14.50 }
+          { item: 'Raw Material A', quantity: 2, unit_cost: 15.5, total: 31.0 },
+          { item: 'Component B', quantity: 1, unit_cost: 14.5, total: 14.5 }
         ],
-        total: 45.50
+        total: 45.5
       },
       direct_labor: {
         operations: [
-          { operation: 'Assembly', hours: 0.75, rate: 24.00, total: 18.00 },
-          { operation: 'Testing', hours: 0.18, rate: 24.00, total: 4.30 }
+          { operation: 'Assembly', hours: 0.75, rate: 24.0, total: 18.0 },
+          { operation: 'Testing', hours: 0.18, rate: 24.0, total: 4.3 }
         ],
-        total: 22.30
+        total: 22.3
       },
       overhead_allocation: {
         cost_pools: [
-          { pool: 'Machine Hours', driver_units: 0.5, rate: 125.00, allocation: 62.50 },
-          { pool: 'Setup Costs', driver_units: 0.02, rate: 1500.00, allocation: 30.00 }
+          { pool: 'Machine Hours', driver_units: 0.5, rate: 125.0, allocation: 62.5 },
+          { pool: 'Setup Costs', driver_units: 0.02, rate: 1500.0, allocation: 30.0 }
         ],
-        total: 92.50
+        total: 92.5
       }
     },
-    total_cost: 160.30,
+    total_cost: 160.3,
     smart_codes_used: [
       'HERA.COST.PROD.CALC.v1',
       'HERA.COST.PROD.MATERIAL.v1',
@@ -380,10 +411,13 @@ async function calculateProductCost(searchParams: URLSearchParams) {
 async function createProfitCenter(data: any, organizationId: string) {
   // Validate required fields
   if (!data.center_name || !data.center_type) {
-    return NextResponse.json({
-      success: false,
-      error: 'Missing required fields: center_name, center_type'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Missing required fields: center_name, center_type'
+      },
+      { status: 400 }
+    )
   }
 
   // Mock creation
@@ -411,10 +445,13 @@ async function createProfitCenter(data: any, organizationId: string) {
 async function createCostPool(data: any, organizationId: string) {
   // Validate required fields
   if (!data.pool_name || !data.cost_driver) {
-    return NextResponse.json({
-      success: false,
-      error: 'Missing required fields: pool_name, cost_driver'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Missing required fields: pool_name, cost_driver'
+      },
+      { status: 400 }
+    )
   }
 
   // Mock creation
@@ -473,10 +510,13 @@ async function allocateCosts(data: any, organizationId: string) {
 
 async function updateProductCost(data: any, organizationId: string) {
   if (!data.product_id) {
-    return NextResponse.json({
-      success: false,
-      error: 'product_id required'
-    }, { status: 400 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'product_id required'
+      },
+      { status: 400 }
+    )
   }
 
   // Mock update
@@ -484,13 +524,13 @@ async function updateProductCost(data: any, organizationId: string) {
     product_id: data.product_id,
     organization_id: organizationId,
     previous_cost: 86.55,
-    new_cost: data.new_cost || 92.30,
+    new_cost: data.new_cost || 92.3,
     cost_change: 5.75,
     change_percentage: 6.6,
     updated_components: data.components || {
-      direct_material: 48.00,
-      direct_labor: 23.50,
-      overhead: 20.80
+      direct_material: 48.0,
+      direct_labor: 23.5,
+      overhead: 20.8
     },
     smart_code: 'HERA.COST.PROD.CALC.v1',
     updated_at: new Date().toISOString(),
@@ -506,18 +546,14 @@ async function updateProductCost(data: any, organizationId: string) {
 
 async function runProfitabilityAnalysis(data: any, organizationId: string) {
   const analysisType = data.analysis_type || 'comprehensive'
-  
+
   // Mock comprehensive profitability analysis
   const analysisResults = {
     analysis_id: `analysis_${Date.now()}`,
     organization_id: organizationId,
     analysis_type: analysisType,
     period: data.period || 'current_month',
-    smart_codes_used: [
-      'HERA.PROF.ANAL.PROD.v1',
-      'HERA.PROF.ANAL.CUST.v1',
-      'HERA.PROF.ANAL.SEG.v1'
-    ],
+    smart_codes_used: ['HERA.PROF.ANAL.PROD.v1', 'HERA.PROF.ANAL.CUST.v1', 'HERA.PROF.ANAL.SEG.v1'],
     results: {
       by_profit_center: MOCK_DATA.profit_centers.map(pc => ({
         center: pc.center_name,

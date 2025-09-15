@@ -5,19 +5,19 @@ export interface BPOInvoiceEntity {
   // Core entity properties (maps to core_entities)
   entity_id: string
   entity_type: 'bpo_invoice'
-  entity_name: string  // Invoice number/reference
-  entity_code: string  // Unique invoice code
+  entity_name: string // Invoice number/reference
+  entity_code: string // Unique invoice code
   status: BPOInvoiceStatus
   organization_id: string
   client_id?: string
-  smart_code: string  // HERA.BPO.INVOICE.{STATUS}.v1
-  
+  smart_code: string // HERA.BPO.INVOICE.{STATUS}.v1
+
   // Basic invoice metadata
   created_at: Date
   updated_at: Date
   created_by: string
   assigned_to?: string
-  
+
   // Core invoice data (stored in core_dynamic_data)
   invoice_number?: string
   vendor_name?: string
@@ -27,46 +27,46 @@ export interface BPOInvoiceEntity {
   currency?: string
   po_number?: string
   description?: string
-  
+
   // Workflow data
   submitted_date?: Date
   processing_start_date?: Date
   completed_date?: Date
   verification_date?: Date
   approval_date?: Date
-  
+
   // Processing metadata
   priority: BPOPriority
   complexity: BPOComplexity
   sla_deadline?: Date
   processing_time_hours?: number
-  
+
   // Quality metrics
   error_count?: number
   revision_count?: number
   quality_score?: number
-  
+
   // Attachment references
   original_invoice_url?: string
   processed_document_url?: string
   supporting_documents?: string[]
-  
+
   // Communication thread ID
   communication_thread_id?: string
 }
 
-export type BPOInvoiceStatus = 
-  | 'submitted'           // HO uploaded invoice
-  | 'queued'             // Waiting in BO work queue
-  | 'in_progress'        // BO currently processing
-  | 'verification'       // Under BO quality review
-  | 'query_raised'       // BO has questions for HO
-  | 'query_resolved'     // HO responded to query
-  | 'completed'          // BO processing complete
-  | 'approved'           // HO approved final result
-  | 'rejected'           // HO rejected, needs rework
-  | 'on_hold'            // Temporarily paused
-  | 'escalated'          // Escalated to supervisor
+export type BPOInvoiceStatus =
+  | 'submitted' // HO uploaded invoice
+  | 'queued' // Waiting in BO work queue
+  | 'in_progress' // BO currently processing
+  | 'verification' // Under BO quality review
+  | 'query_raised' // BO has questions for HO
+  | 'query_resolved' // HO responded to query
+  | 'completed' // BO processing complete
+  | 'approved' // HO approved final result
+  | 'rejected' // HO rejected, needs rework
+  | 'on_hold' // Temporarily paused
+  | 'escalated' // Escalated to supervisor
 
 export type BPOPriority = 'low' | 'medium' | 'high' | 'urgent'
 export type BPOComplexity = 'simple' | 'standard' | 'complex' | 'expert'
@@ -78,19 +78,19 @@ export type BPOUserRole = 'head-office' | 'back-office' | 'supervisor' | 'admin'
 export interface BPOCommunicationEntity {
   entity_id: string
   entity_type: 'bpo_communication'
-  entity_name: string  // Thread title
+  entity_name: string // Thread title
   smart_code: 'HERA.BPO.COMM.THREAD.v1'
-  
+
   // Core properties
   invoice_id: string
   thread_status: 'active' | 'resolved' | 'closed'
   priority: BPOPriority
-  
+
   // Participants
   head_office_user_id: string
   back_office_user_id: string
   created_by: string
-  
+
   // Metadata
   created_at: Date
   last_message_at?: Date
@@ -103,21 +103,21 @@ export interface BPOCommunicationEntity {
 export interface BPOMessageEntity {
   entity_id: string
   entity_type: 'bpo_message'
-  entity_name: string  // Message subject/preview
+  entity_name: string // Message subject/preview
   smart_code: 'HERA.BPO.COMM.MESSAGE.v1'
-  
+
   // Core properties
   thread_id: string
   sender_id: string
   sender_role: BPOUserRole
   message_content: string
   message_type: 'text' | 'query' | 'response' | 'status_update' | 'attachment'
-  
+
   // Metadata
   created_at: Date
   read_at?: Date
   is_read: boolean
-  
+
   // Attachments
   attachments?: string[]
 }
@@ -126,23 +126,23 @@ export interface BPOMessageEntity {
 export interface BPOWorkflowTransaction {
   transaction_id: string
   transaction_type: 'bpo_status_change'
-  smart_code: string  // HERA.BPO.WORKFLOW.{ACTION}.v1
-  
+  smart_code: string // HERA.BPO.WORKFLOW.{ACTION}.v1
+
   // Core transaction data
   invoice_id: string
   from_status: BPOInvoiceStatus
   to_status: BPOInvoiceStatus
   changed_by: string
   change_reason?: string
-  
+
   // Timing data
   transaction_date: Date
-  processing_duration?: number  // Minutes spent in previous status
-  
+  processing_duration?: number // Minutes spent in previous status
+
   // SLA tracking
   sla_target?: Date
   sla_met: boolean
-  
+
   // Quality metrics
   quality_notes?: string
   error_details?: string
@@ -160,28 +160,124 @@ export interface BPOSLAConfig {
 // Default SLA matrix
 export const BPO_SLA_MATRIX: BPOSLAConfig[] = [
   // Simple invoices
-  { complexity: 'simple', priority: 'low', target_hours: 24, escalation_hours: 48, warning_hours: 20 },
-  { complexity: 'simple', priority: 'medium', target_hours: 12, escalation_hours: 24, warning_hours: 10 },
-  { complexity: 'simple', priority: 'high', target_hours: 6, escalation_hours: 12, warning_hours: 5 },
-  { complexity: 'simple', priority: 'urgent', target_hours: 2, escalation_hours: 4, warning_hours: 1.5 },
-  
+  {
+    complexity: 'simple',
+    priority: 'low',
+    target_hours: 24,
+    escalation_hours: 48,
+    warning_hours: 20
+  },
+  {
+    complexity: 'simple',
+    priority: 'medium',
+    target_hours: 12,
+    escalation_hours: 24,
+    warning_hours: 10
+  },
+  {
+    complexity: 'simple',
+    priority: 'high',
+    target_hours: 6,
+    escalation_hours: 12,
+    warning_hours: 5
+  },
+  {
+    complexity: 'simple',
+    priority: 'urgent',
+    target_hours: 2,
+    escalation_hours: 4,
+    warning_hours: 1.5
+  },
+
   // Standard invoices
-  { complexity: 'standard', priority: 'low', target_hours: 48, escalation_hours: 72, warning_hours: 40 },
-  { complexity: 'standard', priority: 'medium', target_hours: 24, escalation_hours: 48, warning_hours: 20 },
-  { complexity: 'standard', priority: 'high', target_hours: 12, escalation_hours: 24, warning_hours: 10 },
-  { complexity: 'standard', priority: 'urgent', target_hours: 4, escalation_hours: 8, warning_hours: 3 },
-  
+  {
+    complexity: 'standard',
+    priority: 'low',
+    target_hours: 48,
+    escalation_hours: 72,
+    warning_hours: 40
+  },
+  {
+    complexity: 'standard',
+    priority: 'medium',
+    target_hours: 24,
+    escalation_hours: 48,
+    warning_hours: 20
+  },
+  {
+    complexity: 'standard',
+    priority: 'high',
+    target_hours: 12,
+    escalation_hours: 24,
+    warning_hours: 10
+  },
+  {
+    complexity: 'standard',
+    priority: 'urgent',
+    target_hours: 4,
+    escalation_hours: 8,
+    warning_hours: 3
+  },
+
   // Complex invoices
-  { complexity: 'complex', priority: 'low', target_hours: 72, escalation_hours: 120, warning_hours: 60 },
-  { complexity: 'complex', priority: 'medium', target_hours: 48, escalation_hours: 72, warning_hours: 40 },
-  { complexity: 'complex', priority: 'high', target_hours: 24, escalation_hours: 48, warning_hours: 20 },
-  { complexity: 'complex', priority: 'urgent', target_hours: 8, escalation_hours: 16, warning_hours: 6 },
-  
+  {
+    complexity: 'complex',
+    priority: 'low',
+    target_hours: 72,
+    escalation_hours: 120,
+    warning_hours: 60
+  },
+  {
+    complexity: 'complex',
+    priority: 'medium',
+    target_hours: 48,
+    escalation_hours: 72,
+    warning_hours: 40
+  },
+  {
+    complexity: 'complex',
+    priority: 'high',
+    target_hours: 24,
+    escalation_hours: 48,
+    warning_hours: 20
+  },
+  {
+    complexity: 'complex',
+    priority: 'urgent',
+    target_hours: 8,
+    escalation_hours: 16,
+    warning_hours: 6
+  },
+
   // Expert invoices
-  { complexity: 'expert', priority: 'low', target_hours: 120, escalation_hours: 168, warning_hours: 96 },
-  { complexity: 'expert', priority: 'medium', target_hours: 72, escalation_hours: 120, warning_hours: 60 },
-  { complexity: 'expert', priority: 'high', target_hours: 48, escalation_hours: 72, warning_hours: 40 },
-  { complexity: 'expert', priority: 'urgent', target_hours: 12, escalation_hours: 24, warning_hours: 10 }
+  {
+    complexity: 'expert',
+    priority: 'low',
+    target_hours: 120,
+    escalation_hours: 168,
+    warning_hours: 96
+  },
+  {
+    complexity: 'expert',
+    priority: 'medium',
+    target_hours: 72,
+    escalation_hours: 120,
+    warning_hours: 60
+  },
+  {
+    complexity: 'expert',
+    priority: 'high',
+    target_hours: 48,
+    escalation_hours: 72,
+    warning_hours: 40
+  },
+  {
+    complexity: 'expert',
+    priority: 'urgent',
+    target_hours: 12,
+    escalation_hours: 24,
+    warning_hours: 10
+  }
 ]
 
 // Smart codes for different BPO workflow actions
@@ -194,22 +290,22 @@ export const BPO_SMART_CODES = {
   INVOICE_COMPLETED: 'HERA.BPO.INVOICE.COMPLETED.v1',
   INVOICE_APPROVED: 'HERA.BPO.INVOICE.APPROVED.v1',
   INVOICE_REJECTED: 'HERA.BPO.INVOICE.REJECTED.v1',
-  
+
   // Query management
   QUERY_RAISED: 'HERA.BPO.QUERY.RAISED.v1',
   QUERY_RESPONDED: 'HERA.BPO.QUERY.RESPONDED.v1',
   QUERY_RESOLVED: 'HERA.BPO.QUERY.RESOLVED.v1',
-  
+
   // Communication
   MESSAGE_SENT: 'HERA.BPO.COMM.MESSAGE.SENT.v1',
   THREAD_CREATED: 'HERA.BPO.COMM.THREAD.CREATED.v1',
   THREAD_CLOSED: 'HERA.BPO.COMM.THREAD.CLOSED.v1',
-  
+
   // Escalations
   SLA_WARNING: 'HERA.BPO.SLA.WARNING.v1',
   SLA_BREACH: 'HERA.BPO.SLA.BREACH.v1',
   ESCALATION_TRIGGERED: 'HERA.BPO.ESCALATION.TRIGGERED.v1',
-  
+
   // Quality metrics
   QUALITY_CHECK: 'HERA.BPO.QUALITY.CHECK.v1',
   ERROR_LOGGED: 'HERA.BPO.ERROR.LOGGED.v1',
@@ -223,16 +319,16 @@ export interface BPOKPIs {
   slaCompliance: number
   errorRate: number
   qualityScore: number
-  
+
   // By status
   statusBreakdown: Record<BPOInvoiceStatus, number>
-  
+
   // By priority
   priorityBreakdown: Record<BPOPriority, number>
-  
+
   // By complexity
   complexityBreakdown: Record<BPOComplexity, number>
-  
+
   // Trending data
   dailyVolume: Array<{ date: string; count: number }>
   processingTrends: Array<{ date: string; avgHours: number }>
@@ -241,14 +337,16 @@ export interface BPOKPIs {
 
 // Utility functions for SLA management
 export function getSLAConfig(complexity: BPOComplexity, priority: BPOPriority): BPOSLAConfig {
-  return BPO_SLA_MATRIX.find(config => 
-    config.complexity === complexity && config.priority === priority
-  ) || BPO_SLA_MATRIX[0]
+  return (
+    BPO_SLA_MATRIX.find(
+      config => config.complexity === complexity && config.priority === priority
+    ) || BPO_SLA_MATRIX[0]
+  )
 }
 
 export function calculateSLADeadline(
-  submittedDate: Date, 
-  complexity: BPOComplexity, 
+  submittedDate: Date,
+  complexity: BPOComplexity,
   priority: BPOPriority
 ): Date {
   const config = getSLAConfig(complexity, priority)
@@ -265,7 +363,7 @@ export function getSLAStatus(
 ): 'safe' | 'warning' | 'breach' | 'escalation' {
   const config = getSLAConfig(complexity, priority)
   const hoursElapsed = (currentDate.getTime() - submittedDate.getTime()) / (1000 * 60 * 60)
-  
+
   if (hoursElapsed >= config.escalation_hours) return 'escalation'
   if (hoursElapsed >= config.target_hours) return 'breach'
   if (hoursElapsed >= config.warning_hours) return 'warning'

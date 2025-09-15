@@ -32,36 +32,31 @@ export function FurnitureStatCard({
   }[trend]
 
   return (
-    <Card className={cn(
-      "backdrop-blur-xl bg-gray-800/70",
-      "border-gray-700/50",
-      "shadow-lg hover:shadow-xl transition-shadow",
-      className
-    )}>
+    <Card
+      className={cn(
+        'backdrop-blur-xl bg-gray-800/70',
+        'border-gray-700/50',
+        'shadow-lg hover:shadow-xl transition-shadow',
+        className
+      )}
+    >
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-300 uppercase tracking-wide">
-              {label}
-            </p>
+            <p className="text-sm font-medium text-gray-300 uppercase tracking-wide">{label}</p>
             <p className="text-3xl font-bold mt-2 text-white">
               {typeof value === 'number' ? value.toLocaleString() : value}
             </p>
-            {change && (
-              <p className={cn(
-                "text-xs mt-1 font-medium",
-                changeColorClass
-              )}>
-                {change}
-              </p>
-            )}
+            {change && <p className={cn('text-xs mt-1 font-medium', changeColorClass)}>{change}</p>}
           </div>
           {Icon && (
-            <div className={cn(
-              "w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg",
-              "bg-gradient-to-br",
-              gradient
-            )}>
+            <div
+              className={cn(
+                'w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg',
+                'bg-gradient-to-br',
+                gradient
+              )}
+            >
               <Icon className="w-7 h-7 text-white" />
             </div>
           )}

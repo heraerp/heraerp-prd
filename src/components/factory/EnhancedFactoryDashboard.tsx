@@ -11,14 +11,14 @@
  * 8. Advanced Filtering
  */
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Factory, 
-  RefreshCw, 
-  TrendingUp, 
-  TrendingDown, 
-  AlertTriangle, 
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Factory,
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
   Bell,
   Filter,
   Calendar,
@@ -37,140 +37,143 @@ import {
   Sparkles,
   ArrowUpRight,
   ArrowDownRight
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { 
+  SelectValue
+} from '@/components/ui/select'
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Progress } from '@/components/ui/progress';
-import { cn } from '@/lib/utils';
-import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard';
-import { GuardrailDetailDialog } from './GuardrailDetailDialog';
-import { NotificationCenter } from './NotificationCenter';
-import { ModulePipelineView } from './ModulePipelineView';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Progress } from '@/components/ui/progress'
+import { cn } from '@/lib/utils'
+import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard'
+import { GuardrailDetailDialog } from './GuardrailDetailDialog'
+import { NotificationCenter } from './NotificationCenter'
+import { ModulePipelineView } from './ModulePipelineView'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 // Module metadata
 const moduleInfo: Record<string, { name: string; icon: any; color: string }> = {
-  'LOYALTY': { name: 'Loyalty System', icon: Sparkles, color: 'purple' },
-  'INVENTORY': { name: 'Inventory Management', icon: Package, color: 'blue' },
-  'POS': { name: 'Point of Sale', icon: Factory, color: 'green' },
-  'CRM': { name: 'Customer Relations', icon: FileCheck, color: 'orange' },
-  'FIN': { name: 'Financial Module', icon: BarChart3, color: 'cyan' },
-  'HR': { name: 'Human Resources', icon: Shield, color: 'pink' },
-};
+  LOYALTY: { name: 'Loyalty System', icon: Sparkles, color: 'purple' },
+  INVENTORY: { name: 'Inventory Management', icon: Package, color: 'blue' },
+  POS: { name: 'Point of Sale', icon: Factory, color: 'green' },
+  CRM: { name: 'Customer Relations', icon: FileCheck, color: 'orange' },
+  FIN: { name: 'Financial Module', icon: BarChart3, color: 'cyan' },
+  HR: { name: 'Human Resources', icon: Shield, color: 'pink' }
+}
 
-const stageOrder = ['PLAN', 'BUILD', 'TEST', 'COMPLY', 'RELEASE'];
+const stageOrder = ['PLAN', 'BUILD', 'TEST', 'COMPLY', 'RELEASE']
 
 interface FilterState {
-  modules: string[];
-  stages: string[];
-  status: string[];
-  timeRange: '24h' | '7d' | '30d' | '90d';
-  showFailedOnly: boolean;
+  modules: string[]
+  stages: string[]
+  status: string[]
+  timeRange: '24h' | '7d' | '30d' | '90d'
+  showFailedOnly: boolean
 }
 
 export default function EnhancedFactoryDashboard() {
-  const { filters: baseFilters, data, actions } = useFactoryDashboard();
-  const [selectedView, setSelectedView] = useState<'pipeline' | 'table' | 'analytics'>('pipeline');
-  const [selectedModule, setSelectedModule] = useState<string | null>(null);
+  const { filters: baseFilters, data, actions } = useFactoryDashboard()
+  const [selectedView, setSelectedView] = useState<'pipeline' | 'table' | 'analytics'>('pipeline')
+  const [selectedModule, setSelectedModule] = useState<string | null>(null)
   const [filters, setFilters] = useState<FilterState>({
     modules: [],
     stages: [],
     status: [],
     timeRange: '30d',
-    showFailedOnly: false,
-  });
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [guardrailDialog, setGuardrailDialog] = useState<any>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
+    showFailedOnly: false
+  })
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [guardrailDialog, setGuardrailDialog] = useState<any>(null)
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  const { 
-    transactions, 
-    modules, 
-    relationships, 
-    fiscalPeriods, 
-    transactionLines, 
-    kpis, 
-    loading, 
-    error 
-  } = data;
+  const {
+    transactions,
+    modules,
+    relationships,
+    fiscalPeriods,
+    transactionLines,
+    kpis,
+    loading,
+    error
+  } = data
 
   // Process transactions by module and stage
   const moduleData = React.useMemo(() => {
-    const result = new Map<string, {
-      stages: Map<string, any[]>;
-      coverage: number[];
-      guardrailPass: number[];
-      status: 'running' | 'passed' | 'failed' | 'partial';
-    }>();
+    const result = new Map<
+      string,
+      {
+        stages: Map<string, any[]>
+        coverage: number[]
+        guardrailPass: number[]
+        status: 'running' | 'passed' | 'failed' | 'partial'
+      }
+    >()
 
     transactions.forEach(txn => {
-      const moduleCode = txn.smart_code.split('.')[2];
-      const stage = txn.smart_code.split('.')[3];
+      const moduleCode = txn.smart_code.split('.')[2]
+      const stage = txn.smart_code.split('.')[3]
 
       if (!result.has(moduleCode)) {
         result.set(moduleCode, {
           stages: new Map(),
           coverage: [],
           guardrailPass: [],
-          status: 'running',
-        });
+          status: 'running'
+        })
       }
 
-      const module = result.get(moduleCode)!;
+      const module = result.get(moduleCode)!
       if (!module.stages.has(stage)) {
-        module.stages.set(stage, []);
+        module.stages.set(stage, [])
       }
 
-      module.stages.get(stage)!.push(txn);
+      module.stages.get(stage)!.push(txn)
 
       // Extract metrics
-      const lines = transactionLines.get(txn.id) || [];
+      const lines = transactionLines.get(txn.id) || []
       lines.forEach(line => {
         if ((line.metadata as any)?.coverage) {
-          module.coverage.push(line.metadata.coverage * 100);
+          module.coverage.push(line.metadata.coverage * 100)
         }
-      });
-    });
+      })
+    })
 
-    return result;
-  }, [transactions, transactionLines]);
+    return result
+  }, [transactions, transactionLines])
 
   // Calculate sparkline data for coverage trends
   const getCoverageSparkline = (coverage: number[]) => {
     return coverage.slice(-10).map((value, index) => ({
       value,
       index
-    }));
-  };
+    }))
+  }
 
   // Initialize component
   useEffect(() => {
-    setIsInitialized(true);
-  }, []);
+    setIsInitialized(true)
+  }, [])
 
   // Check for alerts
   useEffect(() => {
-    if (!isInitialized) return;
-    
-    const alerts = [];
+    if (!isInitialized) return
+
+    const alerts = []
 
     // Low coverage alert
     if (kpis.coverageAvg < 60) {
@@ -179,8 +182,8 @@ export default function EnhancedFactoryDashboard() {
         type: 'error',
         title: 'Low Test Coverage',
         message: `Average test coverage is ${kpis.coverageAvg.toFixed(1)}% (target: 85%)`,
-        timestamp: new Date(),
-      });
+        timestamp: new Date()
+      })
     }
 
     // Guardrail failures
@@ -190,8 +193,8 @@ export default function EnhancedFactoryDashboard() {
         type: 'warning',
         title: 'Guardrail Compliance Issue',
         message: `Guardrail pass rate is ${kpis.guardrailPassRate.toFixed(1)}% (target: 95%)`,
-        timestamp: new Date(),
-      });
+        timestamp: new Date()
+      })
     }
 
     // Fiscal period closed
@@ -201,12 +204,12 @@ export default function EnhancedFactoryDashboard() {
         type: 'warning',
         title: 'Fiscal Period Closed',
         message: 'Promotion blocked until fiscal period reopens',
-        timestamp: new Date(),
-      });
+        timestamp: new Date()
+      })
     }
 
-    setNotifications(alerts);
-  }, [kpis, isInitialized]);
+    setNotifications(alerts)
+  }, [kpis, isInitialized])
 
   // Prevent rendering until data is loaded
   if (loading && !isInitialized) {
@@ -217,7 +220,7 @@ export default function EnhancedFactoryDashboard() {
           <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -229,7 +232,7 @@ export default function EnhancedFactoryDashboard() {
           Retry
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -269,7 +272,7 @@ export default function EnhancedFactoryDashboard() {
                 <DropdownMenuContent className="w-72">
                   <DropdownMenuLabel>Filter Options</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  
+
                   {/* Module Filter */}
                   <div className="p-2 space-y-2">
                     <p className="text-sm font-medium">Modules</p>
@@ -277,13 +280,13 @@ export default function EnhancedFactoryDashboard() {
                       <label key={code} className="flex items-center gap-2 cursor-pointer">
                         <Checkbox
                           checked={filters.modules.includes(code)}
-                          onCheckedChange={(checked) => {
+                          onCheckedChange={checked => {
                             setFilters(prev => ({
                               ...prev,
-                              modules: checked 
+                              modules: checked
                                 ? [...prev.modules, code]
                                 : prev.modules.filter(m => m !== code)
-                            }));
+                            }))
                           }}
                         />
                         <info.icon className="w-4 h-4" />
@@ -299,11 +302,11 @@ export default function EnhancedFactoryDashboard() {
                     <label className="flex items-center gap-2 cursor-pointer">
                       <Checkbox
                         checked={filters.showFailedOnly}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                           setFilters(prev => ({
                             ...prev,
                             showFailedOnly: !!checked
-                          }));
+                          }))
                         }}
                       />
                       <span className="text-sm">Show failed only</span>
@@ -315,9 +318,9 @@ export default function EnhancedFactoryDashboard() {
               {/* Time Range */}
               <Select
                 value={filters.timeRange}
-                onValueChange={(value) => {
+                onValueChange={value => {
                   if (value !== filters.timeRange) {
-                    setFilters(prev => ({ ...prev, timeRange: value as any }));
+                    setFilters(prev => ({ ...prev, timeRange: value as any }))
                   }
                 }}
               >
@@ -333,18 +336,13 @@ export default function EnhancedFactoryDashboard() {
               </Select>
 
               {/* Notifications */}
-              <NotificationCenter 
+              <NotificationCenter
                 notifications={notifications}
-                onDismiss={(id) => setNotifications(prev => prev.filter(n => n.id !== id))}
+                onDismiss={id => setNotifications(prev => prev.filter(n => n.id !== id))}
               />
 
               {/* Refresh */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={actions.refresh}
-                disabled={loading}
-              >
+              <Button variant="outline" size="sm" onClick={actions.refresh} disabled={loading}>
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
@@ -364,10 +362,12 @@ export default function EnhancedFactoryDashboard() {
                   <p className="text-2xl font-bold">{kpis.leadTimeDays}d</p>
                   <p className="text-xs text-gray-500">PLAN → RELEASE</p>
                 </div>
-                <Clock className={cn(
-                  "w-8 h-8",
-                  kpis.leadTimeDays <= 3 ? "text-green-500" : "text-orange-500"
-                )} />
+                <Clock
+                  className={cn(
+                    'w-8 h-8',
+                    kpis.leadTimeDays <= 3 ? 'text-green-500' : 'text-orange-500'
+                  )}
+                />
               </div>
             </CardContent>
           </Card>
@@ -388,11 +388,15 @@ export default function EnhancedFactoryDashboard() {
                   </div>
                   <div className="h-8 mt-2">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={getCoverageSparkline(Array.from(moduleData.values()).flatMap(m => m.coverage))}>
-                        <Line 
-                          type="monotone" 
-                          dataKey="value" 
-                          stroke={kpis.coverageAvg >= 85 ? "#10b981" : "#f59e0b"} 
+                      <LineChart
+                        data={getCoverageSparkline(
+                          Array.from(moduleData.values()).flatMap(m => m.coverage)
+                        )}
+                      >
+                        <Line
+                          type="monotone"
+                          dataKey="value"
+                          stroke={kpis.coverageAvg >= 85 ? '#10b981' : '#f59e0b'}
                           strokeWidth={2}
                           dot={false}
                         />
@@ -408,7 +412,7 @@ export default function EnhancedFactoryDashboard() {
           {/* Guardrail Pass */}
           <Card>
             <CardContent className="p-4">
-              <div 
+              <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setGuardrailDialog({ open: true })}
               >
@@ -417,10 +421,12 @@ export default function EnhancedFactoryDashboard() {
                   <p className="text-2xl font-bold">{kpis.guardrailPassRate.toFixed(1)}%</p>
                   <p className="text-xs text-blue-600 hover:underline">View details →</p>
                 </div>
-                <Shield className={cn(
-                  "w-8 h-8",
-                  kpis.guardrailPassRate >= 95 ? "text-green-500" : "text-red-500"
-                )} />
+                <Shield
+                  className={cn(
+                    'w-8 h-8',
+                    kpis.guardrailPassRate >= 95 ? 'text-green-500' : 'text-red-500'
+                  )}
+                />
               </div>
             </CardContent>
           </Card>
@@ -431,18 +437,19 @@ export default function EnhancedFactoryDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Audit Ready</p>
-                  <p className={cn(
-                    "text-2xl font-bold",
-                    kpis.auditReady ? "text-green-600" : "text-red-600"
-                  )}>
+                  <p
+                    className={cn(
+                      'text-2xl font-bold',
+                      kpis.auditReady ? 'text-green-600' : 'text-red-600'
+                    )}
+                  >
                     {kpis.auditReady ? 'YES' : 'NO'}
                   </p>
                   <p className="text-xs text-gray-500">SBOM + Attestations</p>
                 </div>
-                <FileCheck className={cn(
-                  "w-8 h-8",
-                  kpis.auditReady ? "text-green-500" : "text-red-500"
-                )} />
+                <FileCheck
+                  className={cn('w-8 h-8', kpis.auditReady ? 'text-green-500' : 'text-red-500')}
+                />
               </div>
             </CardContent>
           </Card>
@@ -453,20 +460,22 @@ export default function EnhancedFactoryDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Fiscal Period</p>
-                  <p className={cn(
-                    "text-2xl font-bold",
-                    kpis.fiscalAligned ? "text-green-600" : "text-orange-600"
-                  )}>
+                  <p
+                    className={cn(
+                      'text-2xl font-bold',
+                      kpis.fiscalAligned ? 'text-green-600' : 'text-orange-600'
+                    )}
+                  >
                     {kpis.fiscalAligned ? 'OPEN' : 'CLOSED'}
                   </p>
-                  {!kpis.fiscalAligned && (
-                    <p className="text-xs text-orange-600">Opens Jan 31</p>
-                  )}
+                  {!kpis.fiscalAligned && <p className="text-xs text-orange-600">Opens Jan 31</p>}
                 </div>
-                <Calendar className={cn(
-                  "w-8 h-8",
-                  kpis.fiscalAligned ? "text-green-500" : "text-orange-500"
-                )} />
+                <Calendar
+                  className={cn(
+                    'w-8 h-8',
+                    kpis.fiscalAligned ? 'text-green-500' : 'text-orange-500'
+                  )}
+                />
               </div>
             </CardContent>
           </Card>
@@ -483,7 +492,7 @@ export default function EnhancedFactoryDashboard() {
           </TabsList>
 
           <TabsContent value="pipeline" className="mt-6">
-            <ModulePipelineView 
+            <ModulePipelineView
               moduleData={moduleData}
               moduleInfo={moduleInfo}
               stageOrder={stageOrder}
@@ -491,7 +500,7 @@ export default function EnhancedFactoryDashboard() {
               transactionLines={transactionLines}
               filters={filters}
               onSelectModule={setSelectedModule}
-              onOpenGuardrail={(data) => setGuardrailDialog(data)}
+              onOpenGuardrail={data => setGuardrailDialog(data)}
             />
           </TabsContent>
 
@@ -501,9 +510,7 @@ export default function EnhancedFactoryDashboard() {
               <CardHeader>
                 <CardTitle>Transaction Details</CardTitle>
               </CardHeader>
-              <CardContent>
-                {/* Table implementation */}
-              </CardContent>
+              <CardContent>{/* Table implementation */}</CardContent>
             </Card>
           </TabsContent>
 
@@ -514,18 +521,14 @@ export default function EnhancedFactoryDashboard() {
                 <CardHeader>
                   <CardTitle>Coverage Trends by Module</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  {/* Module coverage charts */}
-                </CardContent>
+                <CardContent>{/* Module coverage charts */}</CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
                   <CardTitle>Pipeline Performance</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  {/* Performance metrics */}
-                </CardContent>
+                <CardContent>{/* Performance metrics */}</CardContent>
               </Card>
             </div>
           </TabsContent>
@@ -534,15 +537,15 @@ export default function EnhancedFactoryDashboard() {
 
       {/* Guardrail Detail Dialog */}
       {guardrailDialog && (
-        <GuardrailDetailDialog 
+        <GuardrailDetailDialog
           {...guardrailDialog}
           onClose={() => setGuardrailDialog(null)}
           onCreateWaiver={(policy, reason) => {
             // Handle waiver creation
-            console.log('Creating waiver:', { policy, reason });
+            console.log('Creating waiver:', { policy, reason })
           }}
         />
       )}
     </div>
-  );
+  )
 }

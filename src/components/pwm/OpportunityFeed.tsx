@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Lightbulb, TrendingUp, Zap, DollarSign, Clock, ChevronRight } from 'lucide-react';
-import { AIInsight } from '@/lib/pwm/types';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Lightbulb, TrendingUp, Zap, DollarSign, Clock, ChevronRight } from 'lucide-react'
+import { AIInsight } from '@/lib/pwm/types'
+import { cn } from '@/lib/utils'
 
 interface OpportunityFeedProps {
-  organizationId: string;
-  insights: AIInsight[];
+  organizationId: string
+  insights: AIInsight[]
 }
 
 export function OpportunityFeed({ organizationId, insights }: OpportunityFeedProps) {
@@ -52,9 +52,9 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
       timeframe: 'End of quarter',
       category: 'Tax Strategy'
     }
-  ];
+  ]
 
-  const allOpportunities = [...insights, ...additionalOpportunities];
+  const allOpportunities = [...insights, ...additionalOpportunities]
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
@@ -62,10 +62,10 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
       'Private Markets': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
       'Tax Strategy': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
       'Market Timing': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-      'default': 'bg-slate-500/20 text-slate-300 border-slate-500/30'
-    };
-    return colors[category] || colors.default;
-  };
+      default: 'bg-slate-500/20 text-slate-300 border-slate-500/30'
+    }
+    return colors[category] || colors.default
+  }
 
   const formatImpact = (impact: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -75,8 +75,8 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
       maximumFractionDigits: 0,
       notation: 'compact',
       compactDisplay: 'short'
-    }).format(Math.abs(impact));
-  };
+    }).format(Math.abs(impact))
+  }
 
   return (
     <div className="space-y-6">
@@ -90,12 +90,13 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
             <div>
               <h3 className="text-xl font-semibold text-white">Active Opportunities</h3>
               <p className="text-sm text-emerald-400">
-                {allOpportunities.length} opportunities • +${allOpportunities.reduce((sum, o) => sum + o.impact, 0) / 1000000}M potential
+                {allOpportunities.length} opportunities • +$
+                {allOpportunities.reduce((sum, o) => sum + o.impact, 0) / 1000000}M potential
               </p>
             </div>
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400"
           >
             <Zap className="h-4 w-4 mr-2" />
@@ -115,7 +116,12 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
           <div className="text-center p-3 rounded-lg bg-slate-800/50">
             <TrendingUp className="h-5 w-5 text-blue-400 mx-auto mb-1" />
             <p className="text-2xl font-bold text-white">
-              {(allOpportunities.reduce((sum, o) => sum + o.confidence, 0) / allOpportunities.length * 100).toFixed(0)}%
+              {(
+                (allOpportunities.reduce((sum, o) => sum + o.confidence, 0) /
+                  allOpportunities.length) *
+                100
+              ).toFixed(0)}
+              %
             </p>
             <p className="text-xs text-slate-400">Avg Confidence</p>
           </div>
@@ -131,8 +137,8 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
 
       {/* Opportunity Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {allOpportunities.map((opportunity) => (
-          <Card 
+        {allOpportunities.map(opportunity => (
+          <Card
             key={opportunity.id}
             className="p-5 bg-slate-900/50 backdrop-blur-sm border-slate-800 hover:border-slate-700 transition-all"
           >
@@ -141,33 +147,29 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   {(opportunity as any).category && (
-                    <Badge 
-                      variant="outline" 
-                      className={cn("text-xs", getCategoryColor((opportunity as any).category))}
+                    <Badge
+                      variant="outline"
+                      className={cn('text-xs', getCategoryColor((opportunity as any).category))}
                     >
                       {(opportunity as any).category}
                     </Badge>
                   )}
-                  <Badge 
+                  <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs",
-                      opportunity.priority === 'high' 
-                        ? "bg-red-500/20 text-red-300 border-red-500/30"
+                      'text-xs',
+                      opportunity.priority === 'high'
+                        ? 'bg-red-500/20 text-red-300 border-red-500/30'
                         : opportunity.priority === 'medium'
-                        ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30"
-                        : "bg-slate-500/20 text-slate-300 border-slate-500/30"
+                          ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
+                          : 'bg-slate-500/20 text-slate-300 border-slate-500/30'
                     )}
                   >
                     {opportunity.priority} priority
                   </Badge>
                 </div>
-                <h4 className="font-semibold text-white text-lg mb-1">
-                  {opportunity.title}
-                </h4>
-                <p className="text-sm text-slate-400 leading-relaxed">
-                  {opportunity.description}
-                </p>
+                <h4 className="font-semibold text-white text-lg mb-1">{opportunity.title}</h4>
+                <p className="text-sm text-slate-400 leading-relaxed">{opportunity.description}</p>
               </div>
             </div>
 
@@ -201,18 +203,14 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Button 
+              <Button
                 className="flex-1 bg-emerald-500/20 border-emerald-500/30 hover:bg-emerald-500/30 text-emerald-400"
                 variant="outline"
               >
                 Explore Opportunity
                 <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
-              <Button 
-                size="icon"
-                variant="ghost"
-                className="text-slate-400 hover:text-white"
-              >
+              <Button size="icon" variant="ghost" className="text-slate-400 hover:text-white">
                 <Clock className="h-4 w-4" />
               </Button>
             </div>
@@ -237,5 +235,5 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
         </div>
       </Card>
     </div>
-  );
+  )
 }

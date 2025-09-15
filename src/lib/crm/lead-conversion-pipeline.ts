@@ -4,7 +4,7 @@ import { createLeadScoringEngine, LeadScore } from '@/lib/email/lead-scoring-eng
 /**
  * HERA CRM Lead Conversion Pipeline
  * Intelligent lead management system with automated conversion workflows
- * 
+ *
  * Features:
  * - Automated lead qualification and scoring
  * - Multi-stage conversion pipeline management
@@ -65,7 +65,7 @@ export interface ConversionMetrics {
 export class LeadConversionPipeline {
   private organizationId: string
   private leadScoringEngine: any
-  
+
   // Default pipeline stages - can be customized per organization
   private defaultPipelineStages: LeadPipelineStage[] = [
     {
@@ -113,7 +113,7 @@ export class LeadConversionPipeline {
       stage_id: 'negotiation',
       stage_name: 'Negotiation',
       stage_order: 4,
-      conversion_rate: 0.70, // 70% of negotiations close successfully
+      conversion_rate: 0.7, // 70% of negotiations close successfully
       average_time_in_stage: 7,
       required_actions: ['contract_review', 'pricing_approved'],
       automation_rules: {
@@ -147,8 +147,8 @@ export class LeadConversionPipeline {
    * Process new lead from email engagement
    */
   async processEmailLead(
-    email: string, 
-    campaignId: string, 
+    email: string,
+    campaignId: string,
     engagementType: string
   ): Promise<{ leadId: string; currentStage: string }> {
     try {
@@ -184,25 +184,28 @@ export class LeadConversionPipeline {
         await universalApi.setDynamicField(leadId, 'lead_source', 'email_campaign')
         await universalApi.setDynamicField(leadId, 'source_campaign_id', campaignId)
         await universalApi.setDynamicField(leadId, 'pipeline_stage', 'lead')
-        
       } else {
         leadId = existingLeads[0].id
       }
 
       // Calculate lead score
       const leadScore = await this.leadScoringEngine.calculateLeadScore(email)
-      
+
       // Update lead scoring
       await universalApi.setDynamicField(leadId, 'lead_score', String(leadScore.total_score))
       await universalApi.setDynamicField(leadId, 'lead_grade', leadScore.lead_grade)
-      await universalApi.setDynamicField(leadId, 'qualification_status', leadScore.qualification_status)
+      await universalApi.setDynamicField(
+        leadId,
+        'qualification_status',
+        leadScore.qualification_status
+      )
 
       // Determine current pipeline stage
       const currentStage = await this.getCurrentPipelineStage(leadId)
-      
+
       // Check if lead should be automatically moved to next stage
       await this.processStageAutomation(leadId, currentStage, leadScore)
-      
+
       // Create lead processing transaction
       await universalApi.createTransaction({
         organization_id: this.organizationId,
@@ -227,7 +230,6 @@ export class LeadConversionPipeline {
       })
 
       return { leadId, currentStage }
-
     } catch (error) {
       console.error('Error processing email lead:', error)
       throw error
@@ -241,7 +243,7 @@ export class LeadConversionPipeline {
     try {
       const currentStage = await this.getCurrentPipelineStage(leadId)
       const targetStageInfo = this.defaultPipelineStages.find(s => s.stage_id === targetStage)
-      
+
       if (!targetStageInfo) {
         throw new Error(`Invalid pipeline stage: ${targetStage}`)
       }
@@ -249,7 +251,7 @@ export class LeadConversionPipeline {
       // Update lead stage
       await universalApi.setDynamicField(leadId, 'pipeline_stage', targetStage)
       await universalApi.setDynamicField(leadId, 'stage_moved_at', new Date().toISOString())
-      
+
       if (reason) {
         await universalApi.setDynamicField(leadId, 'stage_move_reason', reason)
       }
@@ -286,7 +288,6 @@ export class LeadConversionPipeline {
       if (targetStage === 'closed_won') {
         await this.processClosedWon(leadId)
       }
-
     } catch (error) {
       console.error('Error moving lead to stage:', error)
       throw error
@@ -322,17 +323,25 @@ export class LeadConversionPipeline {
       // Set opportunity details
       const estimatedValue = await this.estimateOpportunityValue(leadId)
       const probability = this.calculateCloseProbability(leadDynamicData)
-      
+
       await universalApi.setDynamicField(opportunityId, 'estimated_value', String(estimatedValue))
       await universalApi.setDynamicField(opportunityId, 'close_probability', String(probability))
       await universalApi.setDynamicField(opportunityId, 'pipeline_stage', 'opportunity')
-      await universalApi.setDynamicField(opportunityId, 'lead_score', leadDynamicData.lead_score || '0')
+      await universalApi.setDynamicField(
+        opportunityId,
+        'lead_score',
+        leadDynamicData.lead_score || '0'
+      )
       await universalApi.setDynamicField(opportunityId, 'source_email', leadDynamicData.email || '')
-      
+
       // Set expected close date (average sales cycle + current date)
       const expectedCloseDate = new Date()
       expectedCloseDate.setDate(expectedCloseDate.getDate() + 30) // 30-day default sales cycle
-      await universalApi.setDynamicField(opportunityId, 'expected_close_date', expectedCloseDate.toISOString())
+      await universalApi.setDynamicField(
+        opportunityId,
+        'expected_close_date',
+        expectedCloseDate.toISOString()
+      )
 
       // Link opportunity back to lead
       await universalApi.setDynamicField(leadId, 'opportunity_id', opportunityId)
@@ -359,7 +368,6 @@ export class LeadConversionPipeline {
 
       console.log(`🎯 CRM Opportunity created: ${opportunityId} (Value: $${estimatedValue})`)
       return opportunityId
-
     } catch (error) {
       console.error('Error creating CRM opportunity:', error)
       throw error
@@ -369,10 +377,12 @@ export class LeadConversionPipeline {
   /**
    * Get pipeline conversion metrics
    */
-  async getConversionMetrics(timeframe: 'month' | 'quarter' | 'year' = 'month'): Promise<ConversionMetrics> {
+  async getConversionMetrics(
+    timeframe: 'month' | 'quarter' | 'year' = 'month'
+  ): Promise<ConversionMetrics> {
     try {
       const startDate = this.getTimeframeStartDate(timeframe)
-      
+
       // Get all leads in timeframe
       const leads = await universalApi.getTransactions({
         filters: {
@@ -401,23 +411,21 @@ export class LeadConversionPipeline {
       })
 
       const totalLeads = leads.length
-      const qualifiedLeads = leads.filter(l => 
-        parseInt((l.metadata as any)?.lead_score || '0') >= 60
+      const qualifiedLeads = leads.filter(
+        l => parseInt((l.metadata as any)?.lead_score || '0') >= 60
       ).length
-      
+
       const opportunitiesCreated = opportunities.length
       const dealsWon = closedDeals.length
-      
-      const totalRevenue = closedDeals.reduce((sum, deal) => 
-        sum + (deal.total_amount || 0), 0
-      )
-      
+
+      const totalRevenue = closedDeals.reduce((sum, deal) => sum + (deal.total_amount || 0), 0)
+
       const avgDealSize = dealsWon > 0 ? totalRevenue / dealsWon : 0
       const conversionRate = totalLeads > 0 ? (dealsWon / totalLeads) * 100 : 0
 
       // Calculate average sales cycle
       const avgSalesCycle = await this.calculateAverageSalesCycle(timeframe)
-      
+
       // Calculate pipeline velocity (deals per time period)
       const pipelineVelocity = this.calculatePipelineVelocity(dealsWon, timeframe)
 
@@ -432,7 +440,6 @@ export class LeadConversionPipeline {
         revenue_attributed: Math.round(totalRevenue),
         pipeline_velocity: Math.round(pipelineVelocity * 100) / 100
       }
-
     } catch (error) {
       console.error('Error getting conversion metrics:', error)
       throw error
@@ -445,15 +452,15 @@ export class LeadConversionPipeline {
   async getLeadsByStage(): Promise<Record<string, any[]>> {
     try {
       const leadsByStage: Record<string, any[]> = {}
-      
+
       for (const stage of this.defaultPipelineStages) {
         const stageLeads = await universalApi.getEntities('lead', {
           filters: { pipeline_stage: stage.stage_id }
         })
-        
+
         // Enrich leads with dynamic data
         const enrichedLeads = await Promise.all(
-          stageLeads.map(async (lead) => {
+          stageLeads.map(async lead => {
             const dynamicData = await universalApi.getDynamicData(lead.id)
             return {
               ...lead,
@@ -462,12 +469,11 @@ export class LeadConversionPipeline {
             }
           })
         )
-        
+
         leadsByStage[stage.stage_id] = enrichedLeads
       }
-      
-      return leadsByStage
 
+      return leadsByStage
     } catch (error) {
       console.error('Error getting leads by stage:', error)
       throw error
@@ -482,8 +488,8 @@ export class LeadConversionPipeline {
   }
 
   private async processStageAutomation(
-    leadId: string, 
-    currentStage: string, 
+    leadId: string,
+    currentStage: string,
     leadScore: LeadScore
   ): Promise<void> {
     const stageInfo = this.defaultPipelineStages.find(s => s.stage_id === currentStage)
@@ -491,15 +497,15 @@ export class LeadConversionPipeline {
 
     // Check if lead qualifies for auto-advancement
     const autoQualifyThreshold = stageInfo.automation_rules.auto_qualify_threshold
-    
+
     if (leadScore.total_score >= autoQualifyThreshold) {
       const nextStageIndex = stageInfo.stage_order
       const nextStage = this.defaultPipelineStages.find(s => s.stage_order === nextStageIndex + 1)
-      
+
       if (nextStage) {
         await this.moveLeadToStage(
-          leadId, 
-          nextStage.stage_id, 
+          leadId,
+          nextStage.stage_id,
           `Auto-qualified with score ${leadScore.total_score}`
         )
       }
@@ -538,7 +544,7 @@ export class LeadConversionPipeline {
   private async triggerNurturingSequence(leadId: string, sequenceName: string): Promise<void> {
     // This would integrate with email campaign system to trigger nurturing emails
     console.log(`Triggering nurturing sequence "${sequenceName}" for lead ${leadId}`)
-    
+
     // Create nurturing campaign trigger
     await universalApi.createTransaction({
       organization_id: this.organizationId,
@@ -560,20 +566,20 @@ export class LeadConversionPipeline {
     // Basic value estimation based on lead source and scoring
     const leadDynamicData = await universalApi.getDynamicData(leadId)
     const leadScore = parseInt(leadDynamicData.lead_score || '50')
-    
+
     // Base value multipliers by lead source
     const sourceMultipliers = {
-      'email_campaign': 1.2,
-      'inbound': 1.5,
-      'referral': 2.0,
-      'cold_outreach': 0.8
+      email_campaign: 1.2,
+      inbound: 1.5,
+      referral: 2.0,
+      cold_outreach: 0.8
     }
-    
+
     const baseValue = 5000 // Base opportunity value
     const source = leadDynamicData.lead_source || 'email_campaign'
     const sourceMultiplier = sourceMultipliers[source as keyof typeof sourceMultipliers] || 1.0
     const scoreMultiplier = leadScore / 100
-    
+
     return Math.round(baseValue * sourceMultiplier * scoreMultiplier)
   }
 
@@ -586,7 +592,7 @@ export class LeadConversionPipeline {
   private async processClosedWon(leadId: string): Promise<void> {
     const opportunityId = await universalApi.getDynamicField(leadId, 'opportunity_id')
     const estimatedValue = await universalApi.getDynamicField(opportunityId, 'estimated_value')
-    
+
     // Create deal closure transaction
     await universalApi.createTransaction({
       organization_id: this.organizationId,
@@ -615,7 +621,7 @@ export class LeadConversionPipeline {
   private getTimeframeStartDate(timeframe: 'month' | 'quarter' | 'year'): string {
     const now = new Date()
     const startDate = new Date(now)
-    
+
     switch (timeframe) {
       case 'month':
         startDate.setMonth(now.getMonth() - 1)
@@ -627,7 +633,7 @@ export class LeadConversionPipeline {
         startDate.setFullYear(now.getFullYear() - 1)
         break
     }
-    
+
     return startDate.toISOString().split('T')[0]
   }
 
@@ -638,7 +644,10 @@ export class LeadConversionPipeline {
     return defaultCycles[timeframe as keyof typeof defaultCycles] || 30
   }
 
-  private calculatePipelineVelocity(dealsWon: number, timeframe: 'month' | 'quarter' | 'year'): number {
+  private calculatePipelineVelocity(
+    dealsWon: number,
+    timeframe: 'month' | 'quarter' | 'year'
+  ): number {
     const timeframeDays = { month: 30, quarter: 90, year: 365 }
     const days = timeframeDays[timeframe]
     return (dealsWon / days) * 30 // Deals per 30 days

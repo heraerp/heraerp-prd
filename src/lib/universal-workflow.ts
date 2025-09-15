@@ -35,11 +35,11 @@ export interface WorkflowTemplate {
 
 export class UniversalWorkflow {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
   }
-  
+
   /**
    * Create a workflow template with stages and transitions
    */
@@ -58,10 +58,10 @@ export class UniversalWorkflow {
           transitions: config.transitions
         }
       })
-      
+
       // Create status entities for each stage
       const statusMap = new Map<string, string>()
-      
+
       for (const stage of config.stages) {
         const status = await universalApi.createEntity({
           entity_type: 'workflow_status',
@@ -77,9 +77,9 @@ export class UniversalWorkflow {
             is_final: stage.isFinal || false
           }
         })
-        
+
         statusMap.set(stage.code, status.id)
-        
+
         // Link status to workflow
         await universalApi.createRelationship({
           from_entity_id: workflow.id,
@@ -94,12 +94,12 @@ export class UniversalWorkflow {
           }
         })
       }
-      
+
       // Create transition relationships
       for (const transition of config.transitions) {
         const fromStatusId = statusMap.get(transition.from)
         const toStatusId = statusMap.get(transition.to)
-        
+
         if (fromStatusId && toStatusId) {
           await universalApi.createRelationship({
             from_entity_id: fromStatusId,
@@ -116,14 +116,14 @@ export class UniversalWorkflow {
           })
         }
       }
-      
+
       return workflow
     } catch (error) {
       console.error('Failed to create workflow template:', error)
       throw error
     }
   }
-  
+
   /**
    * Assign workflow to a transaction
    */
@@ -131,11 +131,11 @@ export class UniversalWorkflow {
     try {
       // Get initial status
       const initialStatus = await this.getInitialStatus(workflowTemplateId)
-      
+
       if (!initialStatus) {
         throw new Error('No initial status found for workflow')
       }
-      
+
       // Create relationship
       await universalApi.createRelationship({
         from_entity_id: transactionId,
@@ -149,20 +149,20 @@ export class UniversalWorkflow {
           is_active: true
         }
       })
-      
+
       return initialStatus
     } catch (error) {
       console.error('Failed to assign workflow:', error)
       throw error
     }
   }
-  
+
   /**
    * Transition to a new status
    */
   async transitionStatus(
-    transactionId: string, 
-    newStatusId: string, 
+    transactionId: string,
+    newStatusId: string,
     context: {
       reason?: string
       userId: string
@@ -172,24 +172,21 @@ export class UniversalWorkflow {
     try {
       // Get current status
       const currentStatus = await this.getCurrentStatus(transactionId)
-      
+
       if (!currentStatus) {
         throw new Error('No current status found')
       }
-      
+
       // Validate transition
-      const canTransition = await this.validateTransition(
-        currentStatus.id, 
-        newStatusId
-      )
-      
+      const canTransition = await this.validateTransition(currentStatus.id, newStatusId)
+
       if (!canTransition) {
         throw new Error('Invalid status transition')
       }
-      
+
       // End current status relationship
       await this.endCurrentStatus(transactionId, currentStatus.id)
-      
+
       // Create new status relationship
       await universalApi.createRelationship({
         from_entity_id: transactionId,
@@ -206,17 +203,17 @@ export class UniversalWorkflow {
           ...context.metadata
         }
       })
-      
+
       // Trigger any automated actions
       await this.triggerWorkflowActions(transactionId, newStatusId)
-      
+
       return newStatusId
     } catch (error) {
       console.error('Failed to transition status:', error)
       throw error
     }
   }
-  
+
   /**
    * Get current workflow status
    */
@@ -231,11 +228,11 @@ export class UniversalWorkflow {
         },
         limit: 1
       })
-      
+
       if (!relationships || relationships.length === 0) {
         return null
       }
-      
+
       // Get the status entity
       const status = await universalApi.getEntity(relationships[0].to_entity_id)
       return status
@@ -244,7 +241,7 @@ export class UniversalWorkflow {
       return null
     }
   }
-  
+
   /**
    * Get workflow history
    */
@@ -258,9 +255,9 @@ export class UniversalWorkflow {
         },
         orderBy: { created_at: 'desc' }
       })
-      
+
       const history = []
-      
+
       for (const rel of relationships) {
         const status = await universalApi.getEntity(rel.to_entity_id)
         history.push({
@@ -274,25 +271,25 @@ export class UniversalWorkflow {
           metadata: rel.relationship_data
         })
       }
-      
+
       return history
     } catch (error) {
       console.error('Failed to get workflow history:', error)
       return []
     }
   }
-  
+
   /**
    * Get available transitions from current status
    */
   async getAvailableTransitions(transactionId: string) {
     try {
       const currentStatus = await this.getCurrentStatus(transactionId)
-      
+
       if (!currentStatus) {
         return []
       }
-      
+
       // Get allowed transitions
       const transitions = await universalApi.query({
         table: 'core_relationships',
@@ -301,9 +298,9 @@ export class UniversalWorkflow {
           relationship_type: 'can_transition_to'
         }
       })
-      
+
       const availableStatuses = []
-      
+
       for (const transition of transitions) {
         const status = await universalApi.getEntity(transition.to_entity_id)
         availableStatuses.push({
@@ -316,18 +313,18 @@ export class UniversalWorkflow {
           }
         })
       }
-      
+
       return availableStatuses
     } catch (error) {
       console.error('Failed to get available transitions:', error)
       return []
     }
   }
-  
+
   /**
    * Private helper methods
    */
-  
+
   private async getInitialStatus(workflowTemplateId: string) {
     const stages = await universalApi.query({
       table: 'core_relationships',
@@ -338,14 +335,14 @@ export class UniversalWorkflow {
       },
       limit: 1
     })
-    
+
     if (!stages || stages.length === 0) {
       return null
     }
-    
+
     return await universalApi.getEntity(stages[0].to_entity_id)
   }
-  
+
   private async validateTransition(fromStatusId: string, toStatusId: string) {
     const transitions = await universalApi.query({
       table: 'core_relationships',
@@ -355,10 +352,10 @@ export class UniversalWorkflow {
         relationship_type: 'can_transition_to'
       }
     })
-    
+
     return transitions && transitions.length > 0
   }
-  
+
   private async endCurrentStatus(transactionId: string, statusId: string) {
     // Update the current active status to inactive
     const relationships = await universalApi.query({
@@ -370,7 +367,7 @@ export class UniversalWorkflow {
         'metadata->is_active': true
       }
     })
-    
+
     for (const rel of relationships) {
       await universalApi.updateRelationship(rel.id, {
         relationship_data: {
@@ -381,13 +378,13 @@ export class UniversalWorkflow {
       })
     }
   }
-  
+
   private async triggerWorkflowActions(transactionId: string, statusId: string) {
     // This could trigger notifications, automated processes, etc.
     // For now, just log the transition
     console.log(`Workflow action triggered for transaction ${transactionId} to status ${statusId}`)
   }
-  
+
   private getDefaultColor(order: number): string {
     const colors = [
       '#6B7280', // gray
@@ -397,9 +394,9 @@ export class UniversalWorkflow {
       '#10B981', // emerald
       '#F59E0B', // amber
       '#EF4444', // red
-      '#EC4899', // pink
+      '#EC4899' // pink
     ]
-    
+
     return colors[order % colors.length]
   }
 }
@@ -428,7 +425,7 @@ export const WORKFLOW_TEMPLATES = {
       { from: 'SHIPPED', to: 'DELIVERED' }
     ]
   },
-  
+
   APPOINTMENT: {
     name: 'Appointment Workflow',
     code: 'APPOINTMENT',
@@ -452,7 +449,7 @@ export const WORKFLOW_TEMPLATES = {
       { from: 'COMPLETED', to: 'PAID' }
     ]
   },
-  
+
   INVOICE: {
     name: 'Invoice Workflow',
     code: 'INVOICE',

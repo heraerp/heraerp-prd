@@ -80,10 +80,7 @@ export function normalizeGLAccount(entityType: string): string {
 /**
  * Validate GL account entity
  */
-export function validateGLAccountEntity(entity: {
-  entity_type: string
-  metadata?: any
-}): {
+export function validateGLAccountEntity(entity: { entity_type: string; metadata?: any }): {
   valid: boolean
   errors: string[]
 } {
@@ -96,11 +93,11 @@ export function validateGLAccountEntity(entity: {
 
   // Check required metadata
   if (!(entity.metadata as any)?.ledger_type) {
-    errors.push("GL accounts must have metadata.ledger_type")
+    errors.push('GL accounts must have metadata.ledger_type')
   }
 
   if (!(entity.metadata as any)?.account_category) {
-    errors.push("GL accounts must have metadata.account_category")
+    errors.push('GL accounts must have metadata.account_category')
   }
 
   return {

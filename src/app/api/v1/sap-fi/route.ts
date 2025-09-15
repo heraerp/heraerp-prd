@@ -12,12 +12,9 @@ export async function POST(request: NextRequest) {
   try {
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const token = authorization.split(' ')[1]
@@ -30,12 +27,12 @@ export async function POST(request: NextRequest) {
     })
 
     // Get user and organization
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -72,20 +69,13 @@ export async function POST(request: NextRequest) {
         break
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json(result)
-
   } catch (error: any) {
     console.error('SAP FI API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -96,10 +86,7 @@ export async function GET(request: NextRequest) {
     const organizationId = searchParams.get('organization_id')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     let result: any
@@ -118,26 +105,20 @@ export async function GET(request: NextRequest) {
         break
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json(result)
-
   } catch (error: any) {
     console.error('SAP FI API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
   }
 }
 
 // Helper functions
 async function configureSAP(supabase: any, params: any) {
-  const { organization_id, system_type, base_url, credentials, company_code, chart_of_accounts } = params
+  const { organization_id, system_type, base_url, credentials, company_code, chart_of_accounts } =
+    params
 
   // Store configuration in core_dynamic_data
   const configFields = [
@@ -149,18 +130,19 @@ async function configureSAP(supabase: any, params: any) {
   ]
 
   for (const field of configFields) {
-    await supabase
-      .from('core_dynamic_data')
-      .upsert({
+    await supabase.from('core_dynamic_data').upsert(
+      {
         organization_id,
         entity_id: organization_id,
         field_name: field.field_name,
         field_value_text: field.field_value_text,
         field_value_json: field.field_value_json,
         smart_code: 'HERA.ERP.FI.CONFIG.v1'
-      }, {
+      },
+      {
         onConflict: 'organization_id,entity_id,field_name'
-      })
+      }
+    )
   }
 
   // Test connection
@@ -168,7 +150,9 @@ async function configureSAP(supabase: any, params: any) {
 
   return {
     success: testResult.success,
-    message: testResult.success ? 'SAP configuration saved and tested successfully' : 'Configuration saved but connection test failed',
+    message: testResult.success
+      ? 'SAP configuration saved and tested successfully'
+      : 'Configuration saved but connection test failed',
     system_info: testResult.systemInfo,
     error: testResult.error
   }
@@ -176,7 +160,7 @@ async function configureSAP(supabase: any, params: any) {
 
 async function getSAPConfig(organizationId: string) {
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
-  
+
   const { data: configData, error } = await supabase
     .from('core_dynamic_data')
     .select('field_name, field_value_text, field_value_json')
@@ -202,10 +186,11 @@ async function getSAPConfig(organizationId: string) {
 
 async function getPostingQueue(organizationId: string) {
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
-  
+
   const { data: transactions, error } = await supabase
     .from('universal_transactions')
-    .select(`
+    .select(
+      `
       id,
       transaction_code,
       transaction_date,
@@ -215,7 +200,8 @@ async function getPostingQueue(organizationId: string) {
       smart_code,
       metadata,
       created_at
-    `)
+    `
+    )
     .eq('organization_id', organizationId)
     .like('smart_code', 'HERA.ERP.FI.%')
     .in('transaction_status', ['pending', 'validated', 'posting'])
@@ -234,15 +220,17 @@ async function getPostingQueue(organizationId: string) {
 
 async function getErrorLog(organizationId: string) {
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
-  
+
   const { data: errors, error } = await supabase
     .from('core_dynamic_data')
-    .select(`
+    .select(
+      `
       entity_id,
       field_value_text,
       field_value_json,
       created_at
-    `)
+    `
+    )
     .eq('organization_id', organizationId)
     .eq('field_name', 'sap_posting_error')
     .order('created_at', { ascending: false })
@@ -254,11 +242,12 @@ async function getErrorLog(organizationId: string) {
 
   return {
     total: errors?.length || 0,
-    errors: errors?.map(e => ({
-      transaction_id: e.entity_id,
-      error_message: e.field_value_text,
-      error_details: e.field_value_json,
-      occurred_at: e.created_at
-    })) || []
+    errors:
+      errors?.map(e => ({
+        transaction_id: e.entity_id,
+        error_message: e.field_value_text,
+        error_details: e.field_value_json,
+        occurred_at: e.created_at
+      })) || []
   }
 }

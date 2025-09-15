@@ -10,10 +10,10 @@ import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Package, 
-  ShoppingCart, 
-  Factory, 
+import {
+  Package,
+  ShoppingCart,
+  Factory,
   Users,
   TrendingUp,
   Clock,
@@ -34,80 +34,92 @@ import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 function FurnitureDashboard() {
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   // Dashboard stats - in production these would come from Universal API - Memoized to prevent re-creation
-  const stats = React.useMemo(() => [
-    {
-      label: 'Active Orders',
-      value: '47',
-      change: '+12%',
-      trend: 'up' as const,
-      icon: ShoppingCart,
-      gradient: 'from-blue-500 to-cyan-500'
-    },
-    {
-      label: 'Production Queue',
-      value: '23',
-      change: '5 urgent',
-      trend: 'neutral' as const,
-      icon: Factory,
-      gradient: 'from-purple-500 to-pink-500'
-    },
-    {
-      label: 'Monthly Revenue',
-      value: '₹28.5L',
-      change: '+18%',
-      trend: 'up' as const,
-      icon: TrendingUp,
-      gradient: 'from-green-500 to-emerald-500'
-    },
-    {
-      label: 'Inventory Value',
-      value: '₹45.2L',
-      change: 'Well stocked',
-      trend: 'neutral' as const,
-      icon: Package,
-      gradient: 'from-amber-500 to-orange-500'
-    }
-  ], [])
+  const stats = React.useMemo(
+    () => [
+      {
+        label: 'Active Orders',
+        value: '47',
+        change: '+12%',
+        trend: 'up' as const,
+        icon: ShoppingCart,
+        gradient: 'from-blue-500 to-cyan-500'
+      },
+      {
+        label: 'Production Queue',
+        value: '23',
+        change: '5 urgent',
+        trend: 'neutral' as const,
+        icon: Factory,
+        gradient: 'from-purple-500 to-pink-500'
+      },
+      {
+        label: 'Monthly Revenue',
+        value: '₹28.5L',
+        change: '+18%',
+        trend: 'up' as const,
+        icon: TrendingUp,
+        gradient: 'from-green-500 to-emerald-500'
+      },
+      {
+        label: 'Inventory Value',
+        value: '₹45.2L',
+        change: 'Well stocked',
+        trend: 'neutral' as const,
+        icon: Package,
+        gradient: 'from-amber-500 to-orange-500'
+      }
+    ],
+    []
+  )
 
-  const recentActivities = React.useMemo(() => [
-    {
-      id: '1',
-      type: 'order' as const,
-      title: 'New order from Marriott Hotels',
-      description: '150 Executive Room Chairs',
-      time: '2 hours ago',
-      amount: '₹12,50,000'
-    },
-    {
-      id: '2', 
-      type: 'production' as const,
-      title: 'Production completed',
-      description: 'Order #FRN-2025-0234 ready for dispatch',
-      time: '4 hours ago'
-    },
-    {
-      id: '3',
-      type: 'payment' as const,
-      title: 'Payment received',
-      description: 'ITC Hotels - ₹8,50,000',
-      time: '6 hours ago',
-      amount: '₹8,50,000'
-    }
-  ], [])
+  const recentActivities = React.useMemo(
+    () => [
+      {
+        id: '1',
+        type: 'order' as const,
+        title: 'New order from Marriott Hotels',
+        description: '150 Executive Room Chairs',
+        time: '2 hours ago',
+        amount: '₹12,50,000'
+      },
+      {
+        id: '2',
+        type: 'production' as const,
+        title: 'Production completed',
+        description: 'Order #FRN-2025-0234 ready for dispatch',
+        time: '4 hours ago'
+      },
+      {
+        id: '3',
+        type: 'payment' as const,
+        title: 'Payment received',
+        description: 'ITC Hotels - ₹8,50,000',
+        time: '6 hours ago',
+        amount: '₹8,50,000'
+      }
+    ],
+    []
+  )
 
-  const productionKPIs = React.useMemo(() => [
-    { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
-    { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
-    { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
-    { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
-  ], [])
+  const productionKPIs = React.useMemo(
+    () => [
+      { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
+      { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
+      { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
+      { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
+    ],
+    []
+  )
 
-  const quickActions = React.useMemo(() => [
-    { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
-    { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
-    { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
-    { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
-  ], [])
+  const quickActions = React.useMemo(
+    () => [
+      { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
+      { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
+      { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
+      { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
+    ],
+    []
+  )
 
   // Show loading state while organization is loading
   if (orgLoading) {
@@ -150,11 +162,8 @@ function FurnitureDashboard() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Business Overview</h2>
           <StatCardGrid>
-            {stats.map((stat) => (
-              <FurnitureStatCard 
-                key={stat.label} 
-                {...stat}
-              />
+            {stats.map(stat => (
+              <FurnitureStatCard key={stat.label} {...stat} />
             ))}
           </StatCardGrid>
         </div>
@@ -174,7 +183,8 @@ function FurnitureDashboard() {
                       <Sparkles className="h-4 w-4 text-purple-400" />
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Get instant insights, recommendations, and strategic analysis for your furniture business
+                      Get instant insights, recommendations, and strategic analysis for your
+                      furniture business
                     </p>
                   </div>
                 </div>
@@ -201,7 +211,7 @@ function FurnitureDashboard() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Quick Actions</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {quickActions.map((action) => (
+                {quickActions.map(action => (
                   <Link key={action.label} href={action.href}>
                     <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
                       <div className="flex flex-col items-center text-center gap-2">
@@ -219,16 +229,17 @@ function FurnitureDashboard() {
               <h3 className="text-lg font-semibold">Recent Activities</h3>
               <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-white/20 dark:border-gray-700/50">
                 <div className="space-y-4">
-                  {recentActivities.map((activity) => (
-                    <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  {recentActivities.map(activity => (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
                       <div className="flex-1">
                         <p className="font-medium">{activity.title}</p>
                         <p className="text-sm text-muted-foreground">{activity.description}</p>
                         <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
                       </div>
-                      {activity.amount && (
-                        <p className="font-semibold">{activity.amount}</p>
-                      )}
+                      {activity.amount && <p className="font-semibold">{activity.amount}</p>}
                     </div>
                   ))}
                   <Link href="/furniture/reports">
@@ -245,20 +256,27 @@ function FurnitureDashboard() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Production KPIs</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {productionKPIs.map((kpi) => (
-                  <Card key={kpi.label} className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
+                {productionKPIs.map(kpi => (
+                  <Card
+                    key={kpi.label}
+                    className="p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm"
+                  >
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">{kpi.label}</p>
                       <p className="text-2xl font-bold">{kpi.value}%</p>
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs">
                           <span>Target: {kpi.target}%</span>
-                          <span className={kpi.value >= kpi.target ? 'text-green-600' : 'text-amber-600'}>
+                          <span
+                            className={
+                              kpi.value >= kpi.target ? 'text-green-600' : 'text-amber-600'
+                            }
+                          >
                             {kpi.value >= kpi.target ? '✓' : '↓'}
                           </span>
                         </div>
                         <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className={`h-full bg-${kpi.color}-500 transition-all`}
                             style={{ width: `${kpi.value}%` }}
                           />
@@ -275,11 +293,11 @@ function FurnitureDashboard() {
               <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
                 <div className="space-y-4">
                   {[
-                    { label: "Cutting Station", value: 85, icon: Factory },
-                    { label: "Assembly Line 1", value: 72, icon: Factory },
-                    { label: "Finishing Bay", value: 90, icon: Factory },
-                    { label: "Quality Check", value: 65, icon: CheckCircle }
-                  ].map((center) => (
+                    { label: 'Cutting Station', value: 85, icon: Factory },
+                    { label: 'Assembly Line 1', value: 72, icon: Factory },
+                    { label: 'Finishing Bay', value: 90, icon: Factory },
+                    { label: 'Quality Check', value: 65, icon: CheckCircle }
+                  ].map(center => (
                     <div key={center.label} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -289,7 +307,7 @@ function FurnitureDashboard() {
                         <span className="text-sm font-medium">{center.value}%</span>
                       </div>
                       <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-primary transition-all"
                           style={{ width: `${center.value}%` }}
                         />
@@ -313,7 +331,7 @@ function FurnitureDashboard() {
                   <AlertCircle className="h-8 w-8 text-amber-500" />
                 </div>
               </Card>
-              
+
               <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div>
@@ -324,7 +342,7 @@ function FurnitureDashboard() {
                   <DollarSign className="h-8 w-8 text-green-500" />
                 </div>
               </Card>
-              
+
               <Card className="p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div>
@@ -407,10 +425,14 @@ function FurnitureDashboard() {
   )
 }
 
-const ModuleLink = React.memo(function ModuleLink({ href, icon: Icon, label }: { 
+const ModuleLink = React.memo(function ModuleLink({
+  href,
+  icon: Icon,
+  label
+}: {
   href: string
   icon: React.ElementType
-  label: string 
+  label: string
 }) {
   return (
     <Link href={href}>

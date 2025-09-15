@@ -29,13 +29,14 @@ export async function GET(request: NextRequest) {
     const location = searchParams.get('location')
     const includeReservations = searchParams.get('include_reservations') === 'true'
     const date = searchParams.get('date') // For availability checking
-    
+
     console.log('🪑 Table Management: Loading restaurant tables')
 
     // Get all tables (stored as entities with type 'restaurant_table')
     let query = supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
@@ -44,7 +45,8 @@ export async function GET(request: NextRequest) {
           field_value_boolean,
           field_type
         )
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'restaurant_table')
       .order('entity_name', { ascending: true })
@@ -64,66 +66,71 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform tables with dynamic data
-    const transformedTables = tables?.map(table => {
-      const dynamicProps = table.dynamic_data?.reduce((acc: any, prop: any) => {
-        let value = prop.field_value
-        if (prop.field_type === 'number' && prop.field_value_number !== null) {
-          value = prop.field_value_number
-        } else if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
-          value = prop.field_value_boolean
-        }
-        acc[prop.field_name] = value
-        return acc
-      }, {}) || {}
+    const transformedTables =
+      tables?.map(table => {
+        const dynamicProps =
+          table.dynamic_data?.reduce((acc: any, prop: any) => {
+            let value = prop.field_value
+            if (prop.field_type === 'number' && prop.field_value_number !== null) {
+              value = prop.field_value_number
+            } else if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
+              value = prop.field_value_boolean
+            }
+            acc[prop.field_name] = value
+            return acc
+          }, {}) || {}
 
-      return {
-        id: table.id,
-        table_number: table.entity_name,
-        table_code: table.entity_code,
-        status: table.status,
-        description: table.description,
-        created_at: table.created_at,
-        updated_at: table.updated_at,
-        
-        // Table Configuration
-        seating_capacity: parseInt(dynamicProps.seating_capacity || '4'),
-        location: dynamicProps.location || 'indoor',
-        table_type: dynamicProps.table_type || 'standard',
-        minimum_party_size: parseInt(dynamicProps.minimum_party_size || '1'),
-        maximum_party_size: parseInt(dynamicProps.maximum_party_size || dynamicProps.seating_capacity || '4'),
-        
-        // Features & Amenities
-        special_features: dynamicProps.special_features ? 
-          JSON.parse(dynamicProps.special_features) : [],
-        pricing_tier: dynamicProps.pricing_tier || 'standard',
-        wheelchair_accessible: dynamicProps.wheelchair_accessible === 'true',
-        window_view: dynamicProps.window_view === 'true',
-        quiet_zone: dynamicProps.quiet_zone === 'true',
-        
-        // Operational Settings
-        allow_reservations: dynamicProps.allow_reservations !== 'false',
-        advance_booking_days: parseInt(dynamicProps.advance_booking_days || '30'),
-        minimum_booking_duration: parseInt(dynamicProps.minimum_booking_duration || '90'),
-        maximum_booking_duration: parseInt(dynamicProps.maximum_booking_duration || '180'),
-        
-        // Current Status (if checking availability for specific date)
-        ...(date && {
-          availability_status: 'available', // Will be calculated based on reservations
-          next_reservation: null,
-          current_reservation: null
-        })
-      }
-    }) || []
+        return {
+          id: table.id,
+          table_number: table.entity_name,
+          table_code: table.entity_code,
+          status: table.status,
+          description: table.description,
+          created_at: table.created_at,
+          updated_at: table.updated_at,
+
+          // Table Configuration
+          seating_capacity: parseInt(dynamicProps.seating_capacity || '4'),
+          location: dynamicProps.location || 'indoor',
+          table_type: dynamicProps.table_type || 'standard',
+          minimum_party_size: parseInt(dynamicProps.minimum_party_size || '1'),
+          maximum_party_size: parseInt(
+            dynamicProps.maximum_party_size || dynamicProps.seating_capacity || '4'
+          ),
+
+          // Features & Amenities
+          special_features: dynamicProps.special_features
+            ? JSON.parse(dynamicProps.special_features)
+            : [],
+          pricing_tier: dynamicProps.pricing_tier || 'standard',
+          wheelchair_accessible: dynamicProps.wheelchair_accessible === 'true',
+          window_view: dynamicProps.window_view === 'true',
+          quiet_zone: dynamicProps.quiet_zone === 'true',
+
+          // Operational Settings
+          allow_reservations: dynamicProps.allow_reservations !== 'false',
+          advance_booking_days: parseInt(dynamicProps.advance_booking_days || '30'),
+          minimum_booking_duration: parseInt(dynamicProps.minimum_booking_duration || '90'),
+          maximum_booking_duration: parseInt(dynamicProps.maximum_booking_duration || '180'),
+
+          // Current Status (if checking availability for specific date)
+          ...(date && {
+            availability_status: 'available', // Will be calculated based on reservations
+            next_reservation: null,
+            current_reservation: null
+          })
+        }
+      }) || []
 
     // Filter by location if specified
-    const filteredTables = location 
+    const filteredTables = location
       ? transformedTables.filter(table => table.location === location)
       : transformedTables
 
     // If date is provided, check availability for each table
     if (date && includeReservations) {
       console.log(`🗓️ Checking table availability for ${date}`)
-      
+
       // Get reservations for the specified date
       const { data: reservations } = await supabaseAdmin
         .from('universal_transactions')
@@ -135,36 +142,43 @@ export async function GET(request: NextRequest) {
 
       // Update availability status for each table
       filteredTables.forEach(table => {
-        const tableReservations = reservations?.filter(res => 
-          (res.metadata as any)?.table_id === table.id
-        ) || [];
+        const tableReservations =
+          reservations?.filter(res => (res.metadata as any)?.table_id === table.id) || []
 
-        (table as any).current_reservation = tableReservations.find(res => {
-          const startTime = (res.metadata as any)?.start_time;
-          const endTime = (res.metadata as any)?.end_time;
-          const now = new Date();
-          const currentTime = now.getHours() * 60 + now.getMinutes();
-          
-          if (startTime && endTime) {
-            const start = parseInt(startTime);
-            const end = parseInt(endTime);
-            return currentTime >= start && currentTime <= end;
-          }
-          return false;
-        }) || null;
+        ;(table as any).current_reservation =
+          tableReservations.find(res => {
+            const startTime = (res.metadata as any)?.start_time
+            const endTime = (res.metadata as any)?.end_time
+            const now = new Date()
+            const currentTime = now.getHours() * 60 + now.getMinutes()
 
-        (table as any).next_reservation = tableReservations
-          .filter(res => {
-            const startTime = (res.metadata as any)?.start_time;
-            const now = new Date();
-            const currentTime = now.getHours() * 60 + now.getMinutes();
-            return startTime && parseInt(startTime) > currentTime;
-          })
-          .sort((a, b) => parseInt((a.metadata as any)?.start_time || '0') - parseInt((b.metadata as any)?.start_time || '0'))[0] || null;
+            if (startTime && endTime) {
+              const start = parseInt(startTime)
+              const end = parseInt(endTime)
+              return currentTime >= start && currentTime <= end
+            }
+            return false
+          }) || null
 
-        (table as any).availability_status = (table as any).current_reservation ? 'occupied' : 'available';
-        (table as any).reservations_today = tableReservations.length;
-      });
+        ;(table as any).next_reservation =
+          tableReservations
+            .filter(res => {
+              const startTime = (res.metadata as any)?.start_time
+              const now = new Date()
+              const currentTime = now.getHours() * 60 + now.getMinutes()
+              return startTime && parseInt(startTime) > currentTime
+            })
+            .sort(
+              (a, b) =>
+                parseInt((a.metadata as any)?.start_time || '0') -
+                parseInt((b.metadata as any)?.start_time || '0')
+            )[0] || null
+
+        ;(table as any).availability_status = (table as any).current_reservation
+          ? 'occupied'
+          : 'available'
+        ;(table as any).reservations_today = tableReservations.length
+      })
     }
 
     // Calculate summary statistics
@@ -198,13 +212,9 @@ export async function GET(request: NextRequest) {
 
     console.log(`✅ Loaded ${filteredTables.length} tables (${summary.active_tables} active)`)
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('❌ Table management API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -222,11 +232,11 @@ export async function POST(request: NextRequest) {
     // Validate required fields with helpful error messages
     const requiredFields = ['table_number', 'seating_capacity', 'location']
     const missingFields = requiredFields.filter(field => !(tableData as any)[field])
-    
+
     if (missingFields.length > 0) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           message: `Missing required fields: ${missingFields.join(', ')}`,
           required_fields: requiredFields
         },
@@ -262,7 +272,9 @@ export async function POST(request: NextRequest) {
         entity_name: tableData.table_number,
         entity_code: tableCode,
         status: tableData.status || 'active',
-        description: tableData.description || `Table ${tableData.table_number} - ${tableData.seating_capacity} seats`
+        description:
+          tableData.description ||
+          `Table ${tableData.table_number} - ${tableData.seating_capacity} seats`
       })
       .select()
       .single()
@@ -281,50 +293,72 @@ export async function POST(request: NextRequest) {
       { name: 'seating_capacity', value: tableData.seating_capacity.toString(), type: 'number' },
       { name: 'location', value: tableData.location, type: 'text' },
       { name: 'table_type', value: tableData.table_type || 'standard', type: 'text' },
-      
+
       // Capacity Rules
-      { name: 'minimum_party_size', value: (tableData.minimum_party_size || 1).toString(), type: 'number' },
-      { name: 'maximum_party_size', value: (tableData.maximum_party_size || tableData.seating_capacity).toString(), type: 'number' },
-      
+      {
+        name: 'minimum_party_size',
+        value: (tableData.minimum_party_size || 1).toString(),
+        type: 'number'
+      },
+      {
+        name: 'maximum_party_size',
+        value: (tableData.maximum_party_size || tableData.seating_capacity).toString(),
+        type: 'number'
+      },
+
       // Features & Amenities
-      { name: 'special_features', value: JSON.stringify(tableData.special_features || []), type: 'text' },
+      {
+        name: 'special_features',
+        value: JSON.stringify(tableData.special_features || []),
+        type: 'text'
+      },
       { name: 'pricing_tier', value: tableData.pricing_tier || 'standard', type: 'text' },
-      { name: 'wheelchair_accessible', value: (tableData.special_features?.includes('wheelchair_accessible') || false).toString(), type: 'boolean' },
-      { name: 'window_view', value: (tableData.special_features?.includes('window_view') || false).toString(), type: 'boolean' },
-      { name: 'quiet_zone', value: (tableData.special_features?.includes('quiet_zone') || false).toString(), type: 'boolean' },
-      
+      {
+        name: 'wheelchair_accessible',
+        value: (tableData.special_features?.includes('wheelchair_accessible') || false).toString(),
+        type: 'boolean'
+      },
+      {
+        name: 'window_view',
+        value: (tableData.special_features?.includes('window_view') || false).toString(),
+        type: 'boolean'
+      },
+      {
+        name: 'quiet_zone',
+        value: (tableData.special_features?.includes('quiet_zone') || false).toString(),
+        type: 'boolean'
+      },
+
       // Operational Settings
       { name: 'allow_reservations', value: 'true', type: 'boolean' },
       { name: 'advance_booking_days', value: '30', type: 'number' },
       { name: 'minimum_booking_duration', value: '90', type: 'number' }, // 1.5 hours
       { name: 'maximum_booking_duration', value: '180', type: 'number' }, // 3 hours
-      
+
       // System Fields
       { name: 'created_by', value: 'admin', type: 'text' },
       { name: 'last_updated_by', value: 'admin', type: 'text' }
     ].filter(prop => prop.value !== '' && prop.value !== 'undefined')
 
     if (tableProperties.length > 0) {
-      const { error: dynamicError } = await supabaseAdmin
-        .from('core_dynamic_data')
-        .insert(
-          tableProperties.map(prop => {
-            const baseProps = {
-              organization_id: organizationId,
-              entity_id: table.id,
-              field_name: prop.name,
-              field_type: prop.type
-            }
-            
-            if (prop.type === 'number') {
-              return { ...baseProps, field_value_number: parseFloat(prop.value) || 0 }
-            } else if (prop.type === 'boolean') {
-              return { ...baseProps, field_value_boolean: prop.value === 'true' }
-            } else {
-              return { ...baseProps, field_value: prop.value }
-            }
-          })
-        )
+      const { error: dynamicError } = await supabaseAdmin.from('core_dynamic_data').insert(
+        tableProperties.map(prop => {
+          const baseProps = {
+            organization_id: organizationId,
+            entity_id: table.id,
+            field_name: prop.name,
+            field_type: prop.type
+          }
+
+          if (prop.type === 'number') {
+            return { ...baseProps, field_value_number: parseFloat(prop.value) || 0 }
+          } else if (prop.type === 'boolean') {
+            return { ...baseProps, field_value_boolean: prop.value === 'true' }
+          } else {
+            return { ...baseProps, field_value: prop.value }
+          }
+        })
+      )
 
       if (dynamicError) {
         console.error('❌ Error storing table properties:', dynamicError)
@@ -351,15 +385,13 @@ export async function POST(request: NextRequest) {
       ]
     }
 
-    console.log(`✅ Table created: ${table.entity_name} (${tableData.seating_capacity} seats, ${tableData.location})`)
+    console.log(
+      `✅ Table created: ${table.entity_name} (${tableData.seating_capacity} seats, ${tableData.location})`
+    )
     return NextResponse.json(response, { status: 201 })
-
   } catch (error) {
     console.error('❌ Create table API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -405,38 +437,62 @@ export async function PUT(request: NextRequest) {
 
     // Update dynamic properties with intelligent upsert
     const dynamicUpdates = [
-      'seating_capacity', 'location', 'table_type', 'minimum_party_size', 'maximum_party_size',
-      'special_features', 'pricing_tier', 'wheelchair_accessible', 'window_view', 'quiet_zone',
-      'allow_reservations', 'advance_booking_days', 'minimum_booking_duration', 'maximum_booking_duration'
+      'seating_capacity',
+      'location',
+      'table_type',
+      'minimum_party_size',
+      'maximum_party_size',
+      'special_features',
+      'pricing_tier',
+      'wheelchair_accessible',
+      'window_view',
+      'quiet_zone',
+      'allow_reservations',
+      'advance_booking_days',
+      'minimum_booking_duration',
+      'maximum_booking_duration'
     ]
 
     for (const property of dynamicUpdates) {
       if (updateData[property] !== undefined) {
         const value = updateData[property]
-        const fieldType = ['seating_capacity', 'minimum_party_size', 'maximum_party_size', 'advance_booking_days', 'minimum_booking_duration', 'maximum_booking_duration'].includes(property) ? 'number' :
-                         ['wheelchair_accessible', 'window_view', 'quiet_zone', 'allow_reservations'].includes(property) ? 'boolean' : 'text'
-        
+        const fieldType = [
+          'seating_capacity',
+          'minimum_party_size',
+          'maximum_party_size',
+          'advance_booking_days',
+          'minimum_booking_duration',
+          'maximum_booking_duration'
+        ].includes(property)
+          ? 'number'
+          : ['wheelchair_accessible', 'window_view', 'quiet_zone', 'allow_reservations'].includes(
+                property
+              )
+            ? 'boolean'
+            : 'text'
+
         const baseProps = {
           organization_id: organizationId,
           entity_id: updateData.id,
           field_name: property,
           field_type: fieldType
         }
-        
+
         let upsertData
         if (fieldType === 'number') {
           upsertData = { ...baseProps, field_value_number: parseFloat(value) || 0 }
         } else if (fieldType === 'boolean') {
           upsertData = { ...baseProps, field_value_boolean: Boolean(value) }
         } else {
-          upsertData = { ...baseProps, field_value: typeof value === 'object' ? JSON.stringify(value) : value.toString() }
+          upsertData = {
+            ...baseProps,
+            field_value: typeof value === 'object' ? JSON.stringify(value) : value.toString()
+          }
         }
-        
-        await supabaseAdmin
-          .from('core_dynamic_data')
-          .upsert(upsertData, {
-            onConflict: 'organization_id,entity_id,field_name'
-          })
+
+        await supabaseAdmin.from('core_dynamic_data').upsert(upsertData, {
+          onConflict: 'organization_id,entity_id,field_name'
+        })
       }
     }
 
@@ -445,13 +501,9 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'Table updated successfully'
     })
-
   } catch (error) {
     console.error('❌ Update table API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -465,10 +517,7 @@ export async function DELETE(request: NextRequest) {
     const tableId = searchParams.get('id')
 
     if (!tableId) {
-      return NextResponse.json(
-        { success: false, message: 'Table ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'Table ID is required' }, { status: 400 })
     }
 
     console.log(`🪑 Table Management: Deactivating table ${tableId}`)
@@ -484,17 +533,20 @@ export async function DELETE(request: NextRequest) {
       .in('status', ['pending', 'confirmed'])
 
     if (futureReservations && futureReservations.length > 0) {
-      return NextResponse.json({
-        success: false,
-        message: `Cannot deactivate table. ${futureReservations.length} future reservations exist.`,
-        future_reservations: futureReservations.length
-      }, { status: 409 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Cannot deactivate table. ${futureReservations.length} future reservations exist.`,
+          future_reservations: futureReservations.length
+        },
+        { status: 409 }
+      )
     }
 
     // Soft delete by setting status to inactive
     const { error: updateError } = await supabaseAdmin
       .from('core_entities')
-      .update({ 
+      .update({
         status: 'inactive',
         updated_at: new Date().toISOString()
       })
@@ -515,12 +567,8 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Table deactivated successfully'
     })
-
   } catch (error) {
     console.error('❌ Delete table API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

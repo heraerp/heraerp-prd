@@ -1,6 +1,6 @@
 /**
  * HERA Leave Management API - Universal Architecture Extension
- * 
+ *
  * Uses the Sacred 6-Table architecture:
  * - core_entities: Employees, Calendar Events
  * - core_dynamic_data: Leave policies, balances, calendar settings
@@ -11,24 +11,30 @@
 
 import { universalApi } from '@/lib/universal-api'
 import { formatDate } from '@/lib/date-utils'
-import { eachDayOfInterval, isWeekend, isWithinInterval, differenceInDays, isSameDay } from 'date-fns'
+import {
+  eachDayOfInterval,
+  isWeekend,
+  isWithinInterval,
+  differenceInDays,
+  isSameDay
+} from 'date-fns'
 
 // Smart Code definitions for Leave Management
 export const LEAVE_SMART_CODES = {
   // Entity smart codes
   EMPLOYEE: 'HERA.SALON.HR.EMPLOYEE.RECORD.v1',
   CALENDAR_EVENT: 'HERA.SALON.CALENDAR.EVENT.v1',
-  
+
   // Transaction smart codes
   LEAVE_REQUEST: 'HERA.SALON.HR.LEAVE.REQUEST.v1',
   LEAVE_APPROVAL: 'HERA.SALON.HR.LEAVE.APPROVAL.v1',
   LEAVE_CANCELLATION: 'HERA.SALON.HR.LEAVE.CANCELLATION.v1',
   LEAVE_ADJUSTMENT: 'HERA.SALON.HR.LEAVE.ADJUSTMENT.v1',
-  
+
   // Relationship smart codes
   REPORTS_TO: 'HERA.SALON.HR.REPORTS.TO.v1',
   LEAVE_CALENDAR_SYNC: 'HERA.SALON.LEAVE.CALENDAR.SYNC.v1',
-  
+
   // Dynamic field smart codes
   LEAVE_POLICY: 'HERA.SALON.HR.LEAVE.POLICY.v1',
   LEAVE_BALANCE: 'HERA.SALON.HR.LEAVE.BALANCE.v1',
@@ -102,31 +108,36 @@ export class LeaveManagementApi {
         request.leaveType,
         organizationId
       )
-      
+
       if (balance.available < businessDays) {
-        throw new Error(`Insufficient leave balance. Available: ${balance.available}, Requested: ${businessDays}`)
+        throw new Error(
+          `Insufficient leave balance. Available: ${balance.available}, Requested: ${businessDays}`
+        )
       }
     }
 
     // Create the leave request transaction
-    const transaction = await this.api.createTransaction({
-      transaction_type: 'leave_request',
-      smart_code: LEAVE_SMART_CODES.LEAVE_REQUEST,
-      reference_number: `LEAVE-${Date.now()}`,
-      transaction_date: new Date().toISOString(),
-      total_amount: businessDays, // Days as amount for reporting
-      metadata: {
-        from_entity_id: request.employeeId,
-        leave_type: request.leaveType,
-        start_date: request.startDate,
-        end_date: request.endDate,
-        partial_days: request.partialDays,
-        reason: request.reason,
-        deduct_from_balance: request.deductFromBalance,
-        coverage_notes: request.coverageNotes,
-        approval_status: 'pending'
-      }
-    }, organizationId)
+    const transaction = await this.api.createTransaction(
+      {
+        transaction_type: 'leave_request',
+        smart_code: LEAVE_SMART_CODES.LEAVE_REQUEST,
+        reference_number: `LEAVE-${Date.now()}`,
+        transaction_date: new Date().toISOString(),
+        total_amount: businessDays, // Days as amount for reporting
+        metadata: {
+          from_entity_id: request.employeeId,
+          leave_type: request.leaveType,
+          start_date: request.startDate,
+          end_date: request.endDate,
+          partial_days: request.partialDays,
+          reason: request.reason,
+          deduct_from_balance: request.deductFromBalance,
+          coverage_notes: request.coverageNotes,
+          approval_status: 'pending'
+        }
+      },
+      organizationId
+    )
 
     // Create transaction lines for each day
     const lines = await this.createLeaveLines(
@@ -144,14 +155,10 @@ export class LeaveManagementApi {
   /**
    * Approve a leave request with calendar sync
    */
-  async approveLeaveRequest(
-    requestId: string,
-    approverId: string,
-    organizationId: string
-  ) {
+  async approveLeaveRequest(requestId: string, approverId: string, organizationId: string) {
     // Get the original request
     const request = await this.api.getTransaction(requestId)
-    
+
     if (!request || request.metadata.approval_status !== 'pending') {
       throw new Error('Invalid leave request or already processed')
     }
@@ -207,7 +214,7 @@ export class LeaveManagementApi {
     organizationId: string
   ) {
     const request = await this.api.getTransaction(requestId)
-    
+
     if (!request || request.metadata.approval_status === 'cancelled') {
       throw new Error('Invalid leave request or already cancelled')
     }
@@ -264,14 +271,17 @@ export class LeaveManagementApi {
     // Get all transactions affecting this employee's balance
     const transactionsResponse = await this.api.getTransactions(organizationId)
     const allTransactions = transactionsResponse.success ? transactionsResponse.data || [] : []
-    
+
     // Filter for this employee's leave transactions
-    const transactions = allTransactions.filter(txn => 
-      [LEAVE_SMART_CODES.LEAVE_REQUEST, 
-       LEAVE_SMART_CODES.LEAVE_ADJUSTMENT, 
-       LEAVE_SMART_CODES.LEAVE_CANCELLATION].includes(txn.smart_code) &&
-      txn.from_entity_id === employeeId &&
-      (txn.metadata as any)?.leave_type === leaveType
+    const transactions = allTransactions.filter(
+      txn =>
+        [
+          LEAVE_SMART_CODES.LEAVE_REQUEST,
+          LEAVE_SMART_CODES.LEAVE_ADJUSTMENT,
+          LEAVE_SMART_CODES.LEAVE_CANCELLATION
+        ].includes(txn.smart_code) &&
+        txn.from_entity_id === employeeId &&
+        (txn.metadata as any)?.leave_type === leaveType
     )
 
     // Get policy settings - for now use defaults
@@ -353,10 +363,10 @@ export class LeaveManagementApi {
     // Get team members reporting to this manager
     const relationshipsResponse = await this.api.getRelationships(managerId, organizationId)
     const allRelationships = relationshipsResponse.success ? relationshipsResponse.data || [] : []
-    
-    const teamMembers = allRelationships.filter(rel => 
-      rel.relationship_type === LEAVE_SMART_CODES.REPORTS_TO &&
-      rel.to_entity_id === managerId
+
+    const teamMembers = allRelationships.filter(
+      rel =>
+        rel.relationship_type === LEAVE_SMART_CODES.REPORTS_TO && rel.to_entity_id === managerId
     )
 
     const teamIds = teamMembers.map(rel => rel.from_entity_id)
@@ -364,7 +374,7 @@ export class LeaveManagementApi {
     // Get all leave for team members in date range
     const transactionsResponse = await this.api.getTransactions(organizationId)
     const allTransactions = transactionsResponse.success ? transactionsResponse.data || [] : []
-    
+
     const teamLeave = allTransactions.filter(txn => {
       const startDateCheck = (txn.metadata as any)?.start_date >= startDate
       const endDateCheck = (txn.metadata as any)?.end_date <= endDate
@@ -372,7 +382,8 @@ export class LeaveManagementApi {
         txn.smart_code === LEAVE_SMART_CODES.LEAVE_REQUEST &&
         teamIds.includes(txn.from_entity_id) &&
         ['approved', 'pending'].includes((txn.metadata as any)?.approval_status) &&
-        startDateCheck && endDateCheck
+        startDateCheck &&
+        endDateCheck
       )
     })
 
@@ -399,25 +410,27 @@ export class LeaveManagementApi {
     // Get all leave transactions for the fiscal year
     const transactionsResponse = await this.api.getTransactions(organizationId)
     const allTransactions = transactionsResponse.success ? transactionsResponse.data || [] : []
-    
+
     // Filter for leave transactions in the fiscal year
     const leaveTransactions = allTransactions.filter(txn => {
       const txnDate = new Date(txn.transaction_date)
       const startDate = new Date(fiscalYearStart)
       const endDate = new Date(fiscalYearEnd)
-      
+
       return (
-        [LEAVE_SMART_CODES.LEAVE_REQUEST, 
-         LEAVE_SMART_CODES.LEAVE_ADJUSTMENT, 
-         LEAVE_SMART_CODES.LEAVE_CANCELLATION].includes(txn.smart_code) &&
-        txnDate >= startDate && 
+        [
+          LEAVE_SMART_CODES.LEAVE_REQUEST,
+          LEAVE_SMART_CODES.LEAVE_ADJUSTMENT,
+          LEAVE_SMART_CODES.LEAVE_CANCELLATION
+        ].includes(txn.smart_code) &&
+        txnDate >= startDate &&
         txnDate <= endDate
       )
     })
 
     // Build report data
     const reportData = await Promise.all(
-      employees.map(async (employee) => {
+      employees.map(async employee => {
         const balances = await Promise.all([
           this.getEmployeeBalance(employee.id, 'annual', organizationId),
           this.getEmployeeBalance(employee.id, 'sick', organizationId)
@@ -472,11 +485,12 @@ export class LeaveManagementApi {
   ): Promise<boolean> {
     const transactionsResponse = await this.api.getTransactions(organizationId)
     const allTransactions = transactionsResponse.success ? transactionsResponse.data || [] : []
-    
-    const existingLeave = allTransactions.filter(txn => 
-      txn.smart_code === LEAVE_SMART_CODES.LEAVE_REQUEST &&
-      txn.from_entity_id === employeeId &&
-      ['pending', 'approved'].includes((txn.metadata as any)?.approval_status)
+
+    const existingLeave = allTransactions.filter(
+      txn =>
+        txn.smart_code === LEAVE_SMART_CODES.LEAVE_REQUEST &&
+        txn.from_entity_id === employeeId &&
+        ['pending', 'approved'].includes((txn.metadata as any)?.approval_status)
     )
 
     return existingLeave.some(leave => {
@@ -508,8 +522,8 @@ export class LeaveManagementApi {
 
     const lines = await Promise.all(
       days.map(async (day, index) => {
-        const isPartial = partialDays?.type === 'half' || 
-                         partialDays?.dates?.[formatDate(day, 'yyyy-MM-dd')]
+        const isPartial =
+          partialDays?.type === 'half' || partialDays?.dates?.[formatDate(day, 'yyyy-MM-dd')]
 
         return this.api.createTransactionLine({
           transaction_id: transactionId,
@@ -540,24 +554,24 @@ export class LeaveManagementApi {
   ) {
     // This would be handled by auto-journal rules in production
     // For now, we'll create a transaction to track the balance change
-    await this.api.createTransaction({
-      transaction_type: 'leave_balance_adjustment',
-      from_entity_id: employeeId,
-      transaction_date: new Date().toISOString(),
-      total_amount: adjustment,
-      metadata: {
-        leave_type: leaveType,
-        adjustment_type: adjustment > 0 ? 'credit' : 'debit',
-        adjustment_reason: 'leave_approval'
+    await this.api.createTransaction(
+      {
+        transaction_type: 'leave_balance_adjustment',
+        from_entity_id: employeeId,
+        transaction_date: new Date().toISOString(),
+        total_amount: adjustment,
+        metadata: {
+          leave_type: leaveType,
+          adjustment_type: adjustment > 0 ? 'credit' : 'debit',
+          adjustment_reason: 'leave_approval'
+        },
+        smart_code: 'HERA.SALON.HR.LEAVE.BALANCE.ADJUSTMENT.v1'
       },
-      smart_code: 'HERA.SALON.HR.LEAVE.BALANCE.ADJUSTMENT.v1'
-    }, organizationId)
+      organizationId
+    )
   }
 
-  private async syncToCalendar(
-    leaveRequest: any,
-    organizationId: string
-  ) {
+  private async syncToCalendar(leaveRequest: any, organizationId: string) {
     // Get employee calendar settings
     const calendarSettings = await this.api.getDynamicFields(
       leaveRequest.from_entity_id,
@@ -598,17 +612,15 @@ export class LeaveManagementApi {
     return calendarEvent
   }
 
-  private async removeFromCalendar(
-    requestId: string,
-    organizationId: string
-  ) {
+  private async removeFromCalendar(requestId: string, organizationId: string) {
     // Find related calendar events
     const relationshipsResponse = await this.api.getRelationships(requestId, organizationId)
     const allRelationships = relationshipsResponse.success ? relationshipsResponse.data || [] : []
-    
-    const relationships = allRelationships.filter(rel => 
-      rel.from_entity_id === requestId &&
-      rel.relationship_type === LEAVE_SMART_CODES.LEAVE_CALENDAR_SYNC
+
+    const relationships = allRelationships.filter(
+      rel =>
+        rel.from_entity_id === requestId &&
+        rel.relationship_type === LEAVE_SMART_CODES.LEAVE_CALENDAR_SYNC
     )
 
     // Mark calendar events as deleted
@@ -631,8 +643,9 @@ export class LeaveManagementApi {
     return {
       summary: {
         total_employees: data.length,
-        total_leave_taken: data.reduce((sum, d) => 
-          sum + d.balances.reduce((s: number, b: any) => s + b.used, 0), 0
+        total_leave_taken: data.reduce(
+          (sum, d) => sum + d.balances.reduce((s: number, b: any) => s + b.used, 0),
+          0
         ),
         report_period: options?.fiscalYearStart + ' to ' + options?.fiscalYearEnd
       },

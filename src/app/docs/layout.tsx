@@ -6,14 +6,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'HERA Documentation',
-  description: 'Enterprise Resource Planning with Universal Architecture',
+  description: 'Enterprise Resource Planning with Universal Architecture'
 }
 
-export default function DocsLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`docs-container ${inter.className}`}>
       <DocsThemeToggle />

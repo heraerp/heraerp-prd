@@ -1,9 +1,8 @@
-import * as React from "react"
-import { cn } from "@/lib/utils-hera-salon"
-import { Eye, EyeOff } from "lucide-react"
+import * as React from 'react'
+import { cn } from '@/lib/utils-hera-salon'
+import { Eye, EyeOff } from 'lucide-react'
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
@@ -12,8 +11,8 @@ export interface InputProps
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, error, leftIcon, rightIcon, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false)
-    const isPassword = type === "password"
-    const inputType = isPassword && showPassword ? "text" : type
+    const isPassword = type === 'password'
+    const inputType = isPassword && showPassword ? 'text' : type
 
     return (
       <div className="relative">
@@ -25,15 +24,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={inputType}
           className={cn(
-            "flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm shadow-hera-sm",
-            "text-hera-ink-900 placeholder:text-hera-ink-500",
-            "border-hera-line-200 focus-visible:border-transparent", 
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hera-primary-400",
-            "disabled:cursor-not-allowed disabled:opacity-50",
-            "dark:bg-hera-card dark:border-hera-border dark:text-hera-ink",
-            error && "border-red-500 focus-visible:ring-red-300",
-            leftIcon && "pl-9",
-            (rightIcon || isPassword) && "pr-9",
+            'flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm shadow-hera-sm',
+            'text-hera-ink-900 placeholder:text-hera-ink-500',
+            'border-hera-line-200 focus-visible:border-transparent',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hera-primary-400',
+            'disabled:cursor-not-allowed disabled:opacity-50',
+            'dark:bg-hera-card dark:border-hera-border dark:text-hera-ink',
+            error && 'border-red-500 focus-visible:ring-red-300',
+            leftIcon && 'pl-9',
+            (rightIcon || isPassword) && 'pr-9',
             className
           )}
           ref={ref}
@@ -57,6 +56,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     )
   }
 )
-Input.displayName = "Input"
+Input.displayName = 'Input'
 
 export { Input }

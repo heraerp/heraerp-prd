@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { 
+import {
   MetricCard,
   AnimatedCounter,
   StatusIndicator,
@@ -107,7 +107,7 @@ export function CustomerManagement() {
       setIsLoading(true)
       // Mock API call
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       const mockCustomers: Customer[] = [
         {
           id: '1',
@@ -116,7 +116,7 @@ export function CustomerManagement() {
           phone: '+1-555-0123',
           avatar: '/api/placeholder/32/32',
           tier: 'vip',
-          totalSpent: 2845.50,
+          totalSpent: 2845.5,
           visitCount: 47,
           lastVisit: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
           favoriteItems: ['Margherita Pizza', 'Caesar Salad', 'Tiramisu'],
@@ -174,7 +174,7 @@ export function CustomerManagement() {
           email: 'dpark@email.com',
           phone: '+1-555-0126',
           tier: 'vip',
-          totalSpent: 1650.00,
+          totalSpent: 1650.0,
           visitCount: 31,
           lastVisit: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
           favoriteItems: ['Ramen Bowl', 'Gyoza', 'Green Tea Ice Cream'],
@@ -185,7 +185,7 @@ export function CustomerManagement() {
           tags: ['Regular', 'Japanese Cuisine']
         }
       ]
-      
+
       setCustomers(mockCustomers)
     } catch (error) {
       console.error('Error loading customers:', error)
@@ -201,9 +201,10 @@ export function CustomerManagement() {
   // Filter and sort customers
   const filteredCustomers = customers
     .filter(customer => {
-      const matchesSearch = customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           customer.phone.includes(searchQuery)
+      const matchesSearch =
+        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.phone.includes(searchQuery)
       const matchesTier = filterTier === 'all' || customer.tier === filterTier
       return matchesSearch && matchesTier
     })
@@ -223,20 +224,20 @@ export function CustomerManagement() {
   const getTierConfig = (tier: string) => {
     switch (tier) {
       case 'diamond':
-        return { 
-          color: 'bg-purple-100 text-purple-800', 
+        return {
+          color: 'bg-purple-100 text-purple-800',
           icon: <Crown className="w-3 h-3" />,
           label: 'Diamond'
         }
       case 'vip':
-        return { 
-          color: 'bg-yellow-100 text-yellow-800', 
+        return {
+          color: 'bg-yellow-100 text-yellow-800',
           icon: <Star className="w-3 h-3" />,
           label: 'VIP'
         }
       default:
-        return { 
-          color: 'bg-gray-100 text-gray-800', 
+        return {
+          color: 'bg-gray-100 text-gray-800',
           icon: <User className="w-3 h-3" />,
           label: 'Regular'
         }
@@ -244,7 +245,9 @@ export function CustomerManagement() {
   }
 
   const getLastVisitColor = (lastVisit: string) => {
-    const daysSince = Math.floor((Date.now() - new Date(lastVisit).getTime()) / (1000 * 60 * 60 * 24))
+    const daysSince = Math.floor(
+      (Date.now() - new Date(lastVisit).getTime()) / (1000 * 60 * 60 * 24)
+    )
     if (daysSince <= 7) return 'text-green-600'
     if (daysSince <= 30) return 'text-yellow-600'
     return 'text-red-600'
@@ -275,7 +278,7 @@ export function CustomerManagement() {
           icon={<Users className="w-5 h-5 text-white" />}
           color="from-blue-500 to-indigo-600"
         />
-        
+
         <MetricCard
           title="New This Month"
           value={stats.newThisMonth}
@@ -284,7 +287,7 @@ export function CustomerManagement() {
           icon={<UserPlus className="w-5 h-5 text-white" />}
           color="from-green-500 to-emerald-600"
         />
-        
+
         <MetricCard
           title="VIP Customers"
           value={stats.vipCustomers}
@@ -293,7 +296,7 @@ export function CustomerManagement() {
           icon={<Crown className="w-5 h-5 text-white" />}
           color="from-purple-500 to-violet-600"
         />
-        
+
         <MetricCard
           title="Avg Spent"
           value={`$${stats.averageSpent}`}
@@ -302,7 +305,7 @@ export function CustomerManagement() {
           icon={<DollarSign className="w-5 h-5 text-white" />}
           color="from-orange-500 to-red-600"
         />
-        
+
         <MetricCard
           title="Retention Rate"
           value={`${stats.retentionRate}%`}
@@ -311,7 +314,7 @@ export function CustomerManagement() {
           icon={<Heart className="w-5 h-5 text-white" />}
           color="from-pink-500 to-rose-600"
         />
-        
+
         <MetricCard
           title="Satisfaction"
           value={stats.satisfaction}
@@ -331,14 +334,14 @@ export function CustomerManagement() {
               <Input
                 placeholder="Search customers..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="pl-10 w-64"
               />
             </div>
-            
+
             <select
               value={filterTier}
-              onChange={(e) => setFilterTier(e.target.value)}
+              onChange={e => setFilterTier(e.target.value)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Tiers</option>
@@ -346,10 +349,10 @@ export function CustomerManagement() {
               <option value="vip">VIP</option>
               <option value="diamond">Diamond</option>
             </select>
-            
+
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={e => setSortBy(e.target.value as any)}
               className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="lastVisit">Last Visit</option>
@@ -357,7 +360,7 @@ export function CustomerManagement() {
               <option value="totalSpent">Total Spent</option>
             </select>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <Button
@@ -377,12 +380,12 @@ export function CustomerManagement() {
                 List
               </Button>
             </div>
-            
+
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>
-            
+
             <GlowButton
               onClick={() => console.log('Add customer')}
               glowColor="rgba(34, 197, 94, 0.4)"
@@ -398,13 +401,15 @@ export function CustomerManagement() {
       {/* Customers Display */}
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredCustomers.map((customer) => {
+          {filteredCustomers.map(customer => {
             const tierConfig = getTierConfig(customer.tier)
-            const daysSinceLastVisit = Math.floor((Date.now() - new Date(customer.lastVisit).getTime()) / (1000 * 60 * 60 * 24))
-            
+            const daysSinceLastVisit = Math.floor(
+              (Date.now() - new Date(customer.lastVisit).getTime()) / (1000 * 60 * 60 * 24)
+            )
+
             return (
-              <Card 
-                key={customer.id} 
+              <Card
+                key={customer.id}
                 className="p-6 cursor-pointer transition-all hover:shadow-xl hover:scale-105 group"
                 onClick={() => setSelectedCustomer(customer)}
               >
@@ -414,7 +419,10 @@ export function CustomerManagement() {
                     <Avatar className="w-12 h-12">
                       <AvatarImage src={customer.avatar} />
                       <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-                        {customer.name.split(' ').map(n => n[0]).join('')}
+                        {customer.name
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -451,9 +459,11 @@ export function CustomerManagement() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Last visit:</span>
                     <span className={`font-medium ${getLastVisitColor(customer.lastVisit)}`}>
-                      {daysSinceLastVisit === 0 ? 'Today' : 
-                       daysSinceLastVisit === 1 ? 'Yesterday' :
-                       `${daysSinceLastVisit} days ago`}
+                      {daysSinceLastVisit === 0
+                        ? 'Today'
+                        : daysSinceLastVisit === 1
+                          ? 'Yesterday'
+                          : `${daysSinceLastVisit} days ago`}
                     </span>
                   </div>
                 </div>
@@ -477,13 +487,13 @@ export function CustomerManagement() {
                     <span className="text-gray-600">Satisfaction:</span>
                     <div className="flex items-center space-x-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
+                        <Star
+                          key={i}
                           className={`w-3 h-3 ${
-                            i < Math.floor(customer.satisfaction) 
-                              ? 'text-yellow-400 fill-current' 
+                            i < Math.floor(customer.satisfaction)
+                              ? 'text-yellow-400 fill-current'
                               : 'text-gray-300'
-                          }`} 
+                          }`}
                         />
                       ))}
                       <span className="ml-1 font-medium text-gray-900">
@@ -495,7 +505,7 @@ export function CustomerManagement() {
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1 mb-4">
-                  {customer.tags.slice(0, 2).map((tag) => (
+                  {customer.tags.slice(0, 2).map(tag => (
                     <Badge key={tag} variant="secondary" className="text-xs">
                       {tag}
                     </Badge>
@@ -556,10 +566,12 @@ export function CustomerManagement() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredCustomers.map((customer) => {
+                {filteredCustomers.map(customer => {
                   const tierConfig = getTierConfig(customer.tier)
-                  const daysSinceLastVisit = Math.floor((Date.now() - new Date(customer.lastVisit).getTime()) / (1000 * 60 * 60 * 24))
-                  
+                  const daysSinceLastVisit = Math.floor(
+                    (Date.now() - new Date(customer.lastVisit).getTime()) / (1000 * 60 * 60 * 24)
+                  )
+
                   return (
                     <tr key={customer.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -567,7 +579,10 @@ export function CustomerManagement() {
                           <Avatar className="w-10 h-10">
                             <AvatarImage src={customer.avatar} />
                             <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-                              {customer.name.split(' ').map(n => n[0]).join('')}
+                              {customer.name
+                                .split(' ')
+                                .map(n => n[0])
+                                .join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -590,21 +605,23 @@ export function CustomerManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <span className={getLastVisitColor(customer.lastVisit)}>
-                          {daysSinceLastVisit === 0 ? 'Today' : 
-                           daysSinceLastVisit === 1 ? 'Yesterday' :
-                           `${daysSinceLastVisit} days ago`}
+                          {daysSinceLastVisit === 0
+                            ? 'Today'
+                            : daysSinceLastVisit === 1
+                              ? 'Yesterday'
+                              : `${daysSinceLastVisit} days ago`}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-1">
                           {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
+                            <Star
+                              key={i}
                               className={`w-3 h-3 ${
-                                i < Math.floor(customer.satisfaction) 
-                                  ? 'text-yellow-400 fill-current' 
+                                i < Math.floor(customer.satisfaction)
+                                  ? 'text-yellow-400 fill-current'
                                   : 'text-gray-300'
-                              }`} 
+                              }`}
                             />
                           ))}
                           <span className="ml-1 text-sm text-gray-900">

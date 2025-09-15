@@ -1,9 +1,9 @@
 /**
  * HERA Universal Theme System
- * 
+ *
  * A comprehensive theming system that provides semantic color tokens,
  * consistent styling patterns, and perfect light/dark mode support.
- * 
+ *
  * Principles:
  * 1. Semantic naming - colors have meaning, not just hue
  * 2. Accessibility first - WCAG AAA contrast ratios
@@ -29,17 +29,17 @@ export interface SemanticColors {
   // Base colors
   background: string
   foreground: string
-  
+
   // Card/Container colors
   card: string
   cardForeground: string
-  
+
   // Interactive elements
   primary: string
   primaryForeground: string
   secondary: string
   secondaryForeground: string
-  
+
   // Feedback colors
   success: string
   successForeground: string
@@ -49,20 +49,20 @@ export interface SemanticColors {
   dangerForeground: string
   info: string
   infoForeground: string
-  
+
   // Neutral colors
   muted: string
   mutedForeground: string
-  
+
   // Borders and dividers
   border: string
   borderSubtle: string
-  
+
   // Special UI elements
   accent: string
   accentForeground: string
   highlight: string
-  
+
   // Overlays and backdrops
   overlay: string
   backdrop: string
@@ -73,18 +73,18 @@ export interface GradientPalette {
   primary: string
   secondary: string
   accent: string
-  
+
   // Semantic gradients
   success: string
   warning: string
   danger: string
   info: string
-  
+
   // Special effect gradients
   shimmer: string
   glow: string
   aurora: string
-  
+
   // Module-specific gradients
   moduleHero: string
   moduleAccent: string
@@ -219,7 +219,7 @@ export const heraColors = {
     900: 'oklch(0.28 0.096 250)',
     950: 'oklch(0.20 0.072 250)'
   },
-  
+
   // Secondary colors
   cyan: {
     50: 'oklch(0.97 0.012 200)',
@@ -234,7 +234,7 @@ export const heraColors = {
     900: 'oklch(0.30 0.072 200)',
     950: 'oklch(0.22 0.048 200)'
   },
-  
+
   // Accent colors
   purple: {
     50: 'oklch(0.97 0.012 280)',
@@ -249,7 +249,7 @@ export const heraColors = {
     900: 'oklch(0.29 0.096 280)',
     950: 'oklch(0.21 0.072 280)'
   },
-  
+
   // Semantic colors
   emerald: {
     50: 'oklch(0.97 0.012 160)',
@@ -264,7 +264,7 @@ export const heraColors = {
     900: 'oklch(0.33 0.048 160)',
     950: 'oklch(0.25 0.036 160)'
   },
-  
+
   amber: {
     50: 'oklch(0.97 0.012 85)',
     100: 'oklch(0.93 0.024 85)',
@@ -278,7 +278,7 @@ export const heraColors = {
     900: 'oklch(0.31 0.072 85)',
     950: 'oklch(0.23 0.048 85)'
   },
-  
+
   orange: {
     50: 'oklch(0.97 0.012 50)',
     100: 'oklch(0.93 0.024 50)',
@@ -292,7 +292,7 @@ export const heraColors = {
     900: 'oklch(0.31 0.096 50)',
     950: 'oklch(0.23 0.072 50)'
   },
-  
+
   rose: {
     50: 'oklch(0.97 0.012 10)',
     100: 'oklch(0.93 0.024 10)',
@@ -306,7 +306,7 @@ export const heraColors = {
     900: 'oklch(0.28 0.096 10)',
     950: 'oklch(0.20 0.072 10)'
   },
-  
+
   // Neutral colors (enhanced for better contrast)
   gray: {
     50: 'oklch(0.98 0.004 250)',
@@ -321,7 +321,7 @@ export const heraColors = {
     900: 'oklch(0.15 0.010 250)',
     950: 'oklch(0.10 0.010 250)'
   },
-  
+
   // Special module colors (for ice cream)
   pink: {
     50: 'oklch(0.97 0.012 350)',
@@ -346,15 +346,15 @@ export function createSemanticColors(mode: 'light' | 'dark'): SemanticColors {
     return {
       background: heraColors.gray[50],
       foreground: heraColors.gray[900],
-      
+
       card: 'rgba(255, 255, 255, 0.80)',
       cardForeground: heraColors.gray[900],
-      
+
       primary: heraColors.blue[500],
       primaryForeground: 'white',
       secondary: heraColors.cyan[400],
       secondaryForeground: 'white',
-      
+
       success: heraColors.emerald[500],
       successForeground: 'white',
       warning: heraColors.amber[400],
@@ -363,17 +363,17 @@ export function createSemanticColors(mode: 'light' | 'dark'): SemanticColors {
       dangerForeground: 'white',
       info: heraColors.blue[400],
       infoForeground: 'white',
-      
+
       muted: heraColors.gray[100],
       mutedForeground: heraColors.gray[600],
-      
+
       border: heraColors.gray[200],
       borderSubtle: heraColors.gray[100],
-      
+
       accent: heraColors.purple[500],
       accentForeground: 'white',
       highlight: heraColors.amber[200],
-      
+
       overlay: 'rgba(0, 0, 0, 0.5)',
       backdrop: 'rgba(255, 255, 255, 0.8)'
     }
@@ -381,15 +381,15 @@ export function createSemanticColors(mode: 'light' | 'dark'): SemanticColors {
     return {
       background: heraColors.gray[950],
       foreground: heraColors.gray[50],
-      
+
       card: 'rgba(15, 23, 42, 0.80)', // slate-900 with opacity
       cardForeground: heraColors.gray[50],
-      
+
       primary: heraColors.blue[400],
       primaryForeground: heraColors.gray[950],
       secondary: heraColors.cyan[400],
       secondaryForeground: heraColors.gray[950],
-      
+
       success: heraColors.emerald[400],
       successForeground: heraColors.gray[950],
       warning: heraColors.amber[400],
@@ -398,17 +398,17 @@ export function createSemanticColors(mode: 'light' | 'dark'): SemanticColors {
       dangerForeground: heraColors.gray[950],
       info: heraColors.blue[400],
       infoForeground: heraColors.gray[950],
-      
+
       muted: heraColors.gray[800],
       mutedForeground: heraColors.gray[300],
-      
+
       border: heraColors.gray[700],
       borderSubtle: heraColors.gray[800],
-      
+
       accent: heraColors.purple[400],
       accentForeground: heraColors.gray[950],
       highlight: heraColors.amber[900],
-      
+
       overlay: 'rgba(0, 0, 0, 0.7)',
       backdrop: 'rgba(15, 23, 42, 0.8)'
     }
@@ -420,50 +420,50 @@ export function createSemanticColors(mode: 'light' | 'dark'): SemanticColors {
  */
 export function createGradientPalette(mode: 'light' | 'dark'): GradientPalette {
   const isDark = mode === 'dark'
-  
+
   return {
     // Adjusted for better visibility in each mode
     primary: isDark
       ? `linear-gradient(to bottom right, ${heraColors.blue[400]}, ${heraColors.purple[400]})`
       : `linear-gradient(to bottom right, ${heraColors.blue[500]}, ${heraColors.purple[500]})`,
-      
+
     secondary: isDark
       ? `linear-gradient(to bottom right, ${heraColors.cyan[400]}, ${heraColors.blue[400]})`
       : `linear-gradient(to bottom right, ${heraColors.cyan[500]}, ${heraColors.blue[500]})`,
-      
+
     accent: isDark
       ? `linear-gradient(to bottom right, ${heraColors.purple[400]}, ${heraColors.pink[400]})`
       : `linear-gradient(to bottom right, ${heraColors.purple[500]}, ${heraColors.pink[500]})`,
-      
+
     success: isDark
       ? `linear-gradient(to bottom right, ${heraColors.emerald[400]}, ${heraColors.emerald[500]})`
       : `linear-gradient(to bottom right, ${heraColors.emerald[500]}, ${heraColors.emerald[600]})`,
-      
+
     warning: isDark
       ? `linear-gradient(to bottom right, ${heraColors.amber[400]}, ${heraColors.amber[500]})`
       : `linear-gradient(to bottom right, ${heraColors.amber[500]}, ${heraColors.amber[600]})`,
-      
+
     danger: isDark
       ? `linear-gradient(to bottom right, ${heraColors.rose[400]}, ${heraColors.rose[500]})`
       : `linear-gradient(to bottom right, ${heraColors.rose[500]}, ${heraColors.rose[600]})`,
-      
+
     info: isDark
       ? `linear-gradient(to bottom right, ${heraColors.blue[400]}, ${heraColors.cyan[400]})`
       : `linear-gradient(to bottom right, ${heraColors.blue[500]}, ${heraColors.cyan[500]})`,
-      
+
     // Special effects
     shimmer: isDark
       ? `linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%)`
       : `linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.7) 50%, transparent 60%)`,
-      
+
     glow: isDark
       ? `radial-gradient(circle at center, ${heraColors.purple[400]}22, transparent)`
       : `radial-gradient(circle at center, ${heraColors.purple[500]}22, transparent)`,
-      
+
     aurora: isDark
       ? `linear-gradient(45deg, ${heraColors.blue[500]}33, ${heraColors.purple[500]}33, ${heraColors.pink[500]}33)`
       : `linear-gradient(45deg, ${heraColors.blue[300]}33, ${heraColors.purple[300]}33, ${heraColors.pink[300]}33)`,
-      
+
     // Module specific (will be overridden per module)
     moduleHero: '',
     moduleAccent: ''
@@ -486,7 +486,7 @@ export type { ColorScale }
 export function getThemeCSSVariables(theme: ThemeConfig, mode: 'light' | 'dark') {
   const colors = theme.colors[mode]
   const gradients = theme.gradients[mode]
-  
+
   return {
     // Semantic colors
     '--color-background': colors.background,
@@ -511,7 +511,7 @@ export function getThemeCSSVariables(theme: ThemeConfig, mode: 'light' | 'dark')
     '--color-border-subtle': colors.borderSubtle,
     '--color-accent': colors.accent,
     '--color-accent-foreground': colors.accentForeground,
-    
+
     // Gradients
     '--gradient-primary': gradients.primary,
     '--gradient-secondary': gradients.secondary,
@@ -520,23 +520,23 @@ export function getThemeCSSVariables(theme: ThemeConfig, mode: 'light' | 'dark')
     '--gradient-warning': gradients.warning,
     '--gradient-danger': gradients.danger,
     '--gradient-shimmer': gradients.shimmer,
-    
+
     // Effects
     '--backdrop-blur': theme.effects.backdropBlur,
     '--glass-morphism': theme.effects.glassMorphism,
     '--card-opacity': theme.effects.cardOpacity,
-    
+
     // Spacing
     '--spacing-card': theme.spacing.card,
     '--spacing-section': theme.spacing.section,
     '--spacing-component': theme.spacing.component,
-    
+
     // Radius
     '--radius-small': theme.radius.small,
     '--radius-medium': theme.radius.medium,
     '--radius-large': theme.radius.large,
     '--radius-full': theme.radius.full,
-    
+
     // Animation
     '--duration-fast': theme.animation.duration.fast,
     '--duration-normal': theme.animation.duration.normal,

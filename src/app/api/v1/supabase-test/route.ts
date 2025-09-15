@@ -11,21 +11,30 @@ export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Get current user session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession()
+
     if (sessionError) {
-      return NextResponse.json({ 
-        error: 'Failed to get session', 
-        details: sessionError.message 
-      }, { status: 401 })
+      return NextResponse.json(
+        {
+          error: 'Failed to get session',
+          details: sessionError.message
+        },
+        { status: 401 }
+      )
     }
 
     if (!session) {
-      return NextResponse.json({ 
-        error: 'No active session' 
-      }, { status: 401 })
+      return NextResponse.json(
+        {
+          error: 'No active session'
+        },
+        { status: 401 }
+      )
     }
 
     const userId = session.user.id
@@ -33,7 +42,8 @@ export async function GET(request: NextRequest) {
     // Test 1: Check if user entity exists
     const { data: userEntity, error: entityError } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_type,
         entity_name,
@@ -41,7 +51,8 @@ export async function GET(request: NextRequest) {
         smart_code,
         organization_id,
         status
-      `)
+      `
+      )
       .eq('id', userId)
       .eq('entity_type', 'user')
       .single()
@@ -54,7 +65,7 @@ export async function GET(request: NextRequest) {
         .select('*')
         .eq('id', userEntity.organization_id)
         .single()
-      
+
       if (!orgError) {
         organization = orgData
       }
@@ -75,8 +86,7 @@ export async function GET(request: NextRequest) {
       .eq('entity_id', userId)
 
     // Test 5: Get user context using function
-    const { data: userContext, error: contextError } = await supabase
-      .rpc('get_user_context')
+    const { data: userContext, error: contextError } = await supabase.rpc('get_user_context')
 
     return NextResponse.json({
       success: true,
@@ -101,14 +111,16 @@ export async function GET(request: NextRequest) {
       },
       timestamp: new Date().toISOString()
     })
-
   } catch (error) {
     console.error('Supabase test error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -116,14 +128,20 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Get current user session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession()
+
     if (sessionError || !session) {
-      return NextResponse.json({ 
-        error: 'Authentication required' 
-      }, { status: 401 })
+      return NextResponse.json(
+        {
+          error: 'Authentication required'
+        },
+        { status: 401 }
+      )
     }
 
     const body = await request.json()
@@ -148,10 +166,13 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (createError) {
-          return NextResponse.json({ 
-            error: 'Failed to create entity', 
-            details: createError.message 
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              error: 'Failed to create entity',
+              details: createError.message
+            },
+            { status: 400 }
+          )
         }
 
         // Add dynamic data if provided
@@ -163,9 +184,7 @@ export async function POST(request: NextRequest) {
             created_by: session.user.id
           }))
 
-          await supabase
-            .from('core_dynamic_data')
-            .insert(dynamicInserts)
+          await supabase.from('core_dynamic_data').insert(dynamicInserts)
         }
 
         return NextResponse.json({
@@ -193,10 +212,13 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (txnError) {
-          return NextResponse.json({ 
-            error: 'Failed to create transaction', 
-            details: txnError.message 
-          }, { status: 400 })
+          return NextResponse.json(
+            {
+              error: 'Failed to create transaction',
+              details: txnError.message
+            },
+            { status: 400 }
+          )
         }
 
         return NextResponse.json({
@@ -206,17 +228,22 @@ export async function POST(request: NextRequest) {
         })
 
       default:
-        return NextResponse.json({ 
-          error: 'Invalid action' 
-        }, { status: 400 })
+        return NextResponse.json(
+          {
+            error: 'Invalid action'
+          },
+          { status: 400 }
+        )
     }
-
   } catch (error) {
     console.error('Supabase test POST error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

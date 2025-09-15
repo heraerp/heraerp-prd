@@ -15,7 +15,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { universalApi } from '@/lib/universal-api'
 import { BOMExplorer } from '@/components/furniture/BOMExplorer'
@@ -58,12 +58,9 @@ export default function ProductDetailPage() {
         organizationId: currentOrganization!.id
       })
 
-      const productFields = dynamicFields?.filter((f: any) => 
-        f.entity_id === productId
-      ) || []
+      const productFields = dynamicFields?.filter((f: any) => f.entity_id === productId) || []
 
       setDynamicData(productFields)
-
     } catch (err) {
       console.error('Error loading product:', err)
     } finally {
@@ -91,9 +88,7 @@ export default function ProductDetailPage() {
         <div className="text-center">
           <Package className="h-16 w-16 text-gray-500 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-white mb-2">Product Not Found</h2>
-          <Button onClick={() => router.push('/furniture/products')}>
-            Back to Products
-          </Button>
+          <Button onClick={() => router.push('/furniture/products')}>Back to Products</Button>
         </div>
       </div>
     )
@@ -105,11 +100,7 @@ export default function ProductDetailPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.push('/furniture/products')}
-            >
+            <Button variant="ghost" size="icon" onClick={() => router.push('/furniture/products')}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
@@ -117,7 +108,7 @@ export default function ProductDetailPage() {
               <p className="text-gray-400">{product.entity_code}</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button variant="outline" className="gap-2">
               <Pencil className="h-4 w-4" />
@@ -164,9 +155,7 @@ export default function ProductDetailPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Smart Code</p>
-                  <p className="text-sm font-mono text-amber-500 mt-1">
-                    {product.smart_code}
-                  </p>
+                  <p className="text-sm font-mono text-amber-500 mt-1">{product.smart_code}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Status</p>
@@ -190,7 +179,9 @@ export default function ProductDetailPage() {
                         {field.field_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </p>
                       <p className="text-white mt-1">
-                        {field.field_value_text || field.field_value_number || field.field_value_json}
+                        {field.field_value_text ||
+                          field.field_value_number ||
+                          field.field_value_json}
                       </p>
                     </div>
                   ))}
@@ -215,16 +206,11 @@ export default function ProductDetailPage() {
               </TabsList>
 
               <TabsContent value="bom" className="mt-6">
-                <BOMExplorer 
-                  productId={productId}
-                  organizationId={currentOrganization!.id}
-                />
+                <BOMExplorer productId={productId} organizationId={currentOrganization!.id} />
               </TabsContent>
 
               <TabsContent value="suppliers" className="mt-6">
-                <SupplierRelationships 
-                  organizationId={currentOrganization!.id}
-                />
+                <SupplierRelationships organizationId={currentOrganization!.id} />
               </TabsContent>
 
               <TabsContent value="inventory" className="mt-6">

@@ -72,7 +72,7 @@ export class HERASmartMappingEngine {
    */
   async analyzeDataIntelligently(data: any[]): Promise<SmartMappingResult> {
     console.log('🧠 Starting AI-powered data intelligence analysis...')
-    
+
     const result: SmartMappingResult = {
       json_structure_analysis: await this.analyzeJsonStructure(data),
       relationship_detection: await this.detectRelationships(data),
@@ -94,7 +94,8 @@ export class HERASmartMappingEngine {
     const storageRecommendations: StorageRecommendation[] = []
 
     // Analyze each record's JSON structure
-    for (const record of data.slice(0, 10)) { // Sample first 10 records
+    for (const record of data.slice(0, 10)) {
+      // Sample first 10 records
       await this.analyzeRecordStructure(record, '', 0, nestedObjects, arraysDetected)
     }
 
@@ -116,9 +117,9 @@ export class HERASmartMappingEngine {
    * 🔍 Recursive JSON structure analysis
    */
   private async analyzeRecordStructure(
-    obj: any, 
-    path: string, 
-    depth: number, 
+    obj: any,
+    path: string,
+    depth: number,
     nestedObjects: NestedObjectAnalysis[],
     arraysDetected: ArrayAnalysis[]
   ) {
@@ -137,7 +138,7 @@ export class HERASmartMappingEngine {
       } else if (typeof value === 'object' && value !== null) {
         const keys = Object.keys(value)
         const dataTypes: Record<string, string> = {}
-        
+
         for (const [subKey, subValue] of Object.entries(value)) {
           dataTypes[subKey] = typeof subValue
         }
@@ -153,9 +154,15 @@ export class HERASmartMappingEngine {
         }
 
         nestedObjects.push(analysis)
-        
+
         // Recurse deeper
-        await this.analyzeRecordStructure(value, currentPath, depth + 1, nestedObjects, arraysDetected)
+        await this.analyzeRecordStructure(
+          value,
+          currentPath,
+          depth + 1,
+          nestedObjects,
+          arraysDetected
+        )
       }
     }
   }
@@ -170,10 +177,10 @@ export class HERASmartMappingEngine {
 
     // Detect ID patterns that suggest relationships
     await this.detectIdPatterns(data, foreignKeyPatterns)
-    
+
     // Detect parent-child hierarchies
     await this.detectHierarchies(data, hierarchicalStructures)
-    
+
     // Use AI to infer business relationships
     for (const record of data.slice(0, 5)) {
       const detectedRels = await this.inferBusinessRelationships(record)
@@ -197,7 +204,13 @@ export class HERASmartMappingEngine {
     const entityClassifications: EntityClassification[] = []
 
     const sample = data[0]
-    if (!sample) return { universal_table_mappings: mappings, json_field_destinations: jsonDestinations, entity_classifications: entityClassifications, metadata_extraction: [] }
+    if (!sample)
+      return {
+        universal_table_mappings: mappings,
+        json_field_destinations: jsonDestinations,
+        entity_classifications: entityClassifications,
+        metadata_extraction: []
+      }
 
     // Analyze each field and determine optimal placement
     for (const [field, value] of Object.entries(sample)) {
@@ -224,7 +237,7 @@ export class HERASmartMappingEngine {
    */
   private async analyzeBusinessContext(data: any[]): Promise<BusinessContextAnalysis> {
     const sample = data.slice(0, 3)
-    
+
     // Use AI to detect industry and business patterns
     const industryDetection = await this.detectIndustry(sample)
     const businessPatterns = await this.identifyBusinessPatterns(sample)
@@ -249,21 +262,21 @@ export class HERASmartMappingEngine {
       'amount|price|cost|value|revenue': 'Financial data - likely transaction amount',
       'tax|vat|gst': 'Tax-related information',
       'discount|commission': 'Pricing adjustments',
-      
-      // Contact patterns  
+
+      // Contact patterns
       'phone|mobile|contact': 'Contact information',
       'email|mail': 'Email communication data',
       'address|location|city|state': 'Geographic/location data',
-      
+
       // Business patterns
       'company|organization|firm': 'Business entity information',
       'project|deal|opportunity': 'Business project data',
       'status|stage|phase': 'Workflow state information',
-      
+
       // Relationship patterns
       'parent|child|hierarchy': 'Hierarchical relationship data',
       'owner|manager|responsible': 'Ownership/responsibility data',
-      
+
       // Metadata patterns
       'created|updated|modified': 'Audit trail timestamps',
       'id|uuid|key': 'Unique identifier',
@@ -271,7 +284,7 @@ export class HERASmartMappingEngine {
     }
 
     const fieldLower = fieldName.toLowerCase()
-    
+
     for (const [pattern, meaning] of Object.entries(patterns)) {
       const regex = new RegExp(pattern, 'i')
       if (regex.test(fieldLower)) {
@@ -291,17 +304,21 @@ export class HERASmartMappingEngine {
   /**
    * 💡 Recommend storage action for nested data
    */
-  private async recommendAction(fieldName: string, value: any, depth: number): Promise<'flatten_to_dynamic_data' | 'keep_as_json' | 'create_separate_entity'> {
+  private async recommendAction(
+    fieldName: string,
+    value: any,
+    depth: number
+  ): Promise<'flatten_to_dynamic_data' | 'keep_as_json' | 'create_separate_entity'> {
     // Simple nested objects → flatten to dynamic_data
     if (depth <= 2 && Object.keys(value).length <= 5) {
       return 'flatten_to_dynamic_data'
     }
-    
+
     // Complex structures that look like entities
     if (this.looksLikeEntity(fieldName, value)) {
       return 'create_separate_entity'
     }
-    
+
     // Default: keep as JSON for complex nested data
     return 'keep_as_json'
   }
@@ -312,21 +329,23 @@ export class HERASmartMappingEngine {
   private looksLikeEntity(fieldName: string, value: any): boolean {
     const entityIndicators = ['id', 'name', 'type', 'status', 'created_at']
     const keys = Object.keys(value).map(k => k.toLowerCase())
-    
+
     // If it has multiple entity-like fields, it's probably an entity
-    const matches = entityIndicators.filter(indicator => 
-      keys.some(key => key.includes(indicator))
-    )
-    
+    const matches = entityIndicators.filter(indicator => keys.some(key => key.includes(indicator)))
+
     return matches.length >= 2
   }
 
   /**
    * 📍 Determine universal table mapping for a field
    */
-  private async determineUniversalTableMapping(field: string, value: any, record: any): Promise<UniversalTableMapping> {
+  private async determineUniversalTableMapping(
+    field: string,
+    value: any,
+    record: any
+  ): Promise<UniversalTableMapping> {
     const fieldLower = field.toLowerCase()
-    
+
     // Core entity fields
     if (fieldLower.includes('id') && fieldLower.includes('entity|company|customer|project')) {
       return {
@@ -337,18 +356,18 @@ export class HERASmartMappingEngine {
         reasoning: 'Primary entity identifier'
       }
     }
-    
+
     // Name fields
     if (fieldLower.includes('name') && !fieldLower.includes('file|user')) {
       return {
         field_name: field,
-        target_table: 'core_entities', 
+        target_table: 'core_entities',
         target_column: 'entity_name',
-        confidence: 0.90,
+        confidence: 0.9,
         reasoning: 'Entity name field'
       }
     }
-    
+
     // Relationship fields
     if (fieldLower.includes('parent|child|owner|manager')) {
       return {
@@ -359,24 +378,24 @@ export class HERASmartMappingEngine {
         reasoning: 'Relationship indicator'
       }
     }
-    
+
     // Transaction fields
     if (fieldLower.includes('amount|price|cost|value') && typeof value === 'number') {
       return {
         field_name: field,
         target_table: 'universal_transactions',
         target_column: 'total_amount',
-        confidence: 0.90,
+        confidence: 0.9,
         reasoning: 'Financial transaction amount'
       }
     }
-    
+
     // Default: dynamic data
     return {
       field_name: field,
       target_table: 'core_dynamic_data',
       target_column: 'field_value',
-      confidence: 0.70,
+      confidence: 0.7,
       reasoning: 'General business data - stored as dynamic field'
     }
   }
@@ -384,13 +403,16 @@ export class HERASmartMappingEngine {
   /**
    * 🔍 Analyze JSON field destinations
    */
-  private async analyzeJsonFieldDestinations(parentField: string, jsonValue: any): Promise<JsonFieldDestination[]> {
+  private async analyzeJsonFieldDestinations(
+    parentField: string,
+    jsonValue: any
+  ): Promise<JsonFieldDestination[]> {
     const destinations: JsonFieldDestination[] = []
-    
+
     if (typeof jsonValue !== 'object' || jsonValue === null) {
       return destinations
     }
-    
+
     for (const [key, value] of Object.entries(jsonValue)) {
       const destination: JsonFieldDestination = {
         parent_field: parentField,
@@ -399,10 +421,10 @@ export class HERASmartMappingEngine {
         business_context: await this.inferBusinessMeaning(key, value),
         confidence: this.calculateFieldConfidence(key, value)
       }
-      
+
       destinations.push(destination)
     }
-    
+
     return destinations
   }
 
@@ -411,27 +433,27 @@ export class HERASmartMappingEngine {
    */
   private async determineJsonDestination(key: string, value: any): Promise<string> {
     const keyLower = key.toLowerCase()
-    
+
     // High-priority business fields → separate dynamic_data records
     if (keyLower.includes('contact|phone|email|address')) {
       return 'core_dynamic_data (separate record)'
     }
-    
+
     // Financial data → transaction metadata
     if (keyLower.includes('amount|price|cost|tax|discount')) {
       return 'universal_transactions.metadata'
     }
-    
+
     // IDs and relationships → separate analysis
     if (keyLower.includes('id') && typeof value === 'string') {
       return 'core_relationships (potential foreign key)'
     }
-    
+
     // Timestamps → audit fields
     if (keyLower.includes('date|time|created|updated')) {
       return 'entity timestamp fields'
     }
-    
+
     // Default: keep in JSON
     return 'keep in JSON structure'
   }
@@ -441,14 +463,14 @@ export class HERASmartMappingEngine {
    */
   private calculateFieldConfidence(field: string, value: any): number {
     let confidence = 0.5 // Base confidence
-    
+
     // Boost confidence for well-structured data
     if (typeof value === 'string' && value.length > 0) confidence += 0.1
     if (typeof value === 'number') confidence += 0.1
     if (field.includes('id')) confidence += 0.2
     if (field.includes('name')) confidence += 0.15
     if (field.includes('date')) confidence += 0.1
-    
+
     return Math.min(confidence, 1.0)
   }
 
@@ -459,33 +481,39 @@ export class HERASmartMappingEngine {
     // Analyze field names and values to detect industry
     const allFields = sampleData.flatMap(record => Object.keys(record))
     const fieldSignatures = allFields.join(' ').toLowerCase()
-    
+
     const industryPatterns = {
-      'manufacturing': ['production', 'factory', 'inventory', 'warehouse', 'supplier'],
-      'healthcare': ['patient', 'medical', 'doctor', 'clinic', 'treatment'],
-      'finance': ['loan', 'credit', 'investment', 'portfolio', 'trading'],
-      'retail': ['product', 'inventory', 'customer', 'order', 'shopping'],
-      'real_estate': ['property', 'listing', 'rent', 'lease', 'tenant'],
-      'consulting': ['project', 'client', 'service', 'engagement', 'deliverable']
+      manufacturing: ['production', 'factory', 'inventory', 'warehouse', 'supplier'],
+      healthcare: ['patient', 'medical', 'doctor', 'clinic', 'treatment'],
+      finance: ['loan', 'credit', 'investment', 'portfolio', 'trading'],
+      retail: ['product', 'inventory', 'customer', 'order', 'shopping'],
+      real_estate: ['property', 'listing', 'rent', 'lease', 'tenant'],
+      consulting: ['project', 'client', 'service', 'engagement', 'deliverable']
     }
-    
+
     for (const [industry, keywords] of Object.entries(industryPatterns)) {
       const matches = keywords.filter(keyword => fieldSignatures.includes(keyword))
       if (matches.length >= 2) {
         return industry
       }
     }
-    
+
     return 'general_business'
   }
 
   // Placeholder methods for remaining functionality
   private async detectIdPatterns(data: any[], patterns: ForeignKeyPattern[]) {}
   private async detectHierarchies(data: any[], hierarchies: HierarchicalStructure[]) {}
-  private async inferBusinessRelationships(record: any): Promise<DetectedRelationship[]> { return [] }
-  private async identifyBusinessPatterns(data: any[]): Promise<BusinessPattern[]> { return [] }
-  private async identifyWorkflows(data: any[]): Promise<WorkflowStep[]> { return [] }
-  private async assessDataQuality(data: any[]): Promise<QualityAssessment> { 
+  private async inferBusinessRelationships(record: any): Promise<DetectedRelationship[]> {
+    return []
+  }
+  private async identifyBusinessPatterns(data: any[]): Promise<BusinessPattern[]> {
+    return []
+  }
+  private async identifyWorkflows(data: any[]): Promise<WorkflowStep[]> {
+    return []
+  }
+  private async assessDataQuality(data: any[]): Promise<QualityAssessment> {
     return {
       completeness_score: 0.8,
       consistency_score: 0.9,
@@ -493,7 +521,9 @@ export class HERASmartMappingEngine {
       data_issues: []
     }
   }
-  private async recommendStorageStrategy(nested: NestedObjectAnalysis): Promise<StorageRecommendation> {
+  private async recommendStorageStrategy(
+    nested: NestedObjectAnalysis
+  ): Promise<StorageRecommendation> {
     return {
       field_path: nested.path,
       storage_strategy: nested.recommended_action,
@@ -504,8 +534,8 @@ export class HERASmartMappingEngine {
   private calculateConfidenceScores(): ConfidenceScores {
     return {
       overall_confidence: 0.85,
-      json_analysis_confidence: 0.90,
-      relationship_confidence: 0.80,
+      json_analysis_confidence: 0.9,
+      relationship_confidence: 0.8,
       mapping_confidence: 0.85
     }
   }

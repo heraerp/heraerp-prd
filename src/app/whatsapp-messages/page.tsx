@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
+import {
   MessageCircle,
   RefreshCw,
   Search,
@@ -97,21 +97,26 @@ export default function WhatsAppMessagesPage() {
 
   const fetchConversations = async () => {
     if (!currentOrganization?.id) return
-    
+
     setLoading(true)
     try {
       const response = await fetch('/api/v1/whatsapp/six-tables?action=conversations')
       const data = await response.json()
-      
+
       if (data.status === 'success' && data.data) {
         setConversations(data.data.conversations)
         setStats({
           totalConversations: data.data.totalConversations,
           totalMessages: data.data.totalMessages,
-          unreadMessages: data.data.conversations.reduce((sum: number, conv: Conversation) => sum + conv.unreadCount, 0),
-          archivedConversations: data.data.conversations.filter((conv: Conversation) => conv.isArchived).length
+          unreadMessages: data.data.conversations.reduce(
+            (sum: number, conv: Conversation) => sum + conv.unreadCount,
+            0
+          ),
+          archivedConversations: data.data.conversations.filter(
+            (conv: Conversation) => conv.isArchived
+          ).length
         })
-        
+
         // Select first conversation if none selected
         if (!selectedConversation && data.data.conversations.length > 0) {
           setSelectedConversation(data.data.conversations[0])
@@ -126,11 +131,11 @@ export default function WhatsAppMessagesPage() {
 
   const fetchAnalytics = async () => {
     if (!currentOrganization?.id) return
-    
+
     try {
       const response = await fetch('/api/v1/whatsapp/six-tables?action=analytics')
       const data = await response.json()
-      
+
       if (data.status === 'success' && data.data) {
         setAnalytics(data.data)
       }
@@ -142,13 +147,13 @@ export default function WhatsAppMessagesPage() {
   useEffect(() => {
     fetchConversations()
     fetchAnalytics()
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(() => {
       fetchConversations()
       fetchAnalytics()
     }, 30000)
-    
+
     return () => clearInterval(interval)
   }, [currentOrganization])
 
@@ -159,12 +164,10 @@ export default function WhatsAppMessagesPage() {
       return (
         conv.entity_name.toLowerCase().includes(query) ||
         conv.entity_code.toLowerCase().includes(query) ||
-        conv.messages.some(m => 
-          (m.metadata as any)?.text?.toLowerCase().includes(query)
-        )
+        conv.messages.some(m => (m.metadata as any)?.text?.toLowerCase().includes(query))
       )
     }
-    
+
     return true
   })
 
@@ -173,7 +176,7 @@ export default function WhatsAppMessagesPage() {
     const now = new Date()
     const diffMs = now.getTime() - date.getTime()
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-    
+
     if (diffDays === 0) {
       return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
     } else if (diffDays === 1) {
@@ -187,7 +190,7 @@ export default function WhatsAppMessagesPage() {
 
   const getMessageStatusIcon = (message: Message) => {
     const status = (message.metadata as any)?.latest_status
-    
+
     if (status === 'read') {
       return <CheckCheck className="w-4 h-4 text-blue-500" />
     } else if (status === 'delivered') {
@@ -197,7 +200,7 @@ export default function WhatsAppMessagesPage() {
     } else if (status === 'failed') {
       return <AlertCircle className="w-4 h-4 text-red-500" />
     }
-    
+
     return null
   }
 
@@ -252,7 +255,7 @@ export default function WhatsAppMessagesPage() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button 
+            <Button
               variant="outline"
               onClick={() => setShowSetup(!showSetup)}
               className="border-gray-700 !text-gray-300 hover:!bg-gray-800"
@@ -260,8 +263,11 @@ export default function WhatsAppMessagesPage() {
               <Settings className="w-4 h-4 mr-2" />
               Setup
             </Button>
-            <Button 
-              onClick={() => { fetchConversations(); fetchAnalytics(); }} 
+            <Button
+              onClick={() => {
+                fetchConversations()
+                fetchAnalytics()
+              }}
               disabled={loading}
               className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
             >
@@ -272,9 +278,7 @@ export default function WhatsAppMessagesPage() {
         </div>
 
         {/* Setup Section */}
-        {showSetup && (
-          <WhatsAppSetup onClose={() => setShowSetup(false)} />
-        )}
+        {showSetup && <WhatsAppSetup onClose={() => setShowSetup(false)} />}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -287,14 +291,16 @@ export default function WhatsAppMessagesPage() {
               <div className="flex items-baseline justify-between">
                 <p className="text-3xl font-bold !text-white">{stats.totalConversations}</p>
                 {stats.unreadMessages > 0 && (
-                  <Badge className="bg-red-500 text-white border-0">{stats.unreadMessages} new</Badge>
+                  <Badge className="bg-red-500 text-white border-0">
+                    {stats.unreadMessages} new
+                  </Badge>
                 )}
               </div>
               <p className="text-sm !text-gray-300 mt-1 font-medium">conversations</p>
               <p className="text-xs !text-gray-400 mt-2">Active Chats</p>
             </div>
           </div>
-          
+
           <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 opacity-20 blur-2xl" />
             <div className="relative">
@@ -306,7 +312,7 @@ export default function WhatsAppMessagesPage() {
               <p className="text-xs !text-gray-400 mt-2">Total Messages</p>
             </div>
           </div>
-          
+
           <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 opacity-20 blur-2xl" />
             <div className="relative">
@@ -320,16 +326,14 @@ export default function WhatsAppMessagesPage() {
               <p className="text-xs !text-gray-400 mt-2">Response Rate</p>
             </div>
           </div>
-          
+
           <div className="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-gray-800 to-gray-800/95 border border-gray-700 shadow-sm hover:shadow-md transform hover:scale-105 transition-all cursor-pointer">
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 opacity-20 blur-2xl" />
             <div className="relative">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center mb-4">
                 <Clock className="w-6 h-6 text-white" />
               </div>
-              <p className="text-3xl font-bold !text-white">
-                {analytics?.avgResponseTime || '-'}
-              </p>
+              <p className="text-3xl font-bold !text-white">{analytics?.avgResponseTime || '-'}</p>
               <p className="text-sm !text-gray-300 mt-1 font-medium">time</p>
               <p className="text-xs !text-gray-400 mt-2">Avg Response</p>
             </div>
@@ -339,13 +343,22 @@ export default function WhatsAppMessagesPage() {
         {/* Main Content with Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-gray-800 border border-gray-700">
-            <TabsTrigger value="messages" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+            <TabsTrigger
+              value="messages"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white"
+            >
               Messages
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+            <TabsTrigger
+              value="analytics"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white"
+            >
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="automation" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white">
+            <TabsTrigger
+              value="automation"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-violet-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white"
+            >
               Automation
             </TabsTrigger>
           </TabsList>
@@ -363,7 +376,7 @@ export default function WhatsAppMessagesPage() {
                       <Input
                         placeholder="Search conversations..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={e => setSearchQuery(e.target.value)}
                         className="w-full pl-10 bg-gray-700 border-gray-600 text-white placeholder:text-gray-400"
                       />
                     </div>
@@ -371,12 +384,14 @@ export default function WhatsAppMessagesPage() {
                 </CardHeader>
                 <CardContent className="p-0">
                   <ScrollArea className="h-[600px]">
-                    {filteredConversations.map((conversation) => (
+                    {filteredConversations.map(conversation => (
                       <div
                         key={conversation.id}
                         onClick={() => setSelectedConversation(conversation)}
                         className={`p-4 border-b border-gray-700 cursor-pointer hover:bg-gray-700/50 transition-colors ${
-                          selectedConversation?.id === conversation.id ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20' : ''
+                          selectedConversation?.id === conversation.id
+                            ? 'bg-gradient-to-r from-violet-600/20 to-cyan-600/20'
+                            : ''
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -385,33 +400,41 @@ export default function WhatsAppMessagesPage() {
                               {conversation.entity_name.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <p className="font-medium truncate !text-white">{conversation.entity_name}</p>
+                              <p className="font-medium truncate !text-white">
+                                {conversation.entity_name}
+                              </p>
                               <span className="text-xs !text-gray-400">
                                 {formatMessageTime(conversation.updated_at)}
                               </span>
                             </div>
-                            
+
                             {conversation.lastMessage && (
                               <div className="flex items-center gap-1 mt-1">
-                                {conversation.lastMessage.source_entity_id === null && 
-                                  getMessageStatusIcon(conversation.lastMessage)
-                                }
+                                {conversation.lastMessage.source_entity_id === null &&
+                                  getMessageStatusIcon(conversation.lastMessage)}
                                 <p className="text-sm !text-gray-400 truncate">
-                                  {(conversation.lastMessage.metadata as any)?.text || 
-                                   (conversation.lastMessage.metadata as any)?.caption || 
-                                   `[${(conversation.lastMessage.metadata as any)?.type || 'message'}]`}
+                                  {(conversation.lastMessage.metadata as any)?.text ||
+                                    (conversation.lastMessage.metadata as any)?.caption ||
+                                    `[${(conversation.lastMessage.metadata as any)?.type || 'message'}]`}
                                 </p>
                               </div>
                             )}
-                            
+
                             <div className="flex items-center justify-between mt-2">
                               <div className="flex items-center gap-2">
-                                {conversation.isPinned && <Pin className="w-3 h-3 text-violet-400" />}
+                                {conversation.isPinned && (
+                                  <Pin className="w-3 h-3 text-violet-400" />
+                                )}
                                 {(conversation.metadata as any)?.is_online && (
-                                  <Badge variant="outline" className="text-xs border-green-500 text-green-500">Online</Badge>
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs border-green-500 text-green-500"
+                                  >
+                                    Online
+                                  </Badge>
                                 )}
                               </div>
                               {conversation.unreadCount > 0 && (
@@ -441,7 +464,9 @@ export default function WhatsAppMessagesPage() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <h3 className="font-semibold !text-white">{selectedConversation.entity_name}</h3>
+                            <h3 className="font-semibold !text-white">
+                              {selectedConversation.entity_name}
+                            </h3>
                             <p className="text-sm !text-gray-400">
                               {selectedConversation.entity_code}
                               {(selectedConversation.metadata as any)?.is_online && (
@@ -450,37 +475,50 @@ export default function WhatsAppMessagesPage() {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => togglePin(selectedConversation.id, selectedConversation.isPinned)}
+                            onClick={() =>
+                              togglePin(selectedConversation.id, selectedConversation.isPinned)
+                            }
                             className="text-gray-400 hover:text-white hover:bg-gray-700"
                           >
-                            <Pin className={`w-4 h-4 ${selectedConversation.isPinned ? 'fill-current text-violet-400' : ''}`} />
+                            <Pin
+                              className={`w-4 h-4 ${selectedConversation.isPinned ? 'fill-current text-violet-400' : ''}`}
+                            />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => toggleArchive(selectedConversation.id, selectedConversation.isArchived)}
+                            onClick={() =>
+                              toggleArchive(
+                                selectedConversation.id,
+                                selectedConversation.isArchived
+                              )
+                            }
                             className="text-gray-400 hover:text-white hover:bg-gray-700"
                           >
                             <Archive className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-700">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-gray-400 hover:text-white hover:bg-gray-700"
+                          >
                             <MoreVertical className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
                     </CardHeader>
-                    
+
                     <CardContent className="p-0">
                       <ScrollArea className="h-[500px] p-4 bg-gray-900/50">
                         <div className="space-y-4">
-                          {selectedConversation.messages.map((message) => {
+                          {selectedConversation.messages.map(message => {
                             const isOutbound = message.source_entity_id === null
-                            
+
                             return (
                               <div
                                 key={message.id}
@@ -496,13 +534,13 @@ export default function WhatsAppMessagesPage() {
                                   {message.isStarred && (
                                     <Star className="w-3 h-3 fill-current float-right ml-2" />
                                   )}
-                                  
+
                                   <p className="text-sm">
-                                    {(message.metadata as any)?.text || 
-                                     (message.metadata as any)?.caption || 
-                                     `[${(message.metadata as any)?.type || 'message'}]`}
+                                    {(message.metadata as any)?.text ||
+                                      (message.metadata as any)?.caption ||
+                                      `[${(message.metadata as any)?.type || 'message'}]`}
                                   </p>
-                                  
+
                                   <div className="flex items-center justify-end gap-1 mt-1">
                                     <span className="text-xs opacity-75">
                                       {formatMessageTime(message.created_at)}
@@ -515,7 +553,7 @@ export default function WhatsAppMessagesPage() {
                           })}
                         </div>
                       </ScrollArea>
-                      
+
                       {/* Message Input */}
                       <div className="p-4 border-t border-gray-700 bg-gray-800">
                         <div className="flex items-center gap-2">
@@ -574,16 +612,20 @@ export default function WhatsAppMessagesPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {analytics.popularTimeSlots.map((slot) => (
+                      {analytics.popularTimeSlots.map(slot => (
                         <div key={slot.hour} className="flex items-center gap-2">
                           <span className="text-sm w-16 !text-gray-400">{slot.hour}:00</span>
                           <div className="flex-1 bg-gray-700 rounded-full h-4">
-                            <div 
+                            <div
                               className="bg-gradient-to-r from-green-500 to-emerald-600 h-4 rounded-full"
-                              style={{ width: `${(slot.count / Math.max(...analytics.popularTimeSlots.map(s => s.count))) * 100}%` }}
+                              style={{
+                                width: `${(slot.count / Math.max(...analytics.popularTimeSlots.map(s => s.count))) * 100}%`
+                              }}
                             />
                           </div>
-                          <span className="text-sm w-12 text-right !text-gray-300">{slot.count}</span>
+                          <span className="text-sm w-12 text-right !text-gray-300">
+                            {slot.count}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -646,9 +688,7 @@ export default function WhatsAppMessagesPage() {
             ) : (
               <Alert>
                 <AlertCircle className="w-4 h-4" />
-                <AlertDescription>
-                  Loading analytics data...
-                </AlertDescription>
+                <AlertDescription>Loading analytics data...</AlertDescription>
               </Alert>
             )}
           </TabsContent>
@@ -666,12 +706,12 @@ export default function WhatsAppMessagesPage() {
                 <Alert className="bg-gray-700 border-gray-600">
                   <Activity className="w-4 h-4 text-violet-400" />
                   <AlertDescription className="!text-gray-300">
-                    Configure automatic booking responses, appointment confirmations, and reminder messages
-                    through the HERA MCP WhatsApp integration.
+                    Configure automatic booking responses, appointment confirmations, and reminder
+                    messages through the HERA MCP WhatsApp integration.
                   </AlertDescription>
                 </Alert>
                 <div className="mt-4">
-                  <Button 
+                  <Button
                     onClick={() => setShowSetup(true)}
                     className="bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 text-white"
                   >

@@ -7,16 +7,16 @@ export async function GET(request: NextRequest) {
     // Test 1: Check if Supabase is configured
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    
+
     const hasSupabase = !!(supabaseUrl && supabaseKey && !supabaseUrl.includes('placeholder'))
-    
+
     // Test 2: Try a simple query using Universal API
     const organizationId = 'f0af4ced-9d12-4a55-a649-b484368db249'
     universalApi.setOrganizationId(organizationId)
-    
+
     let queryResult = null
     let queryError = null
-    
+
     try {
       const result = await universalApi.read('core_organizations')
       queryResult = result.data
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       queryError = error.message || 'Query failed'
     }
-    
+
     return NextResponse.json({
       success: true,
       tests: {
@@ -43,9 +43,12 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: error.message || 'Test failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Test failed'
+      },
+      { status: 500 }
+    )
   }
 }

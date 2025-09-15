@@ -26,14 +26,11 @@ export function HeraInputDNA({
   ...props
 }: HeraInputDNAProps) {
   const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
-  
+
   return (
     <div className="space-y-2">
       {label && (
-        <label 
-          htmlFor={inputId}
-          className="text-sm font-semibold text-gray-800"
-        >
+        <label htmlFor={inputId} className="text-sm font-semibold text-gray-800">
           {label}
         </label>
       )}
@@ -46,13 +43,13 @@ export function HeraInputDNA({
         <input
           id={inputId}
           className={cn(
-            "w-full h-10 md:h-12 bg-gray-50 border-gray-200",
-            "focus:ring-2 focus:ring-violet-500 focus:border-transparent",
-            "transition-all rounded-md",
+            'w-full h-10 md:h-12 bg-gray-50 border-gray-200',
+            'focus:ring-2 focus:ring-violet-500 focus:border-transparent',
+            'transition-all rounded-md',
             {
-              "pl-10": icon,
-              "pr-10": rightIcon,
-              "border-red-500 focus:ring-red-500": error
+              'pl-10': icon,
+              'pr-10': rightIcon,
+              'border-red-500 focus:ring-red-500': error
             },
             className
           )}
@@ -64,12 +61,8 @@ export function HeraInputDNA({
           </div>
         )}
       </div>
-      {error && (
-        <p className="text-sm text-red-600 font-medium">{error}</p>
-      )}
-      {helperText && !error && (
-        <p className="text-sm text-gray-600">{helperText}</p>
-      )}
+      {error && <p className="text-sm text-red-600 font-medium">{error}</p>}
+      {helperText && !error && <p className="text-sm text-gray-600">{helperText}</p>}
     </div>
   )
 }

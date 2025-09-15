@@ -17,7 +17,7 @@ interface ComingSoonProps {
 
 export default function ComingSoon({
   title = 'Coming Soon',
-  description = 'We\'re working hard to bring you this amazing feature. Stay tuned!',
+  description = "We're working hard to bring you this amazing feature. Stay tuned!",
   estimatedDate,
   features = [],
   showNotification = true,
@@ -59,9 +59,7 @@ export default function ComingSoon({
               <Icon className="w-12 h-12 text-white" />
             </div>
             <h1 className="text-4xl font-bold mb-4">{title}</h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              {description}
-            </p>
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto">{description}</p>
           </div>
 
           {/* Content Section */}
@@ -82,10 +80,7 @@ export default function ComingSoon({
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                   {features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl"
-                    >
+                    <div key={index} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
                       <span className="text-gray-700">{feature}</span>
                     </div>
@@ -99,13 +94,11 @@ export default function ComingSoon({
               <div className="max-w-md mx-auto">
                 <div className="bg-gray-50 rounded-2xl p-8 text-center">
                   <Bell className="w-10 h-10 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Get Notified
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Get Notified</h3>
                   <p className="text-gray-600 mb-6">
                     Be the first to know when this feature launches
                   </p>
-                  
+
                   {subscribed ? (
                     <div className="text-green-600 font-medium">
                       ✓ Thanks! We&apos;ll notify you when it&apos;s ready.
@@ -117,7 +110,7 @@ export default function ComingSoon({
                         <input
                           type="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={e => setEmail(e.target.value)}
                           placeholder="Enter your email"
                           className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           required

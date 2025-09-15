@@ -4,7 +4,11 @@
  * Primary: Claude, Fallback: OpenAI
  */
 
-import { ClaudeWhatsAppService, ClaudeIntent, ClaudeTemplateDecision } from './claude-whatsapp-service'
+import {
+  ClaudeWhatsAppService,
+  ClaudeIntent,
+  ClaudeTemplateDecision
+} from './claude-whatsapp-service'
 import OpenAI from 'openai'
 
 export interface AIProvider {
@@ -52,8 +56,11 @@ export class UniversalWhatsAppAI {
 
     // Sort providers by priority
     this.providers.sort((a, b) => a.priority - b.priority)
-    
-    console.log('🤖 AI Providers initialized:', this.providers.map(p => p.name))
+
+    console.log(
+      '🤖 AI Providers initialized:',
+      this.providers.map(p => p.name)
+    )
   }
 
   /**
@@ -162,7 +169,7 @@ export class UniversalWhatsAppAI {
    * OpenAI implementation of template selection
    */
   private async selectTemplateWithOpenAI(
-    intent: ClaudeIntent, 
+    intent: ClaudeIntent,
     context: any
   ): Promise<ClaudeTemplateDecision> {
     const systemPrompt = `You are selecting the best WhatsApp template for a customer.
@@ -180,9 +187,9 @@ export class UniversalWhatsAppAI {
       model: 'gpt-4-turbo-preview',
       messages: [
         { role: 'system', content: systemPrompt },
-        { 
-          role: 'user', 
-          content: `Intent: ${JSON.stringify(intent)}\nContext: ${JSON.stringify(context)}` 
+        {
+          role: 'user',
+          content: `Intent: ${JSON.stringify(intent)}\nContext: ${JSON.stringify(context)}`
         }
       ],
       response_format: { type: 'json_object' },
@@ -197,7 +204,7 @@ export class UniversalWhatsAppAI {
    * Craft response message with fallback
    */
   async craftResponse(
-    slots: any[], 
+    slots: any[],
     intent: ClaudeIntent,
     preferredProvider?: 'claude' | 'openai'
   ): Promise<string> {
@@ -299,7 +306,7 @@ export class UniversalWhatsAppAI {
    */
   private ruleBasedIntentExtraction(message: string, context?: any): ClaudeIntent {
     const lowerMessage = message.toLowerCase()
-    
+
     // Simple keyword matching
     if (lowerMessage.includes('book') || lowerMessage.includes('appointment')) {
       return {
@@ -361,7 +368,7 @@ export class UniversalWhatsAppAI {
   private defaultResponseGeneration(slots: any[], intent: ClaudeIntent): string {
     if (intent.intent === 'book_appointment') {
       if (slots.length > 0) {
-        return "I found available slots for you. Would you like to see the times?"
+        return 'I found available slots for you. Would you like to see the times?'
       }
       return "I'd be happy to help you book an appointment. What service are you looking for?"
     }

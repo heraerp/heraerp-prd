@@ -21,7 +21,7 @@
       }
     },
     {
-      "id": "HERA.FURNITURE.FINANCE.MODULE.v1", 
+      "id": "HERA.FURNITURE.FINANCE.MODULE.v1",
       "name": "Furniture Finance & GST",
       "smartCode": "HERA.FURNITURE.FINANCE.MODULE.v1",
       "description": "India-specific financial management with GST compliance and auto-journal posting",
@@ -87,10 +87,7 @@
       "id": "HERA.FURNITURE.STARTER.BUNDLE.v1",
       "name": "Furniture Starter Pack",
       "description": "Essential modules for small furniture manufacturers",
-      "modules": [
-        "HERA.FURNITURE.CORE.MODULE.v1",
-        "HERA.FURNITURE.FINANCE.MODULE.v1"
-      ],
+      "modules": ["HERA.FURNITURE.CORE.MODULE.v1", "HERA.FURNITURE.FINANCE.MODULE.v1"],
       "pricing": {
         "monthly": 129,
         "yearly": 1299,

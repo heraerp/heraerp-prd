@@ -37,7 +37,8 @@ const variantClasses = {
   default: 'bg-white border border-gray-200 shadow-2xl',
   glassmorphism: 'bg-white/95 backdrop-blur-xl border border-white/20 shadow-2xl',
   enterprise: 'bg-gradient-to-br from-slate-50 to-white border border-slate-200 shadow-2xl',
-  premium: 'bg-gradient-to-br from-blue-50 via-white to-purple-50 border border-blue-200/50 shadow-2xl'
+  premium:
+    'bg-gradient-to-br from-blue-50 via-white to-purple-50 border border-blue-200/50 shadow-2xl'
 }
 
 export function ModernModal({
@@ -89,49 +90,45 @@ export function ModernModal({
   const modalContent = (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex items-start sm:items-center justify-center",
-        "p-2 sm:p-4 md:p-6",
-        "bg-black/70 backdrop-blur-md",
-        "animate-in fade-in-0 duration-300",
-        "overflow-y-auto",
+        'fixed inset-0 z-50 flex items-start sm:items-center justify-center',
+        'p-2 sm:p-4 md:p-6',
+        'bg-black/70 backdrop-blur-md',
+        'animate-in fade-in-0 duration-300',
+        'overflow-y-auto',
         overlayClassName
       )}
       onClick={handleBackdropClick}
     >
       <div
         className={cn(
-          "relative rounded-xl sm:rounded-2xl overflow-hidden",
-          "animate-in zoom-in-95 slide-in-from-bottom-8 duration-300",
-          "transform-gpu transition-all",
-          "mt-4 sm:mt-0 mb-4 sm:mb-0",
-          "min-h-fit max-h-[95vh] sm:max-h-[90vh]",
-          isFullScreen ? "w-full h-[95vh] m-2 sm:m-4 max-w-none" : sizeClasses[size],
+          'relative rounded-xl sm:rounded-2xl overflow-hidden',
+          'animate-in zoom-in-95 slide-in-from-bottom-8 duration-300',
+          'transform-gpu transition-all',
+          'mt-4 sm:mt-0 mb-4 sm:mb-0',
+          'min-h-fit max-h-[95vh] sm:max-h-[90vh]',
+          isFullScreen ? 'w-full h-[95vh] m-2 sm:m-4 max-w-none' : sizeClasses[size],
           variantClasses[variant],
           className
         )}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
         data-testid="crm-form-modal"
       >
         {/* Enhanced Header */}
         <div className="relative">
           {/* Premium Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/5 to-indigo-600/10 opacity-50" />
-          
+
           <div className="relative flex items-center justify-between p-4 sm:p-6 border-b border-gray-200/50">
             <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
               {/* Modern Icon - smaller on mobile */}
               <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
                 <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
-              
+
               <div className="flex-1 min-w-0">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
-                  {title}
-                </h2>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{title}</h2>
                 {subtitle && (
-                  <p className="text-sm text-gray-600 mt-0.5 sm:mt-1 truncate">
-                    {subtitle}
-                  </p>
+                  <p className="text-sm text-gray-600 mt-0.5 sm:mt-1 truncate">{subtitle}</p>
                 )}
               </div>
             </div>
@@ -139,7 +136,7 @@ export function ModernModal({
             {/* Header Actions */}
             <div className="flex items-center space-x-2">
               {headerActions}
-              
+
               {/* Window Controls - responsive */}
               <div className="flex items-center space-x-1">
                 {fullScreenEnabled && (
@@ -156,7 +153,7 @@ export function ModernModal({
                     )}
                   </Button>
                 )}
-                
+
                 {showCloseButton && closable && (
                   <Button
                     variant="ghost"
@@ -174,21 +171,26 @@ export function ModernModal({
         </div>
 
         {/* Enhanced Body - mobile-first */}
-        <div className={cn(
-          "relative overflow-y-auto",
-          isFullScreen ? "max-h-[calc(95vh-100px)] sm:max-h-[calc(95vh-140px)]" : "max-h-[75vh] sm:max-h-[70vh]"
-        )}>
+        <div
+          className={cn(
+            'relative overflow-y-auto',
+            isFullScreen
+              ? 'max-h-[calc(95vh-100px)] sm:max-h-[calc(95vh-140px)]'
+              : 'max-h-[75vh] sm:max-h-[70vh]'
+          )}
+        >
           {/* Subtle Background Pattern */}
           <div className="absolute inset-0 opacity-[0.02]">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)`,
-              backgroundSize: '20px 20px'
-            }} />
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)`,
+                backgroundSize: '20px 20px'
+              }}
+            />
           </div>
-          
-          <div className="relative p-4 sm:p-6">
-            {children}
-          </div>
+
+          <div className="relative p-4 sm:p-6">{children}</div>
         </div>
 
         {/* Enhanced Footer - mobile-first */}
@@ -196,10 +198,8 @@ export function ModernModal({
           <div className="relative">
             {/* Subtle Divider */}
             <div className="absolute top-0 left-4 right-4 sm:left-6 sm:right-6 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-            
-            <div className="p-4 sm:p-6 bg-gray-50/50">
-              {footer}
-            </div>
+
+            <div className="p-4 sm:p-6 bg-gray-50/50">{footer}</div>
           </div>
         )}
 
@@ -239,9 +239,12 @@ export function CRMFormModal({
   }
 
   const submitButtonClass = {
-    default: 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg',
-    destructive: 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg',
-    success: 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg'
+    default:
+      'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg',
+    destructive:
+      'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg',
+    success:
+      'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg'
   }
 
   const footer = (
@@ -262,7 +265,7 @@ export function CRMFormModal({
         disabled={isLoading}
         data-testid="submit-btn"
         className={cn(
-          "w-full sm:w-auto px-4 sm:px-6 h-11 sm:h-10 font-medium transition-all duration-200",
+          'w-full sm:w-auto px-4 sm:px-6 h-11 sm:h-10 font-medium transition-all duration-200',
           submitButtonClass[submitVariant]
         )}
       >
@@ -279,12 +282,7 @@ export function CRMFormModal({
   )
 
   return (
-    <ModernModal
-      {...modalProps}
-      footer={footer}
-      variant="premium"
-      fullScreenEnabled
-    >
+    <ModernModal {...modalProps} footer={footer} variant="premium" fullScreenEnabled>
       <form onSubmit={handleSubmit} className="space-y-6">
         {children}
       </form>

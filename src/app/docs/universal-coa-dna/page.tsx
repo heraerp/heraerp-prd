@@ -5,7 +5,19 @@ export const dynamic = 'force-dynamic'
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Globe, Building2, Factory, Heart, ShoppingBag, Briefcase, TrendingUp, Cpu, Dna, Sparkles } from 'lucide-react'
+import {
+  ArrowLeft,
+  Globe,
+  Building2,
+  Factory,
+  Heart,
+  ShoppingBag,
+  Briefcase,
+  TrendingUp,
+  Cpu,
+  Dna,
+  Sparkles
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -33,12 +45,14 @@ export default function UniversalCOADNAPage() {
               HERA DNA System
             </Badge>
           </div>
-          
+
           <div className="flex items-center gap-3 mb-2">
             <Dna className="h-8 w-8" />
             <h1 className="text-3xl font-bold">Universal COA - HERA DNA</h1>
           </div>
-          <p className="text-xl opacity-90">Industry & Country Specific Chart of Accounts via HERA DNA Architecture</p>
+          <p className="text-xl opacity-90">
+            Industry & Country Specific Chart of Accounts via HERA DNA Architecture
+          </p>
         </div>
 
         {/* Introduction */}
@@ -55,16 +69,17 @@ export default function UniversalCOADNAPage() {
           <CardContent className="pt-6">
             <div className="prose max-w-none">
               <p className="text-lg">
-                The Universal Chart of Accounts (COA) is a core component of HERA DNA that revolutionizes 
-                enterprise accounting setup. Through intelligent DNA patterns, HERA can generate complete, 
-                compliant Chart of Accounts for any industry in any country in just 30 seconds.
+                The Universal Chart of Accounts (COA) is a core component of HERA DNA that
+                revolutionizes enterprise accounting setup. Through intelligent DNA patterns, HERA
+                can generate complete, compliant Chart of Accounts for any industry in any country
+                in just 30 seconds.
               </p>
-              
+
               <Alert className="my-4 border-purple-200 bg-purple-50">
                 <AlertDescription>
-                  <strong>HERA DNA Magic:</strong> 132 pre-configured templates (12 countries × 11 industries) 
-                  with IFRS compliance built-in. Each template is a DNA strand that can be customized and 
-                  evolved for specific business needs.
+                  <strong>HERA DNA Magic:</strong> 132 pre-configured templates (12 countries × 11
+                  industries) with IFRS compliance built-in. Each template is a DNA strand that can
+                  be customized and evolved for specific business needs.
                 </AlertDescription>
               </Alert>
             </div>
@@ -83,7 +98,7 @@ export default function UniversalCOADNAPage() {
                 <TabsTrigger value="patterns">Smart Patterns</TabsTrigger>
                 <TabsTrigger value="generation">Generation Process</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="structure" className="space-y-4 mt-4">
                 <div className="bg-gray-900 text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
                   <pre>{`// HERA DNA COA Structure
@@ -131,7 +146,7 @@ const UniversalCOADNA = {
 }`}</pre>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="patterns" className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
                   <Card className="border-2 border-purple-200">
@@ -157,7 +172,7 @@ const UniversalCOADNA = {
                       </div>
                     </CardContent>
                   </Card>
-                  
+
                   <Card className="border-2 border-green-200">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg">Industry Patterns</CardTitle>
@@ -183,44 +198,64 @@ const UniversalCOADNA = {
                   </Card>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="generation" className="space-y-4 mt-4">
                 <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg">
                   <h3 className="text-lg font-semibold mb-4">30-Second COA Generation Process</h3>
                   <ol className="space-y-3">
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</span>
+                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                        1
+                      </span>
                       <div>
                         <strong>DNA Selection:</strong> Choose country + industry combination
-                        <div className="text-sm text-muted-foreground">Example: UAE + Restaurant</div>
+                        <div className="text-sm text-muted-foreground">
+                          Example: UAE + Restaurant
+                        </div>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</span>
+                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                        2
+                      </span>
                       <div>
                         <strong>Base Template Load:</strong> Universal 6-level account structure
-                        <div className="text-sm text-muted-foreground">1000+ base accounts with IFRS mapping</div>
+                        <div className="text-sm text-muted-foreground">
+                          1000+ base accounts with IFRS mapping
+                        </div>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</span>
+                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                        3
+                      </span>
                       <div>
                         <strong>Country Layer Apply:</strong> Tax codes, compliance rules, formats
-                        <div className="text-sm text-muted-foreground">VAT accounts, local reporting requirements</div>
+                        <div className="text-sm text-muted-foreground">
+                          VAT accounts, local reporting requirements
+                        </div>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">4</span>
+                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                        4
+                      </span>
                       <div>
                         <strong>Industry Specialization:</strong> Revenue/cost patterns, KPIs
-                        <div className="text-sm text-muted-foreground">Food cost accounts, labor tracking, tips</div>
+                        <div className="text-sm text-muted-foreground">
+                          Food cost accounts, labor tracking, tips
+                        </div>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">5</span>
+                      <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                        5
+                      </span>
                       <div>
                         <strong>Smart Code Assignment:</strong> Intelligent business context
-                        <div className="text-sm text-muted-foreground">HERA.FIN.GL.UAE.REST.FOOD_COST.v1</div>
+                        <div className="text-sm text-muted-foreground">
+                          HERA.FIN.GL.UAE.REST.FOOD_COST.v1
+                        </div>
                       </div>
                     </li>
                   </ol>
@@ -247,11 +282,21 @@ const UniversalCOADNA = {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div><strong>Revenue:</strong> Food, Beverage, Catering, Delivery</div>
-                  <div><strong>COGS:</strong> Food Cost (35%), Beverage Cost (25%)</div>
-                  <div><strong>Labor:</strong> Kitchen, Service, Management (30%)</div>
-                  <div><strong>KPIs:</strong> Table Turnover, Check Average, Food Waste</div>
-                  <Badge variant="outline" className="mt-2">85 Specialized Accounts</Badge>
+                  <div>
+                    <strong>Revenue:</strong> Food, Beverage, Catering, Delivery
+                  </div>
+                  <div>
+                    <strong>COGS:</strong> Food Cost (35%), Beverage Cost (25%)
+                  </div>
+                  <div>
+                    <strong>Labor:</strong> Kitchen, Service, Management (30%)
+                  </div>
+                  <div>
+                    <strong>KPIs:</strong> Table Turnover, Check Average, Food Waste
+                  </div>
+                  <Badge variant="outline" className="mt-2">
+                    85 Specialized Accounts
+                  </Badge>
                 </CardContent>
               </Card>
 
@@ -264,11 +309,21 @@ const UniversalCOADNA = {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div><strong>Revenue:</strong> Patient Services, Insurance, Grants</div>
-                  <div><strong>Costs:</strong> Medical Supplies, Equipment, Staff</div>
-                  <div><strong>Compliance:</strong> HIPAA, Medicare, Medicaid</div>
-                  <div><strong>KPIs:</strong> Patient Days, Occupancy, AR Days</div>
-                  <Badge variant="outline" className="mt-2">92 Specialized Accounts</Badge>
+                  <div>
+                    <strong>Revenue:</strong> Patient Services, Insurance, Grants
+                  </div>
+                  <div>
+                    <strong>Costs:</strong> Medical Supplies, Equipment, Staff
+                  </div>
+                  <div>
+                    <strong>Compliance:</strong> HIPAA, Medicare, Medicaid
+                  </div>
+                  <div>
+                    <strong>KPIs:</strong> Patient Days, Occupancy, AR Days
+                  </div>
+                  <Badge variant="outline" className="mt-2">
+                    92 Specialized Accounts
+                  </Badge>
                 </CardContent>
               </Card>
 
@@ -281,11 +336,21 @@ const UniversalCOADNA = {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div><strong>Revenue:</strong> Product Sales, Services, Warranties</div>
-                  <div><strong>Costs:</strong> Raw Materials, Labor, Overhead</div>
-                  <div><strong>Inventory:</strong> Raw, WIP, Finished Goods</div>
-                  <div><strong>KPIs:</strong> Efficiency, Utilization, Quality</div>
-                  <Badge variant="outline" className="mt-2">96 Specialized Accounts</Badge>
+                  <div>
+                    <strong>Revenue:</strong> Product Sales, Services, Warranties
+                  </div>
+                  <div>
+                    <strong>Costs:</strong> Raw Materials, Labor, Overhead
+                  </div>
+                  <div>
+                    <strong>Inventory:</strong> Raw, WIP, Finished Goods
+                  </div>
+                  <div>
+                    <strong>KPIs:</strong> Efficiency, Utilization, Quality
+                  </div>
+                  <Badge variant="outline" className="mt-2">
+                    96 Specialized Accounts
+                  </Badge>
                 </CardContent>
               </Card>
 
@@ -298,11 +363,21 @@ const UniversalCOADNA = {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div><strong>Revenue:</strong> Sales, Online, Marketplace</div>
-                  <div><strong>COGS:</strong> Purchase Price, Freight, Duties</div>
-                  <div><strong>Operations:</strong> Rent, Staff, Marketing</div>
-                  <div><strong>KPIs:</strong> Inventory Turns, GMROI, Conversion</div>
-                  <Badge variant="outline" className="mt-2">88 Specialized Accounts</Badge>
+                  <div>
+                    <strong>Revenue:</strong> Sales, Online, Marketplace
+                  </div>
+                  <div>
+                    <strong>COGS:</strong> Purchase Price, Freight, Duties
+                  </div>
+                  <div>
+                    <strong>Operations:</strong> Rent, Staff, Marketing
+                  </div>
+                  <div>
+                    <strong>KPIs:</strong> Inventory Turns, GMROI, Conversion
+                  </div>
+                  <Badge variant="outline" className="mt-2">
+                    88 Specialized Accounts
+                  </Badge>
                 </CardContent>
               </Card>
 
@@ -315,11 +390,21 @@ const UniversalCOADNA = {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div><strong>Revenue:</strong> Consulting, Projects, Retainers</div>
-                  <div><strong>Costs:</strong> Staff, Contractors, Training</div>
-                  <div><strong>WIP:</strong> Unbilled Time, Expenses</div>
-                  <div><strong>KPIs:</strong> Utilization, Realization, Margin</div>
-                  <Badge variant="outline" className="mt-2">78 Specialized Accounts</Badge>
+                  <div>
+                    <strong>Revenue:</strong> Consulting, Projects, Retainers
+                  </div>
+                  <div>
+                    <strong>Costs:</strong> Staff, Contractors, Training
+                  </div>
+                  <div>
+                    <strong>WIP:</strong> Unbilled Time, Expenses
+                  </div>
+                  <div>
+                    <strong>KPIs:</strong> Utilization, Realization, Margin
+                  </div>
+                  <Badge variant="outline" className="mt-2">
+                    78 Specialized Accounts
+                  </Badge>
                 </CardContent>
               </Card>
 
@@ -332,11 +417,21 @@ const UniversalCOADNA = {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div><strong>Revenue:</strong> MRR, ARR, Usage, Services</div>
-                  <div><strong>Costs:</strong> Hosting, Development, Support</div>
-                  <div><strong>Deferred:</strong> Revenue, Commissions</div>
-                  <div><strong>KPIs:</strong> CAC, LTV, Churn, NRR</div>
-                  <Badge variant="outline" className="mt-2">82 Specialized Accounts</Badge>
+                  <div>
+                    <strong>Revenue:</strong> MRR, ARR, Usage, Services
+                  </div>
+                  <div>
+                    <strong>Costs:</strong> Hosting, Development, Support
+                  </div>
+                  <div>
+                    <strong>Deferred:</strong> Revenue, Commissions
+                  </div>
+                  <div>
+                    <strong>KPIs:</strong> CAC, LTV, Churn, NRR
+                  </div>
+                  <Badge variant="outline" className="mt-2">
+                    82 Specialized Accounts
+                  </Badge>
                 </CardContent>
               </Card>
             </div>
@@ -416,9 +511,9 @@ const coa = await heraDNA.generateCOA({
               <Alert className="border-green-200 bg-green-50">
                 <TrendingUp className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>DNA Evolution:</strong> The Universal COA learns from every implementation, 
-                  continuously improving account suggestions and industry patterns. Over 10,000 businesses 
-                  have contributed to the DNA knowledge base.
+                  <strong>DNA Evolution:</strong> The Universal COA learns from every
+                  implementation, continuously improving account suggestions and industry patterns.
+                  Over 10,000 businesses have contributed to the DNA knowledge base.
                 </AlertDescription>
               </Alert>
             </div>
@@ -479,7 +574,11 @@ const coa = await heraDNA.generateCOA({
             <p className="mb-4 opacity-90">
               Generate your industry-specific Chart of Accounts in 30 seconds
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-purple-600 hover:bg-gray-100">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="bg-white text-purple-600 hover:bg-gray-100"
+            >
               Try COA Generator
             </Button>
           </CardContent>

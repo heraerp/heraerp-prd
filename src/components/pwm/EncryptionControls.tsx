@@ -38,9 +38,9 @@ interface EncryptionStatus {
   errors: string[]
 }
 
-export function EncryptionControls({ 
-  organizationId, 
-  onEncryptionChange 
+export function EncryptionControls({
+  organizationId,
+  onEncryptionChange
 }: EncryptionControlsProps) {
   const [encryptionStatus, setEncryptionStatus] = useState<EncryptionStatus>({
     isEnabled: true,
@@ -49,7 +49,7 @@ export function EncryptionControls({
     lastEncryptionCheck: new Date().toISOString(),
     errors: []
   })
-  
+
   const [showSensitiveData, setShowSensitiveData] = useState(false)
   const [isValidating, setIsValidating] = useState(false)
   const [masterKeyInput, setMasterKeyInput] = useState('')
@@ -99,7 +99,7 @@ export function EncryptionControls({
       // Never export actual keys
       note: 'This is a configuration export. Master keys must be managed separately.'
     }
-    
+
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -113,7 +113,7 @@ export function EncryptionControls({
     <div className="space-y-6">
       {/* Customer Key Management */}
       <CustomerKeyManagement organizationId={organizationId} />
-      
+
       {/* Encryption Status Card */}
       <Card>
         <CardHeader>
@@ -131,10 +131,7 @@ export function EncryptionControls({
                 Encrypt sensitive financial data using AES-256-GCM
               </div>
             </div>
-            <Switch
-              checked={encryptionStatus.isEnabled}
-              onCheckedChange={toggleEncryption}
-            />
+            <Switch checked={encryptionStatus.isEnabled} onCheckedChange={toggleEncryption} />
           </div>
 
           {/* Status Indicators */}
@@ -189,11 +186,7 @@ export function EncryptionControls({
               )}
               Validate Setup
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setShowAdvanced(!showAdvanced)}>
               <Settings className="h-4 w-4 mr-2" />
               Advanced
             </Button>
@@ -217,7 +210,7 @@ export function EncryptionControls({
               <div className="text-sm text-slate-600 mb-3">
                 Master keys should be managed through secure environment variables in production.
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -249,7 +242,11 @@ export function EncryptionControls({
                       size="sm"
                       onClick={() => setShowSensitiveData(!showSensitiveData)}
                     >
-                      {showSensitiveData ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showSensitiveData ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                   <div className="text-xs text-amber-600">
@@ -281,19 +278,11 @@ export function EncryptionControls({
             <div className="space-y-3">
               <Label className="text-base font-medium">Configuration Management</Label>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={exportEncryptionConfig}
-                >
+                <Button variant="outline" size="sm" onClick={exportEncryptionConfig}>
                   <Download className="h-4 w-4 mr-2" />
                   Export Config
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled
-                >
+                <Button variant="outline" size="sm" disabled>
                   <Upload className="h-4 w-4 mr-2" />
                   Import Config
                 </Button>
@@ -315,14 +304,14 @@ export function EncryptionControls({
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {[
               'Account Numbers',
-              'SSN/Tax IDs', 
+              'SSN/Tax IDs',
               'Bank Details',
               'Routing Numbers',
               'Beneficiary Info',
               'Private Notes',
               'Advisor Contacts',
               'Transaction Details'
-            ].map((field) => (
+            ].map(field => (
               <div key={field} className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
                 <Shield className="h-4 w-4 text-green-600" />
                 <span className="text-sm text-green-800">{field}</span>
@@ -330,7 +319,8 @@ export function EncryptionControls({
             ))}
           </div>
           <div className="mt-4 text-sm text-slate-600">
-            These fields are automatically encrypted using AES-256-GCM with organization-specific keys.
+            These fields are automatically encrypted using AES-256-GCM with organization-specific
+            keys.
           </div>
         </CardContent>
       </Card>

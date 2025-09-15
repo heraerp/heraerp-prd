@@ -80,47 +80,47 @@ export interface UniversalTransactionLine {
 
 export const INVENTORY_SMART_CODES = {
   // Core Inventory Transactions
-  GOODS_RECEIPT: "HERA.INV.RCV.TXN.IN.v1",
-  GOODS_ISSUE: "HERA.INV.ISS.TXN.OUT.v1",
-  STOCK_ADJUSTMENT: "HERA.INV.ADJ.TXN.ADJ.v1",
-  STOCK_TRANSFER: "HERA.INV.TRF.TXN.TRF.v1",
-  CYCLE_COUNT: "HERA.INV.CNT.TXN.CNT.v1",
-  STOCK_RESERVATION: "HERA.INV.RSV.TXN.RSV.v1",
-  STOCK_RETURN: "HERA.INV.RET.TXN.RET.v1",
-  
+  GOODS_RECEIPT: 'HERA.INV.RCV.TXN.IN.v1',
+  GOODS_ISSUE: 'HERA.INV.ISS.TXN.OUT.v1',
+  STOCK_ADJUSTMENT: 'HERA.INV.ADJ.TXN.ADJ.v1',
+  STOCK_TRANSFER: 'HERA.INV.TRF.TXN.TRF.v1',
+  CYCLE_COUNT: 'HERA.INV.CNT.TXN.CNT.v1',
+  STOCK_RESERVATION: 'HERA.INV.RSV.TXN.RSV.v1',
+  STOCK_RETURN: 'HERA.INV.RET.TXN.RET.v1',
+
   // Item Entity Classifications
-  RAW_MATERIAL: "HERA.INV.ITM.ENT.RAW.v1",
-  FINISHED_GOODS: "HERA.INV.ITM.ENT.FIN.v1", 
-  CONSUMABLES: "HERA.INV.ITM.ENT.CON.v1",
-  ASSETS: "HERA.INV.ITM.ENT.AST.v1",
-  SERVICE_ITEM: "HERA.INV.ITM.ENT.SRV.v1",
-  
+  RAW_MATERIAL: 'HERA.INV.ITM.ENT.RAW.v1',
+  FINISHED_GOODS: 'HERA.INV.ITM.ENT.FIN.v1',
+  CONSUMABLES: 'HERA.INV.ITM.ENT.CON.v1',
+  ASSETS: 'HERA.INV.ITM.ENT.AST.v1',
+  SERVICE_ITEM: 'HERA.INV.ITM.ENT.SRV.v1',
+
   // Jewelry-Specific Classifications
-  GOLD_JEWELRY: "HERA.JWLR.INV.ITM.ENT.GOLD.v1",
-  DIAMOND_JEWELRY: "HERA.JWLR.INV.ITM.ENT.DIAM.v1",
-  SILVER_JEWELRY: "HERA.JWLR.INV.ITM.ENT.SILV.v1",
-  PLATINUM_JEWELRY: "HERA.JWLR.INV.ITM.ENT.PLAT.v1",
-  PRECIOUS_STONES: "HERA.JWLR.INV.ITM.ENT.STONE.v1",
-  LOOSE_DIAMONDS: "HERA.JWLR.INV.ITM.ENT.LOOSE.v1",
-  WATCH_LUXURY: "HERA.JWLR.INV.ITM.ENT.WATCH.v1",
-  CUSTOM_JEWELRY: "HERA.JWLR.INV.ITM.ENT.CUSTOM.v1",
-  
+  GOLD_JEWELRY: 'HERA.JWLR.INV.ITM.ENT.GOLD.v1',
+  DIAMOND_JEWELRY: 'HERA.JWLR.INV.ITM.ENT.DIAM.v1',
+  SILVER_JEWELRY: 'HERA.JWLR.INV.ITM.ENT.SILV.v1',
+  PLATINUM_JEWELRY: 'HERA.JWLR.INV.ITM.ENT.PLAT.v1',
+  PRECIOUS_STONES: 'HERA.JWLR.INV.ITM.ENT.STONE.v1',
+  LOOSE_DIAMONDS: 'HERA.JWLR.INV.ITM.ENT.LOOSE.v1',
+  WATCH_LUXURY: 'HERA.JWLR.INV.ITM.ENT.WATCH.v1',
+  CUSTOM_JEWELRY: 'HERA.JWLR.INV.ITM.ENT.CUSTOM.v1',
+
   // Location & Warehouse Classifications
-  WAREHOUSE: "HERA.INV.LOC.ENT.WHS.v1",
-  SHOWROOM: "HERA.JWLR.INV.LOC.ENT.SHOW.v1",
-  VAULT: "HERA.JWLR.INV.LOC.ENT.VAULT.v1",
-  RETAIL_STORE: "HERA.INV.LOC.ENT.STORE.v1",
-  TRANSIT: "HERA.INV.LOC.ENT.TRANSIT.v1",
-  CUSTOMER_SITE: "HERA.INV.LOC.ENT.CUST.v1",
-  
+  WAREHOUSE: 'HERA.INV.LOC.ENT.WHS.v1',
+  SHOWROOM: 'HERA.JWLR.INV.LOC.ENT.SHOW.v1',
+  VAULT: 'HERA.JWLR.INV.LOC.ENT.VAULT.v1',
+  RETAIL_STORE: 'HERA.INV.LOC.ENT.STORE.v1',
+  TRANSIT: 'HERA.INV.LOC.ENT.TRANSIT.v1',
+  CUSTOMER_SITE: 'HERA.INV.LOC.ENT.CUST.v1',
+
   // AI-Enhanced Classifications
-  AI_DEMAND_FORECAST: "HERA.INV.AI.PRED.DEMAND.v1",
-  AI_REORDER_POINT: "HERA.INV.AI.REORD.OPT.v1",
-  AI_PRICE_OPTIMIZATION: "HERA.JWLR.AI.PRICE.OPT.v1",
-  AI_QUALITY_SCORE: "HERA.INV.AI.QUAL.SCORE.v1",
-  AI_FRAUD_DETECTION: "HERA.INV.AI.FRAUD.DET.v1",
-  AI_TREND_ANALYSIS: "HERA.INV.AI.TREND.SEAS.v1",
-  AI_STOCK_PREDICTION: "HERA.INV.AI.STOCK.PRED.v1"
+  AI_DEMAND_FORECAST: 'HERA.INV.AI.PRED.DEMAND.v1',
+  AI_REORDER_POINT: 'HERA.INV.AI.REORD.OPT.v1',
+  AI_PRICE_OPTIMIZATION: 'HERA.JWLR.AI.PRICE.OPT.v1',
+  AI_QUALITY_SCORE: 'HERA.INV.AI.QUAL.SCORE.v1',
+  AI_FRAUD_DETECTION: 'HERA.INV.AI.FRAUD.DET.v1',
+  AI_TREND_ANALYSIS: 'HERA.INV.AI.TREND.SEAS.v1',
+  AI_STOCK_PREDICTION: 'HERA.INV.AI.STOCK.PRED.v1'
 }
 
 // ==========================================
@@ -129,11 +129,11 @@ export const INVENTORY_SMART_CODES = {
 
 export class UniversalAIInventory {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
   }
-  
+
   // Parse Smart Code Components
   parseSmartCode(smartCode: string): {
     system: string
@@ -145,19 +145,19 @@ export class UniversalAIInventory {
   } {
     const components = smartCode.split('.')
     return {
-      system: components[0],      // HERA
-      module: components[1],      // INV or JWLR
-      submodule: components[2],   // RCV, ISS, ITM, etc.
+      system: components[0], // HERA
+      module: components[1], // INV or JWLR
+      submodule: components[2], // RCV, ISS, ITM, etc.
       functionType: components[3], // TXN, ENT, RPT, AI
-      specific: components[4],    // IN, OUT, GOLD, etc.
-      version: components[5]      // v1, v2, etc.
+      specific: components[4], // IN, OUT, GOLD, etc.
+      version: components[5] // v1, v2, etc.
     }
   }
-  
+
   // ==========================================
   // AI-POWERED INVENTORY OPERATIONS
   // ==========================================
-  
+
   // Create AI-Enhanced Inventory Item
   async createInventoryItem(params: {
     itemName: string
@@ -175,7 +175,7 @@ export class UniversalAIInventory {
       watch: INVENTORY_SMART_CODES.WATCH_LUXURY,
       custom: INVENTORY_SMART_CODES.CUSTOM_JEWELRY
     }
-    
+
     const entity: CoreEntity = {
       id: uuidv4(),
       organization_id: this.organizationId,
@@ -193,24 +193,24 @@ export class UniversalAIInventory {
         ai_analysis_requested: params.aiAnalysis || false
       }
     }
-    
+
     // AI Analysis if requested
     if (params.aiAnalysis) {
       const aiResult = await this.performAIAnalysis(entity)
       entity.ai_confidence_score = aiResult.confidence
       entity.ai_classification = aiResult.classification
     }
-    
+
     return entity
   }
-  
+
   // Create Dynamic Properties for Inventory Item
   async createItemProperties(
-    entityId: string, 
+    entityId: string,
     properties: Record<string, any>
   ): Promise<CoreDynamicData[]> {
     const dynamicData: CoreDynamicData[] = []
-    
+
     // Common jewelry properties
     const propertyMappings = {
       // Physical Properties
@@ -219,29 +219,29 @@ export class UniversalAIInventory {
       dimensions: { type: 'json', unit: 'mm' },
       color: { type: 'string', unit: null },
       clarity: { type: 'string', unit: null },
-      
+
       // Value Properties
       cost_price: { type: 'currency', unit: 'USD' },
       retail_price: { type: 'currency', unit: 'USD' },
       appraisal_value: { type: 'currency', unit: 'USD' },
-      
+
       // Inventory Properties
       quantity_on_hand: { type: 'number', unit: 'pieces' },
       reorder_point: { type: 'number', unit: 'pieces' },
       reorder_quantity: { type: 'number', unit: 'pieces' },
       location: { type: 'string', unit: null },
-      
+
       // AI-Enhanced Properties
       ai_demand_score: { type: 'number', unit: 'score' },
       ai_price_suggestion: { type: 'currency', unit: 'USD' },
       ai_quality_grade: { type: 'string', unit: null },
       ai_trend_indicator: { type: 'string', unit: null }
     }
-    
+
     for (const [key, value] of Object.entries(properties)) {
       if (value !== undefined && value !== null) {
         const mapping = propertyMappings[key as keyof typeof propertyMappings]
-        
+
         const dynamicEntry: CoreDynamicData = {
           id: uuidv4(),
           entity_id: entityId,
@@ -251,14 +251,14 @@ export class UniversalAIInventory {
           is_encrypted: ['cost_price', 'appraisal_value'].includes(key),
           valid_from: new Date()
         }
-        
+
         dynamicData.push(dynamicEntry)
       }
     }
-    
+
     return dynamicData
   }
-  
+
   // Create Inventory Transaction (Receipt, Issue, Transfer, etc.)
   async createInventoryTransaction(params: {
     transactionType: 'receipt' | 'issue' | 'transfer' | 'adjustment' | 'count'
@@ -280,16 +280,18 @@ export class UniversalAIInventory {
       adjustment: INVENTORY_SMART_CODES.STOCK_ADJUSTMENT,
       count: INVENTORY_SMART_CODES.CYCLE_COUNT
     }
-    
+
     const transaction: UniversalTransaction = {
       id: uuidv4(),
       organization_id: this.organizationId,
       transaction_type: `inventory_${params.transactionType}`,
       transaction_date: new Date(),
-      reference_number: params.referenceNumber || this.generateTransactionNumber(params.transactionType),
+      reference_number:
+        params.referenceNumber || this.generateTransactionNumber(params.transactionType),
       smart_code: transactionSmartCodes[params.transactionType],
-      total_amount: params.items.reduce((sum, item) => 
-        sum + (item.quantity * (item.unitPrice || 0)), 0
+      total_amount: params.items.reduce(
+        (sum, item) => sum + item.quantity * (item.unitPrice || 0),
+        0
       ),
       status: 'pending',
       ai_validation_score: 0,
@@ -299,7 +301,7 @@ export class UniversalAIInventory {
         ai_validation_requested: params.aiValidation || false
       }
     }
-    
+
     // AI Validation if requested
     if (params.aiValidation) {
       const validationResult = await this.validateTransaction(transaction, params.items)
@@ -308,14 +310,14 @@ export class UniversalAIInventory {
     } else {
       transaction.status = 'approved'
     }
-    
+
     return transaction
   }
-  
+
   // ==========================================
   // AI INTELLIGENCE FUNCTIONS
   // ==========================================
-  
+
   // Perform AI Analysis on Inventory Item
   private async performAIAnalysis(entity: CoreEntity): Promise<{
     confidence: number
@@ -324,13 +326,13 @@ export class UniversalAIInventory {
   }> {
     // Simulate AI analysis based on Smart Code
     const smartCodeAnalysis = this.parseSmartCode(entity.smart_code)
-    
+
     // Base confidence on completeness of data
     let confidence = 0.85
-    
+
     // Classification based on smart code and metadata
     let classification = smartCodeAnalysis.specific.toUpperCase()
-    
+
     // Generate AI insights
     const insights: Record<string, any> = {
       demand_trend: this.calculateDemandTrend(entity),
@@ -338,14 +340,14 @@ export class UniversalAIInventory {
       quality_assessment: this.assessQuality(entity),
       seasonal_impact: this.analyzeSeasonality(entity)
     }
-    
+
     return {
       confidence,
       classification,
       insights
     }
   }
-  
+
   // Validate Transaction using AI
   private async validateTransaction(
     transaction: UniversalTransaction,
@@ -357,7 +359,7 @@ export class UniversalAIInventory {
   }> {
     const issues: string[] = []
     let score = 100
-    
+
     // Validation rules
     items.forEach((item, index) => {
       // Check quantity
@@ -365,13 +367,13 @@ export class UniversalAIInventory {
         issues.push(`Line ${index + 1}: Invalid quantity`)
         score -= 20
       }
-      
+
       // Check price for receipts
       if (transaction.transaction_type === 'inventory_receipt' && !item.unitPrice) {
         issues.push(`Line ${index + 1}: Missing unit price`)
         score -= 10
       }
-      
+
       // Location validation for transfers
       if (transaction.transaction_type === 'inventory_transfer') {
         if (!item.fromLocation || !item.toLocation) {
@@ -380,18 +382,18 @@ export class UniversalAIInventory {
         }
       }
     })
-    
+
     return {
       score: Math.max(0, score),
       isValid: score >= 70,
       issues
     }
   }
-  
+
   // ==========================================
   // AI PREDICTION FUNCTIONS
   // ==========================================
-  
+
   // Calculate Demand Trend
   private calculateDemandTrend(entity: CoreEntity): string {
     // Simulate trend calculation based on item type
@@ -404,11 +406,11 @@ export class UniversalAIInventory {
       WATCH: 'stable',
       CUSTOM: 'project_based'
     }
-    
+
     const itemType = this.parseSmartCode(entity.smart_code).specific
     return jewelryTrends[itemType as keyof typeof jewelryTrends] || 'stable'
   }
-  
+
   // Suggest Optimal Price
   private suggestOptimalPrice(entity: CoreEntity): number {
     // Base price calculation (simplified)
@@ -421,26 +423,26 @@ export class UniversalAIInventory {
       WATCH: 2.5,
       CUSTOM: 4.0
     }
-    
+
     const itemType = this.parseSmartCode(entity.smart_code).specific
     const multiplier = basePriceMultipliers[itemType as keyof typeof basePriceMultipliers] || 2.5
-    
+
     // Simulate cost-based pricing
     const estimatedCost = (entity.metadata as any)?.estimated_cost || 1000
     return Math.round(estimatedCost * multiplier)
   }
-  
+
   // Assess Quality
   private assessQuality(entity: CoreEntity): string {
     // Quality grades based on metadata completeness
     const dataCompleteness = Object.keys(entity.metadata || {}).length
-    
+
     if (dataCompleteness >= 10) return 'Premium'
     if (dataCompleteness >= 7) return 'High'
     if (dataCompleteness >= 5) return 'Standard'
     return 'Basic'
   }
-  
+
   // Analyze Seasonality
   private analyzeSeasonality(entity: CoreEntity): {
     peak_season: string
@@ -453,10 +455,10 @@ export class UniversalAIInventory {
       valentines: [1], // February
       mothers_day: [4] // May
     }
-    
+
     let peak_season = 'standard'
     let current_demand = 'normal'
-    
+
     if (jewelrySeasonality.wedding_season.includes(month)) {
       peak_season = 'wedding'
       current_demand = 'high'
@@ -467,20 +469,20 @@ export class UniversalAIInventory {
       peak_season = 'valentines'
       current_demand = 'high'
     }
-    
+
     return { peak_season, current_demand }
   }
-  
+
   // ==========================================
   // UTILITY FUNCTIONS
   // ==========================================
-  
+
   private generateItemCode(itemType: string): string {
     const prefix = itemType.substring(0, 3).toUpperCase()
     const timestamp = Date.now().toString().slice(-6)
     return `${prefix}-${timestamp}`
   }
-  
+
   private generateTransactionNumber(transactionType: string): string {
     const prefixMap = {
       receipt: 'GR',
@@ -489,7 +491,7 @@ export class UniversalAIInventory {
       adjustment: 'SA',
       count: 'CC'
     }
-    
+
     const prefix = prefixMap[transactionType as keyof typeof prefixMap] || 'TX'
     const timestamp = Date.now().toString().slice(-8)
     return `${prefix}-${timestamp}`
@@ -502,11 +504,11 @@ export class UniversalAIInventory {
 
 export class InventoryAIEngine {
   private universalInventory: UniversalAIInventory
-  
+
   constructor(organizationId: string) {
     this.universalInventory = new UniversalAIInventory(organizationId)
   }
-  
+
   // Real-time Stock Level Monitoring
   async monitorStockLevels(params: {
     locations: string[]
@@ -524,13 +526,13 @@ export class InventoryAIEngine {
   }> {
     // Simulate real-time monitoring
     const alerts = []
-    
+
     // In production, this would query actual inventory levels
     // For now, simulate with smart analysis
-    
+
     return { alerts }
   }
-  
+
   // Demand Forecasting with AI
   async forecastDemand(params: {
     itemId: string
@@ -541,25 +543,25 @@ export class InventoryAIEngine {
     forecast: Array<{
       date: Date
       predictedDemand: number
-      confidenceInterval: { low: number, high: number }
+      confidenceInterval: { low: number; high: number }
       factors: string[]
     }>
     recommendations: string[]
   }> {
     const forecast = []
     const recommendations = []
-    
+
     // Generate AI-based forecast
     for (let i = 0; i < params.forecastPeriod; i++) {
       const date = new Date()
       date.setDate(date.getDate() + i)
-      
+
       const baseDemand = Math.floor(Math.random() * 10) + 5
       const seasonalFactor = params.includeSeasonality ? 1.2 : 1.0
       const trendFactor = params.includeMarketTrends ? 1.1 : 1.0
-      
+
       const predictedDemand = Math.round(baseDemand * seasonalFactor * trendFactor)
-      
+
       forecast.push({
         date,
         predictedDemand,
@@ -570,14 +572,14 @@ export class InventoryAIEngine {
         factors: ['historical_data', 'seasonal_pattern', 'market_trend']
       })
     }
-    
+
     // Generate recommendations
     recommendations.push('Consider increasing safety stock for high-demand periods')
     recommendations.push('Optimize reorder points based on AI predictions')
-    
+
     return { forecast, recommendations }
   }
-  
+
   // Price Optimization Engine
   async optimizePricing(params: {
     itemId: string
@@ -596,42 +598,43 @@ export class InventoryAIEngine {
   }> {
     // Simulate current price
     const currentPrice = 1000
-    
+
     // AI-based price calculation
     let suggestedPrice = currentPrice
     const reasoning: string[] = []
-    
+
     // Factor in target margin
     suggestedPrice = currentPrice * (1 + params.targetMargin / 100)
     reasoning.push(`Applied target margin of ${params.targetMargin}%`)
-    
+
     // Factor in competitor prices
     if (params.competitorPrices && params.competitorPrices.length > 0) {
-      const avgCompetitorPrice = params.competitorPrices.reduce((a, b) => a + b, 0) / params.competitorPrices.length
+      const avgCompetitorPrice =
+        params.competitorPrices.reduce((a, b) => a + b, 0) / params.competitorPrices.length
       if (suggestedPrice > avgCompetitorPrice * 1.1) {
         suggestedPrice = avgCompetitorPrice * 1.05
         reasoning.push('Adjusted for competitive positioning')
       }
     }
-    
+
     // Factor in market conditions
     const marketMultipliers = {
       bull: 1.1,
       bear: 0.9,
       stable: 1.0
     }
-    
+
     if (params.marketConditions) {
       suggestedPrice *= marketMultipliers[params.marketConditions]
       reasoning.push(`Adjusted for ${params.marketConditions} market conditions`)
     }
-    
+
     // Calculate expected impact
     const priceChange = ((suggestedPrice - currentPrice) / currentPrice) * 100
     const elasticity = -1.5 // Price elasticity of demand
     const demandChange = priceChange * elasticity
     const revenueChange = priceChange + demandChange
-    
+
     return {
       currentPrice,
       suggestedPrice: Math.round(suggestedPrice),

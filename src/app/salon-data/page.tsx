@@ -2,7 +2,7 @@
 /**
  * HERA Salon Modern Full-Screen Dashboard
  * Smart Code: HERA.SALON.MODERN.DASHBOARD.v1
- * 
+ *
  * Full-screen mobile-friendly modern salon interface
  */
 
@@ -23,10 +23,10 @@ import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
 import type { DashboardData, Organization } from '@/types/salon.types'
 import { handleError, withErrorHandler } from '@/lib/salon/error-handler'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
-import { 
-  Users, 
-  Calendar, 
-  DollarSign, 
+import {
+  Users,
+  Calendar,
+  DollarSign,
   Star,
   Clock,
   Scissors,
@@ -91,19 +91,19 @@ export default function SalonModernDashboard() {
   // Sample organization data for demo (always show for demo purposes)
   const salonOrganizations = [
     {
-      id: "e3a9ff9e-bb83-43a8-b062-b85e7a2b4258",
-      organization_code: "SALON-BR1",
-      organization_name: "Hair Talkz • Park Regis Kris Kin (Karama)"
+      id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
+      organization_code: 'SALON-BR1',
+      organization_name: 'Hair Talkz • Park Regis Kris Kin (Karama)'
     },
     {
-      id: "0b1b37cd-4096-4718-8cd4-e370f234005b",
-      organization_code: "SALON-BR2",
-      organization_name: "Hair Talkz • Mercure Gold (Al Mina Rd)"
+      id: '0b1b37cd-4096-4718-8cd4-e370f234005b',
+      organization_code: 'SALON-BR2',
+      organization_name: 'Hair Talkz • Mercure Gold (Al Mina Rd)'
     },
     {
-      id: "849b6efe-2bf0-438f-9c70-01835ac2fe15",
-      organization_code: "SALON-GROUP",
-      organization_name: "Salon Group"
+      id: '849b6efe-2bf0-438f-9c70-01835ac2fe15',
+      organization_code: 'SALON-GROUP',
+      organization_name: 'Salon Group'
     }
   ]
 
@@ -123,7 +123,8 @@ export default function SalonModernDashboard() {
 
       // Extract subdomain
       const parts = hostname.split('.')
-      if (parts.length >= 3) { // e.g., acme.app.com or acme.vercel.app
+      if (parts.length >= 3) {
+        // e.g., acme.app.com or acme.vercel.app
         const subdomain = parts[0]
         if (subdomain && subdomain !== 'app' && subdomain !== 'www') {
           try {
@@ -194,7 +195,7 @@ export default function SalonModernDashboard() {
           context
         }),
         universalConfigService.resolve({
-          family: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT', 
+          family: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT',
           context
         }),
         universalConfigService.resolve({
@@ -251,11 +252,11 @@ export default function SalonModernDashboard() {
     console.log('Fetching dashboard data for organization:', organizationId)
     isFetchingRef.current = true
     setRefreshing(true)
-    
+
     try {
       const dashboardData = await salonApiClient.getDashboardData(organizationId)
       console.log('Dashboard data fetched:', dashboardData)
-      
+
       setData({
         appointments: dashboardData.appointments || 0,
         customers: dashboardData.customers || 0,
@@ -272,10 +273,10 @@ export default function SalonModernDashboard() {
         fallbackMessage: 'Failed to fetch dashboard data',
         showToast: true
       })
-      setData(prev => ({ 
-        ...prev, 
-        loading: false, 
-        error: message 
+      setData(prev => ({
+        ...prev,
+        loading: false,
+        error: message
       }))
     } finally {
       setRefreshing(false)
@@ -308,7 +309,7 @@ export default function SalonModernDashboard() {
 
   const statsCards = [
     {
-      title: 'Today\'s Appointments',
+      title: "Today's Appointments",
       value: data.appointments.toString(),
       subtitle: 'appointments',
       icon: CalendarCheck,
@@ -326,7 +327,7 @@ export default function SalonModernDashboard() {
       darkBgGradient: 'dark:from-gray-800 dark:to-gray-800/95'
     },
     {
-      title: 'Today\'s Revenue',
+      title: "Today's Revenue",
       value: `AED ${data.todayRevenue.toFixed(0)}`,
       subtitle: 'revenue',
       icon: DollarSign,
@@ -391,71 +392,75 @@ export default function SalonModernDashboard() {
   ]
 
   // Use staff members from API data, or fallback to sample data
-  const team = data.staffMembers.length > 0 ? data.staffMembers.map((staff, index) => ({
-    name: staff.entity_name,
-    title: (staff.metadata as any)?.title || 'Hair Stylist',
-    specialties: staff.specialties || [],
-    rating: staff.rating || 4.5,
-    reviews: Math.floor(Math.random() * 250) + 50,
-    instagram: (staff.metadata as any)?.instagram || `@${staff.entity_name.toLowerCase().replace(' ', '_')}`,
-    avatar: staff.entity_name.charAt(0).toUpperCase(),
-    gradient: [
-      'from-purple-400 to-pink-600',
-      'from-blue-400 to-indigo-600',
-      'from-pink-400 to-rose-600',
-      'from-amber-400 to-orange-600'
-    ][index % 4],
-    available: staff.available ?? true
-  })) : [
-    {
-      name: 'Rocky',
-      title: 'Celebrity Hair Artist',
-      specialties: ['Brazilian Blowout', 'Bridal Styling', 'Color Specialist'],
-      rating: 4.9,
-      reviews: 247,
-      instagram: '@rocky_hair_dubai',
-      avatar: 'R',
-      gradient: 'from-purple-400 to-pink-600',
-      available: true
-    },
-    {
-      name: 'Vinay',
-      title: 'Senior Hair Stylist',
-      specialties: ['Cutting Expert', 'Men\'s Styling', 'Color'],
-      rating: 4.7,
-      reviews: 156,
-      instagram: '@vinay_styles',
-      avatar: 'V',
-      gradient: 'from-blue-400 to-indigo-600',
-      available: true
-    },
-    {
-      name: 'Maya',
-      title: 'Color Specialist',
-      specialties: ['Balayage', 'Color Correction', 'Highlights'],
-      rating: 4.8,
-      reviews: 189,
-      instagram: '@maya_colorist',
-      avatar: 'M',
-      gradient: 'from-pink-400 to-rose-600',
-      available: false
-    },
-    {
-      name: 'Sophia',
-      title: 'Bridal Specialist',
-      specialties: ['Bridal Hair', 'Updos', 'Special Events'],
-      rating: 4.9,
-      reviews: 203,
-      instagram: '@sophia_bridal',
-      avatar: 'S',
-      gradient: 'from-amber-400 to-orange-600',
-      available: true
-    }
-  ]
-
+  const team =
+    data.staffMembers.length > 0
+      ? data.staffMembers.map((staff, index) => ({
+          name: staff.entity_name,
+          title: (staff.metadata as any)?.title || 'Hair Stylist',
+          specialties: staff.specialties || [],
+          rating: staff.rating || 4.5,
+          reviews: Math.floor(Math.random() * 250) + 50,
+          instagram:
+            (staff.metadata as any)?.instagram ||
+            `@${staff.entity_name.toLowerCase().replace(' ', '_')}`,
+          avatar: staff.entity_name.charAt(0).toUpperCase(),
+          gradient: [
+            'from-purple-400 to-pink-600',
+            'from-blue-400 to-indigo-600',
+            'from-pink-400 to-rose-600',
+            'from-amber-400 to-orange-600'
+          ][index % 4],
+          available: staff.available ?? true
+        }))
+      : [
+          {
+            name: 'Rocky',
+            title: 'Celebrity Hair Artist',
+            specialties: ['Brazilian Blowout', 'Bridal Styling', 'Color Specialist'],
+            rating: 4.9,
+            reviews: 247,
+            instagram: '@rocky_hair_dubai',
+            avatar: 'R',
+            gradient: 'from-purple-400 to-pink-600',
+            available: true
+          },
+          {
+            name: 'Vinay',
+            title: 'Senior Hair Stylist',
+            specialties: ['Cutting Expert', "Men's Styling", 'Color'],
+            rating: 4.7,
+            reviews: 156,
+            instagram: '@vinay_styles',
+            avatar: 'V',
+            gradient: 'from-blue-400 to-indigo-600',
+            available: true
+          },
+          {
+            name: 'Maya',
+            title: 'Color Specialist',
+            specialties: ['Balayage', 'Color Correction', 'Highlights'],
+            rating: 4.8,
+            reviews: 189,
+            instagram: '@maya_colorist',
+            avatar: 'M',
+            gradient: 'from-pink-400 to-rose-600',
+            available: false
+          },
+          {
+            name: 'Sophia',
+            title: 'Bridal Specialist',
+            specialties: ['Bridal Hair', 'Updos', 'Special Events'],
+            rating: 4.9,
+            reviews: 203,
+            instagram: '@sophia_bridal',
+            avatar: 'S',
+            gradient: 'from-amber-400 to-orange-600',
+            available: true
+          }
+        ]
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="min-h-screen relative overflow-hidden"
       style={{
@@ -483,7 +488,7 @@ export default function SalonModernDashboard() {
       {/* WSAG Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
         {/* Primary Light Orb */}
-        <div 
+        <div
           className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -498,9 +503,9 @@ export default function SalonModernDashboard() {
             transform: `translate(-50%, -50%) scale(${1 + mousePosition.x * 0.002})`
           }}
         />
-        
+
         {/* Secondary Light Orb */}
-        <div 
+        <div
           className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -517,7 +522,7 @@ export default function SalonModernDashboard() {
         />
 
         {/* Tertiary Light Orb */}
-        <div 
+        <div
           className="absolute w-64 h-64 rounded-full transition-all duration-[5000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -537,97 +542,94 @@ export default function SalonModernDashboard() {
       {/* Main Content Container with sidebar padding */}
       <div className="relative z-10 pl-20">
         {/* Header with WSAG Glassmorphism */}
-        <header 
-        className="sticky top-0 z-50 border-b shadow-lg"
-        style={{
-          background: `
+        <header
+          className="sticky top-0 z-50 border-b shadow-lg"
+          style={{
+            background: `
             linear-gradient(135deg, 
               rgba(17, 24, 39, 0.85) 0%, 
               rgba(31, 41, 55, 0.8) 50%,
               rgba(17, 24, 39, 0.85) 100%
             )
           `,
-          backdropFilter: 'blur(20px) saturate(120%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderTop: 'none',
-          borderLeft: 'none',
-          borderRight: 'none',
-          boxShadow: `
+            backdropFilter: 'blur(20px) saturate(120%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(120%)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: 'none',
+            borderLeft: 'none',
+            borderRight: 'none',
+            boxShadow: `
             0 8px 32px rgba(0, 0, 0, 0.5),
             0 4px 16px rgba(0, 0, 0, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.05),
             inset 0 -1px 0 rgba(0, 0, 0, 0.3)
           `
-        }}
-      >
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo with WSAG Glassmorphism */}
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transform transition-all duration-300 cursor-pointer"
-                style={{
-                  background: `
+          }}
+        >
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              {/* Logo with WSAG Glassmorphism */}
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transform transition-all duration-300 cursor-pointer"
+                  style={{
+                    background: `
                     linear-gradient(135deg, 
                       rgba(147, 51, 234, 0.15) 0%, 
                       rgba(59, 130, 246, 0.1) 100%
                     )
                   `,
-                  backdropFilter: 'blur(20px) saturate(120%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(120%)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  boxShadow: `
+                    backdropFilter: 'blur(20px) saturate(120%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(120%)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: `
                     0 8px 32px rgba(0, 0, 0, 0.4),
                     0 4px 16px rgba(147, 51, 234, 0.2),
                     inset 0 1px 0 rgba(255, 255, 255, 0.1)
                   `,
-                  transform: `perspective(1000px) rotateX(${mousePosition.y * 0.01 - 0.5}deg) rotateY(${mousePosition.x * 0.01 - 0.5}deg)`
-                }}
-              >
-                <Scissors className="w-5 h-5 text-white drop-shadow-md" />
+                    transform: `perspective(1000px) rotateX(${mousePosition.y * 0.01 - 0.5}deg) rotateY(${mousePosition.x * 0.01 - 0.5}deg)`
+                  }}
+                >
+                  <Scissors className="w-5 h-5 text-white drop-shadow-md" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">Hair Talkz</h1>
+                  <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">
+                    {isHeadOffice
+                      ? 'Head Office - All Branches'
+                      : (currentOrganization?.organization_name?.includes('•')
+                          ? currentOrganization.organization_name.split('•')[1]?.trim()
+                          : currentOrganization?.organization_name) || 'Dubai Marina'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">
-                  Hair Talkz
-                </h1>
-                <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">
-                  {isHeadOffice ? 'Head Office - All Branches' : 
-                   (currentOrganization?.organization_name?.includes('•') 
-                     ? currentOrganization.organization_name.split('•')[1]?.trim() 
-                     : currentOrganization?.organization_name) || 'Dubai Marina'}
-                </p>
-              </div>
-            </div>
 
-            {/* Right side actions */}
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={fetchDashboardData}
-                disabled={refreshing}
-                className="border-gray-600 text-gray-300 hover:bg-gray-800"
-              >
-                <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
-              </Button>
-              <Button 
-                onClick={() => setIsBookingOpen(true)}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Booking
-              </Button>
+              {/* Right side actions */}
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={fetchDashboardData}
+                  disabled={refreshing}
+                  className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                >
+                  <RefreshCw className={cn('w-4 h-4', refreshing && 'animate-spin')} />
+                </Button>
+                <Button
+                  onClick={() => setIsBookingOpen(true)}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Booking
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </header>
 
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 sm:px-6 lg:px-8 py-6">
+        {/* Main Content */}
+        <main className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="space-y-6 animate-fadeIn">
-
             {/* Stats Grid with WSAG Glassmorphism */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {statsCards.map((stat, index) => (
@@ -647,9 +649,13 @@ export default function SalonModernDashboard() {
                     boxShadow: `
                       0 8px 32px rgba(0, 0, 0, 0.5),
                       0 4px 16px rgba(${
-                        stat.gradient.includes('purple') ? '147, 51, 234' :
-                        stat.gradient.includes('blue') ? '59, 130, 246' :
-                        stat.gradient.includes('emerald') ? '16, 185, 129' : '245, 158, 11'
+                        stat.gradient.includes('purple')
+                          ? '147, 51, 234'
+                          : stat.gradient.includes('blue')
+                            ? '59, 130, 246'
+                            : stat.gradient.includes('emerald')
+                              ? '16, 185, 129'
+                              : '245, 158, 11'
                       }, 0.1),
                       inset 0 1px 0 rgba(255, 255, 255, 0.05)
                     `,
@@ -657,7 +663,7 @@ export default function SalonModernDashboard() {
                   }}
                 >
                   {/* Animated Specular Highlight */}
-                  <div 
+                  <div
                     className="absolute inset-0 transition-all duration-1000 opacity-30 group-hover:opacity-60"
                     style={{
                       background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
@@ -669,34 +675,48 @@ export default function SalonModernDashboard() {
                       borderRadius: 'inherit'
                     }}
                   />
-                  <div className={cn(
-                    "absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br opacity-20",
-                    stat.gradient,
-                    "blur-2xl"
-                  )} />
+                  <div
+                    className={cn(
+                      'absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br opacity-20',
+                      stat.gradient,
+                      'blur-2xl'
+                    )}
+                  />
                   <div className="relative">
-                    <div 
+                    <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
                       style={{
                         background: `linear-gradient(135deg, 
                           rgba(${
-                            stat.gradient.includes('purple') ? '147, 51, 234' :
-                            stat.gradient.includes('blue') ? '59, 130, 246' :
-                            stat.gradient.includes('emerald') ? '16, 185, 129' : '245, 158, 11'
+                            stat.gradient.includes('purple')
+                              ? '147, 51, 234'
+                              : stat.gradient.includes('blue')
+                                ? '59, 130, 246'
+                                : stat.gradient.includes('emerald')
+                                  ? '16, 185, 129'
+                                  : '245, 158, 11'
                           }, 0.15) 0%, 
                           rgba(${
-                            stat.gradient.includes('purple') ? '147, 51, 234' :
-                            stat.gradient.includes('blue') ? '59, 130, 246' :
-                            stat.gradient.includes('emerald') ? '16, 185, 129' : '245, 158, 11'
+                            stat.gradient.includes('purple')
+                              ? '147, 51, 234'
+                              : stat.gradient.includes('blue')
+                                ? '59, 130, 246'
+                                : stat.gradient.includes('emerald')
+                                  ? '16, 185, 129'
+                                  : '245, 158, 11'
                           }, 0.05) 100%
                         )`,
                         backdropFilter: 'blur(10px)',
                         WebkitBackdropFilter: 'blur(10px)',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         boxShadow: `0 4px 16px rgba(${
-                          stat.gradient.includes('purple') ? '147, 51, 234' :
-                          stat.gradient.includes('blue') ? '59, 130, 246' :
-                          stat.gradient.includes('emerald') ? '16, 185, 129' : '245, 158, 11'
+                          stat.gradient.includes('purple')
+                            ? '147, 51, 234'
+                            : stat.gradient.includes('blue')
+                              ? '59, 130, 246'
+                              : stat.gradient.includes('emerald')
+                                ? '16, 185, 129'
+                                : '245, 158, 11'
                         }, 0.2)`
                       }}
                     >
@@ -726,12 +746,15 @@ export default function SalonModernDashboard() {
                         Business Configuration Rules
                       </h3>
                       <p className="text-sm !text-gray-600 dark:!text-gray-400">
-                        {salonConfig.rules_applied.booking_rules + salonConfig.rules_applied.pricing_rules + salonConfig.rules_applied.notification_rules} active rules
+                        {salonConfig.rules_applied.booking_rules +
+                          salonConfig.rules_applied.pricing_rules +
+                          salonConfig.rules_applied.notification_rules}{' '}
+                        active rules
                       </p>
                     </div>
                   </div>
                   <Link href="/salon-data/settings/ucr">
-                    <Button 
+                    <Button
                       size="sm"
                       className="bg-gradient-to-r from-sage-500 to-champagne-500 hover:from-sage-600 hover:to-champagne-600 text-white"
                     >
@@ -748,7 +771,9 @@ export default function SalonModernDashboard() {
               <div className="bg-white/10 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-200/20 dark:border-gray-700 rounded-xl p-6">
                 <div className="flex items-center justify-center gap-3">
                   <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
-                  <span className="!text-gray-700 dark:!text-gray-300">Loading salon configuration...</span>
+                  <span className="!text-gray-700 dark:!text-gray-300">
+                    Loading salon configuration...
+                  </span>
                 </div>
               </div>
             )}
@@ -756,11 +781,11 @@ export default function SalonModernDashboard() {
             {/* Quick Access Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Appointment Booking */}
-              <Card 
+              <Card
                 className="bg-gradient-to-br from-sage-500/10 to-dusty-rose-500/10 border-sage-200/20 dark:border-sage-700/30 hover:from-sage-500/20 hover:to-dusty-rose-500/20 transition-all duration-500 cursor-pointer group"
                 style={{
                   backdropFilter: 'blur(20px) saturate(120%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(120%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(120%)'
                 }}
               >
                 <CardContent className="p-6">
@@ -778,7 +803,7 @@ export default function SalonModernDashboard() {
                         </p>
                       </div>
                     </div>
-                    <Button 
+                    <Button
                       size="sm"
                       className="bg-gradient-to-r from-sage-500 to-dusty-rose-600 hover:from-sage-600 hover:to-dusty-rose-700 text-white"
                       onClick={() => setIsBookingOpen(true)}
@@ -791,11 +816,11 @@ export default function SalonModernDashboard() {
               </Card>
 
               {/* Salon Settings */}
-              <Card 
+              <Card
                 className="bg-gradient-to-br from-champagne-500/10 to-sage-500/10 border-champagne-200/20 dark:border-champagne-700/30 hover:from-champagne-500/20 hover:to-sage-500/20 transition-all duration-500 cursor-pointer group"
                 style={{
                   backdropFilter: 'blur(20px) saturate(120%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(120%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(120%)'
                 }}
               >
                 <CardContent className="p-6">
@@ -814,7 +839,7 @@ export default function SalonModernDashboard() {
                       </div>
                     </div>
                     <Link href="/salon-data/settings">
-                      <Button 
+                      <Button
                         size="sm"
                         className="bg-gradient-to-r from-champagne-500 to-sage-600 hover:from-champagne-600 hover:to-sage-700 text-white"
                       >
@@ -849,14 +874,16 @@ export default function SalonModernDashboard() {
                       border: '1px solid rgba(255, 255, 255, 0.1)'
                     }}
                   >
-                    <div className={cn("h-2 bg-gradient-to-r", service.gradient)} />
+                    <div className={cn('h-2 bg-gradient-to-r', service.gradient)} />
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
-                        <div className={cn(
-                          "w-12 h-12 rounded-lg bg-gradient-to-r flex items-center justify-center",
-                          service.gradient,
-                          "shadow-lg"
-                        )}>
+                        <div
+                          className={cn(
+                            'w-12 h-12 rounded-lg bg-gradient-to-r flex items-center justify-center',
+                            service.gradient,
+                            'shadow-lg'
+                          )}
+                        >
                           {service.icon}
                         </div>
                         {service.popular && (
@@ -909,10 +936,12 @@ export default function SalonModernDashboard() {
                     }}
                   >
                     <CardContent className="p-6 text-center">
-                      <div className={cn(
-                        "w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r flex items-center justify-center text-2xl font-bold text-white shadow-xl",
-                        member.gradient
-                      )}>
+                      <div
+                        className={cn(
+                          'w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r flex items-center justify-center text-2xl font-bold text-white shadow-xl',
+                          member.gradient
+                        )}
+                      >
                         {member.avatar}
                       </div>
                       <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-1">
@@ -926,10 +955,10 @@ export default function SalonModernDashboard() {
                           <Star
                             key={i}
                             className={cn(
-                              "w-4 h-4",
+                              'w-4 h-4',
                               i < Math.floor(member.rating)
-                                ? "text-yellow-400 fill-current"
-                                : "text-gray-600"
+                                ? 'text-yellow-400 fill-current'
+                                : 'text-gray-600'
                             )}
                           />
                         ))}
@@ -941,15 +970,15 @@ export default function SalonModernDashboard() {
                         {member.reviews} reviews
                       </p>
                       <Badge
-                        variant={member.available ? "default" : "secondary"}
+                        variant={member.available ? 'default' : 'secondary'}
                         className={cn(
-                          "text-xs",
+                          'text-xs',
                           member.available
-                            ? "bg-green-500/20 text-green-300 border-green-500/50"
-                            : "bg-gray-500/20 text-gray-300 border-gray-500/50"
+                            ? 'bg-green-500/20 text-green-300 border-green-500/50'
+                            : 'bg-gray-500/20 text-gray-300 border-gray-500/50'
                         )}
                       >
-                        {member.available ? "Available" : "Busy"}
+                        {member.available ? 'Available' : 'Busy'}
                       </Badge>
                       <div className="mt-4 pt-4 border-t border-gray-700">
                         <div className="flex flex-wrap gap-1 justify-center mb-2">
@@ -973,7 +1002,6 @@ export default function SalonModernDashboard() {
                 ))}
               </div>
             </div>
-
 
             {/* Recent Appointments */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1017,13 +1045,16 @@ export default function SalonModernDashboard() {
                                 {appointment.customer_name || 'Guest Customer'}
                               </p>
                               <p className="text-sm !text-gray-600 dark:!text-gray-400">
-                                {appointment.service_name || 'General Service'} • {appointment.staff_name || 'Any Staff'}
+                                {appointment.service_name || 'General Service'} •{' '}
+                                {appointment.staff_name || 'Any Staff'}
                               </p>
                             </div>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium !text-gray-900 dark:!text-white">
-                              {appointment.transaction_date ? new Date(appointment.transaction_date).toLocaleDateString() : 'N/A'}
+                              {appointment.transaction_date
+                                ? new Date(appointment.transaction_date).toLocaleDateString()
+                                : 'N/A'}
                             </p>
                             <p className="text-xs !text-gray-600 dark:!text-gray-400">
                               {appointment.status || 'Confirmed'}
@@ -1035,9 +1066,7 @@ export default function SalonModernDashboard() {
                   ) : (
                     <div className="text-center py-8">
                       <CalendarCheck className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                      <p className="!text-gray-600 dark:!text-gray-400">
-                        No recent appointments
-                      </p>
+                      <p className="!text-gray-600 dark:!text-gray-400">No recent appointments</p>
                     </div>
                   )}
                 </CardContent>
@@ -1075,13 +1104,18 @@ export default function SalonModernDashboard() {
                           className="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
                         >
                           <div className="flex items-center gap-3">
-                            <div className={cn(
-                              "w-10 h-10 rounded-full bg-gradient-to-r flex items-center justify-center",
-                              index === 0 ? "from-amber-500 to-orange-500" :
-                              index === 1 ? "from-purple-500 to-pink-500" :
-                              index === 2 ? "from-blue-500 to-cyan-500" :
-                              "from-gray-500 to-gray-600"
-                            )}>
+                            <div
+                              className={cn(
+                                'w-10 h-10 rounded-full bg-gradient-to-r flex items-center justify-center',
+                                index === 0
+                                  ? 'from-amber-500 to-orange-500'
+                                  : index === 1
+                                    ? 'from-purple-500 to-pink-500'
+                                    : index === 2
+                                      ? 'from-blue-500 to-cyan-500'
+                                      : 'from-gray-500 to-gray-600'
+                              )}
+                            >
                               <Scissors className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -1116,75 +1150,75 @@ export default function SalonModernDashboard() {
               </Card>
             </div>
           </div>
-      </main>
+        </main>
 
-      {/* Floating Action Button (Mobile) */}
-      <button 
-        onClick={() => setIsBookingOpen(true)}
-        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full shadow-2xl flex items-center justify-center text-white transform hover:scale-110 transition-all"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+        {/* Floating Action Button (Mobile) */}
+        <button
+          onClick={() => setIsBookingOpen(true)}
+          className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full shadow-2xl flex items-center justify-center text-white transform hover:scale-110 transition-all"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
 
-      {/* Footer */}
-      <footer className="mt-12 border-t border-gray-800 bg-gray-900/50 backdrop-blur-xl">
-        <div className="px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-4">
-                Hair Talkz {isHeadOffice ? '- All Branches' : ''}
-              </h3>
-              <p className="!text-gray-600 dark:!text-gray-400 text-sm">
-                Premium hair salon services in Dubai. Expert stylists, premium products, exceptional service.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold !text-gray-900 dark:!text-white mb-3">Contact</h4>
-              <div className="space-y-2 text-sm !text-gray-600 dark:!text-gray-400">
-                <p className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  +971 4 123 4567
-                </p>
-                <p className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Park Regis Kris Kin, Karama, Dubai
-                </p>
-                <p className="flex items-center gap-2">
-                  <Instagram className="w-4 h-4" />
-                  @hairtalkzdubai
+        {/* Footer */}
+        <footer className="mt-12 border-t border-gray-800 bg-gray-900/50 backdrop-blur-xl">
+          <div className="px-6 py-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold !text-gray-900 dark:!text-white mb-4">
+                  Hair Talkz {isHeadOffice ? '- All Branches' : ''}
+                </h3>
+                <p className="!text-gray-600 dark:!text-gray-400 text-sm">
+                  Premium hair salon services in Dubai. Expert stylists, premium products,
+                  exceptional service.
                 </p>
               </div>
-            </div>
-            <div>
-              <h4 className="font-semibold !text-gray-900 dark:!text-white mb-3">Hours</h4>
-              <div className="space-y-1 text-sm !text-gray-600 dark:!text-gray-400">
-                <p>Monday - Friday: 9:00 AM - 9:00 PM</p>
-                <p>Saturday: 9:00 AM - 10:00 PM</p>
-                <p>Sunday: 10:00 AM - 8:00 PM</p>
+              <div>
+                <h4 className="font-semibold !text-gray-900 dark:!text-white mb-3">Contact</h4>
+                <div className="space-y-2 text-sm !text-gray-600 dark:!text-gray-400">
+                  <p className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    +971 4 123 4567
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Park Regis Kris Kin, Karama, Dubai
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Instagram className="w-4 h-4" />
+                    @hairtalkzdubai
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-semibold !text-gray-900 dark:!text-white mb-3">Hours</h4>
+                <div className="space-y-1 text-sm !text-gray-600 dark:!text-gray-400">
+                  <p>Monday - Friday: 9:00 AM - 9:00 PM</p>
+                  <p>Saturday: 9:00 AM - 10:00 PM</p>
+                  <p>Sunday: 10:00 AM - 8:00 PM</p>
+                </div>
               </div>
             </div>
+            <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm !text-gray-600 dark:!text-gray-400">
+              <p>© 2024 Hair Talkz Dubai. All rights reserved. Powered by HERA ERP.</p>
+            </div>
           </div>
-          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm !text-gray-600 dark:!text-gray-400">
-            <p>© 2024 Hair Talkz Dubai. All rights reserved. Powered by HERA ERP.</p>
-          </div>
-        </div>
-      </footer>
+        </footer>
 
-      {/* Book Appointment Modal - GLASSMORPHISM VERSION WITH WSAG EFFECTS */}
-      {isBookingOpen && (
-        <BookAppointmentModalGlass 
-          isOpen={isBookingOpen}
-          onClose={() => setIsBookingOpen(false)}
-          onBookingComplete={(booking) => {
-            console.log('Booking completed:', booking)
-            // Booking completed successfully
-            setIsBookingOpen(false)
-            // Refresh dashboard data
-            fetchDashboardData()
-          }}
-        />
-      )}
-      
+        {/* Book Appointment Modal - GLASSMORPHISM VERSION WITH WSAG EFFECTS */}
+        {isBookingOpen && (
+          <BookAppointmentModalGlass
+            isOpen={isBookingOpen}
+            onClose={() => setIsBookingOpen(false)}
+            onBookingComplete={booking => {
+              console.log('Booking completed:', booking)
+              // Booking completed successfully
+              setIsBookingOpen(false)
+              // Refresh dashboard data
+              fetchDashboardData()
+            }}
+          />
+        )}
       </div>
     </div>
   )

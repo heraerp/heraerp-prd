@@ -6,14 +6,28 @@ import { usePathname } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Zap, TestTube, Code, Database, Settings, Home, ChevronLeft, ChevronRight,
-  Rocket, Sparkles, Building2, Package, Monitor, FileText, Activity, BarChart3
+import {
+  Zap,
+  TestTube,
+  Code,
+  Database,
+  Settings,
+  Home,
+  ChevronLeft,
+  ChevronRight,
+  Rocket,
+  Sparkles,
+  Building2,
+  Package,
+  Monitor,
+  FileText,
+  Activity,
+  BarChart3
 } from 'lucide-react'
 
 /**
  * Development Tools Sidebar
- * 
+ *
  * Navigation for HERA development tools:
  * - Module Generator (NEW)
  * - Module Testing (NEW)
@@ -84,7 +98,9 @@ export function DevelopmentSidebar() {
   const pathname = usePathname()
 
   return (
-    <div className={`${sidebarCollapsed ? 'w-16' : 'w-80'} transition-all duration-300 bg-white border-r border-gray-200 flex flex-col`}>
+    <div
+      className={`${sidebarCollapsed ? 'w-16' : 'w-80'} transition-all duration-300 bg-white border-r border-gray-200 flex flex-col`}
+    >
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
@@ -124,7 +140,7 @@ export function DevelopmentSidebar() {
           const IconComponent = item.icon
           const isActive = pathname === item.href
           const isDisabled = item.badge === 'Coming Soon'
-          
+
           return (
             <Link
               key={item.id}
@@ -136,25 +152,25 @@ export function DevelopmentSidebar() {
                   isActive
                     ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-white shadow-lg'
                     : isDisabled
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:bg-gray-100'
+                      ? 'text-gray-400 cursor-not-allowed'
+                      : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <IconComponent className={`w-5 h-5 ${sidebarCollapsed ? 'mx-auto' : ''}`} />
-                
+
                 {!sidebarCollapsed && (
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-medium">{item.name}</div>
-                        <div className={`text-xs ${
-                          isActive ? 'text-purple-100' : 'text-gray-500'
-                        }`}>
+                        <div
+                          className={`text-xs ${isActive ? 'text-purple-100' : 'text-gray-500'}`}
+                        >
                           {item.description}
                         </div>
                       </div>
                       {item.badge && (
-                        <Badge 
+                        <Badge
                           variant={item.badge === 'New' ? 'default' : 'secondary'}
                           className="text-xs"
                         >
@@ -176,9 +192,7 @@ export function DevelopmentSidebar() {
           <Card className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-4 h-4 text-purple-500" />
-              <span className="text-sm font-medium text-purple-700">
-                200x Acceleration
-              </span>
+              <span className="text-sm font-medium text-purple-700">200x Acceleration</span>
             </div>
             <p className="text-xs text-purple-600">
               Generate complete modules in 30 seconds vs 26+ weeks manual development

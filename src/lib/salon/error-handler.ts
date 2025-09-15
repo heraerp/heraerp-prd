@@ -100,10 +100,10 @@ function getUserFriendlyMessage(technicalMessage: string, context: string): stri
   const errorMappings: Record<string, string> = {
     'Network request failed': 'Unable to connect. Please check your internet connection.',
     'Failed to fetch': 'Unable to load data. Please try again.',
-    'Unauthorized': 'Your session has expired. Please sign in again.',
-    'Forbidden': 'You don\'t have permission to perform this action.',
+    Unauthorized: 'Your session has expired. Please sign in again.',
+    Forbidden: "You don't have permission to perform this action.",
     'Not found': 'The requested item could not be found.',
-    'Conflict': 'This action conflicts with existing data.',
+    Conflict: 'This action conflicts with existing data.',
     'Invalid input': 'Please check your input and try again.',
     'Server error': 'Something went wrong on our end. Please try again later.'
   }
@@ -111,24 +111,24 @@ function getUserFriendlyMessage(technicalMessage: string, context: string): stri
   // Context-specific messages
   const contextMessages: Record<string, Record<string, string>> = {
     'pos-sale': {
-      'insufficient_stock': 'Some items are out of stock.',
-      'payment_failed': 'Payment could not be processed. Please try again.',
-      'customer_required': 'Please select a customer for this transaction.'
+      insufficient_stock: 'Some items are out of stock.',
+      payment_failed: 'Payment could not be processed. Please try again.',
+      customer_required: 'Please select a customer for this transaction.'
     },
     'appointment-booking': {
-      'time_slot_taken': 'This time slot is no longer available.',
-      'staff_unavailable': 'The selected staff member is not available.',
-      'service_unavailable': 'This service is currently unavailable.'
+      time_slot_taken: 'This time slot is no longer available.',
+      staff_unavailable: 'The selected staff member is not available.',
+      service_unavailable: 'This service is currently unavailable.'
     },
-    'inventory': {
-      'negative_stock': 'Stock cannot go below zero.',
-      'duplicate_sku': 'This SKU already exists.',
-      'invalid_cost': 'Please enter a valid cost amount.'
+    inventory: {
+      negative_stock: 'Stock cannot go below zero.',
+      duplicate_sku: 'This SKU already exists.',
+      invalid_cost: 'Please enter a valid cost amount.'
     },
-    'payroll': {
-      'processing_failed': 'Payroll processing failed. Please review and try again.',
-      'insufficient_funds': 'Insufficient funds for payroll.',
-      'missing_bank_info': 'Some employees are missing bank information.'
+    payroll: {
+      processing_failed: 'Payroll processing failed. Please review and try again.',
+      insufficient_funds: 'Insufficient funds for payroll.',
+      missing_bank_info: 'Some employees are missing bank information.'
     }
   }
 

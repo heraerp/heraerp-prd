@@ -12,7 +12,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import {
   BarChart,
@@ -31,7 +31,7 @@ import {
   RadialBarChart,
   RadialBar
 } from 'recharts'
-import { 
+import {
   FileText,
   AlertTriangle,
   CheckCircle2,
@@ -168,7 +168,10 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
     const Icon = config.icon
 
     return (
-      <Badge variant={config.variant} className={`flex items-center gap-1 ${config.className || ''}`}>
+      <Badge
+        variant={config.variant}
+        className={`flex items-center gap-1 ${config.className || ''}`}
+      >
         <Icon className="h-3 w-3" />
         {status}
       </Badge>
@@ -193,12 +196,8 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            HERA Tax & Compliance
-          </h1>
-          <p className="text-muted-foreground">
-            Global tax compliance on 6 universal tables
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">HERA Tax & Compliance</h1>
+          <p className="text-muted-foreground">Global tax compliance on 6 universal tables</p>
         </div>
         <Badge variant="outline" className="px-3 py-1">
           <Globe className="h-4 w-4 mr-2" />
@@ -212,9 +211,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Compliance Score
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Compliance Score</p>
                 <p className={`text-2xl font-bold ${getComplianceColor(complianceScore)}`}>
                   {complianceScore}%
                 </p>
@@ -228,9 +225,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Pending Filings
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Pending Filings</p>
                 <p className="text-2xl font-bold">7</p>
               </div>
               <FileText className="h-8 w-8 text-blue-600" />
@@ -242,9 +237,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Tax Liability MTD
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Tax Liability MTD</p>
                 <p className="text-2xl font-bold">{formatCurrency(32500)}</p>
               </div>
               <Calculator className="h-8 w-8 text-purple-600" />
@@ -256,9 +249,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  AI Anomalies
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">AI Anomalies</p>
                 <p className="text-2xl font-bold text-orange-600">2</p>
               </div>
               <Brain className="h-8 w-8 text-orange-600" />
@@ -283,15 +274,25 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
             <Card>
               <CardHeader>
                 <CardTitle>Compliance Health</CardTitle>
-                <CardDescription>
-                  Overall tax compliance status
-                </CardDescription>
+                <CardDescription>Overall tax compliance status</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={200}>
-                  <RadialBarChart cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" data={[{ value: complianceScore, fill: '#00C49F' }]}>
+                  <RadialBarChart
+                    cx="50%"
+                    cy="50%"
+                    innerRadius="60%"
+                    outerRadius="90%"
+                    data={[{ value: complianceScore, fill: '#00C49F' }]}
+                  >
                     <RadialBar dataKey="value" cornerRadius={10} fill="#00C49F" />
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold">
+                    <text
+                      x="50%"
+                      y="50%"
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="text-3xl font-bold"
+                    >
                       {complianceScore}%
                     </text>
                   </RadialBarChart>
@@ -326,9 +327,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
             <Card>
               <CardHeader>
                 <CardTitle>Tax by Jurisdiction</CardTitle>
-                <CardDescription>
-                  Distribution across tax jurisdictions
-                </CardDescription>
+                <CardDescription>Distribution across tax jurisdictions</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -358,9 +357,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
           <Card>
             <CardHeader>
               <CardTitle>Tax Liability Trend</CardTitle>
-              <CardDescription>
-                Monthly tax liabilities by type
-              </CardDescription>
+              <CardDescription>Monthly tax liabilities by type</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -385,9 +382,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Tax Return Filings</CardTitle>
-                  <CardDescription>
-                    Upcoming and recent tax returns
-                  </CardDescription>
+                  <CardDescription>Upcoming and recent tax returns</CardDescription>
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
@@ -416,22 +411,29 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {upcomingFilings.map((filing) => (
+                    {upcomingFilings.map(filing => (
                       <TableRow key={filing.id}>
                         <TableCell>
                           <Badge variant="outline">{filing.tax_type}</Badge>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {filing.return_type}
-                        </TableCell>
+                        <TableCell className="font-medium">{filing.return_type}</TableCell>
                         <TableCell>{filing.period}</TableCell>
                         <TableCell>{filing.due_date}</TableCell>
                         <TableCell>
-                          <span className={filing.days_remaining < 0 ? 'text-red-600 font-bold' : 
-                                         filing.days_remaining <= 7 ? 'text-yellow-600' : ''}>
-                            {filing.days_remaining < 0 ? `${Math.abs(filing.days_remaining)} days overdue` :
-                             filing.days_remaining === 0 ? 'Due today' :
-                             `${filing.days_remaining} days`}
+                          <span
+                            className={
+                              filing.days_remaining < 0
+                                ? 'text-red-600 font-bold'
+                                : filing.days_remaining <= 7
+                                  ? 'text-yellow-600'
+                                  : ''
+                            }
+                          >
+                            {filing.days_remaining < 0
+                              ? `${Math.abs(filing.days_remaining)} days overdue`
+                              : filing.days_remaining === 0
+                                ? 'Due today'
+                                : `${filing.days_remaining} days`}
                           </span>
                         </TableCell>
                         <TableCell>{getStatusBadge(filing.status)}</TableCell>
@@ -455,9 +457,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Tax Registrations</CardTitle>
-                  <CardDescription>
-                    Active tax registrations across jurisdictions
-                  </CardDescription>
+                  <CardDescription>Active tax registrations across jurisdictions</CardDescription>
                 </div>
                 <Button size="sm">
                   <Globe className="h-4 w-4 mr-2" />
@@ -479,20 +479,20 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {registrations.map((reg) => (
+                    {registrations.map(reg => (
                       <TableRow key={reg.id}>
                         <TableCell>
                           <Badge variant="outline">{reg.type}</Badge>
                         </TableCell>
-                        <TableCell className="font-mono font-medium">
-                          {reg.number}
-                        </TableCell>
+                        <TableCell className="font-mono font-medium">{reg.number}</TableCell>
                         <TableCell>{reg.jurisdiction}</TableCell>
                         <TableCell>{getStatusBadge(reg.status)}</TableCell>
                         <TableCell>{reg.valid_until || 'Perpetual'}</TableCell>
                         <TableCell>
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="sm">Edit</Button>
+                            <Button variant="ghost" size="sm">
+                              Edit
+                            </Button>
                             <Button variant="ghost" size="sm">
                               <Download className="h-4 w-4" />
                             </Button>
@@ -513,9 +513,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
             <Card>
               <CardHeader>
                 <CardTitle>Effective Tax Rates</CardTitle>
-                <CardDescription>
-                  Average rates by jurisdiction
-                </CardDescription>
+                <CardDescription>Average rates by jurisdiction</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -543,7 +541,10 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                       <span className="text-sm font-bold">8.5%</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div className="bg-purple-600 h-2 rounded-full" style={{ width: '34%' }}></div>
+                      <div
+                        className="bg-purple-600 h-2 rounded-full"
+                        style={{ width: '34%' }}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -554,9 +555,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
             <Card>
               <CardHeader>
                 <CardTitle>Tax Optimization</CardTitle>
-                <CardDescription>
-                  Potential savings identified by AI
-                </CardDescription>
+                <CardDescription>Potential savings identified by AI</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -585,15 +584,10 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
           <Card>
             <CardHeader>
               <CardTitle>Compliance Calendar</CardTitle>
-              <CardDescription>
-                Tax filing deadlines and important dates
-              </CardDescription>
+              <CardDescription>Tax filing deadlines and important dates</CardDescription>
             </CardHeader>
             <CardContent>
-              <Calendar
-                mode="single"
-                className="rounded-md border"
-              />
+              <Calendar mode="single" className="rounded-md border" />
             </CardContent>
           </Card>
         </TabsContent>
@@ -630,39 +624,48 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {anomalies.map((anomaly) => (
+                    {anomalies.map(anomaly => (
                       <TableRow key={anomaly.id}>
                         <TableCell>
                           <Badge variant="outline">{anomaly.type}</Badge>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {anomaly.transaction}
+                        <TableCell className="font-medium">{anomaly.transaction}</TableCell>
+                        <TableCell className="text-right">
+                          {anomaly.type === 'Rate Mismatch'
+                            ? `${anomaly.expected}%`
+                            : formatCurrency(anomaly.expected)}
                         </TableCell>
                         <TableCell className="text-right">
-                          {anomaly.type === 'Rate Mismatch' ? `${anomaly.expected}%` : formatCurrency(anomaly.expected)}
+                          {anomaly.type === 'Rate Mismatch'
+                            ? `${anomaly.actual}%`
+                            : formatCurrency(anomaly.actual)}
                         </TableCell>
                         <TableCell className="text-right">
-                          {anomaly.type === 'Rate Mismatch' ? `${anomaly.actual}%` : formatCurrency(anomaly.actual)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span className={anomaly.variance > 0 ? 'text-red-600' : 'text-green-600'}>
-                            {anomaly.variance > 0 ? '+' : ''}{anomaly.variance}%
+                          <span
+                            className={anomaly.variance > 0 ? 'text-red-600' : 'text-green-600'}
+                          >
+                            {anomaly.variance > 0 ? '+' : ''}
+                            {anomaly.variance}%
                           </span>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                              <div 
-                                className="bg-blue-600 h-2 rounded-full" 
+                              <div
+                                className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${anomaly.confidence * 100}%` }}
                               ></div>
                             </div>
-                            <span className="text-sm">{(anomaly.confidence * 100).toFixed(0)}%</span>
+                            <span className="text-sm">
+                              {(anomaly.confidence * 100).toFixed(0)}%
+                            </span>
                           </div>
                         </TableCell>
                         <TableCell>{getStatusBadge(anomaly.status)}</TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="sm">Review</Button>
+                          <Button variant="ghost" size="sm">
+                            Review
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}

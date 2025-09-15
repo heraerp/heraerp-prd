@@ -179,7 +179,14 @@ export interface PayrollEmployee {
 }
 
 // ===== Finance Types =====
-export type TabType = 'dashboard' | 'calendar' | 'appointments' | 'services' | 'finance' | 'team' | 'whatsapp'
+export type TabType =
+  | 'dashboard'
+  | 'calendar'
+  | 'appointments'
+  | 'services'
+  | 'finance'
+  | 'team'
+  | 'whatsapp'
 export type BranchType = 'all' | 'branch1' | 'branch2'
 export type PeriodType = 'month' | 'quarter' | 'ytd' | 'custom'
 export type DateSelectionType = 'current' | 'prior_month' | 'prior_year' | 'custom'

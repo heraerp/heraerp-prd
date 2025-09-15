@@ -161,30 +161,30 @@ export function QuickExpenseGrid({ onExpenseSelect, selectedCategory }: QuickExp
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {EXPENSE_CATEGORIES.map((expense) => (
+        {EXPENSE_CATEGORIES.map(expense => (
           <div key={expense.id} className="relative">
             <Button
               variant={selectedCategory === expense.id ? 'default' : 'outline'}
               className={cn(
-                "w-full h-auto flex flex-col items-center justify-center p-4 space-y-2",
-                "hover:scale-105 transition-transform duration-200",
-                selectedCategory === expense.id && "ring-2 ring-purple-600"
+                'w-full h-auto flex flex-col items-center justify-center p-4 space-y-2',
+                'hover:scale-105 transition-transform duration-200',
+                selectedCategory === expense.id && 'ring-2 ring-purple-600'
               )}
               onClick={() => handleCategoryClick(expense)}
             >
-              <expense.icon className={cn("w-8 h-8", expense.color)} />
+              <expense.icon className={cn('w-8 h-8', expense.color)} />
               <div className="text-center">
                 <p className="font-medium text-sm">{expense.name}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{expense.category}</p>
               </div>
             </Button>
-            
+
             {/* Quick amount selection */}
             {expandedCategory === expense.id && expense.commonAmounts && (
               <div className="absolute z-10 top-full mt-2 left-0 right-0 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2">
                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Common amounts:</p>
                 <div className="grid grid-cols-3 gap-1">
-                  {expense.commonAmounts.map((amount) => (
+                  {expense.commonAmounts.map(amount => (
                     <Button
                       key={amount}
                       size="sm"
@@ -223,12 +223,19 @@ export function QuickExpenseGrid({ onExpenseSelect, selectedCategory }: QuickExp
                   <div className="p-2 bg-white dark:bg-gray-800 rounded-lg">
                     {React.createElement(
                       EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)!.icon,
-                      { className: cn("w-5 h-5", EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)?.color) }
+                      {
+                        className: cn(
+                          'w-5 h-5',
+                          EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)?.color
+                        )
+                      }
                     )}
                   </div>
                 )}
                 <div>
-                  <p className="font-medium">{EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)?.name}</p>
+                  <p className="font-medium">
+                    {EXPENSE_CATEGORIES.find(e => e.id === selectedCategory)?.name}
+                  </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Ready to record expense
                   </p>

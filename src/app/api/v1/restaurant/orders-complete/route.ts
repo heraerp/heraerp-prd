@@ -20,10 +20,7 @@ export async function GET(request: NextRequest) {
     const customerView = searchParams.get('customer_view') === 'true'
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     // Calculate date filter based on range
@@ -39,11 +36,13 @@ export async function GET(request: NextRequest) {
     // Fetch orders from universal_transactions with transaction_type = 'order'
     let orderQuery = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         reference_entity:core_entities!reference_entity_id(*),
         transaction_lines:universal_transaction_lines(*)
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('transaction_type', 'order')
       .gte('transaction_date', dateFilter.toISOString())
@@ -57,15 +56,12 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Orders fetch error:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch orders' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
     }
 
     // Transform orders for response
     const transformedOrders = await Promise.all(
-      (orders || []).map(async (order) => {
+      (orders || []).map(async order => {
         // Get dynamic data for additional order properties
         const { data: orderDynamicData } = await supabase
           .from('core_dynamic_data')
@@ -73,7 +69,12 @@ export async function GET(request: NextRequest) {
           .eq('entity_id', order.id)
 
         const dynamicProps = (orderDynamicData || []).reduce((acc, prop) => {
-          let value = prop.field_value_text || prop.field_value_number || prop.field_value_json || prop.field_value_boolean || prop.field_value_integer
+          let value =
+            prop.field_value_text ||
+            prop.field_value_number ||
+            prop.field_value_json ||
+            prop.field_value_boolean ||
+            prop.field_value_integer
           acc[prop.field_name] = value
           return acc
         }, {})
@@ -103,7 +104,7 @@ export async function GET(request: NextRequest) {
 
         // Transform line items with menu item details
         const transformedLines = await Promise.all(
-          (order.transaction_lines || []).map(async (line) => {
+          (order.transaction_lines || []).map(async line => {
             // Get menu item details
             let menuItem = null
             if (line.line_entity_id) {
@@ -120,7 +121,8 @@ export async function GET(request: NextRequest) {
                   .eq('entity_id', line.line_entity_id)
 
                 const menuProps = (menuDynamic || []).reduce((acc, prop) => {
-                  let value = prop.field_value_text || prop.field_value_number || prop.field_value_json
+                  let value =
+                    prop.field_value_text || prop.field_value_number || prop.field_value_json
                   acc[prop.field_name] = value
                   return acc
                 }, {})
@@ -232,21 +234,24 @@ export async function GET(request: NextRequest) {
       count: transformedOrders.length,
       analytics: {
         total_revenue: transformedOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0),
-        avg_order_value: transformedOrders.length > 0 ? 
-          transformedOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0) / transformedOrders.length : 0,
-        avg_prep_time: transformedOrders.filter(o => o.prep_time_actual).length > 0 ?
-          transformedOrders.filter(o => o.prep_time_actual)
-            .reduce((sum, o) => sum + o.prep_time_actual, 0) / transformedOrders.filter(o => o.prep_time_actual).length : 0
+        avg_order_value:
+          transformedOrders.length > 0
+            ? transformedOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0) /
+              transformedOrders.length
+            : 0,
+        avg_prep_time:
+          transformedOrders.filter(o => o.prep_time_actual).length > 0
+            ? transformedOrders
+                .filter(o => o.prep_time_actual)
+                .reduce((sum, o) => sum + o.prep_time_actual, 0) /
+              transformedOrders.filter(o => o.prep_time_actual).length
+            : 0
       },
       smart_code: 'HERA.REST.ORDERS.API.READ.COMPLETE.v1'
     })
-
   } catch (error) {
     console.error('Orders API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -264,10 +269,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     if (!organization_id || !items || items.length === 0) {
-      return NextResponse.json(
-        { error: 'Organization ID and items are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID and items are required' }, { status: 400 })
     }
 
     // Calculate total amount
@@ -290,7 +292,8 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      const price = menuItem.core_dynamic_data?.find(d => d.field_name === 'price')?.field_value_number || 0
+      const price =
+        menuItem.core_dynamic_data?.find(d => d.field_name === 'price')?.field_value_number || 0
       const lineAmount = price * item.quantity
 
       processedItems.push({
@@ -339,7 +342,7 @@ export async function POST(request: NextRequest) {
 
         if (!customerError) {
           customerId = newCustomer.id
-          
+
           // Add customer dynamic data
           const customerData = []
           if (customer_info.phone) {
@@ -358,7 +361,7 @@ export async function POST(request: NextRequest) {
               smart_code: 'HERA.REST.CUSTOMER.EMAIL.v1'
             })
           }
-          
+
           if (customerData.length > 0) {
             await supabase.from('core_dynamic_data').insert(customerData)
           }
@@ -384,10 +387,7 @@ export async function POST(request: NextRequest) {
 
     if (orderError) {
       console.error('Order creation error:', orderError)
-      return NextResponse.json(
-        { error: 'Failed to create order' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
     }
 
     // Create order line items
@@ -409,10 +409,7 @@ export async function POST(request: NextRequest) {
       console.error('Order lines creation error:', linesError)
       // Clean up order
       await supabase.from('universal_transactions').delete().eq('id', orderTransaction.id)
-      return NextResponse.json(
-        { error: 'Failed to create order items' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to create order items' }, { status: 500 })
     }
 
     // Create order dynamic data
@@ -507,13 +504,9 @@ export async function POST(request: NextRequest) {
       message: 'Order created successfully',
       smart_code: 'HERA.REST.ORDERS.API.CREATE.v1'
     })
-
   } catch (error) {
     console.error('Order creation API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -564,14 +557,12 @@ export async function PUT(request: NextRequest) {
 
     for (const [fieldName, value] of Object.entries(fieldsToUpdate)) {
       if (value !== undefined) {
-        await supabase
-          .from('core_dynamic_data')
-          .upsert({
-            entity_id: order_id,
-            field_name: fieldName,
-            field_value_text: value?.toString(),
-            smart_code: `HERA.REST.ORDER.${fieldName.toUpperCase()}.v1`
-          })
+        await supabase.from('core_dynamic_data').upsert({
+          entity_id: order_id,
+          field_name: fieldName,
+          field_value_text: value?.toString(),
+          smart_code: `HERA.REST.ORDER.${fieldName.toUpperCase()}.v1`
+        })
       }
     }
 
@@ -581,14 +572,12 @@ export async function PUT(request: NextRequest) {
       const endTime = new Date(prep_end_time)
       const prepTimeMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000)
 
-      await supabase
-        .from('core_dynamic_data')
-        .upsert({
-          entity_id: order_id,
-          field_name: 'prep_time_actual',
-          field_value_integer: prepTimeMinutes,
-          smart_code: 'HERA.REST.ORDER.PREP.TIME.ACTUAL.v1'
-        })
+      await supabase.from('core_dynamic_data').upsert({
+        entity_id: order_id,
+        field_name: 'prep_time_actual',
+        field_value_integer: prepTimeMinutes,
+        smart_code: 'HERA.REST.ORDER.PREP.TIME.ACTUAL.v1'
+      })
     }
 
     return NextResponse.json({
@@ -596,12 +585,8 @@ export async function PUT(request: NextRequest) {
       message: 'Order updated successfully',
       smart_code: 'HERA.REST.ORDERS.API.UPDATE.v1'
     })
-
   } catch (error) {
     console.error('Order update API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

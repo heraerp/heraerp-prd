@@ -1,6 +1,6 @@
 /**
  * 📦 HERA Module Registry
- * 
+ *
  * Central registry of all HERA modules and their configurations
  * - Module definitions and metadata
  * - Feature flags and capabilities
@@ -162,7 +162,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
     category: 'industry',
     features: [
       'Appointment booking',
-      'Service management', 
+      'Service management',
       'Staff scheduling',
       'Client profiles',
       'Inventory tracking'
@@ -204,10 +204,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
         exportName: 'AppointmentCalendar'
       }
     ],
-    dependencies: [
-      'HERA.CORE.ENTITIES.MODULE.v1',
-      'HERA.CORE.ACCOUNTING.MODULE.v1'
-    ],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.ACCOUNTING.MODULE.v1'],
     permissions: ['salon:access'],
     configuration: {
       defaults: {
@@ -281,10 +278,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
         exportName: 'KitchenDisplay'
       }
     ],
-    dependencies: [
-      'HERA.CORE.ENTITIES.MODULE.v1',
-      'HERA.CORE.ACCOUNTING.MODULE.v1'
-    ],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.ACCOUNTING.MODULE.v1'],
     permissions: ['restaurant:access']
   }
 ]
@@ -410,7 +404,9 @@ export function getModule(smartCode: string): ModuleConfig | undefined {
 /**
  * Get modules by category
  */
-export function getModulesByCategory(category: 'core' | 'industry' | 'addon' | 'enterprise'): ModuleConfig[] {
+export function getModulesByCategory(
+  category: 'core' | 'industry' | 'addon' | 'enterprise'
+): ModuleConfig[] {
   return Array.from(MODULE_REGISTRY.values()).filter(m => m.category === category)
 }
 
@@ -419,29 +415,32 @@ export function getModulesByCategory(category: 'core' | 'industry' | 'addon' | '
  */
 export function getEnabledRoutes(enabledModules: string[]): ModuleRoute[] {
   const routes: ModuleRoute[] = []
-  
+
   enabledModules.forEach(smartCode => {
     const module = getModule(smartCode)
     if (module) {
       routes.push(...module.routes)
     }
   })
-  
+
   return routes
 }
 
 /**
  * Check module dependencies
  */
-export function checkDependencies(smartCode: string, enabledModules: string[]): {
+export function checkDependencies(
+  smartCode: string,
+  enabledModules: string[]
+): {
   satisfied: boolean
   missing: string[]
 } {
   const module = getModule(smartCode)
   if (!module) return { satisfied: false, missing: [smartCode] }
-  
+
   const missing = module.dependencies.filter(dep => !enabledModules.includes(dep))
-  
+
   return {
     satisfied: missing.length === 0,
     missing

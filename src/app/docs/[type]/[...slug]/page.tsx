@@ -19,17 +19,17 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { type, slug } = await params
   const slugPath = slug.join('/')
-  
+
   try {
     const page = await getDocPage(slugPath, type)
-    
+
     if (!page) {
       return {
         title: 'Page Not Found - HERA Docs',
-        description: 'The requested documentation page could not be found.',
+        description: 'The requested documentation page could not be found.'
       }
     }
-    
+
     return {
       title: `${page.title} - HERA ${type === 'dev' ? 'Developer' : 'User'} Docs`,
       description: page.description || `${page.title} documentation for HERA platform`,
@@ -38,13 +38,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: page.description,
         type: 'article',
         publishedTime: page.createdAt,
-        modifiedTime: page.updatedAt,
-      },
+        modifiedTime: page.updatedAt
+      }
     }
   } catch (error) {
     return {
       title: 'Page Not Found - HERA Docs',
-      description: 'The requested documentation page could not be found.',
+      description: 'The requested documentation page could not be found.'
     }
   }
 }
@@ -58,7 +58,6 @@ export default async function DocumentationPage({ params }: PageProps) {
     notFound()
   }
 
-
   try {
     const [page, navigation] = await Promise.all([
       getDocPage(slugPath, type),
@@ -69,7 +68,12 @@ export default async function DocumentationPage({ params }: PageProps) {
       // During build time, create a fallback page structure
       const fallbackPage = {
         id: `fallback-${slugPath}`,
-        title: slugPath.split('/').pop()?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Documentation',
+        title:
+          slugPath
+            .split('/')
+            .pop()
+            ?.replace(/-/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase()) || 'Documentation',
         slug: slugPath,
         content: `<h1>Documentation Page</h1><p>This documentation page is being loaded dynamically.</p>`,
         createdAt: new Date().toISOString(),
@@ -79,27 +83,22 @@ export default async function DocumentationPage({ params }: PageProps) {
           { title: type === 'dev' ? 'Developer' : 'User', href: `/docs/${type}` }
         ]
       }
-      
+
       const navigation = await getDocNavigation(type)
-      
+
       return (
         <DocLayout navigation={navigation} docType={type} currentPath={slugPath}>
           <article className="max-w-4xl mx-auto">
             <DocBreadcrumb path={fallbackPage.breadcrumb} docType={type} />
-            
+
             <header className="mb-8">
-              <h1 className="text-4xl font-bold mb-4 text-hera-primary">
-                {fallbackPage.title}
-              </h1>
+              <h1 className="text-4xl font-bold mb-4 text-hera-primary">{fallbackPage.title}</h1>
               <p className="text-xl text-muted-foreground">
                 This documentation page will be dynamically loaded.
               </p>
             </header>
 
-            <DocMeta
-              lastUpdated={fallbackPage.updatedAt}
-              readingTime={1}
-            />
+            <DocMeta lastUpdated={fallbackPage.updatedAt} readingTime={1} />
 
             <div className="prose prose-lg max-w-none">
               <div className="space-y-4">
@@ -121,15 +120,11 @@ export default async function DocumentationPage({ params }: PageProps) {
       <DocLayout navigation={navigation} docType={type} currentPath={slugPath}>
         <article className="max-w-4xl mx-auto">
           <DocBreadcrumb path={page.breadcrumb} docType={type} />
-          
+
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-hera-primary">
-              {page.title}
-            </h1>
+            <h1 className="text-4xl font-bold mb-4 text-hera-primary">{page.title}</h1>
             {page.description && (
-              <p className="text-xl text-muted-foreground">
-                {page.description}
-              </p>
+              <p className="text-xl text-muted-foreground">{page.description}</p>
             )}
           </header>
 
@@ -140,10 +135,7 @@ export default async function DocumentationPage({ params }: PageProps) {
             editUrl={page.editUrl}
           />
 
-          <DocContent 
-            content={page.content}
-            tableOfContents={page.tableOfContents}
-          />
+          <DocContent content={page.content} tableOfContents={page.tableOfContents} />
 
           {page.nextPage && (
             <div className="mt-12 pt-8 border-t">
@@ -184,7 +176,7 @@ export async function generateStaticParams() {
     { type: 'dev', slug: ['components', 'development'] },
     { type: 'dev', slug: ['testing', 'guide'] },
     { type: 'dev', slug: ['deployment', 'guide'] },
-    { type: 'dev', slug: ['contributing'] },
+    { type: 'dev', slug: ['contributing'] }
   ]
 
   const commonUserPaths = [
@@ -196,7 +188,7 @@ export async function generateStaticParams() {
     { type: 'user', slug: ['data', 'management'] },
     { type: 'user', slug: ['troubleshooting'] },
     { type: 'user', slug: ['faq'] },
-    { type: 'user', slug: ['mobile', 'guide'] },
+    { type: 'user', slug: ['mobile', 'guide'] }
   ]
 
   return [...commonDevPaths, ...commonUserPaths]

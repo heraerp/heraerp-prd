@@ -48,26 +48,33 @@ export const DNA_VALIDATION_RULES: DNAValidationRule[] = [
     description: 'Ensures EnterpriseCard is used instead of basic Card',
     severity: 'error',
     check: (content: string) => {
-      const hasBasicCard = /<Card(?!\s|>)|\bCard\b(?!Header|Title|Content|Description)/.test(content)
+      const hasBasicCard = /<Card(?!\s|>)|\bCard\b(?!Header|Title|Content|Description)/.test(
+        content
+      )
       const hasEnterpriseCard = /EnterpriseCard/.test(content)
       return !hasBasicCard || hasEnterpriseCard
     },
     fix: (content: string) => {
       return content
-        .replace(/import.*Card.*from.*shadcn/g, "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'")
+        .replace(
+          /import.*Card.*from.*shadcn/g,
+          "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'"
+        )
         .replace(/<Card/g, '<EnterpriseCard')
         .replace(/<\/Card>/g, '</EnterpriseCard>')
     },
     message: 'Use EnterpriseCard instead of basic Card for enterprise features and glassmorphism'
   },
-  
+
   {
     id: 'enterprise-stats-usage',
     name: 'Enterprise Stats Card Usage',
     description: 'Ensures EnterpriseStatsCard is used for all metric displays',
     severity: 'error',
     check: (content: string) => {
-      const hasStatsPattern = /\b(stat|metric|kpi|number|count|revenue|performance)\b/i.test(content)
+      const hasStatsPattern = /\b(stat|metric|kpi|number|count|revenue|performance)\b/i.test(
+        content
+      )
       const hasEnterpriseStats = /EnterpriseStatsCard/.test(content)
       return !hasStatsPattern || hasEnterpriseStats
     },
@@ -213,7 +220,7 @@ export class HeraDNAHooks {
     // Additional checks for push
     if (context.branch === 'main' || context.branch === 'production') {
       result.report += '🔒 PRODUCTION BRANCH: Enhanced validation active\n\n'
-      
+
       // Stricter validation for production branches
       for (const filePath of context.files) {
         if (this.shouldValidateFile(filePath)) {
@@ -294,7 +301,7 @@ export class HeraDNAHooks {
 
     try {
       const content = await this.readFile(filePath)
-      
+
       // Run validation rules
       for (const rule of DNA_VALIDATION_RULES) {
         if (!rule.check(content, context)) {
@@ -321,7 +328,6 @@ export class HeraDNAHooks {
       if (middlewareResult.warnings.length > 0) {
         result.warnings.push(...middlewareResult.warnings)
       }
-
     } catch (error) {
       result.errors.push(`Failed to validate ${filePath}: ${error}`)
       result.passed = false
@@ -335,11 +341,11 @@ export class HeraDNAHooks {
    */
   private async validateFileStrict(filePath: string, context: HookContext): Promise<HookResult> {
     const baseResult = await this.validateFile(filePath, context)
-    
+
     // Convert warnings to errors for strict mode
     baseResult.errors.push(...baseResult.warnings)
     baseResult.warnings = []
-    
+
     if (baseResult.errors.length > 0) {
       baseResult.passed = false
       baseResult.blocked = true
@@ -354,9 +360,11 @@ export class HeraDNAHooks {
   private shouldValidateFile(filePath: string): boolean {
     const validExtensions = ['.tsx', '.ts', '.jsx', '.js']
     const excludePaths = ['node_modules', '.next', 'dist', 'build']
-    
-    return validExtensions.some(ext => filePath.endsWith(ext)) &&
-           !excludePaths.some(exclude => filePath.includes(exclude))
+
+    return (
+      validExtensions.some(ext => filePath.endsWith(ext)) &&
+      !excludePaths.some(exclude => filePath.includes(exclude))
+    )
   }
 
   private async readFile(filePath: string): Promise<string> {
@@ -369,7 +377,7 @@ export class HeraDNAHooks {
     target.warnings.push(...source.warnings.map(w => `${filePath}: ${w}`))
     target.errors.push(...source.errors.map(e => `${filePath}: ${e}`))
     target.fixes.push(...source.fixes.map(f => `${filePath}: ${f}`))
-    
+
     if (!source.passed) target.passed = false
     if (source.blocked) target.blocked = true
     if (source.enforcementApplied) target.enforcementApplied = true
@@ -441,8 +449,8 @@ export async function validateProjectDNA(projectPath: string = '.'): Promise<Hoo
  * Auto-fix DNA compliance issues
  */
 export async function autoFixDNA(filePath: string): Promise<{
-  fixed: boolean,
-  changes: string[],
+  fixed: boolean
+  changes: string[]
   remainingIssues: string[]
 }> {
   // Implementation would read file, apply fixes, and write back
@@ -460,7 +468,7 @@ export const packageJsonScripts = {
   'dna:validate': 'node -e "require(\'./src/lib/dna/hooks/hera-dna-hooks\').validateProjectDNA()"',
   'dna:fix': 'node -e "require(\'./src/lib/dna/hooks/hera-dna-hooks\').autoFixDNA()"',
   'dna:hooks': 'node -e "require(\'./src/lib/dna/hooks/hera-dna-hooks\').setupGitHooks()"',
-  'predeploy': 'npm run dna:validate && npm run build'
+  predeploy: 'npm run dna:validate && npm run build'
 }
 
 /**
@@ -479,9 +487,9 @@ jobs:
       - uses: actions/setup-node@v2
       - run: npm install
       - run: npm run dna:validate
-    `,
+    `
   },
-  
+
   gitlab: {
     pipeline: `
 stages:
@@ -500,24 +508,24 @@ dna-validation:
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * // 1. Setup hooks (run once per project)
  * setupGitHooks()
- * 
+ *
  * // 2. Validate a specific file
  * const result = await validateFileDNA('./src/components/Dashboard.tsx')
  * console.log(result.passed)
- * 
+ *
  * // 3. Validate entire project
  * const projectResult = await validateProjectDNA()
  * if (!projectResult.passed) {
  *   console.log('Issues:', projectResult.errors)
  * }
- * 
+ *
  * // 4. Auto-fix issues
  * const fixed = await autoFixDNA('./src/components/Dashboard.tsx')
  * console.log('Changes applied:', fixed.changes)
- * 
+ *
  * // 5. Runtime validation (in development)
  * heraDNAHooks.runtimeHook('Card', {})  // Returns false, suggests EnterpriseCard
  */

@@ -28,7 +28,12 @@ interface AppointmentListProps {
   loading?: boolean
 }
 
-export function AppointmentList({ appointments, onConfirm, onCancel, loading }: AppointmentListProps) {
+export function AppointmentList({
+  appointments,
+  onConfirm,
+  onCancel,
+  loading
+}: AppointmentListProps) {
   const [showNotificationHistory, setShowNotificationHistory] = useState<string | null>(null)
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -58,7 +63,8 @@ export function AppointmentList({ appointments, onConfirm, onCancel, loading }: 
 
   if (appointments.length === 0) {
     return (
-      <div className="rounded-xl overflow-hidden"
+      <div
+        className="rounded-xl overflow-hidden"
         style={{
           background: `
             linear-gradient(135deg, 
@@ -79,7 +85,9 @@ export function AppointmentList({ appointments, onConfirm, onCancel, loading }: 
         <div className="p-12 text-center">
           <Calendar className="h-12 w-12 text-gray-600 mx-auto mb-4" />
           <p className="text-lg !text-gray-600 dark:!text-gray-400">No appointments found</p>
-          <p className="text-sm !text-gray-500 dark:!text-gray-500 mt-2">Create your first appointment to get started</p>
+          <p className="text-sm !text-gray-500 dark:!text-gray-500 mt-2">
+            Create your first appointment to get started
+          </p>
         </div>
       </div>
     )
@@ -87,7 +95,7 @@ export function AppointmentList({ appointments, onConfirm, onCancel, loading }: 
 
   return (
     <div className="space-y-4">
-      {appointments.map((appointment) => (
+      {appointments.map(appointment => (
         <div
           key={appointment.id}
           className="rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
@@ -123,9 +131,9 @@ export function AppointmentList({ appointments, onConfirm, onCancel, loading }: 
                       {appointment.serviceName}
                     </p>
                   </div>
-                  <Badge 
-                    variant="outline" 
-                    className={cn("ml-auto", getStatusStyle(appointment.status))}
+                  <Badge
+                    variant="outline"
+                    className={cn('ml-auto', getStatusStyle(appointment.status))}
                   >
                     <span className="flex items-center gap-1">
                       {getStatusIcon(appointment.status)}
@@ -213,7 +221,7 @@ export function AppointmentList({ appointments, onConfirm, onCancel, loading }: 
                     />
                   </div>
                 )}
-                
+
                 {appointment.status === 'cancelled' && (
                   <div className="mt-3 p-3 rounded-lg bg-red-900/20 border border-red-800/30">
                     <WhatsAppNotificationBadge

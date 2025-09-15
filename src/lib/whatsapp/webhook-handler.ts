@@ -2,10 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // Create Supabase client inside the class to avoid initialization issues
 const getSupabaseClient = () => {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 }
 
 export interface WhatsAppWebhookMessage {
@@ -37,9 +34,7 @@ export interface WhatsAppWebhookContact {
 }
 
 export class WhatsAppWebhookHandler {
-  constructor(
-    private organizationId: string
-  ) {}
+  constructor(private organizationId: string) {}
 
   async handleIncomingMessage(
     message: WhatsAppWebhookMessage,
@@ -47,24 +42,21 @@ export class WhatsAppWebhookHandler {
     phoneNumberId: string
   ) {
     console.log('📥 Processing incoming WhatsApp message...')
-    
+
     try {
       // Find or create customer entity
       const customerEntity = await this.findOrCreateCustomer(
         message.from,
         contact?.profile?.name || 'WhatsApp User'
       )
-      
+
       if (!customerEntity) {
         console.error('Failed to find/create customer entity')
         return { success: false, error: 'Failed to create customer' }
       }
 
       // Create conversation if needed
-      const conversation = await this.findOrCreateConversation(
-        customerEntity.id,
-        message.from
-      )
+      const conversation = await this.findOrCreateConversation(customerEntity.id, message.from)
 
       if (!conversation) {
         console.error('Failed to find/create conversation')
@@ -96,7 +88,6 @@ export class WhatsAppWebhookHandler {
         conversationId: conversation.id,
         customerId: customerEntity.id
       }
-
     } catch (error) {
       console.error('❌ Error handling WhatsApp message:', error)
       return {
@@ -148,15 +139,13 @@ export class WhatsAppWebhookHandler {
     }
 
     // Store phone number in dynamic data
-    await supabase
-      .from('core_dynamic_data')
-      .insert({
-        entity_id: newCustomer.id,
-        field_name: 'phone',
-        field_value_text: waId,
-        organization_id: this.organizationId,
-        smart_code: 'HERA.CRM.CUST.DYN.PHONE.v1'
-      })
+    await supabase.from('core_dynamic_data').insert({
+      entity_id: newCustomer.id,
+      field_name: 'phone',
+      field_value_text: waId,
+      organization_id: this.organizationId,
+      smart_code: 'HERA.CRM.CUST.DYN.PHONE.v1'
+    })
 
     return newCustomer
   }
@@ -205,15 +194,13 @@ export class WhatsAppWebhookHandler {
     }
 
     // Create relationship between customer and conversation
-    await supabase
-      .from('core_relationships')
-      .insert({
-        from_entity_id: customerId,
-        to_entity_id: newConversation.id,
-        relationship_type: 'has_conversation',
-        organization_id: this.organizationId,
-        smart_code: 'HERA.CRM.REL.CUST.CONV.v1'
-      })
+    await supabase.from('core_relationships').insert({
+      from_entity_id: customerId,
+      to_entity_id: newConversation.id,
+      relationship_type: 'has_conversation',
+      organization_id: this.organizationId,
+      smart_code: 'HERA.CRM.REL.CUST.CONV.v1'
+    })
 
     return newConversation
   }
@@ -231,7 +218,7 @@ export class WhatsAppWebhookHandler {
   }) {
     const messageContent = message.text?.body || '[Non-text message]'
     const messageType = message.type || 'text'
-    
+
     const supabase = getSupabaseClient()
     // Store as universal transaction
     const { data: storedMessage, error } = await supabase
@@ -280,29 +267,27 @@ export class WhatsAppWebhookHandler {
       .eq('id', conversationId)
 
     // Store message content in transaction lines for better querying
-    await supabase
-      .from('universal_transaction_lines')
-      .insert({
-        transaction_id: storedMessage.id,
-        line_number: 1,
-        line_entity_id: customerId,
-        quantity: 1,
-        unit_price: 0,
-        line_amount: 0,
-        organization_id: this.organizationId,
-        smart_code: 'HERA.CRM.MSG.LINE.CONTENT.v1',
-        metadata: {
-          content: messageContent,
-          content_type: messageType
-        }
-      })
+    await supabase.from('universal_transaction_lines').insert({
+      transaction_id: storedMessage.id,
+      line_number: 1,
+      line_entity_id: customerId,
+      quantity: 1,
+      unit_price: 0,
+      line_amount: 0,
+      organization_id: this.organizationId,
+      smart_code: 'HERA.CRM.MSG.LINE.CONTENT.v1',
+      metadata: {
+        content: messageContent,
+        content_type: messageType
+      }
+    })
 
     return storedMessage
   }
 
   async handleStatusUpdate(statusUpdate: any) {
     console.log('📊 Processing WhatsApp status update...')
-    
+
     const supabase = getSupabaseClient()
     // Find the original message
     const { data: originalMessage, error } = await supabase
@@ -325,7 +310,9 @@ export class WhatsAppWebhookHandler {
           ...originalMessage.metadata,
           delivery_status: statusUpdate.status,
           delivery_timestamp: statusUpdate.timestamp,
-          [`status_${statusUpdate.status}_at`]: new Date(parseInt(statusUpdate.timestamp) * 1000).toISOString()
+          [`status_${statusUpdate.status}_at`]: new Date(
+            parseInt(statusUpdate.timestamp) * 1000
+          ).toISOString()
         }
       })
       .eq('id', originalMessage.id)

@@ -1,0 +1,26 @@
+{
+  "header": {
+    "transaction_type": "pos_order",
+    "transaction_code": "POS-DXB-PL-0001",
+    "transaction_date": "2025-09-15T14:00:00Z",
+    "smart_code": "HERA.SALON.POS.TXN.SALE.v1",
+    "status": "posted",
+    "organization_id": "00000000-0000-0000-0000-000000000001",
+    "currency_code": "AED",
+    "total_amount": 50.00,
+    "metadata": { "customer_slug": "customer:ALICE_DXB" }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "service",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 50.00,
+      "line_amount": 50.00,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.SERVICE.LINE.v1",
+      "metadata": { "service_slug": "service:HAIRCUT_BASIC" }
+    }
+  ]
+}

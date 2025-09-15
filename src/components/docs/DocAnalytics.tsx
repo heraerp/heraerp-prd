@@ -10,12 +10,7 @@ interface DocAnalyticsProps {
   title: string
 }
 
-export default function DocAnalytics({ 
-  pageId, 
-  docType, 
-  slug, 
-  title 
-}: DocAnalyticsProps) {
+export default function DocAnalytics({ pageId, docType, slug, title }: DocAnalyticsProps) {
   useEffect(() => {
     // Track page view on mount
     const trackPageView = async () => {
@@ -47,19 +42,22 @@ export default function DocAnalytics({
 
     // Track time on page
     const startTime = Date.now()
-    
+
     const handleScroll = () => trackScroll()
     const handleBeforeUnload = () => {
       const timeOnPage = Math.round((Date.now() - startTime) / 1000)
-      
+
       // Send analytics data before page unload
-      navigator.sendBeacon('/api/v1/analytics/page-exit', JSON.stringify({
-        pageId,
-        docType,
-        slug,
-        timeOnPage,
-        maxScroll
-      }))
+      navigator.sendBeacon(
+        '/api/v1/analytics/page-exit',
+        JSON.stringify({
+          pageId,
+          docType,
+          slug,
+          timeOnPage,
+          maxScroll
+        })
+      )
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })

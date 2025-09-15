@@ -1,9 +1,9 @@
 /**
  * HERA DNA Component: Document Numbering System
  * Universal document number generation for all industries
- * 
+ *
  * DNA Component ID: HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.v1
- * 
+ *
  * Features:
  * - Universal cross-industry support
  * - Professional sequential numbering
@@ -32,7 +32,7 @@ export const HERA_DNA_DOCUMENT_CONFIGS = {
       quotation: { prefix: 'QT-FRN', sequence_start: 7001, description: 'Quotation' }
     }
   },
-  
+
   // Restaurant Industry
   restaurant: {
     industry_code: 'REST',
@@ -46,21 +46,33 @@ export const HERA_DNA_DOCUMENT_CONFIGS = {
       delivery_receipt: { prefix: 'DR-REST', sequence_start: 4001, description: 'Delivery Receipt' }
     }
   },
-  
+
   // Salon Industry
   salon: {
     industry_code: 'SALON',
     documents: {
-      appointment: { prefix: 'APT-SALON', sequence_start: 1001, description: 'Service Appointment' },
-      service_invoice: { prefix: 'SVC-SALON', sequence_start: 3001, description: 'Service Invoice' },
+      appointment: {
+        prefix: 'APT-SALON',
+        sequence_start: 1001,
+        description: 'Service Appointment'
+      },
+      service_invoice: {
+        prefix: 'SVC-SALON',
+        sequence_start: 3001,
+        description: 'Service Invoice'
+      },
       product_sale: { prefix: 'PS-SALON', sequence_start: 2001, description: 'Product Sale' },
       commission_note: { prefix: 'CM-SALON', sequence_start: 7001, description: 'Commission Note' },
       journal_entry: { prefix: 'JE-SALON', sequence_start: 6001, description: 'Journal Entry' },
       purchase_order: { prefix: 'PO-SALON', sequence_start: 5001, description: 'Supply Order' },
-      gift_certificate: { prefix: 'GC-SALON', sequence_start: 8001, description: 'Gift Certificate' }
+      gift_certificate: {
+        prefix: 'GC-SALON',
+        sequence_start: 8001,
+        description: 'Gift Certificate'
+      }
     }
   },
-  
+
   // Healthcare Industry
   healthcare: {
     industry_code: 'HLTH',
@@ -74,7 +86,7 @@ export const HERA_DNA_DOCUMENT_CONFIGS = {
       appointment: { prefix: 'APT-HLTH', sequence_start: 8001, description: 'Medical Appointment' }
     }
   },
-  
+
   // Manufacturing Industry
   manufacturing: {
     industry_code: 'MFG',
@@ -88,7 +100,7 @@ export const HERA_DNA_DOCUMENT_CONFIGS = {
       shipping_note: { prefix: 'SN-MFG', sequence_start: 7001, description: 'Shipping Note' }
     }
   },
-  
+
   // Retail Industry
   retail: {
     industry_code: 'RTL',
@@ -102,7 +114,7 @@ export const HERA_DNA_DOCUMENT_CONFIGS = {
       layaway_ticket: { prefix: 'LT-RTL', sequence_start: 7001, description: 'Layaway Ticket' }
     }
   },
-  
+
   // Universal/Generic Industry (fallback)
   universal: {
     industry_code: 'UNI',
@@ -128,52 +140,55 @@ export const HERA_DNA_DOCUMENT_TYPES = {
   PURCHASE_ORDER: 'purchase_order',
   JOURNAL_ENTRY: 'journal_entry',
   QUOTATION: 'quotation',
-  
+
   // Industry-specific types
-  KITCHEN_ORDER: 'kitchen_order',          // Restaurant
-  TABLE_BILL: 'table_bill',                // Restaurant
-  APPOINTMENT: 'appointment',              // Salon, Healthcare
-  SERVICE_INVOICE: 'service_invoice',      // Salon
-  PRODUCT_SALE: 'product_sale',            // Salon, Retail
-  COMMISSION_NOTE: 'commission_note',      // Salon
-  GIFT_CERTIFICATE: 'gift_certificate',   // Salon, Retail
-  PATIENT_RECORD: 'patient_record',        // Healthcare
-  MEDICAL_INVOICE: 'medical_invoice',      // Healthcare
-  PRESCRIPTION: 'prescription',            // Healthcare
-  INSURANCE_CLAIM: 'insurance_claim',      // Healthcare
-  LAB_REPORT: 'lab_report',                // Healthcare
-  WORK_ORDER: 'work_order',                // Manufacturing
-  PRODUCTION_ORDER: 'production_order',    // Manufacturing
-  QUALITY_REPORT: 'quality_report',        // Manufacturing
-  MATERIAL_RECEIPT: 'material_receipt',    // Manufacturing
-  SALES_RECEIPT: 'sales_receipt',          // Retail
-  RETURN_RECEIPT: 'return_receipt',        // Retail
-  STOCK_RECEIPT: 'stock_receipt',          // Retail
-  LAYAWAY_TICKET: 'layaway_ticket',        // Retail
-  DELIVERY_RECEIPT: 'delivery_receipt',    // Restaurant
-  SHIPPING_NOTE: 'shipping_note'           // Manufacturing
+  KITCHEN_ORDER: 'kitchen_order', // Restaurant
+  TABLE_BILL: 'table_bill', // Restaurant
+  APPOINTMENT: 'appointment', // Salon, Healthcare
+  SERVICE_INVOICE: 'service_invoice', // Salon
+  PRODUCT_SALE: 'product_sale', // Salon, Retail
+  COMMISSION_NOTE: 'commission_note', // Salon
+  GIFT_CERTIFICATE: 'gift_certificate', // Salon, Retail
+  PATIENT_RECORD: 'patient_record', // Healthcare
+  MEDICAL_INVOICE: 'medical_invoice', // Healthcare
+  PRESCRIPTION: 'prescription', // Healthcare
+  INSURANCE_CLAIM: 'insurance_claim', // Healthcare
+  LAB_REPORT: 'lab_report', // Healthcare
+  WORK_ORDER: 'work_order', // Manufacturing
+  PRODUCTION_ORDER: 'production_order', // Manufacturing
+  QUALITY_REPORT: 'quality_report', // Manufacturing
+  MATERIAL_RECEIPT: 'material_receipt', // Manufacturing
+  SALES_RECEIPT: 'sales_receipt', // Retail
+  RETURN_RECEIPT: 'return_receipt', // Retail
+  STOCK_RECEIPT: 'stock_receipt', // Retail
+  LAYAWAY_TICKET: 'layaway_ticket', // Retail
+  DELIVERY_RECEIPT: 'delivery_receipt', // Restaurant
+  SHIPPING_NOTE: 'shipping_note' // Manufacturing
 } as const
 
-export type HeraDocumentType = typeof HERA_DNA_DOCUMENT_TYPES[keyof typeof HERA_DNA_DOCUMENT_TYPES]
+export type HeraDocumentType =
+  (typeof HERA_DNA_DOCUMENT_TYPES)[keyof typeof HERA_DNA_DOCUMENT_TYPES]
 export type HeraIndustryType = keyof typeof HERA_DNA_DOCUMENT_CONFIGS
 
 // 🧬 HERA DNA: Universal Document Number Generator
 export async function generateHeraDocumentNumber(
-  organizationId: string, 
-  documentType: string, 
+  organizationId: string,
+  documentType: string,
   industry?: HeraIndustryType
 ): Promise<string> {
   const dnaSmartCode = 'HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.v1'
-  
+
   try {
     // Auto-detect industry if not provided
     if (!industry) {
       industry = await detectOrganizationIndustry(organizationId)
     }
-    
-    const industryConfig = HERA_DNA_DOCUMENT_CONFIGS[industry] || HERA_DNA_DOCUMENT_CONFIGS.universal
-    const documentConfig = industryConfig.documents[documentType as keyof typeof industryConfig.documents]
-    
+
+    const industryConfig =
+      HERA_DNA_DOCUMENT_CONFIGS[industry] || HERA_DNA_DOCUMENT_CONFIGS.universal
+    const documentConfig =
+      industryConfig.documents[documentType as keyof typeof industryConfig.documents]
+
     if (!documentConfig) {
       // Fallback for unknown document types
       const timestamp = Date.now()
@@ -184,18 +199,17 @@ export async function generateHeraDocumentNumber(
     // Professional format: PREFIX-YEAR-SEQUENCE
     const currentYear = new Date().getFullYear()
     const timestamp = Date.now()
-    
+
     // Create unique sequence based on timestamp + start number
     const sequence = documentConfig.sequence_start + parseInt(timestamp.toString().slice(-4))
     const paddedSequence = sequence.toString().padStart(4, '0')
-    
+
     const documentNumber = `${documentConfig.prefix}-${currentYear}-${paddedSequence}`
-    
+
     // Store document number generation in DNA tracking
     await trackDocumentNumberGeneration(organizationId, documentType, documentNumber, industry)
-    
+
     return documentNumber
-    
   } catch (error) {
     console.error('HERA DNA Document Number generation failed:', error)
     // Ultimate fallback with DNA smart code
@@ -209,25 +223,28 @@ export async function generateHeraDocumentNumber(
 async function detectOrganizationIndustry(organizationId: string): Promise<HeraIndustryType> {
   try {
     universalApi.setOrganizationId(organizationId)
-    
+
     const orgResponse = await universalApi.read('core_organizations', undefined, organizationId)
-    
+
     if (orgResponse.success && orgResponse.data && orgResponse.data.length > 0) {
       const org = orgResponse.data.find((o: any) => o.id === organizationId)
-      
+
       if (org?.industry_classification) {
         const classification = org.industry_classification.toLowerCase()
-        
+
         // Map classification to industry types
         if (classification.includes('furniture')) return 'furniture'
-        if (classification.includes('restaurant') || classification.includes('food')) return 'restaurant'
+        if (classification.includes('restaurant') || classification.includes('food'))
+          return 'restaurant'
         if (classification.includes('salon') || classification.includes('beauty')) return 'salon'
-        if (classification.includes('healthcare') || classification.includes('medical')) return 'healthcare'
-        if (classification.includes('manufacturing') || classification.includes('production')) return 'manufacturing'
+        if (classification.includes('healthcare') || classification.includes('medical'))
+          return 'healthcare'
+        if (classification.includes('manufacturing') || classification.includes('production'))
+          return 'manufacturing'
         if (classification.includes('retail') || classification.includes('store')) return 'retail'
       }
     }
-    
+
     return 'universal' // Default fallback
   } catch (error) {
     console.error('Industry detection failed:', error)
@@ -237,9 +254,9 @@ async function detectOrganizationIndustry(organizationId: string): Promise<HeraI
 
 // 🧬 HERA DNA: Track Document Number Generation
 async function trackDocumentNumberGeneration(
-  organizationId: string, 
-  documentType: string, 
-  documentNumber: string, 
+  organizationId: string,
+  documentType: string,
+  documentNumber: string,
   industry: HeraIndustryType
 ) {
   try {
@@ -279,12 +296,12 @@ export interface HeraDocumentNumberInfo {
 
 export function parseHeraDocumentNumber(documentNumber: string): HeraDocumentNumberInfo {
   const parts = documentNumber.split('-')
-  
+
   if (parts.length >= 4) {
     // HERA DNA format: SO-FRN-2025-1001
     const [type, industryCode, year, sequence] = parts
     const prefix = `${type}-${industryCode}`
-    
+
     // Detect industry from code
     let industry: HeraIndustryType = 'universal'
     Object.entries(HERA_DNA_DOCUMENT_CONFIGS).forEach(([key, config]) => {
@@ -292,7 +309,7 @@ export function parseHeraDocumentNumber(documentNumber: string): HeraDocumentNum
         industry = key as HeraIndustryType
       }
     })
-    
+
     return {
       documentNumber,
       prefix,
@@ -332,35 +349,44 @@ export function parseHeraDocumentNumber(documentNumber: string): HeraDocumentNum
 // 🧬 HERA DNA: Document Number Validation
 export function isValidHeraDocumentNumber(documentNumber: string): boolean {
   const parsed = parseHeraDocumentNumber(documentNumber)
-  return parsed.isValid && 
-         parsed.year.length === 4 && 
-         parseInt(parsed.year) >= 2020 &&
-         parsed.sequence.length >= 4 &&
-         parsed.generatedBy === 'hera_dna'
+  return (
+    parsed.isValid &&
+    parsed.year.length === 4 &&
+    parseInt(parsed.year) >= 2020 &&
+    parsed.sequence.length >= 4 &&
+    parsed.generatedBy === 'hera_dna'
+  )
 }
 
 // 🧬 HERA DNA: Get Document Description
-export function getHeraDocumentDescription(documentType: string, industry?: HeraIndustryType): string {
+export function getHeraDocumentDescription(
+  documentType: string,
+  industry?: HeraIndustryType
+): string {
   if (!industry) industry = 'universal'
-  
+
   const industryConfig = HERA_DNA_DOCUMENT_CONFIGS[industry]
-  const documentConfig = industryConfig?.documents[documentType as keyof typeof industryConfig.documents]
-  
+  const documentConfig =
+    industryConfig?.documents[documentType as keyof typeof industryConfig.documents]
+
   return documentConfig?.description || documentType.replace('_', ' ').toUpperCase()
 }
 
 // 🧬 HERA DNA: React Hook for Document Number Generation
-export function useHeraDocumentNumbering(organizationId: string | null | undefined, industry?: HeraIndustryType) {
+export function useHeraDocumentNumbering(
+  organizationId: string | null | undefined,
+  industry?: HeraIndustryType
+) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [lastGenerated, setLastGenerated] = useState<string | null>(null)
   const [generationHistory, setGenerationHistory] = useState<string[]>([])
-  
+
   const generateNumber = async (documentType: string): Promise<string> => {
     if (!organizationId) {
       console.error('HERA DNA: Cannot generate document number without organization ID')
       throw new Error('Organization ID is required')
     }
-    
+
     setIsGenerating(true)
     try {
       const docNumber = await generateHeraDocumentNumber(organizationId, documentType, industry)
@@ -371,7 +397,7 @@ export function useHeraDocumentNumbering(organizationId: string | null | undefin
       setIsGenerating(false)
     }
   }
-  
+
   return {
     generateNumber,
     isGenerating,
@@ -387,25 +413,25 @@ interface HeraDocumentNumberDisplayProps {
   className?: string
 }
 
-export function HeraDocumentNumberDisplay({ 
-  documentNumber, 
-  showDetails = false, 
-  className = '' 
+export function HeraDocumentNumberDisplay({
+  documentNumber,
+  showDetails = false,
+  className = ''
 }: HeraDocumentNumberDisplayProps) {
   const parsed = parseHeraDocumentNumber(documentNumber)
-  
+
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
       <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono">
         {documentNumber}
       </code>
-      
+
       {parsed.generatedBy === 'hera_dna' && (
         <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs">
           🧬 DNA
         </span>
       )}
-      
+
       {showDetails && parsed.isValid && (
         <div className="text-xs text-gray-500 dark:text-gray-400">
           {parsed.industry} • {parsed.year} • #{parsed.sequence}

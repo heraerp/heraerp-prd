@@ -4,7 +4,15 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 interface SmartCodeGenerationRequest {
   organization_id: string
   business_context: {
-    industry: 'restaurant' | 'healthcare' | 'manufacturing' | 'professional' | 'retail' | 'legal' | 'education' | 'system'
+    industry:
+      | 'restaurant'
+      | 'healthcare'
+      | 'manufacturing'
+      | 'professional'
+      | 'retail'
+      | 'legal'
+      | 'education'
+      | 'system'
     module: string
     sub_module: string
     function_type: string
@@ -38,51 +46,54 @@ interface SmartCodeGenerationResponse {
 
 // Industry to module mapping
 const INDUSTRY_MODULE_MAP: Record<string, string> = {
-  'restaurant': 'REST',
-  'healthcare': 'HLTH', 
-  'manufacturing': 'MFG',
-  'professional': 'PROF',
-  'retail': 'RETAIL',
-  'legal': 'LEGAL',
-  'education': 'EDU',
-  'system': 'SYSTEM'
+  restaurant: 'REST',
+  healthcare: 'HLTH',
+  manufacturing: 'MFG',
+  professional: 'PROF',
+  retail: 'RETAIL',
+  legal: 'LEGAL',
+  education: 'EDU',
+  system: 'SYSTEM'
 }
 
 // Common business context mappings
-const BUSINESS_CONTEXT_MAP: Record<string, { sub_module: string; function_type: string; entity_type: string }> = {
+const BUSINESS_CONTEXT_MAP: Record<
+  string,
+  { sub_module: string; function_type: string; entity_type: string }
+> = {
   // Restaurant contexts
-  'menu_item_management': { sub_module: 'CRM', function_type: 'ENT', entity_type: 'PRODUCT' },
-  'customer_orders': { sub_module: 'CRM', function_type: 'TXN', entity_type: 'ORDER' },
-  'payment_processing': { sub_module: 'FIN', function_type: 'TXN', entity_type: 'PAYMENT' },
-  'inventory_tracking': { sub_module: 'INV', function_type: 'TXN', entity_type: 'ADJ' },
-  'food_costing': { sub_module: 'FIN', function_type: 'CALC', entity_type: 'BOM' },
-  
+  menu_item_management: { sub_module: 'CRM', function_type: 'ENT', entity_type: 'PRODUCT' },
+  customer_orders: { sub_module: 'CRM', function_type: 'TXN', entity_type: 'ORDER' },
+  payment_processing: { sub_module: 'FIN', function_type: 'TXN', entity_type: 'PAYMENT' },
+  inventory_tracking: { sub_module: 'INV', function_type: 'TXN', entity_type: 'ADJ' },
+  food_costing: { sub_module: 'FIN', function_type: 'CALC', entity_type: 'BOM' },
+
   // Healthcare contexts
-  'patient_management': { sub_module: 'CRM', function_type: 'ENT', entity_type: 'CUSTOMER' },
-  'treatment_records': { sub_module: 'CRM', function_type: 'TXN', entity_type: 'TREATMENT' },
-  'insurance_billing': { sub_module: 'FIN', function_type: 'TXN', entity_type: 'BILLING' },
-  'appointment_scheduling': { sub_module: 'CRM', function_type: 'TXN', entity_type: 'APPOINTMENT' },
-  
+  patient_management: { sub_module: 'CRM', function_type: 'ENT', entity_type: 'CUSTOMER' },
+  treatment_records: { sub_module: 'CRM', function_type: 'TXN', entity_type: 'TREATMENT' },
+  insurance_billing: { sub_module: 'FIN', function_type: 'TXN', entity_type: 'BILLING' },
+  appointment_scheduling: { sub_module: 'CRM', function_type: 'TXN', entity_type: 'APPOINTMENT' },
+
   // Manufacturing contexts
-  'bom_management': { sub_module: 'INV', function_type: 'ENT', entity_type: 'BOM' },
-  'work_orders': { sub_module: 'MFG', function_type: 'TXN', entity_type: 'WORK_ORDER' },
-  'quality_control': { sub_module: 'QC', function_type: 'TXN', entity_type: 'INSPECTION' },
-  'cost_rollup': { sub_module: 'FIN', function_type: 'CALC', entity_type: 'COST' },
-  
+  bom_management: { sub_module: 'INV', function_type: 'ENT', entity_type: 'BOM' },
+  work_orders: { sub_module: 'MFG', function_type: 'TXN', entity_type: 'WORK_ORDER' },
+  quality_control: { sub_module: 'QC', function_type: 'TXN', entity_type: 'INSPECTION' },
+  cost_rollup: { sub_module: 'FIN', function_type: 'CALC', entity_type: 'COST' },
+
   // System contexts
-  'template_management': { sub_module: 'TEMPLATE', function_type: 'ENT', entity_type: 'TEMP' },
-  'dag_calculation': { sub_module: 'ENGINE', function_type: 'CALC', entity_type: 'DAG_CALC' },
-  'validation_engine': { sub_module: 'ENGINE', function_type: 'VAL', entity_type: 'VALIDATION' },
-  'industry_adapter': { sub_module: 'ADAPTER', function_type: 'ENT', entity_type: 'RESTAURANT' }
+  template_management: { sub_module: 'TEMPLATE', function_type: 'ENT', entity_type: 'TEMP' },
+  dag_calculation: { sub_module: 'ENGINE', function_type: 'CALC', entity_type: 'DAG_CALC' },
+  validation_engine: { sub_module: 'ENGINE', function_type: 'VAL', entity_type: 'VALIDATION' },
+  industry_adapter: { sub_module: 'ADAPTER', function_type: 'ENT', entity_type: 'RESTAURANT' }
 }
 
 function generateSmartCode(request: SmartCodeGenerationRequest): string {
   const { business_context, options } = request
   const { industry, module, sub_module, function_type, entity_type } = business_context
-  
+
   const industryModule = INDUSTRY_MODULE_MAP[industry] || module.toUpperCase()
   const version = options?.version || 1
-  
+
   return `HERA.${industryModule}.${sub_module.toUpperCase()}.${function_type.toUpperCase()}.${entity_type.toUpperCase()}.v${version}`
 }
 
@@ -91,7 +102,7 @@ async function findSimilarCodes(smartCode: string, organizationId: string): Prom
     const parts = smartCode.split('.')
     const module = parts[1]
     const subModule = parts[2]
-    
+
     const { data: similarCodes } = await supabase
       .from('core_entities')
       .select('smart_code')
@@ -99,7 +110,7 @@ async function findSimilarCodes(smartCode: string, organizationId: string): Prom
       .ilike('smart_code', `HERA.${module}.${subModule}%`)
       .neq('smart_code', smartCode)
       .limit(5)
-    
+
     return similarCodes?.map(item => item.smart_code) || []
   } catch (error) {
     console.error('Error finding similar codes:', error)
@@ -107,12 +118,16 @@ async function findSimilarCodes(smartCode: string, organizationId: string): Prom
   }
 }
 
-async function validateGeneratedCode(smartCode: string, organizationId: string, validationLevel: string): Promise<any> {
+async function validateGeneratedCode(
+  smartCode: string,
+  organizationId: string,
+  validationLevel: string
+): Promise<any> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/smart-code/validate`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         smart_code: smartCode,
@@ -120,7 +135,7 @@ async function validateGeneratedCode(smartCode: string, organizationId: string, 
         organization_id: organizationId
       })
     })
-    
+
     return await response.json()
   } catch (error) {
     console.error('Error validating generated code:', error)
@@ -131,7 +146,7 @@ async function validateGeneratedCode(smartCode: string, organizationId: string, 
 function generateSuggestions(request: SmartCodeGenerationRequest, generatedCode: string): string[] {
   const suggestions: string[] = []
   const { business_context } = request
-  
+
   // Industry-specific suggestions
   switch (business_context.industry) {
     case 'restaurant':
@@ -147,23 +162,25 @@ function generateSuggestions(request: SmartCodeGenerationRequest, generatedCode:
       suggestions.push('Use HERA.MFG.FIN.CALC.COST.v1 for cost calculations')
       break
     case 'system':
-      suggestions.push('System codes require HERA System Organization (719dfed1-09b4-4ca8-bfda-f682460de945)')
+      suggestions.push(
+        'System codes require HERA System Organization (719dfed1-09b4-4ca8-bfda-f682460de945)'
+      )
       suggestions.push('Consider versioning strategy for system templates')
       break
   }
-  
+
   // Context-based suggestions
   if (business_context.function_type === 'TXN') {
     suggestions.push('Transaction codes should have corresponding line item codes')
   }
-  
+
   if (business_context.function_type === 'CALC') {
     suggestions.push('Calculation codes may require DAG engine dependencies')
   }
-  
+
   suggestions.push(`Generated code: ${generatedCode}`)
   suggestions.push('Validate with higher levels (L3/L4) for production use')
-  
+
   return suggestions
 }
 
@@ -176,10 +193,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     if (!business_context.industry || !business_context.module) {
@@ -193,7 +207,7 @@ export async function POST(request: NextRequest) {
     let finalContext = business_context
     if (business_context.business_description) {
       const description = business_context.business_description.toLowerCase()
-      
+
       for (const [context, mapping] of Object.entries(BUSINESS_CONTEXT_MAP)) {
         if (description.includes(context.replace('_', ' '))) {
           finalContext = {
@@ -219,10 +233,14 @@ export async function POST(request: NextRequest) {
     // Auto-validate if requested
     let validationResults = undefined
     let isValid = true
-    
+
     if (options.auto_validate !== false) {
       const validationLevel = options.validation_level || 'L2_SEMANTIC'
-      validationResults = await validateGeneratedCode(generatedSmartCode, organization_id, validationLevel)
+      validationResults = await validateGeneratedCode(
+        generatedSmartCode,
+        organization_id,
+        validationLevel
+      )
       isValid = validationResults.is_valid
     }
 
@@ -248,11 +266,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('Smart code generation error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error during generation',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },

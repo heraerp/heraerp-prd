@@ -31,7 +31,8 @@ export function FranchiseHero({
   backgroundVariant = 'default'
 }: FranchiseHeroProps) {
   const backgroundClasses = {
-    default: 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900',
+    default:
+      'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900',
     gradient: 'bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700',
     dark: 'bg-slate-900'
   }
@@ -53,7 +54,7 @@ export function FranchiseHero({
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
       <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5" />
-      
+
       <div className="container mx-auto px-4 py-24 lg:py-32 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -65,28 +66,32 @@ export function FranchiseHero({
                   Join the ERP Revolution
                 </span>
               </div>
-              
-              <h1 className={`text-4xl lg:text-6xl font-bold mb-6 leading-tight ${textClasses[backgroundVariant]}`}>
+
+              <h1
+                className={`text-4xl lg:text-6xl font-bold mb-6 leading-tight ${textClasses[backgroundVariant]}`}
+              >
                 {title}
               </h1>
-              
-              <p className={`text-xl lg:text-2xl font-semibold mb-6 ${
-                backgroundVariant === 'default' 
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'
-                  : 'text-yellow-300'
-              }`}>
+
+              <p
+                className={`text-xl lg:text-2xl font-semibold mb-6 ${
+                  backgroundVariant === 'default'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'
+                    : 'text-yellow-300'
+                }`}
+              >
                 {subtitle}
               </p>
-              
+
               {description && (
                 <p className={`text-lg mb-8 leading-relaxed ${subtitleClasses[backgroundVariant]}`}>
                   {description}
                 </p>
               )}
-              
+
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <Button 
+                <Button
                   asChild
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
@@ -96,8 +101,8 @@ export function FranchiseHero({
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                
-                <Button 
+
+                <Button
                   asChild
                   variant={backgroundVariant === 'default' ? 'outline' : 'secondary'}
                   size="lg"
@@ -109,33 +114,43 @@ export function FranchiseHero({
                   </Link>
                 </Button>
               </div>
-              
+
               {/* Stats */}
               {showStats && (
                 <div className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-200 dark:border-slate-700">
                   <div className="text-center">
-                    <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>500+</div>
+                    <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>
+                      500+
+                    </div>
                     <div className={`text-sm ${subtitleClasses[backgroundVariant]}`}>Partners</div>
                   </div>
                   <div className="text-center">
-                    <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>$50B</div>
-                    <div className={`text-sm ${subtitleClasses[backgroundVariant]}`}>Market Size</div>
+                    <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>
+                      $50B
+                    </div>
+                    <div className={`text-sm ${subtitleClasses[backgroundVariant]}`}>
+                      Market Size
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>95%</div>
-                    <div className={`text-sm ${subtitleClasses[backgroundVariant]}`}>Success Rate</div>
+                    <div className={`text-2xl font-bold ${textClasses[backgroundVariant]}`}>
+                      95%
+                    </div>
+                    <div className={`text-sm ${subtitleClasses[backgroundVariant]}`}>
+                      Success Rate
+                    </div>
                   </div>
                 </div>
               )}
             </div>
-            
+
             {/* Visual Element */}
             <div className="flex justify-center lg:justify-end">
               {showVideo ? (
                 <div className="relative w-full max-w-lg">
                   <div className="aspect-video bg-slate-800 rounded-2xl shadow-2xl overflow-hidden">
                     <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-600 to-purple-600">
-                      <Button 
+                      <Button
                         size="lg"
                         variant="secondary"
                         className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-white/30"
@@ -168,7 +183,7 @@ export function FranchiseHero({
                       <p className="text-sm text-slate-300">Disrupt a $50B industry</p>
                     </div>
                   </div>
-                  
+
                   {/* Floating Elements */}
                   <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-400/20 rounded-full blur-xl" />
                   <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-purple-400/20 rounded-full blur-xl" />

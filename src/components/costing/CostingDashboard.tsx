@@ -11,7 +11,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
 import {
   BarChart,
@@ -29,7 +29,7 @@ import {
   ResponsiveContainer,
   Treemap
 } from 'recharts'
-import { 
+import {
   Calculator,
   TrendingUp,
   Package,
@@ -71,8 +71,8 @@ const recentEstimates = [
     product: 'Premium Widget A',
     plant: 'PLANT-01',
     variant: 'STDZ',
-    totalCost: 125.50,
-    unitCost: 125.50,
+    totalCost: 125.5,
+    unitCost: 125.5,
     status: 'calculated',
     date: '2024-01-15'
   },
@@ -91,8 +91,8 @@ const recentEstimates = [
     product: 'Economy Widget C',
     plant: 'PLANT-02',
     variant: 'PLND',
-    totalCost: 62.00,
-    unitCost: 62.00,
+    totalCost: 62.0,
+    unitCost: 62.0,
     status: 'processing',
     date: '2024-01-13'
   }
@@ -155,9 +155,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            HERA Costing & Profitability
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">HERA Costing & Profitability</h1>
           <p className="text-muted-foreground">
             Revolutionary enterprise costing on 6 universal tables
           </p>
@@ -174,9 +172,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Active Cost Estimates
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Active Cost Estimates</p>
                 <p className="text-2xl font-bold">24</p>
               </div>
               <Package className="h-8 w-8 text-muted-foreground" />
@@ -188,9 +184,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Avg Material Cost %
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Avg Material Cost %</p>
                 <p className="text-2xl font-bold">45%</p>
               </div>
               <Layers className="h-8 w-8 text-blue-600" />
@@ -202,9 +196,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Avg CM3 Margin
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Avg CM3 Margin</p>
                 <p className="text-2xl font-bold text-green-600">33.3%</p>
               </div>
               <TrendingUp className="h-8 w-8 text-green-600" />
@@ -216,9 +208,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Allocations MTD
-                </p>
+                <p className="text-sm font-medium text-muted-foreground">Allocations MTD</p>
                 <p className="text-2xl font-bold">{formatCurrency(125000)}</p>
               </div>
               <Activity className="h-8 w-8 text-purple-600" />
@@ -242,9 +232,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
             <Card>
               <CardHeader>
                 <CardTitle>Cost Component Breakdown</CardTitle>
-                <CardDescription>
-                  Average distribution across all products
-                </CardDescription>
+                <CardDescription>Average distribution across all products</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -273,9 +261,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
             <Card>
               <CardHeader>
                 <CardTitle>Contribution Margin Analysis</CardTitle>
-                <CardDescription>
-                  Revenue to CM3 waterfall
-                </CardDescription>
+                <CardDescription>Revenue to CM3 waterfall</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -284,11 +270,14 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
                     <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
                     <YAxis />
                     <Tooltip formatter={(value: number) => formatCurrency(Math.abs(value))} />
-                    <Bar dataKey="value" fill={(entry: any) => {
-                      if (entry.type === 'positive') return '#00C49F'
-                      if (entry.type === 'negative') return '#FF8042'
-                      return '#0088FE'
-                    }} />
+                    <Bar
+                      dataKey="value"
+                      fill={(entry: any) => {
+                        if (entry.type === 'positive') return '#00C49F'
+                        if (entry.type === 'negative') return '#FF8042'
+                        return '#0088FE'
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -299,9 +288,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
           <Card>
             <CardHeader>
               <CardTitle>Current Activity Rates</CardTitle>
-              <CardDescription>
-                Rates by plant and activity type
-              </CardDescription>
+              <CardDescription>Rates by plant and activity type</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -351,9 +338,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Cost Estimates</CardTitle>
-                  <CardDescription>
-                    Recent standard cost calculations
-                  </CardDescription>
+                  <CardDescription>Recent standard cost calculations</CardDescription>
                 </div>
                 <Button>
                   <Calculator className="h-4 w-4 mr-2" />
@@ -376,11 +361,9 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {recentEstimates.map((estimate) => (
+                    {recentEstimates.map(estimate => (
                       <TableRow key={estimate.id}>
-                        <TableCell className="font-medium">
-                          {estimate.product}
-                        </TableCell>
+                        <TableCell className="font-medium">{estimate.product}</TableCell>
                         <TableCell>{estimate.plant}</TableCell>
                         <TableCell>
                           <Badge variant="outline">{estimate.variant}</Badge>
@@ -408,9 +391,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Allocation Runs</CardTitle>
-                  <CardDescription>
-                    Cost center allocations and distributions
-                  </CardDescription>
+                  <CardDescription>Cost center allocations and distributions</CardDescription>
                 </div>
                 <Button>
                   <Activity className="h-4 w-4 mr-2" />
@@ -433,14 +414,12 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {allocationRuns.map((allocation) => (
+                    {allocationRuns.map(allocation => (
                       <TableRow key={allocation.id}>
                         <TableCell>
                           <Badge variant="outline">{allocation.type}</Badge>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {allocation.sender}
-                        </TableCell>
+                        <TableCell className="font-medium">{allocation.sender}</TableCell>
                         <TableCell>{allocation.receivers} cost centers</TableCell>
                         <TableCell>{allocation.driver}</TableCell>
                         <TableCell className="text-right">
@@ -461,9 +440,7 @@ export function CostingDashboard({ organizationId }: CostingDashboardProps) {
           <Card>
             <CardHeader>
               <CardTitle>Multi-Dimensional Profitability</CardTitle>
-              <CardDescription>
-                Margin analysis by product, customer, and region
-              </CardDescription>
+              <CardDescription>Margin analysis by product, customer, and region</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">

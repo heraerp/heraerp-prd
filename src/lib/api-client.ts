@@ -17,7 +17,6 @@ interface UniversalDataResponse {
 }
 
 export class universalApi {
-  
   /**
    * Fetch entities from core_entities table
    */
@@ -46,7 +45,11 @@ export class universalApi {
   /**
    * Fetch transactions from universal_transactions table
    */
-  async getTransactions(organizationId: string, transactionType?: string, limit = 20): Promise<any[]> {
+  async getTransactions(
+    organizationId: string,
+    transactionType?: string,
+    limit = 20
+  ): Promise<any[]> {
     const params = new URLSearchParams({
       org_id: organizationId,
       table: 'universal_transactions',
@@ -129,7 +132,7 @@ export class universalApi {
   async getDashboardData(organizationId: string) {
     const [products, customers, transactions, locations] = await Promise.all([
       this.getEntities(organizationId, 'product', 30),
-      this.getEntities(organizationId, 'customer', 30), 
+      this.getEntities(organizationId, 'customer', 30),
       this.getTransactions(organizationId, undefined, 15),
       this.getEntities(organizationId, 'location', 15)
     ])

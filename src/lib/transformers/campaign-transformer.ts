@@ -21,13 +21,13 @@ export function transformToUICampaign(data: {
   relationships: any[]
 }): UICampaign {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -46,16 +46,17 @@ export function transformToUICampaign(data: {
 
 export function filterCampaign(items: UICampaign[], searchTerm: string): UICampaign[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.campaign_type?.toLowerCase().includes(term) ||
-    item.start_date?.toLowerCase().includes(term) ||
-    item.end_date?.toLowerCase().includes(term) ||
-    item.target_audience?.toLowerCase().includes(term) ||
-    item.budget?.toLowerCase().includes(term) ||
-    item.status?.toLowerCase().includes(term) ||
-    item.channel?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.campaign_type?.toLowerCase().includes(term) ||
+      item.start_date?.toLowerCase().includes(term) ||
+      item.end_date?.toLowerCase().includes(term) ||
+      item.target_audience?.toLowerCase().includes(term) ||
+      item.budget?.toLowerCase().includes(term) ||
+      item.status?.toLowerCase().includes(term) ||
+      item.channel?.toLowerCase().includes(term)
   )
 }

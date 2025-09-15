@@ -1,7 +1,7 @@
 /**
  * HERA CRM Activity History & Audit Trail Component
  * Comprehensive activity tracking and audit trail UI
- * 
+ *
  * Project Manager Task: Activity History and Audit Trail (Task #8)
  */
 
@@ -12,21 +12,50 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { 
-  Activity, User, Calendar, Filter, Download, RefreshCw, Search,
-  Eye, Edit, Trash2, Plus, Mail, Phone, FileText, Upload,
-  Clock, AlertCircle, CheckCircle, Info, XCircle, TrendingUp,
-  Users, Target, CheckSquare, Database, Zap, BarChart3
+import {
+  Activity,
+  User,
+  Calendar,
+  Filter,
+  Download,
+  RefreshCw,
+  Search,
+  Eye,
+  Edit,
+  Trash2,
+  Plus,
+  Mail,
+  Phone,
+  FileText,
+  Upload,
+  Clock,
+  AlertCircle,
+  CheckCircle,
+  Info,
+  XCircle,
+  TrendingUp,
+  Users,
+  Target,
+  CheckSquare,
+  Database,
+  Zap,
+  BarChart3
 } from 'lucide-react'
-import { 
-  createActivityTracker, 
-  type ActivityEvent, 
-  type ActivityFilter, 
-  type ActivitySummary 
+import {
+  createActivityTracker,
+  type ActivityEvent,
+  type ActivityFilter,
+  type ActivitySummary
 } from '@/lib/crm/activity-tracker'
 
 interface ActivityHistoryProps {
@@ -54,17 +83,19 @@ export function ActivityHistory({
   entityFilter
 }: ActivityHistoryProps) {
   // State
-  const [activityTracker] = useState(() => 
+  const [activityTracker] = useState(() =>
     createActivityTracker(organizationId, userId, userName, userEmail)
   )
   const [activities, setActivities] = useState<ActivityEvent[]>([])
   const [summary, setSummary] = useState<ActivitySummary | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [filters, setFilters] = useState<ActivityFilter>({
-    ...entityFilter ? { 
-      entity_type: entityFilter.type, 
-      entity_id: entityFilter.id 
-    } : {}
+    ...(entityFilter
+      ? {
+          entity_type: entityFilter.type,
+          entity_id: entityFilter.id
+        }
+      : {})
   })
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
@@ -80,13 +111,13 @@ export function ActivityHistory({
     try {
       const offset = (page - 1) * itemsPerPage
       const result = await activityTracker.getActivityHistory(filters, itemsPerPage, offset)
-      
+
       if (resetList) {
         setActivities(result.activities)
       } else {
         setActivities(prev => [...prev, ...result.activities])
       }
-      
+
       setTotalCount(result.total_count)
       setHasMore(result.has_more)
       setCurrentPage(page)
@@ -125,10 +156,14 @@ export function ActivityHistory({
 
   // Clear filters
   const clearFilters = () => {
-    setFilters(entityFilter ? { 
-      entity_type: entityFilter.type, 
-      entity_id: entityFilter.id 
-    } : {})
+    setFilters(
+      entityFilter
+        ? {
+            entity_type: entityFilter.type,
+            entity_id: entityFilter.id
+          }
+        : {}
+    )
   }
 
   // Export activities
@@ -155,28 +190,44 @@ export function ActivityHistory({
   // Activity icon mapping
   const getActivityIcon = (activity: ActivityEvent) => {
     switch (activity.action_type) {
-      case 'create': return <Plus className="h-4 w-4" />
-      case 'update': return <Pencil className="h-4 w-4" />
-      case 'delete': return <Trash2 className="h-4 w-4" />
-      case 'view': return <Eye className="h-4 w-4" />
-      case 'email': return <Mail className="h-4 w-4" />
-      case 'call': return <Phone className="h-4 w-4" />
-      case 'meeting': return <Users className="h-4 w-4" />
-      case 'note': return <FileText className="h-4 w-4" />
-      case 'import': return <Upload className="h-4 w-4" />
-      case 'export': return <Download className="h-4 w-4" />
-      default: return <Activity className="h-4 w-4" />
+      case 'create':
+        return <Plus className="h-4 w-4" />
+      case 'update':
+        return <Pencil className="h-4 w-4" />
+      case 'delete':
+        return <Trash2 className="h-4 w-4" />
+      case 'view':
+        return <Eye className="h-4 w-4" />
+      case 'email':
+        return <Mail className="h-4 w-4" />
+      case 'call':
+        return <Phone className="h-4 w-4" />
+      case 'meeting':
+        return <Users className="h-4 w-4" />
+      case 'note':
+        return <FileText className="h-4 w-4" />
+      case 'import':
+        return <Upload className="h-4 w-4" />
+      case 'export':
+        return <Download className="h-4 w-4" />
+      default:
+        return <Activity className="h-4 w-4" />
     }
   }
 
   // Activity color mapping
   const getActivityColor = (activity: ActivityEvent) => {
     switch (activity.severity) {
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'medium': return 'text-blue-600 bg-blue-50 border-blue-200'
-      case 'low': return 'text-gray-600 bg-gray-50 border-gray-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'critical':
+        return 'text-red-600 bg-red-50 border-red-200'
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'medium':
+        return 'text-blue-600 bg-blue-50 border-blue-200'
+      case 'low':
+        return 'text-gray-600 bg-gray-50 border-gray-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
@@ -195,8 +246,8 @@ export function ActivityHistory({
     } else if (diffInHours < 48) {
       return 'Yesterday'
     } else {
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
         day: 'numeric',
         year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
       })
@@ -277,7 +328,7 @@ export function ActivityHistory({
                         <Input
                           placeholder="Search activities..."
                           value={filters.search_query || ''}
-                          onChange={(e) => updateFilters({ search_query: e.target.value })}
+                          onChange={e => updateFilters({ search_query: e.target.value })}
                           className="pl-10"
                         />
                       </div>
@@ -286,11 +337,13 @@ export function ActivityHistory({
                     {/* Action Type */}
                     <div>
                       <Label>Action</Label>
-                      <Select 
-                        value={filters.action_type || 'all'} 
-                        onValueChange={(value) => updateFilters({ 
-                          action_type: value === 'all' ? undefined : value 
-                        })}
+                      <Select
+                        value={filters.action_type || 'all'}
+                        onValueChange={value =>
+                          updateFilters({
+                            action_type: value === 'all' ? undefined : value
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -310,11 +363,13 @@ export function ActivityHistory({
                     {/* Entity Type */}
                     <div>
                       <Label>Entity Type</Label>
-                      <Select 
-                        value={filters.entity_type || 'all'} 
-                        onValueChange={(value) => updateFilters({ 
-                          entity_type: value === 'all' ? undefined : value 
-                        })}
+                      <Select
+                        value={filters.entity_type || 'all'}
+                        onValueChange={value =>
+                          updateFilters({
+                            entity_type: value === 'all' ? undefined : value
+                          })
+                        }
                         disabled={!!entityFilter}
                       >
                         <SelectTrigger>
@@ -333,11 +388,13 @@ export function ActivityHistory({
                     {/* Category */}
                     <div>
                       <Label>Category</Label>
-                      <Select 
-                        value={filters.category || 'all'} 
-                        onValueChange={(value) => updateFilters({ 
-                          category: value === 'all' ? undefined : value 
-                        })}
+                      <Select
+                        value={filters.category || 'all'}
+                        onValueChange={value =>
+                          updateFilters({
+                            category: value === 'all' ? undefined : value
+                          })
+                        }
                       >
                         <SelectTrigger>
                           <SelectValue />
@@ -358,11 +415,7 @@ export function ActivityHistory({
                       {totalCount > 0 ? `${totalCount} activities found` : 'No activities found'}
                     </div>
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={clearFilters}
-                      >
+                      <Button variant="outline" size="sm" onClick={clearFilters}>
                         Clear Filters
                       </Button>
                       <Button
@@ -374,11 +427,7 @@ export function ActivityHistory({
                         <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                         Refresh
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleExport}
-                      >
+                      <Button variant="outline" size="sm" onClick={handleExport}>
                         <Download className="h-4 w-4 mr-2" />
                         Export
                       </Button>
@@ -403,27 +452,35 @@ export function ActivityHistory({
                 ) : (
                   <>
                     {activities.map((activity, index) => (
-                      <Card key={activity.id} className={`border-l-4 ${getActivityColor(activity)}`}>
+                      <Card
+                        key={activity.id}
+                        className={`border-l-4 ${getActivityColor(activity)}`}
+                      >
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start space-x-3 flex-1 min-w-0">
                               <div className={`p-2 rounded-full ${getActivityColor(activity)}`}>
                                 {getActivityIcon(activity)}
                               </div>
-                              
+
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center space-x-2">
                                   <p className="text-sm font-medium text-gray-900 truncate">
                                     {activity.description}
                                   </p>
-                                  <Badge 
-                                    variant={activity.severity === 'high' || activity.severity === 'critical' ? 'destructive' : 'secondary'}
+                                  <Badge
+                                    variant={
+                                      activity.severity === 'high' ||
+                                      activity.severity === 'critical'
+                                        ? 'destructive'
+                                        : 'secondary'
+                                    }
                                     className="text-xs"
                                   >
                                     {activity.severity}
                                   </Badge>
                                 </div>
-                                
+
                                 <div className="mt-1 flex items-center space-x-4 text-xs text-gray-600">
                                   <span className="flex items-center">
                                     <User className="h-3 w-3 mr-1" />
@@ -442,9 +499,9 @@ export function ActivityHistory({
                                 </div>
 
                                 {/* Show changes if available */}
-                                {activity.changes && activity.changes.length > 0 && (
-                                  renderChanges(activity.changes)
-                                )}
+                                {activity.changes &&
+                                  activity.changes.length > 0 &&
+                                  renderChanges(activity.changes)}
                               </div>
                             </div>
                           </div>
@@ -547,7 +604,7 @@ export function ActivityHistory({
                     <CardContent className="p-6">
                       <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
                       <div className="space-y-3">
-                        {summary.recent_activities.slice(0, 8).map((activity) => (
+                        {summary.recent_activities.slice(0, 8).map(activity => (
                           <div key={activity.id} className="flex items-center space-x-3 text-sm">
                             <div className={`p-1 rounded-full ${getActivityColor(activity)}`}>
                               {getActivityIcon(activity)}
@@ -570,7 +627,10 @@ export function ActivityHistory({
                       <h3 className="text-lg font-semibold mb-4">Most Active Entities</h3>
                       <div className="space-y-2">
                         {summary.most_active_entities.slice(0, 10).map((entity, index) => (
-                          <div key={`${entity.entity_type}-${entity.entity_id}`} className="flex justify-between items-center text-sm">
+                          <div
+                            key={`${entity.entity_type}-${entity.entity_id}`}
+                            className="flex justify-between items-center text-sm"
+                          >
                             <div className="flex items-center space-x-2">
                               <span className="text-gray-500">#{index + 1}</span>
                               <Badge variant="outline" className="text-xs">
@@ -578,7 +638,9 @@ export function ActivityHistory({
                               </Badge>
                               <span className="truncate">{entity.entity_name}</span>
                             </div>
-                            <span className="font-medium text-blue-600">{entity.activity_count}</span>
+                            <span className="font-medium text-blue-600">
+                              {entity.activity_count}
+                            </span>
                           </div>
                         ))}
                       </div>

@@ -4,18 +4,15 @@ import { smartCodeReporting } from '@/lib/financial/smart-code-reporting'
 /**
  * GET /api/v1/reports/:type
  * Generate financial reports dynamically based on smart codes
- * 
+ *
  * Example: GET /api/v1/reports/pl?period=2025-Q1&organization_id=org-123
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ type: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ type: string }> }) {
   try {
     const { type } = await params
     const reportType = type as 'pl' | 'balance_sheet' | 'cashflow' | 'trial_balance'
     const { searchParams } = new URL(request.url)
-    
+
     const organizationId = searchParams.get('organization_id')
     const period = searchParams.get('period')
     const branchId = searchParams.get('branch_id')
@@ -79,10 +76,7 @@ export async function GET(
     })
   } catch (error) {
     console.error('Error generating report:', error)
-    return NextResponse.json(
-      { error: 'Failed to generate report' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to generate report' }, { status: 500 })
   }
 }
 
@@ -101,17 +95,10 @@ export async function POST(
     const { organization_id, custom_config } = body
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
-    await smartCodeReporting.storeReportConfig(
-      organization_id,
-      reportType,
-      custom_config
-    )
+    await smartCodeReporting.storeReportConfig(organization_id, reportType, custom_config)
 
     return NextResponse.json({
       success: true,
@@ -119,9 +106,6 @@ export async function POST(
     })
   } catch (error) {
     console.error('Error storing report config:', error)
-    return NextResponse.json(
-      { error: 'Failed to store report configuration' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to store report configuration' }, { status: 500 })
   }
 }

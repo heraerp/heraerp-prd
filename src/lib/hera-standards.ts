@@ -1,6 +1,6 @@
 /**
  * HERA Standardization System
- * 
+ *
  * This module defines the standard types, patterns, and validation rules for HERA.
  * All standards are stored as entities in the system itself, making HERA self-aware.
  */
@@ -13,7 +13,7 @@ export const STANDARD_ENTITY_TYPES = {
   RELATIONSHIP_TYPE_DEFINITION: 'relationship_type_definition',
   STATUS_DEFINITION: 'status_definition',
   SMART_CODE_PATTERN: 'smart_code_pattern',
-  
+
   // Business Entity Types
   CUSTOMER: 'customer',
   VENDOR: 'vendor',
@@ -29,12 +29,12 @@ export const STANDARD_ENTITY_TYPES = {
   USER: 'user',
   AI_AGENT: 'ai_agent',
   WORKFLOW_STATUS: 'workflow_status',
-  
+
   // Document Types
   DOCUMENT: 'document',
   REPORT: 'report',
   POLICY: 'policy',
-  
+
   // Configuration Types
   CONFIGURATION: 'configuration',
   RULE: 'rule',
@@ -51,26 +51,26 @@ export const STANDARD_TRANSACTION_TYPES = {
   JOURNAL_ENTRY: 'journal_entry',
   TRANSFER: 'transfer',
   ADJUSTMENT: 'adjustment',
-  
+
   // Budget & Forecast
   BUDGET_LINE: 'budget_line',
   FORECAST_LINE: 'forecast_line',
-  
+
   // Inventory Transactions
   GOODS_RECEIPT: 'goods_receipt',
   GOODS_ISSUE: 'goods_issue',
   STOCK_TRANSFER: 'stock_transfer',
   STOCK_ADJUSTMENT: 'stock_adjustment',
-  
+
   // Service Transactions
   SERVICE_ORDER: 'service_order',
   SERVICE_DELIVERY: 'service_delivery',
   TIME_ENTRY: 'time_entry',
-  
+
   // Auto-Journal Types
   AUTO_JOURNAL: 'auto_journal',
   BATCH_JOURNAL: 'batch_journal',
-  
+
   // System Transactions
   AUDIT_EVENT: 'audit_event',
   STATUS_CHANGE: 'status_change',
@@ -82,11 +82,11 @@ export const STANDARD_RELATIONSHIP_TYPES = {
   // Hierarchical
   PARENT_OF: 'parent_of',
   CHILD_OF: 'child_of',
-  
+
   // Status & Workflow
   HAS_STATUS: 'has_status',
   PREVIOUS_STATUS: 'previous_status',
-  
+
   // Business Relationships
   CUSTOMER_OF: 'customer_of',
   VENDOR_OF: 'vendor_of',
@@ -95,17 +95,17 @@ export const STANDARD_RELATIONSHIP_TYPES = {
   REPORTS_TO: 'reports_to',
   MEMBER_OF: 'member_of',
   OWNER_OF: 'owner_of',
-  
+
   // Document Relationships
   ATTACHMENT_OF: 'attachment_of',
   VERSION_OF: 'version_of',
   APPROVAL_FOR: 'approval_for',
-  
+
   // Financial Relationships
   PAYMENT_FOR: 'payment_for',
   LINE_ITEM_OF: 'line_item_of',
   ALLOCATION_OF: 'allocation_of',
-  
+
   // Product/Service Relationships
   COMPONENT_OF: 'component_of',
   SUBSTITUTE_FOR: 'substitute_for',
@@ -122,17 +122,17 @@ export const STANDARD_STATUSES = {
   COMPLETED: 'completed',
   CANCELLED: 'cancelled',
   ARCHIVED: 'archived',
-  
+
   // Transaction Statuses
   POSTED: 'posted',
   REVERSED: 'reversed',
   VOID: 'void',
-  
+
   // Workflow Statuses
   IN_PROGRESS: 'in_progress',
   ON_HOLD: 'on_hold',
   UNDER_REVIEW: 'under_review',
-  
+
   // Entity Statuses
   ACTIVE: 'active',
   INACTIVE: 'inactive',
@@ -144,7 +144,7 @@ export const STANDARD_STATUSES = {
 export const SMART_CODE_PATTERNS = {
   // Pattern: HERA.{INDUSTRY}.{MODULE}.{FUNCTION}.{TYPE}.v{VERSION}
   PATTERN_REGEX: /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.v\d+$/,
-  
+
   // Industry Codes
   INDUSTRIES: {
     GEN: 'General',
@@ -159,7 +159,7 @@ export const SMART_CODE_PATTERNS = {
     FIN: 'Finance',
     TECH: 'Technology'
   },
-  
+
   // Module Codes
   MODULES: {
     CRM: 'Customer Relationship Management',
@@ -177,7 +177,7 @@ export const SMART_CODE_PATTERNS = {
     RPT: 'Reporting',
     WF: 'Workflow'
   },
-  
+
   // Function Codes
   FUNCTIONS: {
     // Entity Functions
@@ -186,14 +186,14 @@ export const SMART_CODE_PATTERNS = {
     PROD: 'Product',
     EMP: 'Employee',
     GL: 'General Ledger',
-    
+
     // Transaction Functions
     SALE: 'Sale',
     PUR: 'Purchase',
     PAY: 'Payment',
     RCP: 'Receipt',
     JE: 'Journal Entry',
-    
+
     // System Functions
     AUTH: 'Authorization',
     AUDIT: 'Audit',
@@ -201,7 +201,7 @@ export const SMART_CODE_PATTERNS = {
     ONBOARD: 'Onboarding',
     REPORT: 'Report'
   },
-  
+
   // Type Codes
   TYPES: {
     ENT: 'Entity',
@@ -271,7 +271,7 @@ export function parseSmartCode(smartCode: string): {
 } | null {
   const match = smartCode.match(/^HERA\.([A-Z]+)\.([A-Z]+)\.([A-Z]+)\.([A-Z]+)\.v(\d+)$/)
   if (!match) return null
-  
+
   return {
     industry: match[1],
     module: match[2],
@@ -286,11 +286,15 @@ export function isStandardEntityType(type: string): type is keyof typeof STANDAR
   return Object.values(STANDARD_ENTITY_TYPES).includes(type as any)
 }
 
-export function isStandardTransactionType(type: string): type is keyof typeof STANDARD_TRANSACTION_TYPES {
+export function isStandardTransactionType(
+  type: string
+): type is keyof typeof STANDARD_TRANSACTION_TYPES {
   return Object.values(STANDARD_TRANSACTION_TYPES).includes(type as any)
 }
 
-export function isStandardRelationshipType(type: string): type is keyof typeof STANDARD_RELATIONSHIP_TYPES {
+export function isStandardRelationshipType(
+  type: string
+): type is keyof typeof STANDARD_RELATIONSHIP_TYPES {
   return Object.values(STANDARD_RELATIONSHIP_TYPES).includes(type as any)
 }
 
@@ -299,7 +303,9 @@ export function isStandardStatus(status: string): status is keyof typeof STANDAR
 }
 
 // Export type literals for TypeScript
-export type StandardEntityType = typeof STANDARD_ENTITY_TYPES[keyof typeof STANDARD_ENTITY_TYPES]
-export type StandardTransactionType = typeof STANDARD_TRANSACTION_TYPES[keyof typeof STANDARD_TRANSACTION_TYPES]
-export type StandardRelationshipType = typeof STANDARD_RELATIONSHIP_TYPES[keyof typeof STANDARD_RELATIONSHIP_TYPES]
-export type StandardStatus = typeof STANDARD_STATUSES[keyof typeof STANDARD_STATUSES]
+export type StandardEntityType = (typeof STANDARD_ENTITY_TYPES)[keyof typeof STANDARD_ENTITY_TYPES]
+export type StandardTransactionType =
+  (typeof STANDARD_TRANSACTION_TYPES)[keyof typeof STANDARD_TRANSACTION_TYPES]
+export type StandardRelationshipType =
+  (typeof STANDARD_RELATIONSHIP_TYPES)[keyof typeof STANDARD_RELATIONSHIP_TYPES]
+export type StandardStatus = (typeof STANDARD_STATUSES)[keyof typeof STANDARD_STATUSES]

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   ArrowLeft,
   ArrowRight,
   CheckCircle,
@@ -21,8 +21,8 @@ import { usePartnerJourney } from '@/lib/partner-journey'
 /**
  * Seamless Partner Navigation
  * Steve Jobs-Inspired Contextual Guidance
- * 
- * "The best interface is no interface." - But when you need one, 
+ *
+ * "The best interface is no interface." - But when you need one,
  * it should feel magical and inevitable.
  */
 
@@ -41,11 +41,14 @@ interface SeamlessNavigationProps {
   className?: string
 }
 
-export default function SeamlessNavigation({ partnerId = 'demo-partner', className = '' }: SeamlessNavigationProps) {
+export default function SeamlessNavigation({
+  partnerId = 'demo-partner',
+  className = ''
+}: SeamlessNavigationProps) {
   const router = useRouter()
   const pathname = usePathname()
   const journey = usePartnerJourney(partnerId)
-  
+
   const [navState, setNavState] = useState<NavigationState>({
     currentStep: 'discover',
     progress: 0,
@@ -54,7 +57,7 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
     canGoBack: false,
     canGoForward: true
   })
-  
+
   const [isVisible, setIsVisible] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
 
@@ -69,7 +72,7 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
     }
 
     const currentProgress = stepMap[pathname] || 0
-    
+
     // Get step name from pathname
     const getStepName = (path: string) => {
       if (path === '/partner') return 'Discover the Revolution'
@@ -137,7 +140,7 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
     }
 
     const nextRoute = getNextRoute(pathname)
-    
+
     // Smooth transition
     setTimeout(() => {
       router.push(nextRoute)
@@ -174,9 +177,11 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
   return (
     <div className={`${className}`}>
       {/* Floating Navigation Bar */}
-      <div className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ${
-        isMinimized ? 'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
-      }`}>
+      <div
+        className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ${
+          isMinimized ? 'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
+        }`}
+      >
         <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 px-6 py-4 max-w-md">
           {/* Progress Header */}
           <div className="flex items-center justify-between mb-3">
@@ -191,10 +196,7 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
 
           {/* Progress Bar */}
           <div className="mb-4">
-            <Progress 
-              value={navState.progress} 
-              className={`h-2 transition-all duration-1000`}
-            />
+            <Progress value={navState.progress} className={`h-2 transition-all duration-1000`} />
             <div className="flex justify-between text-xs text-slate-500 mt-1">
               <span>Journey Progress</span>
               <span>{navState.progress}/100</span>
@@ -270,7 +272,9 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
           <div className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg">
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4" />
-              <span className="text-sm font-semibold">Just {4 - Math.floor(navState.progress / 25)} steps left!</span>
+              <span className="text-sm font-semibold">
+                Just {4 - Math.floor(navState.progress / 25)} steps left!
+              </span>
             </div>
           </div>
         </div>
@@ -294,13 +298,11 @@ export default function SeamlessNavigation({ partnerId = 'demo-partner', classNa
 }
 
 // Smart Context Provider
-export function withSeamlessNavigation<T extends object>(
-  Component: React.ComponentType<T>
-) {
+export function withSeamlessNavigation<T extends object>(Component: React.ComponentType<T>) {
   return function WrappedComponent(props: T) {
     const pathname = usePathname()
     const isPartnerPath = pathname.includes('/partner')
-    
+
     if (!isPartnerPath) {
       return <Component {...props} />
     }

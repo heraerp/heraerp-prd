@@ -1,46 +1,45 @@
 /**
  * 🎓 HERA Universal Learning Router - Hybrid Architecture
- * 
+ *
  * Intelligently routes educational content processing based on domain characteristics:
  * - Direct AI: Stable knowledge domains (Math, Physics, English)
- * - PDF Processing: Dynamic/regulatory domains (CA, Medicine, Law)  
+ * - PDF Processing: Dynamic/regulatory domains (CA, Medicine, Law)
  * - Hybrid: Mixed scenarios (Engineering, Business, Technology)
  */
 
 export interface LearningStrategy {
-  approach: 'direct_ai' | 'pdf_processing' | 'hybrid';
-  reasoning: string;
-  smart_code: string;
-  cost_factor: number;
-  response_time: string;
-  advantages: string[];
+  approach: 'direct_ai' | 'pdf_processing' | 'hybrid'
+  reasoning: string
+  smart_code: string
+  cost_factor: number
+  response_time: string
+  advantages: string[]
 }
 
 export interface LearningRequest {
-  domain: string;
-  topic: string;
-  content_type?: string;
-  student_query: string;
-  student_level?: string;
-  files?: File[];
-  urgency?: 'low' | 'medium' | 'high';
+  domain: string
+  topic: string
+  content_type?: string
+  student_query: string
+  student_level?: string
+  files?: File[]
+  urgency?: 'low' | 'medium' | 'high'
 }
 
 export interface DomainCharacteristics {
-  domain: string;
-  stability: 'stable' | 'semi_stable' | 'dynamic';
-  regulatory_compliance: boolean;
-  content_change_frequency: 'never' | 'yearly' | 'quarterly' | 'monthly';
-  ai_knowledge_coverage: 'excellent' | 'good' | 'limited';
-  document_dependency: boolean;
+  domain: string
+  stability: 'stable' | 'semi_stable' | 'dynamic'
+  regulatory_compliance: boolean
+  content_change_frequency: 'never' | 'yearly' | 'quarterly' | 'monthly'
+  ai_knowledge_coverage: 'excellent' | 'good' | 'limited'
+  document_dependency: boolean
 }
 
 export class HERAUniversalLearningRouter {
-  
   // Domain Classification Matrix
   private domainCharacteristics: Record<string, DomainCharacteristics> = {
     // === KNOWLEDGE-STABLE DOMAINS (Direct AI Optimal) ===
-    'MATH': {
+    MATH: {
       domain: 'MATH',
       stability: 'stable',
       regulatory_compliance: false,
@@ -48,31 +47,31 @@ export class HERAUniversalLearningRouter {
       ai_knowledge_coverage: 'excellent',
       document_dependency: false
     },
-    'PHYSICS': {
-      domain: 'PHYSICS', 
+    PHYSICS: {
+      domain: 'PHYSICS',
       stability: 'stable',
       regulatory_compliance: false,
       content_change_frequency: 'never',
       ai_knowledge_coverage: 'excellent',
       document_dependency: false
     },
-    'CHEMISTRY': {
+    CHEMISTRY: {
       domain: 'CHEMISTRY',
       stability: 'stable',
-      regulatory_compliance: false, 
+      regulatory_compliance: false,
       content_change_frequency: 'never',
       ai_knowledge_coverage: 'excellent',
       document_dependency: false
     },
-    'ENGLISH': {
+    ENGLISH: {
       domain: 'ENGLISH',
       stability: 'stable',
       regulatory_compliance: false,
       content_change_frequency: 'never',
-      ai_knowledge_coverage: 'excellent', 
+      ai_knowledge_coverage: 'excellent',
       document_dependency: false
     },
-    'HISTORY': {
+    HISTORY: {
       domain: 'HISTORY',
       stability: 'stable',
       regulatory_compliance: false,
@@ -80,9 +79,9 @@ export class HERAUniversalLearningRouter {
       ai_knowledge_coverage: 'excellent',
       document_dependency: false
     },
-    
+
     // === CONTENT-DEPENDENT DOMAINS (PDF Processing Required) ===
-    'CA': {
+    CA: {
       domain: 'CA',
       stability: 'dynamic',
       regulatory_compliance: true,
@@ -90,15 +89,15 @@ export class HERAUniversalLearningRouter {
       ai_knowledge_coverage: 'limited',
       document_dependency: true
     },
-    'MEDICINE': {
+    MEDICINE: {
       domain: 'MEDICINE',
-      stability: 'dynamic', 
+      stability: 'dynamic',
       regulatory_compliance: true,
       content_change_frequency: 'monthly',
       ai_knowledge_coverage: 'good',
       document_dependency: true
     },
-    'LAW': {
+    LAW: {
       domain: 'LAW',
       stability: 'dynamic',
       regulatory_compliance: true,
@@ -106,17 +105,17 @@ export class HERAUniversalLearningRouter {
       ai_knowledge_coverage: 'limited',
       document_dependency: true
     },
-    'BUSINESS_COMPLIANCE': {
+    BUSINESS_COMPLIANCE: {
       domain: 'BUSINESS_COMPLIANCE',
       stability: 'dynamic',
       regulatory_compliance: true,
-      content_change_frequency: 'quarterly', 
+      content_change_frequency: 'quarterly',
       ai_knowledge_coverage: 'limited',
       document_dependency: true
     },
-    
+
     // === HYBRID DOMAINS (Mixed Approach) ===
-    'ENGINEERING': {
+    ENGINEERING: {
       domain: 'ENGINEERING',
       stability: 'semi_stable',
       regulatory_compliance: true,
@@ -124,7 +123,7 @@ export class HERAUniversalLearningRouter {
       ai_knowledge_coverage: 'good',
       document_dependency: true
     },
-    'BUSINESS': {
+    BUSINESS: {
       domain: 'BUSINESS',
       stability: 'semi_stable',
       regulatory_compliance: false,
@@ -132,26 +131,26 @@ export class HERAUniversalLearningRouter {
       ai_knowledge_coverage: 'good',
       document_dependency: false
     },
-    'TECHNOLOGY': {
+    TECHNOLOGY: {
       domain: 'TECHNOLOGY',
-      stability: 'semi_stable', 
+      stability: 'semi_stable',
       regulatory_compliance: false,
       content_change_frequency: 'monthly',
       ai_knowledge_coverage: 'good',
       document_dependency: false
     }
-  };
+  }
 
   /**
    * Main routing function - determines optimal learning strategy
    */
   async determineOptimalStrategy(request: LearningRequest): Promise<LearningStrategy> {
-    const domain = request.domain.toUpperCase();
-    const characteristics = this.domainCharacteristics[domain];
-    
+    const domain = request.domain.toUpperCase()
+    const characteristics = this.domainCharacteristics[domain]
+
     if (!characteristics) {
       // Default to hybrid approach for unknown domains
-      return this.createHybridStrategy(domain, 'Unknown domain - using adaptive approach');
+      return this.createHybridStrategy(domain, 'Unknown domain - using adaptive approach')
     }
 
     // Decision matrix based on domain characteristics
@@ -163,24 +162,23 @@ export class HERAUniversalLearningRouter {
       docDependency: characteristics.document_dependency,
       hasFiles: request.files && request.files.length > 0,
       urgency: request.urgency || 'medium'
-    };
+    }
 
-    return this.selectOptimalStrategy(domain, decisionFactors, characteristics);
+    return this.selectOptimalStrategy(domain, decisionFactors, characteristics)
   }
 
   /**
    * Strategy selection logic
    */
   private selectOptimalStrategy(
-    domain: string, 
-    factors: any, 
+    domain: string,
+    factors: any,
     characteristics: DomainCharacteristics
   ): LearningStrategy {
-    
     // Direct AI Strategy - for stable knowledge domains
     if (
-      factors.stability === 'stable' && 
-      !factors.regulatory && 
+      factors.stability === 'stable' &&
+      !factors.regulatory &&
       factors.aiCoverage === 'excellent' &&
       !factors.docDependency
     ) {
@@ -193,11 +191,11 @@ export class HERAUniversalLearningRouter {
         advantages: [
           'Instant response - no processing delay',
           'Cost-effective - single API call',
-          'Always available - no document dependencies', 
+          'Always available - no document dependencies',
           'Comprehensive coverage - AI trained on vast knowledge',
           'Multiple explanation styles built-in'
         ]
-      };
+      }
     }
 
     // PDF Processing Strategy - for regulatory/dynamic domains
@@ -219,7 +217,7 @@ export class HERAUniversalLearningRouter {
           'Updated case studies and examples',
           'Precise legal/regulatory references'
         ]
-      };
+      }
     }
 
     // Hybrid Strategy - for mixed scenarios
@@ -235,42 +233,45 @@ export class HERAUniversalLearningRouter {
         'Cost-optimized approach - smart resource usage',
         'Flexible content delivery - adapts to query type'
       ]
-    };
+    }
   }
 
   /**
    * Process learning request using determined strategy
    */
   async processLearningRequest(request: LearningRequest): Promise<any> {
-    const strategy = await this.determineOptimalStrategy(request);
-    
-    console.log(`🎯 HERA Router Selected: ${strategy.approach.toUpperCase()} for ${request.domain}`);
-    console.log(`📋 Reasoning: ${strategy.reasoning}`);
-    console.log(`⚡ Expected Response Time: ${strategy.response_time}`);
-    console.log(`💰 Cost Factor: ${strategy.cost_factor}x base cost`);
+    const strategy = await this.determineOptimalStrategy(request)
+
+    console.log(`🎯 HERA Router Selected: ${strategy.approach.toUpperCase()} for ${request.domain}`)
+    console.log(`📋 Reasoning: ${strategy.reasoning}`)
+    console.log(`⚡ Expected Response Time: ${strategy.response_time}`)
+    console.log(`💰 Cost Factor: ${strategy.cost_factor}x base cost`)
 
     switch (strategy.approach) {
       case 'direct_ai':
-        return await this.processDirectAILearning(request, strategy);
-        
+        return await this.processDirectAILearning(request, strategy)
+
       case 'pdf_processing':
-        return await this.processPDFBasedLearning(request, strategy);
-        
+        return await this.processPDFBasedLearning(request, strategy)
+
       case 'hybrid':
-        return await this.processHybridLearning(request, strategy);
-        
+        return await this.processHybridLearning(request, strategy)
+
       default:
-        throw new Error(`Unknown strategy: ${strategy.approach}`);
+        throw new Error(`Unknown strategy: ${strategy.approach}`)
     }
   }
 
   /**
    * Direct AI Processing - for stable knowledge domains
    */
-  private async processDirectAILearning(request: LearningRequest, strategy: LearningStrategy): Promise<any> {
+  private async processDirectAILearning(
+    request: LearningRequest,
+    strategy: LearningStrategy
+  ): Promise<any> {
     try {
-      console.log(`🤖 Processing via Direct AI for ${request.domain}`);
-      
+      console.log(`🤖 Processing via Direct AI for ${request.domain}`)
+
       // Call HERA Universal AI with domain-specific optimization
       const response = await fetch('/api/v1/ai/universal', {
         method: 'POST',
@@ -293,10 +294,10 @@ export class HERAUniversalLearningRouter {
           },
           fallback_enabled: true
         })
-      });
+      })
 
-      const result = await response.json();
-      
+      const result = await response.json()
+
       return {
         success: true,
         approach: 'direct_ai',
@@ -310,23 +311,25 @@ export class HERAUniversalLearningRouter {
           advantages_realized: strategy.advantages
         },
         optimization: `Direct AI optimal for stable ${request.domain} knowledge`
-      };
-      
+      }
     } catch (error) {
-      console.error('Direct AI processing error:', error);
-      
+      console.error('Direct AI processing error:', error)
+
       // Fallback to hybrid approach
-      return await this.processHybridLearning(request, strategy);
+      return await this.processHybridLearning(request, strategy)
     }
   }
 
   /**
    * PDF Processing - for regulatory/dynamic domains
    */
-  private async processPDFBasedLearning(request: LearningRequest, strategy: LearningStrategy): Promise<any> {
+  private async processPDFBasedLearning(
+    request: LearningRequest,
+    strategy: LearningStrategy
+  ): Promise<any> {
     try {
-      console.log(`📄 Processing via PDF Pipeline for ${request.domain}`);
-      
+      console.log(`📄 Processing via PDF Pipeline for ${request.domain}`)
+
       // Call Universal Learning API for PDF processing
       const response = await fetch('/api/v1/universal-learning', {
         method: 'POST',
@@ -346,10 +349,10 @@ export class HERAUniversalLearningRouter {
           },
           smart_code: strategy.smart_code
         })
-      });
+      })
 
-      const result = await response.json();
-      
+      const result = await response.json()
+
       return {
         success: true,
         approach: 'pdf_processing',
@@ -363,44 +366,59 @@ export class HERAUniversalLearningRouter {
           advantages_realized: strategy.advantages
         },
         optimization: `PDF processing optimal for dynamic ${request.domain} content`
-      };
-      
+      }
     } catch (error) {
-      console.error('PDF processing error:', error);
-      
+      console.error('PDF processing error:', error)
+
       // Fallback to direct AI with disclaimer
-      const fallbackStrategy = this.createDirectAIStrategy(request.domain, 'PDF processing failed - using AI with compliance disclaimer');
-      return await this.processDirectAILearning(request, fallbackStrategy);
+      const fallbackStrategy = this.createDirectAIStrategy(
+        request.domain,
+        'PDF processing failed - using AI with compliance disclaimer'
+      )
+      return await this.processDirectAILearning(request, fallbackStrategy)
     }
   }
 
   /**
    * Hybrid Processing - for mixed scenarios
    */
-  private async processHybridLearning(request: LearningRequest, strategy: LearningStrategy): Promise<any> {
+  private async processHybridLearning(
+    request: LearningRequest,
+    strategy: LearningStrategy
+  ): Promise<any> {
     try {
-      console.log(`🔄 Processing via Hybrid Approach for ${request.domain}`);
-      
+      console.log(`🔄 Processing via Hybrid Approach for ${request.domain}`)
+
       // Determine if query needs fundamental concepts or current applications
-      const queryType = this.analyzeQueryType(request.student_query);
-      
+      const queryType = this.analyzeQueryType(request.student_query)
+
       if (queryType === 'fundamental') {
         // Use direct AI for basic concepts
-        const fundamentalStrategy = this.createDirectAIStrategy(request.domain, 'Fundamental concepts - direct AI optimal');
-        return await this.processDirectAILearning(request, fundamentalStrategy);
-        
+        const fundamentalStrategy = this.createDirectAIStrategy(
+          request.domain,
+          'Fundamental concepts - direct AI optimal'
+        )
+        return await this.processDirectAILearning(request, fundamentalStrategy)
       } else if (queryType === 'current') {
         // Use PDF processing for current applications
-        const currentStrategy = this.createPDFStrategy(request.domain, 'Current applications - PDF processing required');
-        return await this.processPDFBasedLearning(request, currentStrategy);
-        
+        const currentStrategy = this.createPDFStrategy(
+          request.domain,
+          'Current applications - PDF processing required'
+        )
+        return await this.processPDFBasedLearning(request, currentStrategy)
       } else {
         // Combine both approaches
         const [fundamentalResponse, currentResponse] = await Promise.allSettled([
-          this.processDirectAILearning(request, this.createDirectAIStrategy(request.domain, 'Hybrid: fundamental concepts')),
-          this.processPDFBasedLearning(request, this.createPDFStrategy(request.domain, 'Hybrid: current applications'))
-        ]);
-        
+          this.processDirectAILearning(
+            request,
+            this.createDirectAIStrategy(request.domain, 'Hybrid: fundamental concepts')
+          ),
+          this.processPDFBasedLearning(
+            request,
+            this.createPDFStrategy(request.domain, 'Hybrid: current applications')
+          )
+        ])
+
         return {
           success: true,
           approach: 'hybrid',
@@ -413,15 +431,17 @@ export class HERAUniversalLearningRouter {
             advantages_realized: strategy.advantages
           },
           optimization: `Hybrid approach optimal for mixed ${request.domain} scenarios`
-        };
+        }
       }
-      
     } catch (error) {
-      console.error('Hybrid processing error:', error);
-      
+      console.error('Hybrid processing error:', error)
+
       // Final fallback to direct AI
-      const fallbackStrategy = this.createDirectAIStrategy(request.domain, 'Hybrid failed - using direct AI fallback');
-      return await this.processDirectAILearning(request, fallbackStrategy);
+      const fallbackStrategy = this.createDirectAIStrategy(
+        request.domain,
+        'Hybrid failed - using direct AI fallback'
+      )
+      return await this.processDirectAILearning(request, fallbackStrategy)
     }
   }
 
@@ -429,38 +449,57 @@ export class HERAUniversalLearningRouter {
    * Analyze query to determine if it needs fundamental or current content
    */
   private analyzeQueryType(query: string): 'fundamental' | 'current' | 'mixed' {
-    const fundamentalKeywords = ['explain', 'what is', 'how does', 'basic', 'concept', 'principle', 'theory', 'definition'];
-    const currentKeywords = ['latest', 'new', 'recent', 'current', 'update', '2024', '2025', 'amendment', 'change'];
-    
-    const queryLower = query.toLowerCase();
-    
-    const hasFundamental = fundamentalKeywords.some(keyword => queryLower.includes(keyword));
-    const hasCurrent = currentKeywords.some(keyword => queryLower.includes(keyword));
-    
-    if (hasFundamental && !hasCurrent) return 'fundamental';
-    if (hasCurrent && !hasFundamental) return 'current';
-    return 'mixed';
+    const fundamentalKeywords = [
+      'explain',
+      'what is',
+      'how does',
+      'basic',
+      'concept',
+      'principle',
+      'theory',
+      'definition'
+    ]
+    const currentKeywords = [
+      'latest',
+      'new',
+      'recent',
+      'current',
+      'update',
+      '2024',
+      '2025',
+      'amendment',
+      'change'
+    ]
+
+    const queryLower = query.toLowerCase()
+
+    const hasFundamental = fundamentalKeywords.some(keyword => queryLower.includes(keyword))
+    const hasCurrent = currentKeywords.some(keyword => queryLower.includes(keyword))
+
+    if (hasFundamental && !hasCurrent) return 'fundamental'
+    if (hasCurrent && !hasFundamental) return 'current'
+    return 'mixed'
   }
 
   /**
    * Combine responses from multiple approaches
    */
   private combineResponses(fundamentalResponse: any, currentResponse: any): string {
-    let combined = '';
-    
+    let combined = ''
+
     if (fundamentalResponse.status === 'fulfilled') {
-      combined += `## 📚 Fundamental Concepts:\n\n${fundamentalResponse.value.data?.content || 'Fundamental knowledge processed'}\n\n`;
+      combined += `## 📚 Fundamental Concepts:\n\n${fundamentalResponse.value.data?.content || 'Fundamental knowledge processed'}\n\n`
     }
-    
+
     if (currentResponse.status === 'fulfilled') {
-      combined += `## 🔄 Current Applications & Updates:\n\n${currentResponse.value.data?.content || 'Current content processed'}\n\n`;
+      combined += `## 🔄 Current Applications & Updates:\n\n${currentResponse.value.data?.content || 'Current content processed'}\n\n`
     }
-    
+
     if (!combined) {
-      combined = 'Hybrid processing completed - check individual responses for details.';
+      combined = 'Hybrid processing completed - check individual responses for details.'
     }
-    
-    return combined;
+
+    return combined
   }
 
   /**
@@ -474,7 +513,7 @@ export class HERAUniversalLearningRouter {
       cost_factor: 0.1,
       response_time: '~1 second',
       advantages: ['Instant response', 'Cost-effective', 'Comprehensive coverage']
-    };
+    }
   }
 
   private createPDFStrategy(domain: string, reasoning: string): LearningStrategy {
@@ -485,7 +524,7 @@ export class HERAUniversalLearningRouter {
       cost_factor: 1.0,
       response_time: '~30 seconds',
       advantages: ['Latest compliance', 'Document authority', 'Precise references']
-    };
+    }
   }
 
   private createHybridStrategy(domain: string, reasoning: string): LearningStrategy {
@@ -496,26 +535,26 @@ export class HERAUniversalLearningRouter {
       cost_factor: 0.6,
       response_time: '~15 seconds',
       advantages: ['Best of both worlds', 'Comprehensive coverage', 'Cost-optimized']
-    };
+    }
   }
 
   /**
    * Get domain characteristics for external use
    */
   getDomainCharacteristics(domain: string): DomainCharacteristics | null {
-    return this.domainCharacteristics[domain.toUpperCase()] || null;
+    return this.domainCharacteristics[domain.toUpperCase()] || null
   }
 
   /**
    * Add or update domain characteristics
    */
   updateDomainCharacteristics(domain: string, characteristics: DomainCharacteristics): void {
-    this.domainCharacteristics[domain.toUpperCase()] = characteristics;
+    this.domainCharacteristics[domain.toUpperCase()] = characteristics
   }
 }
 
 // Export singleton instance
-export const heraRouter = new HERAUniversalLearningRouter();
+export const heraRouter = new HERAUniversalLearningRouter()
 
 // Export types for external use
-export type { LearningStrategy, LearningRequest, DomainCharacteristics };
+export type { LearningStrategy, LearningRequest, DomainCharacteristics }

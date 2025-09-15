@@ -1,7 +1,19 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Calendar, Clock, TrendingUp, Users, ChevronRight, Plus, Filter, Download, CalendarOff, Briefcase, Sun } from 'lucide-react'
+import {
+  Calendar,
+  Clock,
+  TrendingUp,
+  Users,
+  ChevronRight,
+  Plus,
+  Filter,
+  Download,
+  CalendarOff,
+  Briefcase,
+  Sun
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { LeaveRequestForm } from './LeaveRequestForm'
@@ -23,7 +35,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
   const { currentOrganization } = useMultiOrgAuth()
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
-  
+
   // Use provided organizationId or fallback to currentOrganization
   const effectiveOrgId = organizationId || currentOrganization?.id
 
@@ -56,7 +68,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
   }, [])
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="min-h-screen relative overflow-hidden"
       style={{
@@ -81,7 +93,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
       {/* WSAG Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
         {/* Primary Light Orb */}
-        <div 
+        <div
           className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -96,9 +108,9 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
             transform: `translate(-50%, -50%) scale(${1 + mousePosition.x * 0.002})`
           }}
         />
-        
+
         {/* Secondary Light Orb */}
-        <div 
+        <div
           className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -115,7 +127,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
         />
 
         {/* Tertiary Light Orb */}
-        <div 
+        <div
           className="absolute w-64 h-64 rounded-full transition-all duration-[5000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -137,7 +149,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold !text-gray-900 dark:!text-white flex items-center gap-3">
-            <div 
+            <div
               className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"
               style={{
                 background: `
@@ -167,7 +179,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
 
         {/* Navigation Tabs with WSAG Glassmorphism */}
         <div className="mb-8">
-          <div 
+          <div
             className="inline-flex rounded-lg p-1"
             style={{
               background: `
@@ -189,7 +201,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
             <button
               onClick={() => setActiveView('dashboard')}
               className={cn(
-                "px-6 py-2 rounded-md transition-all duration-200 font-medium",
+                'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'dashboard'
                   ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
                   : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
@@ -200,7 +212,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
             <button
               onClick={() => setActiveView('calendar')}
               className={cn(
-                "px-6 py-2 rounded-md transition-all duration-200 font-medium",
+                'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'calendar'
                   ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
                   : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
@@ -211,7 +223,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
             <button
               onClick={() => setActiveView('reports')}
               className={cn(
-                "px-6 py-2 rounded-md transition-all duration-200 font-medium",
+                'px-6 py-2 rounded-md transition-all duration-200 font-medium',
                 activeView === 'reports'
                   ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
                   : '!text-gray-700 dark:!text-gray-300 hover:bg-white/10'
@@ -364,13 +376,14 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
           </div>
         )}
 
-        {activeView === 'reports' && (
-          <AnnualLeaveReport organizationId={effectiveOrgId} />
-        )}
+        {activeView === 'reports' && <AnnualLeaveReport organizationId={effectiveOrgId} />}
 
         {/* Leave Request Modal */}
         {showRequestForm && (
-          <LeaveRequestForm onClose={() => setShowRequestForm(false)} organizationId={effectiveOrgId} />
+          <LeaveRequestForm
+            onClose={() => setShowRequestForm(false)}
+            organizationId={effectiveOrgId}
+          />
         )}
       </div>
     </div>

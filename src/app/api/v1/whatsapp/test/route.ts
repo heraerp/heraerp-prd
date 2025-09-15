@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       .eq('field_name', 'whatsapp_message')
       .order('created_at', { ascending: false })
       .limit(10)
-    
+
     // Check for WhatsApp conversations (stored as entities)
     const { data: conversations } = await supabase
       .from('core_entities')
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       .eq('entity_type', 'whatsapp_conversation')
       .order('updated_at', { ascending: false })
       .limit(5)
-    
+
     // Check environment variables
     const config = {
       webhook_token_set: !!process.env.WHATSAPP_WEBHOOK_TOKEN,
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       business_account_id_set: !!process.env.WHATSAPP_BUSINESS_ACCOUNT_ID,
       organization_id_set: !!process.env.DEFAULT_ORGANIZATION_ID
     }
-    
+
     return NextResponse.json({
       status: 'WhatsApp Integration Test Endpoint',
       config,
@@ -39,14 +39,17 @@ export async function GET(request: NextRequest) {
       recent_conversations: conversations || [],
       webhook_url: 'https://heraerp.com/api/v1/whatsapp/webhook',
       verify_token: 'hera-whatsapp-webhook-2024-secure-token',
-      message: 'If recent_messages is empty, webhook may not be receiving messages. Check Meta Business Manager webhook subscription.'
+      message:
+        'If recent_messages is empty, webhook may not be receiving messages. Check Meta Business Manager webhook subscription.'
     })
-    
   } catch (error) {
     console.error('Test endpoint error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to check WhatsApp status',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: 'Failed to check WhatsApp status',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

@@ -22,23 +22,30 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!organizationId || !journalDate || !description || !lines || lines.length < 2) {
-      return NextResponse.json({
-        error: 'Missing required fields'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Missing required fields'
+        },
+        { status: 400 }
+      )
     }
 
     // Calculate totals to ensure balance
     const totalDebit = lines.reduce((sum: number, line: any) => sum + (line.debit || 0), 0)
     const totalCredit = lines.reduce((sum: number, line: any) => sum + (line.credit || 0), 0)
-    
+
     if (Math.abs(totalDebit - totalCredit) >= 0.01) {
-      return NextResponse.json({
-        error: 'Journal entry must be balanced'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Journal entry must be balanced'
+        },
+        { status: 400 }
+      )
     }
 
     // Generate journal entry code
-    const journalCode = reference || `JE-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`
+    const journalCode =
+      reference || `JE-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`
 
     // Create the journal entry transaction
     const journalTransaction = await universalApi.createTransaction({
@@ -100,15 +107,18 @@ export async function POST(request: NextRequest) {
     // If posting immediately, trigger the auto-journal processing
     if (status === 'posted') {
       try {
-        const processResult = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/transactions/auto-journal`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            transactionId: journalTransaction.id,
-            organizationId
-          })
-        })
-        
+        const processResult = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/transactions/auto-journal`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transactionId: journalTransaction.id,
+              organizationId
+            })
+          }
+        )
+
         const processData = await processResult.json()
         console.log('Auto-journal processing result:', processData)
       } catch (error) {
@@ -122,17 +132,20 @@ export async function POST(request: NextRequest) {
       journalId: journalTransaction.id,
       journalCode: journalCode,
       status: status,
-      message: status === 'posted' 
-        ? `Journal entry ${journalCode} has been posted successfully` 
-        : `Journal entry ${journalCode} has been saved as draft`,
+      message:
+        status === 'posted'
+          ? `Journal entry ${journalCode} has been posted successfully`
+          : `Journal entry ${journalCode} has been saved as draft`,
       transaction: journalTransaction
     })
-
   } catch (error) {
     console.error('Journal entry error:', error)
-    return NextResponse.json({
-      error: error instanceof Error ? error.message : 'Failed to create journal entry'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : 'Failed to create journal entry'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -144,16 +157,20 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status')
 
     if (!organizationId) {
-      return NextResponse.json({
-        error: 'Organization ID is required'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          error: 'Organization ID is required'
+        },
+        { status: 400 }
+      )
     }
 
     // If specific journal ID requested
     if (journalId) {
       const { data: journal, error } = await supabase
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           *,
           universal_transaction_lines (
             *,
@@ -162,7 +179,8 @@ export async function GET(request: NextRequest) {
               entity_name
             )
           )
-        `)
+        `
+        )
         .eq('id', journalId)
         .eq('organization_id', organizationId)
         .eq('transaction_type', 'journal_entry')
@@ -179,7 +197,8 @@ export async function GET(request: NextRequest) {
     // List journal entries
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         universal_transaction_lines (
           *,
@@ -188,7 +207,8 @@ export async function GET(request: NextRequest) {
             entity_name
           )
         )
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('transaction_type', 'journal_entry')
       .order('transaction_date', { ascending: false })
@@ -207,11 +227,13 @@ export async function GET(request: NextRequest) {
       journals,
       count: journals.length
     })
-
   } catch (error) {
     console.error('Journal fetch error:', error)
-    return NextResponse.json({
-      error: error instanceof Error ? error.message : 'Failed to fetch journal entries'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : 'Failed to fetch journal entries'
+      },
+      { status: 500 }
+    )
   }
 }

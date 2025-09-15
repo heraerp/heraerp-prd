@@ -11,7 +11,7 @@ export interface UniversalResource {
   smart_code: string
   status: 'active' | 'inactive' | 'maintenance'
   ai_confidence?: number
-  
+
   // Resource-specific properties (from core_dynamic_data)
   resource_type: 'STAFF' | 'EQUIPMENT' | 'ROOM' | 'VEHICLE' | 'VIRTUAL'
   industry_type: 'healthcare' | 'restaurant' | 'professional' | 'manufacturing' | 'universal'
@@ -33,22 +33,22 @@ export interface UniversalAppointment {
   reference_number: string
   transaction_date: Date
   status: 'draft' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled' | 'no_show'
-  
+
   // Appointment details
   title: string
   description?: string
   start_time: Date
   end_time: Date
   duration_minutes: number
-  
+
   // Customer/Client information (entity_id reference)
   customer_entity_id?: string
-  
+
   // Appointment metadata
   appointment_type: string
   priority: 'low' | 'medium' | 'high' | 'urgent'
   notes?: string
-  
+
   // Industry-specific data (JSON in core_dynamic_data)
   industry_data?: Record<string, any>
 }
@@ -64,7 +64,7 @@ export interface AppointmentLine {
   unit_cost?: number
   line_total?: number
   smart_code: string
-  
+
   // Resource allocation details
   allocation_type: 'primary' | 'secondary' | 'backup'
   preparation_time?: number
@@ -112,25 +112,25 @@ export interface CalendarSmartCodes {
   HEALTHCARE_STAFF: 'HERA.HLTH.CRM.RES.STAFF.v1'
   HEALTHCARE_EQUIPMENT: 'HERA.HLTH.CRM.RES.EQUIP.v1'
   HEALTHCARE_ROOM: 'HERA.HLTH.CRM.RES.ROOM.v1'
-  
+
   RESTAURANT_TABLE: 'HERA.REST.CRM.RES.TABLE.v1'
   RESTAURANT_STAFF: 'HERA.REST.CRM.RES.STAFF.v1'
   RESTAURANT_KITCHEN: 'HERA.REST.CRM.RES.KITCHEN.v1'
-  
+
   PROFESSIONAL_STAFF: 'HERA.PROF.CRM.RES.STAFF.v1'
   PROFESSIONAL_ROOM: 'HERA.PROF.CRM.RES.ROOM.v1'
   PROFESSIONAL_VIRTUAL: 'HERA.PROF.CRM.RES.VIRTUAL.v1'
-  
+
   MANUFACTURING_EQUIPMENT: 'HERA.MFG.CRM.RES.EQUIP.v1'
   MANUFACTURING_STAFF: 'HERA.MFG.CRM.RES.STAFF.v1'
   MANUFACTURING_LINE: 'HERA.MFG.CRM.RES.LINE.v1'
-  
+
   // Appointment Transaction Smart Codes
   HEALTHCARE_APPOINTMENT: 'HERA.HLTH.CRM.TXN.APPT.v1'
   RESTAURANT_RESERVATION: 'HERA.REST.CRM.TXN.RESV.v1'
   PROFESSIONAL_MEETING: 'HERA.PROF.CRM.TXN.MEET.v1'
   MANUFACTURING_MAINTENANCE: 'HERA.MFG.CRM.TXN.MAINT.v1'
-  
+
   // Calendar Event Smart Codes
   CALENDAR_EVENT_DRAFT: 'HERA.CRM.CAL.ENT.EVENT.DRAFT'
   CALENDAR_EVENT_AI_HIGH: 'HERA.CRM.CAL.ENT.EVENT.AI.HIGH'
@@ -160,10 +160,10 @@ export interface IndustryCalendarConfig {
 }
 
 // Calendar View Types
-export type CalendarView = 
-  | 'dayGridMonth' 
-  | 'timeGridWeek' 
-  | 'timeGridDay' 
+export type CalendarView =
+  | 'dayGridMonth'
+  | 'timeGridWeek'
+  | 'timeGridDay'
   | 'listWeek'
   | 'resourceTimeGridDay'
   | 'resourceTimeGridWeek'
@@ -171,7 +171,11 @@ export type CalendarView =
 // Conflict Detection
 export interface SchedulingConflict {
   conflict_id: string
-  type: 'resource_double_booking' | 'maintenance_overlap' | 'skills_unavailable' | 'capacity_exceeded'
+  type:
+    | 'resource_double_booking'
+    | 'maintenance_overlap'
+    | 'skills_unavailable'
+    | 'capacity_exceeded'
   severity: 'warning' | 'error' | 'critical'
   affected_appointments: string[]
   affected_resources: string[]
@@ -246,7 +250,11 @@ export interface CalendarSecurityContext {
 
 // Real-time Update Types
 export interface CalendarUpdateEvent {
-  event_type: 'appointment_created' | 'appointment_updated' | 'appointment_cancelled' | 'resource_updated'
+  event_type:
+    | 'appointment_created'
+    | 'appointment_updated'
+    | 'appointment_cancelled'
+    | 'resource_updated'
   organization_id: string
   entity_id: string
   transaction_id?: string

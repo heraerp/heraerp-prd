@@ -2,10 +2,20 @@
 
 import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { 
-  Home, Users, Settings, Shield, Activity, 
-  CreditCard, Database, Bell, ChevronLeft,
-  Building2, UserPlus, FileText, BarChart3
+import {
+  Home,
+  Users,
+  Settings,
+  Shield,
+  Activity,
+  CreditCard,
+  Database,
+  Bell,
+  ChevronLeft,
+  Building2,
+  UserPlus,
+  FileText,
+  BarChart3
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -108,16 +118,16 @@ export function OrganizationSidebar() {
       {/* Navigation Items */}
       <nav className="flex-1 flex flex-col gap-2">
         <TooltipProvider>
-          {sidebarItems.map((item) => (
+          {sidebarItems.map(item => (
             <Tooltip key={item.id}>
               <TooltipTrigger asChild>
                 <Link href={item.href}>
                   <Button
-                    variant={isActive(item.href) ? "secondary" : "ghost"}
+                    variant={isActive(item.href) ? 'secondary' : 'ghost'}
                     size="icon"
                     className={`relative ${
-                      isActive(item.href) 
-                        ? 'bg-blue-100 text-blue-600 hover:bg-blue-100' 
+                      isActive(item.href)
+                        ? 'bg-blue-100 text-blue-600 hover:bg-blue-100'
                         : 'hover:bg-gray-100'
                     }`}
                   >

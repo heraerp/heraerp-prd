@@ -10,7 +10,10 @@ import type { Organization } from '@/types/salon.types'
 
 // Dynamically import the AppointmentManagementDashboard to avoid SSR issues
 const AppointmentManagementDashboard = dynamicImport(
-  () => import('@/components/salon/appointments/AppointmentManagementDashboard').then(mod => mod.AppointmentManagementDashboard),
+  () =>
+    import('@/components/salon/appointments/AppointmentManagementDashboard').then(
+      mod => mod.AppointmentManagementDashboard
+    ),
   {
     loading: () => (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
@@ -50,7 +53,8 @@ export default function SalonAppointmentsPage() {
 
       // Extract subdomain
       const parts = hostname.split('.')
-      if (parts.length >= 3) { // e.g., acme.app.com or acme.vercel.app
+      if (parts.length >= 3) {
+        // e.g., acme.app.com or acme.vercel.app
         const subdomain = parts[0]
         if (subdomain && subdomain !== 'app' && subdomain !== 'www') {
           try {

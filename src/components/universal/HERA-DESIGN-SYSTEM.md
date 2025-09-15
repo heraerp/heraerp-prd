@@ -17,35 +17,54 @@ The HERA Universal Design System provides a consistent, premium dark-mode experi
 ## Color System
 
 ### HERA Brand Colors (Oklahoma LCH)
+
 ```css
 /* Primary Brand Colors */
---hera-500: oklch(0.57 0.192 250);   /* Primary Blue */
---hera-cyan-500: oklch(0.68 0.12 200);   /* Secondary Cyan */
+--hera-500: oklch(0.57 0.192 250); /* Primary Blue */
+--hera-cyan-500: oklch(0.68 0.12 200); /* Secondary Cyan */
 --hera-emerald-500: oklch(0.64 0.12 160); /* Success Green */
---hera-amber-500: oklch(0.69 0.12 85);    /* Warning Gold */
+--hera-amber-500: oklch(0.69 0.12 85); /* Warning Gold */
 --hera-purple-500: oklch(0.58 0.192 280); /* Accent Purple */
 ```
 
 ### Dark Theme Variables
+
 ```css
 /* Enhanced Dark Surfaces */
---dark-surface-1: oklch(0.09 0.01 250);    /* Background */
---dark-surface-2: oklch(0.12 0.02 250);    /* Cards */
---dark-surface-3: oklch(0.15 0.03 250);    /* Elevated */
+--dark-surface-1: oklch(0.09 0.01 250); /* Background */
+--dark-surface-2: oklch(0.12 0.02 250); /* Cards */
+--dark-surface-3: oklch(0.15 0.03 250); /* Elevated */
 --dark-surface-elevated: oklch(0.18 0.04 250); /* Popover */
 ```
 
 ### Gradients
+
 ```css
 /* Universal Gradients */
---hera-gradient: linear-gradient(45deg, var(--hera-500), var(--hera-cyan-500), var(--hera-emerald-500));
---hera-gradient-wealth: linear-gradient(135deg, var(--hera-500) 0%, var(--hera-cyan-600) 50%, var(--hera-emerald-500) 100%);
---hera-gradient-dark: linear-gradient(135deg, var(--hera-900) 0%, var(--hera-800) 50%, var(--hera-700) 100%);
+--hera-gradient: linear-gradient(
+  45deg,
+  var(--hera-500),
+  var(--hera-cyan-500),
+  var(--hera-emerald-500)
+);
+--hera-gradient-wealth: linear-gradient(
+  135deg,
+  var(--hera-500) 0%,
+  var(--hera-cyan-600) 50%,
+  var(--hera-emerald-500) 100%
+);
+--hera-gradient-dark: linear-gradient(
+  135deg,
+  var(--hera-900) 0%,
+  var(--hera-800) 50%,
+  var(--hera-700) 100%
+);
 ```
 
 ## Animation System
 
 ### Durations & Easing
+
 ```css
 /* Animation Durations */
 --duration-fast: 150ms;
@@ -61,6 +80,7 @@ The HERA Universal Design System provides a consistent, premium dark-mode experi
 ```
 
 ### Universal Animation Classes
+
 ```tsx
 // Entry Animations
 <div className="animate-fade-in">Fade In</div>
@@ -82,6 +102,7 @@ The HERA Universal Design System provides a consistent, premium dark-mode experi
 ## Component Library
 
 ### HeraCard
+
 Premium card component with multiple variants:
 
 ```tsx
@@ -104,6 +125,7 @@ import { HeraCard, HeraWealthCard, HeraGlassCard } from '@/components/universal/
 ```
 
 **Props:**
+
 - `variant`: 'default' | 'glass' | 'wealth' | 'metric' | 'elevated'
 - `interactive`: boolean - Adds hover effects
 - `glow`: 'none' | 'primary' | 'success' | 'warning'
@@ -111,6 +133,7 @@ import { HeraCard, HeraWealthCard, HeraGlassCard } from '@/components/universal/
 - `animationDelay`: Delay in milliseconds
 
 ### HeraMetric
+
 Universal metric display component:
 
 ```tsx
@@ -137,12 +160,14 @@ import { HeraMetric, HeraWealthMetric } from '@/components/universal/ui';
 ```
 
 **Features:**
+
 - Automatic number formatting (currency, percentage, large numbers)
 - Trend indicators with icons
 - Multiple size variants
 - Interactive hover effects
 
 ### HeraProgress
+
 Advanced progress indicators:
 
 ```tsx
@@ -168,15 +193,16 @@ import { HeraProgress, HeraWealthProgress, HeraGoalProgress } from '@/components
 ```
 
 ### HeraLayout System
+
 Flexible layout components:
 
 ```tsx
-import { 
-  HeraLayout, 
-  HeraGrid, 
-  HeraStack, 
+import {
+  HeraLayout,
+  HeraGrid,
+  HeraStack,
   HeraDashboardLayout,
-  HeraPageHeader 
+  HeraPageHeader
 } from '@/components/universal/ui';
 
 // Dashboard Layout
@@ -186,7 +212,7 @@ import {
     subtitle="Monitor and manage your portfolio"
     actions={<Button>Export Data</Button>}
   />
-  
+
   <HeraGrid cols={3} responsive gap="lg">
     <HeraCard>Metric 1</HeraCard>
     <HeraCard>Metric 2</HeraCard>
@@ -204,6 +230,7 @@ import {
 ## CSS Utility Classes
 
 ### Glass Effects
+
 ```css
 .hera-glass-card     /* Premium glass card */
 .hera-wealth-card    /* Wealth-specific styling */
@@ -211,6 +238,7 @@ import {
 ```
 
 ### Status Indicators
+
 ```css
 .hera-status-positive  /* Green trend indicators */
 .hera-status-negative  /* Red trend indicators */
@@ -218,6 +246,7 @@ import {
 ```
 
 ### Interactive Elements
+
 ```css
 .hera-interactive     /* Hover effects */
 .hera-glow-primary    /* Primary glow effect */
@@ -226,6 +255,7 @@ import {
 ```
 
 ### Layout Utilities
+
 ```css
 .hera-stack-vertical    /* Vertical flex stack */
 .hera-stack-horizontal  /* Horizontal flex stack */
@@ -238,15 +268,13 @@ import {
 ## Usage Examples
 
 ### Wealth Management Dashboard
+
 ```tsx
 function WealthDashboard() {
   return (
     <HeraDashboardLayout>
-      <HeraPageHeader
-        title="Portfolio Overview"
-        subtitle="$250M+ under management"
-      />
-      
+      <HeraPageHeader title="Portfolio Overview" subtitle="$250M+ under management" />
+
       <HeraGrid cols={4} gap="lg">
         <HeraWealthMetric
           title="Total Value"
@@ -254,7 +282,7 @@ function WealthDashboard() {
           change={{ percentage: 2.4 }}
           trend="up"
         />
-        
+
         <HeraMetric
           title="Daily P&L"
           value={125000}
@@ -262,25 +290,21 @@ function WealthDashboard() {
           trend="up"
           variant="metric"
         />
-        
-        <HeraProgress
-          label="Risk Exposure"
-          value={35}
-          variant="warning"
-          showPercentage
-        />
-        
+
+        <HeraProgress label="Risk Exposure" value={35} variant="warning" showPercentage />
+
         <HeraGlassCard animation="slide-up" animationDelay={300}>
           <h3>AI Insights</h3>
           <p>Market opportunities detected...</p>
         </HeraGlassCard>
       </HeraGrid>
     </HeraDashboardLayout>
-  );
+  )
 }
 ```
 
 ### Restaurant Management
+
 ```tsx
 function RestaurantDashboard() {
   return (
@@ -289,7 +313,7 @@ function RestaurantDashboard() {
         title="Restaurant Operations"
         subtitle="Real-time kitchen and order management"
       />
-      
+
       <HeraGrid cols={3} gap="md">
         <HeraMetricCard interactive>
           <HeraMetric
@@ -300,42 +324,36 @@ function RestaurantDashboard() {
             icon={<DollarSign />}
           />
         </HeraMetricCard>
-        
+
         <HeraMetricCard>
-          <HeraMetric
-            title="Orders Today"
-            value={145}
-            trend="up"
-            icon={<ShoppingBag />}
-          />
+          <HeraMetric title="Orders Today" value={145} trend="up" icon={<ShoppingBag />} />
         </HeraMetricCard>
-        
+
         <HeraMetricCard>
-          <HeraGoalProgress
-            current={8500}
-            target={10000}
-            title="Daily Goal"
-          />
+          <HeraGoalProgress current={8500} target={10000} title="Daily Goal" />
         </HeraMetricCard>
       </HeraGrid>
     </HeraDashboardLayout>
-  );
+  )
 }
 ```
 
 ## Implementation Notes
 
 ### Performance
+
 - All animations use CSS transforms for GPU acceleration
 - CSS variables enable efficient theme switching
 - Backdrop-filter has fallbacks for older browsers
 
 ### Accessibility
+
 - All interactive elements have focus states
 - Color combinations meet WCAG contrast requirements
 - Animations respect `prefers-reduced-motion`
 
 ### Browser Support
+
 - Modern browsers with CSS custom properties
 - Graceful degradation for older browsers
 - Progressive enhancement for advanced features
@@ -343,6 +361,7 @@ function RestaurantDashboard() {
 ## Migration Guide
 
 ### From Existing Components
+
 ```tsx
 // Old approach
 <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
@@ -361,6 +380,7 @@ function RestaurantDashboard() {
 ```
 
 ### CSS Class Migration
+
 ```css
 /* Old classes */
 .custom-card { background: #1e293b; }
@@ -382,4 +402,4 @@ function RestaurantDashboard() {
 
 ---
 
-*The HERA Universal Design System - Built for the future of enterprise applications.*
+_The HERA Universal Design System - Built for the future of enterprise applications._

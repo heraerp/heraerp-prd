@@ -9,29 +9,29 @@ export function formatDate(date: Date | string, formatStr: string): string {
   try {
     // During build, return a placeholder that will be replaced client-side
     if (typeof window === 'undefined') {
-      const d = new Date(date);
-      
+      const d = new Date(date)
+
       // Basic format patterns
       switch (formatStr) {
         case 'yyyy-MM-dd':
-          return d.toISOString().split('T')[0];
+          return d.toISOString().split('T')[0]
         case 'HH:mm':
-          return d.toTimeString().slice(0, 5);
+          return d.toTimeString().slice(0, 5)
         case 'MMM dd':
-          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
         case 'MMM dd, yyyy':
-          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         default:
-          return d.toISOString();
+          return d.toISOString()
       }
     }
-    
+
     // Client-side: use date-fns
-    const { format } = require('date-fns');
-    return format(date, formatStr);
+    const { format } = require('date-fns')
+    return format(date, formatStr)
   } catch (error) {
-    console.warn('Date formatting error:', error);
-    return new Date(date).toISOString();
+    console.warn('Date formatting error:', error)
+    return new Date(date).toISOString()
   }
 }
 
@@ -42,19 +42,19 @@ export function addMinutesSafe(date: Date | string, amount: number): Date {
   try {
     if (typeof window === 'undefined') {
       // Server-side fallback
-      const d = new Date(date);
-      d.setMinutes(d.getMinutes() + amount);
-      return d;
+      const d = new Date(date)
+      d.setMinutes(d.getMinutes() + amount)
+      return d
     }
-    
+
     // Client-side: use date-fns
-    const { addMinutes } = require('date-fns');
-    return addMinutes(date, amount);
+    const { addMinutes } = require('date-fns')
+    return addMinutes(date, amount)
   } catch (error) {
-    console.warn('Add minutes error:', error);
-    const d = new Date(date);
-    d.setMinutes(d.getMinutes() + amount);
-    return d;
+    console.warn('Add minutes error:', error)
+    const d = new Date(date)
+    d.setMinutes(d.getMinutes() + amount)
+    return d
   }
 }
 
@@ -65,15 +65,15 @@ export function parseDateSafe(dateString: string, formatString: string, referenc
   try {
     if (typeof window === 'undefined') {
       // Server-side: basic parsing
-      return new Date(dateString);
+      return new Date(dateString)
     }
-    
+
     // Client-side: use date-fns
-    const { parse } = require('date-fns');
-    return parse(dateString, formatString, referenceDate);
+    const { parse } = require('date-fns')
+    return parse(dateString, formatString, referenceDate)
   } catch (error) {
-    console.warn('Date parsing error:', error);
-    return new Date(dateString);
+    console.warn('Date parsing error:', error)
+    return new Date(dateString)
   }
 }
 
@@ -84,19 +84,19 @@ export function isTodaySafe(date: Date | string): boolean {
   try {
     if (typeof window === 'undefined') {
       // Server-side fallback
-      const d = new Date(date);
-      const today = new Date();
-      return d.toDateString() === today.toDateString();
+      const d = new Date(date)
+      const today = new Date()
+      return d.toDateString() === today.toDateString()
     }
-    
+
     // Client-side: use date-fns
-    const { isToday } = require('date-fns');
-    return isToday(date);
+    const { isToday } = require('date-fns')
+    return isToday(date)
   } catch (error) {
-    console.warn('Is today error:', error);
-    const d = new Date(date);
-    const today = new Date();
-    return d.toDateString() === today.toDateString();
+    console.warn('Is today error:', error)
+    const d = new Date(date)
+    const today = new Date()
+    return d.toDateString() === today.toDateString()
   }
 }
 
@@ -107,21 +107,21 @@ export function isYesterdaySafe(date: Date | string): boolean {
   try {
     if (typeof window === 'undefined') {
       // Server-side fallback
-      const d = new Date(date);
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      return d.toDateString() === yesterday.toDateString();
+      const d = new Date(date)
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      return d.toDateString() === yesterday.toDateString()
     }
-    
+
     // Client-side: use date-fns
-    const { isYesterday } = require('date-fns');
-    return isYesterday(date);
+    const { isYesterday } = require('date-fns')
+    return isYesterday(date)
   } catch (error) {
-    console.warn('Is yesterday error:', error);
-    const d = new Date(date);
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return d.toDateString() === yesterday.toDateString();
+    console.warn('Is yesterday error:', error)
+    const d = new Date(date)
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    return d.toDateString() === yesterday.toDateString()
   }
 }
 
@@ -132,19 +132,19 @@ export function differenceInHoursSafe(dateLeft: Date | string, dateRight: Date |
   try {
     if (typeof window === 'undefined') {
       // Server-side fallback
-      const d1 = new Date(dateLeft);
-      const d2 = new Date(dateRight);
-      return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60));
+      const d1 = new Date(dateLeft)
+      const d2 = new Date(dateRight)
+      return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60))
     }
-    
+
     // Client-side: use date-fns
-    const { differenceInHours } = require('date-fns');
-    return differenceInHours(dateLeft, dateRight);
+    const { differenceInHours } = require('date-fns')
+    return differenceInHours(dateLeft, dateRight)
   } catch (error) {
-    console.warn('Difference in hours error:', error);
-    const d1 = new Date(dateLeft);
-    const d2 = new Date(dateRight);
-    return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60));
+    console.warn('Difference in hours error:', error)
+    const d1 = new Date(dateLeft)
+    const d2 = new Date(dateRight)
+    return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60))
   }
 }
 
@@ -155,18 +155,18 @@ export function differenceInMinutesSafe(dateLeft: Date | string, dateRight: Date
   try {
     if (typeof window === 'undefined') {
       // Server-side fallback
-      const d1 = new Date(dateLeft);
-      const d2 = new Date(dateRight);
-      return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60));
+      const d1 = new Date(dateLeft)
+      const d2 = new Date(dateRight)
+      return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60))
     }
-    
+
     // Client-side: use date-fns
-    const { differenceInMinutes } = require('date-fns');
-    return differenceInMinutes(dateLeft, dateRight);
+    const { differenceInMinutes } = require('date-fns')
+    return differenceInMinutes(dateLeft, dateRight)
   } catch (error) {
-    console.warn('Difference in minutes error:', error);
-    const d1 = new Date(dateLeft);
-    const d2 = new Date(dateRight);
-    return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60));
+    console.warn('Difference in minutes error:', error)
+    const d1 = new Date(dateLeft)
+    const d2 = new Date(dateRight)
+    return Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60))
   }
 }

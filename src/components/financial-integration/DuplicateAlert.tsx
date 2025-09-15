@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,11 +20,11 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table'
-import { 
-  AlertTriangle, 
-  FileText, 
+import {
+  AlertTriangle,
+  FileText,
   Calendar,
   DollarSign,
   Building2,
@@ -106,10 +106,14 @@ export function DuplicateAlert({
 
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk) {
-      case 'high': return 'destructive'
-      case 'medium': return 'secondary'
-      case 'low': return 'outline'
-      default: return 'secondary'
+      case 'high':
+        return 'destructive'
+      case 'medium':
+        return 'secondary'
+      case 'low':
+        return 'outline'
+      default:
+        return 'secondary'
     }
   }
 
@@ -149,8 +153,8 @@ export function DuplicateAlert({
             Potential Duplicate Transaction Detected
           </DialogTitle>
           <DialogDescription>
-            HERA DNA's AI analysis has detected a potential duplicate transaction.
-            Please review the details below before proceeding.
+            HERA DNA's AI analysis has detected a potential duplicate transaction. Please review the
+            details below before proceeding.
           </DialogDescription>
         </DialogHeader>
 
@@ -232,13 +236,9 @@ export function DuplicateAlert({
                     {checkResult.matches.map((match, index) => (
                       <TableRow key={index}>
                         <TableCell>{formatDate(match.date)}</TableCell>
-                        <TableCell className="font-medium">
-                          {match.invoice_number || '-'}
-                        </TableCell>
+                        <TableCell className="font-medium">{match.invoice_number || '-'}</TableCell>
                         <TableCell>{match.vendor_name || '-'}</TableCell>
-                        <TableCell className="text-right">
-                          {formatAmount(match.amount)}
-                        </TableCell>
+                        <TableCell className="text-right">{formatAmount(match.amount)}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
                             {match.confidence_factors.amount_match && (
@@ -305,10 +305,7 @@ export function DuplicateAlert({
             <span>This analysis is powered by HERA DNA AI</span>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={handleCancel}
-            >
+            <Button variant="outline" onClick={handleCancel}>
               <XCircle className="h-4 w-4 mr-2" />
               Cancel Posting
             </Button>

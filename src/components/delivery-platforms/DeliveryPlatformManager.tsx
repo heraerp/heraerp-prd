@@ -114,11 +114,11 @@ export function DeliveryPlatformManager() {
     try {
       setIsLoading(true)
       setError(null)
-      
+
       console.log('🚛 Loading delivery platforms...')
       const response = await fetch('/api/v1/delivery-platforms?include_stats=true')
       const result = await response.json()
-      
+
       if (result.success) {
         setPlatformData(result.data)
         setLastUpdated(new Date())
@@ -145,7 +145,7 @@ export function DeliveryPlatformManager() {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       const method = editingPlatform ? 'PUT' : 'POST'
       const url = '/api/v1/delivery-platforms'
@@ -159,7 +159,7 @@ export function DeliveryPlatformManager() {
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         console.log(`✅ Platform ${editingPlatform ? 'updated' : 'created'} successfully`)
         setShowAddForm(false)
@@ -243,34 +243,49 @@ export function DeliveryPlatformManager() {
   // Helper functions
   const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`
   const formatPercent = (rate: number) => `${(rate * 100).toFixed(1)}%`
-  
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800 border-green-200'
-      case 'inactive': return 'bg-gray-100 text-gray-800 border-gray-200'
-      case 'configuring': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'active':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'inactive':
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'configuring':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
 
   const getSyncStatusColor = (status: string) => {
     switch (status) {
-      case 'connected': return 'bg-green-100 text-green-800'
-      case 'configuring': return 'bg-yellow-100 text-yellow-800'
-      case 'error': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'connected':
+        return 'bg-green-100 text-green-800'
+      case 'configuring':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'error':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
   const getPlatformIcon = (type: string) => {
     switch (type) {
-      case 'deliveroo': return '🛵'
-      case 'ubereats': return '🚗'
-      case 'swiggy': return '🏍️'
-      case 'zomato': return '🛺'
-      case 'doordash': return '🚲'
-      case 'grubhub': return '🚛'
-      default: return '📱'
+      case 'deliveroo':
+        return '🛵'
+      case 'ubereats':
+        return '🚗'
+      case 'swiggy':
+        return '🏍️'
+      case 'zomato':
+        return '🛺'
+      case 'doordash':
+        return '🚲'
+      case 'grubhub':
+        return '🚛'
+      default:
+        return '📱'
     }
   }
 
@@ -292,7 +307,9 @@ export function DeliveryPlatformManager() {
       <div className="max-w-7xl mx-auto p-6">
         <Card className="p-8 text-center">
           <AlertCircle className="w-12 h-12 mx-auto text-red-500 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Unable to Load Delivery Platforms</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Unable to Load Delivery Platforms
+          </h3>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={loadPlatforms}
@@ -385,7 +402,9 @@ export function DeliveryPlatformManager() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-yellow-800">Today's Revenue</p>
-              <p className="text-2xl font-bold text-yellow-900">{formatCurrency(stats.total_today_revenue)}</p>
+              <p className="text-2xl font-bold text-yellow-900">
+                {formatCurrency(stats.total_today_revenue)}
+              </p>
             </div>
             <DollarSign className="w-8 h-8 text-yellow-600" />
           </div>
@@ -404,7 +423,9 @@ export function DeliveryPlatformManager() {
         {platforms.length === 0 ? (
           <div className="text-center py-12">
             <Truck className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Delivery Platforms Connected</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No Delivery Platforms Connected
+            </h3>
             <p className="text-gray-600 mb-6">
               Connect with delivery platforms like Deliveroo, Uber Eats, Swiggy to expand your reach
             </p>
@@ -418,7 +439,7 @@ export function DeliveryPlatformManager() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {platforms.map((platform) => (
+            {platforms.map(platform => (
               <Card key={platform.id} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -426,9 +447,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <h4 className="font-semibold text-gray-900 flex items-center space-x-2">
                         <span>{platform.name}</span>
-                        <Badge className={getStatusColor(platform.status)}>
-                          {platform.status}
-                        </Badge>
+                        <Badge className={getStatusColor(platform.status)}>{platform.status}</Badge>
                       </h4>
                       <p className="text-sm text-gray-600 capitalize">{platform.platform_type}</p>
                     </div>
@@ -450,7 +469,9 @@ export function DeliveryPlatformManager() {
                     </div>
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <p className="text-xs text-gray-600">Revenue</p>
-                      <p className="font-semibold text-gray-900">{formatCurrency(platform.stats.total_revenue)}</p>
+                      <p className="font-semibold text-gray-900">
+                        {formatCurrency(platform.stats.total_revenue)}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -500,14 +521,19 @@ export function DeliveryPlatformManager() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-500">Webhook URL</span>
                     <button
-                      onClick={() => copyToClipboard(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/v1/delivery-platforms/${platform.id}/webhook`)}
+                      onClick={() =>
+                        copyToClipboard(
+                          `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/v1/delivery-platforms/${platform.id}/webhook`
+                        )
+                      }
                       className="p-1 text-gray-400 hover:text-gray-600 rounded"
                     >
                       <Copy className="w-3 h-3" />
                     </button>
                   </div>
                   <p className="text-xs font-mono text-gray-700 bg-gray-50 p-2 rounded mt-1 break-all">
-                    {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/v1/delivery-platforms/{platform.id}/webhook
+                    {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}
+                    /api/v1/delivery-platforms/{platform.id}/webhook
                   </p>
                 </div>
               </Card>
@@ -543,14 +569,17 @@ export function DeliveryPlatformManager() {
                   <h4 className="text-md font-semibold text-gray-800">Basic Information</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="platform_name" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="platform_name"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Platform Name *
                       </label>
                       <input
                         id="platform_name"
                         type="text"
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                         placeholder="Mario's Deliveroo"
                         required
@@ -558,13 +587,16 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label htmlFor="platform_type" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="platform_type"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Platform Type *
                       </label>
                       <select
                         id="platform_type"
                         value={formData.platform_type}
-                        onChange={(e) => setFormData({...formData, platform_type: e.target.value})}
+                        onChange={e => setFormData({ ...formData, platform_type: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                         required
                       >
@@ -581,16 +613,19 @@ export function DeliveryPlatformManager() {
                 {/* API Configuration */}
                 <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">API Configuration</h4>
-                  
+
                   <div>
-                    <label htmlFor="api_endpoint" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="api_endpoint"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       API Endpoint *
                     </label>
                     <input
                       id="api_endpoint"
                       type="url"
                       value={formData.api_endpoint}
-                      onChange={(e) => setFormData({...formData, api_endpoint: e.target.value})}
+                      onChange={e => setFormData({ ...formData, api_endpoint: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                       placeholder="https://api.deliveroo.com/v1/"
                       required
@@ -599,28 +634,34 @@ export function DeliveryPlatformManager() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="api_key" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="api_key"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         API Key
                       </label>
                       <input
                         id="api_key"
                         type="text"
                         value={formData.api_key}
-                        onChange={(e) => setFormData({...formData, api_key: e.target.value})}
+                        onChange={e => setFormData({ ...formData, api_key: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                         placeholder="Your API key"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="secret_key" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="secret_key"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Secret Key
                       </label>
                       <input
                         id="secret_key"
                         type="password"
                         value={formData.secret_key}
-                        onChange={(e) => setFormData({...formData, secret_key: e.target.value})}
+                        onChange={e => setFormData({ ...formData, secret_key: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                         placeholder="Your secret key"
                       />
@@ -629,28 +670,34 @@ export function DeliveryPlatformManager() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="restaurant_id" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="restaurant_id"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Restaurant ID
                       </label>
                       <input
                         id="restaurant_id"
                         type="text"
                         value={formData.restaurant_id}
-                        onChange={(e) => setFormData({...formData, restaurant_id: e.target.value})}
+                        onChange={e => setFormData({ ...formData, restaurant_id: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                         placeholder="Platform restaurant ID"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="store_id" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="store_id"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Store ID
                       </label>
                       <input
                         id="store_id"
                         type="text"
                         value={formData.store_id}
-                        onChange={(e) => setFormData({...formData, store_id: e.target.value})}
+                        onChange={e => setFormData({ ...formData, store_id: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                         placeholder="Platform store ID"
                       />
@@ -661,10 +708,13 @@ export function DeliveryPlatformManager() {
                 {/* Business Configuration */}
                 <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">Business Configuration</h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="commission_rate" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="commission_rate"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Commission Rate (%)
                       </label>
                       <div className="relative">
@@ -676,7 +726,12 @@ export function DeliveryPlatformManager() {
                           min="0"
                           max="1"
                           value={formData.commission_rate}
-                          onChange={(e) => setFormData({...formData, commission_rate: parseFloat(e.target.value) || 0})}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              commission_rate: parseFloat(e.target.value) || 0
+                            })
+                          }
                           className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                           placeholder="0.15"
                         />
@@ -684,7 +739,10 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label htmlFor="delivery_fee" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="delivery_fee"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Delivery Fee ($)
                       </label>
                       <div className="relative">
@@ -695,7 +753,12 @@ export function DeliveryPlatformManager() {
                           step="0.01"
                           min="0"
                           value={formData.delivery_fee}
-                          onChange={(e) => setFormData({...formData, delivery_fee: parseFloat(e.target.value) || 0})}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              delivery_fee: parseFloat(e.target.value) || 0
+                            })
+                          }
                           className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                           placeholder="2.99"
                         />
@@ -703,7 +766,10 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label htmlFor="minimum_order" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="minimum_order"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Minimum Order Value ($)
                       </label>
                       <div className="relative">
@@ -714,7 +780,12 @@ export function DeliveryPlatformManager() {
                           step="0.01"
                           min="0"
                           value={formData.minimum_order_value}
-                          onChange={(e) => setFormData({...formData, minimum_order_value: parseFloat(e.target.value) || 0})}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              minimum_order_value: parseFloat(e.target.value) || 0
+                            })
+                          }
                           className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                           placeholder="15.00"
                         />
@@ -722,7 +793,10 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label htmlFor="max_distance" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="max_distance"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Max Delivery Distance (km)
                       </label>
                       <div className="relative">
@@ -733,7 +807,12 @@ export function DeliveryPlatformManager() {
                           step="0.1"
                           min="0"
                           value={formData.max_delivery_distance}
-                          onChange={(e) => setFormData({...formData, max_delivery_distance: parseFloat(e.target.value) || 0})}
+                          onChange={e =>
+                            setFormData({
+                              ...formData,
+                              max_delivery_distance: parseFloat(e.target.value) || 0
+                            })
+                          }
                           className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                           placeholder="10.0"
                         />
@@ -745,36 +824,46 @@ export function DeliveryPlatformManager() {
                 {/* Operational Settings */}
                 <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
                   <h4 className="text-md font-semibold text-gray-800">Operational Settings</h4>
-                  
+
                   <div className="space-y-3">
                     <label className="flex items-center space-x-3 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={formData.auto_accept_orders}
-                        onChange={(e) => setFormData({...formData, auto_accept_orders: e.target.checked})}
+                        onChange={e =>
+                          setFormData({ ...formData, auto_accept_orders: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 bg-white"
                       />
-                      <span className="text-sm font-medium text-gray-700">Auto-accept incoming orders</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        Auto-accept incoming orders
+                      </span>
                     </label>
 
                     <label className="flex items-center space-x-3 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={formData.sync_menu}
-                        onChange={(e) => setFormData({...formData, sync_menu: e.target.checked})}
+                        onChange={e => setFormData({ ...formData, sync_menu: e.target.checked })}
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 bg-white"
                       />
-                      <span className="text-sm font-medium text-gray-700">Sync menu items with platform</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        Sync menu items with platform
+                      </span>
                     </label>
 
                     <label className="flex items-center space-x-3 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={formData.sync_inventory}
-                        onChange={(e) => setFormData({...formData, sync_inventory: e.target.checked})}
+                        onChange={e =>
+                          setFormData({ ...formData, sync_inventory: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 bg-white"
                       />
-                      <span className="text-sm font-medium text-gray-700">Sync inventory levels</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        Sync inventory levels
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -812,24 +901,30 @@ export function DeliveryPlatformManager() {
             Universal Delivery Platform Integration
           </h3>
           <p className="text-sm text-blue-800 mb-4">
-            HERA's universal architecture enables seamless integration with any delivery platform without custom development:
+            HERA's universal architecture enables seamless integration with any delivery platform
+            without custom development:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-blue-700">
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Universal Entities</strong><br />
+              <strong>Universal Entities</strong>
+              <br />
               Each platform stored as flexible entity with unlimited custom properties
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Webhook Architecture</strong><br />
+              <strong>Webhook Architecture</strong>
+              <br />
               Universal webhook handler transforms any platform order format to HERA transactions
             </div>
             <div className="bg-white/50 p-3 rounded-lg">
-              <strong>Steve Jobs Philosophy</strong><br />
-              "Innovation distinguishes between a leader and a follower" - leading integration design
+              <strong>Steve Jobs Philosophy</strong>
+              <br />
+              "Innovation distinguishes between a leader and a follower" - leading integration
+              design
             </div>
           </div>
           <p className="text-xs text-blue-600 mt-4">
-            Same integration pattern works for e-commerce platforms, payment gateways, and third-party services
+            Same integration pattern works for e-commerce platforms, payment gateways, and
+            third-party services
           </p>
         </div>
       </Card>

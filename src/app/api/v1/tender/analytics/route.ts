@@ -15,10 +15,12 @@ export async function GET(request: NextRequest) {
 
     try {
       // Define period filter
-      const periodFilter = 
-        period === 'quarter' ? "NOW() - INTERVAL '3 months'" :
-        period === 'year' ? "NOW() - INTERVAL '1 year'" :
-        "NOW() - INTERVAL '6 months'"
+      const periodFilter =
+        period === 'quarter'
+          ? "NOW() - INTERVAL '3 months'"
+          : period === 'year'
+            ? "NOW() - INTERVAL '1 year'"
+            : "NOW() - INTERVAL '6 months'"
 
       // 1. Monthly bid performance
       const monthlyPerformanceQuery = `
@@ -49,13 +51,10 @@ export async function GET(request: NextRequest) {
         FROM monthly_bids
       `
 
-      const { data: monthlyData, error: monthlyError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: monthlyPerformanceQuery,
-          params: [organizationId]
-        }
-      )
+      const { data: monthlyData, error: monthlyError } = await supabase.rpc('execute_sql', {
+        query: monthlyPerformanceQuery,
+        params: [organizationId]
+      })
 
       // 2. Win rate by category (wood type)
       const winRateByCategoryQuery = `
@@ -93,13 +92,10 @@ export async function GET(request: NextRequest) {
         ORDER BY total_bids DESC
       `
 
-      const { data: categoryData, error: categoryError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: winRateByCategoryQuery,
-          params: [organizationId]
-        }
-      )
+      const { data: categoryData, error: categoryError } = await supabase.rpc('execute_sql', {
+        query: winRateByCategoryQuery,
+        params: [organizationId]
+      })
 
       // 3. Competitor market share
       const competitorShareQuery = `
@@ -140,13 +136,10 @@ export async function GET(request: NextRequest) {
         LIMIT 5
       `
 
-      const { data: competitorData, error: competitorError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: competitorShareQuery,
-          params: [organizationId]
-        }
-      )
+      const { data: competitorData, error: competitorError } = await supabase.rpc('execute_sql', {
+        query: competitorShareQuery,
+        params: [organizationId]
+      })
 
       // 4. AI performance metrics
       const aiPerformanceQuery = `
@@ -181,13 +174,10 @@ export async function GET(request: NextRequest) {
         FROM ai_predictions
       `
 
-      const { data: aiMetrics, error: aiError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: aiPerformanceQuery,
-          params: [organizationId]
-        }
-      )
+      const { data: aiMetrics, error: aiError } = await supabase.rpc('execute_sql', {
+        query: aiPerformanceQuery,
+        params: [organizationId]
+      })
 
       // 5. Tender value trends
       const valueTrendsQuery = `
@@ -213,13 +203,10 @@ export async function GET(request: NextRequest) {
         FROM monthly_values
       `
 
-      const { data: valueTrends, error: valueTrendsError } = await supabase.rpc(
-        'execute_sql',
-        { 
-          query: valueTrendsQuery,
-          params: [organizationId]
-        }
-      )
+      const { data: valueTrends, error: valueTrendsError } = await supabase.rpc('execute_sql', {
+        query: valueTrendsQuery,
+        params: [organizationId]
+      })
 
       // Check for errors
       if (monthlyError || categoryError || competitorError || aiError || valueTrendsError) {
@@ -249,8 +236,8 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error('Error fetching tender analytics:', error)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to fetch tender analytics',
           smart_code: 'HERA.FURNITURE.TENDER.ANALYTICS.ERROR.v1'
         },

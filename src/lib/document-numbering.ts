@@ -1,7 +1,7 @@
 /**
  * HERA Document Number Generator
  * Professional document numbering for furniture industry
- * 
+ *
  * Usage:
  *   const docNumber = await generateDocumentNumber(orgId, 'sales_order')
  *   // Returns: SO-FRN-2025-1001
@@ -15,13 +15,13 @@ const DOCUMENT_CONFIGS = {
     sequence_start: 1001
   },
   proforma_invoice: {
-    prefix: 'PI-FRN', 
+    prefix: 'PI-FRN',
     description: 'Proforma Invoice',
     sequence_start: 2001
   },
   invoice: {
     prefix: 'INV-FRN',
-    description: 'Commercial Invoice', 
+    description: 'Commercial Invoice',
     sequence_start: 3001
   },
   delivery_note: {
@@ -40,16 +40,19 @@ const DOCUMENT_CONFIGS = {
     sequence_start: 6001
   },
   quotation: {
-    prefix: 'QT-FRN', 
+    prefix: 'QT-FRN',
     description: 'Quotation',
     sequence_start: 7001
   }
 } as const
 
-export async function generateDocumentNumber(organizationId: string, documentType: string): Promise<string> {
+export async function generateDocumentNumber(
+  organizationId: string,
+  documentType: string
+): Promise<string> {
   try {
     const config = DOCUMENT_CONFIGS[documentType as keyof typeof DOCUMENT_CONFIGS]
-    
+
     if (!config) {
       // Fallback for unknown document types
       const timestamp = Date.now()
@@ -61,13 +64,12 @@ export async function generateDocumentNumber(organizationId: string, documentTyp
     // Example: SO-FRN-2025-1001
     const currentYear = new Date().getFullYear()
     const timestamp = Date.now()
-    
+
     // Extract last 4 digits of timestamp for uniqueness
     const sequence = config.sequence_start + parseInt(timestamp.toString().slice(-4))
     const paddedSequence = sequence.toString().padStart(4, '0')
-    
+
     return `${config.prefix}-${currentYear}-${paddedSequence}`
-    
   } catch (error) {
     console.error('Document number generation failed:', error)
     // Ultimate fallback
@@ -80,7 +82,7 @@ export async function generateDocumentNumber(organizationId: string, documentTyp
 // Document type constants for type safety
 export const DocumentTypes = {
   SALES_ORDER: 'sales_order',
-  PROFORMA_INVOICE: 'proforma_invoice', 
+  PROFORMA_INVOICE: 'proforma_invoice',
   INVOICE: 'invoice',
   DELIVERY_NOTE: 'delivery_note',
   PURCHASE_ORDER: 'purchase_order',
@@ -88,7 +90,7 @@ export const DocumentTypes = {
   QUOTATION: 'quotation'
 } as const
 
-export type DocumentType = typeof DocumentTypes[keyof typeof DocumentTypes]
+export type DocumentType = (typeof DocumentTypes)[keyof typeof DocumentTypes]
 
 // Utility to get document description
 export function getDocumentDescription(documentType: string): string {
@@ -107,18 +109,21 @@ export interface ParsedDocumentNumber {
 
 export function parseDocumentNumber(documentNumber: string): ParsedDocumentNumber {
   const parts = documentNumber.split('-')
-  
+
   if (parts.length >= 4) {
     // Format: SO-FRN-2025-1001
     const [type, industry, year, sequence] = parts
     const prefix = `${type}-${industry}`
-    
+
     return {
       prefix,
       year,
-      sequence, 
+      sequence,
       isValid: true,
-      documentType: type.toLowerCase() + '_' + (type === 'SO' ? 'order' : type === 'PI' ? 'invoice' : 'document')
+      documentType:
+        type.toLowerCase() +
+        '_' +
+        (type === 'SO' ? 'order' : type === 'PI' ? 'invoice' : 'document')
     }
   } else if (parts.length === 2) {
     // Fallback format: SOL-1234567890
@@ -130,7 +135,7 @@ export function parseDocumentNumber(documentNumber: string): ParsedDocumentNumbe
       isValid: false
     }
   }
-  
+
   return {
     prefix: documentNumber,
     year: '',
@@ -142,8 +147,10 @@ export function parseDocumentNumber(documentNumber: string): ParsedDocumentNumbe
 // Validate document number format
 export function isValidDocumentNumber(documentNumber: string): boolean {
   const parsed = parseDocumentNumber(documentNumber)
-  return parsed.isValid && 
-         parsed.year.length === 4 && 
-         parseInt(parsed.year) >= 2020 &&
-         parsed.sequence.length >= 4
+  return (
+    parsed.isValid &&
+    parsed.year.length === 4 &&
+    parseInt(parsed.year) >= 2020 &&
+    parsed.sequence.length >= 4
+  )
 }

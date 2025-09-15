@@ -23,11 +23,12 @@ export async function isPeriodOpen(
   fiscalPeriod: number
 ): Promise<boolean> {
   const supabase = getSupabase()
-  
+
   // Look up fiscal period entity with status
   const { data: periodEntity, error } = await supabase
     .from('core_entities')
-    .select(`
+    .select(
+      `
       id,
       entity_code,
       metadata,
@@ -37,7 +38,8 @@ export async function isPeriodOpen(
           metadata
         )
       )
-    `)
+    `
+    )
     .eq('organization_id', organizationId)
     .eq('entity_type', 'fiscal_period')
     .eq('entity_code', `FY${fiscalYear}-P${String(fiscalPeriod).padStart(2, '0')}`)
@@ -50,8 +52,9 @@ export async function isPeriodOpen(
 
   // Check for closed status relationship
   const statusRelationship = periodEntity.relationships_from?.find(
-    rel => rel.to_entity?.entity_type === 'workflow_status' &&
-           rel.to_entity?.entity_code === 'STATUS-CLOSED'
+    rel =>
+      rel.to_entity?.entity_type === 'workflow_status' &&
+      rel.to_entity?.entity_code === 'STATUS-CLOSED'
   )
 
   return !statusRelationship // Open if no closed status
@@ -71,15 +74,15 @@ export async function checkPeriodPostingAllowed(params: {
   periodStatus?: PeriodStatus
 }> {
   const { organizationId, transactionDate, transactionType, smartCode } = params
-  
+
   // Extract fiscal period from date
   const date = new Date(transactionDate)
   const fiscalYear = date.getFullYear()
   const fiscalPeriod = date.getMonth() + 1 // 1-12
-  
+
   // Check if period is open
   const isOpen = await isPeriodOpen(organizationId, fiscalYear, fiscalPeriod)
-  
+
   if (!isOpen) {
     return {
       allowed: false,
@@ -92,7 +95,7 @@ export async function checkPeriodPostingAllowed(params: {
       }
     }
   }
-  
+
   // Special cases for year-end transactions
   if (smartCode.includes('.YEAREND.') || smartCode.includes('.CLOSE.')) {
     // These are allowed even in closed periods by authorized users
@@ -107,7 +110,7 @@ export async function checkPeriodPostingAllowed(params: {
       }
     }
   }
-  
+
   return {
     allowed: true,
     periodStatus: {
@@ -134,9 +137,9 @@ export async function closeFiscalPeriod(params: {
 }> {
   const { organizationId, fiscalYear, fiscalPeriod, closedBy } = params
   const supabase = getSupabase()
-  
+
   const periodCode = `FY${fiscalYear}-P${String(fiscalPeriod).padStart(2, '0')}`
-  
+
   // First ensure period entity exists
   const { data: periodEntity } = await supabase
     .from('core_entities')
@@ -145,9 +148,9 @@ export async function closeFiscalPeriod(params: {
     .eq('entity_type', 'fiscal_period')
     .eq('entity_code', periodCode)
     .single()
-    
+
   let periodId = periodEntity?.id
-  
+
   if (!periodId) {
     // Create period entity
     const { data: newPeriod, error: createError } = await supabase
@@ -167,14 +170,14 @@ export async function closeFiscalPeriod(params: {
       })
       .select()
       .single()
-      
+
     if (createError) {
       return { success: false, error: createError.message }
     }
-    
+
     periodId = newPeriod.id
   }
-  
+
   // Get closed status entity
   const { data: closedStatus } = await supabase
     .from('core_entities')
@@ -183,30 +186,28 @@ export async function closeFiscalPeriod(params: {
     .eq('entity_type', 'workflow_status')
     .eq('entity_code', 'STATUS-CLOSED')
     .single()
-    
+
   if (!closedStatus) {
     return { success: false, error: 'Closed status not found in system' }
   }
-  
+
   // Create status relationship
-  const { error: relError } = await supabase
-    .from('core_relationships')
-    .insert({
-      from_entity_id: periodId,
-      to_entity_id: closedStatus.id,
-      relationship_type: 'has_status',
-      smart_code: 'HERA.FIN.PERIOD.CLOSE.v1',
-      organization_id: organizationId,
-      metadata: {
-        closed_at: new Date().toISOString(),
-        closed_by: closedBy,
-        action: 'period_close'
-      }
-    })
-    
+  const { error: relError } = await supabase.from('core_relationships').insert({
+    from_entity_id: periodId,
+    to_entity_id: closedStatus.id,
+    relationship_type: 'has_status',
+    smart_code: 'HERA.FIN.PERIOD.CLOSE.v1',
+    organization_id: organizationId,
+    metadata: {
+      closed_at: new Date().toISOString(),
+      closed_by: closedBy,
+      action: 'period_close'
+    }
+  })
+
   if (relError) {
     return { success: false, error: relError.message }
   }
-  
+
   return { success: true, periodId }
 }

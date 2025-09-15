@@ -7,13 +7,19 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 // import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider' // Not needed - using default salon org
 import { useToast } from '@/components/ui/use-toast'
-import { 
+import {
   ChevronLeft,
   Download,
   FileText,
@@ -38,7 +44,8 @@ import {
 } from 'lucide-react'
 
 // Default organization ID for development
-const DEFAULT_ORG_ID = process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+const DEFAULT_ORG_ID =
+  process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
 
 interface GLAccount {
   id: string
@@ -97,7 +104,7 @@ interface TrialBalanceData {
 export default function TrialBalancePage() {
   const router = useRouter()
   const { toast } = useToast()
-  
+
   // Use default salon organization - no auth required
   const organizationId = '550e8400-e29b-41d4-a716-446655440000'
 
@@ -117,15 +124,15 @@ export default function TrialBalancePage() {
     try {
       setLoading(true)
       const { start, end } = getPeriodDates(selectedPeriod)
-      
+
       const response = await fetch(
         `/api/v1/reports/trial-balance?organization_id=${organizationId}&start_date=${start}&end_date=${end}&currency=${selectedCurrency}`
       )
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch trial balance')
       }
-      
+
       const data = await response.json()
       setTrialBalanceData(data.data)
     } catch (error) {
@@ -210,16 +217,16 @@ export default function TrialBalancePage() {
         `/api/v1/reports/trial-balance/export?organization_id=${organizationId}&start_date=${start}&end_date=${end}&format=${format}&currency=${selectedCurrency}`,
         { method: 'POST' }
       )
-      
+
       if (!response.ok) throw new Error('Export failed')
-      
+
       const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
       a.download = `trial-balance-${new Date().toISOString().split('T')[0]}.${format}`
       a.click()
-      
+
       toast({
         title: 'Export Successful',
         description: `Trial balance exported as ${format.toUpperCase()}`
@@ -237,28 +244,33 @@ export default function TrialBalancePage() {
     const hasChildren = entry.children && entry.children.length > 0
     const isExpanded = expandedAccounts.has(entry.account.account_code)
     const indent = level * 24
-    
+
     // Hide zero balance accounts if setting is enabled
     if (showZeroBalances === false) {
       const hasBalance = entry.closing_balance_debit !== 0 || entry.closing_balance_credit !== 0
       if (!hasBalance && !hasChildren) return null
     }
 
-    const values = selectedView === 'ytd' ? {
-      debit: entry.ytd_debit,
-      credit: entry.ytd_credit,
-      closingDebit: entry.closing_balance_debit,
-      closingCredit: entry.closing_balance_credit
-    } : {
-      debit: entry.period_debit,
-      credit: entry.period_credit,
-      closingDebit: entry.closing_balance_debit,
-      closingCredit: entry.closing_balance_credit
-    }
+    const values =
+      selectedView === 'ytd'
+        ? {
+            debit: entry.ytd_debit,
+            credit: entry.ytd_credit,
+            closingDebit: entry.closing_balance_debit,
+            closingCredit: entry.closing_balance_credit
+          }
+        : {
+            debit: entry.period_debit,
+            credit: entry.period_credit,
+            closingDebit: entry.closing_balance_debit,
+            closingCredit: entry.closing_balance_credit
+          }
 
     return (
       <React.Fragment key={entry.account.id}>
-        <tr className={`border-b hover:bg-gray-50 ${entry.account.is_control_account ? 'font-semibold bg-gray-50' : ''}`}>
+        <tr
+          className={`border-b hover:bg-gray-50 ${entry.account.is_control_account ? 'font-semibold bg-gray-50' : ''}`}
+        >
           <td className="py-2 px-4" style={{ paddingLeft: `${indent + 16}px` }}>
             <div className="flex items-center gap-2">
               {hasChildren && (
@@ -268,7 +280,11 @@ export default function TrialBalancePage() {
                   className="p-0 h-5 w-5"
                   onClick={() => toggleAccountExpansion(entry.account.account_code)}
                 >
-                  {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  {isExpanded ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
                 </Button>
               )}
               <span className="text-sm">{entry.account.account_code}</span>
@@ -302,13 +318,17 @@ export default function TrialBalancePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push(`/general-ledger/${entry.account.id}?period=${selectedPeriod}`)}
+              onClick={() =>
+                router.push(`/general-ledger/${entry.account.id}?period=${selectedPeriod}`)
+              }
             >
               <Eye className="w-4 h-4" />
             </Button>
           </td>
         </tr>
-        {hasChildren && isExpanded && entry.children!.map(child => renderAccountRow(child, level + 1))}
+        {hasChildren &&
+          isExpanded &&
+          entry.children!.map(child => renderAccountRow(child, level + 1))}
       </React.Fragment>
     )
   }
@@ -352,24 +372,20 @@ export default function TrialBalancePage() {
       <div className="p-6 max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => router.push('/financial')}
             className="mb-4"
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Back to Financial
           </Button>
-          
+
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Trial Balance Report
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Enterprise financial position statement
-              </p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Trial Balance Report</h1>
+              <p className="text-gray-600 text-lg">Enterprise financial position statement</p>
             </div>
             <div className="flex items-center gap-4">
               <Button onClick={() => fetchTrialBalance()} variant="outline">
@@ -401,7 +417,7 @@ export default function TrialBalancePage() {
                       Period
                     </div>
                     <p className="font-medium">
-                      {new Date(trialBalanceData.period.from).toLocaleDateString()} - 
+                      {new Date(trialBalanceData.period.from).toLocaleDateString()} -
                       {new Date(trialBalanceData.period.to).toLocaleDateString()}
                     </p>
                   </div>
@@ -428,7 +444,8 @@ export default function TrialBalancePage() {
                       Fiscal Period
                     </div>
                     <p className="font-medium">
-                      FY{trialBalanceData.period.fiscal_year} P{trialBalanceData.period.fiscal_period}
+                      FY{trialBalanceData.period.fiscal_year} P
+                      {trialBalanceData.period.fiscal_period}
                     </p>
                   </div>
                 </div>
@@ -452,7 +469,7 @@ export default function TrialBalancePage() {
                 </SelectContent>
               </Select>
 
-              <Tabs value={selectedView} onValueChange={(v) => setSelectedView(v as 'ytd' | 'ptd')}>
+              <Tabs value={selectedView} onValueChange={v => setSelectedView(v as 'ytd' | 'ptd')}>
                 <TabsList>
                   <TabsTrigger value="ytd">Year to Date</TabsTrigger>
                   <TabsTrigger value="ptd">Period to Date</TabsTrigger>
@@ -492,13 +509,22 @@ export default function TrialBalancePage() {
                       <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
                         Account Code & Name
                       </th>
-                      <th className="text-right py-3 px-4 font-semibold text-sm text-gray-700" colSpan={2}>
+                      <th
+                        className="text-right py-3 px-4 font-semibold text-sm text-gray-700"
+                        colSpan={2}
+                      >
                         Opening Balance
                       </th>
-                      <th className="text-right py-3 px-4 font-semibold text-sm text-gray-700" colSpan={2}>
+                      <th
+                        className="text-right py-3 px-4 font-semibold text-sm text-gray-700"
+                        colSpan={2}
+                      >
                         {selectedView === 'ytd' ? 'Year to Date' : 'Period Activity'}
                       </th>
-                      <th className="text-right py-3 px-4 font-semibold text-sm text-gray-700" colSpan={2}>
+                      <th
+                        className="text-right py-3 px-4 font-semibold text-sm text-gray-700"
+                        colSpan={2}
+                      >
                         Closing Balance
                       </th>
                       <th className="text-center py-3 px-4 font-semibold text-sm text-gray-700 w-16">
@@ -507,12 +533,24 @@ export default function TrialBalancePage() {
                     </tr>
                     <tr className="bg-gray-50">
                       <th className="text-left py-2 px-4 font-medium text-xs text-gray-600"></th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">Debit</th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">Credit</th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">Debit</th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">Credit</th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">Debit</th>
-                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">Credit</th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                        Debit
+                      </th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                        Credit
+                      </th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                        Debit
+                      </th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                        Credit
+                      </th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                        Debit
+                      </th>
+                      <th className="text-right py-2 px-4 font-medium text-xs text-gray-600">
+                        Credit
+                      </th>
                       <th className="text-center py-2 px-4 font-medium text-xs text-gray-600"></th>
                     </tr>
                   </thead>
@@ -535,10 +573,18 @@ export default function TrialBalancePage() {
                         {formatNumber(trialBalanceData.totals.opening_credit)}
                       </td>
                       <td className="py-3 px-4 text-right">
-                        {formatNumber(selectedView === 'ytd' ? trialBalanceData.totals.ytd_debit : trialBalanceData.totals.period_debit)}
+                        {formatNumber(
+                          selectedView === 'ytd'
+                            ? trialBalanceData.totals.ytd_debit
+                            : trialBalanceData.totals.period_debit
+                        )}
                       </td>
                       <td className="py-3 px-4 text-right">
-                        {formatNumber(selectedView === 'ytd' ? trialBalanceData.totals.ytd_credit : trialBalanceData.totals.period_credit)}
+                        {formatNumber(
+                          selectedView === 'ytd'
+                            ? trialBalanceData.totals.ytd_credit
+                            : trialBalanceData.totals.period_credit
+                        )}
                       </td>
                       <td className="py-3 px-4 text-right">
                         {formatNumber(trialBalanceData.totals.closing_debit)}
@@ -549,17 +595,26 @@ export default function TrialBalancePage() {
                       <td className="py-3 px-4"></td>
                     </tr>
                     {/* Balance check row */}
-                    <tr className={`font-medium ${
-                      Math.abs(trialBalanceData.totals.closing_debit - trialBalanceData.totals.closing_credit) < 0.01 
-                        ? 'text-green-600' 
-                        : 'text-red-600'
-                    }`}>
-                      <td className="py-2 px-4" colSpan={5}>Balance Check</td>
+                    <tr
+                      className={`font-medium ${
+                        Math.abs(
+                          trialBalanceData.totals.closing_debit -
+                            trialBalanceData.totals.closing_credit
+                        ) < 0.01
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                      }`}
+                    >
+                      <td className="py-2 px-4" colSpan={5}>
+                        Balance Check
+                      </td>
                       <td className="py-2 px-4 text-right" colSpan={2}>
-                        {Math.abs(trialBalanceData.totals.closing_debit - trialBalanceData.totals.closing_credit) < 0.01
+                        {Math.abs(
+                          trialBalanceData.totals.closing_debit -
+                            trialBalanceData.totals.closing_credit
+                        ) < 0.01
                           ? 'BALANCED'
-                          : `UNBALANCED: ${formatCurrency(Math.abs(trialBalanceData.totals.closing_debit - trialBalanceData.totals.closing_credit))}`
-                        }
+                          : `UNBALANCED: ${formatCurrency(Math.abs(trialBalanceData.totals.closing_debit - trialBalanceData.totals.closing_credit))}`}
                       </td>
                       <td className="py-2 px-4"></td>
                     </tr>
@@ -572,8 +627,9 @@ export default function TrialBalancePage() {
 
         {/* Footer */}
         <div className="mt-6 text-center text-sm text-gray-500">
-          Generated on {new Date().toLocaleString()} | {trialBalanceData?.organization?.name || 'Beauty Salon'} | 
-          Report Currency: {selectedCurrency}
+          Generated on {new Date().toLocaleString()} |{' '}
+          {trialBalanceData?.organization?.name || 'Beauty Salon'} | Report Currency:{' '}
+          {selectedCurrency}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 /**
  * HERA Salon Appointment Workflow
  * Smart Code: HERA.SALON.WORKFLOW.APPOINTMENT.v1
- * 
+ *
  * Complete end-to-end appointment lifecycle using HERA Workflow Engine
  * Sacred 6-table architecture with payment guardrails
  */
@@ -24,13 +24,13 @@ export const APPOINTMENT_SMART_CODES = {
   STATUS_CANCELLED_NO_SERVICE: 'HERA.SALON.APPOINTMENT.STATUS.CANCELLED_NOT_SERVED.v1',
   STATUS_DISPUTED: 'HERA.SALON.APPOINTMENT.STATUS.DISPUTED.v1',
   STATUS_PARTIAL: 'HERA.SALON.APPOINTMENT.STATUS.PARTIALLY_COMPLETED.v1',
-  
+
   // Relationship Smart Codes
   HAS_STATUS: 'HERA.SALON.APPOINTMENT.REL.APPOINTMENT_HAS_STATUS.v1',
   LINKED_TO_PAYMENT: 'HERA.SALON.APPOINTMENT.REL.APPOINTMENT_LINKED_TO_PAYMENT.v1',
   ASSIGNED_TO_STAFF: 'HERA.SALON.APPOINTMENT.REL.ASSIGNED_TO_STAFF.v1',
   FOR_SERVICE: 'HERA.SALON.APPOINTMENT.REL.FOR_SERVICE.v1',
-  
+
   // Transaction Smart Codes
   CHECKIN: 'HERA.SALON.APPOINTMENT.TXN.CHECKIN.v1',
   SERVICE_DELIVERY: 'HERA.SALON.APPOINTMENT.TXN.SERVICE_DELIVERY.v1',
@@ -39,11 +39,11 @@ export const APPOINTMENT_SMART_CODES = {
   PAYMENT_CAPTURE: 'HERA.SALON.PAYMENT.TXN.CAPTURE.v1',
   PAYMENT_REFUND: 'HERA.SALON.PAYMENT.TXN.REFUND.v1',
   PAYMENT_VOID: 'HERA.SALON.PAYMENT.TXN.VOID.v1',
-  
+
   // Transaction Line Smart Codes
   SERVICE_LINE: 'HERA.SALON.APPOINTMENT.TXN.LINE.SERVICE.v1',
   PRODUCT_LINE: 'HERA.SALON.APPOINTMENT.TXN.LINE.PRODUCT.v1',
-  DISCOUNT_LINE: 'HERA.SALON.APPOINTMENT.TXN.LINE.DISCOUNT.v1',
+  DISCOUNT_LINE: 'HERA.SALON.APPOINTMENT.TXN.LINE.DISCOUNT.v1'
 } as const
 
 export const salonAppointmentWorkflow: WorkflowDefinition = {
@@ -52,14 +52,14 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
   description: 'Complete appointment flow from booking to review with payment guardrails',
   version: '1.0.0',
   smart_code: 'HERA.SALON.WORKFLOW.APPOINTMENT.v1',
-  
+
   // Initial trigger - appointment creation
   trigger: {
     type: 'entity_created',
     entity_type: 'appointment',
     smart_code_pattern: 'HERA.SALON.APPOINTMENT.ENTITY.*'
   },
-  
+
   // Workflow variables
   variables: {
     appointment_id: { type: 'string', required: true },
@@ -72,7 +72,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
     payment_status: { type: 'string', default: 'pending', required: false },
     cancellation_reason: { type: 'string', required: false }
   },
-  
+
   // Workflow steps
   steps: [
     {
@@ -84,23 +84,71 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         {
           type: 'create_entity',
           entities: [
-            { entity_type: 'appointment_status', entity_name: 'Schedule Requested', smart_code: APPOINTMENT_SMART_CODES.STATUS_REQUESTED },
-            { entity_type: 'appointment_status', entity_name: 'Scheduled', smart_code: APPOINTMENT_SMART_CODES.STATUS_SCHEDULED },
-            { entity_type: 'appointment_status', entity_name: 'Checked In', smart_code: APPOINTMENT_SMART_CODES.STATUS_CHECKED_IN },
-            { entity_type: 'appointment_status', entity_name: 'In Progress', smart_code: APPOINTMENT_SMART_CODES.STATUS_IN_PROGRESS },
-            { entity_type: 'appointment_status', entity_name: 'Completed', smart_code: APPOINTMENT_SMART_CODES.STATUS_COMPLETED },
-            { entity_type: 'appointment_status', entity_name: 'Review Pending', smart_code: APPOINTMENT_SMART_CODES.STATUS_REVIEW_PENDING },
-            { entity_type: 'appointment_status', entity_name: 'Reviewed', smart_code: APPOINTMENT_SMART_CODES.STATUS_REVIEWED },
-            { entity_type: 'appointment_status', entity_name: 'Closed', smart_code: APPOINTMENT_SMART_CODES.STATUS_CLOSED },
-            { entity_type: 'appointment_status', entity_name: 'Cancelled by Client', smart_code: APPOINTMENT_SMART_CODES.STATUS_CANCELLED_CLIENT },
-            { entity_type: 'appointment_status', entity_name: 'Cancelled - Not Served', smart_code: APPOINTMENT_SMART_CODES.STATUS_CANCELLED_NO_SERVICE },
-            { entity_type: 'appointment_status', entity_name: 'Disputed', smart_code: APPOINTMENT_SMART_CODES.STATUS_DISPUTED },
-            { entity_type: 'appointment_status', entity_name: 'Partially Completed', smart_code: APPOINTMENT_SMART_CODES.STATUS_PARTIAL }
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Schedule Requested',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_REQUESTED
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Scheduled',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_SCHEDULED
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Checked In',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_CHECKED_IN
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'In Progress',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_IN_PROGRESS
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Completed',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_COMPLETED
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Review Pending',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_REVIEW_PENDING
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Reviewed',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_REVIEWED
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Closed',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_CLOSED
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Cancelled by Client',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_CANCELLED_CLIENT
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Cancelled - Not Served',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_CANCELLED_NO_SERVICE
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Disputed',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_DISPUTED
+            },
+            {
+              entity_type: 'appointment_status',
+              entity_name: 'Partially Completed',
+              smart_code: APPOINTMENT_SMART_CODES.STATUS_PARTIAL
+            }
           ]
         }
       ]
     },
-    
+
     {
       id: 'set-initial-status',
       name: 'Set Initial Status to Scheduled',
@@ -123,7 +171,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         }
       ]
     },
-    
+
     {
       id: 'wait-for-appointment-time',
       name: 'Wait Until Appointment Time',
@@ -135,7 +183,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         action: 'send_reminder'
       }
     },
-    
+
     {
       id: 'check-in-process',
       name: 'Client Check-In',
@@ -160,7 +208,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         action: 'mark_no_show'
       }
     },
-    
+
     {
       id: 'payment-authorization',
       name: 'Process Payment Authorization',
@@ -197,7 +245,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         payment_timeout: 'cancel-appointment'
       }
     },
-    
+
     {
       id: 'start-service',
       name: 'Start Service Delivery',
@@ -222,7 +270,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         }
       ]
     },
-    
+
     {
       id: 'complete-service',
       name: 'Complete Service',
@@ -253,7 +301,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         }
       ]
     },
-    
+
     {
       id: 'request-review',
       name: 'Request Client Review',
@@ -272,7 +320,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         }
       ]
     },
-    
+
     {
       id: 'close-appointment',
       name: 'Close Appointment',
@@ -289,7 +337,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       ]
     }
   ],
-  
+
   // Exception handlers
   exception_handlers: [
     {
@@ -311,7 +359,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         }
       ]
     },
-    
+
     {
       id: 'payment-failure',
       trigger: 'payment.declined',
@@ -325,7 +373,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
         }
       ]
     },
-    
+
     {
       id: 'dispute-handler',
       trigger: 'client.dispute',
@@ -346,7 +394,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       ]
     }
   ],
-  
+
   // Guardrails
   guardrails: [
     {
@@ -357,7 +405,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       action: 'block',
       error_message: 'Cannot start service without approved payment'
     },
-    
+
     {
       id: 'no-backdating',
       description: 'Prevent backdating transactions',
@@ -366,7 +414,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
       action: 'block',
       error_message: 'Cannot post to closed fiscal period'
     },
-    
+
     {
       id: 'refund-requires-original',
       description: 'Refunds must reference original payment',
@@ -379,13 +427,10 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
 }
 
 // Helper function to execute workflow
-export async function executeAppointmentWorkflow(
-  appointmentId: string,
-  organizationId: string
-) {
+export async function executeAppointmentWorkflow(appointmentId: string, organizationId: string) {
   // This would integrate with HERA Workflow Engine
   const workflowEngine = await import('@/lib/workflow/engine')
-  
+
   return workflowEngine.execute({
     workflow: salonAppointmentWorkflow,
     context: {
@@ -411,13 +456,10 @@ export async function transitionAppointmentStatus(
     is_active: false,
     expiration_date: new Date()
   })
-  
+
   // Get status entity ID
-  const statusEntity = await universalApi.getEntityBySmartCode(
-    newStatusCode,
-    organizationId
-  )
-  
+  const statusEntity = await universalApi.getEntityBySmartCode(newStatusCode, organizationId)
+
   // Create new status relationship
   await universalApi.createRelationship({
     organization_id: organizationId,

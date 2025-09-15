@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import { 
-  Plus, 
-  Minus, 
+import {
+  Plus,
+  Minus,
   X,
   CreditCard,
   DollarSign,
@@ -94,14 +94,14 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
     { id: 'm4', name: 'Fish & Chips', category: 'popular', price: 18.95 },
     { id: 'm5', name: 'Chicken Wings', category: 'popular', price: 13.95 },
     { id: 'm6', name: 'Pasta Carbonara', category: 'popular', price: 17.95 },
-    
+
     // Beverages
     { id: 'b1', name: 'Coca-Cola', category: 'beverages', price: 3.95 },
     { id: 'b2', name: 'Iced Tea', category: 'beverages', price: 3.95 },
     { id: 'b3', name: 'Lemonade', category: 'beverages', price: 4.95 },
-    { id: 'b4', name: 'Coffee', category: 'beverages', price: 3.50 },
+    { id: 'b4', name: 'Coffee', category: 'beverages', price: 3.5 },
     { id: 'b5', name: 'Orange Juice', category: 'beverages', price: 4.95 },
-    
+
     // Bar items
     { id: 'bar1', name: 'Draft Beer', category: 'bar', price: 6.95 },
     { id: 'bar2', name: 'House Wine', category: 'bar', price: 8.95 },
@@ -109,21 +109,28 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
     { id: 'bar4', name: 'Old Fashioned', category: 'bar', price: 12.95 }
   ]
 
-  const filteredItems = menuItems.filter(item => 
-    item.category === selectedCategory && 
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredItems = menuItems.filter(
+    item =>
+      item.category === selectedCategory &&
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const addToOrder = (menuItem: MenuItem) => {
     const existingItem = currentOrder.find(item => item.menuItem.id === menuItem.id)
-    
+
     if (existingItem) {
       // Increase quantity
-      setCurrentOrder(currentOrder.map(item => 
-        item.id === existingItem.id 
-          ? { ...item, quantity: item.quantity + 1, totalPrice: (item.quantity + 1) * menuItem.price }
-          : item
-      ))
+      setCurrentOrder(
+        currentOrder.map(item =>
+          item.id === existingItem.id
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: (item.quantity + 1) * menuItem.price
+              }
+            : item
+        )
+      )
     } else {
       // Add new item
       const newItem: OrderItem = {
@@ -138,18 +145,22 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
   }
 
   const updateQuantity = (itemId: string, delta: number) => {
-    setCurrentOrder(currentOrder.map(item => {
-      if (item.id === itemId) {
-        const newQuantity = Math.max(0, item.quantity + delta)
-        if (newQuantity === 0) return null
-        return {
-          ...item,
-          quantity: newQuantity,
-          totalPrice: newQuantity * item.menuItem.price
-        }
-      }
-      return item
-    }).filter(Boolean) as OrderItem[])
+    setCurrentOrder(
+      currentOrder
+        .map(item => {
+          if (item.id === itemId) {
+            const newQuantity = Math.max(0, item.quantity + delta)
+            if (newQuantity === 0) return null
+            return {
+              ...item,
+              quantity: newQuantity,
+              totalPrice: newQuantity * item.menuItem.price
+            }
+          }
+          return item
+        })
+        .filter(Boolean) as OrderItem[]
+    )
   }
 
   const removeItem = (itemId: string) => {
@@ -182,7 +193,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
           <Input
             placeholder="Search menu items..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -260,7 +271,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
           <CardContent className="space-y-4">
             {/* Order Type */}
             <div className="flex gap-2">
-              <Button 
+              <Button
                 variant={orderType === 'dine-in' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setOrderType('dine-in')}
@@ -268,7 +279,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
               >
                 Dine In
               </Button>
-              <Button 
+              <Button
                 variant={orderType === 'takeout' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setOrderType('takeout')}
@@ -277,7 +288,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
                 <Package className="h-4 w-4 mr-2" />
                 Takeout
               </Button>
-              <Button 
+              <Button
                 variant={orderType === 'delivery' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setOrderType('delivery')}
@@ -292,7 +303,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
               <Input
                 placeholder="Customer name..."
                 value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
+                onChange={e => setCustomerName(e.target.value)}
               />
             </div>
 
@@ -313,30 +324,18 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, -1)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => updateQuantity(item.id, -1)}>
                         <Minus className="h-3 w-3" />
                       </Button>
                       <span className="w-8 text-center font-medium">{item.quantity}</span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, 1)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => updateQuantity(item.id, 1)}>
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
                     <div className="text-right">
                       <div className="font-medium">${item.totalPrice.toFixed(2)}</div>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => removeItem(item.id)}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => removeItem(item.id)}>
                       <X className="h-3 w-3" />
                     </Button>
                   </div>
@@ -365,31 +364,25 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
             {/* Payment Buttons */}
             {currentOrder.length > 0 && (
               <div className="grid grid-cols-2 gap-2">
-                <Button 
+                <Button
                   className="bg-green-600 hover:bg-green-700"
                   onClick={() => processPayment('cash')}
                 >
                   <DollarSign className="h-4 w-4 mr-2" />
                   Cash
                 </Button>
-                <Button 
+                <Button
                   className="bg-blue-600 hover:bg-blue-700"
                   onClick={() => processPayment('card')}
                 >
                   <CreditCard className="h-4 w-4 mr-2" />
                   Card
                 </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => processPayment('mobile')}
-                >
+                <Button variant="outline" onClick={() => processPayment('mobile')}>
                   <Smartphone className="h-4 w-4 mr-2" />
                   Mobile
                 </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => processPayment('gift')}
-                >
+                <Button variant="outline" onClick={() => processPayment('gift')}>
                   <Gift className="h-4 w-4 mr-2" />
                   Gift Card
                 </Button>
@@ -398,11 +391,7 @@ export function QuickServicePOS({ mode, isOnline, currentEmployee }: QuickServic
 
             {/* Clear Order */}
             {currentOrder.length > 0 && (
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={clearOrder}
-              >
+              <Button variant="outline" className="w-full" onClick={clearOrder}>
                 Clear Order
               </Button>
             )}

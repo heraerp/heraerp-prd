@@ -1,6 +1,6 @@
 /**
  * HERA DNA Pattern: Demo Organization Loading
- * 
+ *
  * CRITICAL LEARNINGS:
  * 1. DO NOT provide fallback organization ID - infinite loading is a good debugging symptom
  * 2. The loading logic bug was: isAuthenticated ? isLoadingOrgs : !demoOrg
@@ -9,7 +9,7 @@
  * 3. Load demo org only when not authenticated
  * 4. Always show organization info in UI for transparency
  * 5. Add proper error states when no org is found
- * 
+ *
  * This pattern properly handles demo org loading without masking issues
  */
 
@@ -23,11 +23,11 @@ export function useDemoOrganization() {
   const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
   const [demoOrgLoading, setDemoOrgLoading] = useState(true)
-  
+
   // CRITICAL: No fallback - let the component handle missing org
   const organizationId = currentOrganization?.id || demoOrg?.id || ''
   const organizationName = currentOrganization?.organization_name || demoOrg?.name || ''
-  
+
   // CRITICAL FIX: The bug was using !demoOrg which caused infinite loading
   // Correct logic: only show loading for authenticated users who are loading orgs
   const orgLoading = isAuthenticated ? isLoadingOrgs : false
@@ -63,23 +63,26 @@ export function useDemoOrganization() {
  * Standard Organization Display Component
  * Always show org info for transparency
  */
-export function OrganizationInfo({ name, id, className = '' }: { 
+export function OrganizationInfo({
+  name,
+  id,
+  className = ''
+}: {
   name: string
-  id: string 
-  className?: string 
+  id: string
+  className?: string
 }) {
-  const baseClasses = "mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block"
+  const baseClasses =
+    'mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 inline-block'
   const combinedClasses = className ? `${baseClasses} ${className}` : baseClasses
-  
+
   return (
     <div className={combinedClasses}>
       <p className="text-sm text-gray-700 dark:text-gray-300">
         <span className="text-gray-500 dark:text-gray-500">Organization:</span>{' '}
         <span className="font-medium text-gray-900 dark:text-white">{name}</span>
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-        Organization ID: {id}
-      </p>
+      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">Organization ID: {id}</p>
     </div>
   )
 }
@@ -87,7 +90,7 @@ export function OrganizationInfo({ name, id, className = '' }: {
 /**
  * Standard Loading State Component
  */
-export function OrganizationLoading({ message = "Loading organization..." }: { message?: string }) {
+export function OrganizationLoading({ message = 'Loading organization...' }: { message?: string }) {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="text-center">

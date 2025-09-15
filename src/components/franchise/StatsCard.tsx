@@ -60,41 +60,39 @@ export function StatsCard({
   const currentVariant = variants[variant]
 
   return (
-    <div className={cn(
-      'rounded-xl border p-6 shadow-sm transition-all duration-200 hover:shadow-md',
-      currentVariant.card,
-      className
-    )}>
+    <div
+      className={cn(
+        'rounded-xl border p-6 shadow-sm transition-all duration-200 hover:shadow-md',
+        currentVariant.card,
+        className
+      )}
+    >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className={cn('text-sm font-medium', currentVariant.title)}>
-            {title}
-          </p>
+          <p className={cn('text-sm font-medium', currentVariant.title)}>{title}</p>
           <div className="flex items-baseline mt-1">
-            <p className={cn('text-3xl font-bold', currentVariant.value)}>
-              {value}
-            </p>
+            <p className={cn('text-3xl font-bold', currentVariant.value)}>{value}</p>
             {trend && (
-              <span className={cn(
-                'ml-2 text-sm font-medium',
-                trend.direction === 'up' ? 'text-green-600' : 'text-red-600'
-              )}>
+              <span
+                className={cn(
+                  'ml-2 text-sm font-medium',
+                  trend.direction === 'up' ? 'text-green-600' : 'text-red-600'
+                )}
+              >
                 {trend.direction === 'up' ? '↗' : '↘'} {trend.value}
               </span>
             )}
           </div>
-          {description && (
-            <p className={cn('text-sm mt-1', currentVariant.title)}>
-              {description}
-            </p>
-          )}
+          {description && <p className={cn('text-sm mt-1', currentVariant.title)}>{description}</p>}
         </div>
-        
+
         {Icon && (
-          <div className={cn(
-            'flex h-12 w-12 items-center justify-center rounded-lg',
-            currentVariant.icon
-          )}>
+          <div
+            className={cn(
+              'flex h-12 w-12 items-center justify-center rounded-lg',
+              currentVariant.icon
+            )}
+          >
             <Icon className="h-6 w-6" />
           </div>
         )}
@@ -120,10 +118,7 @@ interface StatsGridProps {
 
 export function StatsGrid({ stats, className }: StatsGridProps) {
   return (
-    <div className={cn(
-      'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6',
-      className
-    )}>
+    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6', className)}>
       {stats.map((stat, index) => (
         <StatsCard key={index} {...stat} />
       ))}

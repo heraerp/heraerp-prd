@@ -8,11 +8,11 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { HERAFooter } from '@/components/ui/HERAFooter'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Building2, 
-  FileText, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Building2,
+  FileText,
+  CheckCircle2,
+  Clock,
   AlertCircle,
   Users,
   Briefcase,
@@ -113,13 +113,13 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
     const fetchAuditFirm = async () => {
       try {
         setIsFirmLoading(true)
-        
+
         // Get current audit firm from database (not hardcoded)
         const response = await fetch('/api/v1/audit/firm?action=current', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user?.organization_id || 'unknown'}`
+            Authorization: `Bearer ${user?.organization_id || 'unknown'}`
           }
         })
 
@@ -127,7 +127,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
           const result = await response.json()
           if (result.success && result.data) {
             setAuditFirm(result.data)
-            console.log(`✅ Audit Firm loaded from database: ${result.data.entity_name} (${result.data.entity_code})`)
+            console.log(
+              `✅ Audit Firm loaded from database: ${result.data.entity_name} (${result.data.entity_code})`
+            )
             console.log(`Organization ID: ${result.data.organization_id}`)
           }
         } else {
@@ -165,13 +167,13 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
     const fetchClients = async () => {
       try {
         setIsLoading(true)
-        
+
         // Fetch clients from HERA database API
         const response = await fetch('/api/v1/audit/clients', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user?.organization_id || 'gspu_audit_partners_org'}`
+            Authorization: `Bearer ${user?.organization_id || 'gspu_audit_partners_org'}`
           }
         })
 
@@ -191,13 +193,19 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               status: client.status === 'active' ? 'fieldwork' : 'planning',
               phase: client.metadata.risk_rating === 'high' ? 2 : 4,
               completion: client.metadata.risk_rating === 'high' ? 30 : 65,
-              partner: client.team_assignment?.partner_id === 'auditor_john_smith' ? 'John Smith' : 'Michael Brown',
-              manager: client.team_assignment?.manager_id === 'auditor_sarah_johnson' ? 'Sarah Johnson' : 'Emily Davis',
+              partner:
+                client.team_assignment?.partner_id === 'auditor_john_smith'
+                  ? 'John Smith'
+                  : 'Michael Brown',
+              manager:
+                client.team_assignment?.manager_id === 'auditor_sarah_johnson'
+                  ? 'Sarah Johnson'
+                  : 'Emily Davis',
               deadline: client.metadata.risk_rating === 'high' ? '2025-04-15' : '2025-03-31'
             }))
-            
+
             setClients(transformedClients)
-            
+
             // Update stats based on real data
             setStats({
               total_clients: transformedClients.length,
@@ -249,27 +257,36 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       total_clients: prev.total_clients + 1,
       active_engagements: prev.active_engagements + 1
     }))
-    
+
     // Add new client to the list
     const newClient: ClientSummary = {
       id: engagement.id,
       name: engagement.client_name,
-      organization_id: engagement.organization_id || `gspu_client_${engagement.client_code?.toLowerCase().replace(/[^a-z0-9]/g, '_')}_org`,
+      organization_id:
+        engagement.organization_id ||
+        `gspu_client_${engagement.client_code?.toLowerCase().replace(/[^a-z0-9]/g, '_')}_org`,
       gspu_client_id: engagement.client_code || engagement.id,
       audit_firm: engagement.audit_firm || 'GSPU_AUDIT_PARTNERS',
-      type: engagement.client_type === 'private' ? 'Private Company' : 
-            engagement.client_type === 'public' ? 'Public Company' :
-            engagement.client_type === 'non_profit' ? 'Non-Profit Organization' : 'Government Entity',
+      type:
+        engagement.client_type === 'private'
+          ? 'Private Company'
+          : engagement.client_type === 'public'
+            ? 'Public Company'
+            : engagement.client_type === 'non_profit'
+              ? 'Non-Profit Organization'
+              : 'Government Entity',
       risk_rating: engagement.risk_rating,
       audit_year: engagement.audit_year,
       status: 'planning',
       phase: 1,
       completion: 10,
-      partner: engagement.engagement_partner.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      partner: engagement.engagement_partner
+        .replace('_', ' ')
+        .replace(/\b\w/g, l => l.toUpperCase()),
       manager: engagement.audit_manager.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
       deadline: engagement.target_completion_date || '2025-12-31'
     }
-    
+
     setClients(prev => [newClient, ...prev])
   }
 
@@ -281,11 +298,11 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
       console.log(`Navigating to client: ${client.name} (${client.gspu_client_id})`)
       console.log(`Organization ID: ${client.organization_id}`)
       console.log(`URL: ${clientUrl}`)
-      
+
       // For now, show in same component, but URL structure is ready for routing
       setSelectedClient(clientId)
       setViewMode('client')
-      
+
       // Update URL without navigation (for demonstration)
       if (typeof window !== 'undefined') {
         window.history.pushState({}, '', clientUrl)
@@ -305,37 +322,58 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'text-green-600 bg-green-50 border-green-200'
-      case 'moderate': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200'
-      case 'very_high': return 'text-red-600 bg-red-50 border-red-200'
-      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'low':
+        return 'text-green-600 bg-green-50 border-green-200'
+      case 'moderate':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'high':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'very_high':
+        return 'text-red-600 bg-red-50 border-red-200'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
     }
   }
 
   const getPhaseIcon = (phase: number) => {
     switch (phase) {
-      case 1: return <UserCheck className="w-4 h-4" />
-      case 2: return <ClipboardCheck className="w-4 h-4" />
-      case 3: return <Shield className="w-4 h-4" />
-      case 4: return <FileCheck className="w-4 h-4" />
-      case 5: return <FileText className="w-4 h-4" />
-      case 6: return <Eye className="w-4 h-4" />
-      case 7: return <CheckCircle2 className="w-4 h-4" />
-      case 8: return <FileSignature className="w-4 h-4" />
-      case 9: return <BarChart3 className="w-4 h-4" />
-      default: return <Circle className="w-4 h-4" />
+      case 1:
+        return <UserCheck className="w-4 h-4" />
+      case 2:
+        return <ClipboardCheck className="w-4 h-4" />
+      case 3:
+        return <Shield className="w-4 h-4" />
+      case 4:
+        return <FileCheck className="w-4 h-4" />
+      case 5:
+        return <FileText className="w-4 h-4" />
+      case 6:
+        return <Eye className="w-4 h-4" />
+      case 7:
+        return <CheckCircle2 className="w-4 h-4" />
+      case 8:
+        return <FileSignature className="w-4 h-4" />
+      case 9:
+        return <BarChart3 className="w-4 h-4" />
+      default:
+        return <Circle className="w-4 h-4" />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'planning': return 'bg-blue-100 text-blue-800'
-      case 'fieldwork': return 'bg-purple-100 text-purple-800'
-      case 'review': return 'bg-orange-100 text-orange-800'
-      case 'reporting': return 'bg-green-100 text-green-800'
-      case 'completed': return 'bg-gray-100 text-gray-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'planning':
+        return 'bg-blue-100 text-blue-800'
+      case 'fieldwork':
+        return 'bg-purple-100 text-purple-800'
+      case 'review':
+        return 'bg-orange-100 text-orange-800'
+      case 'reporting':
+        return 'bg-green-100 text-green-800'
+      case 'completed':
+        return 'bg-gray-100 text-gray-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -358,7 +396,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               </Badge>
             )}
           </div>
-          <p className="text-gray-600 mt-1">Friday, February 2, 2025 • 5 items need your attention</p>
+          <p className="text-gray-600 mt-1">
+            Friday, February 2, 2025 • 5 items need your attention
+          </p>
           {user && (
             <p className="text-sm text-gray-500 mt-1">
               Welcome back, {user.name} ({user.role})
@@ -372,10 +412,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
         </div>
         <div className="flex items-center gap-3">
           <Badge className="bg-red-100 text-red-800 px-3 py-1">
-            <AlertTriangle className="w-3 h-3 mr-1" />
-            2 Urgent
+            <AlertTriangle className="w-3 h-3 mr-1" />2 Urgent
           </Badge>
-          <Button 
+          <Button
             variant="outline"
             onClick={() => router.push('/audit/engagements')}
             className="border-black text-black hover:bg-black hover:text-white"
@@ -383,7 +422,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
             <Briefcase className="w-4 h-4 mr-2" />
             Engagements
           </Button>
-          <Button 
+          <Button
             variant="outline"
             onClick={() => router.push('/audit/workpapers')}
             className="border-black text-black hover:bg-black hover:text-white"
@@ -414,12 +453,14 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                 <div>
-                  <p className="font-medium text-gray-900">ABC Trading - Bank confirmations overdue</p>
+                  <p className="font-medium text-gray-900">
+                    ABC Trading - Bank confirmations overdue
+                  </p>
                   <p className="text-sm text-gray-600">Due 3 days ago • Partner: Michael Brown</p>
                 </div>
               </div>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 className="bg-red-600 hover:bg-red-700"
                 onClick={() => {
                   // Navigate to ABC Trading client dashboard
@@ -435,17 +476,19 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 Open File
               </Button>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-white rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                 <div>
-                  <p className="font-medium text-gray-900">Tech Solutions - Partner review needed</p>
+                  <p className="font-medium text-gray-900">
+                    Tech Solutions - Partner review needed
+                  </p>
                   <p className="text-sm text-gray-600">Waiting 2 days • Manager: David Wilson</p>
                 </div>
               </div>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => {
                   // Navigate to Tech Solutions client dashboard
@@ -498,7 +541,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
           {isLoading ? (
             <div className="grid gap-4">
               {/* Loading skeletons */}
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3].map(i => (
                 <Card key={i} className="p-6">
                   <div className="animate-pulse">
                     <div className="flex items-start justify-between">
@@ -524,82 +567,87 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                   </div>
                 </Card>
               ) : (
-                clients.map((client) => (
-              <Card key={client.id} 
-                className={`cursor-pointer hover:shadow-lg transition-all ${
-                  client.status === 'review' ? 'border-l-4 border-l-orange-500' : 
-                  client.deadline < '2025-02-15' ? 'border-l-4 border-l-red-500' : ''
-                }`}
-                onClick={() => handleClientClick(client.id)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{client.name}</h3>
-                        <Badge className={getRiskColor(client.risk_rating)}>
-                          {client.risk_rating}
-                        </Badge>
-                        {client.deadline < '2025-02-15' && (
-                          <Badge className="bg-red-100 text-red-800">
-                            <Clock className="w-3 h-3 mr-1" />
-                            Due Soon
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center gap-6 text-sm text-gray-600">
-                        <div>
-                          <span className="font-medium">Partner:</span> {client.partner}
+                clients.map(client => (
+                  <Card
+                    key={client.id}
+                    className={`cursor-pointer hover:shadow-lg transition-all ${
+                      client.status === 'review'
+                        ? 'border-l-4 border-l-orange-500'
+                        : client.deadline < '2025-02-15'
+                          ? 'border-l-4 border-l-red-500'
+                          : ''
+                    }`}
+                    onClick={() => handleClientClick(client.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900">{client.name}</h3>
+                            <Badge className={getRiskColor(client.risk_rating)}>
+                              {client.risk_rating}
+                            </Badge>
+                            {client.deadline < '2025-02-15' && (
+                              <Badge className="bg-red-100 text-red-800">
+                                <Clock className="w-3 h-3 mr-1" />
+                                Due Soon
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-6 text-sm text-gray-600">
+                            <div>
+                              <span className="font-medium">Partner:</span> {client.partner}
+                            </div>
+                            <div>
+                              <span className="font-medium">Deadline:</span>{' '}
+                              {new Date(client.deadline).toLocaleDateString()}
+                            </div>
+                            <div>
+                              <span className="font-medium">Progress:</span> {client.completion}%
+                            </div>
+                          </div>
+                          <div className="mt-2 text-xs text-gray-600 font-mono">
+                            <span className="font-medium">Org ID:</span> {client.organization_id}
+                          </div>
                         </div>
-                        <div>
-                          <span className="font-medium">Deadline:</span> {new Date(client.deadline).toLocaleDateString()}
-                        </div>
-                        <div>
-                          <span className="font-medium">Progress:</span> {client.completion}%
+
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={e => {
+                              e.stopPropagation()
+                              // Handle working papers
+                            }}
+                          >
+                            <FileText className="w-3 h-3 mr-1" />
+                            Working Papers
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={e => {
+                              e.stopPropagation()
+                              // Handle client portal
+                            }}
+                          >
+                            <Users className="w-3 h-3 mr-1" />
+                            Client Portal
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={e => {
+                              e.stopPropagation()
+                              handleClientClick(client.id)
+                            }}
+                          >
+                            Open Audit
+                          </Button>
                         </div>
                       </div>
-                      <div className="mt-2 text-xs text-gray-600 font-mono">
-                        <span className="font-medium">Org ID:</span> {client.organization_id}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          // Handle working papers
-                        }}
-                      >
-                        <FileText className="w-3 h-3 mr-1" />
-                        Working Papers
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          // Handle client portal
-                        }}
-                      >
-                        <Users className="w-3 h-3 mr-1" />
-                        Client Portal
-                      </Button>
-                      <Button 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleClientClick(client.id)
-                        }}
-                      >
-                        Open Audit
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
                 ))
               )}
             </div>
@@ -631,7 +679,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                     </div>
                     <Badge className="bg-green-100 text-green-800">Available</Badge>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -644,7 +692,7 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                     </div>
                     <Badge className="bg-orange-100 text-orange-800">Busy</Badge>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
@@ -676,16 +724,20 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                     <p className="text-sm text-gray-600">Submitted by David Wilson • 2 days ago</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
-                      <Button size="sm" variant="outline">Request Changes</Button>
+                      <Button size="sm" variant="outline">
+                        Request Changes
+                      </Button>
                     </div>
                   </div>
-                  
+
                   <div className="p-3 border rounded-lg">
                     <p className="font-medium text-gray-900">XYZ Manufacturing - Inventory Count</p>
                     <p className="text-sm text-gray-600">Submitted by Sarah Johnson • 1 day ago</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
-                      <Button size="sm" variant="outline">Request Changes</Button>
+                      <Button size="sm" variant="outline">
+                        Request Changes
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -712,15 +764,19 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                       <p className="font-medium text-gray-900">Tech Solutions Inc - Final Report</p>
                       <p className="text-sm text-red-600">Due: February 28, 2025 (4 days)</p>
                     </div>
-                    <Button size="sm" className="bg-red-600 hover:bg-red-700">Priority</Button>
+                    <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                      Priority
+                    </Button>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">ABC Trading - Fieldwork Complete</p>
                       <p className="text-sm text-orange-600">Due: March 1, 2025 (5 days)</p>
                     </div>
-                    <Button size="sm" variant="outline">On Track</Button>
+                    <Button size="sm" variant="outline">
+                      On Track
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -738,18 +794,24 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">XYZ Manufacturing - Planning Complete</p>
+                      <p className="font-medium text-gray-900">
+                        XYZ Manufacturing - Planning Complete
+                      </p>
                       <p className="text-sm text-gray-600">Due: March 15, 2025</p>
                     </div>
-                    <Button size="sm" variant="outline">Scheduled</Button>
+                    <Button size="sm" variant="outline">
+                      Scheduled
+                    </Button>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">Healthcare Corp - Risk Assessment</p>
                       <p className="text-sm text-gray-600">Due: March 20, 2025</p>
                     </div>
-                    <Button size="sm" variant="outline">Scheduled</Button>
+                    <Button size="sm" variant="outline">
+                      Scheduled
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -760,7 +822,6 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
 
       {/* HERA Footer - Network Effect */}
       <HERAFooter className="mt-12 pb-4" />
-
     </div>
   )
 }

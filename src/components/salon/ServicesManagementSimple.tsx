@@ -9,15 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Plus,
-  Search, 
-  Edit,
-  Trash2,
-  Scissors,
-  DollarSign,
-  Clock
-} from 'lucide-react'
+import { Plus, Search, Edit, Trash2, Scissors, DollarSign, Clock } from 'lucide-react'
 
 interface Service {
   id: string
@@ -47,7 +39,7 @@ export default function ServicesManagementSimple() {
       active: true
     }
   ])
-  
+
   const [searchQuery, setSearchQuery] = useState('')
   const [showForm, setShowForm] = useState(false)
 
@@ -75,30 +67,36 @@ export default function ServicesManagementSimple() {
           <CardHeader>
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <CardTitle className="text-xl">Services</CardTitle>
-              
+
               <div className="flex gap-3 items-center w-full sm:w-auto">
                 <div className="relative flex-1 sm:flex-none">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
                     placeholder="Search services..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-9 sm:w-64"
                   />
                 </div>
-                
-                <Button onClick={() => setShowForm(true)} className="bg-purple-600 hover:bg-purple-700">
+
+                <Button
+                  onClick={() => setShowForm(true)}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Service
                 </Button>
               </div>
             </div>
           </CardHeader>
-          
+
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredServices.map((service) => (
-                <div key={service.id} className="group relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg transition-all duration-200">
+              {filteredServices.map(service => (
+                <div
+                  key={service.id}
+                  className="group relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg transition-all duration-200"
+                >
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
                       {service.name}
@@ -109,11 +107,11 @@ export default function ServicesManagementSimple() {
                       </Badge>
                     )}
                   </div>
-                  
+
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                     {service.description}
                   </p>
-                  
+
                   <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
@@ -126,7 +124,7 @@ export default function ServicesManagementSimple() {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" className="flex-1">
                       <Pencil className="w-4 h-4 mr-2" />
@@ -147,10 +145,15 @@ export default function ServicesManagementSimple() {
                   No services found
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {searchQuery ? 'Try adjusting your search' : 'Create your first service to get started'}
+                  {searchQuery
+                    ? 'Try adjusting your search'
+                    : 'Create your first service to get started'}
                 </p>
                 {!searchQuery && (
-                  <Button onClick={() => setShowForm(true)} className="mt-4 bg-purple-600 hover:bg-purple-700">
+                  <Button
+                    onClick={() => setShowForm(true)}
+                    className="mt-4 bg-purple-600 hover:bg-purple-700"
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Service
                   </Button>
@@ -191,7 +194,10 @@ export default function ServicesManagementSimple() {
                 <Button variant="outline" onClick={() => setShowForm(false)} className="flex-1">
                   Cancel
                 </Button>
-                <Button onClick={() => setShowForm(false)} className="flex-1 bg-purple-600 hover:bg-purple-700">
+                <Button
+                  onClick={() => setShowForm(false)}
+                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                >
                   Add Service
                 </Button>
               </div>

@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || 'demo_org'
     const reportType = searchParams.get('type') || 'dashboard'
-    
+
     // Demo analytics data
     const salesData = {
       total_contacts: 156,
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
       { source: 'Trade Shows', count: 28, conversion_rate: 0.85, avg_value: 35000 },
       { source: 'Cold Outreach', count: 23, conversion_rate: 0.43, avg_value: 12000 },
       { source: 'Social Media', count: 18, conversion_rate: 0.52, avg_value: 8500 },
-      { source: 'Partners', count: 10, conversion_rate: 0.90, avg_value: 45000 }
+      { source: 'Partners', count: 10, conversion_rate: 0.9, avg_value: 45000 }
     ]
 
     const monthlyTrends = [
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
           proposals_sent: 2
         }
       },
-      
+
       sales_performance: {
         summary: salesData,
         monthly_trends: monthlyTrends,
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
           team_conversion_rate: 0.68
         }
       },
-      
+
       lead_analysis: {
         lead_sources: leadSources,
         conversion_funnel: salesFunnel,
@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
           slowest_conversion: 120
         }
       },
-      
+
       pipeline_forecast: {
         current_quarter: {
           target: 350000,
@@ -147,7 +147,6 @@ export async function GET(request: NextRequest) {
       organization_id: organizationId,
       message: `${reportType.replace('_', ' ')} report generated successfully`
     })
-
   } catch (error) {
     console.error('CRM Reports API error:', error)
     return NextResponse.json(
@@ -193,7 +192,6 @@ export async function POST(request: NextRequest) {
       data: customReport,
       message: 'Custom report generated successfully'
     })
-
   } catch (error) {
     console.error('Generate custom report error:', error)
     return NextResponse.json(

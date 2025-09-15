@@ -84,122 +84,122 @@ export interface UniversalTransactionLine {
 
 export const APPOINTMENT_SMART_CODES = {
   // Jewelry Store Appointments
-  JEWELRY_CONSULTATION: "HERA.JWLR.CRM.APT.TXN.CONS.v1",
-  JEWELRY_RING_SIZING: "HERA.JWLR.CRM.APT.TXN.SIZE.v1",
-  JEWELRY_APPRAISAL: "HERA.JWLR.CRM.APT.TXN.APPR.v1",
-  JEWELRY_REPAIR: "HERA.JWLR.CRM.APT.TXN.RPR.v1",
-  JEWELRY_VIP_VIEWING: "HERA.JWLR.CRM.APT.TXN.VIP.v1",
-  JEWELRY_CUSTOM_DESIGN: "HERA.JWLR.CRM.APT.TXN.CUST.v1",
-  
+  JEWELRY_CONSULTATION: 'HERA.JWLR.CRM.APT.TXN.CONS.v1',
+  JEWELRY_RING_SIZING: 'HERA.JWLR.CRM.APT.TXN.SIZE.v1',
+  JEWELRY_APPRAISAL: 'HERA.JWLR.CRM.APT.TXN.APPR.v1',
+  JEWELRY_REPAIR: 'HERA.JWLR.CRM.APT.TXN.RPR.v1',
+  JEWELRY_VIP_VIEWING: 'HERA.JWLR.CRM.APT.TXN.VIP.v1',
+  JEWELRY_CUSTOM_DESIGN: 'HERA.JWLR.CRM.APT.TXN.CUST.v1',
+
   // Healthcare Appointments
-  HEALTHCARE_CHECKUP: "HERA.HLTH.CRM.APT.TXN.CHKUP.v1",
-  HEALTHCARE_SPECIALIST: "HERA.HLTH.CRM.APT.TXN.SPEC.v1",
-  HEALTHCARE_PROCEDURE: "HERA.HLTH.CRM.APT.TXN.PROC.v1",
-  HEALTHCARE_FOLLOWUP: "HERA.HLTH.CRM.APT.TXN.FLWUP.v1",
-  HEALTHCARE_EMERGENCY: "HERA.HLTH.CRM.APT.TXN.EMRG.v1",
-  HEALTHCARE_CONSULTATION: "HERA.HLTH.CRM.APT.TXN.CONS.v1",
-  
+  HEALTHCARE_CHECKUP: 'HERA.HLTH.CRM.APT.TXN.CHKUP.v1',
+  HEALTHCARE_SPECIALIST: 'HERA.HLTH.CRM.APT.TXN.SPEC.v1',
+  HEALTHCARE_PROCEDURE: 'HERA.HLTH.CRM.APT.TXN.PROC.v1',
+  HEALTHCARE_FOLLOWUP: 'HERA.HLTH.CRM.APT.TXN.FLWUP.v1',
+  HEALTHCARE_EMERGENCY: 'HERA.HLTH.CRM.APT.TXN.EMRG.v1',
+  HEALTHCARE_CONSULTATION: 'HERA.HLTH.CRM.APT.TXN.CONS.v1',
+
   // Restaurant Reservations
-  RESTAURANT_RESERVATION: "HERA.REST.CRM.APT.TXN.RES.v1",
-  RESTAURANT_PRIVATE_EVENT: "HERA.REST.CRM.APT.TXN.PRIV.v1",
-  RESTAURANT_TASTING_MENU: "HERA.REST.CRM.APT.TXN.TAST.v1",
-  RESTAURANT_COOKING_CLASS: "HERA.REST.CRM.APT.TXN.COOK.v1",
-  RESTAURANT_CHEF_TABLE: "HERA.REST.CRM.APT.TXN.CHEF.v1",
-  
+  RESTAURANT_RESERVATION: 'HERA.REST.CRM.APT.TXN.RES.v1',
+  RESTAURANT_PRIVATE_EVENT: 'HERA.REST.CRM.APT.TXN.PRIV.v1',
+  RESTAURANT_TASTING_MENU: 'HERA.REST.CRM.APT.TXN.TAST.v1',
+  RESTAURANT_COOKING_CLASS: 'HERA.REST.CRM.APT.TXN.COOK.v1',
+  RESTAURANT_CHEF_TABLE: 'HERA.REST.CRM.APT.TXN.CHEF.v1',
+
   // Professional Services
-  PROFESSIONAL_MEETING: "HERA.PROF.CRM.APT.TXN.MEET.v1",
-  PROFESSIONAL_LEGAL_CONSULT: "HERA.PROF.CRM.APT.TXN.LEGAL.v1",
-  PROFESSIONAL_DOCUMENT_REVIEW: "HERA.PROF.CRM.APT.TXN.DOC.v1",
-  PROFESSIONAL_COURT_APPEARANCE: "HERA.PROF.CRM.APT.TXN.COURT.v1",
-  PROFESSIONAL_STRATEGY_SESSION: "HERA.PROF.CRM.APT.TXN.STRAT.v1",
-  
+  PROFESSIONAL_MEETING: 'HERA.PROF.CRM.APT.TXN.MEET.v1',
+  PROFESSIONAL_LEGAL_CONSULT: 'HERA.PROF.CRM.APT.TXN.LEGAL.v1',
+  PROFESSIONAL_DOCUMENT_REVIEW: 'HERA.PROF.CRM.APT.TXN.DOC.v1',
+  PROFESSIONAL_COURT_APPEARANCE: 'HERA.PROF.CRM.APT.TXN.COURT.v1',
+  PROFESSIONAL_STRATEGY_SESSION: 'HERA.PROF.CRM.APT.TXN.STRAT.v1',
+
   // Retail Appointments
-  RETAIL_PERSONAL_SHOPPING: "HERA.RETL.CRM.APT.TXN.SHOP.v1",
-  RETAIL_STYLING_SESSION: "HERA.RETL.CRM.APT.TXN.STYLE.v1",
-  RETAIL_PRODUCT_DEMO: "HERA.RETL.CRM.APT.TXN.DEMO.v1",
-  RETAIL_CONSULTATION: "HERA.RETL.CRM.APT.TXN.CONS.v1",
-  
+  RETAIL_PERSONAL_SHOPPING: 'HERA.RETL.CRM.APT.TXN.SHOP.v1',
+  RETAIL_STYLING_SESSION: 'HERA.RETL.CRM.APT.TXN.STYLE.v1',
+  RETAIL_PRODUCT_DEMO: 'HERA.RETL.CRM.APT.TXN.DEMO.v1',
+  RETAIL_CONSULTATION: 'HERA.RETL.CRM.APT.TXN.CONS.v1',
+
   // Manufacturing Appointments
-  MANUFACTURING_SITE_VISIT: "HERA.MFG.CRM.APT.TXN.VISIT.v1",
-  MANUFACTURING_INSPECTION: "HERA.MFG.CRM.APT.TXN.INSP.v1",
-  MANUFACTURING_DELIVERY: "HERA.MFG.CRM.APT.TXN.DELIV.v1",
-  MANUFACTURING_CONSULTATION: "HERA.MFG.CRM.APT.TXN.CONS.v1",
-  
+  MANUFACTURING_SITE_VISIT: 'HERA.MFG.CRM.APT.TXN.VISIT.v1',
+  MANUFACTURING_INSPECTION: 'HERA.MFG.CRM.APT.TXN.INSP.v1',
+  MANUFACTURING_DELIVERY: 'HERA.MFG.CRM.APT.TXN.DELIV.v1',
+  MANUFACTURING_CONSULTATION: 'HERA.MFG.CRM.APT.TXN.CONS.v1',
+
   // Education Appointments
-  EDUCATION_TUTORING: "HERA.EDU.CRM.APT.TXN.TUTOR.v1",
-  EDUCATION_CONSULTATION: "HERA.EDU.CRM.APT.TXN.CONS.v1",
-  EDUCATION_ASSESSMENT: "HERA.EDU.CRM.APT.TXN.ASSESS.v1",
-  EDUCATION_PARENT_MEETING: "HERA.EDU.CRM.APT.TXN.PARENT.v1",
-  
+  EDUCATION_TUTORING: 'HERA.EDU.CRM.APT.TXN.TUTOR.v1',
+  EDUCATION_CONSULTATION: 'HERA.EDU.CRM.APT.TXN.CONS.v1',
+  EDUCATION_ASSESSMENT: 'HERA.EDU.CRM.APT.TXN.ASSESS.v1',
+  EDUCATION_PARENT_MEETING: 'HERA.EDU.CRM.APT.TXN.PARENT.v1',
+
   // Fitness Appointments
-  FITNESS_PERSONAL_TRAINING: "HERA.FIT.CRM.APT.TXN.TRAIN.v1",
-  FITNESS_CONSULTATION: "HERA.FIT.CRM.APT.TXN.CONS.v1",
-  FITNESS_ASSESSMENT: "HERA.FIT.CRM.APT.TXN.ASSESS.v1",
-  FITNESS_GROUP_CLASS: "HERA.FIT.CRM.APT.TXN.GROUP.v1",
-  
+  FITNESS_PERSONAL_TRAINING: 'HERA.FIT.CRM.APT.TXN.TRAIN.v1',
+  FITNESS_CONSULTATION: 'HERA.FIT.CRM.APT.TXN.CONS.v1',
+  FITNESS_ASSESSMENT: 'HERA.FIT.CRM.APT.TXN.ASSESS.v1',
+  FITNESS_GROUP_CLASS: 'HERA.FIT.CRM.APT.TXN.GROUP.v1',
+
   // Beauty & Wellness
-  BEAUTY_HAIRCUT: "HERA.BEAU.CRM.APT.TXN.HAIR.v1",
-  BEAUTY_FACIAL: "HERA.BEAU.CRM.APT.TXN.FACIAL.v1",
-  BEAUTY_MASSAGE: "HERA.BEAU.CRM.APT.TXN.MASSAGE.v1",
-  BEAUTY_CONSULTATION: "HERA.BEAU.CRM.APT.TXN.CONS.v1",
-  
+  BEAUTY_HAIRCUT: 'HERA.BEAU.CRM.APT.TXN.HAIR.v1',
+  BEAUTY_FACIAL: 'HERA.BEAU.CRM.APT.TXN.FACIAL.v1',
+  BEAUTY_MASSAGE: 'HERA.BEAU.CRM.APT.TXN.MASSAGE.v1',
+  BEAUTY_CONSULTATION: 'HERA.BEAU.CRM.APT.TXN.CONS.v1',
+
   // Automotive Services
-  AUTOMOTIVE_SERVICE: "HERA.AUTO.CRM.APT.TXN.SVC.v1",
-  AUTOMOTIVE_INSPECTION: "HERA.AUTO.CRM.APT.TXN.INSP.v1",
-  AUTOMOTIVE_CONSULTATION: "HERA.AUTO.CRM.APT.TXN.CONS.v1",
-  AUTOMOTIVE_DELIVERY: "HERA.AUTO.CRM.APT.TXN.DELIV.v1",
-  
+  AUTOMOTIVE_SERVICE: 'HERA.AUTO.CRM.APT.TXN.SVC.v1',
+  AUTOMOTIVE_INSPECTION: 'HERA.AUTO.CRM.APT.TXN.INSP.v1',
+  AUTOMOTIVE_CONSULTATION: 'HERA.AUTO.CRM.APT.TXN.CONS.v1',
+  AUTOMOTIVE_DELIVERY: 'HERA.AUTO.CRM.APT.TXN.DELIV.v1',
+
   // Legal Services
-  LEGAL_CONSULTATION: "HERA.LEGAL.CRM.APT.TXN.CONS.v1",
-  LEGAL_DOCUMENT_REVIEW: "HERA.LEGAL.CRM.APT.TXN.DOC.v1",
-  LEGAL_COURT_APPEARANCE: "HERA.LEGAL.CRM.APT.TXN.COURT.v1",
-  LEGAL_MEDIATION: "HERA.LEGAL.CRM.APT.TXN.MEDIAT.v1",
-  
+  LEGAL_CONSULTATION: 'HERA.LEGAL.CRM.APT.TXN.CONS.v1',
+  LEGAL_DOCUMENT_REVIEW: 'HERA.LEGAL.CRM.APT.TXN.DOC.v1',
+  LEGAL_COURT_APPEARANCE: 'HERA.LEGAL.CRM.APT.TXN.COURT.v1',
+  LEGAL_MEDIATION: 'HERA.LEGAL.CRM.APT.TXN.MEDIAT.v1',
+
   // Real Estate
-  REALESTATE_SHOWING: "HERA.RE.CRM.APT.TXN.SHOW.v1",
-  REALESTATE_CONSULTATION: "HERA.RE.CRM.APT.TXN.CONS.v1",
-  REALESTATE_INSPECTION: "HERA.RE.CRM.APT.TXN.INSP.v1",
-  REALESTATE_CLOSING: "HERA.RE.CRM.APT.TXN.CLOSE.v1",
-  
+  REALESTATE_SHOWING: 'HERA.RE.CRM.APT.TXN.SHOW.v1',
+  REALESTATE_CONSULTATION: 'HERA.RE.CRM.APT.TXN.CONS.v1',
+  REALESTATE_INSPECTION: 'HERA.RE.CRM.APT.TXN.INSP.v1',
+  REALESTATE_CLOSING: 'HERA.RE.CRM.APT.TXN.CLOSE.v1',
+
   // Insurance Services
-  INSURANCE_CONSULTATION: "HERA.INS.CRM.APT.TXN.CONS.v1",
-  INSURANCE_CLAIM_REVIEW: "HERA.INS.CRM.APT.TXN.CLAIM.v1",
-  INSURANCE_POLICY_REVIEW: "HERA.INS.CRM.APT.TXN.POLICY.v1",
-  
+  INSURANCE_CONSULTATION: 'HERA.INS.CRM.APT.TXN.CONS.v1',
+  INSURANCE_CLAIM_REVIEW: 'HERA.INS.CRM.APT.TXN.CLAIM.v1',
+  INSURANCE_POLICY_REVIEW: 'HERA.INS.CRM.APT.TXN.POLICY.v1',
+
   // Banking Services
-  BANKING_CONSULTATION: "HERA.BANK.CRM.APT.TXN.CONS.v1",
-  BANKING_LOAN_MEETING: "HERA.BANK.CRM.APT.TXN.LOAN.v1",
-  BANKING_INVESTMENT_REVIEW: "HERA.BANK.CRM.APT.TXN.INVEST.v1",
-  
+  BANKING_CONSULTATION: 'HERA.BANK.CRM.APT.TXN.CONS.v1',
+  BANKING_LOAN_MEETING: 'HERA.BANK.CRM.APT.TXN.LOAN.v1',
+  BANKING_INVESTMENT_REVIEW: 'HERA.BANK.CRM.APT.TXN.INVEST.v1',
+
   // Service Entity Classifications
-  SERVICE_JEWELRY: "HERA.JWLR.CRM.ENT.SVC.v1",
-  SERVICE_HEALTHCARE: "HERA.HLTH.CRM.ENT.SVC.v1",
-  SERVICE_RESTAURANT: "HERA.REST.CRM.ENT.SVC.v1",
-  SERVICE_PROFESSIONAL: "HERA.PROF.CRM.ENT.SVC.v1",
-  SERVICE_RETAIL: "HERA.RETL.CRM.ENT.SVC.v1",
-  SERVICE_MANUFACTURING: "HERA.MFG.CRM.ENT.SVC.v1",
-  SERVICE_EDUCATION: "HERA.EDU.CRM.ENT.SVC.v1",
-  SERVICE_FITNESS: "HERA.FIT.CRM.ENT.SVC.v1",
-  SERVICE_BEAUTY: "HERA.BEAU.CRM.ENT.SVC.v1",
-  SERVICE_AUTOMOTIVE: "HERA.AUTO.CRM.ENT.SVC.v1",
-  
+  SERVICE_JEWELRY: 'HERA.JWLR.CRM.ENT.SVC.v1',
+  SERVICE_HEALTHCARE: 'HERA.HLTH.CRM.ENT.SVC.v1',
+  SERVICE_RESTAURANT: 'HERA.REST.CRM.ENT.SVC.v1',
+  SERVICE_PROFESSIONAL: 'HERA.PROF.CRM.ENT.SVC.v1',
+  SERVICE_RETAIL: 'HERA.RETL.CRM.ENT.SVC.v1',
+  SERVICE_MANUFACTURING: 'HERA.MFG.CRM.ENT.SVC.v1',
+  SERVICE_EDUCATION: 'HERA.EDU.CRM.ENT.SVC.v1',
+  SERVICE_FITNESS: 'HERA.FIT.CRM.ENT.SVC.v1',
+  SERVICE_BEAUTY: 'HERA.BEAU.CRM.ENT.SVC.v1',
+  SERVICE_AUTOMOTIVE: 'HERA.AUTO.CRM.ENT.SVC.v1',
+
   // Universal Customer Classifications
-  CUSTOMER_JEWELRY: "HERA.JWLR.CRM.ENT.CUST.v1",
-  CUSTOMER_HEALTHCARE: "HERA.HLTH.CRM.ENT.PATIENT.v1",
-  CUSTOMER_RESTAURANT: "HERA.REST.CRM.ENT.GUEST.v1",
-  CUSTOMER_PROFESSIONAL: "HERA.PROF.CRM.ENT.CLIENT.v1",
-  CUSTOMER_RETAIL: "HERA.RETL.CRM.ENT.CUST.v1",
-  CUSTOMER_MANUFACTURING: "HERA.MFG.CRM.ENT.CLIENT.v1",
-  CUSTOMER_EDUCATION: "HERA.EDU.CRM.ENT.STUDENT.v1",
-  CUSTOMER_FITNESS: "HERA.FIT.CRM.ENT.MEMBER.v1",
-  CUSTOMER_BEAUTY: "HERA.BEAU.CRM.ENT.CLIENT.v1",
-  CUSTOMER_AUTOMOTIVE: "HERA.AUTO.CRM.ENT.CUST.v1",
-  
+  CUSTOMER_JEWELRY: 'HERA.JWLR.CRM.ENT.CUST.v1',
+  CUSTOMER_HEALTHCARE: 'HERA.HLTH.CRM.ENT.PATIENT.v1',
+  CUSTOMER_RESTAURANT: 'HERA.REST.CRM.ENT.GUEST.v1',
+  CUSTOMER_PROFESSIONAL: 'HERA.PROF.CRM.ENT.CLIENT.v1',
+  CUSTOMER_RETAIL: 'HERA.RETL.CRM.ENT.CUST.v1',
+  CUSTOMER_MANUFACTURING: 'HERA.MFG.CRM.ENT.CLIENT.v1',
+  CUSTOMER_EDUCATION: 'HERA.EDU.CRM.ENT.STUDENT.v1',
+  CUSTOMER_FITNESS: 'HERA.FIT.CRM.ENT.MEMBER.v1',
+  CUSTOMER_BEAUTY: 'HERA.BEAU.CRM.ENT.CLIENT.v1',
+  CUSTOMER_AUTOMOTIVE: 'HERA.AUTO.CRM.ENT.CUST.v1',
+
   // Universal Staff Classifications
-  STAFF_UNIVERSAL: "HERA.UNIV.HR.ENT.STAFF.v1",
-  STAFF_APPOINTMENT_ASSIGNMENT: "HERA.UNIV.HR.REL.STAFF.APT.v1",
-  CUSTOMER_APPOINTMENT_BOOKING: "HERA.UNIV.CRM.REL.CUST.APT.v1",
-  SERVICE_APPOINTMENT_PROVISION: "HERA.UNIV.CRM.REL.SVC.APT.v1"
+  STAFF_UNIVERSAL: 'HERA.UNIV.HR.ENT.STAFF.v1',
+  STAFF_APPOINTMENT_ASSIGNMENT: 'HERA.UNIV.HR.REL.STAFF.APT.v1',
+  CUSTOMER_APPOINTMENT_BOOKING: 'HERA.UNIV.CRM.REL.CUST.APT.v1',
+  SERVICE_APPOINTMENT_PROVISION: 'HERA.UNIV.CRM.REL.SVC.APT.v1'
 }
 
 // ==========================================
@@ -207,19 +207,19 @@ export const APPOINTMENT_SMART_CODES = {
 // ==========================================
 
 export const APPOINTMENT_WORKFLOW = {
-  DRAFT: 'draft',           // Initial creation
-  SCHEDULED: 'scheduled',   // Time slot reserved
-  CONFIRMED: 'confirmed',   // Customer confirmed attendance
-  REMINDED: 'reminded',     // Automatic reminders sent
+  DRAFT: 'draft', // Initial creation
+  SCHEDULED: 'scheduled', // Time slot reserved
+  CONFIRMED: 'confirmed', // Customer confirmed attendance
+  REMINDED: 'reminded', // Automatic reminders sent
   CHECKED_IN: 'checked_in', // Customer arrived
   IN_PROGRESS: 'in_progress', // Service being provided
-  COMPLETED: 'completed',   // Service finished
-  FOLLOW_UP: 'follow_up',   // Post-service actions
-  CANCELLED: 'cancelled',   // Appointment cancelled
-  NO_SHOW: 'no_show'        // Customer didn't attend
+  COMPLETED: 'completed', // Service finished
+  FOLLOW_UP: 'follow_up', // Post-service actions
+  CANCELLED: 'cancelled', // Appointment cancelled
+  NO_SHOW: 'no_show' // Customer didn't attend
 } as const
 
-export type AppointmentStatus = typeof APPOINTMENT_WORKFLOW[keyof typeof APPOINTMENT_WORKFLOW]
+export type AppointmentStatus = (typeof APPOINTMENT_WORKFLOW)[keyof typeof APPOINTMENT_WORKFLOW]
 
 // ==========================================
 // UNIVERSAL SERVICE TYPES - EXPANDABLE FOR ANY INDUSTRY
@@ -228,289 +228,289 @@ export type AppointmentStatus = typeof APPOINTMENT_WORKFLOW[keyof typeof APPOINT
 export const SERVICE_TYPES = {
   JEWELRY: {
     DESIGN_CONSULTATION: {
-      name: "Design Consultation",
+      name: 'Design Consultation',
       duration: 60,
       price: 2000,
       smart_code: APPOINTMENT_SMART_CODES.JEWELRY_CONSULTATION,
-      requires: ["design_expert"],
-      description: "Custom jewelry design discussions"
+      requires: ['design_expert'],
+      description: 'Custom jewelry design discussions'
     },
     RING_SIZING: {
-      name: "Ring Sizing",
+      name: 'Ring Sizing',
       duration: 15,
       price: 500,
       smart_code: APPOINTMENT_SMART_CODES.JEWELRY_RING_SIZING,
-      requires: ["jeweler"],
-      description: "Professional sizing services"
+      requires: ['jeweler'],
+      description: 'Professional sizing services'
     },
     JEWELRY_APPRAISAL: {
-      name: "Jewelry Appraisal",
+      name: 'Jewelry Appraisal',
       duration: 30,
       price: 1500,
       smart_code: APPOINTMENT_SMART_CODES.JEWELRY_APPRAISAL,
-      requires: ["certified_appraiser"],
-      description: "Valuation for insurance/sales"
+      requires: ['certified_appraiser'],
+      description: 'Valuation for insurance/sales'
     },
     REPAIR_SERVICES: {
-      name: "Repair Services",
+      name: 'Repair Services',
       duration: 45,
       price: 1000,
       smart_code: APPOINTMENT_SMART_CODES.JEWELRY_REPAIR,
-      requires: ["repair_specialist"],
-      description: "Restoration work"
+      requires: ['repair_specialist'],
+      description: 'Restoration work'
     },
     COLLECTION_VIEWING: {
-      name: "Collection Viewing",
+      name: 'Collection Viewing',
       duration: 90,
       price: 0,
       smart_code: APPOINTMENT_SMART_CODES.JEWELRY_VIP_VIEWING,
-      requires: ["sales_expert"],
-      description: "VIP customer private viewings"
+      requires: ['sales_expert'],
+      description: 'VIP customer private viewings'
     }
   },
-  
+
   HEALTHCARE: {
     GENERAL_CHECKUP: {
-      name: "General Checkup",
+      name: 'General Checkup',
       duration: 30,
       price: 5000,
       smart_code: APPOINTMENT_SMART_CODES.HEALTHCARE_CHECKUP,
-      requires: ["general_practitioner"],
-      description: "Routine examinations"
+      requires: ['general_practitioner'],
+      description: 'Routine examinations'
     },
     SPECIALIST_CONSULTATION: {
-      name: "Specialist Consultation",
+      name: 'Specialist Consultation',
       duration: 45,
       price: 8000,
       smart_code: APPOINTMENT_SMART_CODES.HEALTHCARE_SPECIALIST,
-      requires: ["specialist"],
-      description: "Expert medical advice"
+      requires: ['specialist'],
+      description: 'Expert medical advice'
     },
     MEDICAL_PROCEDURE: {
-      name: "Medical Procedure",
+      name: 'Medical Procedure',
       duration: 120,
       price: 15000,
       smart_code: APPOINTMENT_SMART_CODES.HEALTHCARE_PROCEDURE,
-      requires: ["specialist", "nurse", "equipment"],
-      description: "Scheduled treatments"
+      requires: ['specialist', 'nurse', 'equipment'],
+      description: 'Scheduled treatments'
     },
     FOLLOW_UP_VISIT: {
-      name: "Follow-up Visit",
+      name: 'Follow-up Visit',
       duration: 20,
       price: 3000,
       smart_code: APPOINTMENT_SMART_CODES.HEALTHCARE_FOLLOWUP,
-      requires: ["doctor"],
-      description: "Post-treatment reviews"
+      requires: ['doctor'],
+      description: 'Post-treatment reviews'
     },
     EMERGENCY_SLOT: {
-      name: "Emergency Slot",
+      name: 'Emergency Slot',
       duration: 15,
       price: 10000,
       smart_code: APPOINTMENT_SMART_CODES.HEALTHCARE_EMERGENCY,
-      requires: ["emergency_doctor"],
-      description: "Urgent care availability"
+      requires: ['emergency_doctor'],
+      description: 'Urgent care availability'
     }
   },
-  
+
   RESTAURANT: {
     TABLE_RESERVATION: {
-      name: "Table Reservation",
+      name: 'Table Reservation',
       duration: 120,
       price: 0,
       smart_code: APPOINTMENT_SMART_CODES.RESTAURANT_RESERVATION,
-      requires: ["table", "server"],
-      description: "Standard dining bookings"
+      requires: ['table', 'server'],
+      description: 'Standard dining bookings'
     },
     PRIVATE_EVENT: {
-      name: "Private Event",
+      name: 'Private Event',
       duration: 240,
       price: 50000,
       smart_code: APPOINTMENT_SMART_CODES.RESTAURANT_PRIVATE_EVENT,
-      requires: ["private_room", "dedicated_staff"],
-      description: "Exclusive dining experiences"
+      requires: ['private_room', 'dedicated_staff'],
+      description: 'Exclusive dining experiences'
     },
     TASTING_MENU: {
-      name: "Tasting Menu",
+      name: 'Tasting Menu',
       duration: 180,
       price: 15000,
       smart_code: APPOINTMENT_SMART_CODES.RESTAURANT_TASTING_MENU,
-      requires: ["chef", "sommelier"],
+      requires: ['chef', 'sommelier'],
       description: "Chef's special presentations"
     },
     COOKING_CLASS: {
-      name: "Cooking Class",
+      name: 'Cooking Class',
       duration: 150,
       price: 8000,
       smart_code: APPOINTMENT_SMART_CODES.RESTAURANT_COOKING_CLASS,
-      requires: ["chef_instructor", "kitchen"],
-      description: "Interactive culinary experiences"
+      requires: ['chef_instructor', 'kitchen'],
+      description: 'Interactive culinary experiences'
     }
   },
-  
+
   PROFESSIONAL: {
     CLIENT_MEETING: {
-      name: "Client Meeting",
+      name: 'Client Meeting',
       duration: 60,
       price: 12000,
       smart_code: APPOINTMENT_SMART_CODES.PROFESSIONAL_MEETING,
-      requires: ["consultant"],
-      description: "Strategic consultations"
+      requires: ['consultant'],
+      description: 'Strategic consultations'
     },
     LEGAL_CONSULTATION: {
-      name: "Legal Consultation",
+      name: 'Legal Consultation',
       duration: 90,
       price: 18000,
       smart_code: APPOINTMENT_SMART_CODES.PROFESSIONAL_LEGAL_CONSULT,
-      requires: ["lawyer"],
-      description: "Professional advice sessions"
+      requires: ['lawyer'],
+      description: 'Professional advice sessions'
     },
     DOCUMENT_REVIEW: {
-      name: "Document Review",
+      name: 'Document Review',
       duration: 45,
       price: 9000,
       smart_code: APPOINTMENT_SMART_CODES.PROFESSIONAL_DOCUMENT_REVIEW,
-      requires: ["legal_expert"],
-      description: "Contract analysis meetings"
+      requires: ['legal_expert'],
+      description: 'Contract analysis meetings'
     },
     COURT_APPEARANCE: {
-      name: "Court Appearance",
+      name: 'Court Appearance',
       duration: 480,
       price: 50000,
       smart_code: APPOINTMENT_SMART_CODES.PROFESSIONAL_COURT_APPEARANCE,
-      requires: ["senior_lawyer"],
-      description: "Legal proceedings"
+      requires: ['senior_lawyer'],
+      description: 'Legal proceedings'
     }
   },
-  
+
   // EXPANDED UNIVERSAL SERVICE TYPES
-  
+
   RETAIL: {
     PERSONAL_SHOPPING: {
-      name: "Personal Shopping",
+      name: 'Personal Shopping',
       duration: 90,
       price: 5000,
       smart_code: APPOINTMENT_SMART_CODES.RETAIL_PERSONAL_SHOPPING,
-      requires: ["personal_shopper"],
-      description: "Personalized shopping experience"
+      requires: ['personal_shopper'],
+      description: 'Personalized shopping experience'
     },
     STYLING_SESSION: {
-      name: "Styling Session",
+      name: 'Styling Session',
       duration: 60,
       price: 3000,
       smart_code: APPOINTMENT_SMART_CODES.RETAIL_STYLING_SESSION,
-      requires: ["stylist"],
-      description: "Fashion styling consultation"
+      requires: ['stylist'],
+      description: 'Fashion styling consultation'
     },
     PRODUCT_DEMO: {
-      name: "Product Demonstration",
+      name: 'Product Demonstration',
       duration: 30,
       price: 0,
       smart_code: APPOINTMENT_SMART_CODES.RETAIL_PRODUCT_DEMO,
-      requires: ["sales_associate"],
-      description: "Product demonstrations"
+      requires: ['sales_associate'],
+      description: 'Product demonstrations'
     }
   },
-  
+
   MANUFACTURING: {
     SITE_VISIT: {
-      name: "Site Visit",
+      name: 'Site Visit',
       duration: 120,
       price: 0,
       smart_code: APPOINTMENT_SMART_CODES.MANUFACTURING_SITE_VISIT,
-      requires: ["site_manager"],
-      description: "Facility tours and meetings"
+      requires: ['site_manager'],
+      description: 'Facility tours and meetings'
     },
     QUALITY_INSPECTION: {
-      name: "Quality Inspection",
+      name: 'Quality Inspection',
       duration: 60,
       price: 5000,
       smart_code: APPOINTMENT_SMART_CODES.MANUFACTURING_INSPECTION,
-      requires: ["quality_inspector"],
-      description: "Product quality assessments"
+      requires: ['quality_inspector'],
+      description: 'Product quality assessments'
     }
   },
-  
+
   EDUCATION: {
     TUTORING_SESSION: {
-      name: "Tutoring Session",
+      name: 'Tutoring Session',
       duration: 60,
       price: 2000,
       smart_code: APPOINTMENT_SMART_CODES.EDUCATION_TUTORING,
-      requires: ["tutor"],
-      description: "One-on-one tutoring"
+      requires: ['tutor'],
+      description: 'One-on-one tutoring'
     },
     PARENT_CONSULTATION: {
-      name: "Parent Consultation",
+      name: 'Parent Consultation',
       duration: 30,
       price: 1000,
       smart_code: APPOINTMENT_SMART_CODES.EDUCATION_CONSULTATION,
-      requires: ["teacher"],
-      description: "Parent-teacher meetings"
+      requires: ['teacher'],
+      description: 'Parent-teacher meetings'
     }
   },
-  
+
   FITNESS: {
     PERSONAL_TRAINING: {
-      name: "Personal Training",
+      name: 'Personal Training',
       duration: 60,
       price: 3000,
       smart_code: APPOINTMENT_SMART_CODES.FITNESS_PERSONAL_TRAINING,
-      requires: ["personal_trainer"],
-      description: "One-on-one fitness training"
+      requires: ['personal_trainer'],
+      description: 'One-on-one fitness training'
     },
     FITNESS_ASSESSMENT: {
-      name: "Fitness Assessment",
+      name: 'Fitness Assessment',
       duration: 45,
       price: 2000,
       smart_code: APPOINTMENT_SMART_CODES.FITNESS_ASSESSMENT,
-      requires: ["fitness_assessor"],
-      description: "Comprehensive fitness evaluation"
+      requires: ['fitness_assessor'],
+      description: 'Comprehensive fitness evaluation'
     }
   },
-  
+
   BEAUTY: {
     HAIRCUT_STYLING: {
-      name: "Haircut & Styling",
+      name: 'Haircut & Styling',
       duration: 60,
       price: 2500,
       smart_code: APPOINTMENT_SMART_CODES.BEAUTY_HAIRCUT,
-      requires: ["hair_stylist"],
-      description: "Hair cutting and styling services"
+      requires: ['hair_stylist'],
+      description: 'Hair cutting and styling services'
     },
     FACIAL_TREATMENT: {
-      name: "Facial Treatment",
+      name: 'Facial Treatment',
       duration: 90,
       price: 4000,
       smart_code: APPOINTMENT_SMART_CODES.BEAUTY_FACIAL,
-      requires: ["esthetician"],
-      description: "Professional facial treatments"
+      requires: ['esthetician'],
+      description: 'Professional facial treatments'
     },
     MASSAGE_THERAPY: {
-      name: "Massage Therapy",
+      name: 'Massage Therapy',
       duration: 60,
       price: 3500,
       smart_code: APPOINTMENT_SMART_CODES.BEAUTY_MASSAGE,
-      requires: ["massage_therapist"],
-      description: "Therapeutic massage services"
+      requires: ['massage_therapist'],
+      description: 'Therapeutic massage services'
     }
   },
-  
+
   AUTOMOTIVE: {
     SERVICE_APPOINTMENT: {
-      name: "Service Appointment",
+      name: 'Service Appointment',
       duration: 120,
       price: 5000,
       smart_code: APPOINTMENT_SMART_CODES.AUTOMOTIVE_SERVICE,
-      requires: ["service_technician"],
-      description: "Vehicle maintenance and repair"
+      requires: ['service_technician'],
+      description: 'Vehicle maintenance and repair'
     },
     VEHICLE_INSPECTION: {
-      name: "Vehicle Inspection",
+      name: 'Vehicle Inspection',
       duration: 45,
       price: 2000,
       smart_code: APPOINTMENT_SMART_CODES.AUTOMOTIVE_INSPECTION,
-      requires: ["certified_inspector"],
-      description: "Vehicle safety and emissions inspection"
+      requires: ['certified_inspector'],
+      description: 'Vehicle safety and emissions inspection'
     }
   }
 } as const
@@ -521,11 +521,11 @@ export const SERVICE_TYPES = {
 
 export class UniversalAppointmentSystem {
   private organizationId: string
-  
+
   constructor(organizationId: string) {
     this.organizationId = organizationId
   }
-  
+
   // Parse Smart Code Components
   parseSmartCode(smartCode: string): {
     system: string
@@ -537,19 +537,19 @@ export class UniversalAppointmentSystem {
   } {
     const components = smartCode.split('.')
     return {
-      system: components[0],      // HERA
-      industry: components[1],    // JWLR, HLTH, REST, PROF, etc.
-      module: components[2],      // CRM, HR
-      type: components[3],        // APT, ENT, REL
-      function: components[4],    // TXN, SVC, CUST, etc.
-      version: components[5]      // v1, v2, etc.
+      system: components[0], // HERA
+      industry: components[1], // JWLR, HLTH, REST, PROF, etc.
+      module: components[2], // CRM, HR
+      type: components[3], // APT, ENT, REL
+      function: components[4], // TXN, SVC, CUST, etc.
+      version: components[5] // v1, v2, etc.
     }
   }
-  
+
   // ==========================================
   // UNIVERSAL CUSTOMER MANAGEMENT
   // ==========================================
-  
+
   // Create Universal Customer Entity
   async createCustomer(params: {
     customerName: string
@@ -578,7 +578,7 @@ export class UniversalAppointmentSystem {
       }
       return smartCodeMap[industry] || 'HERA.UNIV.CRM.ENT.CUST.v1'
     }
-    
+
     const customer: CoreEntity = {
       id: uuidv4(),
       organization_id: this.organizationId,
@@ -599,21 +599,21 @@ export class UniversalAppointmentSystem {
         appointment_history: []
       }
     }
-    
+
     // AI Analysis if requested
     if (params.aiAnalysis) {
       const aiResult = await this.performUniversalCustomerAIAnalysis(customer)
       customer.ai_confidence_score = aiResult.confidence
       customer.ai_classification = aiResult.classification
     }
-    
+
     return customer
   }
-  
+
   // ==========================================
   // UNIVERSAL SERVICE MANAGEMENT
   // ==========================================
-  
+
   // Create Universal Service Entity
   async createService(params: {
     serviceName: string
@@ -626,17 +626,21 @@ export class UniversalAppointmentSystem {
     // Get service template with fallback
     const serviceTypeKey = params.serviceType.toUpperCase() as keyof typeof SERVICE_TYPES
     const serviceTypes = SERVICE_TYPES[serviceTypeKey]
-    
+
     if (!serviceTypes) {
-      throw new Error(`Service type ${params.serviceType} not supported. Available types: ${Object.keys(SERVICE_TYPES).join(', ')}`)
+      throw new Error(
+        `Service type ${params.serviceType} not supported. Available types: ${Object.keys(SERVICE_TYPES).join(', ')}`
+      )
     }
-    
+
     const serviceTemplate = serviceTypes[params.serviceSubtype as keyof typeof serviceTypes]
-    
+
     if (!serviceTemplate) {
-      throw new Error(`Service subtype ${params.serviceSubtype} not found for ${params.serviceType}`)
+      throw new Error(
+        `Service subtype ${params.serviceSubtype} not found for ${params.serviceType}`
+      )
     }
-    
+
     const service: CoreEntity = {
       id: uuidv4(),
       organization_id: this.organizationId,
@@ -663,14 +667,14 @@ export class UniversalAppointmentSystem {
         }
       }
     }
-    
+
     return service
   }
-  
+
   // ==========================================
   // UNIVERSAL APPOINTMENT CREATION & MANAGEMENT
   // ==========================================
-  
+
   // Create Universal Appointment Transaction
   async createAppointment(params: {
     customerId: string
@@ -688,7 +692,7 @@ export class UniversalAppointmentSystem {
     if (!service) {
       throw new Error('Service not found')
     }
-    
+
     const appointment: UniversalTransaction = {
       id: uuidv4(),
       organization_id: this.organizationId,
@@ -717,7 +721,7 @@ export class UniversalAppointmentSystem {
       },
       ai_insights: {}
     }
-    
+
     // AI Optimization if requested
     if (params.aiOptimization) {
       const aiOptimization = await this.optimizeUniversalAppointment(appointment)
@@ -727,10 +731,10 @@ export class UniversalAppointmentSystem {
         ai_suggestions: aiOptimization.suggestions
       }
     }
-    
+
     return appointment
   }
-  
+
   // Universal Appointment Status Update
   async updateAppointmentStatus(params: {
     appointmentId: string
@@ -740,7 +744,7 @@ export class UniversalAppointmentSystem {
     automaticActions?: boolean
   }): Promise<{ success: boolean; nextActions: string[] }> {
     const nextActions: string[] = []
-    
+
     // Universal workflow automation based on new status
     switch (params.newStatus) {
       case APPOINTMENT_WORKFLOW.SCHEDULED:
@@ -750,21 +754,21 @@ export class UniversalAppointmentSystem {
           nextActions.push('prepare_resources')
         }
         break
-        
+
       case APPOINTMENT_WORKFLOW.CONFIRMED:
         if (params.automaticActions) {
           nextActions.push('send_pre_appointment_info')
           nextActions.push('block_calendar_slot')
         }
         break
-        
+
       case APPOINTMENT_WORKFLOW.CHECKED_IN:
         if (params.automaticActions) {
           nextActions.push('notify_staff')
           nextActions.push('prepare_service_area')
         }
         break
-        
+
       case APPOINTMENT_WORKFLOW.COMPLETED:
         if (params.automaticActions) {
           nextActions.push('send_feedback_request')
@@ -773,7 +777,7 @@ export class UniversalAppointmentSystem {
           nextActions.push('generate_invoice')
         }
         break
-        
+
       case APPOINTMENT_WORKFLOW.CANCELLED:
         if (params.automaticActions) {
           nextActions.push('release_resources')
@@ -782,17 +786,17 @@ export class UniversalAppointmentSystem {
         }
         break
     }
-    
+
     return {
       success: true,
       nextActions
     }
   }
-  
+
   // ==========================================
   // UNIVERSAL AVAILABILITY & SCHEDULING
   // ==========================================
-  
+
   // Universal Availability Check
   async checkAvailability(params: {
     serviceId: string
@@ -820,17 +824,17 @@ export class UniversalAppointmentSystem {
     // Universal availability checking algorithm
     const availableSlots = []
     const conflicts = []
-    
+
     // Generate universal available slots
     const currentDate = new Date(params.dateRange.start)
     const endDate = new Date(params.dateRange.end)
-    
+
     while (currentDate <= endDate) {
       // Universal business hours: 8 AM to 6 PM (customizable per industry)
       for (let hour = 8; hour < 18; hour++) {
         const startTime = `${hour.toString().padStart(2, '0')}:00`
         const endTime = `${(hour + Math.ceil(params.duration / 60)).toString().padStart(2, '0')}:00`
-        
+
         availableSlots.push({
           date: new Date(currentDate),
           startTime,
@@ -838,23 +842,24 @@ export class UniversalAppointmentSystem {
           staffAvailable: params.staffPreferences || ['staff_1', 'staff_2'],
           resourcesAvailable: ['room_1', 'equipment_set_a'],
           conflictScore: Math.random() * 100, // 0-100, lower is better
-          aiRecommendation: Math.random() > 0.7 ? 'Optimal slot based on universal patterns' : undefined
+          aiRecommendation:
+            Math.random() > 0.7 ? 'Optimal slot based on universal patterns' : undefined
         })
       }
-      
+
       currentDate.setDate(currentDate.getDate() + 1)
     }
-    
+
     return {
       availableSlots: availableSlots.slice(0, 50), // Return top 50 slots
       conflicts
     }
   }
-  
+
   // ==========================================
   // UNIVERSAL AI INTELLIGENCE & OPTIMIZATION
   // ==========================================
-  
+
   // Universal Customer AI Analysis
   private async performUniversalCustomerAIAnalysis(customer: CoreEntity): Promise<{
     confidence: number
@@ -862,16 +867,16 @@ export class UniversalAppointmentSystem {
     insights: Record<string, any>
   }> {
     const smartCodeAnalysis = this.parseSmartCode(customer.smart_code)
-    
+
     // Calculate confidence based on data completeness
     let confidence = 0.8
     const contactInfo = (customer.metadata as any)?.contact_info || {}
     if (contactInfo.email) confidence += 0.1
     if (contactInfo.phone) confidence += 0.1
-    
+
     // Universal classification
     const classification = `${smartCodeAnalysis.industry}_CUSTOMER`
-    
+
     // Generate universal AI insights
     const insights = {
       customer_segment: this.determineUniversalCustomerSegment(customer),
@@ -881,14 +886,14 @@ export class UniversalAppointmentSystem {
       lifetime_value_prediction: this.predictUniversalLifetimeValue(customer),
       retention_probability: this.calculateUniversalRetentionProbability(customer)
     }
-    
+
     return {
       confidence: Math.min(1, confidence),
       classification,
       insights
     }
   }
-  
+
   // Universal Appointment Optimization
   private async optimizeUniversalAppointment(appointment: UniversalTransaction): Promise<{
     insights: Record<string, any>
@@ -896,35 +901,35 @@ export class UniversalAppointmentSystem {
   }> {
     const suggestions: string[] = []
     const insights: Record<string, any> = {}
-    
+
     // Universal time optimization
     const timeInsights = this.analyzeUniversalOptimalTiming(appointment)
     insights.timing = timeInsights
     if (timeInsights.suggestion) {
       suggestions.push(timeInsights.suggestion)
     }
-    
+
     // Universal resource optimization
     const resourceInsights = this.optimizeUniversalResources(appointment)
     insights.resources = resourceInsights
     if (resourceInsights.suggestion) {
       suggestions.push(resourceInsights.suggestion)
     }
-    
+
     // Universal revenue optimization
     const revenueInsights = this.optimizeUniversalRevenue(appointment)
     insights.revenue = revenueInsights
     if (revenueInsights.suggestion) {
       suggestions.push(revenueInsights.suggestion)
     }
-    
+
     return { insights, suggestions }
   }
-  
+
   // ==========================================
   // UNIVERSAL UTILITY FUNCTIONS
   // ==========================================
-  
+
   private generateUniversalCustomerCode(industry: string): string {
     const prefixMap: Record<string, string> = {
       jewelry: 'JWLR-CUST',
@@ -942,18 +947,18 @@ export class UniversalAppointmentSystem {
     const timestamp = Date.now().toString().slice(-6)
     return `${prefix}-${timestamp}`
   }
-  
+
   private generateUniversalServiceCode(serviceType: string): string {
     const prefix = serviceType.substring(0, 4).toUpperCase()
     const timestamp = Date.now().toString().slice(-6)
     return `${prefix}-SVC-${timestamp}`
   }
-  
+
   private generateUniversalAppointmentNumber(): string {
     const timestamp = Date.now().toString().slice(-8)
     return `APT-${timestamp}`
   }
-  
+
   // Universal service lookup
   private async getUniversalServiceById(serviceId: string): Promise<CoreEntity | null> {
     // In production, this would query the universal core_entities table
@@ -972,22 +977,22 @@ export class UniversalAppointmentSystem {
       }
     }
   }
-  
+
   // Universal AI Analysis Helper Functions
   private determineUniversalCustomerSegment(customer: CoreEntity): string {
     const universalSegments = ['premium', 'standard', 'new', 'loyal', 'at_risk']
     return universalSegments[Math.floor(Math.random() * universalSegments.length)]
   }
-  
+
   private predictUniversalPreferredTimes(customer: CoreEntity): string[] {
     const timeSlots = ['morning', 'afternoon', 'evening', 'weekend']
     return timeSlots.slice(0, Math.floor(Math.random() * 3) + 1)
   }
-  
+
   private suggestUniversalServices(customer: CoreEntity): string[] {
     return ['Premium Service', 'Standard Service', 'Follow-up Service']
   }
-  
+
   private analyzeUniversalCommPreferences(customer: CoreEntity): Record<string, string> {
     return {
       preferred_channel: Math.random() > 0.5 ? 'email' : 'sms',
@@ -995,16 +1000,19 @@ export class UniversalAppointmentSystem {
       communication_frequency: 'standard'
     }
   }
-  
+
   private predictUniversalLifetimeValue(customer: CoreEntity): number {
     return Math.floor(Math.random() * 100000) + 10000 // ₹10K - ₹110K
   }
-  
+
   private calculateUniversalRetentionProbability(customer: CoreEntity): number {
     return Math.floor(Math.random() * 40) + 60 // 60% - 100%
   }
-  
-  private analyzeUniversalOptimalTiming(appointment: UniversalTransaction): { optimal_time?: string; suggestion?: string } {
+
+  private analyzeUniversalOptimalTiming(appointment: UniversalTransaction): {
+    optimal_time?: string
+    suggestion?: string
+  } {
     const currentHour = new Date(appointment.transaction_date).getHours()
     if (currentHour < 9) {
       return {
@@ -1014,15 +1022,21 @@ export class UniversalAppointmentSystem {
     }
     return { optimal_time: (appointment.metadata as any)?.start_time }
   }
-  
-  private optimizeUniversalResources(appointment: UniversalTransaction): { required?: string[]; suggestion?: string } {
+
+  private optimizeUniversalResources(appointment: UniversalTransaction): {
+    required?: string[]
+    suggestion?: string
+  } {
     return {
       required: ['staff_member', 'service_area'],
       suggestion: 'Optimize resource allocation based on appointment type and duration'
     }
   }
-  
-  private optimizeUniversalRevenue(appointment: UniversalTransaction): { opportunity?: string; suggestion?: string } {
+
+  private optimizeUniversalRevenue(appointment: UniversalTransaction): {
+    opportunity?: string
+    suggestion?: string
+  } {
     return {
       opportunity: 'upsell',
       suggestion: 'Consider offering complementary services based on universal customer patterns'

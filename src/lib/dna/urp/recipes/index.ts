@@ -1,14 +1,20 @@
 /**
  * Universal Report Pattern Recipes
  * Smart Code: HERA.URP.RECIPE.*.v1
- * 
+ *
  * Pre-built report definitions using URP primitives
  */
 
 import type { UniversalReportEngine } from '../report-engine'
 
 export interface ReportRecipeStep {
-  primitive: 'entityResolver' | 'hierarchyBuilder' | 'transactionFacts' | 'dynamicJoin' | 'rollupBalance' | 'custom'
+  primitive:
+    | 'entityResolver'
+    | 'hierarchyBuilder'
+    | 'transactionFacts'
+    | 'dynamicJoin'
+    | 'rollupBalance'
+    | 'custom'
   config?: Record<string, any>
   outputKey?: string
   handler?: (data: any, engine: UniversalReportEngine, params: Record<string, any>) => Promise<any>
@@ -50,14 +56,14 @@ export const reportRecipes: Array<[string, ReportRecipe]> = [
   [balanceSheetRecipe.name, balanceSheetRecipe],
   [profitLossRecipe.name, profitLossRecipe],
   [cashflowRecipe.name, cashflowRecipe],
-  
+
   // Sales recipes
   [customerAgingRecipe.name, customerAgingRecipe],
   [salesAnalysisRecipe.name, salesAnalysisRecipe],
-  
+
   // Inventory recipes
   [inventoryLevelsRecipe.name, inventoryLevelsRecipe],
-  
+
   // Production recipes
   [productionAnalysisRecipe.name, productionAnalysisRecipe]
 ]

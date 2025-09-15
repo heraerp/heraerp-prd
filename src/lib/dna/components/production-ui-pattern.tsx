@@ -1,9 +1,9 @@
 /**
  * Production UI Components - HERA DNA Pattern
- * 
+ *
  * Reusable production management UI components that work across all manufacturing industries.
  * Provides consistent user experience while allowing industry-specific customizations.
- * 
+ *
  * Acceleration: 100x (eliminates 95% of production UI development)
  */
 
@@ -128,22 +128,27 @@ interface ProductionOrderCardProps {
   baseUrl?: string
 }
 
-export function ProductionOrderCard({ 
-  order, 
-  product, 
-  workCenter, 
-  progress, 
+export function ProductionOrderCard({
+  order,
+  product,
+  workCenter,
+  progress,
   status,
   industryConfig,
   baseUrl = '/production'
 }: ProductionOrderCardProps) {
   const getStatusColor = (statusCode: string) => {
     switch (statusCode) {
-      case 'STATUS-IN_PROGRESS': return 'bg-blue-500/10 text-blue-400'
-      case 'STATUS-COMPLETED': return 'bg-green-500/10 text-green-400'
-      case 'STATUS-ON_HOLD': return 'bg-amber-500/10 text-amber-400'
-      case 'STATUS-CANCELLED': return 'bg-red-500/10 text-red-400'
-      default: return 'bg-gray-500/10 text-gray-400'
+      case 'STATUS-IN_PROGRESS':
+        return 'bg-blue-500/10 text-blue-400'
+      case 'STATUS-COMPLETED':
+        return 'bg-green-500/10 text-green-400'
+      case 'STATUS-ON_HOLD':
+        return 'bg-amber-500/10 text-amber-400'
+      case 'STATUS-CANCELLED':
+        return 'bg-red-500/10 text-red-400'
+      default:
+        return 'bg-gray-500/10 text-gray-400'
     }
   }
 
@@ -165,9 +170,7 @@ export function ProductionOrderCard({
                 Work Center: {workCenter?.entity_name || 'Not assigned'}
               </p>
             </div>
-            <Badge className={cn("ml-4", getStatusColor(status))}>
-              {formatStatusName(status)}
-            </Badge>
+            <Badge className={cn('ml-4', getStatusColor(status))}>{formatStatusName(status)}</Badge>
           </div>
 
           <div className="space-y-2">
@@ -183,11 +186,17 @@ export function ProductionOrderCard({
           <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
-              Start: {new Date((order.metadata as any)?.planned_start || order.transaction_date).toLocaleDateString()}
+              Start:{' '}
+              {new Date(
+                (order.metadata as any)?.planned_start || order.transaction_date
+              ).toLocaleDateString()}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              Due: {new Date((order.metadata as any)?.planned_end || order.transaction_date).toLocaleDateString()}
+              Due:{' '}
+              {new Date(
+                (order.metadata as any)?.planned_end || order.transaction_date
+              ).toLocaleDateString()}
             </span>
             {(order.metadata as any)?.batch_number && (
               <span className="flex items-center gap-1">
@@ -235,10 +244,10 @@ interface WorkCenterGridProps {
   baseUrl?: string
 }
 
-export function WorkCenterGrid({ 
-  workCenters, 
-  activeOrders, 
-  products, 
+export function WorkCenterGrid({
+  workCenters,
+  activeOrders,
+  products,
   transactionLines,
   getOrderProgress,
   industryConfig,
@@ -246,11 +255,15 @@ export function WorkCenterGrid({
 }: WorkCenterGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {workCenters.map((center) => {
+      {workCenters.map(center => {
         // Find active order for this work center
         const activeOrder = activeOrders.find(o => o.target_entity_id === center.id)
-        const product = activeOrder ? products.find(p => p.id === activeOrder.source_entity_id) : null
-        const progress = activeOrder ? getOrderProgress(activeOrder.id, activeOrder.total_amount) : null
+        const product = activeOrder
+          ? products.find(p => p.id === activeOrder.source_entity_id)
+          : null
+        const progress = activeOrder
+          ? getOrderProgress(activeOrder.id, activeOrder.total_amount)
+          : null
 
         return (
           <Card key={center.id} className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
@@ -260,7 +273,7 @@ export function WorkCenterGrid({
                 <p className="text-sm text-gray-400">
                   {(center.metadata as any)?.location || 'Shop Floor'}
                 </p>
-                
+
                 {/* Industry-specific work center info */}
                 {industryConfig?.showTemperature && (center.metadata as any)?.temperature && (
                   <p className="text-xs text-blue-400 mt-1">
@@ -268,7 +281,11 @@ export function WorkCenterGrid({
                   </p>
                 )}
               </div>
-              <Badge className={activeOrder ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}>
+              <Badge
+                className={
+                  activeOrder ? 'bg-green-500/10 text-green-400' : 'bg-gray-500/10 text-gray-400'
+                }
+              >
                 {activeOrder ? 'Running' : 'Idle'}
               </Badge>
             </div>
@@ -277,7 +294,9 @@ export function WorkCenterGrid({
               <div className="space-y-3">
                 <div>
                   <p className="text-sm font-medium text-white">{activeOrder.transaction_code}</p>
-                  <p className="text-xs text-gray-400">{product?.entity_name || 'Unknown Product'}</p>
+                  <p className="text-xs text-gray-400">
+                    {product?.entity_name || 'Unknown Product'}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -370,21 +389,31 @@ export function ProductionActivityFeed({ activities, maxItems = 5 }: ActivityFee
 
   const getActivityIcon = (type: Activity['type']) => {
     switch (type) {
-      case 'completed': return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'started': return <Activity className="h-4 w-4 text-blue-500" />
-      case 'paused': return <Pause className="h-4 w-4 text-yellow-500" />
-      case 'alert': return <AlertCircle className="h-4 w-4 text-amber-500" />
-      default: return <Activity className="h-4 w-4 text-gray-500" />
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case 'started':
+        return <Activity className="h-4 w-4 text-blue-500" />
+      case 'paused':
+        return <Pause className="h-4 w-4 text-yellow-500" />
+      case 'alert':
+        return <AlertCircle className="h-4 w-4 text-amber-500" />
+      default:
+        return <Activity className="h-4 w-4 text-gray-500" />
     }
   }
 
   const getActivityBgColor = (type: Activity['type']) => {
     switch (type) {
-      case 'completed': return 'bg-green-500/10'
-      case 'started': return 'bg-blue-500/10'
-      case 'paused': return 'bg-yellow-500/10'
-      case 'alert': return 'bg-amber-500/10'
-      default: return 'bg-gray-500/10'
+      case 'completed':
+        return 'bg-green-500/10'
+      case 'started':
+        return 'bg-blue-500/10'
+      case 'paused':
+        return 'bg-yellow-500/10'
+      case 'alert':
+        return 'bg-amber-500/10'
+      default:
+        return 'bg-gray-500/10'
     }
   }
 
@@ -392,20 +421,20 @@ export function ProductionActivityFeed({ activities, maxItems = 5 }: ActivityFee
     <div className="space-y-3">
       {displayActivities.map((activity, index) => (
         <div key={index} className="flex items-start gap-3 text-sm">
-          <div className={cn("mt-0.5 p-1.5 rounded", getActivityBgColor(activity.type))}>
+          <div className={cn('mt-0.5 p-1.5 rounded', getActivityBgColor(activity.type))}>
             {getActivityIcon(activity.type)}
           </div>
           <div>
             <p className="text-white">{activity.description}</p>
-            <p className="text-xs text-gray-500">{activity.details} • {activity.timestamp}</p>
+            <p className="text-xs text-gray-500">
+              {activity.details} • {activity.timestamp}
+            </p>
           </div>
         </div>
       ))}
-      
+
       {activities.length === 0 && (
-        <div className="text-center text-gray-400 py-8">
-          No recent activities
-        </div>
+        <div className="text-center text-gray-400 py-8">No recent activities</div>
       )}
     </div>
   )
@@ -428,17 +457,20 @@ interface QuickActionsGridProps {
   baseUrl?: string
 }
 
-export function ProductionQuickActions({ actions, baseUrl = '/production' }: QuickActionsGridProps) {
+export function ProductionQuickActions({
+  actions,
+  baseUrl = '/production'
+}: QuickActionsGridProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {actions.map((action) => {
+      {actions.map(action => {
         const Icon = action.icon
-        
+
         return (
           <Link key={action.href} href={`${baseUrl}${action.href}`}>
             <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-gray-800/30 backdrop-blur-sm border-gray-700/30 hover:bg-gray-800/50">
               <div className="flex flex-col items-center text-center gap-2">
-                <Icon className={cn("h-8 w-8", action.color)} />
+                <Icon className={cn('h-8 w-8', action.color)} />
                 <span className="text-sm font-medium text-gray-300">{action.title}</span>
                 {action.description && (
                   <span className="text-xs text-gray-500">{action.description}</span>
@@ -475,13 +507,16 @@ export function ProductionPlanningMetrics({ metrics }: PlanningMetricsProps) {
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       {metrics.map((metric, index) => {
         const Icon = metric.icon
-        
+
         return (
           <Card key={index} className="p-6 bg-gray-800/50 backdrop-blur-sm border-gray-700/50">
             <div className="flex items-center justify-between mb-4">
-              <Icon className={cn("h-8 w-8", metric.color)} />
+              <Icon className={cn('h-8 w-8', metric.color)} />
               {metric.badge && (
-                <Badge variant="secondary" className={metric.badgeColor || "bg-blue-500/10 text-blue-400"}>
+                <Badge
+                  variant="secondary"
+                  className={metric.badgeColor || 'bg-blue-500/10 text-blue-400'}
+                >
                   {metric.badge}
                 </Badge>
               )}
@@ -544,7 +579,7 @@ export const INDUSTRY_UI_CONFIGS = {
     workCenterIcon: Factory,
     customFields: ['wood_type', 'finish', 'dimensions']
   },
-  
+
   FOOD: {
     primaryColor: 'green',
     showBatchNumbers: true,
@@ -553,7 +588,7 @@ export const INDUSTRY_UI_CONFIGS = {
     workCenterIcon: Package,
     customFields: ['batch_size', 'expiry_date', 'temperature']
   },
-  
+
   PHARMACEUTICAL: {
     primaryColor: 'blue',
     showBatchNumbers: true,
@@ -562,7 +597,7 @@ export const INDUSTRY_UI_CONFIGS = {
     workCenterIcon: Target,
     customFields: ['api_content', 'potency', 'stability']
   },
-  
+
   AUTOMOTIVE: {
     primaryColor: 'purple',
     showSerialNumbers: true,

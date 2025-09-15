@@ -1,7 +1,7 @@
 /**
  * HERA DNA WhatsApp Integration
  * Universal messaging system using sacred 6-table architecture
- * 
+ *
  * This DNA component provides complete WhatsApp integration capabilities
  * that work across all industries through smart codes and dynamic data.
  */
@@ -18,12 +18,12 @@ export const WHATSAPP_SMART_CODES = {
   CONVERSATION: 'HERA.MESSAGING.WHATSAPP.CONVERSATION.v1',
   TEMPLATE: 'HERA.MESSAGING.WHATSAPP.TEMPLATE.v1',
   AUTOMATION: 'HERA.MESSAGING.WHATSAPP.AUTOMATION.v1',
-  
+
   // Transactions
   SEND_MESSAGE: 'HERA.MESSAGING.WHATSAPP.SEND.TXN.v1',
   RECEIVE_MESSAGE: 'HERA.MESSAGING.WHATSAPP.RECEIVE.TXN.v1',
   TEMPLATE_SEND: 'HERA.MESSAGING.WHATSAPP.TEMPLATE.SEND.TXN.v1',
-  
+
   // Message types (transaction lines)
   MESSAGE_TEXT: 'HERA.MESSAGING.WHATSAPP.MESSAGE.TEXT.v1',
   MESSAGE_IMAGE: 'HERA.MESSAGING.WHATSAPP.MESSAGE.IMAGE.v1',
@@ -32,17 +32,17 @@ export const WHATSAPP_SMART_CODES = {
   MESSAGE_VIDEO: 'HERA.MESSAGING.WHATSAPP.MESSAGE.VIDEO.v1',
   MESSAGE_LOCATION: 'HERA.MESSAGING.WHATSAPP.MESSAGE.LOCATION.v1',
   MESSAGE_TEMPLATE: 'HERA.MESSAGING.WHATSAPP.MESSAGE.TEMPLATE.v1',
-  
+
   // Relationships
   CONVERSATION_CUSTOMER: 'HERA.MESSAGING.WHATSAPP.REL.CONVERSATION_CUSTOMER.v1',
   CONVERSATION_APPOINTMENT: 'HERA.MESSAGING.WHATSAPP.REL.CONVERSATION_APPOINTMENT.v1',
   MESSAGE_CONVERSATION: 'HERA.MESSAGING.WHATSAPP.REL.MESSAGE_CONVERSATION.v1',
-  
+
   // Industry-specific (Salon example)
   SALON_BOOKING_REMINDER: 'HERA.SALON.MESSAGING.WHATSAPP.BOOKING_REMINDER.v1',
   SALON_BOOKING_CONFIRMATION: 'HERA.SALON.MESSAGING.WHATSAPP.BOOKING_CONFIRMATION.v1',
   SALON_SERVICE_FOLLOWUP: 'HERA.SALON.MESSAGING.WHATSAPP.SERVICE_FOLLOWUP.v1',
-  SALON_PROMOTION: 'HERA.SALON.MESSAGING.WHATSAPP.PROMOTION.v1',
+  SALON_PROMOTION: 'HERA.SALON.MESSAGING.WHATSAPP.PROMOTION.v1'
 } as const
 
 // ============================================================================
@@ -143,7 +143,11 @@ export class WhatsAppDNA {
     await universalApi.setDynamicField(app.id, 'business_id', this.config.businessId)
     await universalApi.setDynamicField(app.id, 'phone_number_id', this.config.phoneNumberId)
     await universalApi.setDynamicField(app.id, 'access_token', this.config.accessToken)
-    await universalApi.setDynamicField(app.id, 'webhook_verify_token', this.config.webhookVerifyToken)
+    await universalApi.setDynamicField(
+      app.id,
+      'webhook_verify_token',
+      this.config.webhookVerifyToken
+    )
     await universalApi.setDynamicField(app.id, 'api_version', this.config.apiVersion || 'v17.0')
 
     // 3. Setup default message templates
@@ -159,7 +163,10 @@ export class WhatsAppDNA {
   // CONVERSATION MANAGEMENT
   // ==========================================================================
 
-  async findOrCreateConversation(customerPhone: string, customerId?: string): Promise<WhatsAppConversation> {
+  async findOrCreateConversation(
+    customerPhone: string,
+    customerId?: string
+  ): Promise<WhatsAppConversation> {
     // Check if conversation exists
     const existingConversations = await universalApi.query('core_entities', {
       entity_type: 'whatsapp_conversation',
@@ -263,7 +270,11 @@ export class WhatsAppDNA {
     })
 
     // 6. Store API response
-    await universalApi.setDynamicField(transaction.id, 'whatsapp_message_id', apiResponse.messages[0].id)
+    await universalApi.setDynamicField(
+      transaction.id,
+      'whatsapp_message_id',
+      apiResponse.messages[0].id
+    )
 
     return {
       transactionId: transaction.id,
@@ -340,7 +351,11 @@ export class WhatsAppDNA {
     // Store template details in dynamic data
     await universalApi.setDynamicField(templateEntity.id, 'language', template.language)
     await universalApi.setDynamicField(templateEntity.id, 'category', template.category)
-    await universalApi.setDynamicField(templateEntity.id, 'components', JSON.stringify(template.components))
+    await universalApi.setDynamicField(
+      templateEntity.id,
+      'components',
+      JSON.stringify(template.components)
+    )
 
     return templateEntity
   }
@@ -387,7 +402,11 @@ export class WhatsAppDNA {
     await universalApi.setDynamicField(automation.id, 'trigger_type', config.trigger)
     await universalApi.setDynamicField(automation.id, 'trigger_value', config.triggerValue)
     await universalApi.setDynamicField(automation.id, 'action_type', config.action)
-    await universalApi.setDynamicField(automation.id, 'action_value', JSON.stringify(config.actionValue))
+    await universalApi.setDynamicField(
+      automation.id,
+      'action_value',
+      JSON.stringify(config.actionValue)
+    )
 
     return automation
   }
@@ -405,9 +424,14 @@ export class WhatsAppDNA {
       const triggerValue = await universalApi.getDynamicField(automation.id, 'trigger_value')
 
       // Check keyword triggers
-      if (triggerType === 'keyword' && messageText.toLowerCase().includes(triggerValue.toLowerCase())) {
+      if (
+        triggerType === 'keyword' &&
+        messageText.toLowerCase().includes(triggerValue.toLowerCase())
+      ) {
         const actionType = await universalApi.getDynamicField(automation.id, 'action_type')
-        const actionValue = JSON.parse(await universalApi.getDynamicField(automation.id, 'action_value'))
+        const actionValue = JSON.parse(
+          await universalApi.getDynamicField(automation.id, 'action_value')
+        )
 
         if (actionType === 'send_message') {
           await this.sendMessage({
@@ -480,7 +504,7 @@ export class WhatsAppDNA {
       components: [
         {
           type: 'BODY',
-          text: 'Hi {{1}}, how was your {{2}} experience yesterday? We\'d love to hear your feedback! Rate us 1-5 ⭐',
+          text: "Hi {{1}}, how was your {{2}} experience yesterday? We'd love to hear your feedback! Rate us 1-5 ⭐",
           example: {
             body_text: [['Emma', 'Premium Cut & Style']]
           }
@@ -497,17 +521,12 @@ export class WhatsAppDNA {
     const stylist = (appointment.metadata as any)?.stylist_name
     const appointmentTime = new Date(appointment.transaction_date)
 
-    return this.sendTemplateMessage(
-      customerPhone,
-      'appointment_reminder',
-      'en',
-      {
-        '1': (appointment.metadata as any)?.customer_name,
-        '2': services.map((s: any) => s.name).join(', '),
-        '3': appointmentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-        '4': stylist
-      }
-    )
+    return this.sendTemplateMessage(customerPhone, 'appointment_reminder', 'en', {
+      '1': (appointment.metadata as any)?.customer_name,
+      '2': services.map((s: any) => s.name).join(', '),
+      '3': appointmentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      '4': stylist
+    })
   }
 
   // ==========================================================================
@@ -602,9 +621,11 @@ export class WhatsAppDNA {
     // Mock API call - in production, use actual Meta Graph API
     console.log(`WhatsApp API Call: ${endpoint}`, data)
     return {
-      messages: [{
-        id: `wamid.${Date.now()}`
-      }]
+      messages: [
+        {
+          id: `wamid.${Date.now()}`
+        }
+      ]
     }
   }
 
@@ -632,7 +653,8 @@ export class WhatsAppDNA {
       triggerValue: 'hi',
       action: 'send_message',
       actionValue: {
-        message: 'Welcome! How can we assist you today? You can:\n• Book an appointment\n• Check our services\n• View our location\n• Speak to a team member'
+        message:
+          'Welcome! How can we assist you today? You can:\n• Book an appointment\n• Check our services\n• View our location\n• Speak to a team member'
       }
     })
 
@@ -643,7 +665,8 @@ export class WhatsAppDNA {
       triggerValue: 'hours',
       action: 'send_message',
       actionValue: {
-        message: 'Our business hours are:\nMon-Thu: 9:00 AM - 9:00 PM\nFri: 9:00 AM - 1:00 PM\nSat-Sun: 10:00 AM - 9:00 PM'
+        message:
+          'Our business hours are:\nMon-Thu: 9:00 AM - 9:00 PM\nFri: 9:00 AM - 1:00 PM\nSat-Sun: 10:00 AM - 9:00 PM'
       }
     })
   }
@@ -672,16 +695,16 @@ export async function handleWhatsAppWebhook(req: Request): Promise<Response> {
   if (method === 'POST') {
     // Process incoming webhook
     const body = await req.json()
-    
+
     // Extract message data from webhook payload
     const entry = body.entry?.[0]
     const changes = entry?.changes?.[0]
     const value = changes?.value
     const messages = value?.messages
-    
+
     if (messages && messages.length > 0) {
       const message = messages[0]
-      
+
       // Initialize WhatsApp DNA with config from environment
       const whatsappDNA = new WhatsAppDNA({
         organizationId: process.env.DEFAULT_ORGANIZATION_ID!,
@@ -690,11 +713,11 @@ export async function handleWhatsAppWebhook(req: Request): Promise<Response> {
         accessToken: process.env.WHATSAPP_ACCESS_TOKEN!,
         webhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN!
       })
-      
+
       // Process the message
       await whatsappDNA.receiveMessage(message)
     }
-    
+
     return new Response('OK', { status: 200 })
   }
 

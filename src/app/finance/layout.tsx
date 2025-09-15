@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
+import {
   DollarSign,
   TrendingUp,
   FileText,
@@ -36,14 +36,10 @@ const navigation = [
   { name: 'Profit Centers', href: '/finance/profit-centers', icon: TrendingUp },
   { name: 'Profitability', href: '/finance/profitability', icon: PieChart },
   { name: 'Reports', href: '/finance/reports', icon: FileText },
-  { name: 'Settings', href: '/finance/settings', icon: Settings },
+  { name: 'Settings', href: '/finance/settings', icon: Settings }
 ]
 
-export default function FinanceLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function FinanceLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -65,9 +61,11 @@ export default function FinanceLayout({
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-72 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-72 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
         <div className="h-full bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl border-r border-white/10">
           <div className="flex h-full flex-col">
             {/* Logo */}
@@ -105,32 +103,34 @@ export default function FinanceLayout({
                     key={item.name}
                     href={item.href}
                     className={`group relative flex items-center space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
-                      isActive
-                        ? 'text-white'
-                        : 'text-white/70 hover:text-white'
+                      isActive ? 'text-white' : 'text-white/70 hover:text-white'
                     }`}
                     style={{
                       animationDelay: `${index * 50}ms`
                     }}
                   >
                     {/* Background gradient on active/hover */}
-                    <div className={`absolute inset-0 rounded-xl transition-all duration-300 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-emerald-500/20 to-green-600/20 shadow-lg shadow-emerald-500/20'
-                        : 'bg-transparent group-hover:bg-white/5'
-                    }`} />
-                    
+                    <div
+                      className={`absolute inset-0 rounded-xl transition-all duration-300 ${
+                        isActive
+                          ? 'bg-gradient-to-r from-emerald-500/20 to-green-600/20 shadow-lg shadow-emerald-500/20'
+                          : 'bg-transparent group-hover:bg-white/5'
+                      }`}
+                    />
+
                     {/* Icon with gradient on active */}
                     <div className="relative">
-                      <item.icon className={`h-5 w-5 transition-all duration-300 ${
-                        isActive 
-                          ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' 
-                          : 'text-white/70 group-hover:text-white'
-                      }`} />
+                      <item.icon
+                        className={`h-5 w-5 transition-all duration-300 ${
+                          isActive
+                            ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                            : 'text-white/70 group-hover:text-white'
+                        }`}
+                      />
                     </div>
-                    
+
                     <span className="relative">{item.name}</span>
-                    
+
                     {/* Active indicator */}
                     {isActive && (
                       <div className="absolute right-3 h-2 w-2 rounded-full bg-gradient-to-r from-emerald-400 to-green-500 animate-pulse shadow-lg shadow-emerald-400/50" />
@@ -154,7 +154,7 @@ export default function FinanceLayout({
                     </div>
                     <span className="text-xs font-medium text-emerald-400">Good</span>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs">
                       <span className="text-white/60">Revenue YTD</span>
@@ -169,7 +169,7 @@ export default function FinanceLayout({
                       <span className="text-[#00DDFF] font-medium">₹85 Cr</span>
                     </div>
                   </div>
-                  
+
                   <div className="mt-3 pt-3 border-t border-white/10">
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-white/60">Working Capital</span>
@@ -197,7 +197,7 @@ export default function FinanceLayout({
             >
               <Menu className="h-6 w-6" />
             </button>
-            
+
             <div className="flex items-center space-x-6 ml-auto">
               {/* Quick Stats */}
               <div className="hidden sm:flex items-center space-x-4">
@@ -208,7 +208,7 @@ export default function FinanceLayout({
                     <span className="text-xs font-semibold text-emerald-400">₹125 Cr</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
                   <ArrowDownRight className="h-4 w-4 text-red-400" />
                   <div className="flex flex-col">
@@ -216,7 +216,7 @@ export default function FinanceLayout({
                     <span className="text-xs font-semibold text-red-400">₹82 Cr</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-[#00DDFF]/10 border border-[#00DDFF]/20">
                   <Wallet className="h-4 w-4 text-[#00DDFF]" />
                   <div className="flex flex-col">
@@ -230,9 +230,7 @@ export default function FinanceLayout({
         </header>
 
         {/* Page content */}
-        <main className="p-4 lg:p-6">
-          {children}
-        </main>
+        <main className="p-4 lg:p-6">{children}</main>
       </div>
     </div>
   )

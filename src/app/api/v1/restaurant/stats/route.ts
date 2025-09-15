@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       .lt('transaction_date', endOfDay.toISOString())
 
     if (ordersError) {
-      console.error('Error fetching today\'s orders:', ordersError)
+      console.error("Error fetching today's orders:", ordersError)
       return NextResponse.json(
         { success: false, message: 'Failed to fetch order statistics' },
         { status: 500 }
@@ -34,14 +34,15 @@ export async function GET(request: NextRequest) {
     // Calculate statistics
     const totalOrders = todaysOrders.length
     const totalRevenue = todaysOrders.reduce((sum, order) => sum + (order.total_amount || 0), 0)
-    
+
     // Count unique customers (from transaction_data)
     const uniqueCustomers = new Set()
     todaysOrders.forEach(order => {
       try {
-        const data = typeof order.transaction_data === 'string' 
-          ? JSON.parse(order.transaction_data) 
-          : order.transaction_data
+        const data =
+          typeof order.transaction_data === 'string'
+            ? JSON.parse(order.transaction_data)
+            : order.transaction_data
         if (data?.customer_id) {
           uniqueCustomers.add(data.customer_id)
         }
@@ -61,19 +62,21 @@ export async function GET(request: NextRequest) {
         // Count line items for this order (approximation)
         return sum + Math.ceil(order.total_amount / 15) // Rough estimate
       }, 0)
-      avgOrderTime = Math.round(totalItems / completedOrders.length * 3) + 12 // Base prep time
+      avgOrderTime = Math.round((totalItems / completedOrders.length) * 3) + 12 // Base prep time
     }
 
     // Get recent orders for dashboard
     const { data: recentOrders, error: recentError } = await supabaseAdmin
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         lines:universal_transaction_lines(
           quantity,
           menu_item:core_entities!universal_transaction_lines_entity_id_fkey(entity_name)
         )
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('transaction_type', 'order')
       .order('transaction_date', { ascending: false })
@@ -84,49 +87,57 @@ export async function GET(request: NextRequest) {
     }
 
     // Format recent orders
-    const formattedRecentOrders = recentOrders?.map(order => {
-      interface TransactionData {
-        table_id?: string
-        order_type?: string
-        customer_name?: string
-        table_number?: string
-        [key: string]: unknown
-      }
-      
-      let transactionData: TransactionData = {}
-      try {
-        transactionData = typeof order.transaction_data === 'string' 
-          ? JSON.parse(order.transaction_data) 
-          : order.transaction_data || {}
-      } catch (e) {
-        // Ignore parsing errors
-      }
+    const formattedRecentOrders =
+      recentOrders?.map(order => {
+        interface TransactionData {
+          table_id?: string
+          order_type?: string
+          customer_name?: string
+          table_number?: string
+          [key: string]: unknown
+        }
 
-      // Get item names
-      const itemNames = order.lines?.map((line: { quantity: number; menu_item?: { entity_name?: string } }) => 
-        `${line.quantity}x ${line.menu_item?.entity_name || 'Item'}`
-      ).join(', ') || 'No items'
+        let transactionData: TransactionData = {}
+        try {
+          transactionData =
+            typeof order.transaction_data === 'string'
+              ? JSON.parse(order.transaction_data)
+              : order.transaction_data || {}
+        } catch (e) {
+          // Ignore parsing errors
+        }
 
-      // Calculate time ago
-      const orderTime = new Date(order.transaction_date)
-      const diffMs = Date.now() - orderTime.getTime()
-      const diffMins = Math.floor(diffMs / 60000)
-      let timeAgo = 'Just now'
-      if (diffMins >= 1) {
-        timeAgo = diffMins === 1 ? '1 min ago' : `${diffMins} mins ago`
-      }
+        // Get item names
+        const itemNames =
+          order.lines
+            ?.map(
+              (line: { quantity: number; menu_item?: { entity_name?: string } }) =>
+                `${line.quantity}x ${line.menu_item?.entity_name || 'Item'}`
+            )
+            .join(', ') || 'No items'
 
-      return {
-        id: order.reference_number,
-        table: transactionData.table_id ? 
-          transactionData.table_id.replace('table_', 'Table ').replace('_', ' ') : 
-          (transactionData.order_type === 'takeout' ? 'Takeout' : 'Delivery'),
-        items: itemNames.length > 50 ? itemNames.substring(0, 47) + '...' : itemNames,
-        total: order.total_amount,
-        status: order.status,
-        time: timeAgo
-      }
-    }) || []
+        // Calculate time ago
+        const orderTime = new Date(order.transaction_date)
+        const diffMs = Date.now() - orderTime.getTime()
+        const diffMins = Math.floor(diffMs / 60000)
+        let timeAgo = 'Just now'
+        if (diffMins >= 1) {
+          timeAgo = diffMins === 1 ? '1 min ago' : `${diffMins} mins ago`
+        }
+
+        return {
+          id: order.reference_number,
+          table: transactionData.table_id
+            ? transactionData.table_id.replace('table_', 'Table ').replace('_', ' ')
+            : transactionData.order_type === 'takeout'
+              ? 'Takeout'
+              : 'Delivery',
+          items: itemNames.length > 50 ? itemNames.substring(0, 47) + '...' : itemNames,
+          total: order.total_amount,
+          status: order.status,
+          time: timeAgo
+        }
+      }) || []
 
     return NextResponse.json({
       success: true,
@@ -140,12 +151,8 @@ export async function GET(request: NextRequest) {
         recentOrders: formattedRecentOrders
       }
     })
-
   } catch (error) {
     console.error('Restaurant stats API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

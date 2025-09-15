@@ -19,13 +19,13 @@ export function transformToUITransaction(data: {
   relationships: any[]
 }): UITransaction {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -42,14 +42,15 @@ export function transformToUITransaction(data: {
 
 export function filterTransaction(items: UITransaction[], searchTerm: string): UITransaction[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.payment_method?.toLowerCase().includes(term) ||
-    item.amount?.toLowerCase().includes(term) ||
-    item.reference_number?.toLowerCase().includes(term) ||
-    item.status?.toLowerCase().includes(term) ||
-    item.notes?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.payment_method?.toLowerCase().includes(term) ||
+      item.amount?.toLowerCase().includes(term) ||
+      item.reference_number?.toLowerCase().includes(term) ||
+      item.status?.toLowerCase().includes(term) ||
+      item.notes?.toLowerCase().includes(term)
   )
 }

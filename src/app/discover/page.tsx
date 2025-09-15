@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Discover Page - Explore Live Demos
  * Smart Code: HERA.UI.JOURNEY.DISCOVER.PAGE.v1
- * 
+ *
  * First step in the HERA journey - showcase live business demos
  */
 
@@ -101,12 +101,18 @@ export default function DiscoverPage() {
         satisfaction: '98%'
       },
       testimonial: {
-        quote: "HERA transformed our salon operations. We went from chaos to complete control in just minutes!",
-        author: "Sarah Johnson",
-        role: "Owner, Hair Talkz Dubai"
+        quote:
+          'HERA transformed our salon operations. We went from chaos to complete control in just minutes!',
+        author: 'Sarah Johnson',
+        role: 'Owner, Hair Talkz Dubai'
       },
       liveBusinesses: ['Hair Talkz', 'Glow Spa', 'Beauty Palace'],
-      popularFeatures: ['WhatsApp Booking', 'Staff Commission', 'Inventory Tracking', 'Client Management']
+      popularFeatures: [
+        'WhatsApp Booking',
+        'Staff Commission',
+        'Inventory Tracking',
+        'Client Management'
+      ]
     },
     {
       id: 'restaurant',
@@ -122,12 +128,18 @@ export default function DiscoverPage() {
         satisfaction: '97%'
       },
       testimonial: {
-        quote: "From order to accounting, HERA handles everything. It's like having a full IT team built-in.",
-        author: "Mario Rossi",
+        quote:
+          "From order to accounting, HERA handles everything. It's like having a full IT team built-in.",
+        author: 'Mario Rossi',
         role: "Owner, Mario's Authentic Italian"
       },
       liveBusinesses: ["Mario's Restaurant", 'Tasty Bites', 'Coffee Hub'],
-      popularFeatures: ['Table Management', 'Kitchen Display', 'Delivery Integration', 'Recipe Costing']
+      popularFeatures: [
+        'Table Management',
+        'Kitchen Display',
+        'Delivery Integration',
+        'Recipe Costing'
+      ]
     },
     {
       id: 'healthcare',
@@ -143,12 +155,18 @@ export default function DiscoverPage() {
         satisfaction: '99%'
       },
       testimonial: {
-        quote: "HIPAA compliant, feature-rich, and incredibly easy to use. HERA is a game-changer for clinics.",
-        author: "Dr. Emily Chen",
-        role: "Medical Director, Family Care Clinic"
+        quote:
+          'HIPAA compliant, feature-rich, and incredibly easy to use. HERA is a game-changer for clinics.',
+        author: 'Dr. Emily Chen',
+        role: 'Medical Director, Family Care Clinic'
       },
       liveBusinesses: ['Family Care Clinic', 'Dental Plus', 'MedCare Center'],
-      popularFeatures: ['Electronic Medical Records', 'Prescription Management', 'Lab Integration', 'Insurance Claims']
+      popularFeatures: [
+        'Electronic Medical Records',
+        'Prescription Management',
+        'Lab Integration',
+        'Insurance Claims'
+      ]
     },
     {
       id: 'retail',
@@ -164,12 +182,18 @@ export default function DiscoverPage() {
         satisfaction: '96%'
       },
       testimonial: {
-        quote: "Our inventory accuracy went from 70% to 99%. HERA pays for itself in reduced shrinkage alone.",
-        author: "Michael Torres",
-        role: "Operations Manager, Fashion Forward"
+        quote:
+          'Our inventory accuracy went from 70% to 99%. HERA pays for itself in reduced shrinkage alone.',
+        author: 'Michael Torres',
+        role: 'Operations Manager, Fashion Forward'
       },
       liveBusinesses: ['Fashion Forward', 'Tech Store Pro', 'Home Essentials'],
-      popularFeatures: ['Barcode Scanning', 'Multi-location Inventory', 'Customer Rewards', 'Omnichannel Sales']
+      popularFeatures: [
+        'Barcode Scanning',
+        'Multi-location Inventory',
+        'Customer Rewards',
+        'Omnichannel Sales'
+      ]
     }
   ]
 
@@ -213,7 +237,9 @@ export default function DiscoverPage() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-slate-900 dark:text-white">HERA</h1>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">Discover Live Demos</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                    Discover Live Demos
+                  </p>
                 </div>
               </Link>
 
@@ -239,8 +265,8 @@ export default function DiscoverPage() {
               See HERA in Action
             </h2>
             <p className="text-lg text-slate-700 dark:text-slate-300 max-w-3xl mx-auto">
-              Explore real businesses powered by HERA. Click any industry below to experience 
-              a live demo with actual data, features, and workflows.
+              Explore real businesses powered by HERA. Click any industry below to experience a live
+              demo with actual data, features, and workflows.
             </p>
           </div>
 
@@ -260,20 +286,21 @@ export default function DiscoverPage() {
 
           {/* Industry Demos Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {industries.map((industry) => (
+            {industries.map(industry => (
               <Card
                 key={industry.id}
                 className="relative overflow-hidden group transition-all duration-700 hover:-translate-y-2 cursor-pointer bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 hover:bg-white/90 dark:hover:bg-slate-800/90 hover:shadow-xl"
                 onClick={() => handleDemoClick(industry)}
               >
-
                 <CardHeader className="relative z-10">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-12 h-12 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg",
-                        industry.gradient
-                      )}>
+                      <div
+                        className={cn(
+                          'w-12 h-12 rounded-xl bg-gradient-to-r flex items-center justify-center shadow-lg',
+                          industry.gradient
+                        )}
+                      >
                         <industry.icon className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -296,18 +323,20 @@ export default function DiscoverPage() {
                 </CardHeader>
 
                 <CardContent className="relative z-10">
-                  <p className="text-slate-700 dark:text-slate-300 mb-4">
-                    {industry.description}
-                  </p>
+                  <p className="text-slate-700 dark:text-slate-300 mb-4">{industry.description}</p>
 
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{industry.metrics.setupTime}</p>
+                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        {industry.metrics.setupTime}
+                      </p>
                       <p className="text-xs text-slate-600 dark:text-slate-400">Setup Time</p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{industry.metrics.costSavings}</p>
+                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                        {industry.metrics.costSavings}
+                      </p>
                       <p className="text-xs text-slate-600 dark:text-slate-400">Cost Savings</p>
                     </div>
                   </div>
@@ -342,17 +371,20 @@ export default function DiscoverPage() {
                       "{industry.testimonial.quote}"
                     </p>
                     <p className="text-xs text-slate-700 dark:text-slate-300">
-                      — {industry.testimonial.author}, <span className="text-slate-600 dark:text-slate-400">{industry.testimonial.role}</span>
+                      — {industry.testimonial.author},{' '}
+                      <span className="text-slate-600 dark:text-slate-400">
+                        {industry.testimonial.role}
+                      </span>
                     </p>
                   </div>
 
                   {/* CTA */}
                   <Button
                     className={cn(
-                      "w-full mt-4 group",
-                      industry.id === 'salon' 
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-                        : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      'w-full mt-4 group',
+                      industry.id === 'salon'
+                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                     )}
                     disabled={industry.id !== 'salon'}
                   >
@@ -373,23 +405,20 @@ export default function DiscoverPage() {
 
           {/* Selected Industry Modal */}
           {selectedIndustry && (
-            <div 
+            <div
               className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
               onClick={() => setSelectedIndustry(null)}
             >
-              <div 
+              <div
                 className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full"
-                onClick={(e) => e.stopPropagation()}
+                onClick={e => e.stopPropagation()}
               >
                 <h3 className="text-lg font-semibold mb-2">Coming Soon!</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  The {industries.find(i => i.id === selectedIndustry)?.name} demo is being prepared. 
-                  Try our Beauty & Wellness demo for now!
+                  The {industries.find(i => i.id === selectedIndustry)?.name} demo is being
+                  prepared. Try our Beauty & Wellness demo for now!
                 </p>
-                <Button 
-                  className="w-full"
-                  onClick={() => setSelectedIndustry(null)}
-                >
+                <Button className="w-full" onClick={() => setSelectedIndustry(null)}>
                   Got it
                 </Button>
               </div>
@@ -404,8 +433,8 @@ export default function DiscoverPage() {
                 Ready to validate?
               </h3>
               <p className="text-slate-700 dark:text-slate-300 mb-6 max-w-md">
-                After exploring our demos, check if HERA fits your specific business needs 
-                with our interactive validation tools.
+                After exploring our demos, check if HERA fits your specific business needs with our
+                interactive validation tools.
               </p>
               <Button
                 size="lg"
@@ -422,10 +451,18 @@ export default function DiscoverPage() {
       {/* Add animation styles */}
       <style jsx global>{`
         @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1);
+          }
         }
         .animate-blob {
           animation: blob 7s infinite;

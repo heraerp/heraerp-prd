@@ -35,7 +35,7 @@ export function StatsWidget({ widget, entityId, organizationId }: StatsWidgetPro
   const loadStats = async () => {
     try {
       setLoading(true)
-      
+
       const source = widget.data_source
       if (!source) {
         // Use default stats if no data source specified
@@ -107,30 +107,36 @@ export function StatsWidget({ widget, entityId, organizationId }: StatsWidgetPro
 
   const aggregateStats = async (aggregations: any[]): Promise<StatData[]> => {
     const stats: StatData[] = []
-    
+
     for (const agg of aggregations) {
       // Query the appropriate table based on the aggregation
       let tableName = 'core_entities'
       if (agg.table) {
         tableName = agg.table
       }
-      
+
       const result = await universalApi.query(tableName, {
         organization_id: organizationId
       })
-      
+
       if (result.data) {
         let value = 0
-        
+
         switch (agg.function) {
           case 'count':
             value = result.data.length
             break
           case 'sum':
-            value = result.data.reduce((acc: number, row: any) => acc + (Number(row[agg.field]) || 0), 0)
+            value = result.data.reduce(
+              (acc: number, row: any) => acc + (Number(row[agg.field]) || 0),
+              0
+            )
             break
           case 'avg':
-            const sum = result.data.reduce((acc: number, row: any) => acc + (Number(row[agg.field]) || 0), 0)
+            const sum = result.data.reduce(
+              (acc: number, row: any) => acc + (Number(row[agg.field]) || 0),
+              0
+            )
             value = result.data.length > 0 ? sum / result.data.length : 0
             break
           case 'min':
@@ -140,7 +146,7 @@ export function StatsWidget({ widget, entityId, organizationId }: StatsWidgetPro
             value = Math.max(...result.data.map((row: any) => Number(row[agg.field]) || 0))
             break
         }
-        
+
         stats.push({
           label: agg.alias.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
           value: Math.round(value * 100) / 100,
@@ -148,7 +154,7 @@ export function StatsWidget({ widget, entityId, organizationId }: StatsWidgetPro
         })
       }
     }
-    
+
     return stats
   }
 
@@ -156,11 +162,11 @@ export function StatsWidget({ widget, entityId, organizationId }: StatsWidgetPro
     if (typeof stat.value === 'string') {
       return stat.value
     }
-    
+
     let formatted = stat.value.toLocaleString()
     if (stat.prefix) formatted = stat.prefix + formatted
     if (stat.suffix) formatted = formatted + stat.suffix
-    
+
     return formatted
   }
 
@@ -210,20 +216,17 @@ export function StatsWidget({ widget, entityId, organizationId }: StatsWidgetPro
           </CardHeader>
           <CardContent>
             <div className="space-y-1">
-              <p className="text-2xl font-bold">
-                {formatValue(stat)}
-              </p>
+              <p className="text-2xl font-bold">{formatValue(stat)}</p>
               {(stat.change !== undefined || stat.changeLabel) && (
                 <div className={cn('flex items-center gap-1 text-sm', getTrendColor(stat.trend))}>
                   {getTrendIcon(stat.trend)}
                   {stat.change !== undefined && (
                     <span>
-                      {stat.change > 0 ? '+' : ''}{stat.change}%
+                      {stat.change > 0 ? '+' : ''}
+                      {stat.change}%
                     </span>
                   )}
-                  {stat.changeLabel && (
-                    <span>{stat.changeLabel}</span>
-                  )}
+                  {stat.changeLabel && <span>{stat.changeLabel}</span>}
                 </div>
               )}
             </div>

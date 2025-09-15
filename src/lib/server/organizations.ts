@@ -90,10 +90,12 @@ export async function getUserOrganizations(userId: string): Promise<Organization
     // Get user's organization memberships
     const { data: memberships, error: membershipError } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         organization_id,
         metadata
-      `)
+      `
+      )
       .eq('entity_type', 'user')
       .eq('metadata->>auth_user_id', userId)
 

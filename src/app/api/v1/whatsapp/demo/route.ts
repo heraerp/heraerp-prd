@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { 
+import {
   createConversation,
   postMessage,
   upsertCustomerByPhone,
@@ -13,9 +13,11 @@ export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
+
     // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user }
+    } = await supabase.auth.getUser()
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -159,16 +161,32 @@ export async function POST(request: NextRequest) {
                     {
                       title: 'Hair Services',
                       rows: [
-                        { id: 'haircut', title: 'Haircut & Style', description: 'AED 150 - 45 mins' },
+                        {
+                          id: 'haircut',
+                          title: 'Haircut & Style',
+                          description: 'AED 150 - 45 mins'
+                        },
                         { id: 'color', title: 'Hair Color', description: 'AED 350 - 2 hours' },
-                        { id: 'highlights', title: 'Highlights', description: 'AED 450 - 2.5 hours' }
+                        {
+                          id: 'highlights',
+                          title: 'Highlights',
+                          description: 'AED 450 - 2.5 hours'
+                        }
                       ]
                     },
                     {
                       title: 'Treatments',
                       rows: [
-                        { id: 'keratin', title: 'Keratin Treatment', description: 'AED 800 - 3 hours' },
-                        { id: 'deepcond', title: 'Deep Conditioning', description: 'AED 200 - 1 hour' }
+                        {
+                          id: 'keratin',
+                          title: 'Keratin Treatment',
+                          description: 'AED 800 - 3 hours'
+                        },
+                        {
+                          id: 'deepcond',
+                          title: 'Deep Conditioning',
+                          description: 'AED 200 - 1 hour'
+                        }
                       ]
                     }
                   ]
@@ -200,7 +218,6 @@ export async function POST(request: NextRequest) {
         failed: results.filter(r => !r.success).length
       }
     })
-
   } catch (error) {
     console.error('WhatsApp Demo API error:', error)
     return NextResponse.json(

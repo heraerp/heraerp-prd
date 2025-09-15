@@ -12,13 +12,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const organizationId = '550e8400-e29b-41d4-a716-446655440000' // Demo org UUID
     const includeOrders = searchParams.get('include_orders') === 'true'
-    
+
     console.log('🍽️ Tables: Loading table management data')
 
     // Get all tables (stored as entities)
     const { data: tables, error: tablesError } = await supabaseAdmin
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         dynamic_data:core_dynamic_data(
           field_name,
@@ -27,7 +28,8 @@ export async function GET(request: NextRequest) {
           field_value_boolean,
           field_type
         )
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'table')
       .order('entity_code', { ascending: true })
@@ -45,7 +47,8 @@ export async function GET(request: NextRequest) {
     if (includeOrders) {
       const { data: orders, error: ordersError } = await supabaseAdmin
         .from('universal_transactions')
-        .select(`
+        .select(
+          `
           *,
           lines:universal_transaction_lines(
             id,
@@ -57,7 +60,8 @@ export async function GET(request: NextRequest) {
               entity_name
             )
           )
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .eq('transaction_type', 'order')
         .in('status', ['pending', 'processing', 'approved'])
@@ -68,68 +72,71 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform tables with dynamic data and current status
-    const transformedTables = tables?.map(table => {
-      const dynamicProps = table.dynamic_data?.reduce((acc: any, prop: any) => {
-        let value = prop.field_value
-        if (prop.field_type === 'number' && prop.field_value_number !== null) {
-          value = prop.field_value_number
-        } else if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
-          value = prop.field_value_boolean
+    const transformedTables =
+      tables?.map(table => {
+        const dynamicProps =
+          table.dynamic_data?.reduce((acc: any, prop: any) => {
+            let value = prop.field_value
+            if (prop.field_type === 'number' && prop.field_value_number !== null) {
+              value = prop.field_value_number
+            } else if (prop.field_type === 'boolean' && prop.field_value_boolean !== null) {
+              value = prop.field_value_boolean
+            }
+            acc[prop.field_name] = value
+            return acc
+          }, {}) || {}
+
+        // Find current order for this table
+        const currentOrder = currentOrders.find(
+          (order: any) => (order.metadata as any)?.table_id === table.id
+        )
+
+        const tableData = {
+          id: table.id,
+          table_number: table.entity_code,
+          name: table.entity_name,
+          capacity: parseInt(dynamicProps.capacity || '4'),
+          location: dynamicProps.location || 'Main Dining',
+          table_type: dynamicProps.table_type || 'standard',
+          is_active: table.status === 'active',
+
+          // Real-time status
+          status: currentOrder ? 'occupied' : dynamicProps.current_status || 'available',
+          current_party_size: currentOrder?.metadata?.party_size || 0,
+          seated_at: currentOrder?.created_at || null,
+
+          // Server assignment
+          server_id: currentOrder?.metadata?.server_id || null,
+          server_name: currentOrder?.metadata?.server_name || null,
+
+          // Current order details (if table is occupied)
+          ...(currentOrder && {
+            current_order: {
+              id: currentOrder.id,
+              order_number: currentOrder.transaction_code,
+              status: currentOrder.status,
+              total_amount: currentOrder.total_amount || 0,
+              created_at: currentOrder.created_at,
+              item_count: currentOrder.lines?.length || 0,
+              items:
+                currentOrder.lines?.map((line: any) => ({
+                  name: line.menu_item?.entity_name || line.line_description,
+                  quantity: line.quantity || 0
+                })) || []
+            }
+          }),
+
+          // Table configuration
+          coordinates: {
+            x: parseInt(dynamicProps.x_position || '0'),
+            y: parseInt(dynamicProps.y_position || '0')
+          },
+          shape: dynamicProps.shape || 'rectangle',
+          notes: dynamicProps.notes || ''
         }
-        acc[prop.field_name] = value
-        return acc
-      }, {}) || {}
 
-      // Find current order for this table
-      const currentOrder = currentOrders.find((order: any) => 
-        (order.metadata as any)?.table_id === table.id
-      )
-
-      const tableData = {
-        id: table.id,
-        table_number: table.entity_code,
-        name: table.entity_name,
-        capacity: parseInt(dynamicProps.capacity || '4'),
-        location: dynamicProps.location || 'Main Dining',
-        table_type: dynamicProps.table_type || 'standard',
-        is_active: table.status === 'active',
-        
-        // Real-time status
-        status: currentOrder ? 'occupied' : (dynamicProps.current_status || 'available'),
-        current_party_size: currentOrder?.metadata?.party_size || 0,
-        seated_at: currentOrder?.created_at || null,
-        
-        // Server assignment
-        server_id: currentOrder?.metadata?.server_id || null,
-        server_name: currentOrder?.metadata?.server_name || null,
-        
-        // Current order details (if table is occupied)
-        ...(currentOrder && {
-          current_order: {
-            id: currentOrder.id,
-            order_number: currentOrder.transaction_code,
-            status: currentOrder.status,
-            total_amount: currentOrder.total_amount || 0,
-            created_at: currentOrder.created_at,
-            item_count: currentOrder.lines?.length || 0,
-            items: currentOrder.lines?.map((line: any) => ({
-              name: line.menu_item?.entity_name || line.line_description,
-              quantity: line.quantity || 0
-            })) || []
-          }
-        }),
-        
-        // Table configuration
-        coordinates: {
-          x: parseInt(dynamicProps.x_position || '0'),
-          y: parseInt(dynamicProps.y_position || '0')
-        },
-        shape: dynamicProps.shape || 'rectangle',
-        notes: dynamicProps.notes || ''
-      }
-
-      return tableData
-    }) || []
+        return tableData
+      }) || []
 
     // Calculate table statistics
     const stats = {
@@ -140,9 +147,12 @@ export async function GET(request: NextRequest) {
       cleaning_tables: transformedTables.filter(t => t.status === 'cleaning').length,
       total_capacity: transformedTables.reduce((sum, t) => sum + t.capacity, 0),
       current_occupancy: transformedTables.reduce((sum, t) => sum + t.current_party_size, 0),
-      occupancy_rate: transformedTables.length > 0 
-        ? (transformedTables.filter(t => t.status === 'occupied').length / transformedTables.length) * 100 
-        : 0
+      occupancy_rate:
+        transformedTables.length > 0
+          ? (transformedTables.filter(t => t.status === 'occupied').length /
+              transformedTables.length) *
+            100
+          : 0
     }
 
     const response = {
@@ -157,13 +167,9 @@ export async function GET(request: NextRequest) {
 
     console.log(`✅ Loaded ${transformedTables.length} tables (${stats.occupied_tables} occupied)`)
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('❌ Tables API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -220,24 +226,22 @@ export async function POST(request: NextRequest) {
     ].filter(prop => prop.value !== '')
 
     if (tableProperties.length > 0) {
-      const { error: dynamicError } = await supabaseAdmin
-        .from('core_dynamic_data')
-        .insert(
-          tableProperties.map(prop => {
-            const baseProps = {
-              organization_id: organizationId,
-              entity_id: table.id,
-              field_name: prop.name,
-              field_type: prop.type
-            }
-            
-            if (prop.type === 'number') {
-              return { ...baseProps, field_value_number: parseFloat(prop.value) || 0 }
-            } else {
-              return { ...baseProps, field_value: prop.value }
-            }
-          })
-        )
+      const { error: dynamicError } = await supabaseAdmin.from('core_dynamic_data').insert(
+        tableProperties.map(prop => {
+          const baseProps = {
+            organization_id: organizationId,
+            entity_id: table.id,
+            field_name: prop.name,
+            field_type: prop.type
+          }
+
+          if (prop.type === 'number') {
+            return { ...baseProps, field_value_number: parseFloat(prop.value) || 0 }
+          } else {
+            return { ...baseProps, field_value: prop.value }
+          }
+        })
+      )
 
       if (dynamicError) {
         console.error('❌ Error storing table properties:', dynamicError)
@@ -258,13 +262,9 @@ export async function POST(request: NextRequest) {
 
     console.log(`✅ Table created: ${table.entity_code}`)
     return NextResponse.json(response, { status: 201 })
-
   } catch (error) {
     console.error('❌ Create table API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -310,34 +310,40 @@ export async function PUT(request: NextRequest) {
 
     // Update dynamic properties
     const dynamicUpdates = [
-      'capacity', 'location', 'table_type', 'current_status',
-      'x_position', 'y_position', 'shape', 'notes'
+      'capacity',
+      'location',
+      'table_type',
+      'current_status',
+      'x_position',
+      'y_position',
+      'shape',
+      'notes'
     ]
 
     for (const property of dynamicUpdates) {
       if (updateData[property] !== undefined) {
         const value = updateData[property]
-        const fieldType = ['capacity', 'x_position', 'y_position'].includes(property) ? 'number' : 'text'
-        
+        const fieldType = ['capacity', 'x_position', 'y_position'].includes(property)
+          ? 'number'
+          : 'text'
+
         const baseProps = {
           organization_id: organizationId,
           entity_id: updateData.id,
           field_name: property,
           field_type: fieldType
         }
-        
+
         let upsertData
         if (fieldType === 'number') {
           upsertData = { ...baseProps, field_value_number: parseFloat(value) || 0 }
         } else {
           upsertData = { ...baseProps, field_value: value.toString() }
         }
-        
-        await supabaseAdmin
-          .from('core_dynamic_data')
-          .upsert(upsertData, {
-            onConflict: 'organization_id,entity_id,field_name'
-          })
+
+        await supabaseAdmin.from('core_dynamic_data').upsert(upsertData, {
+          onConflict: 'organization_id,entity_id,field_name'
+        })
       }
     }
 
@@ -346,12 +352,8 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: 'Table updated successfully'
     })
-
   } catch (error) {
     console.error('❌ Update table API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

@@ -4,7 +4,7 @@ import path from 'path'
 
 /**
  * HERA Generated Modules API
- * 
+ *
  * Track and manage generated modules
  * Provides information about existing modules and their status
  */
@@ -45,14 +45,14 @@ export async function GET(request: NextRequest) {
           const config = JSON.parse(configContent)
 
           // Get module stats
-          const uiPages = existsSync(moduleUIPath) 
-            ? readdirSync(moduleUIPath).filter(item => 
+          const uiPages = existsSync(moduleUIPath)
+            ? readdirSync(moduleUIPath).filter(item =>
                 statSync(path.join(moduleUIPath, item)).isDirectory()
-              ) 
+              )
             : []
 
           const apiEndpoints = existsSync(moduleAPIPath)
-            ? readdirSync(moduleAPIPath).filter(item => 
+            ? readdirSync(moduleAPIPath).filter(item =>
                 statSync(path.join(moduleAPIPath, item)).isDirectory()
               )
             : []
@@ -115,7 +115,6 @@ export async function GET(request: NextRequest) {
         }))
       }
     })
-
   } catch (error) {
     console.error('Error loading modules:', error)
     return NextResponse.json(
@@ -133,13 +132,12 @@ export async function POST(request: NextRequest) {
 
     // This endpoint can be used to register modules that were generated
     // or to update module metadata
-    
+
     return NextResponse.json({
       success: true,
       message: 'Module registration not implemented yet',
       data: { moduleName, businessType, metadata }
     })
-
   } catch (error) {
     console.error('Error registering module:', error)
     return NextResponse.json(
@@ -165,13 +163,12 @@ export async function DELETE(request: NextRequest) {
 
     // For security, we'll only mark modules as deleted rather than actually deleting files
     // Real file deletion should be done through careful administrative processes
-    
+
     return NextResponse.json({
       success: true,
       message: 'Module deletion not implemented - use file system for manual cleanup',
       data: { moduleName, businessType }
     })
-
   } catch (error) {
     console.error('Error deleting module:', error)
     return NextResponse.json(

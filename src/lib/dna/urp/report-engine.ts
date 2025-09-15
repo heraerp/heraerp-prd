@@ -1,7 +1,7 @@
 /**
  * Universal Report Engine
  * Smart Code: HERA.DNA.URP.ENGINE.v1
- * 
+ *
  * Main orchestrator for Universal Report Pattern
  */
 
@@ -40,9 +40,9 @@ export class UniversalReportEngine {
   public readonly dynamicJoin: DynamicJoin
   public readonly rollupBalance: RollupBalance
   public readonly presentationFormatter: PresentationFormatter
-  
+
   private recipes: Map<string, ReportRecipe>
-  
+
   constructor(private config: ReportEngineConfig) {
     // Initialize primitives
     this.entityResolver = new EntityResolver(config)
@@ -51,11 +51,11 @@ export class UniversalReportEngine {
     this.dynamicJoin = new DynamicJoin(config)
     this.rollupBalance = new RollupBalance(config)
     this.presentationFormatter = new PresentationFormatter(config)
-    
+
     // Load recipes
     this.recipes = new Map(reportRecipes)
   }
-  
+
   /**
    * Execute a complete report recipe
    */
@@ -68,23 +68,19 @@ export class UniversalReportEngine {
     if (!recipe) {
       throw new Error(`Recipe not found: ${recipeName}`)
     }
-    
+
     // Check cache if enabled
     if (this.config.enableCaching && options.useCache !== false && !options.refreshCache) {
-      const cached = await cacheManager.get(
-        this.config.organizationId,
-        recipeName,
-        parameters
-      )
-      
+      const cached = await cacheManager.get(this.config.organizationId, recipeName, parameters)
+
       if (cached) {
         return this.formatOutput(cached, options)
       }
     }
-    
+
     // Execute recipe steps
     let data: any = null
-    
+
     for (const step of recipe.steps) {
       switch (step.primitive) {
         case 'entityResolver':
@@ -93,7 +89,7 @@ export class UniversalReportEngine {
             ...this.applyParameterOverrides(step.config, parameters)
           })
           break
-          
+
         case 'hierarchyBuilder':
           data = await this.hierarchyBuilder.build({
             entities: data || [],
@@ -101,21 +97,21 @@ export class UniversalReportEngine {
             ...this.applyParameterOverrides(step.config, parameters)
           })
           break
-          
+
         case 'transactionFacts':
           data = await this.transactionFacts.aggregate({
             ...step.config,
             ...this.applyParameterOverrides(step.config, parameters)
           })
           break
-          
+
         case 'dynamicJoin':
           data = await this.dynamicJoin.join({
             ...step.config,
             ...this.applyParameterOverrides(step.config, parameters)
           })
           break
-          
+
         case 'rollupBalance':
           data = this.rollupBalance.calculate({
             transactions: data || [],
@@ -123,20 +119,20 @@ export class UniversalReportEngine {
             ...this.applyParameterOverrides(step.config, parameters)
           })
           break
-          
+
         case 'custom':
           if (step.handler) {
             data = await step.handler(data, this, parameters)
           }
           break
       }
-      
+
       // Store intermediate results if named
       if (step.outputKey) {
         parameters[step.outputKey] = data
       }
     }
-    
+
     // Cache result if enabled
     if (this.config.enableCaching && options.useCache !== false) {
       await cacheManager.set(
@@ -147,24 +143,24 @@ export class UniversalReportEngine {
         this.config.cacheTTL || recipe.cacheTTL
       )
     }
-    
+
     return this.formatOutput(data, options)
   }
-  
+
   /**
    * Register a custom report recipe
    */
   registerRecipe(recipe: ReportRecipe): void {
     this.recipes.set(recipe.name, recipe)
   }
-  
+
   /**
    * Get available recipes
    */
   getAvailableRecipes(): ReportRecipe[] {
     return Array.from(this.recipes.values())
   }
-  
+
   /**
    * Clear cache for a specific report or all reports
    */
@@ -175,7 +171,7 @@ export class UniversalReportEngine {
       await cacheManager.clearAll(this.config.organizationId)
     }
   }
-  
+
   /**
    * Apply parameter overrides to step configuration
    */
@@ -184,7 +180,7 @@ export class UniversalReportEngine {
     parameters: Record<string, any>
   ): Record<string, any> {
     const overrides: Record<string, any> = {}
-    
+
     for (const [key, value] of Object.entries(config)) {
       // Replace parameter placeholders
       if (typeof value === 'string' && value.startsWith('{{') && value.endsWith('}}')) {
@@ -194,10 +190,10 @@ export class UniversalReportEngine {
         }
       }
     }
-    
+
     return overrides
   }
-  
+
   /**
    * Format output based on requested format
    */
@@ -205,7 +201,7 @@ export class UniversalReportEngine {
     if (!options.format || options.format === 'json') {
       return data
     }
-    
+
     return this.presentationFormatter.format({
       data,
       format: options.format,
@@ -213,7 +209,7 @@ export class UniversalReportEngine {
       currency: options.currency
     })
   }
-  
+
   /**
    * Create a materialized view for a recipe (if database supports it)
    */
@@ -225,12 +221,12 @@ export class UniversalReportEngine {
     if (!this.config.enableMaterializedViews) {
       throw new Error('Materialized views are not enabled')
     }
-    
+
     const recipe = this.recipes.get(recipeName)
     if (!recipe) {
       throw new Error(`Recipe not found: ${recipeName}`)
     }
-    
+
     // This would create actual database views
     // For now, we'll store the configuration
     await cacheManager.set(
@@ -241,24 +237,20 @@ export class UniversalReportEngine {
       -1 // Never expire
     )
   }
-  
+
   /**
    * Refresh a materialized view
    */
   async refreshMaterializedView(viewName: string): Promise<void> {
-    const viewConfig = await cacheManager.get(
-      this.config.organizationId,
-      `view_${viewName}`,
-      {}
-    )
-    
+    const viewConfig = await cacheManager.get(this.config.organizationId, `view_${viewName}`, {})
+
     if (!viewConfig) {
       throw new Error(`Materialized view not found: ${viewName}`)
     }
-    
+
     // Execute the recipe and cache with view name
     const data = await this.executeRecipe(viewConfig.recipeName, {}, { refreshCache: true })
-    
+
     await cacheManager.set(
       this.config.organizationId,
       `view_data_${viewName}`,
@@ -267,21 +259,19 @@ export class UniversalReportEngine {
       -1 // Never expire
     )
   }
-  
+
   /**
    * Query a materialized view
    */
   async queryMaterializedView(viewName: string): Promise<any> {
-    const data = await cacheManager.get(
-      this.config.organizationId,
-      `view_data_${viewName}`,
-      {}
-    )
-    
+    const data = await cacheManager.get(this.config.organizationId, `view_data_${viewName}`, {})
+
     if (!data) {
-      throw new Error(`Materialized view data not found: ${viewName}. Run refreshMaterializedView first.`)
+      throw new Error(
+        `Materialized view data not found: ${viewName}. Run refreshMaterializedView first.`
+      )
     }
-    
+
     return data
   }
 }

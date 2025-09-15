@@ -16,15 +16,15 @@ const RESTAURANT_CONFIG = {
     ORDER_LINE: 'HERA.RESTAURANT.POS.LINE.ITEM.v1',
     ORDER_MODIFIER: 'HERA.RESTAURANT.POS.LINE.MODIFIER.v1',
     ORDER_DISCOUNT: 'HERA.RESTAURANT.POS.LINE.DISCOUNT.v1',
-    
+
     // Customer & Table
     CUSTOMER: 'HERA.RESTAURANT.CUSTOMER.ENTITY.v1',
     TABLE: 'HERA.RESTAURANT.TABLE.ENTITY.v1',
-    
+
     // Payment
     PAYMENT: 'HERA.RESTAURANT.POS.PAYMENT.v1',
     REFUND: 'HERA.RESTAURANT.POS.REFUND.v1',
-    
+
     // Relationships
     REL_ORDER_TABLE: 'HERA.RESTAURANT.ORDER.REL.TABLE.v1',
     REL_ORDER_CUSTOMER: 'HERA.RESTAURANT.ORDER.REL.CUSTOMER.v1'
@@ -34,7 +34,7 @@ const RESTAURANT_CONFIG = {
 export default function RestaurantPOSPage() {
   return (
     <div className="h-screen">
-      <POSTerminalGlass 
+      <POSTerminalGlass
         organizationId={RESTAURANT_CONFIG.organizationId}
         smartCodes={RESTAURANT_CONFIG.smartCodes}
         isDemoMode={false}

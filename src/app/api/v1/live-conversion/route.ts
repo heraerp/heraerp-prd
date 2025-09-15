@@ -25,30 +25,30 @@ class MCPCommandExecutor {
    */
   async executeMCPCommand(command: string, params: any = {}): Promise<any> {
     this.log(`🔧 MCP: ${command}`)
-    
+
     try {
       switch (command) {
         case 'create-hera-user':
           return await this.createHeraUser(params)
-        
+
         case 'setup-organization-security':
           return await this.setupOrganizationSecurity(params)
-        
+
         case 'create-entity':
           return await this.createEntity(params)
-        
+
         case 'deploy-universal-pos':
           return await this.deployUniversalPOS(params)
-        
+
         case 'setup-payments':
           return await this.setupPayments(params)
-        
+
         case 'deploy-production':
           return await this.deployProduction(params)
-        
+
         case 'verify-hera-compliance':
           return await this.verifyHeraCompliance(params)
-        
+
         default:
           throw new Error(`Unknown MCP command: ${command}`)
       }
@@ -166,7 +166,9 @@ class MCPCommandExecutor {
               email: `customer${i + 1}@example.com`,
               phone: `(555) ${String(Math.floor(Math.random() * 900) + 100)}-${String(Math.floor(Math.random() * 9000) + 1000)}`,
               total_spent: Math.floor(Math.random() * 1000) + 100,
-              last_visit: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+              last_visit: new Date(
+                Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+              ).toISOString(),
               loyalty_points: Math.floor(Math.random() * 500)
             }
           }
@@ -202,7 +204,7 @@ class MCPCommandExecutor {
         case 'product':
           const salonProducts = [
             { name: 'Professional Shampoo', price: 28, cost: 12 },
-            { name: 'Hair Styling Mousse', price: 22.50, cost: 10 },
+            { name: 'Hair Styling Mousse', price: 22.5, cost: 10 },
             { name: 'Premium Conditioner', price: 45, cost: 20 },
             { name: 'Hair Serum', price: 35, cost: 15 },
             { name: 'Nail Polish Set', price: 24, cost: 8 },
@@ -221,15 +223,29 @@ class MCPCommandExecutor {
               price: product.price,
               cost: product.cost,
               stock: Math.floor(Math.random() * 50) + 10,
-              brand: ['L\'Oreal', 'Redken', 'Olaplex', 'Schwarzkopf'][Math.floor(Math.random() * 4)],
+              brand: ["L'Oreal", 'Redken', 'Olaplex', 'Schwarzkopf'][Math.floor(Math.random() * 4)],
               active: true
             }
           }
           break
 
         case 'staff':
-          const staffNames = ['Emma Rodriguez', 'Sarah Johnson', 'Maria Garcia', 'David Kim', 'Alex Thompson', 'Lisa Chen']
-          const specialties = ['Hair & Color', 'Color & Spa', 'Nails & Spa', 'Men\'s Services', 'Hair Treatments', 'Spa & Wellness']
+          const staffNames = [
+            'Emma Rodriguez',
+            'Sarah Johnson',
+            'Maria Garcia',
+            'David Kim',
+            'Alex Thompson',
+            'Lisa Chen'
+          ]
+          const specialties = [
+            'Hair & Color',
+            'Color & Spa',
+            'Nails & Spa',
+            "Men's Services",
+            'Hair Treatments',
+            'Spa & Wellness'
+          ]
           entityData = {
             ...entityData,
             entity_name: staffNames[i % staffNames.length],
@@ -240,7 +256,9 @@ class MCPCommandExecutor {
               experience: `${Math.floor(Math.random() * 8) + 2} years`,
               rating: (4.5 + Math.random() * 0.5).toFixed(1),
               status: 'active',
-              hire_date: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+              hire_date: new Date(
+                Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000
+              ).toISOString()
             }
           }
           break
@@ -289,15 +307,19 @@ class MCPCommandExecutor {
    */
   private async setupPayments(params: any) {
     // Create payment configuration
-    await universalApi.setDynamicField(params.org, 'payment_config', JSON.stringify({
-      provider: params.provider,
-      methods: params.methods,
-      live_mode: true,
-      webhook_configured: true,
-      encryption_enabled: true,
-      pci_compliant: true,
-      setup_date: new Date().toISOString()
-    }))
+    await universalApi.setDynamicField(
+      params.org,
+      'payment_config',
+      JSON.stringify({
+        provider: params.provider,
+        methods: params.methods,
+        live_mode: true,
+        webhook_configured: true,
+        encryption_enabled: true,
+        pci_compliant: true,
+        setup_date: new Date().toISOString()
+      })
+    )
 
     this.log(`✅ Payment processing activated: ${params.provider}`)
     return { success: true, methods: params.methods }
@@ -308,7 +330,7 @@ class MCPCommandExecutor {
    */
   private async deployProduction(params: any) {
     const subdomain = await this.generateSubdomain(params.org)
-    
+
     // Update organization with production settings
     const { error } = await supabase
       .from('core_organizations')
@@ -367,7 +389,7 @@ class MCPCommandExecutor {
     const complianceScore = (passedChecks / totalChecks) * 100
 
     this.log(`✅ HERA compliance: ${complianceScore}% (${passedChecks}/${totalChecks} checks)`)
-    
+
     return {
       score: complianceScore,
       passed: passedChecks,
@@ -386,12 +408,16 @@ class MCPCommandExecutor {
 
     if (!org) return `hera-${orgId.slice(-8)}`
 
-    return org.organization_name
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-      .substring(0, 20) + '-' + Math.random().toString(36).substr(2, 4)
+    return (
+      org.organization_name
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .substring(0, 20) +
+      '-' +
+      Math.random().toString(36).substr(2, 4)
+    )
   }
 
   private log(message: string) {
@@ -514,7 +540,6 @@ export async function POST(request: NextRequest) {
         results.compliance = compliance
 
         return NextResponse.json(results)
-
       } catch (error) {
         results.success = false
         results.error = error.message
@@ -524,7 +549,6 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
-
   } catch (error) {
     console.error('Live conversion API error:', error)
     return NextResponse.json(

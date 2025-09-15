@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
 import { FranchiseHero } from '@/components/franchise/FranchiseHero'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   User,
   Building2,
   HeartHandshake,
@@ -29,30 +29,36 @@ import {
 
 export const metadata: Metadata = {
   title: 'The Opportunity - HERA Franchise',
-  description: 'You own the relationship, we handle delivery. Learn what you do vs what HERA provides in this revolutionary franchise model.',
-  keywords: 'HERA franchise opportunity, what franchisees do, franchise responsibilities, ERP sales opportunity',
+  description:
+    'You own the relationship, we handle delivery. Learn what you do vs what HERA provides in this revolutionary franchise model.',
+  keywords:
+    'HERA franchise opportunity, what franchisees do, franchise responsibilities, ERP sales opportunity'
 }
 
 const yourResponsibilities = [
   {
     icon: HeartHandshake,
     title: 'Build Client Relationships',
-    description: 'Develop and maintain direct relationships with business owners and decision makers in your territory.'
+    description:
+      'Develop and maintain direct relationships with business owners and decision makers in your territory.'
   },
   {
     icon: Target,
     title: 'Identify Prospects',
-    description: 'Find businesses struggling with manual processes, legacy systems, or expensive ERP implementations.'
+    description:
+      'Find businesses struggling with manual processes, legacy systems, or expensive ERP implementations.'
   },
   {
     icon: Briefcase,
     title: 'Present HERA Solutions',
-    description: 'Deliver compelling presentations showing how HERA solves problems in 24 hours vs 18 months.'
+    description:
+      'Deliver compelling presentations showing how HERA solves problems in 24 hours vs 18 months.'
   },
   {
     icon: User,
     title: 'Close Deals',
-    description: 'Guide prospects through the decision process and secure signed contracts for HERA implementations.'
+    description:
+      'Guide prospects through the decision process and secure signed contracts for HERA implementations.'
   }
 ]
 
@@ -65,17 +71,20 @@ const heraProvides = [
   {
     icon: Headphones,
     title: 'Ongoing Client Support',
-    description: '24/7 technical support, system maintenance, and updates handled by HERA technical teams.'
+    description:
+      '24/7 technical support, system maintenance, and updates handled by HERA technical teams.'
   },
   {
     icon: Settings,
     title: 'Training & Certification',
-    description: 'Comprehensive franchise training, sales materials, and ongoing educational programs.'
+    description:
+      'Comprehensive franchise training, sales materials, and ongoing educational programs.'
   },
   {
     icon: Shield,
     title: 'Territory Protection',
-    description: 'Exclusive geographic protection ensures no competition from other HERA franchisees.'
+    description:
+      'Exclusive geographic protection ensures no competition from other HERA franchisees.'
   }
 ]
 
@@ -173,19 +182,18 @@ export default function OpportunityPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {marketOpportunity.map((item, index) => (
-              <div key={index} className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center">
+              <div
+                key={index}
+                className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center"
+              >
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <item.icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                   {item.stat}
                 </div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
-                  {item.label}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {item.description}
-                </p>
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{item.label}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{item.description}</p>
               </div>
             ))}
           </div>
@@ -303,16 +311,17 @@ export default function OpportunityPage() {
                   </thead>
                   <tbody>
                     {comparison.map((row, index) => (
-                      <tr key={index} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
+                      <tr
+                        key={index}
+                        className="border-b border-slate-200 dark:border-slate-700 last:border-b-0"
+                      >
                         <td className="py-4 px-6 font-medium text-slate-900 dark:text-white">
                           {row.category}
                         </td>
                         <td className="py-4 px-6">
                           <div className="flex items-center">
                             <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                            <span className="text-green-700 dark:text-green-300">
-                              {row.you}
-                            </span>
+                            <span className="text-green-700 dark:text-green-300">{row.you}</span>
                           </div>
                         </td>
                         <td className="py-4 px-6">
@@ -337,14 +346,13 @@ export default function OpportunityPage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-              Real Success Story
-            </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">Real Success Story</h2>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 mb-8">
               <blockquote className="text-xl text-white leading-relaxed mb-6">
-                "I was burned out from 15 years of SAP consulting. Implementation projects took 18 months, 
-                cost millions, and half of them failed. With HERA, I close bigger deals faster because clients 
-                get results in 24 hours. I've never been happier or earned more."
+                "I was burned out from 15 years of SAP consulting. Implementation projects took 18
+                months, cost millions, and half of them failed. With HERA, I close bigger deals
+                faster because clients get results in 24 hours. I've never been happier or earned
+                more."
               </blockquote>
               <div className="flex items-center justify-center">
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
@@ -388,9 +396,9 @@ export default function OpportunityPage() {
             <p className="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
               Limited territories available. Exclusive protection guaranteed for approved partners.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 asChild
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-6 text-lg"
@@ -400,16 +408,9 @@ export default function OpportunityPage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button 
-                asChild
-                variant="outline"
-                size="lg"
-                className="px-8 py-6 text-lg"
-              >
-                <Link href="/franchise/income">
-                  View Income Potential
-                </Link>
+
+              <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg">
+                <Link href="/franchise/income">View Income Potential</Link>
               </Button>
             </div>
           </div>

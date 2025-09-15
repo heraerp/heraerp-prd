@@ -26,18 +26,17 @@ export class ContextManager {
       this.startAutoPreservation()
 
       this.isInitialized = true
-      
+
       console.log('🧠 Context Manager initialized')
       console.log(`   Session: ${this.sessionId}`)
       console.log(`   Organization: ${this.organizationId}`)
       console.log(`   Loaded contexts: ${this.contexts.size}`)
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      throw new ContextPreservationError(
-        `Failed to initialize Context Manager: ${errorMessage}`,
-        { organization_id: organizationId, session_id: sessionId }
-      )
+      throw new ContextPreservationError(`Failed to initialize Context Manager: ${errorMessage}`, {
+        organization_id: organizationId,
+        session_id: sessionId
+      })
     }
   }
 
@@ -87,7 +86,7 @@ export class ContextManager {
     // Check memory cache first
     if (this.contexts.has(contextId)) {
       const context = this.contexts.get(contextId)!
-      
+
       // Log restoration event
       await this.logContextEvent('context_restored', {
         context_id: contextId,
@@ -102,10 +101,9 @@ export class ContextManager {
     // Load from database
     const context = await this.loadContextFromDatabase(contextId)
     if (!context) {
-      throw new ContextPreservationError(
-        `Context not found: ${contextId}`,
-        { context_id: contextId }
-      )
+      throw new ContextPreservationError(`Context not found: ${contextId}`, {
+        context_id: contextId
+      })
     }
 
     // Cache for future use
@@ -164,13 +162,12 @@ export class ContextManager {
       if (id === contextId) continue
 
       // Check for task lineage connections
-      const hasSharedLineage = context.task_lineage.some(task => 
-        ctx.task_lineage.includes(task)
-      )
+      const hasSharedLineage = context.task_lineage.some(task => ctx.task_lineage.includes(task))
 
       // Check for smart code relationships
-      const hasSmartCodeRelation = context.smart_code.split('.').slice(0, 3).join('.') === 
-                                  ctx.smart_code.split('.').slice(0, 3).join('.')
+      const hasSmartCodeRelation =
+        context.smart_code.split('.').slice(0, 3).join('.') ===
+        ctx.smart_code.split('.').slice(0, 3).join('.')
 
       if (hasSharedLineage || hasSmartCodeRelation) {
         relatedContexts.push(ctx)
@@ -184,10 +181,9 @@ export class ContextManager {
   async updateContext(contextId: string, updates: Partial<VibeContext>): Promise<void> {
     const context = this.contexts.get(contextId)
     if (!context) {
-      throw new ContextPreservationError(
-        `Context not found for update: ${contextId}`,
-        { context_id: contextId }
-      )
+      throw new ContextPreservationError(`Context not found for update: ${contextId}`, {
+        context_id: contextId
+      })
     }
 
     // Merge updates
@@ -268,9 +264,8 @@ export class ContextManager {
       // Load contexts for current session from database
       // This would query the universal tables for session contexts
       console.log('📂 Loading session contexts...')
-      
+
       // Placeholder - would implement actual database loading
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
       console.warn('⚠️ Could not load session contexts:', errorMessage)
@@ -311,7 +306,7 @@ export class ContextManager {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',
@@ -363,7 +358,7 @@ export class ContextManager {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',
@@ -397,10 +392,10 @@ export class ContextManager {
       clearInterval(this.autoPreserveInterval)
       this.autoPreserveInterval = null
     }
-    
+
     this.contexts.clear()
     this.isInitialized = false
-    
+
     console.log('🧹 Context Manager destroyed')
   }
 }

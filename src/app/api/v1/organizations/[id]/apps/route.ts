@@ -13,7 +13,8 @@ const HERA_APPS = {
   salon: {
     id: 'salon',
     name: 'Salon Management',
-    description: 'Complete salon operations with appointment booking, staff management, and inventory',
+    description:
+      'Complete salon operations with appointment booking, staff management, and inventory',
     category: 'Industry Specific',
     pricing: { monthly: 49, yearly: 490 },
     features: ['appointments', 'staff-management', 'inventory', 'reporting'],
@@ -33,7 +34,7 @@ const HERA_APPS = {
     default_config: {
       currency: 'USD',
       tax_rate: 0.08,
-      service_charge: 0.10
+      service_charge: 0.1
     }
   },
   budgeting: {
@@ -62,16 +63,13 @@ const HERA_APPS = {
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -82,13 +80,13 @@ export async function GET(
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Check if user has access to this organization
@@ -103,16 +101,14 @@ export async function GET(
       .single()
 
     if (!membership) {
-      return NextResponse.json(
-        { error: 'Access denied' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
     // Get installed apps
     const { data: installedApps, error } = await supabase
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         *,
         app:to_entity_id(
           id,
@@ -120,7 +116,8 @@ export async function GET(
           entity_code,
           metadata
         )
-      `)
+      `
+      )
       .eq('from_entity_id', id)
       .eq('relationship_type', 'has_installed')
 
@@ -129,14 +126,15 @@ export async function GET(
     }
 
     // Format installed apps
-    const installed = installedApps?.map(rel => ({
-      id: rel.app?.entity_code?.toLowerCase() || rel.to_entity_id,
-      name: rel.app?.entity_name,
-      status: (rel.metadata as any)?.status || 'active',
-      installed_at: (rel.metadata as any)?.installed_at || rel.created_at,
-      config: (rel.metadata as any)?.config || {},
-      subscription: (rel.metadata as any)?.subscription || { plan: 'trial' }
-    })) || []
+    const installed =
+      installedApps?.map(rel => ({
+        id: rel.app?.entity_code?.toLowerCase() || rel.to_entity_id,
+        name: rel.app?.entity_name,
+        status: (rel.metadata as any)?.status || 'active',
+        installed_at: (rel.metadata as any)?.installed_at || rel.created_at,
+        config: (rel.metadata as any)?.config || {},
+        subscription: (rel.metadata as any)?.subscription || { plan: 'trial' }
+      })) || []
 
     // Get available apps (not installed)
     const installedIds = installed.map(app => app.id)
@@ -153,26 +151,19 @@ export async function GET(
       total_installed: installed.length,
       total_available: available.length
     })
-
   } catch (error) {
     console.error('Get apps error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   try {
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -183,13 +174,13 @@ export async function POST(
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // First, find the user entity
@@ -201,10 +192,7 @@ export async function POST(
       .single()
 
     if (!userEntity) {
-      return NextResponse.json(
-        { error: 'User entity not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'User entity not found' }, { status: 404 })
     }
 
     // Check if user has admin/owner access to this organization
@@ -234,10 +222,7 @@ export async function POST(
     const appsToInstall = apps.length > 0 ? apps : [app_id].filter(Boolean)
 
     if (appsToInstall.length === 0) {
-      return NextResponse.json(
-        { error: 'No apps specified for installation' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No apps specified for installation' }, { status: 400 })
     }
 
     // For now, we'll simplify and just mark the apps as selected
@@ -245,19 +230,18 @@ export async function POST(
     console.log(`Installing apps for organization ${id}:`, appsToInstall)
 
     // For MVP, we'll just return success and redirect
-    return NextResponse.json({
-      success: true,
-      installed_apps: appsToInstall,
-      message: `${appsToInstall.length} app(s) installed successfully`,
-      next_step: `/org`
-    }, { status: 201 })
-
+    return NextResponse.json(
+      {
+        success: true,
+        installed_apps: appsToInstall,
+        message: `${appsToInstall.length} app(s) installed successfully`,
+        next_step: `/org`
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Install app error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -270,7 +254,7 @@ export async function DELETE(
     // Get auth token from headers
     const headersList = await headers()
     const authorization = headersList.get('authorization')
-    
+
     if (!authorization?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Missing or invalid authorization header' },
@@ -281,13 +265,13 @@ export async function DELETE(
     const token = authorization.replace('Bearer ', '')
 
     // Verify the token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser(token)
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid token' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     // Check if user has owner access to this organization
@@ -314,10 +298,7 @@ export async function DELETE(
     const appId = searchParams.get('app_id')
 
     if (!appId) {
-      return NextResponse.json(
-        { error: 'Missing app_id parameter' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing app_id parameter' }, { status: 400 })
     }
 
     // Find and delete the app relationship
@@ -338,12 +319,8 @@ export async function DELETE(
       success: true,
       message: `App ${appId} uninstalled successfully`
     })
-
   } catch (error) {
     console.error('Uninstall app error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

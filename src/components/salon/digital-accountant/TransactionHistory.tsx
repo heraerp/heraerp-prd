@@ -102,11 +102,11 @@ const mockTransactions: Transaction[] = [
   }
 ]
 
-export function TransactionHistory({ 
+export function TransactionHistory({
   transactions = mockTransactions,
   onViewTransaction,
   onEditTransaction,
-  onDeleteTransaction 
+  onDeleteTransaction
 }: TransactionHistoryProps) {
   const getTypeIcon = (type: Transaction['type']) => {
     switch (type) {
@@ -171,14 +171,17 @@ export function TransactionHistory({
   }
 
   // Group transactions by date
-  const groupedTransactions = transactions.reduce((acc, transaction) => {
-    const dateKey = transaction.date.toDateString()
-    if (!acc[dateKey]) {
-      acc[dateKey] = []
-    }
-    acc[dateKey].push(transaction)
-    return acc
-  }, {} as Record<string, Transaction[]>)
+  const groupedTransactions = transactions.reduce(
+    (acc, transaction) => {
+      const dateKey = transaction.date.toDateString()
+      if (!acc[dateKey]) {
+        acc[dateKey] = []
+      }
+      acc[dateKey].push(transaction)
+      return acc
+    },
+    {} as Record<string, Transaction[]>
+  )
 
   return (
     <Card className="h-full flex flex-col">
@@ -200,20 +203,18 @@ export function TransactionHistory({
                   {date === new Date().toDateString() ? 'Today' : date}
                 </p>
                 <div className="space-y-2">
-                  {dayTransactions.map((transaction) => (
+                  {dayTransactions.map(transaction => (
                     <div
                       key={transaction.id}
                       className={cn(
-                        "p-3 rounded-lg border transition-colors",
-                        "hover:bg-gray-50 dark:hover:bg-gray-800",
-                        transaction.status === 'cancelled' && "opacity-60"
+                        'p-3 rounded-lg border transition-colors',
+                        'hover:bg-gray-50 dark:hover:bg-gray-800',
+                        transaction.status === 'cancelled' && 'opacity-60'
                       )}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-3 flex-1">
-                          <div className="mt-0.5">
-                            {getTypeIcon(transaction.type)}
-                          </div>
+                          <div className="mt-0.5">{getTypeIcon(transaction.type)}</div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm truncate">
                               {transaction.description}
@@ -241,20 +242,21 @@ export function TransactionHistory({
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-start gap-2">
                           <div className="text-right">
-                            <p className={cn(
-                              "font-semibold",
-                              transaction.type === 'revenue' ? 'text-green-600' : 'text-red-600'
-                            )}>
-                              {transaction.type === 'revenue' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                            <p
+                              className={cn(
+                                'font-semibold',
+                                transaction.type === 'revenue' ? 'text-green-600' : 'text-red-600'
+                              )}
+                            >
+                              {transaction.type === 'revenue' ? '+' : '-'}
+                              {formatCurrency(transaction.amount)}
                             </p>
-                            <div className="mt-1">
-                              {getStatusBadge(transaction.status)}
-                            </div>
+                            <div className="mt-1">{getStatusBadge(transaction.status)}</div>
                           </div>
-                          
+
                           {/* Action buttons */}
                           <div className="flex flex-col gap-1 opacity-0 hover:opacity-100 transition-opacity">
                             <Button
@@ -275,7 +277,8 @@ export function TransactionHistory({
                                 <Pencil className="w-3 h-3" />
                               </Button>
                             )}
-                            {(transaction.status === 'draft' || transaction.status === 'pending') && (
+                            {(transaction.status === 'draft' ||
+                              transaction.status === 'pending') && (
                               <Button
                                 size="icon"
                                 variant="ghost"
@@ -295,7 +298,7 @@ export function TransactionHistory({
             ))}
           </div>
         </ScrollArea>
-        
+
         {/* Summary footer */}
         <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900">
           <div className="flex items-center justify-between text-sm">
@@ -304,16 +307,22 @@ export function TransactionHistory({
             </span>
             <div className="flex items-center gap-4">
               <span className="text-green-600 font-medium">
-                +{formatCurrency(
+                +
+                {formatCurrency(
                   transactions
                     .filter(t => t.type === 'revenue' && t.status !== 'cancelled')
                     .reduce((sum, t) => sum + t.amount, 0)
                 )}
               </span>
               <span className="text-red-600 font-medium">
-                -{formatCurrency(
+                -
+                {formatCurrency(
                   transactions
-                    .filter(t => (t.type === 'expense' || t.type === 'commission') && t.status !== 'cancelled')
+                    .filter(
+                      t =>
+                        (t.type === 'expense' || t.type === 'commission') &&
+                        t.status !== 'cancelled'
+                    )
                     .reduce((sum, t) => sum + t.amount, 0)
                 )}
               </span>

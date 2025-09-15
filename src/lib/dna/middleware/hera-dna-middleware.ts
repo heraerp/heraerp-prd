@@ -73,22 +73,22 @@ export class HeraDNAMiddleware {
    * BYPASS DETECTION SYSTEM
    * Detects attempts to avoid DNA components
    */
-  private detectBypassAttempt(request: string): { detected: boolean, reason: string } {
+  private detectBypassAttempt(request: string): { detected: boolean; reason: string } {
     const bypassPatterns = [
       // Direct bypass attempts
       /without.*dna|skip.*dna|ignore.*dna|bypass.*dna/i,
       /use.*basic|use.*simple|use.*plain/i,
       /just.*create|quick.*fix|simple.*solution/i,
-      
+
       // Component-specific bypasses
       /use.*card(?!.*enterprise)|<card(?!.*enterprise)/i,
       /import.*card(?!.*enterprise)/i,
       /shadcn.*card|radix.*card|mui.*card/i,
-      
+
       // Framework bypasses
       /raw.*react|vanilla.*js|plain.*html/i,
       /no.*components|without.*components/i,
-      
+
       // Urgency-based bypasses
       /no.*time.*for|too.*complex|keep.*it.*simple/i,
       /just.*works|minimal.*viable|prototype/i
@@ -111,8 +111,8 @@ export class HeraDNAMiddleware {
    * Handles attempts to bypass DNA enforcement
    */
   private handleBypassAttempt(
-    request: string, 
-    reason: string, 
+    request: string,
+    reason: string,
     context: MiddlewareContext
   ): MiddlewareResult {
     const warnings = [
@@ -143,10 +143,7 @@ export class HeraDNAMiddleware {
       enforcementActive: true,
       dnaComponents: [autoSelect.selection.primary, ...autoSelect.selection.secondary],
       generatedCode: autoSelect.generatedCode,
-      instructions: [
-        '🛡️ BYPASS BLOCKED - DNA ENFORCEMENT ACTIVE',
-        ...autoSelect.instructions
-      ],
+      instructions: ['🛡️ BYPASS BLOCKED - DNA ENFORCEMENT ACTIVE', ...autoSelect.instructions],
       warnings
     }
   }
@@ -163,7 +160,7 @@ export class HeraDNAMiddleware {
   ): MiddlewareResult {
     // Always enforce DNA for quality and consistency
     const transformedRequest = enforcement.autoEnhancedPrompt
-    
+
     return {
       allowed: true,
       transformedRequest,
@@ -178,10 +175,13 @@ export class HeraDNAMiddleware {
         '',
         ...autoSelect.instructions
       ],
-      warnings: enforcement.enforcementLevel === 'critical' ? [
-        '⚠️ CRITICAL ENFORCEMENT: This is an emergency situation',
-        '🛡️ Using maximum stability DNA components'
-      ] : []
+      warnings:
+        enforcement.enforcementLevel === 'critical'
+          ? [
+              '⚠️ CRITICAL ENFORCEMENT: This is an emergency situation',
+              '🛡️ Using maximum stability DNA components'
+            ]
+          : []
     }
   }
 
@@ -220,7 +220,11 @@ This enforcement cannot be bypassed or overridden.
   /**
    * SESSION MANAGEMENT
    */
-  private buildContext(request: string, sessionId: string, partial: Partial<MiddlewareContext>): MiddlewareContext {
+  private buildContext(
+    request: string,
+    sessionId: string,
+    partial: Partial<MiddlewareContext>
+  ): MiddlewareContext {
     return {
       developmentType: this.detectDevelopmentType(request),
       originalRequest: request,
@@ -269,11 +273,11 @@ This enforcement cannot be bypassed or overridden.
    * COMPLIANCE MONITORING
    */
   getComplianceReport(sessionId: string): {
-    sessionId: string,
-    totalRequests: number,
-    dnaEnforcedRequests: number,
-    complianceRate: number,
-    bypassAttempts: number,
+    sessionId: string
+    totalRequests: number
+    dnaEnforcedRequests: number
+    complianceRate: number
+    bypassAttempts: number
     topComponents: string[]
   } | null {
     const session = this.activeSessions.get(sessionId)
@@ -329,12 +333,12 @@ export function interceptDevelopment(request: string, sessionId?: string): Middl
  * Check if a request would be allowed or needs transformation
  */
 export function checkDNACompliance(request: string): {
-  compliant: boolean,
-  issues: string[],
+  compliant: boolean
+  issues: string[]
   suggestions: string[]
 } {
   const result = heraDNAMiddleware.intercept(request)
-  
+
   return {
     compliant: result.warnings.length === 0,
     issues: result.warnings,
@@ -354,9 +358,9 @@ export function transformToDNA(request: string): string {
  * Validate that generated code uses DNA components
  */
 export function validateDNAUsage(code: string): {
-  valid: boolean,
-  dnaComponents: string[],
-  violations: string[],
+  valid: boolean
+  dnaComponents: string[]
+  violations: string[]
   suggestions: string[]
 } {
   const dnaComponents = []
@@ -395,8 +399,8 @@ export function validateDNAUsage(code: string): {
  * Pre-commit hook integration
  */
 export function preCommitDNAValidation(changedFiles: string[]): {
-  passed: boolean,
-  report: string,
+  passed: boolean
+  report: string
   fixes: string[]
 } {
   // This would validate all changed files for DNA compliance
@@ -423,19 +427,19 @@ export function devServerMiddleware(request: any, response: any, next: any): voi
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * // 1. Intercept any development request
  * const result = interceptDevelopment("Create a stats dashboard")
  * console.log(result.transformedRequest) // Auto-enhanced with DNA components
- * 
+ *
  * // 2. Check compliance before implementation
  * const compliance = checkDNACompliance("Build a simple card")
  * console.log(compliance.compliant) // false - suggests EnterpriseCard
- * 
+ *
  * // 3. Transform non-compliant requests
  * const transformed = transformToDNA("Use basic React components")
  * console.log(transformed) // Transformed to use Enterprise DNA
- * 
+ *
  * // 4. Validate generated code
  * const validation = validateDNAUsage(myCode)
  * if (!validation.valid) {

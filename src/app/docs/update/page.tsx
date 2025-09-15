@@ -6,21 +6,27 @@ export const dynamic = 'force-dynamic'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  BookOpen, 
-  Code, 
-  Users, 
-  Settings, 
-  Database, 
-  Globe, 
-  // Shield, 
+import {
+  BookOpen,
+  Code,
+  Users,
+  Settings,
+  Database,
+  Globe,
+  // Shield,
   Zap,
   Plus,
   FileText,
@@ -52,7 +58,11 @@ const documentationAreas = [
       { id: 'getting-started', name: 'Getting Started', description: 'First steps and onboarding' },
       { id: 'features', name: 'Features', description: 'Feature walkthroughs and usage' },
       { id: 'workflows', name: 'Workflows', description: 'Business process guides' },
-      { id: 'troubleshooting', name: 'Troubleshooting', description: 'Common issues and solutions' },
+      {
+        id: 'troubleshooting',
+        name: 'Troubleshooting',
+        description: 'Common issues and solutions'
+      },
       { id: 'faq', name: 'FAQ', description: 'Frequently asked questions' }
     ]
   },
@@ -76,7 +86,11 @@ const documentationAreas = [
     description: 'Schema, relationships, and data models',
     sections: [
       { id: 'schema', name: 'Schema', description: 'Database structure and tables' },
-      { id: 'relationships', name: 'Relationships', description: 'Entity relationships and constraints' },
+      {
+        id: 'relationships',
+        name: 'Relationships',
+        description: 'Entity relationships and constraints'
+      },
       { id: 'migrations', name: 'Migrations', description: 'Database version control' },
       { id: 'procedures', name: 'Procedures', description: 'Stored procedures and functions' },
       { id: 'optimization', name: 'Optimization', description: 'Performance tuning guides' }
@@ -115,7 +129,7 @@ export default function DocumentationUpdatePage() {
     }
 
     setIsGenerating(true)
-    
+
     try {
       // Simulate API call to generate documentation page
       const response = await fetch('/api/v1/documentation/generate', {
@@ -142,13 +156,13 @@ export default function DocumentationUpdatePage() {
       if (response.ok) {
         const result = await response.json()
         setGeneratedPage(result)
-        
+
         // Reset form
         setTitle('')
         setDescription('')
         setContent('')
         setSelectedContentType('')
-        
+
         alert(`Documentation page "${title}" generated successfully!`)
       } else {
         throw new Error('Failed to generate documentation page')
@@ -180,19 +194,17 @@ export default function DocumentationUpdatePage() {
                   <BookOpen className="w-5 h-5" />
                   Documentation Areas
                 </CardTitle>
-                <CardDescription>
-                  Choose the area you want to update
-                </CardDescription>
+                <CardDescription>Choose the area you want to update</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                {documentationAreas.map((area) => {
+                {documentationAreas.map(area => {
                   const Icon = area.icon
                   return (
                     <div
                       key={area.id}
                       className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                        selectedArea === area.id 
-                          ? 'border-hera-primary bg-hera-primary/5' 
+                        selectedArea === area.id
+                          ? 'border-hera-primary bg-hera-primary/5'
                           : 'border-border hover:border-hera-primary/50'
                       }`}
                       onClick={() => {
@@ -204,9 +216,7 @@ export default function DocumentationUpdatePage() {
                         <Icon className="w-5 h-5 text-hera-primary mt-0.5" />
                         <div>
                           <h3 className="font-medium">{area.name}</h3>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {area.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">{area.description}</p>
                         </div>
                       </div>
                     </div>
@@ -218,7 +228,10 @@ export default function DocumentationUpdatePage() {
 
           {/* Section and Content Form */}
           <div className="lg:col-span-2">
-            <Tabs value={previewMode ? 'preview' : 'edit'} onValueChange={(value) => setPreviewMode(value === 'preview')}>
+            <Tabs
+              value={previewMode ? 'preview' : 'edit'}
+              onValueChange={value => setPreviewMode(value === 'preview')}
+            >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="edit" className="flex items-center gap-2">
                   <FileText className="w-4 h-4" />
@@ -235,7 +248,9 @@ export default function DocumentationUpdatePage() {
                   <CardHeader>
                     <CardTitle>Create New Documentation Page</CardTitle>
                     <CardDescription>
-                      {currentArea ? `Adding to ${currentArea.name}` : 'Select an area to get started'}
+                      {currentArea
+                        ? `Adding to ${currentArea.name}`
+                        : 'Select an area to get started'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -249,7 +264,7 @@ export default function DocumentationUpdatePage() {
                               <SelectValue placeholder="Select a section" />
                             </SelectTrigger>
                             <SelectContent className="bg-background">
-                              {currentArea.sections.map((section) => (
+                              {currentArea.sections.map(section => (
                                 <SelectItem key={section.id} value={section.id}>
                                   <div className="py-1">
                                     <div className="font-medium">{section.name}</div>
@@ -269,24 +284,26 @@ export default function DocumentationUpdatePage() {
                             <div className="space-y-2">
                               <Label>Content Type</Label>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {contentTypes.map((type) => {
+                                {contentTypes.map(type => {
                                   const Icon = type.icon
                                   return (
                                     <div
                                       key={type.id}
                                       className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                                        selectedContentType === type.id 
-                                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' 
+                                        selectedContentType === type.id
+                                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
                                           : 'border-gray-200 hover:border-blue-300 dark:border-gray-700 dark:hover:border-blue-600'
                                       }`}
                                       onClick={() => setSelectedContentType(type.id)}
                                     >
                                       <div className="flex items-center gap-3">
-                                        <Icon className={`w-5 h-5 ${
-                                          selectedContentType === type.id 
-                                            ? 'text-blue-600' 
-                                            : 'text-gray-500'
-                                        }`} />
+                                        <Icon
+                                          className={`w-5 h-5 ${
+                                            selectedContentType === type.id
+                                              ? 'text-blue-600'
+                                              : 'text-gray-500'
+                                          }`}
+                                        />
                                         <div className="text-sm font-medium">{type.name}</div>
                                       </div>
                                     </div>
@@ -305,7 +322,7 @@ export default function DocumentationUpdatePage() {
                                   id="title"
                                   placeholder="Enter page title"
                                   value={title}
-                                  onChange={(e) => setTitle(e.target.value)}
+                                  onChange={e => setTitle(e.target.value)}
                                 />
                               </div>
 
@@ -315,7 +332,7 @@ export default function DocumentationUpdatePage() {
                                   id="description"
                                   placeholder="Brief description of the page content"
                                   value={description}
-                                  onChange={(e) => setDescription(e.target.value)}
+                                  onChange={e => setDescription(e.target.value)}
                                 />
                               </div>
 
@@ -325,7 +342,7 @@ export default function DocumentationUpdatePage() {
                                   id="content"
                                   placeholder="Enter your documentation content (Markdown supported)"
                                   value={content}
-                                  onChange={(e) => setContent(e.target.value)}
+                                  onChange={e => setContent(e.target.value)}
                                   rows={12}
                                   className="font-mono"
                                 />
@@ -333,7 +350,7 @@ export default function DocumentationUpdatePage() {
                             </div>
 
                             <div className="flex gap-3">
-                              <Button 
+                              <Button
                                 onClick={handleGeneratePage}
                                 disabled={isGenerating || !title || !content}
                                 className="hera-button flex items-center gap-2"
@@ -351,8 +368,8 @@ export default function DocumentationUpdatePage() {
                                 )}
                               </Button>
 
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 onClick={() => setPreviewMode(true)}
                                 disabled={!content}
                               >
@@ -379,18 +396,14 @@ export default function DocumentationUpdatePage() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Preview</CardTitle>
-                    <CardDescription>
-                      Preview how your documentation page will look
-                    </CardDescription>
+                    <CardDescription>Preview how your documentation page will look</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {content ? (
                       <div className="prose prose-sm max-w-none">
                         {title && <h1>{title}</h1>}
                         {description && <p className="lead">{description}</p>}
-                        <div className="whitespace-pre-wrap">
-                          {content}
-                        </div>
+                        <div className="whitespace-pre-wrap">{content}</div>
                       </div>
                     ) : (
                       <div className="text-center py-8 text-muted-foreground">
@@ -421,9 +434,7 @@ export default function DocumentationUpdatePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">{generatedPage.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {generatedPage.url}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{generatedPage.url}</p>
                 </div>
                 <Button asChild>
                   <a href={generatedPage.url} target="_blank" rel="noopener noreferrer">

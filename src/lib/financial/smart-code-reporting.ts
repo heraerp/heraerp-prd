@@ -192,7 +192,11 @@ export class SmartCodeReportingService {
         },
         {
           group_name: 'Investing Activities',
-          smart_code_patterns: ['.CASHFLOW.INVESTING.', '.CASH.ASSET.PURCHASE.', '.CASH.ASSET.SALE.'],
+          smart_code_patterns: [
+            '.CASHFLOW.INVESTING.',
+            '.CASH.ASSET.PURCHASE.',
+            '.CASH.ASSET.SALE.'
+          ],
           display_order: 2,
           aggregation: 'sum',
           show_details: true
@@ -243,17 +247,15 @@ export class SmartCodeReportingService {
     if (entityError) throw entityError
 
     // Store config details in dynamic data
-    await supabase
-      .from('core_dynamic_data')
-      .insert({
-        id: uuidv4(),
-        entity_id: entity.id,
-        field_name: 'report_config',
-        field_value_text: JSON.stringify(config),
-        field_type: 'json',
-        smart_code: `HERA.FIN.REPORT.${reportType.toUpperCase()}.RULES.v1`,
-        organization_id: organizationId
-      })
+    await supabase.from('core_dynamic_data').insert({
+      id: uuidv4(),
+      entity_id: entity.id,
+      field_name: 'report_config',
+      field_value_text: JSON.stringify(config),
+      field_type: 'json',
+      smart_code: `HERA.FIN.REPORT.${reportType.toUpperCase()}.RULES.v1`,
+      organization_id: organizationId
+    })
   }
 
   /**
@@ -320,7 +322,7 @@ export class SmartCodeReportingService {
    */
   private parsePeriod(period: string): { startDate: string; endDate: string } {
     const parts = period.split('-')
-    
+
     if (parts.length === 1) {
       // Year: "2025"
       return {
@@ -333,7 +335,7 @@ export class SmartCodeReportingService {
       const quarter = parseInt(parts[1].substring(1))
       const startMonth = (quarter - 1) * 3 + 1
       const endMonth = quarter * 3
-      
+
       return {
         startDate: `${year}-${String(startMonth).padStart(2, '0')}-01`,
         endDate: new Date(year, endMonth, 0).toISOString().split('T')[0]
@@ -342,7 +344,7 @@ export class SmartCodeReportingService {
       // Month: "2025-01"
       const year = parseInt(parts[0])
       const month = parseInt(parts[1])
-      
+
       return {
         startDate: `${year}-${String(month).padStart(2, '0')}-01`,
         endDate: new Date(year, month, 0).toISOString().split('T')[0]
@@ -367,7 +369,8 @@ export class SmartCodeReportingService {
 
     let query = supabase
       .from('universal_transaction_lines')
-      .select(`
+      .select(
+        `
         *,
         universal_transactions!inner(
           transaction_date,
@@ -380,7 +383,8 @@ export class SmartCodeReportingService {
           entity_type,
           smart_code
         )
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .gte('universal_transactions.transaction_date', startDate)
       .lte('universal_transactions.transaction_date', endDate)
@@ -409,7 +413,7 @@ export class SmartCodeReportingService {
     for (const rule of groupingRules) {
       const matchingTransactions = transactions.filter(txn => {
         const smartCode = txn.smart_code || txn.universal_transactions?.smart_code || ''
-        return rule.smart_code_patterns.some(pattern => 
+        return rule.smart_code_patterns.some(pattern =>
           smartCode.includes(pattern.replace(/\./g, ''))
         )
       })
@@ -420,7 +424,7 @@ export class SmartCodeReportingService {
       if (rule.show_details) {
         // Group by account
         const accountGroups = new Map<string, any[]>()
-        
+
         matchingTransactions.forEach(txn => {
           const accountName = txn.line_entity?.entity_name || 'Unknown Account'
           if (!accountGroups.has(accountName)) {
@@ -480,7 +484,7 @@ export class SmartCodeReportingService {
       calculationRules.forEach(rule => {
         // Simple formula parser (for demo - would be more sophisticated in production)
         let result = 0
-        
+
         if (rule.formula.includes(' - ')) {
           const parts = rule.formula.split(' - ')
           result = (totals[parts[0]] || 0) - (totals[parts[1]] || 0)
@@ -488,7 +492,7 @@ export class SmartCodeReportingService {
           const parts = rule.formula.split(' + ')
           result = (totals[parts[0]] || 0) + (totals[parts[1]] || 0)
         }
-        
+
         totals[rule.name.toLowerCase().replace(/\s+/g, '_')] = result
       })
     }
@@ -513,22 +517,20 @@ export class SmartCodeReportingService {
   ): Promise<void> {
     const supabase = getSupabase()
 
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        id: uuidv4(),
-        transaction_type: 'report_generation',
-        transaction_date: new Date().toISOString(),
-        total_amount: 0,
-        smart_code: `HERA.FIN.REPORT.${report.report_type.toUpperCase()}.GENERATED.v1`,
-        organization_id: organizationId,
-        metadata: {
-          report_type: report.report_type,
-          period: report.period,
-          sections_count: report.sections.length,
-          totals: report.totals
-        }
-      })
+    await supabase.from('universal_transactions').insert({
+      id: uuidv4(),
+      transaction_type: 'report_generation',
+      transaction_date: new Date().toISOString(),
+      total_amount: 0,
+      smart_code: `HERA.FIN.REPORT.${report.report_type.toUpperCase()}.GENERATED.v1`,
+      organization_id: organizationId,
+      metadata: {
+        report_type: report.report_type,
+        period: report.period,
+        sections_count: report.sections.length,
+        totals: report.totals
+      }
+    })
   }
 
   /**
@@ -558,11 +560,11 @@ export class SmartCodeReportingService {
       Object.keys(reports[0].totals).forEach(key => {
         comparison.variances[key] = []
         comparison.growth_rates[key] = []
-        
+
         for (let i = 1; i < reports.length; i++) {
           const current = reports[i].totals[key] || 0
           const previous = reports[i - 1].totals[key] || 0
-          
+
           comparison.variances[key].push(current - previous)
           comparison.growth_rates[key].push(
             previous !== 0 ? ((current - previous) / previous) * 100 : 0

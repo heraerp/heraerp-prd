@@ -4,7 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 /**
  * 📦 HERA Universal Inventory Management System
  * Revolutionary Restaurant Inventory using HERA's 6-Table Architecture
- * 
+ *
  * Universal API following HERA-SPEAR patterns
  * Layer 3 of 7-Layer Build Standard
  */
@@ -14,11 +14,12 @@ export async function GET(request: NextRequest) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
     const { searchParams } = new URL(request.url)
-    const organizationId = searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000' // Demo org
+    const organizationId =
+      searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000' // Demo org
     const entityType = searchParams.get('entity_type') || 'inventory_item'
     const includeRelationships = searchParams.get('include_relationships') === 'true'
     const includeDynamicData = searchParams.get('include_dynamic_data') === 'true'
-    
+
     // Get inventory entities from universal core_entities table
     let query = supabaseAdmin
       .from('core_entities')
@@ -48,26 +49,28 @@ export async function GET(request: NextRequest) {
       const entityIds = entities.map(e => e.id)
       const { data: dynamicData } = await supabaseAdmin
         .from('core_dynamic_data')
-        .select('entity_id, field_name, field_type, field_value_text, field_value_number, field_value_json, ai_enhanced_value')
+        .select(
+          'entity_id, field_name, field_type, field_value_text, field_value_number, field_value_json, ai_enhanced_value'
+        )
         .in('entity_id', entityIds)
 
       // Merge dynamic data with entities
       enhancedEntities = entities.map(entity => {
         const entityDynamicData = dynamicData?.filter(d => d.entity_id === entity.id) || []
         const dynamicFields = {}
-        
+
         entityDynamicData.forEach(field => {
           let value = field.field_value_text
           if (field.field_type === 'number') value = field.field_value_number
           if (field.field_type === 'json') value = field.field_value_json
-          
+
           dynamicFields[field.field_name] = {
             value,
             ai_enhanced: field.ai_enhanced_value,
             type: field.field_type
           }
         })
-        
+
         return {
           ...entity,
           dynamic_fields: dynamicFields
@@ -80,18 +83,23 @@ export async function GET(request: NextRequest) {
       const entityIds = entities.map(e => e.id)
       const { data: relationships } = await supabaseAdmin
         .from('core_relationships')
-        .select(`
+        .select(
+          `
           *,
           source_entity:core_entities!core_relationships_source_entity_id_fkey(entity_name, entity_type),
           target_entity:core_entities!core_relationships_target_entity_id_fkey(entity_name, entity_type)
-        `)
-        .or(`source_entity_id.in.(${entityIds.join(',')}),target_entity_id.in.(${entityIds.join(',')})`)
+        `
+        )
+        .or(
+          `source_entity_id.in.(${entityIds.join(',')}),target_entity_id.in.(${entityIds.join(',')})`
+        )
 
       enhancedEntities = enhancedEntities.map(entity => ({
         ...entity,
-        relationships: relationships?.filter(r => 
-          r.source_entity_id === entity.id || r.target_entity_id === entity.id
-        ) || []
+        relationships:
+          relationships?.filter(
+            r => r.source_entity_id === entity.id || r.target_entity_id === entity.id
+          ) || []
       }))
     }
 
@@ -103,13 +111,9 @@ export async function GET(request: NextRequest) {
       architecture: 'HERA_UNIVERSAL_6_TABLE',
       generated_by: 'HERA_DNA_SYSTEM'
     })
-
   } catch (error) {
     console.error('Inventory entities API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -129,7 +133,9 @@ export async function POST(request: NextRequest) {
     } = body
 
     // Generate entity code if not provided
-    const finalEntityCode = entity_code || `INV-${entity_type.toUpperCase().slice(0,3)}-${Date.now().toString().slice(-6)}`
+    const finalEntityCode =
+      entity_code ||
+      `INV-${entity_type.toUpperCase().slice(0, 3)}-${Date.now().toString().slice(-6)}`
 
     // Create entity in core_entities
     const { data: entity, error: entityError } = await supabaseAdmin
@@ -158,7 +164,7 @@ export async function POST(request: NextRequest) {
     const dynamicFieldsData = []
     Object.entries(dynamic_fields).forEach(([fieldName, fieldValue]) => {
       if (fieldValue === null || fieldValue === undefined || fieldValue === '') return
-      
+
       let fieldType = 'text'
       let textValue = null
       let numberValue = null
@@ -228,7 +234,6 @@ export async function POST(request: NextRequest) {
       },
       message: `Inventory ${entity_type} created successfully using HERA universal architecture`
     })
-
   } catch (error) {
     console.error('Inventory entity creation error:', error)
     return NextResponse.json(
@@ -279,7 +284,7 @@ export async function PUT(request: NextRequest) {
     if (Object.keys(dynamic_fields).length > 0) {
       for (const [fieldName, fieldValue] of Object.entries(dynamic_fields)) {
         if (fieldValue === null || fieldValue === undefined || fieldValue === '') continue
-        
+
         let fieldType = 'text'
         let textValue = null
         let numberValue = null
@@ -297,9 +302,8 @@ export async function PUT(request: NextRequest) {
         }
 
         // Upsert dynamic field
-        await supabaseAdmin
-          .from('core_dynamic_data')
-          .upsert({
+        await supabaseAdmin.from('core_dynamic_data').upsert(
+          {
             organization_id,
             entity_id,
             field_name: fieldName,
@@ -308,9 +312,11 @@ export async function PUT(request: NextRequest) {
             field_value_number: numberValue,
             field_value_json: jsonValue,
             updated_at: new Date().toISOString()
-          }, {
+          },
+          {
             onConflict: 'organization_id,entity_id,field_name'
-          })
+          }
+        )
       }
     }
 
@@ -319,13 +325,9 @@ export async function PUT(request: NextRequest) {
       message: 'Inventory entity updated successfully',
       dynamic_fields_updated: Object.keys(dynamic_fields).length
     })
-
   } catch (error) {
     console.error('Inventory entity update error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -335,7 +337,8 @@ export async function DELETE(request: NextRequest) {
     const supabaseAdmin = getSupabaseAdmin()
     const { searchParams } = new URL(request.url)
     const entityId = searchParams.get('entity_id')
-    const organizationId = searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
+    const organizationId =
+      searchParams.get('organization_id') || '550e8400-e29b-41d4-a716-446655440000'
 
     if (!entityId) {
       return NextResponse.json(
@@ -366,12 +369,8 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Inventory entity deleted successfully (soft delete)'
     })
-
   } catch (error) {
     console.error('Inventory entity deletion error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
   }
 }

@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 
 /**
  * Universal Loading States & Error Boundaries
- * 
+ *
  * Based on lessons learned from auth loading issues:
  * - Different loading states for different contexts
  * - Graceful error handling with recovery options
@@ -51,18 +51,18 @@ interface ErrorDisplayProps {
 }
 
 // Loading Spinner Component
-export function UniversalSpinner({ 
-  size = 'md', 
-  color = 'blue', 
-  className = '' 
+export function UniversalSpinner({
+  size = 'md',
+  color = 'blue',
+  className = ''
 }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: 'w-4 h-4',
-    md: 'w-8 h-8', 
+    md: 'w-8 h-8',
     lg: 'w-12 h-12',
     xl: 'w-16 h-16'
   }
-  
+
   const colorClasses = {
     blue: 'border-blue-200 border-t-blue-600',
     gray: 'border-gray-200 border-t-gray-600',
@@ -70,9 +70,9 @@ export function UniversalSpinner({
     green: 'border-green-200 border-t-green-600',
     red: 'border-red-200 border-t-red-600'
   }
-  
+
   return (
-    <div 
+    <div
       className={`${sizeClasses[size]} border-4 ${colorClasses[color]} rounded-full animate-spin ${className}`}
       role="status"
       aria-label="Loading"
@@ -83,61 +83,55 @@ export function UniversalSpinner({
 }
 
 // Full Page Loading Component
-export function UniversalFullPageLoading({ 
-  title = 'Loading...', 
+export function UniversalFullPageLoading({
+  title = 'Loading...',
   subtitle,
   timeout,
-  onTimeout 
+  onTimeout
 }: FullPageLoadingProps) {
   const [showTimeout, setShowTimeout] = React.useState(false)
-  
+
   React.useEffect(() => {
     if (timeout && onTimeout) {
       const timer = setTimeout(() => {
         setShowTimeout(true)
         onTimeout()
       }, timeout)
-      
+
       return () => clearTimeout(timer)
     }
   }, [timeout, onTimeout])
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="text-center max-w-md mx-auto px-6">
         <div className="mb-8">
           <UniversalSpinner size="xl" />
         </div>
-        
+
         <h2 className="text-xl font-semibold text-gray-900 mb-2">{title}</h2>
-        
-        {subtitle && (
-          <p className="text-gray-600 mb-6">{subtitle}</p>
-        )}
-        
+
+        {subtitle && <p className="text-gray-600 mb-6">{subtitle}</p>}
+
         {showTimeout && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-6">
             <p className="text-amber-800 text-sm">
-              This is taking longer than expected. Please check your connection or try refreshing the page.
+              This is taking longer than expected. Please check your connection or try refreshing
+              the page.
             </p>
           </div>
         )}
-        
-        <p className="text-xs text-gray-400 mt-4">
-          If this persists, please contact support
-        </p>
+
+        <p className="text-xs text-gray-400 mt-4">If this persists, please contact support</p>
       </div>
     </div>
   )
 }
 
 // Inline Loading Component
-export function UniversalInlineLoading({ 
-  text = 'Loading...', 
-  size = 'md' 
-}: InlineLoadingProps) {
+export function UniversalInlineLoading({ text = 'Loading...', size = 'md' }: InlineLoadingProps) {
   const textSize = size === 'sm' ? 'text-sm' : 'text-base'
-  
+
   return (
     <div className="flex items-center justify-center py-4">
       <UniversalSpinner size={size} className="mr-3" />
@@ -238,7 +232,7 @@ export function UniversalErrorDisplay({
   type = 'error'
 }: ErrorDisplayProps) {
   const [showDetails, setShowDetails] = React.useState(false)
-  
+
   const typeStyles = {
     error: {
       bg: 'bg-red-50',
@@ -248,45 +242,75 @@ export function UniversalErrorDisplay({
     },
     warning: {
       bg: 'bg-amber-50',
-      border: 'border-amber-200', 
+      border: 'border-amber-200',
       text: 'text-amber-800',
       button: 'bg-amber-600 hover:bg-amber-700 text-white'
     },
     info: {
       bg: 'bg-blue-50',
       border: 'border-blue-200',
-      text: 'text-blue-800', 
+      text: 'text-blue-800',
       button: 'bg-blue-600 hover:bg-blue-700 text-white'
     }
   }
-  
+
   const styles = typeStyles[type]
-  
+
   return (
     <div className={`${styles.bg} ${styles.border} border rounded-lg p-6 max-w-2xl mx-auto`}>
       <div className="flex items-start">
         <div className="flex-shrink-0">
           {type === 'error' && (
-            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-6 h-6 text-red-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           )}
           {type === 'warning' && (
-            <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            <svg
+              className="w-6 h-6 text-amber-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
             </svg>
           )}
           {type === 'info' && (
-            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           )}
         </div>
-        
+
         <div className="ml-3 flex-1">
           <h3 className={`text-lg font-medium ${styles.text} mb-2`}>{title}</h3>
           <p className={`${styles.text} mb-4`}>{message}</p>
-          
+
           {details && (
             <div className="mb-4">
               <button
@@ -295,15 +319,17 @@ export function UniversalErrorDisplay({
               >
                 {showDetails ? 'Hide' : 'Show'} technical details
               </button>
-              
+
               {showDetails && (
-                <pre className={`mt-2 p-3 bg-white border rounded text-xs ${styles.text} overflow-auto max-h-40`}>
+                <pre
+                  className={`mt-2 p-3 bg-white border rounded text-xs ${styles.text} overflow-auto max-h-40`}
+                >
                   {details}
                 </pre>
               )}
             </div>
           )}
-          
+
           <div className="flex gap-3">
             {onRetry && (
               <button
@@ -313,7 +339,7 @@ export function UniversalErrorDisplay({
                 Try Again
               </button>
             )}
-            
+
             {onDismiss && (
               <button
                 onClick={onDismiss}
@@ -333,7 +359,7 @@ export function UniversalErrorDisplay({
 export function useLoadingState() {
   const [isLoading, setIsLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-  
+
   const withLoading = async <T,>(asyncFn: () => Promise<T>): Promise<T | null> => {
     try {
       setIsLoading(true)
@@ -349,9 +375,9 @@ export function useLoadingState() {
       setIsLoading(false)
     }
   }
-  
+
   const clearError = () => setError(null)
-  
+
   return {
     isLoading,
     error,
@@ -362,20 +388,22 @@ export function useLoadingState() {
 
 // Network Status Hook
 export function useNetworkStatus() {
-  const [isOnline, setIsOnline] = React.useState(typeof navigator !== 'undefined' ? navigator.onLine : true)
-  
+  const [isOnline, setIsOnline] = React.useState(
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  )
+
   React.useEffect(() => {
     const handleOnline = () => setIsOnline(true)
     const handleOffline = () => setIsOnline(false)
-    
+
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
-    
+
     return () => {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
   }, [])
-  
+
   return { isOnline, isOffline: !isOnline }
 }

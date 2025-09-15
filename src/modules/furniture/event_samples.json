@@ -6,7 +6,7 @@
       "transaction_date": "2025-01-09",
       "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1",
       "organization_id": "550e8400-e29b-41d4-a716-446655440001",
-      "total_amount": 354000.00,
+      "total_amount": 354000.0,
       "currency_code": "INR",
       "from_entity_id": "cust-govt-school-001",
       "to_entity_id": "loc-factory-cochin-001",
@@ -16,7 +16,7 @@
           "customer_gstin": "32AAAGK1234K1Z5",
           "delivery_date": "2025-02-15",
           "payment_terms": "50% Advance, 50% on delivery",
-          "advance_amount": 177000.00,
+          "advance_amount": 177000.0,
           "po_reference": "EDU/PUR/2024-25/12345"
         }
       }
@@ -26,8 +26,8 @@
         "line_number": 1,
         "line_entity_id": "prod-fg-classroom-desk-001",
         "quantity": 100,
-        "unit_price": 2500.00,
-        "line_amount": 250000.00,
+        "unit_price": 2500.0,
+        "line_amount": 250000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.v1",
         "metadata": {
           "line_data": {
@@ -35,9 +35,9 @@
             "product_name": "Standard Classroom Desk",
             "hsn_code": "94031000",
             "gst_rate": 0.18,
-            "cgst_amount": 22500.00,
-            "sgst_amount": 22500.00,
-            "taxable_value": 250000.00
+            "cgst_amount": 22500.0,
+            "sgst_amount": 22500.0,
+            "taxable_value": 250000.0
           }
         }
       },
@@ -45,8 +45,8 @@
         "line_number": 2,
         "line_entity_id": "prod-fg-teacher-table-001",
         "quantity": 10,
-        "unit_price": 5500.00,
-        "line_amount": 55000.00,
+        "unit_price": 5500.0,
+        "line_amount": 55000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.v1",
         "metadata": {
           "line_data": {
@@ -54,9 +54,9 @@
             "product_name": "Teacher's Table with Drawers",
             "hsn_code": "94032000",
             "gst_rate": 0.18,
-            "cgst_amount": 4950.00,
-            "sgst_amount": 4950.00,
-            "taxable_value": 55000.00
+            "cgst_amount": 4950.0,
+            "sgst_amount": 4950.0,
+            "taxable_value": 55000.0
           }
         }
       }
@@ -69,7 +69,7 @@
       "transaction_date": "2025-01-10",
       "smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.HEADER.v1",
       "organization_id": "550e8400-e29b-41d4-a716-446655440001",
-      "total_amount": 250000.00,
+      "total_amount": 250000.0,
       "currency_code": "INR",
       "from_entity_id": "prod-fg-classroom-desk-001",
       "to_entity_id": "loc-wip-area-001",
@@ -90,8 +90,8 @@
         "line_number": 1,
         "line_entity_id": "prod-rm-plywood-18mm-001",
         "quantity": 150,
-        "unit_price": 550.00,
-        "line_amount": 82500.00,
+        "unit_price": 550.0,
+        "line_amount": 82500.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.MATREQ.v1",
         "metadata": {
           "line_data": {
@@ -107,8 +107,8 @@
         "line_number": 2,
         "line_entity_id": "prod-rm-laminate-001",
         "quantity": 100,
-        "unit_price": 380.00,
-        "line_amount": 38000.00,
+        "unit_price": 380.0,
+        "line_amount": 38000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.MATREQ.v1",
         "metadata": {
           "line_data": {
@@ -126,8 +126,8 @@
         "line_number": 10,
         "line_entity_id": "op-cutting-001",
         "quantity": 100,
-        "unit_price": 120.00,
-        "line_amount": 12000.00,
+        "unit_price": 120.0,
+        "line_amount": 12000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.OP.v1",
         "metadata": {
           "line_data": {
@@ -137,8 +137,8 @@
             "machine_id": "mach-panel-saw-001",
             "setup_hours": 2.0,
             "run_hours": 20.0,
-            "labor_rate": 500.00,
-            "overhead_rate": 200.00
+            "labor_rate": 500.0,
+            "overhead_rate": 200.0
           }
         }
       },
@@ -146,8 +146,8 @@
         "line_number": 20,
         "line_entity_id": "op-edgebanding-001",
         "quantity": 100,
-        "unit_price": 80.00,
-        "line_amount": 8000.00,
+        "unit_price": 80.0,
+        "line_amount": 8000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.OP.v1",
         "metadata": {
           "line_data": {
@@ -157,8 +157,8 @@
             "machine_id": "mach-edgebander-001",
             "setup_hours": 1.0,
             "run_hours": 15.0,
-            "labor_rate": 450.00,
-            "overhead_rate": 180.00
+            "labor_rate": 450.0,
+            "overhead_rate": 180.0
           }
         }
       }
@@ -171,7 +171,7 @@
       "transaction_date": "2025-01-31",
       "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.v1",
       "organization_id": "550e8400-e29b-41d4-a716-446655440001",
-      "total_amount": 850000.00,
+      "total_amount": 850000.0,
       "currency_code": "INR",
       "from_entity_id": "dept-production-001",
       "to_entity_id": "bank-hdfc-salary-001",
@@ -179,9 +179,9 @@
         "business_context": {
           "payroll_month": "2025-01",
           "employee_count": 25,
-          "total_gross": 850000.00,
-          "total_deductions": 127500.00,
-          "total_net": 722500.00,
+          "total_gross": 850000.0,
+          "total_deductions": 127500.0,
+          "total_net": 722500.0,
           "pf_uan": "100123456789",
           "esi_code": "12345678901234567"
         }
@@ -192,17 +192,17 @@
         "line_number": 1,
         "line_entity_id": "emp-prod-supervisor-001",
         "quantity": 1,
-        "unit_price": 50000.00,
-        "line_amount": 50000.00,
+        "unit_price": 50000.0,
+        "line_amount": 50000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EARNINGS.LINE.v1",
         "metadata": {
           "line_data": {
             "employee_code": "EMP001",
             "employee_name": "Rajesh Kumar",
             "designation": "Production Supervisor",
-            "basic_salary": 30000.00,
-            "hra": 12000.00,
-            "special_allowance": 8000.00,
+            "basic_salary": 30000.0,
+            "hra": 12000.0,
+            "special_allowance": 8000.0,
             "pf_number": "KN/KOC/12345/001",
             "esi_number": "12345678900001"
           }
@@ -212,15 +212,15 @@
         "line_number": 2,
         "line_entity_id": "emp-prod-supervisor-001",
         "quantity": 1,
-        "unit_price": 6000.00,
-        "line_amount": 6000.00,
+        "unit_price": 6000.0,
+        "line_amount": 6000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.v1",
         "metadata": {
           "line_data": {
             "deduction_type": "EPF_EMPLOYEE",
             "calculation_basis": "BASIC+DA",
             "rate_percent": 12.0,
-            "basis_amount": 50000.00
+            "basis_amount": 50000.0
           }
         }
       },
@@ -228,15 +228,15 @@
         "line_number": 3,
         "line_entity_id": "emp-prod-supervisor-001",
         "quantity": 1,
-        "unit_price": 375.00,
-        "line_amount": 375.00,
+        "unit_price": 375.0,
+        "line_amount": 375.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.v1",
         "metadata": {
           "line_data": {
             "deduction_type": "ESI_EMPLOYEE",
             "calculation_basis": "GROSS_SALARY",
             "rate_percent": 0.75,
-            "basis_amount": 50000.00
+            "basis_amount": 50000.0
           }
         }
       },
@@ -244,17 +244,17 @@
         "line_number": 4,
         "line_entity_id": "emp-prod-supervisor-001",
         "quantity": 1,
-        "unit_price": 6000.00,
-        "line_amount": 6000.00,
+        "unit_price": 6000.0,
+        "line_amount": 6000.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EMPLOYER_CONTRIB.LINE.v1",
         "metadata": {
           "line_data": {
             "contribution_type": "EPF_EMPLOYER",
             "calculation_basis": "BASIC+DA",
             "rate_percent": 12.0,
-            "basis_amount": 50000.00,
-            "pension_amount": 3750.00,
-            "epf_amount": 2250.00
+            "basis_amount": 50000.0,
+            "pension_amount": 3750.0,
+            "epf_amount": 2250.0
           }
         }
       },
@@ -262,15 +262,15 @@
         "line_number": 5,
         "line_entity_id": "emp-prod-supervisor-001",
         "quantity": 1,
-        "unit_price": 1625.00,
-        "line_amount": 1625.00,
+        "unit_price": 1625.0,
+        "line_amount": 1625.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EMPLOYER_CONTRIB.LINE.v1",
         "metadata": {
           "line_data": {
             "contribution_type": "ESI_EMPLOYER",
             "calculation_basis": "GROSS_SALARY",
             "rate_percent": 3.25,
-            "basis_amount": 50000.00
+            "basis_amount": 50000.0
           }
         }
       },
@@ -278,15 +278,15 @@
         "line_number": 6,
         "line_entity_id": "emp-prod-supervisor-001",
         "quantity": 1,
-        "unit_price": 43625.00,
-        "line_amount": 43625.00,
+        "unit_price": 43625.0,
+        "line_amount": 43625.0,
         "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.BANK_PAYOUT.LINE.v1",
         "metadata": {
           "line_data": {
             "bank_account": "00112233445566",
             "ifsc_code": "HDFC0001234",
             "payment_mode": "NEFT",
-            "net_salary": 43625.00
+            "net_salary": 43625.0
           }
         }
       }

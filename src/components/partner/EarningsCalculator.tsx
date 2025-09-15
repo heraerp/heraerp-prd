@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
+import {
   DollarSign,
   TrendingUp,
   Users,
@@ -19,9 +19,9 @@ import { useRouter } from 'next/navigation'
 
 /**
  * Steve Jobs-Inspired Earnings Calculator
- * 
+ *
  * "The best way to predict the future is to invent it." - Steve Jobs
- * 
+ *
  * This calculator doesn't just show numbers - it shows dreams becoming reality.
  */
 
@@ -54,7 +54,7 @@ export default function EarningsCalculator() {
     const partnerCommission = monthlyRevenue * 0.5 // 50% share
     const yearlyCommission = partnerCommission * 12
     const lifetimeCommission = yearlyCommission * 5 // Conservative 5-year average
-    
+
     // Compare to typical consultant salary ($75k/year)
     const comparisonMultiplier = yearlyCommission / 75000
 
@@ -66,7 +66,7 @@ export default function EarningsCalculator() {
     })
 
     setShowResults(true)
-    
+
     // Trigger number animation
     setTimeout(() => setAnimateNumbers(true), 100)
   }
@@ -115,7 +115,7 @@ export default function EarningsCalculator() {
                 min="1"
                 max="100"
                 value={customers}
-                onChange={(e) => setCustomers(Number(e.target.value))}
+                onChange={e => setCustomers(Number(e.target.value))}
                 className="w-full h-3 bg-gradient-to-r from-emerald-200 to-blue-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
@@ -123,10 +123,10 @@ export default function EarningsCalculator() {
               <span className="text-4xl font-bold text-emerald-600">{customers}</span>
               <span className="text-slate-600 ml-2">customers</span>
             </div>
-            
+
             {/* Quick Scenarios */}
             <div className="grid grid-cols-2 gap-2">
-              {getCustomerScenarios().map((scenario) => (
+              {getCustomerScenarios().map(scenario => (
                 <button
                   key={scenario.label}
                   onClick={() => setCustomers(scenario.customers)}
@@ -156,18 +156,20 @@ export default function EarningsCalculator() {
                 max="1000"
                 step="25"
                 value={avgMonthlyValue}
-                onChange={(e) => setAvgMonthlyValue(Number(e.target.value))}
+                onChange={e => setAvgMonthlyValue(Number(e.target.value))}
                 className="w-full h-3 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
             <div className="text-center">
-              <span className="text-4xl font-bold text-blue-600">{formatCurrency(avgMonthlyValue)}</span>
+              <span className="text-4xl font-bold text-blue-600">
+                {formatCurrency(avgMonthlyValue)}
+              </span>
               <span className="text-slate-600 ml-2">per customer/month</span>
             </div>
-            
+
             {/* Quick Scenarios */}
             <div className="grid grid-cols-2 gap-2">
-              {getPricingScenarios().map((scenario) => (
+              {getPricingScenarios().map(scenario => (
                 <button
                   key={scenario.label}
                   onClick={() => setAvgMonthlyValue(scenario.price)}
@@ -192,7 +194,9 @@ export default function EarningsCalculator() {
         <div className="mt-12">
           {/* Main Results Cards */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <Card className={`relative overflow-hidden transition-all duration-1000 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}>
+            <Card
+              className={`relative overflow-hidden transition-all duration-1000 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
+            >
               <CardContent className="p-6 text-center bg-gradient-to-br from-emerald-50 to-emerald-100">
                 <DollarSign className="h-8 w-8 text-emerald-600 mx-auto mb-3" />
                 <div className="text-3xl font-bold text-emerald-700 mb-2">
@@ -203,7 +207,9 @@ export default function EarningsCalculator() {
               </CardContent>
             </Card>
 
-            <Card className={`relative overflow-hidden transition-all duration-1000 delay-200 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}>
+            <Card
+              className={`relative overflow-hidden transition-all duration-1000 delay-200 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
+            >
               <CardContent className="p-6 text-center bg-gradient-to-br from-blue-50 to-blue-100">
                 <Calendar className="h-8 w-8 text-blue-600 mx-auto mb-3" />
                 <div className="text-3xl font-bold text-blue-700 mb-2">
@@ -214,7 +220,9 @@ export default function EarningsCalculator() {
               </CardContent>
             </Card>
 
-            <Card className={`relative overflow-hidden transition-all duration-1000 delay-400 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}>
+            <Card
+              className={`relative overflow-hidden transition-all duration-1000 delay-400 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
+            >
               <CardContent className="p-6 text-center bg-gradient-to-br from-purple-50 to-purple-100">
                 <Award className="h-8 w-8 text-purple-600 mx-auto mb-3" />
                 <div className="text-3xl font-bold text-purple-700 mb-2">
@@ -234,7 +242,9 @@ export default function EarningsCalculator() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                     <span className="font-semibold">Your HERA Income</span>
-                    <span className="text-emerald-600 font-bold">{formatCurrency(projections.yearly)}</span>
+                    <span className="text-emerald-600 font-bold">
+                      {formatCurrency(projections.yearly)}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
                     <span className="font-semibold">Typical Consultant</span>
@@ -242,10 +252,9 @@ export default function EarningsCalculator() {
                   </div>
                   <div className="text-center py-4">
                     <Badge className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 text-lg">
-                      {projections.comparisonToJob > 1 
+                      {projections.comparisonToJob > 1
                         ? `${projections.comparisonToJob.toFixed(1)}x Better`
-                        : 'Building Your Foundation'
-                      }
+                        : 'Building Your Foundation'}
                     </Badge>
                   </div>
                 </div>
@@ -256,8 +265,11 @@ export default function EarningsCalculator() {
                   <Sparkles className="h-16 w-16 text-amber-500 mx-auto mb-4" />
                   <h4 className="text-xl font-bold mb-2">The Magic Formula</h4>
                   <p className="text-slate-600">
-                    {customers} customers × {formatCurrency(avgMonthlyValue)}/month × 50% = 
-                    <strong className="text-emerald-600"> {formatCurrency(projections.monthly)}/month</strong>
+                    {customers} customers × {formatCurrency(avgMonthlyValue)}/month × 50% =
+                    <strong className="text-emerald-600">
+                      {' '}
+                      {formatCurrency(projections.monthly)}/month
+                    </strong>
                   </p>
                 </div>
 
@@ -294,7 +306,7 @@ export default function EarningsCalculator() {
           cursor: pointer;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-        
+
         .slider::-moz-range-thumb {
           height: 24px;
           width: 24px;

@@ -73,12 +73,10 @@ export default async function DeveloperGuidePage() {
     <DocLayout navigation={navigation} docType="dev" currentPath="">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-hera-primary">
-            Developer Guide
-          </h1>
+          <h1 className="text-4xl font-bold mb-4 text-hera-primary">Developer Guide</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Everything you need to know to build, extend, and deploy applications 
-            using HERA's revolutionary universal architecture.
+            Everything you need to know to build, extend, and deploy applications using HERA's
+            revolutionary universal architecture.
           </p>
         </div>
 
@@ -86,19 +84,17 @@ export default async function DeveloperGuidePage() {
           <div className="hera-card p-6">
             <h2 className="text-xl font-semibold mb-4">Quick Start</h2>
             <p className="text-muted-foreground mb-4">
-              New to HERA development? Start with our comprehensive getting started guide 
-              to set up your environment and understand the core concepts.
+              New to HERA development? Start with our comprehensive getting started guide to set up
+              your environment and understand the core concepts.
             </p>
             <Button asChild className="hera-button">
-              <Link href="/docs/dev/getting-started">
-                Get Started →
-              </Link>
+              <Link href="/docs/dev/getting-started">Get Started →</Link>
             </Button>
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.map((section) => (
+          {sections.map(section => (
             <div key={section.title} className="hera-card p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-start gap-4 mb-4">
                 <div className="p-2 rounded-lg bg-hera-primary/10">
@@ -106,20 +102,15 @@ export default async function DeveloperGuidePage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold mb-2">
-                    <Link 
-                      href={section.href}
-                      className="text-hera-primary hover:underline"
-                    >
+                    <Link href={section.href} className="text-hera-primary hover:underline">
                       {section.title}
                     </Link>
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {section.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{section.description}</p>
                 </div>
               </div>
               <ul className="text-sm text-muted-foreground space-y-1">
-                {section.items.map((item) => (
+                {section.items.map(item => (
                   <li key={item} className="flex items-center gap-2">
                     <div className="w-1 h-1 rounded-full bg-hera-accent" />
                     {item}
@@ -134,19 +125,15 @@ export default async function DeveloperGuidePage() {
           <div className="hera-card p-8">
             <h2 className="text-2xl font-semibold mb-4">Need Help?</h2>
             <p className="text-muted-foreground mb-6">
-              Can't find what you're looking for? Check out our troubleshooting guide 
-              or reach out to the development team.
+              Can't find what you're looking for? Check out our troubleshooting guide or reach out
+              to the development team.
             </p>
             <div className="flex gap-4 justify-center">
               <Button asChild variant="outline">
-                <Link href="/docs/dev/troubleshooting">
-                  Troubleshooting
-                </Link>
+                <Link href="/docs/dev/troubleshooting">Troubleshooting</Link>
               </Button>
               <Button asChild>
-                <Link href="/docs/dev/contributing">
-                  Contribute
-                </Link>
+                <Link href="/docs/dev/contributing">Contribute</Link>
               </Button>
             </div>
           </div>

@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { 
-  Users, 
-  Clock, 
+import {
+  Users,
+  Clock,
   DollarSign,
   AlertCircle,
   CheckCircle,
@@ -43,47 +43,137 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
   // Demo table data
   const tables: Table[] = [
     // Row 1 - Booths
-    { id: 't1', number: '1', seats: 4, status: 'occupied', server: currentServer.name, guests: 3, checkTotal: 87.50, duration: 45, course: 'entree' },
-    { id: 't2', number: '2', seats: 4, status: 'occupied', server: 'Mike R.', guests: 2, checkTotal: 54.25, duration: 62, course: 'dessert' },
+    {
+      id: 't1',
+      number: '1',
+      seats: 4,
+      status: 'occupied',
+      server: currentServer.name,
+      guests: 3,
+      checkTotal: 87.5,
+      duration: 45,
+      course: 'entree'
+    },
+    {
+      id: 't2',
+      number: '2',
+      seats: 4,
+      status: 'occupied',
+      server: 'Mike R.',
+      guests: 2,
+      checkTotal: 54.25,
+      duration: 62,
+      course: 'dessert'
+    },
     { id: 't3', number: '3', seats: 4, status: 'available' },
     { id: 't4', number: '4', seats: 4, status: 'reserved' },
-    
+
     // Row 2 - 2-tops
-    { id: 't5', number: '5', seats: 2, status: 'occupied', server: currentServer.name, guests: 2, checkTotal: 128.00, duration: 38, course: 'entree' },
+    {
+      id: 't5',
+      number: '5',
+      seats: 2,
+      status: 'occupied',
+      server: currentServer.name,
+      guests: 2,
+      checkTotal: 128.0,
+      duration: 38,
+      course: 'entree'
+    },
     { id: 't6', number: '6', seats: 2, status: 'available' },
-    { id: 't7', number: '7', seats: 2, status: 'occupied', server: 'Lisa K.', guests: 2, checkTotal: 45.75, duration: 15, course: 'drinks' },
+    {
+      id: 't7',
+      number: '7',
+      seats: 2,
+      status: 'occupied',
+      server: 'Lisa K.',
+      guests: 2,
+      checkTotal: 45.75,
+      duration: 15,
+      course: 'drinks'
+    },
     { id: 't8', number: '8', seats: 2, status: 'cleaning' },
-    
+
     // Row 3 - 4-tops center
-    { id: 't9', number: '9', seats: 4, status: 'occupied', server: currentServer.name, guests: 4, checkTotal: 156.80, duration: 78, course: 'check' },
+    {
+      id: 't9',
+      number: '9',
+      seats: 4,
+      status: 'occupied',
+      server: currentServer.name,
+      guests: 4,
+      checkTotal: 156.8,
+      duration: 78,
+      course: 'check'
+    },
     { id: 't10', number: '10', seats: 4, status: 'available' },
-    { id: 't11', number: '11', seats: 4, status: 'occupied', server: 'Mike R.', guests: 3, checkTotal: 92.50, duration: 52, course: 'entree' },
+    {
+      id: 't11',
+      number: '11',
+      seats: 4,
+      status: 'occupied',
+      server: 'Mike R.',
+      guests: 3,
+      checkTotal: 92.5,
+      duration: 52,
+      course: 'entree'
+    },
     { id: 't12', number: '12', seats: 4, status: 'available' },
-    
+
     // Row 4 - Large tables
-    { id: 't13', number: '13', seats: 6, status: 'occupied', server: currentServer.name, guests: 5, checkTotal: 234.75, duration: 95, course: 'dessert' },
+    {
+      id: 't13',
+      number: '13',
+      seats: 6,
+      status: 'occupied',
+      server: currentServer.name,
+      guests: 5,
+      checkTotal: 234.75,
+      duration: 95,
+      course: 'dessert'
+    },
     { id: 't14', number: '14', seats: 6, status: 'reserved' },
-    { id: 't15', number: '15', seats: 8, status: 'occupied', server: 'Lisa K.', guests: 7, checkTotal: 412.50, duration: 68, course: 'entree' },
+    {
+      id: 't15',
+      number: '15',
+      seats: 8,
+      status: 'occupied',
+      server: 'Lisa K.',
+      guests: 7,
+      checkTotal: 412.5,
+      duration: 68,
+      course: 'entree'
+    },
     { id: 't16', number: '16', seats: 8, status: 'available' }
   ]
 
   const getTableColor = (table: Table) => {
     switch (table.status) {
-      case 'available': return 'bg-green-100 hover:bg-green-200 border-green-300'
-      case 'occupied': return 'bg-blue-100 hover:bg-blue-200 border-blue-300'
-      case 'reserved': return 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300'
-      case 'cleaning': return 'bg-gray-100 hover:bg-gray-200 border-gray-300'
+      case 'available':
+        return 'bg-green-100 hover:bg-green-200 border-green-300'
+      case 'occupied':
+        return 'bg-blue-100 hover:bg-blue-200 border-blue-300'
+      case 'reserved':
+        return 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300'
+      case 'cleaning':
+        return 'bg-gray-100 hover:bg-gray-200 border-gray-300'
     }
   }
 
   const getCourseIcon = (course?: string) => {
     switch (course) {
-      case 'drinks': return <Coffee className="h-4 w-4" />
-      case 'appetizer': return <UtensilsCrossed className="h-4 w-4" />
-      case 'entree': return <UtensilsCrossed className="h-4 w-4" />
-      case 'dessert': return <Coffee className="h-4 w-4" />
-      case 'check': return <Receipt className="h-4 w-4" />
-      default: return null
+      case 'drinks':
+        return <Coffee className="h-4 w-4" />
+      case 'appetizer':
+        return <UtensilsCrossed className="h-4 w-4" />
+      case 'entree':
+        return <UtensilsCrossed className="h-4 w-4" />
+      case 'dessert':
+        return <Coffee className="h-4 w-4" />
+      case 'check':
+        return <Receipt className="h-4 w-4" />
+      default:
+        return null
     }
   }
 
@@ -154,21 +244,21 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
 
       {/* Floor View Tabs */}
       <div className="flex items-center gap-2">
-        <Button 
+        <Button
           variant={floorView === 'main' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFloorView('main')}
         >
           Main Floor
         </Button>
-        <Button 
+        <Button
           variant={floorView === 'patio' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFloorView('patio')}
         >
           Patio
         </Button>
-        <Button 
+        <Button
           variant={floorView === 'private' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setFloorView('private')}
@@ -181,7 +271,14 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Floor Plan - {floorView === 'main' ? 'Main Floor' : floorView === 'patio' ? 'Patio' : 'Private Dining'}</CardTitle>
+            <CardTitle>
+              Floor Plan -{' '}
+              {floorView === 'main'
+                ? 'Main Floor'
+                : floorView === 'patio'
+                  ? 'Patio'
+                  : 'Private Dining'}
+            </CardTitle>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
@@ -204,25 +301,21 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-4">
-            {tables.map((table) => (
+            {tables.map(table => (
               <button
                 key={table.id}
                 onClick={() => handleTableClick(table)}
                 className={cn(
-                  "relative p-4 rounded-lg border-2 transition-all",
+                  'relative p-4 rounded-lg border-2 transition-all',
                   getTableColor(table),
-                  table.server === currentServer.name && "ring-2 ring-orange-400 ring-offset-2"
+                  table.server === currentServer.name && 'ring-2 ring-orange-400 ring-offset-2'
                 )}
               >
                 {/* Table Number */}
-                <div className="text-2xl font-bold text-center mb-2">
-                  {table.number}
-                </div>
+                <div className="text-2xl font-bold text-center mb-2">{table.number}</div>
 
                 {/* Table Info */}
-                <div className="text-xs text-gray-600 text-center mb-2">
-                  {table.seats} seats
-                </div>
+                <div className="text-xs text-gray-600 text-center mb-2">{table.seats} seats</div>
 
                 {/* Occupied Details */}
                 {table.status === 'occupied' && (
@@ -250,9 +343,7 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
 
                 {/* Cleaning Status */}
                 {table.status === 'cleaning' && (
-                  <div className="text-xs text-center text-gray-500">
-                    Bus & Reset
-                  </div>
+                  <div className="text-xs text-center text-gray-500">Bus & Reset</div>
                 )}
 
                 {/* Alert Indicators */}

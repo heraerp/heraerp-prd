@@ -36,7 +36,7 @@ async function getAnalyticsData(): Promise<AnalyticsData> {
       const response = await fetch('/api/v1/analytics/docs', {
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (response.ok) {
         return await response.json()
       }
@@ -56,7 +56,12 @@ async function getAnalyticsData(): Promise<AnalyticsData> {
       { title: 'Getting Started', slug: 'getting-started', views: 2847, docType: 'dev' },
       { title: 'API Development', slug: 'api/development', views: 2156, docType: 'dev' },
       { title: 'Dashboard Overview', slug: 'dashboard/overview', views: 1923, docType: 'user' },
-      { title: 'Architecture Overview', slug: 'architecture/overview', views: 1756, docType: 'dev' },
+      {
+        title: 'Architecture Overview',
+        slug: 'architecture/overview',
+        views: 1756,
+        docType: 'dev'
+      },
       { title: 'Core Features', slug: 'features/core', views: 1432, docType: 'user' }
     ],
     userEngagement: {
@@ -74,12 +79,12 @@ async function getAnalyticsData(): Promise<AnalyticsData> {
   }
 }
 
-function MetricCard({ 
-  title, 
-  value, 
-  description, 
-  icon: Icon, 
-  trend 
+function MetricCard({
+  title,
+  value,
+  description,
+  icon: Icon,
+  trend
 }: {
   title: string
   value: string | number
@@ -98,7 +103,8 @@ function MetricCard({
         <p className="text-xs text-muted-foreground">
           {trend !== undefined && (
             <span className={trend > 0 ? 'text-green-600' : 'text-red-600'}>
-              {trend > 0 ? '+' : ''}{trend}% from last week
+              {trend > 0 ? '+' : ''}
+              {trend}% from last week
             </span>
           )}
           {!trend && description}
@@ -160,9 +166,13 @@ async function AnalyticsDashboard() {
                     <div>
                       <div className="font-medium text-sm">{page.title}</div>
                       <div className="text-xs text-muted-foreground flex items-center gap-1">
-                        <span className={`px-1.5 py-0.5 rounded text-xs ${
-                          page.docType === 'dev' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
-                        }`}>
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-xs ${
+                            page.docType === 'dev'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-green-100 text-green-700'
+                          }`}
+                        >
                           {page.docType === 'dev' ? 'Dev' : 'User'}
                         </span>
                         {page.slug}
@@ -189,23 +199,25 @@ async function AnalyticsDashboard() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">Average Scroll Depth</span>
-                  <span className="text-sm text-hera-primary">{data.userEngagement.avgScrollDepth}%</span>
+                  <span className="text-sm text-hera-primary">
+                    {data.userEngagement.avgScrollDepth}%
+                  </span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-hera-primary h-2 rounded-full transition-all duration-500"
                     style={{ width: `${data.userEngagement.avgScrollDepth}%` }}
                   />
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">Bounce Rate</span>
                   <span className="text-sm text-red-600">{data.userEngagement.bounceRate}%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-red-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${data.userEngagement.bounceRate}%` }}
                   />
@@ -216,7 +228,9 @@ async function AnalyticsDashboard() {
                 <div className="text-sm text-muted-foreground">
                   <div className="font-medium mb-1">Key Insights:</div>
                   <ul className="space-y-1 text-xs">
-                    <li>• Users read {data.userEngagement.avgScrollDepth}% of each page on average</li>
+                    <li>
+                      • Users read {data.userEngagement.avgScrollDepth}% of each page on average
+                    </li>
                     <li>• Low bounce rate indicates high content quality</li>
                     <li>• Developer docs get more detailed reading</li>
                   </ul>
@@ -237,12 +251,8 @@ async function AnalyticsDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {data.searchTerms.map((term, index) => (
               <div key={term.term} className="text-center">
-                <div className="text-lg font-semibold text-hera-primary">
-                  {term.count}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {term.term}
-                </div>
+                <div className="text-lg font-semibold text-hera-primary">{term.count}</div>
+                <div className="text-sm text-muted-foreground">{term.term}</div>
               </div>
             ))}
           </div>
@@ -263,21 +273,23 @@ export default function AnalyticsPage() {
           </p>
         </div>
 
-        <Suspense fallback={
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => (
-              <Card key={i}>
-                <CardHeader className="animate-pulse">
-                  <div className="h-4 bg-muted rounded w-3/4"></div>
-                </CardHeader>
-                <CardContent className="animate-pulse">
-                  <div className="h-8 bg-muted rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-muted rounded w-full"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {[...Array(4)].map((_, i) => (
+                <Card key={i}>
+                  <CardHeader className="animate-pulse">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                  </CardHeader>
+                  <CardContent className="animate-pulse">
+                    <div className="h-8 bg-muted rounded w-1/2 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-full"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          }
+        >
           <AnalyticsDashboard />
         </Suspense>
       </div>

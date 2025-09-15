@@ -32,18 +32,18 @@ export class VibeEngine {
   async initialize(organizationId: string, sessionId?: string): Promise<void> {
     try {
       console.log('🧬 Initializing HERA Vibe Engine...')
-      
+
       // Initialize core components
       await this.smartCodeRegistry.initialize()
       await this.contextManager.initialize(organizationId, sessionId)
       await this.integrationWeaver.initialize()
 
       this.isInitialized = true
-      
+
       console.log('✅ HERA Vibe Engine initialized successfully')
       console.log(`   Organization: ${organizationId}`)
       console.log(`   Session: ${sessionId || 'new session'}`)
-      
+
       // Register this initialization as a vibe event
       await this.logVibeEvent('engine_initialization', {
         organization_id: organizationId,
@@ -51,7 +51,6 @@ export class VibeEngine {
         timestamp: new Date().toISOString(),
         smart_code: 'HERA.VIBE.ENGINE.INIT.SUCCESS.v1'
       })
-
     } catch (error) {
       console.error('❌ Failed to initialize HERA Vibe Engine:', error)
       const errorMessage = error instanceof Error ? error.message : String(error)
@@ -91,7 +90,7 @@ export class VibeEngine {
 
     const context = await this.contextManager.restoreContext(contextId)
     console.log(`🔄 Context restored: ${contextId}`)
-    
+
     return context
   }
 
@@ -120,8 +119,8 @@ export class VibeEngine {
 
   // Create seamless integration between components
   async createIntegration(
-    sourceSmartCode: string, 
-    targetSmartCode: string, 
+    sourceSmartCode: string,
+    targetSmartCode: string,
     integrationPattern: string
   ): Promise<IntegrationWeave> {
     if (!this.isInitialized) {
@@ -185,15 +184,23 @@ export class VibeEngine {
 
     const results = await Promise.all(checks)
     qualityReport.checks = results
-    qualityReport.quality_score = results.reduce((sum, check) => sum + check.score, 0) / results.length
-    qualityReport.status = qualityReport.quality_score >= 95 ? 'excellent' : 
-                          qualityReport.quality_score >= 85 ? 'good' : 
-                          qualityReport.quality_score >= 70 ? 'acceptable' : 'needs_improvement'
+    qualityReport.quality_score =
+      results.reduce((sum, check) => sum + check.score, 0) / results.length
+    qualityReport.status =
+      qualityReport.quality_score >= 95
+        ? 'excellent'
+        : qualityReport.quality_score >= 85
+          ? 'good'
+          : qualityReport.quality_score >= 70
+            ? 'acceptable'
+            : 'needs_improvement'
 
     // Generate recommendations
     qualityReport.recommendations = this.generateQualityRecommendations(results)
 
-    console.log(`📊 Quality validation: ${componentSmartCode} - Score: ${qualityReport.quality_score}%`)
+    console.log(
+      `📊 Quality validation: ${componentSmartCode} - Score: ${qualityReport.quality_score}%`
+    )
     return qualityReport
   }
 
@@ -221,7 +228,7 @@ export class VibeEngine {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('hera_auth_token')}`
+          Authorization: `Bearer ${localStorage.getItem('hera_auth_token')}`
         },
         body: JSON.stringify({
           action: 'create',
@@ -250,7 +257,7 @@ export class VibeEngine {
     // Validate smart code format and compliance
     const isValidFormat = /^HERA\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.v\d+$/.test(component.smart_code)
     const hasCorrectModule = component.smart_code.includes('VIBE')
-    
+
     return {
       name: 'Smart Code Compliance',
       score: isValidFormat && hasCorrectModule ? 100 : 60,
@@ -278,8 +285,9 @@ export class VibeEngine {
     const hasDescription = !!component.purpose && component.purpose.length > 10
     const hasUsagePatterns = component.usage_patterns && component.usage_patterns.length > 0
     const hasRelationships = component.relationships && component.relationships.length > 0
-    
-    const score = [hasDescription, hasUsagePatterns, hasRelationships].filter(Boolean).length * 33.33
+
+    const score =
+      [hasDescription, hasUsagePatterns, hasRelationships].filter(Boolean).length * 33.33
 
     return {
       name: 'Documentation Quality',
@@ -291,7 +299,8 @@ export class VibeEngine {
 
   private async validatePerformance(component: VibeComponent): Promise<QualityCheck> {
     // Validate performance characteristics
-    const hasMetrics = component.performance_metrics && Object.keys(component.performance_metrics).length > 0
+    const hasMetrics =
+      component.performance_metrics && Object.keys(component.performance_metrics).length > 0
     const score = hasMetrics ? 95 : 80 // Assume good performance if metrics exist
 
     return {
@@ -306,7 +315,7 @@ export class VibeEngine {
     // Validate security compliance
     const hasOrganizationContext = component.smart_code.includes('HERA')
     const hasProperPatterns = component.smart_code.includes('VIBE')
-    
+
     const score = hasOrganizationContext && hasProperPatterns ? 100 : 80
 
     return {
@@ -319,12 +328,14 @@ export class VibeEngine {
 
   private generateQualityRecommendations(checks: QualityCheck[]): string[] {
     const recommendations: string[] = []
-    
+
     checks.forEach(check => {
       if (check.score < 90) {
         switch (check.name) {
           case 'Smart Code Compliance':
-            recommendations.push('Update smart code to follow HERA.VIBE.MODULE.FUNCTION.TYPE.v1 format')
+            recommendations.push(
+              'Update smart code to follow HERA.VIBE.MODULE.FUNCTION.TYPE.v1 format'
+            )
             break
           case 'Integration Health':
             recommendations.push('Review and repair unhealthy component integrations')

@@ -1,6 +1,6 @@
 /**
  * HERA WhatsApp Message Templates for Salon
- * 
+ *
  * Professional WhatsApp Business message templates for appointment notifications
  */
 
@@ -30,7 +30,7 @@ Best regards,
     `.trim(),
     parameters: [
       'customer_name',
-      'salon_name', 
+      'salon_name',
       'service_name',
       'appointment_date',
       'appointment_time',
@@ -153,13 +153,7 @@ Please arrive 10 minutes early for check-in.
 
 See you soon at {{salon_name}}!
     `.trim(),
-    parameters: [
-      'customer_name',
-      'service_name',
-      'appointment_time',
-      'staff_name',
-      'salon_name'
-    ]
+    parameters: ['customer_name', 'service_name', 'appointment_time', 'staff_name', 'salon_name']
   },
 
   // Post-appointment thank you
@@ -179,12 +173,7 @@ We appreciate your business!
 
 {{salon_name}} Team
     `.trim(),
-    parameters: [
-      'customer_name',
-      'salon_name',
-      'service_name',
-      'staff_name'
-    ]
+    parameters: ['customer_name', 'salon_name', 'service_name', 'staff_name']
   },
 
   // Birthday special campaign
@@ -207,13 +196,7 @@ Treat yourself to something special! 💄✨
 
 {{salon_name}} Team
     `.trim(),
-    parameters: [
-      'customer_name',
-      'salon_name',
-      'birthday_offer',
-      'promo_code',
-      'valid_until'
-    ]
+    parameters: ['customer_name', 'salon_name', 'birthday_offer', 'promo_code', 'valid_until']
   },
 
   // Post-service follow-up
@@ -470,7 +453,7 @@ export function formatWhatsAppTemplate(
   }
 
   let message = template.text
-  
+
   // Replace all parameters in the template
   template.parameters.forEach(param => {
     const value = parameters[param] || `[${param}]`
@@ -492,7 +475,7 @@ export function validateTemplateParameters(
   }
 
   const missingParams = template.parameters.filter(param => !parameters[param])
-  
+
   return {
     isValid: missingParams.length === 0,
     missingParams

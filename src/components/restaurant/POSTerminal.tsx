@@ -9,12 +9,24 @@ import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency, extractData } from '@/lib/universal-helpers'
-import { 
+import {
   ShoppingCart,
   Plus,
   Minus,
@@ -111,21 +123,17 @@ interface Customer {
 
 // Category icons
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  'Appetizers': Coffee,
-  'Salads': Salad,
-  'Pizza': Pizza,
-  'Pasta': Soup,
+  Appetizers: Coffee,
+  Salads: Salad,
+  Pizza: Pizza,
+  Pasta: Soup,
   'Main Course': Beef,
-  'Seafood': Fish,
-  'Desserts': IceCream,
-  'Beverages': Wine
+  Seafood: Fish,
+  Desserts: IceCream,
+  Beverages: Wine
 }
 
-export function POSTerminal({ 
-  organizationId, 
-  smartCodes,
-  isDemoMode = false 
-}: POSTerminalProps) {
+export function POSTerminal({ organizationId, smartCodes, isDemoMode = false }: POSTerminalProps) {
   const [loading, setLoading] = useState(true)
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
   const [tables, setTables] = useState<RestaurantTable[]>([])
@@ -170,7 +178,7 @@ export function POSTerminal({
           smart_code: smartCodes.MENU_ITEM
         })
         const menuData = extractData(menuResponse) as MenuItem[]
-        
+
         // Create default items if none exist
         if (!menuData || menuData.length === 0) {
           await createDefaultMenuItems()
@@ -184,7 +192,7 @@ export function POSTerminal({
           smart_code: smartCodes.TABLE
         })
         const tableData = extractData(tableResponse) as RestaurantTable[]
-        
+
         if (!tableData || tableData.length === 0) {
           await createDefaultTables()
         } else {
@@ -206,7 +214,8 @@ export function POSTerminal({
     const defaultItems = generateDemoMenuItems()
     const createdItems: MenuItem[] = []
 
-    for (const item of defaultItems.slice(0, 10)) { // Create first 10 items
+    for (const item of defaultItems.slice(0, 10)) {
+      // Create first 10 items
       try {
         const result = await universalApi.createEntity({
           entity_type: 'menu_item',
@@ -215,7 +224,7 @@ export function POSTerminal({
           smart_code: smartCodes.MENU_ITEM,
           metadata: item.metadata
         })
-        
+
         if (result.success && result.data) {
           createdItems.push(result.data as MenuItem)
         }
@@ -231,7 +240,8 @@ export function POSTerminal({
     const defaultTables = generateDemoTables()
     const createdTables: RestaurantTable[] = []
 
-    for (const table of defaultTables.slice(0, 8)) { // Create first 8 tables
+    for (const table of defaultTables.slice(0, 8)) {
+      // Create first 8 tables
       try {
         const result = await universalApi.createEntity({
           entity_type: 'table',
@@ -240,7 +250,7 @@ export function POSTerminal({
           smart_code: smartCodes.TABLE,
           metadata: table.metadata
         })
-        
+
         if (result.success && result.data) {
           createdTables.push(result.data as RestaurantTable)
         }
@@ -255,66 +265,339 @@ export function POSTerminal({
   // Generate demo menu items
   const generateDemoMenuItems = (): MenuItem[] => [
     // Appetizers
-    { id: '1', entity_name: 'Bruschetta', entity_code: 'APP-001', metadata: { category: 'Appetizers', price: 8.50, description: 'Toasted bread with tomatoes and basil', available: true, preparation_time: 10 } },
-    { id: '2', entity_name: 'Calamari Fritti', entity_code: 'APP-002', metadata: { category: 'Appetizers', price: 12.50, description: 'Crispy fried calamari with marinara', available: true, preparation_time: 15 } },
-    { id: '3', entity_name: 'Garlic Bread', entity_code: 'APP-003', metadata: { category: 'Appetizers', price: 6.50, description: 'Fresh baked with garlic butter', available: true, preparation_time: 8 } },
-    
+    {
+      id: '1',
+      entity_name: 'Bruschetta',
+      entity_code: 'APP-001',
+      metadata: {
+        category: 'Appetizers',
+        price: 8.5,
+        description: 'Toasted bread with tomatoes and basil',
+        available: true,
+        preparation_time: 10
+      }
+    },
+    {
+      id: '2',
+      entity_name: 'Calamari Fritti',
+      entity_code: 'APP-002',
+      metadata: {
+        category: 'Appetizers',
+        price: 12.5,
+        description: 'Crispy fried calamari with marinara',
+        available: true,
+        preparation_time: 15
+      }
+    },
+    {
+      id: '3',
+      entity_name: 'Garlic Bread',
+      entity_code: 'APP-003',
+      metadata: {
+        category: 'Appetizers',
+        price: 6.5,
+        description: 'Fresh baked with garlic butter',
+        available: true,
+        preparation_time: 8
+      }
+    },
+
     // Salads
-    { id: '4', entity_name: 'Caesar Salad', entity_code: 'SAL-001', metadata: { category: 'Salads', price: 11.00, description: 'Romaine, parmesan, croutons', available: true, modifiers: ['Add Chicken +$5', 'Add Shrimp +$8'], preparation_time: 10 } },
-    { id: '5', entity_name: 'Caprese Salad', entity_code: 'SAL-002', metadata: { category: 'Salads', price: 12.00, description: 'Fresh mozzarella, tomatoes, basil', available: true, preparation_time: 10 } },
-    
+    {
+      id: '4',
+      entity_name: 'Caesar Salad',
+      entity_code: 'SAL-001',
+      metadata: {
+        category: 'Salads',
+        price: 11.0,
+        description: 'Romaine, parmesan, croutons',
+        available: true,
+        modifiers: ['Add Chicken +$5', 'Add Shrimp +$8'],
+        preparation_time: 10
+      }
+    },
+    {
+      id: '5',
+      entity_name: 'Caprese Salad',
+      entity_code: 'SAL-002',
+      metadata: {
+        category: 'Salads',
+        price: 12.0,
+        description: 'Fresh mozzarella, tomatoes, basil',
+        available: true,
+        preparation_time: 10
+      }
+    },
+
     // Pizza
-    { id: '6', entity_name: 'Margherita Pizza', entity_code: 'PIZ-001', metadata: { category: 'Pizza', price: 16.00, description: 'Fresh mozzarella, tomato, basil', available: true, modifiers: ['Small -$3', 'Large +$4', 'Extra Cheese +$2'], preparation_time: 20 } },
-    { id: '7', entity_name: 'Pepperoni Pizza', entity_code: 'PIZ-002', metadata: { category: 'Pizza', price: 18.00, description: 'Mozzarella, pepperoni, tomato sauce', available: true, modifiers: ['Small -$3', 'Large +$4', 'Extra Cheese +$2'], preparation_time: 20 } },
-    { id: '8', entity_name: 'Quattro Formaggi', entity_code: 'PIZ-003', metadata: { category: 'Pizza', price: 19.00, description: 'Four cheese blend', available: true, modifiers: ['Small -$3', 'Large +$4'], preparation_time: 20 } },
-    
+    {
+      id: '6',
+      entity_name: 'Margherita Pizza',
+      entity_code: 'PIZ-001',
+      metadata: {
+        category: 'Pizza',
+        price: 16.0,
+        description: 'Fresh mozzarella, tomato, basil',
+        available: true,
+        modifiers: ['Small -$3', 'Large +$4', 'Extra Cheese +$2'],
+        preparation_time: 20
+      }
+    },
+    {
+      id: '7',
+      entity_name: 'Pepperoni Pizza',
+      entity_code: 'PIZ-002',
+      metadata: {
+        category: 'Pizza',
+        price: 18.0,
+        description: 'Mozzarella, pepperoni, tomato sauce',
+        available: true,
+        modifiers: ['Small -$3', 'Large +$4', 'Extra Cheese +$2'],
+        preparation_time: 20
+      }
+    },
+    {
+      id: '8',
+      entity_name: 'Quattro Formaggi',
+      entity_code: 'PIZ-003',
+      metadata: {
+        category: 'Pizza',
+        price: 19.0,
+        description: 'Four cheese blend',
+        available: true,
+        modifiers: ['Small -$3', 'Large +$4'],
+        preparation_time: 20
+      }
+    },
+
     // Pasta
-    { id: '9', entity_name: 'Spaghetti Carbonara', entity_code: 'PAS-001', metadata: { category: 'Pasta', price: 15.00, description: 'Egg, pancetta, parmesan', available: true, preparation_time: 15 } },
-    { id: '10', entity_name: 'Penne Arrabbiata', entity_code: 'PAS-002', metadata: { category: 'Pasta', price: 13.00, description: 'Spicy tomato sauce', available: true, modifiers: ['Extra Spicy', 'Add Sausage +$4'], preparation_time: 15 } },
-    { id: '11', entity_name: 'Fettuccine Alfredo', entity_code: 'PAS-003', metadata: { category: 'Pasta', price: 14.00, description: 'Cream sauce with parmesan', available: true, modifiers: ['Add Chicken +$5', 'Add Shrimp +$8'], preparation_time: 15 } },
-    
+    {
+      id: '9',
+      entity_name: 'Spaghetti Carbonara',
+      entity_code: 'PAS-001',
+      metadata: {
+        category: 'Pasta',
+        price: 15.0,
+        description: 'Egg, pancetta, parmesan',
+        available: true,
+        preparation_time: 15
+      }
+    },
+    {
+      id: '10',
+      entity_name: 'Penne Arrabbiata',
+      entity_code: 'PAS-002',
+      metadata: {
+        category: 'Pasta',
+        price: 13.0,
+        description: 'Spicy tomato sauce',
+        available: true,
+        modifiers: ['Extra Spicy', 'Add Sausage +$4'],
+        preparation_time: 15
+      }
+    },
+    {
+      id: '11',
+      entity_name: 'Fettuccine Alfredo',
+      entity_code: 'PAS-003',
+      metadata: {
+        category: 'Pasta',
+        price: 14.0,
+        description: 'Cream sauce with parmesan',
+        available: true,
+        modifiers: ['Add Chicken +$5', 'Add Shrimp +$8'],
+        preparation_time: 15
+      }
+    },
+
     // Main Course
-    { id: '12', entity_name: 'Grilled Salmon', entity_code: 'MAIN-001', metadata: { category: 'Main Course', price: 26.00, description: 'With lemon butter sauce', available: true, preparation_time: 25 } },
-    { id: '13', entity_name: 'Chicken Parmigiana', entity_code: 'MAIN-002', metadata: { category: 'Main Course', price: 22.00, description: 'Breaded chicken with marinara', available: true, preparation_time: 20 } },
-    { id: '14', entity_name: 'Osso Buco', entity_code: 'MAIN-003', metadata: { category: 'Main Course', price: 32.00, description: 'Braised veal shanks', available: true, preparation_time: 30 } },
-    
+    {
+      id: '12',
+      entity_name: 'Grilled Salmon',
+      entity_code: 'MAIN-001',
+      metadata: {
+        category: 'Main Course',
+        price: 26.0,
+        description: 'With lemon butter sauce',
+        available: true,
+        preparation_time: 25
+      }
+    },
+    {
+      id: '13',
+      entity_name: 'Chicken Parmigiana',
+      entity_code: 'MAIN-002',
+      metadata: {
+        category: 'Main Course',
+        price: 22.0,
+        description: 'Breaded chicken with marinara',
+        available: true,
+        preparation_time: 20
+      }
+    },
+    {
+      id: '14',
+      entity_name: 'Osso Buco',
+      entity_code: 'MAIN-003',
+      metadata: {
+        category: 'Main Course',
+        price: 32.0,
+        description: 'Braised veal shanks',
+        available: true,
+        preparation_time: 30
+      }
+    },
+
     // Desserts
-    { id: '15', entity_name: 'Tiramisu', entity_code: 'DES-001', metadata: { category: 'Desserts', price: 8.00, description: 'Classic Italian dessert', available: true, preparation_time: 5 } },
-    { id: '16', entity_name: 'Panna Cotta', entity_code: 'DES-002', metadata: { category: 'Desserts', price: 7.00, description: 'With berry sauce', available: true, preparation_time: 5 } },
-    { id: '17', entity_name: 'Gelato', entity_code: 'DES-003', metadata: { category: 'Desserts', price: 6.00, description: 'Choice of flavors', available: true, modifiers: ['Vanilla', 'Chocolate', 'Pistachio', 'Strawberry'], preparation_time: 2 } },
-    
+    {
+      id: '15',
+      entity_name: 'Tiramisu',
+      entity_code: 'DES-001',
+      metadata: {
+        category: 'Desserts',
+        price: 8.0,
+        description: 'Classic Italian dessert',
+        available: true,
+        preparation_time: 5
+      }
+    },
+    {
+      id: '16',
+      entity_name: 'Panna Cotta',
+      entity_code: 'DES-002',
+      metadata: {
+        category: 'Desserts',
+        price: 7.0,
+        description: 'With berry sauce',
+        available: true,
+        preparation_time: 5
+      }
+    },
+    {
+      id: '17',
+      entity_name: 'Gelato',
+      entity_code: 'DES-003',
+      metadata: {
+        category: 'Desserts',
+        price: 6.0,
+        description: 'Choice of flavors',
+        available: true,
+        modifiers: ['Vanilla', 'Chocolate', 'Pistachio', 'Strawberry'],
+        preparation_time: 2
+      }
+    },
+
     // Beverages
-    { id: '18', entity_name: 'Soft Drinks', entity_code: 'BEV-001', metadata: { category: 'Beverages', price: 3.50, description: 'Coke, Sprite, Orange', available: true, preparation_time: 1 } },
-    { id: '19', entity_name: 'Italian Soda', entity_code: 'BEV-002', metadata: { category: 'Beverages', price: 4.50, description: 'Various flavors', available: true, preparation_time: 2 } },
-    { id: '20', entity_name: 'Espresso', entity_code: 'BEV-003', metadata: { category: 'Beverages', price: 3.00, description: 'Double shot', available: true, preparation_time: 2 } },
-    { id: '21', entity_name: 'Cappuccino', entity_code: 'BEV-004', metadata: { category: 'Beverages', price: 4.50, description: 'With steamed milk', available: true, preparation_time: 3 } }
+    {
+      id: '18',
+      entity_name: 'Soft Drinks',
+      entity_code: 'BEV-001',
+      metadata: {
+        category: 'Beverages',
+        price: 3.5,
+        description: 'Coke, Sprite, Orange',
+        available: true,
+        preparation_time: 1
+      }
+    },
+    {
+      id: '19',
+      entity_name: 'Italian Soda',
+      entity_code: 'BEV-002',
+      metadata: {
+        category: 'Beverages',
+        price: 4.5,
+        description: 'Various flavors',
+        available: true,
+        preparation_time: 2
+      }
+    },
+    {
+      id: '20',
+      entity_name: 'Espresso',
+      entity_code: 'BEV-003',
+      metadata: {
+        category: 'Beverages',
+        price: 3.0,
+        description: 'Double shot',
+        available: true,
+        preparation_time: 2
+      }
+    },
+    {
+      id: '21',
+      entity_name: 'Cappuccino',
+      entity_code: 'BEV-004',
+      metadata: {
+        category: 'Beverages',
+        price: 4.5,
+        description: 'With steamed milk',
+        available: true,
+        preparation_time: 3
+      }
+    }
   ]
 
   // Generate demo tables
   const generateDemoTables = (): RestaurantTable[] => [
-    { id: 't1', entity_name: 'Table 1', metadata: { table_number: 1, section: 'Main Dining', status: 'available' } },
-    { id: 't2', entity_name: 'Table 2', metadata: { table_number: 2, section: 'Main Dining', status: 'occupied' } },
-    { id: 't3', entity_name: 'Table 3', metadata: { table_number: 3, section: 'Main Dining', status: 'available' } },
-    { id: 't4', entity_name: 'Table 4', metadata: { table_number: 4, section: 'Main Dining', status: 'available' } },
-    { id: 't5', entity_name: 'Table 5', metadata: { table_number: 5, section: 'Private Dining', status: 'available' } },
-    { id: 't6', entity_name: 'Table 6', metadata: { table_number: 6, section: 'Private Dining', status: 'occupied' } },
-    { id: 't7', entity_name: 'Table 7', metadata: { table_number: 7, section: 'Patio', status: 'available' } },
-    { id: 't8', entity_name: 'Table 8', metadata: { table_number: 8, section: 'Patio', status: 'available' } }
+    {
+      id: 't1',
+      entity_name: 'Table 1',
+      metadata: { table_number: 1, section: 'Main Dining', status: 'available' }
+    },
+    {
+      id: 't2',
+      entity_name: 'Table 2',
+      metadata: { table_number: 2, section: 'Main Dining', status: 'occupied' }
+    },
+    {
+      id: 't3',
+      entity_name: 'Table 3',
+      metadata: { table_number: 3, section: 'Main Dining', status: 'available' }
+    },
+    {
+      id: 't4',
+      entity_name: 'Table 4',
+      metadata: { table_number: 4, section: 'Main Dining', status: 'available' }
+    },
+    {
+      id: 't5',
+      entity_name: 'Table 5',
+      metadata: { table_number: 5, section: 'Private Dining', status: 'available' }
+    },
+    {
+      id: 't6',
+      entity_name: 'Table 6',
+      metadata: { table_number: 6, section: 'Private Dining', status: 'occupied' }
+    },
+    {
+      id: 't7',
+      entity_name: 'Table 7',
+      metadata: { table_number: 7, section: 'Patio', status: 'available' }
+    },
+    {
+      id: 't8',
+      entity_name: 'Table 8',
+      metadata: { table_number: 8, section: 'Patio', status: 'available' }
+    }
   ]
 
   // Add item to cart
   const addToCart = (item: MenuItem) => {
     const existingItem = cart.find(c => c.menuItem.id === item.id)
-    
+
     if (existingItem) {
       updateQuantity(item.id, existingItem.quantity + 1)
     } else {
-      setCart([...cart, {
-        menuItem: item,
-        quantity: 1,
-        modifiers: [],
-        lineTotal: (item.metadata as any)?.price || 0
-      }])
+      setCart([
+        ...cart,
+        {
+          menuItem: item,
+          quantity: 1,
+          modifiers: [],
+          lineTotal: (item.metadata as any)?.price || 0
+        }
+      ])
     }
   }
 
@@ -324,12 +607,18 @@ export function POSTerminal({
       removeFromCart(itemId)
       return
     }
-    
-    setCart(cart.map(item => 
-      item.menuItem.id === itemId 
-        ? { ...item, quantity, lineTotal: quantity * ((item.menuItem.metadata as any)?.price || 0) }
-        : item
-    ))
+
+    setCart(
+      cart.map(item =>
+        item.menuItem.id === itemId
+          ? {
+              ...item,
+              quantity,
+              lineTotal: quantity * ((item.menuItem.metadata as any)?.price || 0)
+            }
+          : item
+      )
+    )
   }
 
   // Remove from cart
@@ -360,32 +649,37 @@ export function POSTerminal({
 
   // Filter menu items
   const filteredItems = menuItems.filter(item => {
-    const matchesCategory = selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
-    const matchesSearch = searchTerm === '' || 
+    const matchesCategory =
+      selectedCategory === 'all' || (item.metadata as any)?.category === selectedCategory
+    const matchesSearch =
+      searchTerm === '' ||
       item.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (item.metadata as any)?.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     return matchesCategory && matchesSearch && (item.metadata as any)?.available !== false
   })
 
   // Get categories
-  const categories = ['all', ...Array.from(new Set(menuItems.map(item => (item.metadata as any)?.category).filter(Boolean)))]
+  const categories = [
+    'all',
+    ...Array.from(new Set(menuItems.map(item => (item.metadata as any)?.category).filter(Boolean)))
+  ]
 
   // Process order
   const processOrder = async () => {
     if (cart.length === 0) return
-    
+
     // Validate required fields
     if (orderType === 'dine-in' && !selectedTable) {
       setError('Please select a table')
       return
     }
-    
+
     if (orderType === 'delivery' && (!customerName || !customerPhone || !deliveryAddress)) {
       setError('Please fill in delivery details')
       return
     }
-    
+
     if (orderType === 'takeout' && (!customerName || !customerPhone)) {
       setError('Please fill in customer details')
       return
@@ -393,11 +687,11 @@ export function POSTerminal({
 
     setProcessing(true)
     setError(null)
-    
+
     try {
       // Create order transaction
       const orderNumber = `ORD-${Date.now().toString().slice(-6)}`
-      
+
       const orderData = {
         transaction_type: 'sale',
         transaction_code: orderNumber,
@@ -442,7 +736,7 @@ export function POSTerminal({
         }))
 
         const result = await universalApi.createTransactionWithLines(orderData, lineItems)
-        
+
         if (result.success) {
           alert(`Order ${orderNumber} created successfully!`)
           clearCart()
@@ -517,7 +811,7 @@ export function POSTerminal({
               <Input
                 placeholder="Search menu items..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -543,7 +837,7 @@ export function POSTerminal({
               {filteredItems.map(item => {
                 const Icon = CATEGORY_ICONS[(item.metadata as any)?.category || ''] || Coffee
                 return (
-                  <Card 
+                  <Card
                     key={item.id}
                     className="cursor-pointer transition-all hover:scale-105"
                     onClick={() => addToCart(item)}
@@ -574,11 +868,7 @@ export function POSTerminal({
               {filteredItems.map(item => {
                 const Icon = CATEGORY_ICONS[(item.metadata as any)?.category || ''] || Coffee
                 return (
-                  <Card 
-                    key={item.id}
-                    className="cursor-pointer"
-                    onClick={() => addToCart(item)}
-                  >
+                  <Card key={item.id} className="cursor-pointer" onClick={() => addToCart(item)}>
                     <CardContent className="p-3 flex items-center gap-4">
                       <Icon className="h-6 w-6 text-muted-foreground" />
                       <div className="flex-1">
@@ -652,8 +942,7 @@ export function POSTerminal({
                     <SelectItem key={table.id} value={table.id}>
                       {table.entity_name} - {(table.metadata as any)?.section}
                     </SelectItem>
-                  ))
-                }
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -666,7 +955,7 @@ export function POSTerminal({
               <Label className="text-sm">Customer Name</Label>
               <Input
                 value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
+                onChange={e => setCustomerName(e.target.value)}
                 placeholder="John Doe"
               />
             </div>
@@ -674,7 +963,7 @@ export function POSTerminal({
               <Label className="text-sm">Phone Number</Label>
               <Input
                 value={customerPhone}
-                onChange={(e) => setCustomerPhone(e.target.value)}
+                onChange={e => setCustomerPhone(e.target.value)}
                 placeholder="+1-555-0123"
               />
             </div>
@@ -683,7 +972,7 @@ export function POSTerminal({
                 <Label className="text-sm">Delivery Address</Label>
                 <Input
                   value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  onChange={e => setDeliveryAddress(e.target.value)}
                   placeholder="123 Main St, City"
                 />
               </div>
@@ -701,7 +990,7 @@ export function POSTerminal({
             </div>
           ) : (
             <div className="space-y-3">
-              {cart.map((item) => (
+              {cart.map(item => (
                 <Card key={item.menuItem.id} className="p-3">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
@@ -736,9 +1025,7 @@ export function POSTerminal({
                         <Plus className="h-3 w-3" />
                       </Button>
                     </div>
-                    <span className="font-semibold">
-                      {formatCurrency(item.lineTotal)}
-                    </span>
+                    <span className="font-semibold">{formatCurrency(item.lineTotal)}</span>
                   </div>
                 </Card>
               ))}
@@ -786,11 +1073,7 @@ export function POSTerminal({
               <Percent className="h-4 w-4 mr-1" />
               Discount
             </Button>
-            <Button
-              variant="outline"
-              onClick={clearCart}
-              disabled={cart.length === 0}
-            >
+            <Button variant="outline" onClick={clearCart} disabled={cart.length === 0}>
               <Trash2 className="h-4 w-4 mr-1" />
               Clear
             </Button>
@@ -828,16 +1111,12 @@ export function POSTerminal({
                 min="0"
                 max="100"
                 value={discountPercent}
-                onChange={(e) => setDiscountPercent(parseInt(e.target.value) || 0)}
+                onChange={e => setDiscountPercent(parseInt(e.target.value) || 0)}
               />
             </div>
             <div className="grid grid-cols-4 gap-2">
               {[5, 10, 15, 20].map(percent => (
-                <Button
-                  key={percent}
-                  variant="outline"
-                  onClick={() => setDiscountPercent(percent)}
-                >
+                <Button key={percent} variant="outline" onClick={() => setDiscountPercent(percent)}>
                   {percent}%
                 </Button>
               ))}
@@ -847,9 +1126,7 @@ export function POSTerminal({
             <Button variant="outline" onClick={() => setShowCheckout(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowCheckout(false)}>
-              Apply
-            </Button>
+            <Button onClick={() => setShowCheckout(false)}>Apply</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -897,7 +1174,7 @@ export function POSTerminal({
                 <Input
                   type="number"
                   value={cashReceived}
-                  onChange={(e) => setCashReceived(e.target.value)}
+                  onChange={e => setCashReceived(e.target.value)}
                   placeholder="Enter amount received"
                   className="text-lg"
                 />
@@ -905,7 +1182,9 @@ export function POSTerminal({
                   <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-900/20 rounded">
                     <div className="flex justify-between items-center">
                       <span>Change:</span>
-                      <span className={`text-lg font-bold ${change >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                      <span
+                        className={`text-lg font-bold ${change >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}
+                      >
                         {formatCurrency(Math.abs(change))}
                       </span>
                     </div>
@@ -918,8 +1197,8 @@ export function POSTerminal({
             <Button variant="outline" onClick={() => setShowPayment(false)}>
               Cancel
             </Button>
-            <Button 
-              onClick={processOrder} 
+            <Button
+              onClick={processOrder}
               disabled={processing || (paymentMethod === 'cash' && change < 0)}
             >
               {processing ? (

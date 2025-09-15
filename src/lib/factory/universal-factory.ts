@@ -30,7 +30,7 @@ export interface ModuleManifest {
 // Factory pipeline states
 export enum PipelineState {
   PLAN = 'PLAN',
-  DRAFT = 'DRAFT', 
+  DRAFT = 'DRAFT',
   BUILD = 'BUILD',
   TEST = 'TEST',
   COMPLY = 'COMPLY',
@@ -45,22 +45,22 @@ export const FACTORY_SMART_CODES = {
   // Pipeline operations
   PIPELINE_RUN: 'HERA.UNIVERSAL.FACTORY.PIPELINE.RUN.v1_0',
   PIPELINE_STEP: 'HERA.UNIVERSAL.FACTORY.PIPELINE.STEP.v1_0',
-  
+
   // Module types
   MODULE: 'HERA.UNIVERSAL.MODULE.APP.{NAME}.v{VERSION}',
   BLUEPRINT: 'HERA.UNIVERSAL.MODULE.BLUEPRINT.{NAME}.v1',
   CAPABILITY: 'HERA.UNIVERSAL.CAPABILITY.API.{NAME}.v1_0',
-  
+
   // Artifacts
   ARTIFACT_BUNDLE: 'HERA.UNIVERSAL.ARTIFACT.BUNDLE.v1_0',
   ARTIFACT_SBOM: 'HERA.UNIVERSAL.ARTIFACT.SBOM.v1_0',
   ARTIFACT_ATTESTATION: 'HERA.UNIVERSAL.ARTIFACT.ATTESTATION.v1_0',
-  
+
   // Policies
   GUARDRAIL_GENERAL: 'HERA.UNIVERSAL.GUARDRAIL.PACK.GENERAL.v1_0',
   GUARDRAIL_SOX: 'HERA.FINANCE.GUARDRAIL.PACK.SOX.v2_1',
   GUARDRAIL_HIPAA: 'HERA.HEALTHCARE.GUARDRAIL.PACK.HIPAA.v1_0',
-  
+
   // Relationships
   DEPENDS_ON: 'HERA.UNIVERSAL.REL.DEPENDS_ON.v1',
   PACKAGED_AS: 'HERA.UNIVERSAL.REL.PACKAGED_AS.v1',
@@ -119,12 +119,15 @@ export class UniversalFactory {
   /**
    * Execute a complete factory pipeline run
    */
-  async runPipeline(moduleSmartCode: string, params: {
-    build_params?: Record<string, any>
-    test_matrix?: string[]
-    channels?: string[]
-    compliance_profiles?: string[]
-  } = {}) {
+  async runPipeline(
+    moduleSmartCode: string,
+    params: {
+      build_params?: Record<string, any>
+      test_matrix?: string[]
+      channels?: string[]
+      compliance_profiles?: string[]
+    } = {}
+  ) {
     // Create pipeline transaction
     const pipeline = await universalApi.createTransaction({
       transaction_type: 'factory_pipeline',
@@ -158,12 +161,12 @@ export class UniversalFactory {
    * Execute a pipeline stage with transaction tracking
    */
   private async executeStage(
-    pipelineId: string, 
+    pipelineId: string,
     state: PipelineState,
     handler: (pipelineId: string) => Promise<any>
   ) {
     const startTime = Date.now()
-    
+
     // Create stage transaction line
     const stageLine = await universalApi.createTransactionLine({
       transaction_id: pipelineId,
@@ -179,7 +182,7 @@ export class UniversalFactory {
     try {
       // Run stage handler
       const result = await handler(pipelineId)
-      
+
       // Update stage as completed
       await universalApi.updateTransactionLine(stageLine.data.id, {
         metadata: {
@@ -211,19 +214,17 @@ export class UniversalFactory {
   private async planStage(pipelineId: string) {
     const pipeline = await universalApi.getTransaction(pipelineId)
     const moduleSmartCode = pipeline.data.metadata.module_smart_code
-    
+
     // Resolve module and manifest
     const module = await this.resolveModule(moduleSmartCode)
-    const manifest = JSON.parse(
-      await universalApi.getDynamicField(module.id, 'module_manifest')
-    )
+    const manifest = JSON.parse(await universalApi.getDynamicField(module.id, 'module_manifest'))
 
     // Validate dependencies
     const depValidation = await this.validateDependencies(manifest.depends_on)
-    
+
     // Warm up guardrails
     const guardrails = await guardrailEngine.loadPacks(manifest.guardrail_packs)
-    
+
     // Warm up UCR
     const ucr = await ucrEngine.loadPacks(manifest.ucr_packs)
 
@@ -241,10 +242,10 @@ export class UniversalFactory {
    */
   private async draftStage(pipelineId: string) {
     const plan = await this.getPlanResult(pipelineId)
-    
+
     // Generate module structure
     const structure = await this.generateModuleStructure(plan.manifest)
-    
+
     // Create draft artifact
     const artifact = await universalApi.createEntity({
       entity_type: 'artifact',
@@ -266,10 +267,10 @@ export class UniversalFactory {
   private async buildStage(pipelineId: string) {
     const plan = await this.getPlanResult(pipelineId)
     const draft = await this.getDraftResult(pipelineId)
-    
+
     // Execute build process
     const buildResult = await this.executeBuild(plan.manifest, draft.artifact_id)
-    
+
     // Create build artifact
     const artifact = await universalApi.createEntity({
       entity_type: 'artifact',
@@ -292,7 +293,7 @@ export class UniversalFactory {
       smart_code: FACTORY_SMART_CODES.PACKAGED_AS
     })
 
-    return { 
+    return {
       artifact_id: artifact.data.id,
       checksum: buildResult.checksum,
       size_mb: buildResult.size / 1024 / 1024
@@ -305,14 +306,14 @@ export class UniversalFactory {
   private async testStage(pipelineId: string) {
     const plan = await this.getPlanResult(pipelineId)
     const params = await this.getPipelineParams(pipelineId)
-    
+
     const testMatrix = params.test_matrix || ['unit', 'integration', 'contract', 'security']
     const results = []
 
     for (const testType of testMatrix) {
       const result = await this.runTest(plan.module.id, testType)
       results.push(result)
-      
+
       // Create test result line
       await universalApi.createTransactionLine({
         transaction_id: pipelineId,
@@ -341,7 +342,7 @@ export class UniversalFactory {
   private async complyStage(pipelineId: string) {
     const plan = await this.getPlanResult(pipelineId)
     const params = await this.getPipelineParams(pipelineId)
-    
+
     const profiles = params.compliance_profiles || ['GENERAL']
     const evaluations = []
 
@@ -354,7 +355,7 @@ export class UniversalFactory {
           profile
         }
       })
-      
+
       evaluations.push({
         profile,
         outcome: result.outcome,
@@ -387,7 +388,7 @@ export class UniversalFactory {
   private async packageStage(pipelineId: string) {
     const plan = await this.getPlanResult(pipelineId)
     const build = await this.getBuildResult(pipelineId)
-    
+
     // Generate SBOM
     const sbom = await this.generateSBOM(plan.module.id)
     const sbomArtifact = await universalApi.createEntity({
@@ -405,7 +406,7 @@ export class UniversalFactory {
     // Create attestation
     const attestation = await this.createAttestation(pipelineId)
     const attestationArtifact = await universalApi.createEntity({
-      entity_type: 'artifact', 
+      entity_type: 'artifact',
       entity_name: `${plan.manifest.name}-attestation-${plan.manifest.version}`,
       smart_code: FACTORY_SMART_CODES.ARTIFACT_ATTESTATION,
       metadata: {
@@ -430,7 +431,7 @@ export class UniversalFactory {
   private async releaseStage(pipelineId: string) {
     const plan = await this.getPlanResult(pipelineId)
     const params = await this.getPipelineParams(pipelineId)
-    
+
     const channels = params.channels || plan.manifest.release_channels || ['beta']
     const releases = []
 
@@ -498,7 +499,7 @@ export class UniversalFactory {
     return found
   }
 
-  private async validateDependencies(deps: Array<{smart_code: string, version: string}>) {
+  private async validateDependencies(deps: Array<{ smart_code: string; version: string }>) {
     const results = []
     for (const dep of deps) {
       const capability = await this.resolveCapabilityId(dep.smart_code)
@@ -591,7 +592,7 @@ export class UniversalFactory {
       beta: { coverage: 0.7, vulnerabilities: 5 },
       alpha: { coverage: 0.5, vulnerabilities: 10 }
     }
-    
+
     // TODO: Check actual metrics against requirements
     return true
   }

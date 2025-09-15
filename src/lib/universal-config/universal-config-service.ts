@@ -1,25 +1,20 @@
 /**
  * HERA Universal Configuration Rules Service
  * Smart Code: HERA.UNIV.CONFIG.SERVICE.v1
- * 
+ *
  * Core service for resolving and applying configuration rules
  */
 
 import { universalApi } from '@/lib/universal-api'
 import { supabase } from '@/lib/supabase'
-import type { 
-  Entity,
-  Transaction,
-  DynamicData,
-  Relationship 
-} from '@/types/universal.types'
+import type { Entity, Transaction, DynamicData, Relationship } from '@/types/universal.types'
 
 // Rule interface matching the README specification
 export interface UniversalRule {
   rule_id: string
   smart_code: string
   status: 'active' | 'inactive' | 'draft'
-  
+
   scope: {
     organization_id: string
     branches?: string[]
@@ -28,7 +23,7 @@ export interface UniversalRule {
     customers?: string[]
     channels?: string[]
   }
-  
+
   conditions: {
     effective_from: string
     effective_to?: string
@@ -38,13 +33,13 @@ export interface UniversalRule {
     min_lead_minutes?: number
     [key: string]: any // Family-specific conditions
   }
-  
+
   priority: number
-  
+
   payload: {
     [key: string]: any // Family-specific configuration
   }
-  
+
   metadata: {
     created_by: string
     created_at: string
@@ -55,7 +50,7 @@ export interface UniversalRule {
 
 export interface TimeWindow {
   start_time: string // HH:MM format
-  end_time: string   // HH:MM format
+  end_time: string // HH:MM format
 }
 
 export interface RolloutStrategy {
@@ -91,7 +86,7 @@ export interface Decision {
 // Rule cache structure
 interface RuleCache {
   rules: Map<string, UniversalRule[]> // key: org_id:family
-  lastUpdate: Map<string, number>      // key: org_id:family
+  lastUpdate: Map<string, number> // key: org_id:family
   ttl: number // milliseconds
 }
 
@@ -131,19 +126,19 @@ export class UniversalConfigService {
 
     // 1. Fetch cached rules
     const candidates = await this.fetchRules(orgId, params.family)
-    
+
     // 2. Filter by scope
     const inScope = candidates.filter(rule => this.inScopeMatch(rule.scope, fullContext))
-    
+
     // 3. Filter by time conditions
     const activeNow = inScope.filter(rule => this.timeMatch(rule.conditions, fullContext))
-    
+
     // 4. Filter by business conditions
     const conditionOK = activeNow.filter(rule => this.conditionsMatch(rule.conditions, fullContext))
-    
+
     // 5. Sort by priority, specificity, version
     const ordered = this.sortRules(conditionOK)
-    
+
     // 6. Apply family-specific composition
     return this.composeByFamily(ordered, params.family)
   }
@@ -151,11 +146,7 @@ export class UniversalConfigService {
   /**
    * Make a decision based on resolved rules
    */
-  async decide(params: {
-    family: string
-    context: Context
-    inputs?: any
-  }): Promise<Decision> {
+  async decide(params: { family: string; context: Context; inputs?: any }): Promise<Decision> {
     // Get applicable rules
     const rules = await this.resolve({
       family: params.family,
@@ -176,12 +167,7 @@ export class UniversalConfigService {
     }
 
     // Apply family-specific decision logic
-    const decision = this.applyFamilyLogic(
-      params.family,
-      rules,
-      params.context,
-      params.inputs
-    )
+    const decision = this.applyFamilyLogic(params.family, rules, params.context, params.inputs)
 
     // Log decision as transaction for audit trail
     await this.logDecision(decision, params)
@@ -195,7 +181,7 @@ export class UniversalConfigService {
   private async fetchRules(orgId: string, family: string): Promise<UniversalRule[]> {
     const cacheKey = `${orgId}:${family}`
     const now = Date.now()
-    
+
     // Check cache validity
     const lastUpdate = this.cache.lastUpdate.get(cacheKey) || 0
     if (now - lastUpdate < this.cache.ttl) {
@@ -216,7 +202,7 @@ export class UniversalConfigService {
         .eq('organization_id', orgId)
         .eq('entity_type', 'universal_rule')
         .ilike('smart_code', `${family}%`)
-      
+
       if (error || !ruleEntities) {
         console.error('Failed to fetch rule entities:', error)
         return []
@@ -231,11 +217,11 @@ export class UniversalConfigService {
             .select('*')
             .eq('entity_id', entity.id)
             .eq('organization_id', orgId)
-          
+
           if (dynamicError) {
             console.error('Failed to fetch dynamic data for rule:', dynamicError)
           }
-          
+
           return this.entityToRule(entity, dynamicData || [])
         })
       )
@@ -297,9 +283,7 @@ export class UniversalConfigService {
 
     // Services check
     if (scope.services && context.service_ids) {
-      const hasMatchingService = context.service_ids.some(id => 
-        scope.services!.includes(id)
-      )
+      const hasMatchingService = context.service_ids.some(id => scope.services!.includes(id))
       if (!hasMatchingService) return false
     }
 
@@ -310,7 +294,7 @@ export class UniversalConfigService {
 
     // Customer segments check
     if (scope.customers && context.customer_segments) {
-      const hasMatchingSegment = context.customer_segments.some(segment => 
+      const hasMatchingSegment = context.customer_segments.some(segment =>
         scope.customers!.includes(segment)
       )
       if (!hasMatchingSegment) return false
@@ -329,13 +313,13 @@ export class UniversalConfigService {
    */
   private timeMatch(conditions: UniversalRule['conditions'], context: Context): boolean {
     const now = context.now || new Date()
-    
+
     // Effective date range check
     if (conditions.effective_from) {
       const effectiveFrom = new Date(conditions.effective_from)
       if (now < effectiveFrom) return false
     }
-    
+
     if (conditions.effective_to) {
       const effectiveTo = new Date(conditions.effective_to)
       if (now > effectiveTo) return false
@@ -423,27 +407,27 @@ export class UniversalConfigService {
   private composeByFamily(rules: UniversalRule[], family: string): UniversalRule[] {
     // Different families have different composition strategies
     const familyPrefix = family.split('.').slice(0, 5).join('.')
-    
+
     switch (familyPrefix) {
       case 'HERA.UNIV.CONFIG.BOOKING.AVAILABILITY':
       case 'HERA.UNIV.CONFIG.BOOKING.NO_SHOW':
       case 'HERA.UNIV.CONFIG.BOOKING.SLOT_FILTER':
         // Booking rules: take highest priority only
         return rules.length > 0 ? [rules[0]] : []
-      
+
       case 'HERA.UNIV.CONFIG.PRICING.DISCOUNT':
         // Pricing discounts: can stack, return all
         return rules
-      
+
       case 'HERA.UNIV.CONFIG.NOTIFICATION.SMS':
       case 'HERA.UNIV.CONFIG.NOTIFICATION.EMAIL':
         // Notifications: merge all templates
         return rules
-      
+
       case 'HERA.UNIV.CONFIG.UI.FEATURE_FLAG':
         // Feature flags: first matching rule wins
         return rules.length > 0 ? [rules[0]] : []
-      
+
       default:
         // Default: return highest priority rule
         return rules.length > 0 ? [rules[0]] : []
@@ -454,9 +438,9 @@ export class UniversalConfigService {
    * Apply family-specific decision logic
    */
   private applyFamilyLogic(
-    family: string, 
-    rules: UniversalRule[], 
-    context: Context, 
+    family: string,
+    rules: UniversalRule[],
+    context: Context,
     inputs?: any
   ): Decision {
     if (rules.length === 0) {
@@ -479,13 +463,13 @@ export class UniversalConfigService {
     switch (familyPrefix) {
       case 'HERA.UNIV.CONFIG.BOOKING.NO_SHOW':
         return this.decideNoShowPolicy(primaryRule, context, inputs)
-      
+
       case 'HERA.UNIV.CONFIG.PRICING.DISCOUNT':
         return this.decidePricingDiscount(rules, context, inputs)
-      
+
       case 'HERA.UNIV.CONFIG.BOOKING.AVAILABILITY':
         return this.decideAvailability(primaryRule, context, inputs)
-      
+
       default:
         // Generic decision
         return {
@@ -549,15 +533,15 @@ export class UniversalConfigService {
     // Calculate fee
     const appointmentValue = inputs?.appointment_value || 0
     let fee = 0
-    
+
     if (payload.fee_percentage) {
       fee = appointmentValue * (payload.fee_percentage / 100)
     }
-    
+
     if (payload.min_fee_amount) {
       fee = Math.max(fee, payload.min_fee_amount)
     }
-    
+
     if (payload.max_fee_amount) {
       fee = Math.min(fee, payload.max_fee_amount)
     }
@@ -590,20 +574,20 @@ export class UniversalConfigService {
     // Calculate total discount
     const originalPrice = inputs?.original_price || 0
     let totalDiscount = 0
-    
+
     for (const discount of discounts) {
       let discountAmount = 0
-      
+
       if (discount.type === 'percentage') {
         discountAmount = originalPrice * (discount.value / 100)
       } else if (discount.type === 'fixed') {
         discountAmount = discount.value
       }
-      
+
       if (discount.max_amount) {
         discountAmount = Math.min(discountAmount, discount.max_amount)
       }
-      
+
       totalDiscount += discountAmount
     }
 
@@ -709,19 +693,19 @@ export class UniversalConfigService {
 
     try {
       // Create or update entity
-      const entity = rule.rule_id ? 
-        await universalApi.updateEntity(rule.rule_id, {
-          entity_name: rule.smart_code || 'Universal Rule',
-          smart_code: rule.smart_code,
-          status: rule.status || 'draft'
-        }) :
-        await universalApi.createEntity({
-          entity_type: 'universal_rule',
-          entity_name: rule.smart_code || 'Universal Rule',
-          smart_code: rule.smart_code,
-          status: rule.status || 'draft',
-          organization_id: orgId
-        })
+      const entity = rule.rule_id
+        ? await universalApi.updateEntity(rule.rule_id, {
+            entity_name: rule.smart_code || 'Universal Rule',
+            smart_code: rule.smart_code,
+            status: rule.status || 'draft'
+          })
+        : await universalApi.createEntity({
+            entity_type: 'universal_rule',
+            entity_name: rule.smart_code || 'Universal Rule',
+            smart_code: rule.smart_code,
+            status: rule.status || 'draft',
+            organization_id: orgId
+          })
 
       // Save dynamic fields
       const fieldsToSave = [
@@ -729,7 +713,10 @@ export class UniversalConfigService {
         { field_name: 'conditions', field_value_text: JSON.stringify(rule.conditions || {}) },
         { field_name: 'priority', field_value_number: rule.priority || 0 },
         { field_name: 'payload', field_value_text: JSON.stringify(rule.payload || {}) },
-        { field_name: 'rollout', field_value_text: JSON.stringify((rule.metadata as any)?.rollout || null) },
+        {
+          field_name: 'rollout',
+          field_value_text: JSON.stringify((rule.metadata as any)?.rollout || null)
+        },
         { field_name: 'version', field_value_number: (rule.metadata as any)?.version || 1 }
       ]
 

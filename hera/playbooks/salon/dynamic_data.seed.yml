@@ -1,0 +1,31 @@
+smart_code: HERA.SALON.MDM.DYNAMIC_DATA.SEED.v1
+rows:
+  # Services
+  - { entity_slug: service:HAIRCUT_BASIC, key_slug: service.category,     value: "service", value_type: text }
+  - { entity_slug: service:HAIRCUT_BASIC, key_slug: service.duration_min, value: 45,        value_type: number }
+  - { entity_slug: service:HAIRCUT_BASIC, key_slug: service.base_fee,     value: 50,        value_type: number }
+
+  - { entity_slug: service:HAIR_COLOR,    key_slug: service.category,     value: "service", value_type: text }
+  - { entity_slug: service:HAIR_COLOR,    key_slug: service.duration_min, value: 120,       value_type: number }
+  - { entity_slug: service:HAIR_COLOR,    key_slug: service.base_fee,     value: 200,       value_type: number }
+
+  # Products
+  - { entity_slug: product:SHAMPOO_RET,   key_slug: product.sku,          value: "SKU-RET-001", value_type: text }
+  - { entity_slug: product:SHAMPOO_RET,   key_slug: product.category,     value: "retail",      value_type: text }
+  - { entity_slug: product:SHAMPOO_RET,   key_slug: product.reorder_level, value: 10,           value_type: number }
+
+  - { entity_slug: product:DYE_COLOR,     key_slug: product.sku,          value: "SKU-DYE-001", value_type: text }
+  - { entity_slug: product:DYE_COLOR,     key_slug: product.category,     value: "consumable",  value_type: text }
+  - { entity_slug: product:DYE_COLOR,     key_slug: product.reorder_level, value: 2,            value_type: number }
+
+  # Stylist
+  - { entity_slug: stylist:STY001,        key_slug: stylist.skill_level,  value: "mid",        value_type: text }
+  - { entity_slug: stylist:STY001,        key_slug: stylist.rate_hour,    value: 60,           value_type: number }
+  - { entity_slug: stylist:STY001,        key_slug: stylist.commission_pct, value: 0.2,        value_type: number }
+
+  # Branch
+  - { entity_slug: branch:DUBAI_MAIN,     key_slug: branch.location_pin,  value: "25.2048,55.2708", value_type: text }
+  - { entity_slug: branch:DUBAI_MAIN,     key_slug: branch.phone,         value: "+971-4-000-0000", value_type: text }
+
+  # Price list
+  - { entity_slug: price_list:STANDARD_AED, key_slug: price_list.currency, value: "AED", value_type: text }

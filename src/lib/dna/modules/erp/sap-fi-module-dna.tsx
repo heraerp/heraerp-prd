@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  FileText, 
-  DollarSign, 
-  Users, 
+import {
+  FileText,
+  DollarSign,
+  Users,
   Building2,
   TrendingUp,
   BookOpen,
@@ -57,13 +57,21 @@ export function SAPFIModule({
   onError
 }: SAPFIModuleProps) {
   const [activeTab, setActiveTab] = React.useState('overview')
-  const [syncStatus, setSyncStatus] = React.useState<'idle' | 'syncing' | 'completed' | 'error'>('idle')
+  const [syncStatus, setSyncStatus] = React.useState<'idle' | 'syncing' | 'completed' | 'error'>(
+    'idle'
+  )
   const [postingQueue, setPostingQueue] = React.useState<any[]>([])
 
   // Mock data for demonstration
   const pendingDocuments = [
     { id: '1', type: 'AP Invoice', amount: 25000, status: 'pending', vendor: 'SAP AG' },
-    { id: '2', type: 'GL Journal', amount: 15000, status: 'validated', description: 'Month-end accrual' },
+    {
+      id: '2',
+      type: 'GL Journal',
+      amount: 15000,
+      status: 'validated',
+      description: 'Month-end accrual'
+    },
     { id: '3', type: 'AR Invoice', amount: 50000, status: 'posting', customer: 'Tech Corp' }
   ]
 
@@ -83,15 +91,35 @@ export function SAPFIModule({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="gap-1"><Clock className="h-3 w-3" /> Pending</Badge>
+        return (
+          <Badge variant="outline" className="gap-1">
+            <Clock className="h-3 w-3" /> Pending
+          </Badge>
+        )
       case 'validated':
-        return <Badge className="bg-blue-500 text-white gap-1"><FileCheck className="h-3 w-3" /> Validated</Badge>
+        return (
+          <Badge className="bg-blue-500 text-white gap-1">
+            <FileCheck className="h-3 w-3" /> Validated
+          </Badge>
+        )
       case 'posting':
-        return <Badge className="bg-yellow-500 text-white gap-1"><Clock className="h-3 w-3 animate-spin" /> Posting</Badge>
+        return (
+          <Badge className="bg-yellow-500 text-white gap-1">
+            <Clock className="h-3 w-3 animate-spin" /> Posting
+          </Badge>
+        )
       case 'posted':
-        return <Badge className="bg-green-500 text-white gap-1"><CheckCircle className="h-3 w-3" /> Posted</Badge>
+        return (
+          <Badge className="bg-green-500 text-white gap-1">
+            <CheckCircle className="h-3 w-3" /> Posted
+          </Badge>
+        )
       case 'error':
-        return <Badge variant="destructive" className="gap-1"><AlertCircle className="h-3 w-3" /> Error</Badge>
+        return (
+          <Badge variant="destructive" className="gap-1">
+            <AlertCircle className="h-3 w-3" /> Error
+          </Badge>
+        )
       default:
         return <Badge variant="outline">{status}</Badge>
     }
@@ -108,7 +136,8 @@ export function SAPFIModule({
               <div>
                 <h3 className="font-semibold">SAP {sapConfig?.systemType || 'Not Connected'}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Company: {sapConfig?.companyCode || 'N/A'} | CoA: {sapConfig?.chartOfAccounts || 'N/A'}
+                  Company: {sapConfig?.companyCode || 'N/A'} | CoA:{' '}
+                  {sapConfig?.chartOfAccounts || 'N/A'}
                 </p>
               </div>
             </div>
@@ -200,13 +229,20 @@ export function SAPFIModule({
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {pendingDocuments.map((doc) => (
-                  <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                {pendingDocuments.map(doc => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                        {doc.type === 'AP Invoice' ? <Receipt className="h-5 w-5 text-blue-600" /> :
-                         doc.type === 'GL Journal' ? <BookOpen className="h-5 w-5 text-blue-600" /> :
-                         <Users className="h-5 w-5 text-blue-600" />}
+                        {doc.type === 'AP Invoice' ? (
+                          <Receipt className="h-5 w-5 text-blue-600" />
+                        ) : doc.type === 'GL Journal' ? (
+                          <BookOpen className="h-5 w-5 text-blue-600" />
+                        ) : (
+                          <Users className="h-5 w-5 text-blue-600" />
+                        )}
                       </div>
                       <div>
                         <p className="font-medium">{doc.type}</p>
@@ -335,9 +371,7 @@ export function SAPFIModule({
                     <p className="text-sm text-gray-500">Difference</p>
                   </div>
                 </div>
-                <Button className="w-full">
-                  Start Reconciliation
-                </Button>
+                <Button className="w-full">Start Reconciliation</Button>
               </div>
             </CardContent>
           </Card>
@@ -350,9 +384,7 @@ export function SAPFIModule({
               <CardContent className="p-6">
                 <BookOpen className="h-8 w-8 text-blue-600 mb-2" />
                 <h3 className="font-semibold">Trial Balance</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Real-time from SAP
-                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Real-time from SAP</p>
               </CardContent>
             </Card>
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">

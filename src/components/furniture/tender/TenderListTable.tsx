@@ -10,16 +10,16 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  TableRow
+} from '@/components/ui/table'
 import {
   Search,
   Filter,
@@ -176,13 +176,14 @@ export default function TenderListTable({
 
   // Filter tenders based on search and status
   const filteredTenders = tenders.filter(tender => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch =
+      searchQuery === '' ||
       tender.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tender.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tender.department.toLowerCase().includes(searchQuery.toLowerCase())
-    
+
     const matchesStatus = statusFilter === 'all' || tender.status === statusFilter
-    
+
     return matchesSearch && matchesStatus
   })
 
@@ -194,7 +195,7 @@ export default function TenderListTable({
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Input
             value={searchQuery}
-            onChange={(e) => {
+            onChange={e => {
               setSearchQuery(e.target.value)
               onSearch?.(e.target.value)
             }}
@@ -202,7 +203,7 @@ export default function TenderListTable({
             className="pl-10 bg-gray-800/50 border-gray-700 text-white placeholder-gray-400"
           />
         </div>
-        
+
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full md:w-[200px] bg-gray-800/50 border-gray-700 text-white">
             <SelectValue placeholder="Filter by status" />
@@ -216,7 +217,7 @@ export default function TenderListTable({
             <SelectItem value="lost">Lost</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="w-full md:w-[200px] bg-gray-800/50 border-gray-700 text-white">
             <SelectValue placeholder="Sort by" />
@@ -228,7 +229,7 @@ export default function TenderListTable({
             <SelectItem value="ai_confidence">AI Confidence</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Button variant="outline" size="icon">
           <Download className="h-4 w-4" />
         </Button>
@@ -252,11 +253,12 @@ export default function TenderListTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredTenders.map((tender) => (
-                <TableRow key={tender.id} className="border-gray-700/50 hover:bg-gray-700/30 transition-colors">
-                  <TableCell className="font-mono text-sm text-white">
-                    {tender.code}
-                  </TableCell>
+              {filteredTenders.map(tender => (
+                <TableRow
+                  key={tender.id}
+                  className="border-gray-700/50 hover:bg-gray-700/30 transition-colors"
+                >
+                  <TableCell className="font-mono text-sm text-white">{tender.code}</TableCell>
                   <TableCell>
                     <div>
                       <p className="font-medium text-white">{tender.title}</p>
@@ -264,11 +266,13 @@ export default function TenderListTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge 
+                    <Badge
                       variant={getStatusBadgeVariant(tender.status)}
                       className={cn(
-                        tender.status === 'won' && "bg-green-600/20 text-green-400 border-green-600",
-                        tender.status === 'active' && "bg-amber-600/20 text-amber-400 border-amber-600"
+                        tender.status === 'won' &&
+                          'bg-green-600/20 text-green-400 border-green-600',
+                        tender.status === 'active' &&
+                          'bg-amber-600/20 text-amber-400 border-amber-600'
                       )}
                     >
                       {tender.status}
@@ -279,10 +283,12 @@ export default function TenderListTable({
                       <Clock className="h-4 w-4 text-gray-400" />
                       <div>
                         <p className="text-sm text-white">{tender.closingDate}</p>
-                        <p className={cn(
-                          "text-xs",
-                          tender.daysLeft > 0 ? "text-amber-400" : "text-gray-500"
-                        )}>
+                        <p
+                          className={cn(
+                            'text-xs',
+                            tender.daysLeft > 0 ? 'text-amber-400' : 'text-gray-500'
+                          )}
+                        >
                           {tender.daysLeft > 0 ? `${tender.daysLeft} days left` : 'Closed'}
                         </p>
                       </div>
@@ -344,7 +350,7 @@ export default function TenderListTable({
             <FileText className="h-5 w-5 text-amber-400" />
           </div>
         </Card>
-        
+
         <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
           <div className="flex items-center justify-between">
             <div>
@@ -354,7 +360,7 @@ export default function TenderListTable({
             <DollarSign className="h-5 w-5 text-green-400" />
           </div>
         </Card>
-        
+
         <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
           <div className="flex items-center justify-between">
             <div>
@@ -364,7 +370,7 @@ export default function TenderListTable({
             <Target className="h-5 w-5 text-purple-400" />
           </div>
         </Card>
-        
+
         <Card className="p-4 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
           <div className="flex items-center justify-between">
             <div>

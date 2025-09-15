@@ -92,18 +92,18 @@ export class ChartOfAccountsService {
 
       // Step 4: Calculate balances by account
       const balancesByAccount: Record<string, { debit: number; credit: number }> = {}
-      
+
       if (transactionLines) {
         transactionLines.forEach((line: any) => {
           if (line.gl_account_id) {
             if (!balancesByAccount[line.gl_account_id]) {
               balancesByAccount[line.gl_account_id] = { debit: 0, credit: 0 }
             }
-            
+
             // Check if amounts are in line_data or direct fields
             const debitAmount = line.line_data?.debit_amount || line.debit_amount || 0
             const creditAmount = line.line_data?.credit_amount || line.credit_amount || 0
-            
+
             balancesByAccount[line.gl_account_id].debit += debitAmount
             balancesByAccount[line.gl_account_id].credit += creditAmount
           }
@@ -148,7 +148,7 @@ export class ChartOfAccountsService {
             accountById[parentId].children.push(accountById[childId])
             accountById[childId].parent = accountById[parentId]
             childToParentMap.set(childId, parentId)
-            
+
             // Remove child from root accounts
             rootAccountIds.delete(childId)
           }
@@ -189,7 +189,6 @@ export class ChartOfAccountsService {
         accountMap,
         totalAccounts: allAccounts.length
       }
-
     } catch (error) {
       console.error('Failed to load Chart of Accounts:', error)
       return {
@@ -227,7 +226,10 @@ export class ChartOfAccountsService {
   /**
    * Calculate rollup balances for header accounts
    */
-  private static calculateRollupBalances(account: GLAccountNode): { debit: number; credit: number } {
+  private static calculateRollupBalances(account: GLAccountNode): {
+    debit: number
+    credit: number
+  } {
     // If it's a detail account or has no children, return its own balances
     if ((account.metadata as any)?.account_type === 'detail' || account.children.length === 0) {
       return {
@@ -273,7 +275,9 @@ export class ChartOfAccountsService {
    */
   static printAccountHierarchy(accounts: GLAccountNode[], indent: string = ''): void {
     accounts.forEach(account => {
-      console.log(`${indent}${account.entity_code} - ${account.entity_name} (${account.balance_type} ${account.current_balance})`)
+      console.log(
+        `${indent}${account.entity_code} - ${account.entity_name} (${account.balance_type} ${account.current_balance})`
+      )
       if (account.children && account.children.length > 0) {
         this.printAccountHierarchy(account.children, indent + '  ')
       }

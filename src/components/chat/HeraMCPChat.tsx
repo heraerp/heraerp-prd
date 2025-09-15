@@ -1,7 +1,20 @@
 'use client'
 
 import React, { useState, useRef, useEffect, KeyboardEvent } from 'react'
-import { Send, Bot, User, Loader2, Settings, Copy, Check, Code, Eye, Sparkles, AlertCircle, ChevronDown } from 'lucide-react'
+import {
+  Send,
+  Bot,
+  User,
+  Loader2,
+  Settings,
+  Copy,
+  Check,
+  Code,
+  Eye,
+  Sparkles,
+  AlertCircle,
+  ChevronDown
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Button } from '@/components/ui/button'
@@ -15,8 +28,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from '@/components/ui/select'
 
 interface Message {
   id: string
@@ -42,24 +55,24 @@ interface HeraMCPChatProps {
 
 const EXAMPLE_PROMPTS = {
   internal: [
-    "Show me all customers in the system",
-    "Create a test customer named John Doe",
+    'Show me all customers in the system',
+    'Create a test customer named John Doe',
     "Query today's transactions",
-    "Check system health status",
-    "List all entity types",
-    "Show database statistics"
+    'Check system health status',
+    'List all entity types',
+    'Show database statistics'
   ],
   customer: [
-    "Create a new customer for my business",
+    'Create a new customer for my business',
     "Show today's sales summary",
-    "Add a new product to inventory",
-    "Book an appointment for tomorrow",
-    "Generate a financial report",
-    "Update customer contact information"
+    'Add a new product to inventory',
+    'Book an appointment for tomorrow',
+    'Generate a financial report',
+    'Update customer contact information'
   ]
 }
 
-export function HeraMCPChat({ 
+export function HeraMCPChat({
   apiUrl = process.env.NEXT_PUBLIC_MCP_API_URL || 'http://localhost:3000',
   mode = 'customer',
   className,
@@ -69,7 +82,9 @@ export function HeraMCPChat({
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedOrgId, setSelectedOrgId] = useState(currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '')
+  const [selectedOrgId, setSelectedOrgId] = useState(
+    currentOrganization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || ''
+  )
   const [showRawResponse, setShowRawResponse] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -78,14 +93,17 @@ export function HeraMCPChat({
   // Initialize with welcome message
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([{
-        id: 'welcome',
-        role: 'assistant',
-        content: mode === 'internal' 
-          ? "👋 Welcome to HERA MCP Debug Console! I can help you test database operations, query entities, and validate the universal architecture."
-          : "👋 Hello! I'm your HERA assistant. I can help you manage customers, create transactions, generate reports, and more. What would you like to do today?",
-        timestamp: new Date()
-      }])
+      setMessages([
+        {
+          id: 'welcome',
+          role: 'assistant',
+          content:
+            mode === 'internal'
+              ? '👋 Welcome to HERA MCP Debug Console! I can help you test database operations, query entities, and validate the universal architecture.'
+              : "👋 Hello! I'm your HERA assistant. I can help you manage customers, create transactions, generate reports, and more. What would you like to do today?",
+          timestamp: new Date()
+        }
+      ])
     }
   }, [mode])
 
@@ -188,26 +206,30 @@ export function HeraMCPChat({
       <div
         key={message.id}
         className={cn(
-          "flex gap-3 p-4 rounded-lg mx-2 my-2",
-          isUser ? "bg-blue-50 dark:bg-blue-950/30" : "bg-gray-50 dark:bg-gray-900/50",
-          (message.metadata as any)?.error && "bg-red-50 dark:bg-red-950/30",
-          "border",
-          isUser ? "border-blue-200 dark:border-blue-800" : "border-gray-200 dark:border-gray-800"
+          'flex gap-3 p-4 rounded-lg mx-2 my-2',
+          isUser ? 'bg-blue-50 dark:bg-blue-950/30' : 'bg-gray-50 dark:bg-gray-900/50',
+          (message.metadata as any)?.error && 'bg-red-50 dark:bg-red-950/30',
+          'border',
+          isUser ? 'border-blue-200 dark:border-blue-800' : 'border-gray-200 dark:border-gray-800'
         )}
       >
-        <div className={cn(
-          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
-          isUser ? "bg-primary text-primary-foreground" : "bg-muted"
-        )}>
+        <div
+          className={cn(
+            'flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+            isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'
+          )}
+        >
           {isUser ? <User size={16} /> : <Bot size={16} />}
         </div>
 
         <div className="flex-1 space-y-2">
           <div className="flex items-start justify-between gap-2">
             <div className="max-w-none">
-              <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-900 dark:text-gray-100 font-medium">{message.content}</p>
+              <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-900 dark:text-gray-100 font-medium">
+                {message.content}
+              </p>
             </div>
-            
+
             <div className="flex items-center gap-1 shrink-0">
               {(message.metadata as any)?.confidence && (
                 <Badge variant="secondary" className="text-xs">
@@ -249,8 +271,12 @@ export function HeraMCPChat({
               {showRawResponse && (
                 <Tabs defaultValue="interpretation" className="w-full">
                   <TabsList className="grid w-full grid-cols-2 h-8">
-                    <TabsTrigger value="interpretation" className="text-xs">Interpretation</TabsTrigger>
-                    <TabsTrigger value="result" className="text-xs">Result</TabsTrigger>
+                    <TabsTrigger value="interpretation" className="text-xs">
+                      Interpretation
+                    </TabsTrigger>
+                    <TabsTrigger value="result" className="text-xs">
+                      Result
+                    </TabsTrigger>
                   </TabsList>
                   <TabsContent value="interpretation" className="mt-2">
                     <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto">
@@ -279,7 +305,12 @@ export function HeraMCPChat({
   }
 
   return (
-    <Card className={cn("flex flex-col h-[600px] w-full max-w-4xl mx-auto bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-lg", className)}>
+    <Card
+      className={cn(
+        'flex flex-col h-[600px] w-full max-w-4xl mx-auto bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-lg',
+        className
+      )}
+    >
       {/* Header */}
       <div className="border-b border-gray-200 dark:border-gray-800 px-4 py-3 bg-gray-50 dark:bg-gray-900">
         <div className="flex items-center justify-between">
@@ -382,11 +413,12 @@ export function HeraMCPChat({
           <Textarea
             ref={textareaRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={mode === 'internal' 
-              ? "Test a command... (e.g., 'create customer', 'query transactions')"
-              : "Ask me anything about your business..."
+            placeholder={
+              mode === 'internal'
+                ? "Test a command... (e.g., 'create customer', 'query transactions')"
+                : 'Ask me anything about your business...'
             }
             className="min-h-[60px] max-h-[120px] resize-none text-base bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-gray-300 dark:border-gray-700"
             disabled={isLoading}
@@ -397,11 +429,7 @@ export function HeraMCPChat({
             disabled={!input.trim() || isLoading}
             className="h-[60px] w-[60px]"
           >
-            {isLoading ? (
-              <Loader2 size={20} className="animate-spin" />
-            ) : (
-              <Send size={20} />
-            )}
+            {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
           </Button>
         </form>
 

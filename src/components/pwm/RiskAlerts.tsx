@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Shield, AlertTriangle, TrendingDown, ChevronRight } from 'lucide-react';
-import { AIInsight } from '@/lib/pwm/types';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Shield, AlertTriangle, TrendingDown, ChevronRight } from 'lucide-react'
+import { AIInsight } from '@/lib/pwm/types'
+import { cn } from '@/lib/utils'
 
 interface RiskAlertsProps {
-  organizationId: string;
-  insights: AIInsight[];
+  organizationId: string
+  insights: AIInsight[]
 }
 
 export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
@@ -23,16 +23,19 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
     maxDrawdown: -12.5,
     varAt95: -2500000,
     stressTestResult: -8.2
-  };
+  }
 
   const getRiskLevel = (score: number) => {
-    if (score <= 3) return { level: 'Low', color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' };
-    if (score <= 6) return { level: 'Moderate', color: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20' };
-    if (score <= 8) return { level: 'High', color: 'text-orange-400 bg-orange-400/10 border-orange-400/20' };
-    return { level: 'Critical', color: 'text-red-400 bg-red-400/10 border-red-400/20' };
-  };
+    if (score <= 3)
+      return { level: 'Low', color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20' }
+    if (score <= 6)
+      return { level: 'Moderate', color: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20' }
+    if (score <= 8)
+      return { level: 'High', color: 'text-orange-400 bg-orange-400/10 border-orange-400/20' }
+    return { level: 'Critical', color: 'text-red-400 bg-red-400/10 border-red-400/20' }
+  }
 
-  const riskLevel = getRiskLevel(riskMetrics.overallScore);
+  const riskLevel = getRiskLevel(riskMetrics.overallScore)
 
   return (
     <div className="space-y-6">
@@ -108,7 +111,7 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
       {/* Active Risk Alerts */}
       <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
         <h3 className="text-lg font-semibold text-white mb-4">Active Risk Alerts</h3>
-        
+
         <div className="space-y-4">
           {insights.length === 0 ? (
             <div className="text-center py-8 text-slate-400">
@@ -117,7 +120,7 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
               <p className="text-sm mt-1">Your portfolio is well-protected</p>
             </div>
           ) : (
-            insights.map((insight) => (
+            insights.map(insight => (
               <div
                 key={insight.id}
                 className="p-4 rounded-xl border bg-slate-800/30 border-slate-700/50"
@@ -129,24 +132,24 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
                   <div className="flex-1">
                     <h4 className="font-medium text-white mb-1">{insight.title}</h4>
                     <p className="text-sm text-slate-400 mb-3">{insight.description}</p>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4 text-sm">
                         <span className="text-slate-400">
-                          Impact: 
+                          Impact:
                           <span className="ml-1 font-medium text-red-400">
                             -${Math.abs(insight.impact / 1000000).toFixed(1)}M
                           </span>
                         </span>
                         <span className="text-slate-400">
-                          Confidence: 
+                          Confidence:
                           <span className="ml-1 font-medium text-white">
                             {(insight.confidence * 100).toFixed(0)}%
                           </span>
                         </span>
                       </div>
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
                         className="bg-red-500/10 border-red-500/30 hover:bg-red-500/20 text-red-400"
                       >
@@ -165,7 +168,7 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
       {/* Risk Mitigation Recommendations */}
       <Card className="p-6 bg-slate-900/50 backdrop-blur-sm border-slate-800">
         <h3 className="text-lg font-semibold text-white mb-4">Recommended Actions</h3>
-        
+
         <div className="space-y-3">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
             <div className="p-1.5 rounded bg-blue-500/20">
@@ -179,7 +182,7 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
               Review
             </Button>
           </div>
-          
+
           <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/50">
             <div className="p-1.5 rounded bg-emerald-500/20">
               <Shield className="h-4 w-4 text-emerald-400" />
@@ -195,5 +198,5 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
         </div>
       </Card>
     </div>
-  );
+  )
 }

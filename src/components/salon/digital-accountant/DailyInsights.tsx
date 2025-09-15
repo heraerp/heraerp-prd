@@ -54,7 +54,7 @@ const mockInsights: Insight[] = [
     id: '1',
     type: 'success',
     title: 'Great Start!',
-    description: 'You\'ve already reached 65% of your daily target by 2 PM',
+    description: "You've already reached 65% of your daily target by 2 PM",
     metric: {
       value: 65,
       target: 100,
@@ -86,7 +86,7 @@ const mockInsights: Insight[] = [
     id: '4',
     type: 'tip',
     title: 'Commission Due',
-    description: 'Don\'t forget to process staff commissions today',
+    description: "Don't forget to process staff commissions today",
     metric: {
       value: 2400,
       unit: 'AED'
@@ -98,7 +98,7 @@ const mockInsights: Insight[] = [
   }
 ]
 
-export function DailyInsights({ 
+export function DailyInsights({
   insights = mockInsights,
   dailyTarget = 6000,
   currentRevenue = 3850,
@@ -153,13 +153,13 @@ export function DailyInsights({
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl font-bold">
-                  AED {currentRevenue.toLocaleString()}
-                </span>
-                <span className={cn(
-                  "text-sm font-medium flex items-center gap-1",
-                  revenueChange > 0 ? "text-green-600" : "text-red-600"
-                )}>
+                <span className="text-2xl font-bold">AED {currentRevenue.toLocaleString()}</span>
+                <span
+                  className={cn(
+                    'text-sm font-medium flex items-center gap-1',
+                    revenueChange > 0 ? 'text-green-600' : 'text-red-600'
+                  )}
+                >
                   {revenueChange > 0 ? (
                     <TrendingUp className="w-4 h-4" />
                   ) : (
@@ -195,36 +195,30 @@ export function DailyInsights({
 
       {/* Insights List */}
       <div className="space-y-3">
-        {insights.map((insight) => (
-          <Alert
-            key={insight.id}
-            className={cn(
-              "border",
-              getInsightBgColor(insight.type)
-            )}
-          >
+        {insights.map(insight => (
+          <Alert key={insight.id} className={cn('border', getInsightBgColor(insight.type))}>
             <div className="flex items-start gap-3">
               <div className="mt-0.5">{getInsightIcon(insight.type)}</div>
               <div className="flex-1 space-y-1">
                 <h4 className="text-sm font-semibold flex items-center gap-2">
                   {insight.title}
                   {insight.metric && insight.metric.trend && (
-                    <span className={cn(
-                      "text-xs",
-                      insight.metric.trend === 'up' ? "text-green-600" : "text-red-600"
-                    )}>
+                    <span
+                      className={cn(
+                        'text-xs',
+                        insight.metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                      )}
+                    >
                       {insight.metric.trend === 'up' ? '↑' : '↓'}
                     </span>
                   )}
                 </h4>
-                <AlertDescription className="text-sm">
-                  {insight.description}
-                </AlertDescription>
+                <AlertDescription className="text-sm">{insight.description}</AlertDescription>
                 {insight.metric && (
                   <div className="flex items-center gap-2 mt-2">
                     {insight.metric.target && (
-                      <Progress 
-                        value={(insight.metric.value / insight.metric.target) * 100} 
+                      <Progress
+                        value={(insight.metric.value / insight.metric.target) * 100}
                         className="w-20 h-2"
                       />
                     )}

@@ -1,6 +1,6 @@
 /**
  * HERA Calendar Integration Service
- * 
+ *
  * Provider-agnostic calendar synchronization for leave management
  * Supports Google Calendar, Outlook, and other providers
  */
@@ -39,7 +39,7 @@ export interface CalendarProvider {
  */
 export class GoogleCalendarProvider implements CalendarProvider {
   name = 'google'
-  
+
   constructor(
     private accessToken: string,
     private calendarId: string = 'primary'
@@ -49,7 +49,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
     // In production, this would make actual Google Calendar API calls
     // For now, we'll simulate the response
     console.log('Creating Google Calendar event:', event)
-    
+
     const googleEvent = {
       summary: event.title,
       description: event.description,
@@ -74,7 +74,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
         ]
       }
     }
-    
+
     // Simulated response
     return `google_event_${Date.now()}`
   }
@@ -103,14 +103,14 @@ export class GoogleCalendarProvider implements CalendarProvider {
 
   private getGoogleColorId(color?: string): string {
     const colorMap: Record<string, string> = {
-      'blue': '1',
-      'green': '2',
-      'purple': '3',
-      'red': '4',
-      'yellow': '5',
-      'orange': '6',
-      'turquoise': '7',
-      'gray': '8',
+      blue: '1',
+      green: '2',
+      purple: '3',
+      red: '4',
+      yellow: '5',
+      orange: '6',
+      turquoise: '7',
+      gray: '8',
       'bold-blue': '9',
       'bold-green': '10',
       'bold-red': '11'
@@ -124,7 +124,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
  */
 export class OutlookCalendarProvider implements CalendarProvider {
   name = 'outlook'
-  
+
   constructor(
     private accessToken: string,
     private userEmail: string
@@ -132,7 +132,7 @@ export class OutlookCalendarProvider implements CalendarProvider {
 
   async createEvent(event: CalendarEvent): Promise<string> {
     console.log('Creating Outlook Calendar event:', event)
-    
+
     const outlookEvent = {
       subject: event.title,
       body: {
@@ -157,7 +157,7 @@ export class OutlookCalendarProvider implements CalendarProvider {
       reminderMinutesBeforeStart: event.reminders?.[0]?.minutes || 15,
       isReminderOn: true
     }
-    
+
     // Simulated response
     return `outlook_event_${Date.now()}`
   }
@@ -224,11 +224,11 @@ export class MockCalendarProvider implements CalendarProvider {
  */
 export class CalendarIntegrationService {
   private providers: Map<string, CalendarProvider> = new Map()
-  
+
   registerProvider(provider: CalendarProvider) {
     this.providers.set(provider.name, provider)
   }
-  
+
   async createLeaveEvent(
     providerName: string,
     leaveRequest: any,
@@ -242,12 +242,12 @@ export class CalendarIntegrationService {
     }
 
     const leaveTypeColors: Record<string, string> = {
-      'annual': 'blue',
-      'sick': 'green',
-      'unpaid': 'gray',
-      'maternity': 'purple',
-      'paternity': 'purple',
-      'bereavement': 'gray'
+      annual: 'blue',
+      sick: 'green',
+      unpaid: 'gray',
+      maternity: 'purple',
+      paternity: 'purple',
+      bereavement: 'gray'
     }
 
     const event: CalendarEvent = {
@@ -266,7 +266,7 @@ export class CalendarIntegrationService {
 
     try {
       const eventId = await provider.createEvent(event)
-      
+
       // Store the calendar event ID in dynamic data
       await universalApi.setDynamicField(
         leaveRequest.id,
@@ -275,7 +275,7 @@ export class CalendarIntegrationService {
         'transaction',
         organizationId
       )
-      
+
       await universalApi.setDynamicField(
         leaveRequest.id,
         'calendar_provider',
@@ -283,14 +283,14 @@ export class CalendarIntegrationService {
         'transaction',
         organizationId
       )
-      
+
       return eventId
     } catch (error) {
       console.error('Failed to create calendar event:', error)
       return null
     }
   }
-  
+
   async updateLeaveEvent(
     leaveRequestId: string,
     updates: Partial<CalendarEvent>,
@@ -302,45 +302,42 @@ export class CalendarIntegrationService {
       ['calendar_event_id', 'calendar_provider'],
       organizationId
     )
-    
+
     if (!calendarData.calendar_event_id || !calendarData.calendar_provider) {
       console.warn('No calendar sync data found for leave request')
       return
     }
-    
+
     const provider = this.providers.get(calendarData.calendar_provider)
     if (!provider) {
       console.warn(`Calendar provider ${calendarData.calendar_provider} not registered`)
       return
     }
-    
+
     await provider.updateEvent(calendarData.calendar_event_id, updates)
   }
-  
-  async deleteLeaveEvent(
-    leaveRequestId: string,
-    organizationId: string
-  ): Promise<void> {
+
+  async deleteLeaveEvent(leaveRequestId: string, organizationId: string): Promise<void> {
     // Get the calendar details from dynamic data
     const calendarData = await universalApi.getDynamicFields(
       leaveRequestId,
       ['calendar_event_id', 'calendar_provider'],
       organizationId
     )
-    
+
     if (!calendarData.calendar_event_id || !calendarData.calendar_provider) {
       console.warn('No calendar sync data found for leave request')
       return
     }
-    
+
     const provider = this.providers.get(calendarData.calendar_provider)
     if (!provider) {
       console.warn(`Calendar provider ${calendarData.calendar_provider} not registered`)
       return
     }
-    
+
     await provider.deleteEvent(calendarData.calendar_event_id)
-    
+
     // Clear the calendar sync data
     await universalApi.setDynamicField(
       leaveRequestId,
@@ -350,15 +347,15 @@ export class CalendarIntegrationService {
       organizationId
     )
   }
-  
+
   private formatLeaveType(type: string): string {
     const typeLabels: Record<string, string> = {
-      'annual': 'Annual Leave',
-      'sick': 'Sick Leave',
-      'unpaid': 'Unpaid Leave',
-      'maternity': 'Maternity Leave',
-      'paternity': 'Paternity Leave',
-      'bereavement': 'Bereavement Leave'
+      annual: 'Annual Leave',
+      sick: 'Sick Leave',
+      unpaid: 'Unpaid Leave',
+      maternity: 'Maternity Leave',
+      paternity: 'Paternity Leave',
+      bereavement: 'Bereavement Leave'
     }
     return typeLabels[type] || type
   }

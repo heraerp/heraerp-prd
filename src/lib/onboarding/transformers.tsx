@@ -1,15 +1,15 @@
 /**
  * HERA Universal Onboarding - Transformers
- * 
+ *
  * Converts HERA tour definitions to Joyride-compatible format
  * Handles i18n, theming, and step configuration
  */
 
-import * as React from 'react';
-import type { Step as JoyrideStep } from 'react-joyride';
-import type { HeraStep, HeraTour, OnboardingTheme } from './types';
-import { getMessage } from './i18n';
-import { getProgressStyles } from './themes';
+import * as React from 'react'
+import type { Step as JoyrideStep } from 'react-joyride'
+import type { HeraStep, HeraTour, OnboardingTheme } from './types'
+import { getMessage } from './i18n'
+import { getProgressStyles } from './themes'
 
 /**
  * Transform HERA steps to Joyride steps
@@ -20,25 +20,25 @@ export function toJoyrideSteps(
   theme: OnboardingTheme,
   currentStep?: number
 ): JoyrideStep[] {
-  const totalSteps = heraSteps.length;
-  
+  const totalSteps = heraSteps.length
+
   return heraSteps.map((step, index) => {
-    const stepNumber = index + 1;
-    const isLastStep = index === heraSteps.length - 1;
-    
+    const stepNumber = index + 1
+    const isLastStep = index === heraSteps.length - 1
+
     // Build content with progress indicator
-    const progressHtml = buildProgressIndicator(stepNumber, totalSteps, theme);
-    const titleText = getMessage(step.titleKey, messages);
-    const bodyText = getMessage(step.bodyKey, messages);
-    
+    const progressHtml = buildProgressIndicator(stepNumber, totalSteps, theme)
+    const titleText = getMessage(step.titleKey, messages)
+    const bodyText = getMessage(step.bodyKey, messages)
+
     const content = (
       <div className="hera-onboarding-content">
         {progressHtml}
         <h3 className="hera-onboarding-title">{titleText}</h3>
         <div className="hera-onboarding-body">{bodyText}</div>
       </div>
-    );
-    
+    )
+
     // Transform to Joyride step
     const joyrideStep: JoyrideStep = {
       target: step.selector,
@@ -58,26 +58,26 @@ export function toJoyrideSteps(
         last: getMessage('ui.onboard.controls.last', messages),
         next: getMessage('ui.onboard.controls.next', messages),
         open: getMessage('ui.onboard.controls.open', messages),
-        skip: getMessage('ui.onboard.controls.skip', messages),
+        skip: getMessage('ui.onboard.controls.skip', messages)
       },
       showProgress: false, // We handle progress ourselves
       showSkipButton: !isLastStep,
       spotlightPadding: step.spotlightPadding || 8,
       styles: {
         spotlight: {
-          borderRadius: '8px',
-        },
+          borderRadius: '8px'
+        }
       },
       // Custom data for analytics
       data: {
         smartCode: step.smartCode,
         stepIndex: index,
-        metadata: step.metadata,
-      },
-    };
-    
-    return joyrideStep;
-  });
+        metadata: step.metadata
+      }
+    }
+
+    return joyrideStep
+  })
 }
 
 /**
@@ -88,8 +88,8 @@ function buildProgressIndicator(
   total: number,
   theme: OnboardingTheme
 ): React.ReactElement {
-  const styles = getProgressStyles(theme, current, total);
-  
+  const styles = getProgressStyles(theme, current, total)
+
   return (
     <div className="hera-onboarding-progress">
       <div style={styles.container}>
@@ -99,7 +99,7 @@ function buildProgressIndicator(
         {getMessage('ui.onboard.progress.step', {}, { current, total })}
       </div>
     </div>
-  );
+  )
 }
 
 /**
@@ -114,40 +114,44 @@ export function tourToJoyrideProps(tour: HeraTour) {
     scrollOffset: 20,
     spotlightClicks: false,
     disableOverlay: false,
-    disableOverlayClose: false,
-  };
+    disableOverlayClose: false
+  }
 }
 
 /**
  * Extract route requirements from steps
  * Returns map of step index to route
  */
-export function extractRouteMap(steps: HeraStep[]): Map<number, string | ((router: any) => Promise<void>)> {
-  const routeMap = new Map<number, string | ((router: any) => Promise<void>)>();
-  
+export function extractRouteMap(
+  steps: HeraStep[]
+): Map<number, string | ((router: any) => Promise<void>)> {
+  const routeMap = new Map<number, string | ((router: any) => Promise<void>)>()
+
   steps.forEach((step, index) => {
     if (step.route) {
-      routeMap.set(index, step.route);
+      routeMap.set(index, step.route)
     }
-  });
-  
-  return routeMap;
+  })
+
+  return routeMap
 }
 
 /**
  * Extract wait conditions from steps
  * Returns map of step index to wait condition
  */
-export function extractWaitMap(steps: HeraStep[]): Map<number, string | (() => boolean | Promise<boolean>)> {
-  const waitMap = new Map<number, string | (() => boolean | Promise<boolean>)>();
-  
+export function extractWaitMap(
+  steps: HeraStep[]
+): Map<number, string | (() => boolean | Promise<boolean>)> {
+  const waitMap = new Map<number, string | (() => boolean | Promise<boolean>)>()
+
   steps.forEach((step, index) => {
     if (step.waitFor) {
-      waitMap.set(index, step.waitFor);
+      waitMap.set(index, step.waitFor)
     }
-  });
-  
-  return waitMap;
+  })
+
+  return waitMap
 }
 
 /**
@@ -168,8 +172,8 @@ export function buildStepMetadata(
     placement: step.placement,
     hasRoute: !!step.route,
     hasWaitCondition: !!step.waitFor,
-    timeoutMs: step.timeoutMs,
-  };
+    timeoutMs: step.timeoutMs
+  }
 }
 
 /**
@@ -178,54 +182,51 @@ export function buildStepMetadata(
  */
 export function validateTour(tour: HeraTour): void {
   if (!tour.tourSmartCode) {
-    throw new Error('Tour must have a Smart Code');
+    throw new Error('Tour must have a Smart Code')
   }
-  
+
   if (!tour.steps || tour.steps.length === 0) {
-    throw new Error('Tour must have at least one step');
+    throw new Error('Tour must have at least one step')
   }
-  
+
   // Validate each step
   tour.steps.forEach((step, index) => {
     if (!step.smartCode) {
-      throw new Error(`Step ${index} must have a Smart Code`);
+      throw new Error(`Step ${index} must have a Smart Code`)
     }
-    
+
     if (!step.selector) {
-      throw new Error(`Step ${index} must have a selector`);
+      throw new Error(`Step ${index} must have a selector`)
     }
-    
+
     if (!step.titleKey || !step.bodyKey) {
-      throw new Error(`Step ${index} must have titleKey and bodyKey`);
+      throw new Error(`Step ${index} must have titleKey and bodyKey`)
     }
-    
+
     // Validate Smart Code format
     if (!step.smartCode.startsWith('HERA.UI.ONBOARD.')) {
-      throw new Error(`Step ${index} has invalid Smart Code format: ${step.smartCode}`);
+      throw new Error(`Step ${index} has invalid Smart Code format: ${step.smartCode}`)
     }
-  });
+  })
 }
 
 /**
  * Merge tour overrides
  * Used when starting tour with custom options
  */
-export function mergeTourOverrides(
-  baseTour: HeraTour,
-  overrides?: Partial<HeraTour>
-): HeraTour {
+export function mergeTourOverrides(baseTour: HeraTour, overrides?: Partial<HeraTour>): HeraTour {
   if (!overrides) {
-    return baseTour;
+    return baseTour
   }
-  
+
   return {
     ...baseTour,
     ...overrides,
     // Don't override tourSmartCode
     tourSmartCode: baseTour.tourSmartCode,
     // Merge steps array properly
-    steps: overrides.steps || baseTour.steps,
-  };
+    steps: overrides.steps || baseTour.steps
+  }
 }
 
 /**
@@ -236,12 +237,10 @@ export function filterSteps(
   steps: HeraStep[],
   predicate: (step: HeraStep, index: number) => boolean
 ): HeraStep[] {
-  return steps
-    .filter(predicate)
-    .map((step, newIndex) => ({
-      ...step,
-      stepIndex: newIndex,
-    }));
+  return steps.filter(predicate).map((step, newIndex) => ({
+    ...step,
+    stepIndex: newIndex
+  }))
 }
 
 /**
@@ -261,7 +260,7 @@ export function createErrorStep(error: string, messages: Record<string, string>)
     hideBackButton: true,
     hideFooter: false,
     locale: {
-      close: getMessage('ui.onboard.controls.close', messages),
-    },
-  };
+      close: getMessage('ui.onboard.controls.close', messages)
+    }
+  }
 }

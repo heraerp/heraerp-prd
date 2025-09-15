@@ -6,7 +6,7 @@ let introJs: any = null
 let IntroJs: any = null
 
 if (typeof window !== 'undefined') {
-  import('intro.js').then((module) => {
+  import('intro.js').then(module => {
     introJs = module.default
     IntroJs = module.IntroJs
   })
@@ -33,49 +33,57 @@ export const UNIVERSAL_TOUR_STEPS = {
   // Header and Navigation
   header: {
     element: 'header',
-    intro: '🏢 <strong>Command Center Header</strong><br/>Your real-time business metrics and quick actions are always visible here.',
+    intro:
+      '🏢 <strong>Command Center Header</strong><br/>Your real-time business metrics and quick actions are always visible here.',
     position: 'bottom' as const
   },
-  
+
   metrics: {
     element: '[data-tour="metrics-bar"]',
-    intro: '📊 <strong>Live Business Metrics</strong><br/>Monitor your key performance indicators in real-time. These update automatically as your business grows.',
+    intro:
+      '📊 <strong>Live Business Metrics</strong><br/>Monitor your key performance indicators in real-time. These update automatically as your business grows.',
     position: 'bottom' as const
   },
-  
+
   welcomeSection: {
     element: '[data-tour="welcome-section"]',
-    intro: '👋 <strong>Personalized Welcome</strong><br/>Your business hub with personalized greetings and industry-specific insights.',
+    intro:
+      '👋 <strong>Personalized Welcome</strong><br/>Your business hub with personalized greetings and industry-specific insights.',
     position: 'bottom' as const
   },
-  
+
   moduleGrid: {
     element: '[data-tour="module-grid"]',
-    intro: '🎯 <strong>Business Modules</strong><br/>Access all your business operations through these intelligent modules. Each card shows live statistics and performance trends.',
+    intro:
+      '🎯 <strong>Business Modules</strong><br/>Access all your business operations through these intelligent modules. Each card shows live statistics and performance trends.',
     position: 'top' as const
   },
-  
+
   moduleCard: {
     element: '[data-tour="module-card"]:first-child',
-    intro: '💳 <strong>Smart Module Cards</strong><br/>Each module shows real stats, performance trends, and provides instant access to your operations. Hover to see the premium animations!',
+    intro:
+      '💳 <strong>Smart Module Cards</strong><br/>Each module shows real stats, performance trends, and provides instant access to your operations. Hover to see the premium animations!',
     position: 'top' as const
   },
-  
+
   quickActions: {
     element: '[data-tour="quick-actions"]',
-    intro: '⚡ <strong>Quick Actions</strong><br/>Perform common tasks instantly without navigating through multiple screens. Your most frequent actions are always one click away.',
+    intro:
+      '⚡ <strong>Quick Actions</strong><br/>Perform common tasks instantly without navigating through multiple screens. Your most frequent actions are always one click away.',
     position: 'top' as const
   },
-  
+
   sidebar: {
     element: '[data-tour="sidebar"]',
-    intro: '🧭 <strong>Smart Navigation</strong><br/>Microsoft Teams-style sidebar for instant access to any module. Hover over icons to see labels and tooltips.',
+    intro:
+      '🧭 <strong>Smart Navigation</strong><br/>Microsoft Teams-style sidebar for instant access to any module. Hover over icons to see labels and tooltips.',
     position: 'right' as const
   },
-  
+
   completedTour: {
     element: 'body',
-    intro: '🎉 <strong>Welcome to HERA!</strong><br/>You\'re now ready to experience the future of business management. Each module has its own guided tour when you\'re ready to dive deeper.<br/><br/>💡 <em>Tip: Click the "?" icon in any module to restart its tour.</em>',
+    intro:
+      '🎉 <strong>Welcome to HERA!</strong><br/>You\'re now ready to experience the future of business management. Each module has its own guided tour when you\'re ready to dive deeper.<br/><br/>💡 <em>Tip: Click the "?" icon in any module to restart its tour.</em>',
     position: 'top' as const
   }
 }
@@ -93,24 +101,28 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
       UNIVERSAL_TOUR_STEPS.metrics,
       {
         element: '[data-tour="metrics-bar"] > div:nth-child(2)',
-        intro: '🍽️ <strong>Active Tables</strong><br/>Track your restaurant capacity and table turnover in real-time.',
+        intro:
+          '🍽️ <strong>Active Tables</strong><br/>Track your restaurant capacity and table turnover in real-time.',
         position: 'bottom'
       },
       UNIVERSAL_TOUR_STEPS.welcomeSection,
       UNIVERSAL_TOUR_STEPS.moduleGrid,
       {
         element: '[data-tour="module-card"][data-module="pos"]',
-        intro: '🛒 <strong>Point of Sale</strong><br/>Process orders, handle payments, and manage your daily sales operations.',
+        intro:
+          '🛒 <strong>Point of Sale</strong><br/>Process orders, handle payments, and manage your daily sales operations.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="menu"]',
-        intro: '📋 <strong>Menu Management</strong><br/>Update your menu, manage pricing, and track popular items.',
+        intro:
+          '📋 <strong>Menu Management</strong><br/>Update your menu, manage pricing, and track popular items.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="kitchen"]',
-        intro: '👨‍🍳 <strong>Kitchen Display</strong><br/>Real-time order management and kitchen workflow optimization.',
+        intro:
+          '👨‍🍳 <strong>Kitchen Display</strong><br/>Real-time order management and kitchen workflow optimization.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.quickActions,
@@ -130,24 +142,28 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
       UNIVERSAL_TOUR_STEPS.metrics,
       {
         element: '[data-tour="metrics-bar"] > div:nth-child(2)',
-        intro: '🏥 <strong>Active Patients</strong><br/>Monitor patient flow and practice capacity in real-time.',
+        intro:
+          '🏥 <strong>Active Patients</strong><br/>Monitor patient flow and practice capacity in real-time.',
         position: 'bottom'
       },
       UNIVERSAL_TOUR_STEPS.welcomeSection,
       UNIVERSAL_TOUR_STEPS.moduleGrid,
       {
         element: '[data-tour="module-card"][data-module="appointments"]',
-        intro: '📅 <strong>Appointment Scheduling</strong><br/>Manage patient appointments, reduce no-shows, and optimize your schedule.',
+        intro:
+          '📅 <strong>Appointment Scheduling</strong><br/>Manage patient appointments, reduce no-shows, and optimize your schedule.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="patients"]',
-        intro: '👥 <strong>Patient Records</strong><br/>Comprehensive health management with secure, HIPAA-compliant records.',
+        intro:
+          '👥 <strong>Patient Records</strong><br/>Comprehensive health management with secure, HIPAA-compliant records.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="billing"]',
-        intro: '💰 <strong>Billing & Insurance</strong><br/>Streamlined financial operations with insurance claim management.',
+        intro:
+          '💰 <strong>Billing & Insurance</strong><br/>Streamlined financial operations with insurance claim management.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.quickActions,
@@ -167,24 +183,28 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
       UNIVERSAL_TOUR_STEPS.metrics,
       {
         element: '[data-tour="metrics-bar"] > div:nth-child(2)',
-        intro: '🏪 <strong>Active Stores</strong><br/>Monitor performance across all your retail locations in real-time.',
+        intro:
+          '🏪 <strong>Active Stores</strong><br/>Monitor performance across all your retail locations in real-time.',
         position: 'bottom'
       },
       UNIVERSAL_TOUR_STEPS.welcomeSection,
       UNIVERSAL_TOUR_STEPS.moduleGrid,
       {
         element: '[data-tour="module-card"][data-module="merchandising"]',
-        intro: '🎨 <strong>Merchandising</strong><br/>Product lifecycle management, assortments, and visual merchandising optimization.',
+        intro:
+          '🎨 <strong>Merchandising</strong><br/>Product lifecycle management, assortments, and visual merchandising optimization.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="planning"]',
-        intro: '📈 <strong>Planning & Buying</strong><br/>AI-powered demand forecasting and intelligent buying decisions.',
+        intro:
+          '📈 <strong>Planning & Buying</strong><br/>AI-powered demand forecasting and intelligent buying decisions.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="analytics"]',
-        intro: '📊 <strong>Retail Analytics</strong><br/>Business intelligence dashboards with competitive insights and performance optimization.',
+        intro:
+          '📊 <strong>Retail Analytics</strong><br/>Business intelligence dashboards with competitive insights and performance optimization.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.quickActions,
@@ -203,27 +223,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '🎨 <strong>Merchandising Command Center</strong><br/>Your central hub for product management, visual merchandising, and assortment planning.',
+        intro:
+          '🎨 <strong>Merchandising Command Center</strong><br/>Your central hub for product management, visual merchandising, and assortment planning.',
         position: 'bottom'
       },
       {
         element: '[data-tour="product-catalog"]',
-        intro: '📦 <strong>Product Catalog</strong><br/>Manage your entire product portfolio with smart categorization and performance analytics.',
+        intro:
+          '📦 <strong>Product Catalog</strong><br/>Manage your entire product portfolio with smart categorization and performance analytics.',
         position: 'bottom'
       },
       {
         element: '[data-tour="assortment-planning"]',
-        intro: '🎯 <strong>Assortment Planning</strong><br/>Optimize your product mix by location and season using AI-powered recommendations.',
+        intro:
+          '🎯 <strong>Assortment Planning</strong><br/>Optimize your product mix by location and season using AI-powered recommendations.',
         position: 'top'
       },
       {
         element: '[data-tour="visual-merchandising"]',
-        intro: '🖼️ <strong>Visual Merchandising</strong><br/>Create compelling store layouts and product displays that drive sales.',
+        intro:
+          '🖼️ <strong>Visual Merchandising</strong><br/>Create compelling store layouts and product displays that drive sales.',
         position: 'top'
       },
       {
         element: '[data-tour="performance-analytics"]',
-        intro: '📈 <strong>Performance Analytics</strong><br/>Track product performance, identify top sellers, and spot trends early.',
+        intro:
+          '📈 <strong>Performance Analytics</strong><br/>Track product performance, identify top sellers, and spot trends early.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -239,27 +264,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '📊 <strong>Planning & Buying Center</strong><br/>Your AI-powered hub for demand forecasting and intelligent purchasing decisions.',
+        intro:
+          '📊 <strong>Planning & Buying Center</strong><br/>Your AI-powered hub for demand forecasting and intelligent purchasing decisions.',
         position: 'bottom'
       },
       {
         element: '[data-tour="demand-forecast"]',
-        intro: '🔮 <strong>Demand Forecasting</strong><br/>AI analyzes historical data, seasonality, and trends to predict future demand with 89% accuracy.',
+        intro:
+          '🔮 <strong>Demand Forecasting</strong><br/>AI analyzes historical data, seasonality, and trends to predict future demand with 89% accuracy.',
         position: 'bottom'
       },
       {
         element: '[data-tour="buying-recommendations"]',
-        intro: '🛒 <strong>Smart Buying</strong><br/>Get intelligent recommendations on what to buy, when to buy it, and how much inventory to maintain.',
+        intro:
+          '🛒 <strong>Smart Buying</strong><br/>Get intelligent recommendations on what to buy, when to buy it, and how much inventory to maintain.',
         position: 'top'
       },
       {
         element: '[data-tour="supplier-management"]',
-        intro: '🤝 <strong>Supplier Management</strong><br/>Manage supplier relationships, compare costs, and optimize your supply chain.',
+        intro:
+          '🤝 <strong>Supplier Management</strong><br/>Manage supplier relationships, compare costs, and optimize your supply chain.',
         position: 'top'
       },
       {
         element: '[data-tour="seasonal-planning"]',
-        intro: '🌟 <strong>Seasonal Planning</strong><br/>Plan for holidays, events, and seasonal changes with advanced predictive models.',
+        intro:
+          '🌟 <strong>Seasonal Planning</strong><br/>Plan for holidays, events, and seasonal changes with advanced predictive models.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -275,27 +305,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '🏪 <strong>Procurement Hub</strong><br/>Manage suppliers, purchase orders, and sourcing with complete transparency and control.',
+        intro:
+          '🏪 <strong>Procurement Hub</strong><br/>Manage suppliers, purchase orders, and sourcing with complete transparency and control.',
         position: 'bottom'
       },
       {
         element: '[data-tour="supplier-directory"]',
-        intro: '📋 <strong>Supplier Directory</strong><br/>Maintain comprehensive supplier profiles with performance ratings and contract details.',
+        intro:
+          '📋 <strong>Supplier Directory</strong><br/>Maintain comprehensive supplier profiles with performance ratings and contract details.',
         position: 'bottom'
       },
       {
         element: '[data-tour="purchase-orders"]',
-        intro: '📄 <strong>Purchase Orders</strong><br/>Create, track, and manage purchase orders with automated approval workflows.',
+        intro:
+          '📄 <strong>Purchase Orders</strong><br/>Create, track, and manage purchase orders with automated approval workflows.',
         position: 'top'
       },
       {
         element: '[data-tour="sourcing-tools"]',
-        intro: '🔍 <strong>Strategic Sourcing</strong><br/>Compare suppliers, negotiate better terms, and optimize your procurement strategy.',
+        intro:
+          '🔍 <strong>Strategic Sourcing</strong><br/>Compare suppliers, negotiate better terms, and optimize your procurement strategy.',
         position: 'top'
       },
       {
         element: '[data-tour="cost-analytics"]',
-        intro: '💰 <strong>Cost Analytics</strong><br/>Track spending patterns, identify cost savings opportunities, and manage budgets effectively.',
+        intro:
+          '💰 <strong>Cost Analytics</strong><br/>Track spending patterns, identify cost savings opportunities, and manage budgets effectively.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -311,27 +346,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '🛒 <strong>Point of Sale Command Center</strong><br/>Your unified platform for all sales channels - in-store, online, and mobile.',
+        intro:
+          '🛒 <strong>Point of Sale Command Center</strong><br/>Your unified platform for all sales channels - in-store, online, and mobile.',
         position: 'bottom'
       },
       {
         element: '[data-tour="transaction-interface"]',
-        intro: '💳 <strong>Transaction Interface</strong><br/>Process sales quickly with intuitive touch interface and multiple payment options.',
+        intro:
+          '💳 <strong>Transaction Interface</strong><br/>Process sales quickly with intuitive touch interface and multiple payment options.',
         position: 'bottom'
       },
       {
         element: '[data-tour="customer-lookup"]',
-        intro: '👤 <strong>Customer Management</strong><br/>Quick customer lookup, loyalty program integration, and purchase history access.',
+        intro:
+          '👤 <strong>Customer Management</strong><br/>Quick customer lookup, loyalty program integration, and purchase history access.',
         position: 'top'
       },
       {
         element: '[data-tour="inventory-check"]',
-        intro: '📦 <strong>Real-time Inventory</strong><br/>Check stock levels, reserve items, and handle special orders seamlessly.',
+        intro:
+          '📦 <strong>Real-time Inventory</strong><br/>Check stock levels, reserve items, and handle special orders seamlessly.',
         position: 'top'
       },
       {
         element: '[data-tour="sales-analytics"]',
-        intro: '📊 <strong>Sales Analytics</strong><br/>Monitor daily sales performance, track goals, and identify opportunities.',
+        intro:
+          '📊 <strong>Sales Analytics</strong><br/>Monitor daily sales performance, track goals, and identify opportunities.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -347,27 +387,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '📦 <strong>Inventory Control Center</strong><br/>Manage stock levels, track movements, and optimize warehouse operations with precision.',
+        intro:
+          '📦 <strong>Inventory Control Center</strong><br/>Manage stock levels, track movements, and optimize warehouse operations with precision.',
         position: 'bottom'
       },
       {
         element: '[data-tour="stock-levels"]',
-        intro: '📊 <strong>Stock Levels</strong><br/>Real-time inventory levels across all locations with automatic reorder points and alerts.',
+        intro:
+          '📊 <strong>Stock Levels</strong><br/>Real-time inventory levels across all locations with automatic reorder points and alerts.',
         position: 'bottom'
       },
       {
         element: '[data-tour="warehouse-operations"]',
-        intro: '🏭 <strong>Warehouse Operations</strong><br/>Manage receiving, putaway, picking, and shipping with optimized workflows.',
+        intro:
+          '🏭 <strong>Warehouse Operations</strong><br/>Manage receiving, putaway, picking, and shipping with optimized workflows.',
         position: 'top'
       },
       {
         element: '[data-tour="inventory-transfers"]',
-        intro: '🔄 <strong>Inventory Transfers</strong><br/>Move stock between locations efficiently with full tracking and documentation.',
+        intro:
+          '🔄 <strong>Inventory Transfers</strong><br/>Move stock between locations efficiently with full tracking and documentation.',
         position: 'top'
       },
       {
         element: '[data-tour="cycle-counting"]',
-        intro: '📋 <strong>Cycle Counting</strong><br/>Maintain inventory accuracy with systematic cycle counts and variance analysis.',
+        intro:
+          '📋 <strong>Cycle Counting</strong><br/>Maintain inventory accuracy with systematic cycle counts and variance analysis.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -383,27 +428,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '📈 <strong>Analytics Command Center</strong><br/>Transform data into actionable insights with comprehensive retail analytics and reporting.',
+        intro:
+          '📈 <strong>Analytics Command Center</strong><br/>Transform data into actionable insights with comprehensive retail analytics and reporting.',
         position: 'bottom'
       },
       {
         element: '[data-tour="kpi-dashboard"]',
-        intro: '🎯 <strong>KPI Dashboard</strong><br/>Monitor key performance indicators across sales, inventory, customers, and operations.',
+        intro:
+          '🎯 <strong>KPI Dashboard</strong><br/>Monitor key performance indicators across sales, inventory, customers, and operations.',
         position: 'bottom'
       },
       {
         element: '[data-tour="sales-analysis"]',
-        intro: '💰 <strong>Sales Analysis</strong><br/>Deep dive into sales trends, customer behavior, and product performance patterns.',
+        intro:
+          '💰 <strong>Sales Analysis</strong><br/>Deep dive into sales trends, customer behavior, and product performance patterns.',
         position: 'top'
       },
       {
         element: '[data-tour="predictive-insights"]',
-        intro: '🔮 <strong>Predictive Insights</strong><br/>AI-powered forecasts and recommendations to optimize future performance.',
+        intro:
+          '🔮 <strong>Predictive Insights</strong><br/>AI-powered forecasts and recommendations to optimize future performance.',
         position: 'top'
       },
       {
         element: '[data-tour="custom-reports"]',
-        intro: '📊 <strong>Custom Reports</strong><br/>Build and schedule custom reports tailored to your specific business needs.',
+        intro:
+          '📊 <strong>Custom Reports</strong><br/>Build and schedule custom reports tailored to your specific business needs.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -419,27 +469,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '🎪 <strong>Promotions Hub</strong><br/>Create, manage, and track promotional campaigns and customer loyalty programs.',
+        intro:
+          '🎪 <strong>Promotions Hub</strong><br/>Create, manage, and track promotional campaigns and customer loyalty programs.',
         position: 'bottom'
       },
       {
         element: '[data-tour="campaign-manager"]',
-        intro: '🚀 <strong>Campaign Management</strong><br/>Design and execute promotional campaigns with advanced targeting and automation.',
+        intro:
+          '🚀 <strong>Campaign Management</strong><br/>Design and execute promotional campaigns with advanced targeting and automation.',
         position: 'bottom'
       },
       {
         element: '[data-tour="loyalty-programs"]',
-        intro: '⭐ <strong>Loyalty Programs</strong><br/>Build customer loyalty with points, rewards, and personalized offers.',
+        intro:
+          '⭐ <strong>Loyalty Programs</strong><br/>Build customer loyalty with points, rewards, and personalized offers.',
         position: 'top'
       },
       {
         element: '[data-tour="promotion-analytics"]',
-        intro: '📈 <strong>Promotion Analytics</strong><br/>Measure campaign effectiveness and ROI with detailed performance metrics.',
+        intro:
+          '📈 <strong>Promotion Analytics</strong><br/>Measure campaign effectiveness and ROI with detailed performance metrics.',
         position: 'top'
       },
       {
         element: '[data-tour="customer-segments"]',
-        intro: '🎯 <strong>Customer Segmentation</strong><br/>Target specific customer groups with personalized marketing messages.',
+        intro:
+          '🎯 <strong>Customer Segmentation</strong><br/>Target specific customer groups with personalized marketing messages.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -455,27 +510,32 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
     steps: [
       {
         element: 'header',
-        intro: '👥 <strong>Customer Experience Center</strong><br/>Manage customer relationships, analyze behavior, and deliver personalized experiences.',
+        intro:
+          '👥 <strong>Customer Experience Center</strong><br/>Manage customer relationships, analyze behavior, and deliver personalized experiences.',
         position: 'bottom'
       },
       {
         element: '[data-tour="customer-profiles"]',
-        intro: '📋 <strong>Customer Profiles</strong><br/>Comprehensive customer records with purchase history, preferences, and interaction timeline.',
+        intro:
+          '📋 <strong>Customer Profiles</strong><br/>Comprehensive customer records with purchase history, preferences, and interaction timeline.',
         position: 'bottom'
       },
       {
         element: '[data-tour="segmentation-tools"]',
-        intro: '🎯 <strong>Customer Segmentation</strong><br/>Group customers by behavior, demographics, and value for targeted marketing.',
+        intro:
+          '🎯 <strong>Customer Segmentation</strong><br/>Group customers by behavior, demographics, and value for targeted marketing.',
         position: 'top'
       },
       {
         element: '[data-tour="communication-center"]',
-        intro: '💬 <strong>Communication Center</strong><br/>Manage customer communications across email, SMS, and social media channels.',
+        intro:
+          '💬 <strong>Communication Center</strong><br/>Manage customer communications across email, SMS, and social media channels.',
         position: 'top'
       },
       {
         element: '[data-tour="customer-analytics"]',
-        intro: '📊 <strong>Customer Analytics</strong><br/>Analyze customer lifetime value, churn risk, and engagement patterns.',
+        intro:
+          '📊 <strong>Customer Analytics</strong><br/>Analyze customer lifetime value, churn risk, and engagement patterns.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.completedTour
@@ -493,24 +553,28 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
       UNIVERSAL_TOUR_STEPS.metrics,
       {
         element: '[data-tour="metrics-bar"] > div:nth-child(2)',
-        intro: '🏭 <strong>Active Production Lines</strong><br/>Monitor manufacturing capacity and production efficiency in real-time.',
+        intro:
+          '🏭 <strong>Active Production Lines</strong><br/>Monitor manufacturing capacity and production efficiency in real-time.',
         position: 'bottom'
       },
       UNIVERSAL_TOUR_STEPS.welcomeSection,
       UNIVERSAL_TOUR_STEPS.moduleGrid,
       {
         element: '[data-tour="module-card"][data-module="production"]',
-        intro: '⚙️ <strong>Production Floor</strong><br/>Real-time production monitoring, quality control, and workflow optimization.',
+        intro:
+          '⚙️ <strong>Production Floor</strong><br/>Real-time production monitoring, quality control, and workflow optimization.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="quality"]',
-        intro: '✅ <strong>Quality Control</strong><br/>Ensure excellence at every step with automated quality assurance processes.',
+        intro:
+          '✅ <strong>Quality Control</strong><br/>Ensure excellence at every step with automated quality assurance processes.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="inventory"]',
-        intro: '📦 <strong>Raw Materials</strong><br/>Optimize inventory levels, reduce waste, and prevent stockouts.',
+        intro:
+          '📦 <strong>Raw Materials</strong><br/>Optimize inventory levels, reduce waste, and prevent stockouts.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.quickActions,
@@ -530,24 +594,28 @@ export const INDUSTRY_TOURS: Record<string, IndustryTour> = {
       UNIVERSAL_TOUR_STEPS.metrics,
       {
         element: '[data-tour="metrics-bar"] > div:nth-child(2)',
-        intro: '🏘️ <strong>Active Properties</strong><br/>Track occupancy rates and property performance across your entire portfolio.',
+        intro:
+          '🏘️ <strong>Active Properties</strong><br/>Track occupancy rates and property performance across your entire portfolio.',
         position: 'bottom'
       },
       UNIVERSAL_TOUR_STEPS.welcomeSection,
       UNIVERSAL_TOUR_STEPS.moduleGrid,
       {
         element: '[data-tour="module-card"][data-module="properties"]',
-        intro: '🏢 <strong>Property Management</strong><br/>Complete portfolio management with performance tracking and optimization.',
+        intro:
+          '🏢 <strong>Property Management</strong><br/>Complete portfolio management with performance tracking and optimization.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="tenants"]',
-        intro: '👥 <strong>Tenant Relations</strong><br/>Build lasting relationships with streamlined tenant management and communication.',
+        intro:
+          '👥 <strong>Tenant Relations</strong><br/>Build lasting relationships with streamlined tenant management and communication.',
         position: 'top'
       },
       {
         element: '[data-tour="module-card"][data-module="maintenance"]',
-        intro: '🔧 <strong>Maintenance</strong><br/>Proactive property care with preventive maintenance scheduling and tracking.',
+        intro:
+          '🔧 <strong>Maintenance</strong><br/>Proactive property care with preventive maintenance scheduling and tracking.',
         position: 'top'
       },
       UNIVERSAL_TOUR_STEPS.quickActions,
@@ -676,7 +744,7 @@ export class UniversalTourManager {
 
     // Ensure introJs is loaded client-side
     if (typeof window === 'undefined') return
-    
+
     if (!introJs) {
       const module = await import('intro.js')
       introJs = module.default
@@ -739,7 +807,8 @@ export class UniversalTourManager {
   private showCompletionMessage(): void {
     // Show a success message
     const toast = document.createElement('div')
-    toast.className = 'fixed top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white p-4 rounded-lg shadow-lg z-50'
+    toast.className =
+      'fixed top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white p-4 rounded-lg shadow-lg z-50'
     toast.innerHTML = `
       <div class="flex items-center gap-3">
         <div class="text-2xl">🎉</div>
@@ -759,10 +828,10 @@ export class UniversalTourManager {
   private trackTourEvent(event: string, industry: string): void {
     // Track tour analytics
     console.log(`HERA Tour Event: ${event} for ${industry}`)
-    
+
     // You can integrate with analytics services here
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'tour_action', {
+      ;(window as any).gtag('event', 'tour_action', {
         event_category: 'guided_tour',
         event_label: `${industry}_${event}`,
         value: 1
@@ -770,7 +839,11 @@ export class UniversalTourManager {
     }
   }
 
-  public static addTourDataAttributes(element: HTMLElement, tourId: string, moduleId?: string): void {
+  public static addTourDataAttributes(
+    element: HTMLElement,
+    tourId: string,
+    moduleId?: string
+  ): void {
     element.setAttribute('data-tour', tourId)
     if (moduleId) {
       element.setAttribute('data-module', moduleId)
@@ -782,12 +855,12 @@ export class UniversalTourManager {
     button.className = `tour-trigger ${className}`.trim()
     button.innerHTML = '❓ Take Tour'
     button.title = 'Start Guided Tour'
-    
+
     button.onclick = async () => {
       const tourManager = new UniversalTourManager()
       await tourManager.startTour(industryKey)
     }
-    
+
     return button
   }
 }
@@ -814,15 +887,15 @@ export const useUniversalTour = (industryKey: string) => {
 // Auto-start tour based on localStorage preference
 export const checkAutoStartTour = (industryKey: string): boolean => {
   if (typeof window === 'undefined') return false
-  
+
   const hasSeenTour = localStorage.getItem(`hera_tour_completed_${industryKey}`)
   const isFirstVisit = !localStorage.getItem(`hera_visited_${industryKey}`)
-  
+
   if (isFirstVisit && !hasSeenTour) {
     localStorage.setItem(`hera_visited_${industryKey}`, 'true')
     return true
   }
-  
+
   return false
 }
 

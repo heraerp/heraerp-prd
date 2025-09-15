@@ -27,12 +27,12 @@ export interface EnterpriseStatsCardProps {
   metric: MetricData
   description?: string
   icon?: LucideIcon
-  
+
   // Visual variants
   variant?: 'default' | 'success' | 'warning' | 'danger' | 'info'
   size?: 'sm' | 'md' | 'lg' | 'xl'
   layout?: 'horizontal' | 'vertical' | 'compact'
-  
+
   // Enterprise features
   trend?: {
     value: number
@@ -49,24 +49,24 @@ export interface EnterpriseStatsCardProps {
     text: string
     variant?: 'default' | 'success' | 'warning' | 'danger'
   }
-  
+
   // Interactivity
   onClick?: () => void
   href?: string
   tooltip?: string
   expandable?: boolean
   selectable?: boolean
-  
+
   // Real-time features
   live?: boolean
   updateInterval?: number
   animate?: boolean
-  
+
   // Glass effects (inherited from EnterpriseCard)
   glassIntensity?: 'subtle' | 'medium' | 'strong' | 'ultra'
   glow?: boolean
   shimmer?: boolean
-  
+
   // Additional
   className?: string
   loading?: boolean
@@ -76,11 +76,11 @@ export interface EnterpriseStatsCardProps {
 // Format metric based on type
 function formatMetric(metric: MetricData): string {
   const { current, unit = '', format = 'number', precision = 0 } = metric
-  
+
   if (typeof current === 'string') return current
-  
+
   let formatted: string
-  
+
   switch (format) {
     case 'currency':
       formatted = new Intl.NumberFormat('en-US', {
@@ -90,11 +90,11 @@ function formatMetric(metric: MetricData): string {
         maximumFractionDigits: precision
       }).format(current)
       break
-      
+
     case 'percentage':
       formatted = `${current.toFixed(precision)}%`
       break
-      
+
     case 'compact':
       formatted = new Intl.NumberFormat('en-US', {
         notation: 'compact',
@@ -102,33 +102,40 @@ function formatMetric(metric: MetricData): string {
         maximumFractionDigits: precision
       }).format(current)
       break
-      
+
     default:
       formatted = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: precision,
         maximumFractionDigits: precision
       }).format(current)
   }
-  
+
   return `${formatted}${unit}`
 }
 
 // Calculate trend from metric data
 function calculateTrend(metric: MetricData): number | null {
-  if (!metric.previous || typeof metric.current !== 'number' || typeof metric.previous !== 'number') {
+  if (
+    !metric.previous ||
+    typeof metric.current !== 'number' ||
+    typeof metric.previous !== 'number'
+  ) {
     return null
   }
-  
+
   const change = ((metric.current - metric.previous) / metric.previous) * 100
   return Math.round(change * 10) / 10 // Round to 1 decimal
 }
 
 // Mini sparkline component
-const Sparkline: React.FC<{ data: number[]; color?: string }> = ({ data, color = 'currentColor' }) => {
+const Sparkline: React.FC<{ data: number[]; color?: string }> = ({
+  data,
+  color = 'currentColor'
+}) => {
   const max = Math.max(...data)
   const min = Math.min(...data)
   const range = max - min || 1
-  
+
   const points = data
     .map((value, i) => {
       const x = (i / (data.length - 1)) * 100
@@ -136,7 +143,7 @@ const Sparkline: React.FC<{ data: number[]; color?: string }> = ({ data, color =
       return `${x},${y}`
     })
     .join(' ')
-  
+
   return (
     <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
       <polyline
@@ -151,59 +158,60 @@ const Sparkline: React.FC<{ data: number[]; color?: string }> = ({ data, color =
 }
 
 export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseStatsCardProps>(
-  ({
-    title,
-    metric,
-    description,
-    icon: Icon,
-    variant = 'default',
-    size = 'md',
-    layout = 'vertical',
-    trend,
-    sparkline,
-    comparison,
-    badge,
-    onClick,
-    href,
-    tooltip,
-    expandable = false,
-    selectable = false,
-    live = false,
-    updateInterval = 5000,
-    animate = true,
-    glassIntensity = 'medium',
-    glow = false,
-    shimmer = false,
-    className,
-    loading = false,
-    error,
-    ...props
-  }, ref) => {
+  (
+    {
+      title,
+      metric,
+      description,
+      icon: Icon,
+      variant = 'default',
+      size = 'md',
+      layout = 'vertical',
+      trend,
+      sparkline,
+      comparison,
+      badge,
+      onClick,
+      href,
+      tooltip,
+      expandable = false,
+      selectable = false,
+      live = false,
+      updateInterval = 5000,
+      animate = true,
+      glassIntensity = 'medium',
+      glow = false,
+      shimmer = false,
+      className,
+      loading = false,
+      error,
+      ...props
+    },
+    ref
+  ) => {
     const [isExpanded, setIsExpanded] = React.useState(false)
     const [isSelected, setIsSelected] = React.useState(false)
     const [currentValue, setCurrentValue] = React.useState(metric.current)
-    
+
     // Auto-calculate trend if not provided
     const calculatedTrend = trend?.value ?? calculateTrend(metric)
-    
+
     // Live updates simulation
     React.useEffect(() => {
       if (!live || typeof metric.current !== 'number') return
-      
+
       const interval = setInterval(() => {
         // Simulate value change (±5%)
         const change = (Math.random() - 0.5) * 0.1
         setCurrentValue(prev => {
-          const newVal = typeof prev === 'number' 
-            ? prev * (1 + change)
-            : metric.current
+          const newVal = typeof prev === 'number' ? prev * (1 + change) : metric.current
           return newVal
         })
       }, updateInterval)
-      
+
       return () => clearInterval(interval)
     }, [live, metric.current, updateInterval])
-    
+
     // Size configurations
     const sizeConfig = {
       sm: {
@@ -235,9 +243,9 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
         spacing: 'gap-4'
       }
     }
-    
+
     const config = sizeConfig[size]
-    
+
     // Variant styles
     const variantStyles = {
       default: {
@@ -266,16 +274,17 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
         glow: 'rgba(168, 85, 247, 0.3)'
       }
     }
-    
+
     const styles = variantStyles[variant]
-    
+
     // Trend icon
-    const TrendIcon = calculatedTrend && calculatedTrend > 0 
-      ? TrendingUp 
-      : calculatedTrend && calculatedTrend < 0 
-      ? TrendingDown 
-      : Minus
-    
+    const TrendIcon =
+      calculatedTrend && calculatedTrend > 0
+        ? TrendingUp
+        : calculatedTrend && calculatedTrend < 0
+          ? TrendingDown
+          : Minus
+
     const cardContent = (
       <EnterpriseCard
         ref={ref}
@@ -304,37 +313,37 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
         compact
         {...props}
       >
-        <div className={cn(
-          'flex',
-          layout === 'horizontal' ? 'flex-row items-center justify-between' : 'flex-col',
-          config.spacing
-        )}>
+        <div
+          className={cn(
+            'flex',
+            layout === 'horizontal' ? 'flex-row items-center justify-between' : 'flex-col',
+            config.spacing
+          )}
+        >
           {/* Header section */}
-          <div className={cn(
-            'flex items-start',
-            layout === 'horizontal' ? 'gap-3' : 'gap-3 w-full'
-          )}>
+          <div
+            className={cn('flex items-start', layout === 'horizontal' ? 'gap-3' : 'gap-3 w-full')}
+          >
             {/* Icon */}
             {Icon && (
-              <div className={cn(
-                'flex items-center justify-center rounded-lg shrink-0',
-                config.iconContainer,
-                styles.icon
-              )}>
+              <div
+                className={cn(
+                  'flex items-center justify-center rounded-lg shrink-0',
+                  config.iconContainer,
+                  styles.icon
+                )}
+              >
                 <Icon className={config.icon} />
               </div>
             )}
-            
+
             {/* Title and description */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <h3 className={cn(
-                        'text-muted-foreground truncate',
-                        config.title
-                      )}>
+                      <h3 className={cn('text-muted-foreground truncate', config.title)}>
                         {title}
                       </h3>
                     </TooltipTrigger>
@@ -345,33 +354,30 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
                     )}
                   </Tooltip>
                 </TooltipProvider>
-                
+
                 {badge && (
-                  <span className={cn(
-                    'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
-                    badge.variant === 'success' && 'bg-green-100 text-green-800',
-                    badge.variant === 'warning' && 'bg-amber-100 text-amber-800',
-                    badge.variant === 'danger' && 'bg-red-100 text-red-800',
-                    (!badge.variant || badge.variant === 'default') && 'bg-gray-100 text-gray-800'
-                  )}>
+                  <span
+                    className={cn(
+                      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                      badge.variant === 'success' && 'bg-green-100 text-green-800',
+                      badge.variant === 'warning' && 'bg-amber-100 text-amber-800',
+                      badge.variant === 'danger' && 'bg-red-100 text-red-800',
+                      (!badge.variant || badge.variant === 'default') && 'bg-gray-100 text-gray-800'
+                    )}
+                  >
                     {badge.text}
                   </span>
                 )}
               </div>
-              
+
               {description && !isExpanded && (
-                <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                  {description}
-                </p>
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">{description}</p>
               )}
             </div>
           </div>
-          
+
           {/* Metric section */}
-          <div className={cn(
-            'flex items-baseline gap-2',
-            layout === 'horizontal' ? '' : 'mt-2'
-          )}>
+          <div className={cn('flex items-baseline gap-2', layout === 'horizontal' ? '' : 'mt-2')}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentValue.toString()}
@@ -384,52 +390,52 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
                 {formatMetric({ ...metric, current: currentValue })}
               </motion.div>
             </AnimatePresence>
-            
+
             {/* Trend indicator */}
             {calculatedTrend !== null && (
-              <div className={cn(
-                'flex items-center gap-1 text-sm font-medium',
-                calculatedTrend > 0 ? 'text-green-600' : 
-                calculatedTrend < 0 ? 'text-red-600' : 
-                'text-gray-500'
-              )}>
-                {trend?.showArrow !== false && (
-                  <TrendIcon className="w-3 h-3" />
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-sm font-medium',
+                  calculatedTrend > 0
+                    ? 'text-green-600'
+                    : calculatedTrend < 0
+                      ? 'text-red-600'
+                      : 'text-gray-500'
                 )}
+              >
+                {trend?.showArrow !== false && <TrendIcon className="w-3 h-3" />}
                 <span>{Math.abs(calculatedTrend)}%</span>
                 {trend?.period && (
-                  <span className="text-xs text-muted-foreground">
-                    {trend.period}
-                  </span>
+                  <span className="text-xs text-muted-foreground">{trend.period}</span>
                 )}
               </div>
             )}
           </div>
-          
+
           {/* Sparkline */}
           {sparkline && (
             <div className="h-8 w-full mt-2">
               <Sparkline data={sparkline} color={styles.accent} />
             </div>
           )}
-          
+
           {/* Comparison */}
           {comparison && (
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
-              <span className="text-xs text-muted-foreground">
-                {comparison.label}
-              </span>
-              <span className={cn(
-                'text-xs font-medium',
-                comparison.type === 'positive' && 'text-green-600',
-                comparison.type === 'negative' && 'text-red-600',
-                comparison.type === 'neutral' && 'text-gray-600'
-              )}>
+              <span className="text-xs text-muted-foreground">{comparison.label}</span>
+              <span
+                className={cn(
+                  'text-xs font-medium',
+                  comparison.type === 'positive' && 'text-green-600',
+                  comparison.type === 'negative' && 'text-red-600',
+                  comparison.type === 'neutral' && 'text-gray-600'
+                )}
+              >
                 {comparison.value}
               </span>
             </div>
           )}
-          
+
           {/* Error state */}
           {error && (
             <div className="flex items-center gap-2 mt-2 text-xs text-red-600">
@@ -438,7 +444,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
             </div>
           )}
         </div>
-        
+
         {/* Expanded content */}
         <AnimatePresence>
           {isExpanded && description && (
@@ -455,7 +461,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         {/* Live indicator */}
         {live && (
           <div className="absolute top-2 right-2">
@@ -469,7 +475,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
         )}
       </EnterpriseCard>
     )
-    
+
     // Wrap with link if href provided
     if (href) {
       return (
@@ -478,7 +484,7 @@ export const EnterpriseStatsCard = React.forwardRef<HTMLDivElement, EnterpriseSt
         </a>
       )
     }
-    
+
     return cardContent
   }
 )
@@ -499,14 +505,6 @@ export const StatsGrid: React.FC<{
     5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-5',
     6: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6'
   }
-  
-  return (
-    <div className={cn(
-      'grid gap-4',
-      gridCols[columns],
-      className
-    )}>
-      {children}
-    </div>
-  )
+
+  return <div className={cn('grid gap-4', gridCols[columns], className)}>{children}</div>
 }

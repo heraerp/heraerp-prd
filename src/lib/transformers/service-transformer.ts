@@ -20,13 +20,13 @@ export function transformToUIService(data: {
   relationships: any[]
 }): UIService {
   const { entity, dynamicFields, relationships } = data
-  
+
   // Helper to get field value
   const getField = (fieldName: string) => {
     const field = dynamicFields.find(f => f.field_name === fieldName)
     return field?.field_value_text || field?.field_value_number || field?.field_value_date || ''
   }
-  
+
   return {
     id: entity.id,
     name: entity.entity_name,
@@ -44,15 +44,16 @@ export function transformToUIService(data: {
 
 export function filterService(items: UIService[], searchTerm: string): UIService[] {
   if (!searchTerm) return items
-  
+
   const term = searchTerm.toLowerCase()
-  return items.filter(item => 
-    item.name.toLowerCase().includes(term) ||
-    item.name?.toLowerCase().includes(term) ||
-    item.category?.toLowerCase().includes(term) ||
-    item.price?.toLowerCase().includes(term) ||
-    item.duration?.toLowerCase().includes(term) ||
-    item.description?.toLowerCase().includes(term) ||
-    item.requires_license?.toLowerCase().includes(term)
+  return items.filter(
+    item =>
+      item.name.toLowerCase().includes(term) ||
+      item.name?.toLowerCase().includes(term) ||
+      item.category?.toLowerCase().includes(term) ||
+      item.price?.toLowerCase().includes(term) ||
+      item.duration?.toLowerCase().includes(term) ||
+      item.description?.toLowerCase().includes(term) ||
+      item.requires_license?.toLowerCase().includes(term)
   )
 }

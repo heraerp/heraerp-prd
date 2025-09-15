@@ -4,15 +4,15 @@
  */
 
 export interface CircuitBreakerOptions {
-  failureThreshold: number      // Number of failures before opening
-  resetTimeout: number          // Time before attempting reset (ms)
-  monitoringPeriod: number     // Window for failure counting (ms)
-  successThreshold?: number    // Successes needed to close circuit
+  failureThreshold: number // Number of failures before opening
+  resetTimeout: number // Time before attempting reset (ms)
+  monitoringPeriod: number // Window for failure counting (ms)
+  successThreshold?: number // Successes needed to close circuit
 }
 
 export enum CircuitState {
-  CLOSED = 'closed',       // Normal operation
-  OPEN = 'open',          // Failing fast
+  CLOSED = 'closed', // Normal operation
+  OPEN = 'open', // Failing fast
   HALF_OPEN = 'half-open' // Testing if service recovered
 }
 

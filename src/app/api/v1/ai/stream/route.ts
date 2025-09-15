@@ -7,7 +7,7 @@ import { universalAI, type UniversalAIRequest, AI_SMART_CODES } from '@/lib/ai/u
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     const aiRequest: UniversalAIRequest = {
       smart_code: body.smart_code || AI_SMART_CODES.CHAT_COMPLETION,
       task_type: body.task_type || 'chat',
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
           // Process streaming AI request
           const streamGenerator = universalAI.processStream(aiRequest)
-          
+
           for await (const chunk of streamGenerator) {
             const streamData = {
               type: 'content',
@@ -70,7 +70,6 @@ export async function POST(request: NextRequest) {
             timestamp: new Date().toISOString()
           }
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(completion)}\n\n`))
-          
         } catch (error) {
           const errorData = {
             type: 'error',
@@ -89,13 +88,12 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        Connection: 'keep-alive',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST',
         'Access-Control-Allow-Headers': 'Content-Type'
       }
     })
-
   } catch (error) {
     return new Response(
       JSON.stringify({

@@ -7,11 +7,11 @@ import { HeraMCPChat } from '@/components/chat/HeraMCPChat'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Sparkles, 
-  Code2, 
-  Users, 
-  Settings, 
+import {
+  Sparkles,
+  Code2,
+  Users,
+  Settings,
   BarChart3,
   FileText,
   CheckCircle,
@@ -49,9 +49,7 @@ export default function MCPChatPage() {
                 Development
               </Badge>
             )}
-            <Badge variant="outline">
-              API: {apiUrl}
-            </Badge>
+            <Badge variant="outline">API: {apiUrl}</Badge>
           </div>
         </div>
 
@@ -120,15 +118,11 @@ export default function MCPChatPage() {
                 Customer Mode
               </h3>
               <p className="text-sm text-muted-foreground">
-                Simplified interface for business users. Natural language commands for everyday operations
-                like creating customers, booking appointments, and generating reports.
+                Simplified interface for business users. Natural language commands for everyday
+                operations like creating customers, booking appointments, and generating reports.
               </p>
             </Card>
-            <HeraMCPChat 
-              mode="customer" 
-              apiUrl={apiUrl}
-              className="shadow-lg"
-            />
+            <HeraMCPChat mode="customer" apiUrl={apiUrl} className="shadow-lg" />
           </div>
         </TabsContent>
 
@@ -140,12 +134,13 @@ export default function MCPChatPage() {
                 Developer Mode
               </h3>
               <p className="text-sm text-muted-foreground">
-                Advanced debugging interface with full access to interpretation data, raw results, 
-                and performance metrics. Perfect for testing and validating the universal architecture.
+                Advanced debugging interface with full access to interpretation data, raw results,
+                and performance metrics. Perfect for testing and validating the universal
+                architecture.
               </p>
             </Card>
-            <HeraMCPChat 
-              mode="internal" 
+            <HeraMCPChat
+              mode="internal"
               apiUrl={apiUrl}
               showDebugInfo={true}
               className="shadow-lg"
@@ -163,7 +158,9 @@ export default function MCPChatPage() {
           </h3>
           <div className="space-y-2 text-sm">
             <div className="flex items-start gap-2">
-              <Badge variant="secondary" className="mt-0.5">Entity</Badge>
+              <Badge variant="secondary" className="mt-0.5">
+                Entity
+              </Badge>
               <div>
                 <p className="font-medium">Create & Manage Entities</p>
                 <p className="text-muted-foreground">
@@ -172,7 +169,9 @@ export default function MCPChatPage() {
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Badge variant="secondary" className="mt-0.5">Transaction</Badge>
+              <Badge variant="secondary" className="mt-0.5">
+                Transaction
+              </Badge>
               <div>
                 <p className="font-medium">Process Transactions</p>
                 <p className="text-muted-foreground">
@@ -181,7 +180,9 @@ export default function MCPChatPage() {
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Badge variant="secondary" className="mt-0.5">Analytics</Badge>
+              <Badge variant="secondary" className="mt-0.5">
+                Analytics
+              </Badge>
               <div>
                 <p className="font-medium">Get Insights</p>
                 <p className="text-muted-foreground">

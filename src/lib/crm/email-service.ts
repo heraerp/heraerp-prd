@@ -1,7 +1,7 @@
 /**
  * HERA CRM Email Integration Service
  * Enables real business communication capabilities
- * 
+ *
  * Project Manager Priority #3: Email Integration
  */
 
@@ -45,7 +45,7 @@ export interface EmailTemplate {
 export class CRMEmailService {
   private organizationId: string
   private emailProvider: 'smtp' | 'sendgrid' | 'mailgun' | 'mock'
-  
+
   constructor(organizationId: string, provider: 'smtp' | 'sendgrid' | 'mailgun' | 'mock' = 'mock') {
     this.organizationId = organizationId
     this.emailProvider = provider
@@ -54,17 +54,19 @@ export class CRMEmailService {
   /**
    * Send email to contact
    */
-  async sendEmail(emailData: EmailMessage): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  async sendEmail(
+    emailData: EmailMessage
+  ): Promise<{ success: boolean; messageId?: string; error?: string }> {
     try {
       // Validate email data
       if (!emailData.to.length) {
         throw new Error('At least one recipient is required')
       }
-      
+
       if (!emailData.subject.trim()) {
         throw new Error('Subject is required')
       }
-      
+
       if (!emailData.body.trim()) {
         throw new Error('Email body is required')
       }
@@ -113,7 +115,7 @@ export class CRMEmailService {
       // TODO: Implement SMTP using nodemailer
       // This would require SMTP settings from organization config
       const smtpConfig = await this.getSMTPConfig()
-      
+
       if (!smtpConfig) {
         throw new Error('SMTP configuration not found')
       }
@@ -144,7 +146,7 @@ export class CRMEmailService {
     try {
       // TODO: Implement SendGrid API integration
       const sendGridConfig = await this.getSendGridConfig()
-      
+
       if (!sendGridConfig?.apiKey) {
         throw new Error('SendGrid API key not configured')
       }
@@ -174,7 +176,7 @@ export class CRMEmailService {
     try {
       // TODO: Implement Mailgun API integration
       const mailgunConfig = await this.getMailgunConfig()
-      
+
       if (!mailgunConfig?.apiKey) {
         throw new Error('Mailgun API key not configured')
       }
@@ -267,7 +269,10 @@ export class CRMEmailService {
   /**
    * Update email log with send result
    */
-  private async updateEmailLog(emailData: EmailMessage, result: { success: boolean; messageId?: string; error?: string }) {
+  private async updateEmailLog(
+    emailData: EmailMessage,
+    result: { success: boolean; messageId?: string; error?: string }
+  ) {
     try {
       const status = result.success ? 'sent' : 'failed'
       const updateData = {
@@ -293,7 +298,7 @@ export class CRMEmailService {
     try {
       // TODO: Implement HERA API call to get email entities
       // Filter by contact_id and organization_id
-      
+
       // Mock implementation
       const mockEmails: EmailMessage[] = [
         {
@@ -331,7 +336,7 @@ export class CRMEmailService {
   async getEmailTemplates(category?: string): Promise<EmailTemplate[]> {
     try {
       // TODO: Implement HERA API call to get template entities
-      
+
       // Mock templates
       const mockTemplates: EmailTemplate[] = [
         {
@@ -357,7 +362,15 @@ export class CRMEmailService {
           name: 'Proposal Email',
           subject: 'Proposal for {{company_name}} - {{proposal_title}}',
           body: 'Dear {{contact_name}},\n\nPlease find attached our proposal for {{proposal_title}}.\n\nKey benefits:\n- {{benefit_1}}\n- {{benefit_2}}\n- {{benefit_3}}\n\nI look forward to discussing this with you.\n\nBest regards,\n{{sender_name}}',
-          variables: ['contact_name', 'company_name', 'proposal_title', 'benefit_1', 'benefit_2', 'benefit_3', 'sender_name'],
+          variables: [
+            'contact_name',
+            'company_name',
+            'proposal_title',
+            'benefit_1',
+            'benefit_2',
+            'benefit_3',
+            'sender_name'
+          ],
           category: 'sales',
           organizationId: this.organizationId
         }
@@ -373,7 +386,10 @@ export class CRMEmailService {
   /**
    * Process email template with variables
    */
-  processTemplate(template: EmailTemplate, variables: Record<string, string>): { subject: string; body: string } {
+  processTemplate(
+    template: EmailTemplate,
+    variables: Record<string, string>
+  ): { subject: string; body: string } {
     let processedSubject = template.subject
     let processedBody = template.body
 
@@ -423,6 +439,9 @@ export class CRMEmailService {
 /**
  * Create email service instance
  */
-export const createEmailService = (organizationId: string, provider?: 'smtp' | 'sendgrid' | 'mailgun' | 'mock') => {
+export const createEmailService = (
+  organizationId: string,
+  provider?: 'smtp' | 'sendgrid' | 'mailgun' | 'mock'
+) => {
   return new CRMEmailService(organizationId, provider)
 }

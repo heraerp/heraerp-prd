@@ -6,15 +6,21 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
-import { 
-  TestTube, 
-  Calculator, 
-  Target, 
-  CheckCircle2, 
-  Clock, 
+import {
+  TestTube,
+  Calculator,
+  Target,
+  CheckCircle2,
+  Clock,
   AlertCircle,
   FileText,
   TrendingUp,
@@ -39,9 +45,21 @@ const AUDIT_AREAS: { value: AuditArea; label: string; color: string }[] = [
 
 const PROCEDURE_TYPES: { value: ProcedureType; label: string; description: string }[] = [
   { value: 'walkthrough', label: 'Walkthrough', description: 'Understand and document processes' },
-  { value: 'control_testing', label: 'Control Testing', description: 'Test operating effectiveness of controls' },
-  { value: 'substantive_analytical', label: 'Analytical Procedures', description: 'Substantive analytical procedures' },
-  { value: 'substantive_detail', label: 'Detail Testing', description: 'Detailed substantive testing' },
+  {
+    value: 'control_testing',
+    label: 'Control Testing',
+    description: 'Test operating effectiveness of controls'
+  },
+  {
+    value: 'substantive_analytical',
+    label: 'Analytical Procedures',
+    description: 'Substantive analytical procedures'
+  },
+  {
+    value: 'substantive_detail',
+    label: 'Detail Testing',
+    description: 'Detailed substantive testing'
+  },
   { value: 'confirmation', label: 'Confirmations', description: 'Third-party confirmations' },
   { value: 'observation', label: 'Observation', description: 'Direct observation of processes' },
   { value: 'inquiry', label: 'Inquiry', description: 'Management and staff inquiries' },
@@ -64,7 +82,7 @@ interface AuditProcedure {
 export function AuditProceduresWorkbench() {
   const [selectedArea, setSelectedArea] = useState<AuditArea>('cash_bank')
   const [selectedProcedure, setSelectedProcedure] = useState<string | null>(null)
-  
+
   const [procedures, setProcedures] = useState<AuditProcedure[]>([
     {
       id: 'proc_001',
@@ -124,11 +142,16 @@ export function AuditProceduresWorkbench() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'planned': return 'bg-gray-100 text-gray-800'
-      case 'in_progress': return 'bg-blue-100 text-blue-800'
-      case 'completed': return 'bg-green-100 text-green-800'
-      case 'reviewed': return 'bg-purple-100 text-purple-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'planned':
+        return 'bg-gray-100 text-gray-800'
+      case 'in_progress':
+        return 'bg-blue-100 text-blue-800'
+      case 'completed':
+        return 'bg-green-100 text-green-800'
+      case 'reviewed':
+        return 'bg-purple-100 text-purple-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -143,9 +166,13 @@ export function AuditProceduresWorkbench() {
       completed: areaProcedures.filter(p => p.status === 'completed').length,
       in_progress: areaProcedures.filter(p => p.status === 'in_progress').length,
       exceptions: areaProcedures.reduce((sum, p) => sum + p.exceptions_noted, 0),
-      avg_completion: areaProcedures.length > 0 
-        ? Math.round(areaProcedures.reduce((sum, p) => sum + p.completion_percentage, 0) / areaProcedures.length)
-        : 0
+      avg_completion:
+        areaProcedures.length > 0
+          ? Math.round(
+              areaProcedures.reduce((sum, p) => sum + p.completion_percentage, 0) /
+                areaProcedures.length
+            )
+          : 0
     }
   }
 
@@ -208,10 +235,10 @@ export function AuditProceduresWorkbench() {
 
       {/* Audit Areas Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {AUDIT_AREAS.map((area) => {
+        {AUDIT_AREAS.map(area => {
           const stats = getAreaStats(area.value)
           return (
-            <Card 
+            <Card
               key={area.value}
               className={`cursor-pointer transition-all hover:shadow-lg ${
                 selectedArea === area.value ? 'ring-2 ring-blue-500 shadow-lg' : ''
@@ -220,7 +247,9 @@ export function AuditProceduresWorkbench() {
             >
               <CardContent className="p-4">
                 <div className="text-center">
-                  <div className={`w-12 h-12 mx-auto mb-3 bg-${area.color}-100 rounded-xl flex items-center justify-center`}>
+                  <div
+                    className={`w-12 h-12 mx-auto mb-3 bg-${area.color}-100 rounded-xl flex items-center justify-center`}
+                  >
                     <Activity className={`w-6 h-6 text-${area.color}-600`} />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">{area.label}</h3>
@@ -244,9 +273,7 @@ export function AuditProceduresWorkbench() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>
-              {AUDIT_AREAS.find(a => a.value === selectedArea)?.label} - Audit Procedures
-            </span>
+            <span>{AUDIT_AREAS.find(a => a.value === selectedArea)?.label} - Audit Procedures</span>
             <Button size="sm" variant="outline">
               <FileText className="w-4 h-4 mr-1" />
               Generate Program
@@ -255,8 +282,8 @@ export function AuditProceduresWorkbench() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {getAreaProcedures(selectedArea).map((procedure) => (
-              <div 
+            {getAreaProcedures(selectedArea).map(procedure => (
+              <div
                 key={procedure.id}
                 className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
               >
@@ -275,30 +302,34 @@ export function AuditProceduresWorkbench() {
                         </Badge>
                       )}
                     </div>
-                    
+
                     <h4 className="font-medium text-gray-900 mb-1">{procedure.description}</h4>
-                    
+
                     <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
                       <div>
                         <span className="font-medium">Assigned to:</span> {procedure.assigned_to}
                       </div>
                       <div>
-                        <span className="font-medium">Sample size:</span> {procedure.sample_size || 'N/A'}
+                        <span className="font-medium">Sample size:</span>{' '}
+                        {procedure.sample_size || 'N/A'}
                       </div>
                       <div>
-                        <span className="font-medium">Materiality:</span> ${procedure.materiality_threshold.toLocaleString()}
+                        <span className="font-medium">Materiality:</span> $
+                        {procedure.materiality_threshold.toLocaleString()}
                       </div>
                     </div>
-                    
+
                     <div className="mt-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-medium text-gray-700">Progress</span>
-                        <span className="text-sm font-bold text-gray-900">{procedure.completion_percentage}%</span>
+                        <span className="text-sm font-bold text-gray-900">
+                          {procedure.completion_percentage}%
+                        </span>
                       </div>
                       <Progress value={procedure.completion_percentage} className="h-2" />
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 ml-4">
                     <Button variant="outline" size="sm">
                       <FileText className="w-3 h-3 mr-1" />
@@ -312,12 +343,14 @@ export function AuditProceduresWorkbench() {
                 </div>
               </div>
             ))}
-            
+
             {getAreaProcedures(selectedArea).length === 0 && (
               <div className="text-center py-8">
                 <TestTube className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                 <p className="text-gray-600">No procedures defined for this area</p>
-                <p className="text-sm text-gray-500 mt-1">Create audit procedures to start testing</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Create audit procedures to start testing
+                </p>
               </div>
             )}
           </div>
@@ -334,7 +367,7 @@ export function AuditProceduresWorkbench() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {PROCEDURE_TYPES.map((type) => (
+            {PROCEDURE_TYPES.map(type => (
               <div key={type.value} className="p-3 border rounded-lg">
                 <h4 className="font-medium text-gray-900 mb-1">{type.label}</h4>
                 <p className="text-sm text-gray-600">{type.description}</p>

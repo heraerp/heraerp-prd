@@ -1,0 +1,44 @@
+smart_code: HERA.SALON.SEED.CORE_ORGS.v1
+organizations:
+  - organization_name: Head Office (Dubai)
+    organization_code: ORG-HO-DXB
+    organization_type: services
+    industry_classification: beauty_services
+    currency_code: AED
+    status: active
+    settings:
+      role: head_office
+      finance_dna_enabled: true
+      country: AE
+      timezone: Asia/Dubai
+    features_enabled:
+      finance_dna: true
+
+  - organization_name: Branch 1 - Dubai Main
+    organization_code: ORG-BR-DXB1
+    organization_type: services
+    industry_classification: beauty_services
+    currency_code: AED
+    status: active
+    settings:
+      role: branch
+      parent_org_code: ORG-HO-DXB
+      location: { city: Dubai, area: "Main" }
+      timezone: Asia/Dubai
+    features_enabled:
+      finance_dna: true
+
+  - organization_name: Branch 2 - Dubai Marina
+    organization_code: ORG-BR-DXB2
+    organization_type: services
+    industry_classification: beauty_services
+    currency_code: AED
+    status: active
+    settings:
+      role: branch
+      parent_org_code: ORG-HO-DXB
+      location: { city: Dubai, area: "Marina" }
+      timezone: Asia/Dubai
+    features_enabled:
+      finance_dna: true
+

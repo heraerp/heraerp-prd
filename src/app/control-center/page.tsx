@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Control Center Dashboard
  * Smart Code: HERA.UI.CONTROL.CENTER.DASHBOARD.v1
- * 
+ *
  * Visual dashboard for the Master Control Center
  */
 
@@ -57,9 +57,21 @@ const mockHealthData = {
 
 const mockGuardrails = [
   { name: 'No Custom Tables', status: 'passed', description: 'Only sacred 6 tables exist' },
-  { name: 'Organization ID Required', status: 'passed', description: 'All queries include org context' },
-  { name: 'Smart Code Compliance', status: 'warning', description: '3 operations missing smart codes' },
-  { name: 'Multi-Tenant Isolation', status: 'passed', description: 'Perfect data isolation maintained' },
+  {
+    name: 'Organization ID Required',
+    status: 'passed',
+    description: 'All queries include org context'
+  },
+  {
+    name: 'Smart Code Compliance',
+    status: 'warning',
+    description: '3 operations missing smart codes'
+  },
+  {
+    name: 'Multi-Tenant Isolation',
+    status: 'passed',
+    description: 'Perfect data isolation maintained'
+  },
   { name: 'Audit Trail Complete', status: 'passed', description: 'All operations tracked' }
 ]
 
@@ -139,11 +151,7 @@ export default function ControlCenterDashboard() {
               Master orchestrator and guardian of the entire HERA ecosystem
             </p>
           </div>
-          <Button 
-            onClick={runSystemScan}
-            disabled={isScanning}
-            size="lg"
-          >
+          <Button onClick={runSystemScan} disabled={isScanning} size="lg">
             {isScanning ? (
               <>
                 <Activity className="mr-2 h-4 w-4 animate-spin" />
@@ -173,26 +181,34 @@ export default function ControlCenterDashboard() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl font-bold">{mockHealthData.overall}%</span>
                 <Badge className={cn('text-white', getHealthColor(mockHealthData.overall))}>
-                  {mockHealthData.overall >= 90 ? 'Excellent' : 
-                   mockHealthData.overall >= 70 ? 'Good' :
-                   mockHealthData.overall >= 50 ? 'Fair' : 'Poor'}
+                  {mockHealthData.overall >= 90
+                    ? 'Excellent'
+                    : mockHealthData.overall >= 70
+                      ? 'Good'
+                      : mockHealthData.overall >= 50
+                        ? 'Fair'
+                        : 'Poor'}
                 </Badge>
               </div>
               <Progress value={mockHealthData.overall} className="h-3" />
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              {mockHealthData.components.map((component) => {
+              {mockHealthData.components.map(component => {
                 const Icon = component.icon
                 return (
                   <div key={component.name} className="text-center">
                     <div className="flex justify-center mb-2">
-                      <div className={cn(
-                        'p-3 rounded-full',
-                        component.status === 'healthy' ? 'bg-green-100 dark:bg-green-900' :
-                        component.status === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900' :
-                        'bg-red-100 dark:bg-red-900'
-                      )}>
+                      <div
+                        className={cn(
+                          'p-3 rounded-full',
+                          component.status === 'healthy'
+                            ? 'bg-green-100 dark:bg-green-900'
+                            : component.status === 'warning'
+                              ? 'bg-yellow-100 dark:bg-yellow-900'
+                              : 'bg-red-100 dark:bg-red-900'
+                        )}
+                      >
                         <Icon className={cn('h-6 w-6', getStatusColor(component.status))} />
                       </div>
                     </div>
@@ -283,13 +299,11 @@ export default function ControlCenterDashboard() {
                 <Shield className="h-5 w-5" />
                 Guardrail Enforcement
               </CardTitle>
-              <CardDescription>
-                Core system invariants that must never be violated
-              </CardDescription>
+              <CardDescription>Core system invariants that must never be violated</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockGuardrails.map((guardrail) => (
+                {mockGuardrails.map(guardrail => (
                   <div
                     key={guardrail.name}
                     className="flex items-start gap-3 p-4 rounded-lg bg-muted/50"
@@ -297,19 +311,15 @@ export default function ControlCenterDashboard() {
                     {getStatusIcon(guardrail.status)}
                     <div className="flex-1">
                       <div className="font-medium">{guardrail.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {guardrail.description}
-                      </div>
+                      <div className="text-sm text-muted-foreground">{guardrail.description}</div>
                     </div>
-                    <Badge
-                      variant={guardrail.status === 'passed' ? 'success' : 'warning'}
-                    >
+                    <Badge variant={guardrail.status === 'passed' ? 'success' : 'warning'}>
                       {guardrail.status}
                     </Badge>
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-6 flex gap-3">
                 <Button variant="outline">
                   <Terminal className="mr-2 h-4 w-4" />
@@ -350,7 +360,7 @@ export default function ControlCenterDashboard() {
                       { name: 'POS Module', category: 'Sales', status: 'active' },
                       { name: 'Cashflow DNA', category: 'Financial', status: 'active' },
                       { name: 'Auto-Journal Engine', category: 'Financial', status: 'active' }
-                    ].map((module) => (
+                    ].map(module => (
                       <div
                         key={module.name}
                         className="grid grid-cols-3 gap-4 p-3 rounded hover:bg-muted/50 transition-colors"
@@ -364,7 +374,7 @@ export default function ControlCenterDashboard() {
                     ))}
                   </div>
                 </ScrollArea>
-                
+
                 <div className="mt-4 pt-4 border-t flex gap-3">
                   <Button variant="outline">
                     <Code className="mr-2 h-4 w-4" />
@@ -390,7 +400,7 @@ export default function ControlCenterDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockDeploymentChecks.map((check) => (
+                {mockDeploymentChecks.map(check => (
                   <div
                     key={check.name}
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
@@ -399,15 +409,13 @@ export default function ControlCenterDashboard() {
                       {getStatusIcon(check.status)}
                       <span className="font-medium">{check.name}</span>
                     </div>
-                    <Badge
-                      variant={check.status === 'passed' ? 'success' : 'warning'}
-                    >
+                    <Badge variant={check.status === 'passed' ? 'success' : 'warning'}>
                       {check.status}
                     </Badge>
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-6">
                 {deploymentReady ? (
                   <Alert>
@@ -426,9 +434,9 @@ export default function ControlCenterDashboard() {
                     </AlertDescription>
                   </Alert>
                 )}
-                
+
                 <div className="mt-4 flex gap-3">
-                  <Button 
+                  <Button
                     variant={deploymentReady ? 'default' : 'outline'}
                     disabled={!deploymentReady}
                   >
@@ -452,20 +460,34 @@ export default function ControlCenterDashboard() {
                 <Terminal className="h-5 w-5" />
                 MCP Tool Registry
               </CardTitle>
-              <CardDescription>
-                All available Model Context Protocol tools
-              </CardDescription>
+              <CardDescription>All available Model Context Protocol tools</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { name: 'hera-control-center', description: 'Master control center', status: 'active' },
+                  {
+                    name: 'hera-control-center',
+                    description: 'Master control center',
+                    status: 'active'
+                  },
                   { name: 'hera-cli', description: 'Core HERA operations', status: 'active' },
-                  { name: 'fiscal-close-dna-cli', description: 'Year-end closing operations', status: 'active' },
-                  { name: 'cashflow-dna-cli', description: 'Cashflow analysis and reporting', status: 'active' },
+                  {
+                    name: 'fiscal-close-dna-cli',
+                    description: 'Year-end closing operations',
+                    status: 'active'
+                  },
+                  {
+                    name: 'cashflow-dna-cli',
+                    description: 'Cashflow analysis and reporting',
+                    status: 'active'
+                  },
                   { name: 'factory-cli', description: 'Test data generation', status: 'active' },
-                  { name: 'auto-journal-dna-cli', description: 'Auto-journal management', status: 'active' }
-                ].map((tool) => (
+                  {
+                    name: 'auto-journal-dna-cli',
+                    description: 'Auto-journal management',
+                    status: 'active'
+                  }
+                ].map(tool => (
                   <div
                     key={tool.name}
                     className="p-4 rounded-lg border bg-card hover:shadow-md transition-shadow"
@@ -473,9 +495,7 @@ export default function ControlCenterDashboard() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="font-medium font-mono text-sm">{tool.name}</div>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {tool.description}
-                        </div>
+                        <div className="text-sm text-muted-foreground mt-1">{tool.description}</div>
                       </div>
                       <Badge variant="success">{tool.status}</Badge>
                     </div>

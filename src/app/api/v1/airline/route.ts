@@ -4,9 +4,19 @@ import { NextRequest, NextResponse } from 'next/server'
 // Implements flight search, booking, lottery, and loyalty with HERA DNA patterns
 
 interface AirlineApiRequest {
-  action: 'search_flights' | 'book_flight' | 'lottery_entry' | 'lottery_draw' | 
-          'check_in' | 'issue_boarding_pass' | 'earn_miles' | 'upgrade_status' |
-          'cancel_booking' | 'modify_booking' | 'flight_status' | 'seat_selection'
+  action:
+    | 'search_flights'
+    | 'book_flight'
+    | 'lottery_entry'
+    | 'lottery_draw'
+    | 'check_in'
+    | 'issue_boarding_pass'
+    | 'earn_miles'
+    | 'upgrade_status'
+    | 'cancel_booking'
+    | 'modify_booking'
+    | 'flight_status'
+    | 'seat_selection'
   data: any
   smart_code: string
   organization_id?: string
@@ -106,26 +116,26 @@ const FLIGHT_INVENTORY = [
 class LotteryService {
   static calculateWeight(entry: LotteryEntryData): number {
     let weight = 1.0
-    
+
     // Loyalty tier bonuses
     if (entry.loyalty_tier === 'silver') weight *= 1.2
     if (entry.loyalty_tier === 'gold') weight *= 1.5
     if (entry.loyalty_tier === 'platinum') weight *= 2.0
     if (entry.loyalty_tier === 'diamond') weight *= 2.5
-    
+
     // Second chance entries get small boost
     if (entry.entry_type === 'second_chance') weight *= 1.1
-    
+
     return weight
   }
-  
+
   static async runLotteryDraw(flight_id: string): Promise<any[]> {
     // In real implementation, this would:
     // 1. Get all eligible entries from database
     // 2. Calculate available upgrade seats
     // 3. Run weighted random selection
     // 4. Create upgrade transactions
-    
+
     const mockWinners = [
       {
         winner_id: `WIN-${Date.now()}`,
@@ -137,7 +147,7 @@ class LotteryService {
         notification_sent: true
       }
     ]
-    
+
     return mockWinners
   }
 }
@@ -149,11 +159,15 @@ export async function POST(request: NextRequest) {
 
     // Validate smart code format
     if (!smart_code || !smart_code.startsWith('HERA.AIR.')) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid smart code. Must follow HERA.AIR.{MODULE}.{TYPE}.{FUNCTION}.v{VERSION} pattern',
-        code: 'INVALID_SMART_CODE'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Invalid smart code. Must follow HERA.AIR.{MODULE}.{TYPE}.{FUNCTION}.v{VERSION} pattern',
+          code: 'INVALID_SMART_CODE'
+        },
+        { status: 400 }
+      )
     }
 
     console.log(`🛫 Airlines API: ${action} with smart code: ${smart_code}`)
@@ -161,46 +175,57 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'search_flights':
         return await handleFlightSearch(data, smart_code, organization_id)
-      
+
       case 'book_flight':
         return await handleFlightBooking(data, smart_code, organization_id)
-      
+
       case 'lottery_entry':
         return await handleLotteryEntry(data, smart_code, organization_id)
-      
+
       case 'lottery_draw':
         return await handleLotteryDraw(data, smart_code, organization_id)
-      
+
       case 'check_in':
         return await handleCheckIn(data, smart_code, organization_id)
-      
+
       case 'earn_miles':
         return await handleMilesEarning(data, smart_code, organization_id)
-      
+
       case 'seat_selection':
         return await handleSeatSelection(data, smart_code, organization_id)
-      
+
       case 'flight_status':
         return await handleFlightStatus(data, smart_code, organization_id)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: `Unsupported action: ${action}`,
-          supported_actions: [
-            'search_flights', 'book_flight', 'lottery_entry', 'lottery_draw',
-            'check_in', 'earn_miles', 'seat_selection', 'flight_status'
-          ]
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Unsupported action: ${action}`,
+            supported_actions: [
+              'search_flights',
+              'book_flight',
+              'lottery_entry',
+              'lottery_draw',
+              'check_in',
+              'earn_miles',
+              'seat_selection',
+              'flight_status'
+            ]
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Airlines API Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -219,61 +244,70 @@ export async function GET(request: NextRequest) {
           smart_code: 'HERA.AIR.SEARCH.ENT.SCHEDULE.v1',
           total_flights: FLIGHT_INVENTORY.length
         })
-      
+
       case 'lottery_stats':
         return await getLotteryStatistics(organization_id)
-      
+
       case 'loyalty_status':
         const customer_id = searchParams.get('customer_id')
         return await getLoyaltyStatus(customer_id || '', organization_id)
-      
-      default:
-        return NextResponse.json({
-          success: false,
-          error: 'Unsupported GET action',
-          supported_actions: [
-            'flight_schedule', 'lottery_stats', 'loyalty_status'
-          ]
-        }, { status: 400 })
-    }
 
+      default:
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Unsupported GET action',
+            supported_actions: ['flight_schedule', 'lottery_stats', 'loyalty_status']
+          },
+          { status: 400 }
+        )
+    }
   } catch (error) {
     console.error('Airlines API GET Error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
 // Flight Search Handler (HERA.AIR.SEARCH.TXN.QUERY.v1)
-async function handleFlightSearch(data: FlightSearchData, smart_code: string, organization_id: string) {
+async function handleFlightSearch(
+  data: FlightSearchData,
+  smart_code: string,
+  organization_id: string
+) {
   // Filter flights based on search criteria
   const results = FLIGHT_INVENTORY.filter(flight => {
     const matchesRoute = flight.origin === data.origin && flight.destination === data.destination
     const matchesDate = flight.departure_time.startsWith(data.departure_date)
     const hasAvailability = flight.available_seats[data.cabin_class] >= data.passengers
     const matchesLottery = !data.lottery_eligible_only || flight.lottery_eligible
-    
+
     return matchesRoute && matchesDate && hasAvailability && matchesLottery
   })
-  
+
   // Calculate dynamic pricing based on availability
   const pricedResults = results.map(flight => {
     const basePrice = flight.prices[data.cabin_class]
     const availabilityRatio = flight.available_seats[data.cabin_class] / 200
     const dynamicMultiplier = availabilityRatio < 0.2 ? 1.5 : availabilityRatio < 0.5 ? 1.2 : 1.0
-    
+
     return {
       ...flight,
       price_per_passenger: Math.round(basePrice * dynamicMultiplier),
       total_price: Math.round(basePrice * dynamicMultiplier * data.passengers),
       availability_status: availabilityRatio < 0.1 ? 'limited' : 'available',
-      lottery_probability: flight.lottery_eligible ? calculateLotteryProbability(data.cabin_class) : 0
+      lottery_probability: flight.lottery_eligible
+        ? calculateLotteryProbability(data.cabin_class)
+        : 0
     }
   })
-  
+
   return NextResponse.json({
     success: true,
     message: 'Flight search completed',
@@ -296,13 +330,13 @@ async function handleFlightSearch(data: FlightSearchData, smart_code: string, or
 async function handleFlightBooking(data: BookingData, smart_code: string, organization_id: string) {
   const booking_id = `BOOK-${Date.now()}`
   const confirmation_code = generateConfirmationCode()
-  
+
   // In real implementation, this would create records in:
   // - universal_transactions (booking transaction)
   // - universal_transaction_lines (each passenger, seat, add-on)
   // - core_entities (passenger records if new)
   // - core_dynamic_data (passport info, preferences)
-  
+
   return NextResponse.json({
     success: true,
     message: 'Flight booked successfully',
@@ -328,10 +362,14 @@ async function handleFlightBooking(data: BookingData, smart_code: string, organi
 }
 
 // Lottery Entry Handler (HERA.AIR.LOTTERY.TXN.ENTER.v1)
-async function handleLotteryEntry(data: LotteryEntryData, smart_code: string, organization_id: string) {
+async function handleLotteryEntry(
+  data: LotteryEntryData,
+  smart_code: string,
+  organization_id: string
+) {
   const entry_id = `ENTRY-${Date.now()}`
   const weight = LotteryService.calculateWeight(data)
-  
+
   return NextResponse.json({
     success: true,
     message: 'Lottery entry created successfully',
@@ -353,7 +391,7 @@ async function handleLotteryEntry(data: LotteryEntryData, smart_code: string, or
 // Lottery Draw Handler (HERA.AIR.LOTTERY.TXN.DRAW.v1)
 async function handleLotteryDraw(data: any, smart_code: string, organization_id: string) {
   const winners = await LotteryService.runLotteryDraw(data.flight_id)
-  
+
   return NextResponse.json({
     success: true,
     message: 'Lottery draw completed',
@@ -378,7 +416,7 @@ async function handleLotteryDraw(data: any, smart_code: string, organization_id:
 // Check-in Handler (HERA.AIR.CHECKIN.TXN.PROCESS.v1)
 async function handleCheckIn(data: any, smart_code: string, organization_id: string) {
   const checkin_id = `CI-${Date.now()}`
-  
+
   return NextResponse.json({
     success: true,
     message: 'Check-in completed successfully',
@@ -402,7 +440,7 @@ async function handleMilesEarning(data: any, smart_code: string, organization_id
   const base_miles = calculateBaseMiles(data.flight_distance)
   const tier_multiplier = getTierMultiplier(data.loyalty_tier)
   const total_miles = Math.round(base_miles * tier_multiplier)
-  
+
   return NextResponse.json({
     success: true,
     message: 'Miles credited successfully',
@@ -547,14 +585,16 @@ function calculateNextDrawTime(): string {
 }
 
 function generateBoardingPasses(booking_id: string): any[] {
-  return [{
-    pass_id: `BP-${Date.now()}`,
-    passenger_name: 'John Doe',
-    seat: '12A',
-    boarding_group: 'B',
-    qr_code: `QR-${booking_id}`,
-    tsa_precheck: true
-  }]
+  return [
+    {
+      pass_id: `BP-${Date.now()}`,
+      passenger_name: 'John Doe',
+      seat: '12A',
+      boarding_group: 'B',
+      qr_code: `QR-${booking_id}`,
+      tsa_precheck: true
+    }
+  ]
 }
 
 function generateSecurityCode(): string {
@@ -583,10 +623,10 @@ function calculateTierProgress(total_miles: number): any {
     { name: 'Platinum', threshold: 100000 },
     { name: 'Diamond', threshold: 200000 }
   ]
-  
+
   const current_tier = tiers.findIndex(tier => total_miles < tier.threshold)
   const next_tier = tiers[current_tier] || tiers[tiers.length - 1]
-  
+
   return {
     current_tier: current_tier > 0 ? tiers[current_tier - 1].name : 'Basic',
     next_tier: next_tier.name,

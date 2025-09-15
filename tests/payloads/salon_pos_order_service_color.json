@@ -1,0 +1,41 @@
+{
+  "header": {
+    "transaction_type": "pos_order",
+    "transaction_code": "POS-DXB-CL-0001",
+    "transaction_date": "2025-09-15T10:00:00Z",
+    "smart_code": "HERA.SALON.POS.TXN.SALE.EXCL_TIP.v1",
+    "status": "posted",
+    "organization_id": "00000000-0000-0000-0000-000000000001",
+    "currency_code": "AED",
+    "total_amount": 200.00,
+    "metadata": {
+      "channel": "salon",
+      "notes": "Hair coloring service"
+    }
+  },
+  "lines": [
+    {
+      "line_number": 1,
+      "line_type": "service",
+      "quantity": 1,
+      "unit_of_measure": "EA",
+      "unit_price": 200.00,
+      "line_amount": 200.00,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.SERVICE.LINE.v1",
+      "metadata": { "service_slug": "service:HAIR_COLOR" }
+    },
+    {
+      "line_number": 2,
+      "line_type": "item",
+      "line_entity_id": "product-dye-color-001",
+      "quantity": -3,
+      "unit_of_measure": "EA",
+      "unit_price": 0,
+      "line_amount": 0,
+      "organization_id": "00000000-0000-0000-0000-000000000001",
+      "smart_code": "HERA.SALON.INVENTORY.ISSUE.BOM.v1",
+      "metadata": { "from_service": "service:HAIR_COLOR" }
+    }
+  ]
+}

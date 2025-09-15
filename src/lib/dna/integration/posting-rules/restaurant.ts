@@ -16,23 +16,23 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR Cash/Card', 
+        {
+          derive: 'DR Cash/Card',
           from: 'payment.method.clearing_account',
           conditions: { payment_method: ['cash', 'card'] }
         },
-        { 
-          derive: 'CR Food Revenue', 
+        {
+          derive: 'CR Food Revenue',
           from: 'product.category.revenue_account',
           conditions: { category: 'food' }
         },
-        { 
-          derive: 'CR Beverage Revenue', 
+        {
+          derive: 'CR Beverage Revenue',
           from: 'product.category.revenue_account',
           conditions: { category: 'beverage' }
         },
-        { 
-          derive: 'CR Sales Tax', 
+        {
+          derive: 'CR Sales Tax',
           from: 'tax.jurisdiction.liability_account'
         }
       ]
@@ -42,7 +42,7 @@ export const POSTING_RULES: PostingRule[] = [
       else: 'stage_for_review'
     }
   },
-  
+
   // Kitchen Goods Issue
   {
     smart_code: 'HERA.RESTAURANT.KOT.GOODS_ISSUE.v1',
@@ -53,13 +53,13 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR Food COGS', 
+        {
+          derive: 'DR Food COGS',
           from: 'product.category.cogs_account',
           conditions: { category: 'food' }
         },
-        { 
-          derive: 'CR Food Inventory', 
+        {
+          derive: 'CR Food Inventory',
           from: 'product.category.inventory_account',
           conditions: { category: 'food' }
         }
@@ -70,7 +70,7 @@ export const POSTING_RULES: PostingRule[] = [
       else: 'stage_for_review'
     }
   },
-  
+
   // Supplier Delivery
   {
     smart_code: 'HERA.RESTAURANT.PUR.GOODS_RECEIPT.v1',
@@ -81,12 +81,12 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR Inventory', 
+        {
+          derive: 'DR Inventory',
           from: 'product.category.inventory_account'
         },
-        { 
-          derive: 'CR GR/IR', 
+        {
+          derive: 'CR GR/IR',
           from: 'finance.defaults.grir_account'
         }
       ]
@@ -96,7 +96,7 @@ export const POSTING_RULES: PostingRule[] = [
       else: 'stage_for_review'
     }
   },
-  
+
   // Vendor Invoice
   {
     smart_code: 'HERA.RESTAURANT.PUR.INVOICE_POSTED.v1',
@@ -107,16 +107,16 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR GR/IR', 
+        {
+          derive: 'DR GR/IR',
           from: 'finance.defaults.grir_account'
         },
-        { 
-          derive: 'DR Input Tax', 
+        {
+          derive: 'DR Input Tax',
           from: 'tax.jurisdiction.input_tax_account'
         },
-        { 
-          derive: 'CR Accounts Payable', 
+        {
+          derive: 'CR Accounts Payable',
           from: 'vendor.default.ap_account'
         }
       ]
@@ -126,7 +126,7 @@ export const POSTING_RULES: PostingRule[] = [
       else: 'stage_for_review'
     }
   },
-  
+
   // Daily Cash Reconciliation
   {
     smart_code: 'HERA.RESTAURANT.CASH.RECONCILIATION.v1',
@@ -137,12 +137,12 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR Cash on Hand', 
+        {
+          derive: 'DR Cash on Hand',
           from: 'cash.register.asset_account'
         },
-        { 
-          derive: 'CR Cash Clearing', 
+        {
+          derive: 'CR Cash Clearing',
           from: 'cash.clearing_account'
         }
       ]
@@ -152,7 +152,7 @@ export const POSTING_RULES: PostingRule[] = [
       else: 'stage_for_review'
     }
   },
-  
+
   // Staff Payroll
   {
     smart_code: 'HERA.RESTAURANT.HR.PAYROLL.v1',
@@ -163,22 +163,22 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR Wages - Kitchen', 
+        {
+          derive: 'DR Wages - Kitchen',
           from: 'department.kitchen.payroll_expense',
           conditions: { department: 'kitchen' }
         },
-        { 
-          derive: 'DR Wages - Service', 
+        {
+          derive: 'DR Wages - Service',
           from: 'department.service.payroll_expense',
           conditions: { department: 'service' }
         },
-        { 
-          derive: 'CR Payroll Payable', 
+        {
+          derive: 'CR Payroll Payable',
           from: 'finance.defaults.payroll_liability'
         },
-        { 
-          derive: 'CR Tax Withholdings', 
+        {
+          derive: 'CR Tax Withholdings',
           from: 'tax.payroll.withholding_account'
         }
       ]
@@ -188,7 +188,7 @@ export const POSTING_RULES: PostingRule[] = [
       else: 'stage_for_review'
     }
   },
-  
+
   // Wastage/Spoilage
   {
     smart_code: 'HERA.RESTAURANT.INV.WASTAGE.v1',
@@ -199,12 +199,12 @@ export const POSTING_RULES: PostingRule[] = [
     },
     posting_recipe: {
       lines: [
-        { 
-          derive: 'DR Wastage Expense', 
+        {
+          derive: 'DR Wastage Expense',
           from: 'expense.wastage_account'
         },
-        { 
-          derive: 'CR Inventory', 
+        {
+          derive: 'CR Inventory',
           from: 'product.category.inventory_account'
         }
       ]
@@ -231,7 +231,7 @@ export const RESTAURANT_COA = {
   '160000': { name: 'Kitchen Equipment', type: 'Asset', subtype: 'Fixed' },
   '161000': { name: 'Accumulated Depreciation - Kitchen', type: 'Asset', subtype: 'ContraAsset' },
   '170000': { name: 'Furniture & Fixtures', type: 'Asset', subtype: 'Fixed' },
-  
+
   // Liabilities (2xxxxx)
   '210000': { name: 'Accounts Payable', type: 'Liability', subtype: 'Current' },
   '210500': { name: 'GR/IR Clearing', type: 'Liability', subtype: 'Current' },
@@ -240,18 +240,18 @@ export const RESTAURANT_COA = {
   '230000': { name: 'Payroll Liabilities', type: 'Liability', subtype: 'Current' },
   '231000': { name: 'Tips Payable', type: 'Liability', subtype: 'Current' },
   '240000': { name: 'Accrued Expenses', type: 'Liability', subtype: 'Current' },
-  
+
   // Revenue (4xxxxx)
   '400000': { name: 'Food Revenue', type: 'Revenue', subtype: 'Operating' },
   '401000': { name: 'Beverage Revenue', type: 'Revenue', subtype: 'Operating' },
   '402000': { name: 'Delivery Revenue', type: 'Revenue', subtype: 'Operating' },
   '403000': { name: 'Catering Revenue', type: 'Revenue', subtype: 'Operating' },
-  
+
   // COGS (5xxxxx)
   '500000': { name: 'Food COGS', type: 'Expense', subtype: 'COGS' },
   '501000': { name: 'Beverage COGS', type: 'Expense', subtype: 'COGS' },
   '502000': { name: 'Food Wastage', type: 'Expense', subtype: 'COGS' },
-  
+
   // Operating Expenses (6xxxxx)
   '600000': { name: 'Wages - Kitchen', type: 'Expense', subtype: 'Operating' },
   '601000': { name: 'Wages - Service', type: 'Expense', subtype: 'Operating' },

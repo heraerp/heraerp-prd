@@ -37,8 +37,8 @@ export const salonServices = [
       category: 'hair',
       subcategory: 'cut',
       duration: 45,
-      price: 65.00,
-      commission_rate: 0.40,
+      price: 65.0,
+      commission_rate: 0.4,
       skill_level: 'basic',
       requires_stylist: true,
       booking_buffer: 15
@@ -55,7 +55,7 @@ export const salonServices = [
       category: 'hair',
       subcategory: 'color',
       duration: 120,
-      price: 185.00,
+      price: 185.0,
       commission_rate: 0.35,
       skill_level: 'advanced',
       requires_stylist: true,
@@ -74,7 +74,7 @@ export const salonServices = [
       category: 'hair',
       subcategory: 'color',
       duration: 150,
-      price: 225.00,
+      price: 225.0,
       commission_rate: 0.35,
       skill_level: 'advanced',
       requires_stylist: true,
@@ -92,14 +92,14 @@ export const salonServices = [
       category: 'hair',
       subcategory: 'chemical',
       duration: 180,
-      price: 195.00,
+      price: 195.0,
       commission_rate: 0.38,
       skill_level: 'expert',
       requires_stylist: true,
       booking_buffer: 45
     }
   },
-  
+
   // Nail Services
   {
     id: generateId('service'),
@@ -112,7 +112,7 @@ export const salonServices = [
       category: 'nails',
       subcategory: 'manicure',
       duration: 45,
-      price: 35.00,
+      price: 35.0,
       commission_rate: 0.45,
       skill_level: 'basic',
       requires_stylist: true,
@@ -130,7 +130,7 @@ export const salonServices = [
       category: 'nails',
       subcategory: 'manicure',
       duration: 60,
-      price: 55.00,
+      price: 55.0,
       commission_rate: 0.42,
       skill_level: 'intermediate',
       requires_stylist: true,
@@ -148,14 +148,14 @@ export const salonServices = [
       category: 'nails',
       subcategory: 'pedicure',
       duration: 75,
-      price: 65.00,
+      price: 65.0,
       commission_rate: 0.45,
       skill_level: 'basic',
       requires_stylist: true,
       booking_buffer: 15
     }
   },
-  
+
   // Facial Services
   {
     id: generateId('service'),
@@ -168,8 +168,8 @@ export const salonServices = [
       category: 'facial',
       subcategory: 'cleansing',
       duration: 90,
-      price: 125.00,
-      commission_rate: 0.40,
+      price: 125.0,
+      commission_rate: 0.4,
       skill_level: 'intermediate',
       requires_stylist: true,
       booking_buffer: 20
@@ -186,7 +186,7 @@ export const salonServices = [
       category: 'facial',
       subcategory: 'treatment',
       duration: 105,
-      price: 185.00,
+      price: 185.0,
       commission_rate: 0.35,
       skill_level: 'advanced',
       requires_stylist: true,
@@ -210,9 +210,9 @@ export const salonProducts = [
       subcategory: 'shampoo',
       brand: 'Salon Pro',
       size: '8oz',
-      cost: 12.50,
-      retail_price: 28.00,
-      wholesale_price: 15.00,
+      cost: 12.5,
+      retail_price: 28.0,
+      wholesale_price: 15.0,
       stock_level: 45,
       reorder_point: 15,
       supplier: 'Beauty Supply Co',
@@ -231,16 +231,16 @@ export const salonProducts = [
       subcategory: 'conditioner',
       brand: 'Salon Pro',
       size: '8oz',
-      cost: 14.00,
-      retail_price: 32.00,
-      wholesale_price: 18.00,
+      cost: 14.0,
+      retail_price: 32.0,
+      wholesale_price: 18.0,
       stock_level: 38,
       reorder_point: 12,
       supplier: 'Beauty Supply Co',
       barcode: '123456789013'
     }
   },
-  
+
   // Nail Products
   {
     id: generateId('product'),
@@ -255,16 +255,16 @@ export const salonProducts = [
       brand: 'Nail Perfect',
       color: 'Ruby Red',
       color_code: '#CC0000',
-      cost: 8.50,
-      retail_price: 18.00,
-      wholesale_price: 12.00,
+      cost: 8.5,
+      retail_price: 18.0,
+      wholesale_price: 12.0,
       stock_level: 25,
       reorder_point: 8,
       supplier: 'Nail Supply Direct',
       barcode: '234567890123'
     }
   },
-  
+
   // Skincare Products
   {
     id: generateId('product'),
@@ -278,9 +278,9 @@ export const salonProducts = [
       subcategory: 'cleanser',
       brand: 'Glow Skincare',
       size: '4oz',
-      cost: 18.00,
-      retail_price: 42.00,
-      wholesale_price: 28.00,
+      cost: 18.0,
+      retail_price: 42.0,
+      wholesale_price: 28.0,
       stock_level: 32,
       reorder_point: 10,
       supplier: 'Skincare Wholesale',
@@ -301,9 +301,9 @@ export const salonPackages = [
     metadata: {
       package_type: 'bridal',
       total_duration: 240,
-      original_price: 375.00,
-      package_price: 325.00,
-      savings: 50.00,
+      original_price: 375.0,
+      package_price: 325.0,
+      savings: 50.0,
       advance_booking_required: 14,
       includes_trial: true,
       services: [
@@ -324,9 +324,9 @@ export const salonPackages = [
     metadata: {
       package_type: 'spa_day',
       total_duration: 180,
-      original_price: 285.00,
-      package_price: 245.00,
-      savings: 40.00,
+      original_price: 285.0,
+      package_price: 245.0,
+      savings: 40.0,
       advance_booking_required: 3,
       includes_refreshments: true,
       services: [
@@ -353,7 +353,7 @@ export const salonStylists = [
       specialties: ['hair_color', 'highlights', 'cuts'],
       certifications: ['Color Specialist', 'Keratin Treatment'],
       commission_rate: 0.45,
-      hourly_rate: 28.00,
+      hourly_rate: 28.0,
       phone: '(555) 123-4567',
       email: 'sarah@beautyhaven.com',
       schedule: {
@@ -378,8 +378,8 @@ export const salonStylists = [
       hire_date: '2021-01-10',
       specialties: ['nails', 'facials', 'skincare'],
       certifications: ['Licensed Esthetician', 'Gel Polish Expert'],
-      commission_rate: 0.50,
-      hourly_rate: 24.00,
+      commission_rate: 0.5,
+      hourly_rate: 24.0,
       phone: '(555) 234-5678',
       email: 'maria@beautyhaven.com',
       schedule: {
@@ -412,7 +412,7 @@ export const salonCustomers = [
       loyalty: {
         tier: 'platinum',
         points: 2850,
-        total_spent: 3420.00,
+        total_spent: 3420.0,
         visits: 24,
         last_visit: '2024-01-02'
       },
@@ -447,7 +447,7 @@ export const salonCustomers = [
       loyalty: {
         tier: 'gold',
         points: 1250,
-        total_spent: 1875.00,
+        total_spent: 1875.0,
         visits: 12,
         last_visit: '2024-01-05'
       },
@@ -481,7 +481,7 @@ export const salonEquipment = [
       equipment_type: 'styling_chair',
       location: 'Station 1',
       purchase_date: '2023-01-15',
-      cost: 1250.00,
+      cost: 1250.0,
       warranty_expires: '2026-01-15',
       maintenance: {
         last_service: '2023-12-01',
@@ -544,7 +544,10 @@ export const createProductTransaction = (
   products: any[],
   paymentMethod: string = 'card'
 ) => {
-  const subtotal = products.reduce((sum, product) => sum + (product.quantity * product.metadata.retail_price), 0)
+  const subtotal = products.reduce(
+    (sum, product) => sum + product.quantity * product.metadata.retail_price,
+    0
+  )
   const tax = subtotal * 0.08875
   const total = subtotal + tax
 
@@ -588,7 +591,7 @@ export const createAppointment = (
   appointmentTime: string
 ) => {
   const totalDuration = services.reduce((sum, service) => sum + service.metadata.duration, 0)
-  
+
   return {
     id: generateId('appointment'),
     entity_type: 'appointment',
@@ -625,13 +628,14 @@ export const createAppointment = (
  */
 export const calculateLoyaltyPoints = (transactionAmount: number, customerTier: string) => {
   const basePoints = Math.floor(transactionAmount) // 1 point per dollar
-  const multiplier = {
-    'bronze': 1,
-    'silver': 1.25,
-    'gold': 1.5,
-    'platinum': 2
-  }[customerTier] || 1
-  
+  const multiplier =
+    {
+      bronze: 1,
+      silver: 1.25,
+      gold: 1.5,
+      platinum: 2
+    }[customerTier] || 1
+
   return Math.floor(basePoints * multiplier)
 }
 
@@ -649,13 +653,13 @@ export const generateSalonKPIs = () => {
   return {
     revenue: {
       today: 1250.75,
-      yesterday: 980.50,
+      yesterday: 980.5,
       thisWeek: 7845.25,
-      lastWeek: 8120.00,
-      thisMonth: 28750.00,
-      lastMonth: 26500.00,
-      thisYear: 285000.00,
-      lastYear: 265000.00
+      lastWeek: 8120.0,
+      thisMonth: 28750.0,
+      lastMonth: 26500.0,
+      thisYear: 285000.0,
+      lastYear: 265000.0
     },
     appointments: {
       today: 15,
@@ -672,7 +676,7 @@ export const generateSalonKPIs = () => {
       vip_customers: 156,
       loyalty_members: 890,
       repeat_rate: 0.78,
-      average_visit_value: 125.50
+      average_visit_value: 125.5
     },
     staff: {
       active_stylists: 8,
@@ -685,8 +689,8 @@ export const generateSalonKPIs = () => {
       total_products: 285,
       low_stock_alerts: 12,
       out_of_stock: 3,
-      inventory_value: 18750.00,
-      monthly_sales: 4250.00
+      inventory_value: 18750.0,
+      monthly_sales: 4250.0
     },
     services: {
       most_popular: 'Classic Haircut',
@@ -706,7 +710,7 @@ export const initializeSalonData = () => {
     const salonData = {
       organization: {
         id: SALON_ORG_ID,
-        name: "Beauty Haven Salon & Spa",
+        name: 'Beauty Haven Salon & Spa',
         type: 'salon',
         address: '456 Beauty Boulevard, Style District, NY 10014',
         phone: '(555) BEAUTY-1',
@@ -743,7 +747,7 @@ export const initializeSalonData = () => {
         }
       }
     }
-    
+
     sessionStorage.setItem('hera-salon-data', JSON.stringify(salonData))
     return salonData
   }

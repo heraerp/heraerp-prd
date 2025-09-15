@@ -15,9 +15,9 @@ interface SimpleCalendarProps {
   className?: string
 }
 
-export function SimpleCalendar({ 
-  events = [], 
-  onDateSelect, 
+export function SimpleCalendar({
+  events = [],
+  onDateSelect,
   onEventClick,
   className = ''
 }: SimpleCalendarProps) {
@@ -25,23 +25,21 @@ export function SimpleCalendar({
   const renderEventContent = (eventInfo: any) => {
     const { event } = eventInfo
     const props = event.extendedProps || {}
-    
+
     return (
       <div className="fc-event-main">
         <div className="fc-event-time">{eventInfo.timeText}</div>
         <div className="fc-event-title">{event.title}</div>
         {props.client && props.price && (
           <div className="fc-event-desc">
-            {props.vip && props.vip !== 'regular' && (
-              <span className="text-yellow-300">★</span>
-            )}
+            {props.vip && props.vip !== 'regular' && <span className="text-yellow-300">★</span>}
             <span>{props.price}</span>
           </div>
         )}
       </div>
     )
   }
-  
+
   return (
     <div className={className}>
       <FullCalendar
@@ -65,7 +63,7 @@ export function SimpleCalendar({
         slotMaxTime="20:00"
         slotDuration="00:30:00"
         eventContent={renderEventContent}
-        eventClassNames={(arg) => {
+        eventClassNames={arg => {
           const classes = []
           if (arg.event.extendedProps?.service) {
             classes.push(`fc-event-${arg.event.extendedProps.service}`)
@@ -75,7 +73,7 @@ export function SimpleCalendar({
           }
           return classes
         }}
-        eventDataTransform={(event) => {
+        eventDataTransform={event => {
           // Add data attributes for CSS styling
           if (event.extendedProps?.service) {
             event.classNames = [`service-${event.extendedProps.service}`]

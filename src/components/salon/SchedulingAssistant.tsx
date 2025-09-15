@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
-import { 
+import {
   Calendar,
   CalendarX,
   Clock,
@@ -90,8 +90,9 @@ export function SchedulingAssistant({
   const [currentTime, setCurrentTime] = useState(new Date())
 
   // Calculate total duration including buffers
-  const totalDuration = services.reduce((sum, service) => 
-    sum + service.duration + service.buffer_before + service.buffer_after, 0
+  const totalDuration = services.reduce(
+    (sum, service) => sum + service.duration + service.buffer_before + service.buffer_after,
+    0
   )
 
   // Fetch availability data
@@ -99,12 +100,10 @@ export function SchedulingAssistant({
     setLoading(true)
     try {
       // Calculate window based on view mode
-      const windowStart = viewMode === 'week' 
-        ? startOfWeek(viewDate, { weekStartsOn: 0 })
-        : viewDate
-      const windowEnd = viewMode === 'week'
-        ? endOfWeek(viewDate, { weekStartsOn: 0 })
-        : addDays(viewDate, 1)
+      const windowStart =
+        viewMode === 'week' ? startOfWeek(viewDate, { weekStartsOn: 0 }) : viewDate
+      const windowEnd =
+        viewMode === 'week' ? endOfWeek(viewDate, { weekStartsOn: 0 }) : addDays(viewDate, 1)
 
       // In real implementation, call API
       // const response = await fetch('/api/availability', {
@@ -132,7 +131,7 @@ export function SchedulingAssistant({
         { dow: 3, start: '09:00', end: '21:00', tz: 'Asia/Dubai' }, // Wednesday
         { dow: 4, start: '09:00', end: '21:00', tz: 'Asia/Dubai' }, // Thursday
         { dow: 5, start: '09:00', end: '13:00', tz: 'Asia/Dubai' }, // Friday (half day)
-        { dow: 6, start: '10:00', end: '21:00', tz: 'Asia/Dubai' }, // Saturday
+        { dow: 6, start: '10:00', end: '21:00', tz: 'Asia/Dubai' } // Saturday
       ]
 
       const mockBusyBlocks: BusyBlock[] = [
@@ -159,21 +158,21 @@ export function SchedulingAssistant({
       const slots: TimeSlot[] = []
       const dayOfWeek = viewDate.getDay()
       const dayHours = mockWorkingHours.find(wh => wh.dow === dayOfWeek)
-      
+
       if (dayHours) {
         const [startHour, startMin] = dayHours.start.split(':').map(Number)
         const [endHour, endMin] = dayHours.end.split(':').map(Number)
-        
+
         let currentTime = new Date(viewDate)
         currentTime.setHours(startHour, startMin, 0, 0)
-        
+
         const endTime = new Date(viewDate)
         endTime.setHours(endHour, endMin, 0, 0)
-        
+
         // Generate slots every 15 minutes
         while (currentTime < endTime) {
           const slotEnd = addMinutesSafe(currentTime, totalDuration)
-          
+
           // Check if slot fits within working hours
           if (slotEnd <= endTime) {
             // Check for conflicts with busy blocks
@@ -181,41 +180,42 @@ export function SchedulingAssistant({
               const blockStart = parseISO(block.start)
               const blockEnd = parseISO(block.end)
               const slotStart = currentTime
-              
+
               return (
                 isWithinInterval(slotStart, { start: blockStart, end: blockEnd }) ||
                 isWithinInterval(slotEnd, { start: blockStart, end: blockEnd }) ||
                 isWithinInterval(blockStart, { start: slotStart, end: slotEnd })
               )
             })
-            
+
             if (!hasConflict) {
               // Calculate confidence/score based on various factors
               let confidence = 0.9
               const reasons: string[] = []
-              
+
               // Prefer morning slots
               if (currentTime.getHours() < 12) {
                 confidence += 0.05
                 reasons.push('Morning slot preferred')
               }
-              
+
               // Avoid slots right after prayer time
-              const afterPrayer = mockBusyBlocks.find(b => 
-                b.reason === 'prayer_time' && 
-                Math.abs(currentTime.getTime() - parseISO(b.end).getTime()) < 30 * 60 * 1000
+              const afterPrayer = mockBusyBlocks.find(
+                b =>
+                  b.reason === 'prayer_time' &&
+                  Math.abs(currentTime.getTime() - parseISO(b.end).getTime()) < 30 * 60 * 1000
               )
               if (afterPrayer) {
                 confidence -= 0.1
                 reasons.push('Close to prayer time')
               }
-              
+
               // Check if it's the next available slot
               if (slots.length === 0) {
                 confidence += 0.08
                 reasons.push('Next available')
               }
-              
+
               slots.push({
                 start: currentTime.toISOString(),
                 end: slotEnd.toISOString(),
@@ -225,7 +225,7 @@ export function SchedulingAssistant({
               })
             }
           }
-          
+
           currentTime = addMinutesSafe(currentTime, 15)
         }
       }
@@ -265,7 +265,7 @@ export function SchedulingAssistant({
   // Navigate dates
   const navigateDate = (direction: 'prev' | 'next') => {
     const days = viewMode === 'week' ? 7 : 1
-    setViewDate(prev => direction === 'next' ? addDays(prev, days) : addDays(prev, -days))
+    setViewDate(prev => (direction === 'next' ? addDays(prev, days) : addDays(prev, -days)))
   }
 
   // Render timeline view
@@ -283,7 +283,7 @@ export function SchedulingAssistant({
     const [startHour, startMin] = dayHours.start.split(':').map(Number)
     const [endHour, endMin] = dayHours.end.split(':').map(Number)
     const hours = []
-    
+
     for (let h = startHour; h <= endHour; h++) {
       hours.push(h)
     }
@@ -330,7 +330,7 @@ export function SchedulingAssistant({
                     style={{ marginTop: `${pixelsPerHour / 2}px` }}
                   />
                 )}
-                
+
                 {/* Quarter-hour lines for detailed view */}
                 {timelineZoom === 'detailed' && (
                   <>
@@ -370,21 +370,24 @@ export function SchedulingAssistant({
           {busyBlocks.map((block, idx) => {
             const blockStart = parseISO(block.start)
             const blockEnd = parseISO(block.end)
-            
+
             if (!isSameDay(blockStart, viewDate)) return null
-            
-            const startMinutes = blockStart.getHours() * 60 + blockStart.getMinutes() - startHour * 60
+
+            const startMinutes =
+              blockStart.getHours() * 60 + blockStart.getMinutes() - startHour * 60
             const durationMinutes = (blockEnd.getTime() - blockStart.getTime()) / (60 * 1000)
             const top = (startMinutes / 60) * pixelsPerHour
             const height = (durationMinutes / 60) * pixelsPerHour
-            
+
             return (
               <div
                 key={idx}
                 className={cn(
-                  "absolute left-0 right-0 rounded-md p-2 text-xs shadow-sm",
-                  block.reason === 'existing_appointment' && "bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700",
-                  block.reason === 'prayer_time' && "bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700"
+                  'absolute left-0 right-0 rounded-md p-2 text-xs shadow-sm',
+                  block.reason === 'existing_appointment' &&
+                    'bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700',
+                  block.reason === 'prayer_time' &&
+                    'bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700'
                 )}
                 style={{ top: `${top}px`, height: `${height}px` }}
               >
@@ -404,38 +407,38 @@ export function SchedulingAssistant({
           {suggestedSlots.map((slot, idx) => {
             const slotStart = parseISO(slot.start)
             const slotEnd = parseISO(slot.end)
-            
+
             if (!isSameDay(slotStart, viewDate)) return null
-            
+
             const startMinutes = slotStart.getHours() * 60 + slotStart.getMinutes() - startHour * 60
             const durationMinutes = (slotEnd.getTime() - slotStart.getTime()) / (60 * 1000)
             const top = (startMinutes / 60) * pixelsPerHour
             const height = (durationMinutes / 60) * pixelsPerHour
-            
+
             // Don't show slots in the past
             if (isSameDay(viewDate, new Date()) && slotStart < currentTime) return null
-            
+
             return (
               <div
                 key={idx}
                 className={cn(
-                  "absolute left-0 right-0 rounded-md p-2 text-xs cursor-pointer transition-all shadow-sm",
+                  'absolute left-0 right-0 rounded-md p-2 text-xs cursor-pointer transition-all shadow-sm',
                   selectedSlot?.start === slot.start
-                    ? "bg-purple-200 dark:bg-purple-800 border-2 border-purple-500 shadow-md"
+                    ? 'bg-purple-200 dark:bg-purple-800 border-2 border-purple-500 shadow-md'
                     : preSelectedTime && formatDate(slotStart, 'HH:mm') === preSelectedTime
-                    ? "bg-blue-200 dark:bg-blue-800 border-2 border-blue-500 shadow-md animate-pulse"
-                    : "bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800/30 hover:shadow-md"
+                      ? 'bg-blue-200 dark:bg-blue-800 border-2 border-blue-500 shadow-md animate-pulse'
+                      : 'bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800/30 hover:shadow-md'
                 )}
                 style={{ top: `${top}px`, height: `${height}px` }}
                 onClick={() => handleSlotSelect(slot)}
               >
                 <div className="flex items-center justify-between">
                   <p className="font-medium">
-                    {preSelectedTime && formatDate(slotStart, 'HH:mm') === preSelectedTime 
-                      ? '🎯 Requested Time' 
-                      : idx === 0 
-                      ? '⭐ Available' 
-                      : 'Available'}
+                    {preSelectedTime && formatDate(slotStart, 'HH:mm') === preSelectedTime
+                      ? '🎯 Requested Time'
+                      : idx === 0
+                        ? '⭐ Available'
+                        : 'Available'}
                   </p>
                   {timelineZoom === 'detailed' && (
                     <Badge variant="outline" className="text-xs">
@@ -465,9 +468,7 @@ export function SchedulingAssistant({
             <Button variant="ghost" size="sm" onClick={() => navigateDate('prev')}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <p className="text-sm font-medium">
-              {formatDate(viewDate, 'MMM d, yyyy')}
-            </p>
+            <p className="text-sm font-medium">{formatDate(viewDate, 'MMM d, yyyy')}</p>
             <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
               <ChevronRight className="w-4 h-4" />
             </Button>
@@ -491,12 +492,13 @@ export function SchedulingAssistant({
                 <Card
                   key={idx}
                   className={cn(
-                    "cursor-pointer transition-all",
+                    'cursor-pointer transition-all',
                     selectedSlot?.start === slot.start
-                      ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
-                      : preSelectedTime && formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
-                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 animate-pulse"
-                      : "hover:border-gray-300"
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                      : preSelectedTime &&
+                          formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 animate-pulse'
+                        : 'hover:border-gray-300'
                   )}
                   onClick={() => handleSlotSelect(slot)}
                 >
@@ -504,7 +506,8 @@ export function SchedulingAssistant({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-sm">
-                          {formatDate(parseISO(slot.start), 'h:mm a')} - {formatDate(parseISO(slot.end), 'h:mm a')}
+                          {formatDate(parseISO(slot.start), 'h:mm a')} -{' '}
+                          {formatDate(parseISO(slot.end), 'h:mm a')}
                         </p>
                         <p className="text-xs text-gray-600 dark:text-gray-400">
                           {formatDate(parseISO(slot.start), 'EEEE, MMM d')}
@@ -514,10 +517,11 @@ export function SchedulingAssistant({
                         <Badge variant="outline" className="text-xs">
                           {Math.round(slot.confidence * 100)}%
                         </Badge>
-                        {preSelectedTime && formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime ? (
+                        {preSelectedTime &&
+                        formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime ? (
                           <p className="text-xs text-blue-600 mt-1">Requested time</p>
-                        ) : idx === 0 && (
-                          <p className="text-xs text-green-600 mt-1">Next available</p>
+                        ) : (
+                          idx === 0 && <p className="text-xs text-green-600 mt-1">Next available</p>
                         )}
                       </div>
                     </div>
@@ -528,9 +532,7 @@ export function SchedulingAssistant({
           ) : (
             <div className="text-center py-8">
               <CalendarX className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                No available slots today
-              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">No available slots today</p>
             </div>
           )}
         </ScrollArea>
@@ -546,17 +548,18 @@ export function SchedulingAssistant({
           <Sparkles className="w-5 h-5 text-purple-600" />
           Scheduling Assistant
         </h3>
-        
+
         {/* Pre-selected time indicator */}
         {preSelectedTime && (
           <Alert className="mb-4 border-blue-200 bg-blue-50 dark:bg-blue-900/20">
             <Clock className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-800 dark:text-blue-200">
-              <strong>Looking for availability around:</strong> {preSelectedTime} on {formatDate(selectedDate, 'MMM d, yyyy')}
+              <strong>Looking for availability around:</strong> {preSelectedTime} on{' '}
+              {formatDate(selectedDate, 'MMM d, yyyy')}
             </AlertDescription>
           </Alert>
         )}
-        
+
         {/* View Controls */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -574,45 +577,46 @@ export function SchedulingAssistant({
             >
               Week
             </Button>
-            
+
             <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-1" />
-            
+
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setTimelineZoom(timelineZoom === 'normal' ? 'detailed' : 'normal')}
               title={timelineZoom === 'normal' ? 'Zoom in' : 'Zoom out'}
             >
-              {timelineZoom === 'normal' ? <ZoomIn className="w-4 h-4" /> : <ZoomOut className="w-4 h-4" />}
+              {timelineZoom === 'normal' ? (
+                <ZoomIn className="w-4 h-4" />
+              ) : (
+                <ZoomOut className="w-4 h-4" />
+              )}
             </Button>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={() => navigateDate('prev')}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
             <p className="text-sm font-medium min-w-[150px] text-center">
-              {viewMode === 'week' 
+              {viewMode === 'week'
                 ? `${formatDate(startOfWeek(viewDate), 'MMM d')} - ${formatDate(endOfWeek(viewDate), 'MMM d, yyyy')}`
-                : formatDate(viewDate, 'EEEE, MMM d, yyyy')
-              }
+                : formatDate(viewDate, 'EEEE, MMM d, yyyy')}
             </p>
             <Button variant="ghost" size="sm" onClick={() => navigateDate('next')}>
               <ChevronRight className="w-4 h-4" />
             </Button>
-            
+
             {isSameDay(viewDate, new Date()) && (
-              <Badge variant="secondary" className="text-xs">Today</Badge>
+              <Badge variant="secondary" className="text-xs">
+                Today
+              </Badge>
             )}
           </div>
-          
+
           <div className="flex items-center gap-2">
             {!isSameDay(viewDate, new Date()) && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setViewDate(new Date())}
-              >
+              <Button variant="outline" size="sm" onClick={() => setViewDate(new Date())}>
                 <Clock className="w-4 h-4 mr-2" />
                 Today
               </Button>
@@ -636,7 +640,7 @@ export function SchedulingAssistant({
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <ScrollArea className={timelineZoom === 'detailed' ? "h-[600px]" : "h-[400px]"}>
+            <ScrollArea className={timelineZoom === 'detailed' ? 'h-[600px]' : 'h-[400px]'}>
               {loading ? (
                 <div className="space-y-2">
                   {[...Array(8)].map((_, i) => (
@@ -659,7 +663,7 @@ export function SchedulingAssistant({
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <ScrollArea className={timelineZoom === 'detailed' ? "h-[600px]" : "h-[400px]"}>
+            <ScrollArea className={timelineZoom === 'detailed' ? 'h-[600px]' : 'h-[400px]'}>
               {loading ? (
                 <div className="space-y-2">
                   {[...Array(5)].map((_, i) => (
@@ -672,12 +676,13 @@ export function SchedulingAssistant({
                     <Card
                       key={idx}
                       className={cn(
-                        "cursor-pointer transition-all bg-white dark:bg-gray-700",
+                        'cursor-pointer transition-all bg-white dark:bg-gray-700',
                         selectedSlot?.start === slot.start
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                          : preSelectedTime && formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
-                          ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20 animate-pulse"
-                          : "hover:border-gray-400 dark:hover:border-gray-500"
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          : preSelectedTime &&
+                              formatDate(parseISO(slot.start), 'HH:mm') === preSelectedTime
+                            ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 animate-pulse'
+                            : 'hover:border-gray-400 dark:hover:border-gray-500'
                       )}
                       onClick={() => handleSlotSelect(slot)}
                     >
@@ -685,7 +690,8 @@ export function SchedulingAssistant({
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
-                              {formatDate(parseISO(slot.start), 'h:mm a')} - {formatDate(parseISO(slot.end), 'h:mm a')}
+                              {formatDate(parseISO(slot.start), 'h:mm a')} -{' '}
+                              {formatDate(parseISO(slot.end), 'h:mm a')}
                             </p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               {formatDate(parseISO(slot.start), 'EEEE, MMM d')}
@@ -694,16 +700,18 @@ export function SchedulingAssistant({
                           <Badge
                             variant="outline"
                             className={cn(
-                              "text-xs",
-                              slot.confidence >= 0.9 && "border-green-500 text-green-700",
-                              slot.confidence >= 0.7 && slot.confidence < 0.9 && "border-blue-500 text-blue-700",
-                              slot.confidence < 0.7 && "border-yellow-500 text-yellow-700"
+                              'text-xs',
+                              slot.confidence >= 0.9 && 'border-green-500 text-green-700',
+                              slot.confidence >= 0.7 &&
+                                slot.confidence < 0.9 &&
+                                'border-blue-500 text-blue-700',
+                              slot.confidence < 0.7 && 'border-yellow-500 text-yellow-700'
                             )}
                           >
                             {Math.round(slot.confidence * 100)}%
                           </Badge>
                         </div>
-                        
+
                         {/* Reasons */}
                         {slot.reasons && slot.reasons.length > 0 && (
                           <div className="flex flex-wrap gap-1">
@@ -714,7 +722,7 @@ export function SchedulingAssistant({
                             ))}
                           </div>
                         )}
-                        
+
                         {/* Special badges */}
                         {idx === 0 && (
                           <Badge className="mt-2 bg-green-100 text-green-800 text-xs">

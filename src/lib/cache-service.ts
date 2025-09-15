@@ -6,15 +6,15 @@
 import Redis from 'ioredis'
 
 export interface CacheOptions {
-  defaultTtl: number    // Default TTL in seconds
-  maxSize: number      // Max items in memory cache
-  redisUrl?: string    // Redis connection URL
-  keyPrefix?: string   // Prefix for all cache keys
+  defaultTtl: number // Default TTL in seconds
+  maxSize: number // Max items in memory cache
+  redisUrl?: string // Redis connection URL
+  keyPrefix?: string // Prefix for all cache keys
 }
 
 export interface CacheSetOptions {
-  ttl?: number         // Override default TTL
-  tags?: string[]      // Cache invalidation tags
+  ttl?: number // Override default TTL
+  tags?: string[] // Cache invalidation tags
 }
 
 export class CacheService {
@@ -76,14 +76,10 @@ export class CacheService {
   /**
    * Set value in cache
    */
-  async set<T>(
-    key: string, 
-    value: T, 
-    options: CacheSetOptions = {}
-  ): Promise<void> {
+  async set<T>(key: string, value: T, options: CacheSetOptions = {}): Promise<void> {
     const fullKey = this.options.keyPrefix + key
     const ttl = options.ttl || this.options.defaultTtl
-    const expiresAt = Date.now() + (ttl * 1000)
+    const expiresAt = Date.now() + ttl * 1000
 
     const item: CacheItem<T> = {
       value,
@@ -124,11 +120,7 @@ export class CacheService {
   /**
    * Increment counter (useful for rate limiting)
    */
-  async increment(
-    key: string, 
-    amount: number = 1, 
-    options: CacheSetOptions = {}
-  ): Promise<number> {
+  async increment(key: string, amount: number = 1, options: CacheSetOptions = {}): Promise<number> {
     const fullKey = this.options.keyPrefix + key
 
     try {
@@ -141,7 +133,7 @@ export class CacheService {
       }
 
       // Memory fallback
-      const current = await this.get<number>(key) || 0
+      const current = (await this.get<number>(key)) || 0
       const newValue = current + amount
       await this.set(key, newValue, options)
       return newValue
@@ -161,7 +153,7 @@ export class CacheService {
         // For simplicity, we'll iterate through keys
         const pattern = this.options.keyPrefix + '*'
         const keys = await this.redis.keys(pattern)
-        
+
         for (const key of keys) {
           const value = await this.redis.get(key)
           if (value) {
@@ -234,7 +226,7 @@ export class CacheService {
         showFriendlyErrorStack: process.env.NODE_ENV === 'development'
       })
 
-      this.redis.on('error', (error) => {
+      this.redis.on('error', error => {
         console.error('Redis connection error:', error)
       })
 
@@ -260,7 +252,7 @@ export class CacheService {
       // Remove oldest entries (simple LRU approximation)
       const keysToRemove = Math.floor(this.options.maxSize * 0.1) // Remove 10%
       let removed = 0
-      
+
       for (const key of this.memoryCache.keys()) {
         if (removed >= keysToRemove) break
         this.memoryCache.delete(key)
@@ -295,15 +287,8 @@ interface CacheItem<T = any> {
 /**
  * Cache decorator for class methods
  */
-export function Cacheable(
-  keyGenerator: (...args: any[]) => string,
-  options: CacheSetOptions = {}
-) {
-  return function (
-    target: any,
-    propertyName: string,
-    descriptor: PropertyDescriptor
-  ) {
+export function Cacheable(keyGenerator: (...args: any[]) => string, options: CacheSetOptions = {}) {
+  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value
 
     descriptor.value = async function (...args: any[]) {
@@ -313,16 +298,16 @@ export function Cacheable(
       }
 
       const cacheKey = keyGenerator(...args)
-      
+
       // Try to get from cache
       let result = await cache.get(cacheKey)
-      
+
       if (result === null) {
         // Execute method and cache result
         result = await method.apply(this, args)
         await cache.set(cacheKey, result, options)
       }
-      
+
       return result
     }
   }

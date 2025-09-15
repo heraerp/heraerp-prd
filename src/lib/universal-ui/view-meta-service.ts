@@ -1,6 +1,6 @@
 /**
  * ViewMeta Service - Universal UI Metadata Engine
- * 
+ *
  * This service interprets smart codes and returns UI metadata that describes
  * how to render any entity type without custom code. The metadata is stored
  * in core_dynamic_data and defines widgets, fields, actions, and behaviors.
@@ -38,28 +38,28 @@ export interface WidgetConfig {
   // Form widget config
   fields?: FormField[]
   validation_rules?: ValidationRule[]
-  
+
   // Grid widget config
   columns?: GridColumn[]
   row_actions?: Action[]
   bulk_actions?: Action[]
   pagination?: PaginationConfig
-  
+
   // Timeline widget config
   time_field?: string
   event_template?: string
-  
+
   // Stats widget config
   metric?: string
   aggregation?: 'sum' | 'avg' | 'count' | 'min' | 'max'
   comparison?: 'previous_period' | 'previous_year' | 'budget'
-  
+
   // Chart widget config
   chart_type?: 'line' | 'bar' | 'pie' | 'area' | 'scatter'
   x_axis?: string
   y_axis?: string
   series?: ChartSeries[]
-  
+
   // Related widget config
   relationship_type?: string
   related_entity_type?: string
@@ -69,7 +69,18 @@ export interface WidgetConfig {
 export interface FormField {
   name: string
   label: string
-  type: 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'boolean' | 'textarea' | 'entity_selector' | 'smart_code_selector' | 'money' | 'percentage'
+  type:
+    | 'text'
+    | 'number'
+    | 'date'
+    | 'select'
+    | 'multiselect'
+    | 'boolean'
+    | 'textarea'
+    | 'entity_selector'
+    | 'smart_code_selector'
+    | 'money'
+    | 'percentage'
   required?: boolean
   default_value?: any
   placeholder?: string
@@ -88,7 +99,16 @@ export interface FormField {
 export interface GridColumn {
   field: string
   header: string
-  type: 'text' | 'number' | 'date' | 'boolean' | 'money' | 'percentage' | 'status' | 'entity_link' | 'actions'
+  type:
+    | 'text'
+    | 'number'
+    | 'date'
+    | 'boolean'
+    | 'money'
+    | 'percentage'
+    | 'status'
+    | 'entity_link'
+    | 'actions'
   sortable?: boolean
   filterable?: boolean
   width?: string
@@ -259,7 +279,7 @@ export class ViewMetaService {
     const industry = parts[1] // e.g., FURN for furniture, HLTH for healthcare
     const module = parts[2] // e.g., BOM for bill of materials, PAT for patient
     const entityType = parts[3] // e.g., ITEM for item/product, ENT for entity
-    
+
     // Check if this is an industry-specific configuration
     const industryKey = this.getIndustryKey(industry)
     if (industryKey && industryConfigurations[industryKey]) {
@@ -269,30 +289,30 @@ export class ViewMetaService {
         return industryConfig
       }
     }
-    
+
     // Generate metadata based on patterns
     if (module === 'BOM') {
       return this.generateBOMViewMeta(smartCode, viewType, entityType)
     }
-    
+
     // Default metadata generation
     return this.generateDefaultViewMeta(smartCode, viewType)
   }
-  
+
   /**
    * Map industry code to configuration key
    */
   private getIndustryKey(industry: string): string | null {
     const industryMap: Record<string, string> = {
-      'HLTH': 'healthcare',
-      'REST': 'restaurant',
-      'PROF': 'professionalServices',
-      'RET': 'retail',
-      'FURN': 'furniture'
+      HLTH: 'healthcare',
+      REST: 'restaurant',
+      PROF: 'professionalServices',
+      RET: 'retail',
+      FURN: 'furniture'
     }
     return industryMap[industry] || null
   }
-  
+
   /**
    * Map module/entity/view to configuration view key
    */
@@ -306,7 +326,7 @@ export class ViewMetaService {
     if (module === 'PROJ' && viewType === 'dashboard') return 'projectDashboard'
     if (module === 'INV' && viewType === 'detail') return 'inventoryManagement'
     if (module === 'SALES' && viewType === 'dashboard') return 'salesDashboard'
-    
+
     // Default key format
     return `${module.toLowerCase()}${viewType.charAt(0).toUpperCase() + viewType.slice(1)}`
   }
@@ -314,7 +334,11 @@ export class ViewMetaService {
   /**
    * Generate BOM-specific view metadata
    */
-  private generateBOMViewMeta(smartCode: string, viewType: string, entityType: string): ViewMetadata {
+  private generateBOMViewMeta(
+    smartCode: string,
+    viewType: string,
+    entityType: string
+  ): ViewMetadata {
     if (viewType === 'detail' && entityType === 'ITEM') {
       return {
         id: `${smartCode}-detail-view`,
@@ -347,7 +371,7 @@ export class ViewMetaService {
               ]
             }
           },
-          
+
           // Main form widget
           {
             id: 'bom-form',
@@ -409,7 +433,7 @@ export class ViewMetaService {
               size: { width: 12, height: 2 }
             }
           },
-          
+
           // Components grid widget
           {
             id: 'bom-components',
@@ -512,7 +536,7 @@ export class ViewMetaService {
               ]
             }
           },
-          
+
           // Cost breakdown chart
           {
             id: 'cost-breakdown',
@@ -544,7 +568,7 @@ export class ViewMetaService {
               size: { width: 4, height: 4 }
             }
           },
-          
+
           // Timeline widget
           {
             id: 'bom-timeline',
@@ -611,15 +635,15 @@ export class ViewMetaService {
         ]
       }
     }
-    
+
     if (viewType === 'list') {
       return this.generateBOMListViewMeta(smartCode)
     }
-    
+
     if (viewType === 'dashboard') {
       return this.generateBOMDashboardMeta(smartCode)
     }
-    
+
     return this.generateDefaultViewMeta(smartCode, viewType)
   }
 
@@ -797,7 +821,7 @@ export class ViewMetaService {
             ]
           }
         },
-        
+
         // Cost trend chart
         {
           id: 'cost-trend',
@@ -824,7 +848,7 @@ export class ViewMetaService {
             size: { width: 8, height: 3 }
           }
         },
-        
+
         // Top products by cost
         {
           id: 'top-products',
@@ -886,19 +910,22 @@ export class ViewMetaService {
           type: viewType === 'list' ? 'grid' : 'form',
           title: 'Data',
           smart_code: smartCode,
-          config: viewType === 'list' ? {
-            columns: [
-              { field: 'entity_name', header: 'Name', type: 'text' },
-              { field: 'entity_code', header: 'Code', type: 'text' },
-              { field: 'created_at', header: 'Created', type: 'date' }
-            ]
-          } : {
-            fields: [
-              { name: 'entity_name', label: 'Name', type: 'text', required: true },
-              { name: 'entity_code', label: 'Code', type: 'text', required: true },
-              { name: 'description', label: 'Description', type: 'textarea' }
-            ]
-          }
+          config:
+            viewType === 'list'
+              ? {
+                  columns: [
+                    { field: 'entity_name', header: 'Name', type: 'text' },
+                    { field: 'entity_code', header: 'Code', type: 'text' },
+                    { field: 'created_at', header: 'Created', type: 'date' }
+                  ]
+                }
+              : {
+                  fields: [
+                    { name: 'entity_name', label: 'Name', type: 'text', required: true },
+                    { name: 'entity_code', label: 'Code', type: 'text', required: true },
+                    { name: 'description', label: 'Description', type: 'textarea' }
+                  ]
+                }
         }
       ]
     }
@@ -926,10 +953,10 @@ export class ViewMetaService {
           field_value_json: metadata,
           smart_code: 'HERA.UI.VIEW.CONFIG.v1'
         })
-        
+
         return true
       }
-      
+
       return false
     } catch (error) {
       console.error('Failed to save view metadata:', error)

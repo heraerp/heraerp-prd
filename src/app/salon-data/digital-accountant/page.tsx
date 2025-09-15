@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Digital Accountant Integration
  * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.v1
- * 
+ *
  * Simplified accounting interface for salon owners
  * Natural language processing for non-accountants
  */
@@ -24,7 +24,7 @@ import { Progress } from '@/components/ui/progress'
 import { QuickExpenseGrid } from '@/components/salon/digital-accountant/QuickExpenseGrid'
 import { TransactionHistory } from '@/components/salon/digital-accountant/TransactionHistory'
 import { DailyInsights } from '@/components/salon/digital-accountant/DailyInsights'
-import { 
+import {
   Brain,
   Send,
   Loader2,
@@ -162,7 +162,7 @@ I'll handle all the technical accounting for you! 💅`,
       status: 'success'
     }
   ])
-  
+
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [showExamples, setShowExamples] = useState(true)
@@ -173,9 +173,9 @@ I'll handle all the technical accounting for you! 💅`,
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  
+
   const organizationId = currentOrganization?.id || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-  
+
   // Auto-scroll to bottom with smooth animation
   useEffect(() => {
     // Use requestAnimationFrame for smoother scrolling
@@ -191,29 +191,29 @@ I'll handle all the technical accounting for you! 💅`,
         }
       }
     }
-    
+
     // Delay to ensure DOM is updated
     const timer = setTimeout(() => {
       requestAnimationFrame(scrollToBottom)
     }, 50)
-    
+
     return () => clearTimeout(timer)
   }, [messages])
-  
+
   // Detect scroll position
   useEffect(() => {
     const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
     if (!viewport) return
-    
+
     const handleScroll = () => {
       const isNearBottom = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 100
       setShowScrollButton(!isNearBottom)
     }
-    
+
     viewport.addEventListener('scroll', handleScroll)
     return () => viewport.removeEventListener('scroll', handleScroll)
   }, [])
-  
+
   // Manual scroll to bottom
   const scrollToBottomManual = () => {
     const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]')
@@ -224,13 +224,13 @@ I'll handle all the technical accounting for you! 💅`,
       })
     }
   }
-  
+
   // Handle message submission
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
     const trimmedInput = input.trim()
     if (!trimmedInput || loading) return
-    
+
     // Add user message
     const userMessage: SalonMessage = {
       id: Date.now().toString(),
@@ -238,18 +238,18 @@ I'll handle all the technical accounting for you! 💅`,
       content: trimmedInput,
       timestamp: new Date()
     }
-    
+
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setLoading(true)
     setShowExamples(false)
-    
+
     try {
       // Use MCP or pattern-based API based on toggle
-      const apiEndpoint = useMCP 
-        ? '/api/v1/digital-accountant/mcp'  // Claude-powered intelligent responses
+      const apiEndpoint = useMCP
+        ? '/api/v1/digital-accountant/mcp' // Claude-powered intelligent responses
         : '/api/v1/digital-accountant/chat' // Pattern-based responses
-      
+
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -264,14 +264,14 @@ I'll handle all the technical accounting for you! 💅`,
           }
         })
       })
-      
+
       const data = await response.json()
-      
+
       // Store session ID for conversation continuity
       if (data.sessionId) {
         sessionStorage.setItem('chatSessionId', data.sessionId)
       }
-      
+
       // Create assistant response
       const assistantMessage: SalonMessage = {
         id: Date.now().toString() + '-assistant',
@@ -284,9 +284,8 @@ I'll handle all the technical accounting for you! 💅`,
         journalEntry: data.journalEntry,
         actions: generateActions(data)
       }
-      
+
       setMessages(prev => [...prev, assistantMessage])
-      
     } catch (error) {
       const errorMessage: SalonMessage = {
         id: Date.now().toString() + '-error',
@@ -300,17 +299,18 @@ I'll handle all the technical accounting for you! 💅`,
       setLoading(false)
     }
   }
-  
+
   // Format response for salon owners
   const formatSalonResponse = (data: any): string => {
     if (data.error) return data.error
-    
+
     // Convert technical accounting response to friendly language
     if (data.type === 'journal' && data.result) {
       const amount = data.result.total_amount || extractAmountFromMessage(data.message)
-      const isRevenue = data.message.toLowerCase().includes('revenue') || 
-                       data.message.toLowerCase().includes('sale')
-      
+      const isRevenue =
+        data.message.toLowerCase().includes('revenue') ||
+        data.message.toLowerCase().includes('sale')
+
       if (isRevenue) {
         return `✅ Great! I've recorded the payment of AED ${amount}.
         
@@ -328,15 +328,15 @@ ${data.vendor ? `🏪 Vendor: ${data.vendor}` : ''}
 All set! Your expenses are tracked.`
       }
     }
-    
+
     // Summary response
     if (data.type === 'summary' || data.message.includes('summary')) {
       return data.message.replace(/technical accounting terms/gi, '')
     }
-    
+
     return data.message || 'Transaction processed successfully!'
   }
-  
+
   // Detect transaction category
   const detectCategory = (message: string): SalonMessage['category'] => {
     const lower = message.toLowerCase()
@@ -354,27 +354,27 @@ All set! Your expenses are tracked.`
     }
     return 'revenue'
   }
-  
+
   // Extract amount from response
   const extractAmount = (data: any): number | undefined => {
     if (data.result?.total_amount) return data.result.total_amount
     if (data.amount) return data.amount
-    
+
     // Try to extract from message
     const match = data.message?.match(/\d+(?:,\d{3})*(?:\.\d{2})?/)
     return match ? parseFloat(match[0].replace(',', '')) : undefined
   }
-  
+
   // Extract amount from message
   const extractAmountFromMessage = (message: string): string => {
     const match = message.match(/\d+(?:,\d{3})*(?:\.\d{2})?/)
     return match ? match[0] : '0'
   }
-  
+
   // Generate quick actions based on response
   const generateActions = (data: any): QuickAction[] => {
     const actions: QuickAction[] = []
-    
+
     if (data.type === 'journal' || data.transactionId) {
       // Add journal entry review and posting actions
       actions.push({
@@ -388,7 +388,7 @@ All set! Your expenses are tracked.`
           amount: data.result?.total_amount || extractAmount(data)
         }
       })
-      
+
       actions.push({
         icon: CheckCircle,
         label: 'Post Journal',
@@ -400,7 +400,7 @@ All set! Your expenses are tracked.`
           amount: data.result?.total_amount || extractAmount(data)
         }
       })
-      
+
       actions.push({
         icon: Camera,
         label: 'Add Receipt',
@@ -408,7 +408,7 @@ All set! Your expenses are tracked.`
         variant: 'outline'
       })
     }
-    
+
     if (data.type === 'revenue') {
       actions.push({
         icon: MessageSquare,
@@ -417,54 +417,54 @@ All set! Your expenses are tracked.`
         variant: 'outline'
       })
     }
-    
+
     return actions
   }
-  
+
   // Handle quick prompt click
   const handleQuickPrompt = (prompt: QuickPrompt) => {
     setInput(prompt.prompt)
     inputRef.current?.focus()
   }
-  
+
   // Handle expense selection
   const handleExpenseSelect = (expense: any, amount?: number) => {
-    const message = amount 
+    const message = amount
       ? `Bought ${expense.name.toLowerCase()} for ${amount}`
       : `Bought ${expense.name.toLowerCase()}`
     setInput(message)
     inputRef.current?.focus()
     setActiveView('chat')
   }
-  
+
   // Handle voice input (placeholder)
   const handleVoiceInput = () => {
     // In production, this would integrate with speech-to-text
     alert('Voice input will be available soon! For now, please type your message.')
   }
-  
+
   // Handle file attachment for receipts/evidence
   const handleFileAttachment = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
-    
+
     // Validate file type
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/heic']
     if (!allowedTypes.includes(file.type)) {
       alert('Please upload a PDF or image file (JPEG, PNG, HEIC)')
       return
     }
-    
+
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024 // 5MB
     if (file.size > maxSize) {
       alert('File size must be less than 5MB')
       return
     }
-    
+
     // Show loading state
     setLoading(true)
-    
+
     try {
       // Create FormData
       const formData = new FormData()
@@ -472,20 +472,20 @@ All set! Your expenses are tracked.`
       formData.append('organizationId', organizationId)
       formData.append('fileType', file.type)
       formData.append('fileName', file.name)
-      
+
       // Upload file
       const uploadResponse = await fetch('/api/v1/documents/upload', {
         method: 'POST',
         body: formData
       })
-      
+
       if (!uploadResponse.ok) {
         throw new Error('Failed to upload file')
       }
-      
+
       const uploadResult = await uploadResponse.json()
       const { documentId, publicUrl } = uploadResult.data
-      
+
       // Add message showing the attachment
       const attachmentMessage: SalonMessage = {
         id: Date.now().toString() + '-attachment',
@@ -503,23 +503,25 @@ All set! Your expenses are tracked.`
           }
         ]
       }
-      
+
       setMessages(prev => [...prev, attachmentMessage])
-      
+
       // Store document reference in session for later use
-      sessionStorage.setItem('lastAttachedDocument', JSON.stringify({
-        documentId,
-        fileName: file.name,
-        fileType: file.type,
-        uploadedAt: new Date().toISOString()
-      }))
-      
+      sessionStorage.setItem(
+        'lastAttachedDocument',
+        JSON.stringify({
+          documentId,
+          fileName: file.name,
+          fileType: file.type,
+          uploadedAt: new Date().toISOString()
+        })
+      )
     } catch (error) {
       console.error('Error uploading file:', error)
       const errorMessage: SalonMessage = {
         id: Date.now().toString() + '-upload-error',
         type: 'system',
-        content: "❌ Failed to upload the file. Please try again or contact support.",
+        content: '❌ Failed to upload the file. Please try again or contact support.',
         timestamp: new Date(),
         status: 'error'
       }
@@ -530,7 +532,7 @@ All set! Your expenses are tracked.`
       event.target.value = ''
     }
   }
-  
+
   // Handle camera input for receipts
   const handleCameraInput = () => {
     // Trigger file input click
@@ -539,7 +541,7 @@ All set! Your expenses are tracked.`
       fileInput.click()
     }
   }
-  
+
   // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -548,7 +550,7 @@ All set! Your expenses are tracked.`
   // Handle journal entry review
   const handleReviewJournal = (actionData: any) => {
     const { transactionId, journalEntry, amount } = actionData
-    
+
     // Create a detailed review message
     const reviewMessage: SalonMessage = {
       id: Date.now().toString() + '-review',
@@ -588,7 +590,7 @@ Would you like to post this journal entry to the GL?`,
         }
       ]
     }
-    
+
     setMessages(prev => [...prev, reviewMessage])
   }
 
@@ -596,7 +598,7 @@ Would you like to post this journal entry to the GL?`,
   const handlePostJournal = async (actionData: any) => {
     const { transactionId, journalEntry, amount } = actionData
     setLoading(true)
-    
+
     try {
       // Call the posting API
       const response = await fetch('/api/v1/finance/post-journal', {
@@ -612,13 +614,13 @@ Would you like to post this journal entry to the GL?`,
           smartCode: 'HERA.SALON.MANUAL.POST.v1'
         })
       })
-      
+
       const result = await response.json()
-      
+
       const postMessage: SalonMessage = {
         id: Date.now().toString() + '-posted',
         type: 'assistant',
-        content: result.success 
+        content: result.success
           ? `✅ **Journal Entry Posted Successfully!**
           
 **GL Entry ID:** ${result.glEntryId || 'AUTO-' + Date.now()}
@@ -633,14 +635,13 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
         timestamp: new Date(),
         status: result.success ? 'success' : 'error'
       }
-      
+
       setMessages(prev => [...prev, postMessage])
-      
     } catch (error) {
       const errorMessage: SalonMessage = {
         id: Date.now().toString() + '-post-error',
         type: 'system',
-        content: "❌ Failed to post journal entry. Please check your connection and try again.",
+        content: '❌ Failed to post journal entry. Please check your connection and try again.',
         timestamp: new Date(),
         status: 'error'
       }
@@ -649,11 +650,11 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
       setLoading(false)
     }
   }
-  
+
   // Render journal entry in simple format
   const renderJournalEntry = (entry: any) => {
     if (!entry) return null
-    
+
     return (
       <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
         <p className="font-medium mb-2 text-gray-700 dark:text-gray-300">
@@ -674,7 +675,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
       </div>
     )
   }
-  
+
   if (contextLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
@@ -685,40 +686,29 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
       </div>
     )
   }
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 flex flex-col">
       <div className="max-w-7xl mx-auto p-4 flex-1 flex flex-col w-full">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/salon-data')}
-            >
+            <Button variant="ghost" onClick={() => router.push('/salon-data')}>
               <ChevronRight className="w-4 h-4 mr-2 rotate-180" />
               Back to Salon
             </Button>
-            
+
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => alert('Export coming soon!')}
-              >
+              <Button variant="outline" size="sm" onClick={() => alert('Export coming soon!')}>
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={toggleDarkMode}
-              >
+              <Button variant="outline" size="icon" onClick={toggleDarkMode}>
                 {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </Button>
             </div>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg">
@@ -733,16 +723,20 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
-              <Badge 
-                variant={useMCP ? "default" : "secondary"} 
+              <Badge
+                variant={useMCP ? 'default' : 'secondary'}
                 className="gap-1 cursor-pointer"
                 onClick={() => setUseMCP(!useMCP)}
-                title={useMCP ? "Using Claude AI (Click to switch to pattern mode)" : "Using pattern matching (Click to switch to Claude AI)"}
+                title={
+                  useMCP
+                    ? 'Using Claude AI (Click to switch to pattern mode)'
+                    : 'Using pattern matching (Click to switch to Claude AI)'
+                }
               >
                 <Brain className="w-3 h-3" />
-                {useMCP ? "Claude AI" : "Pattern Mode"}
+                {useMCP ? 'Claude AI' : 'Pattern Mode'}
               </Badge>
               <Badge variant="secondary" className="gap-1">
                 <Sparkles className="w-3 h-3" />
@@ -751,7 +745,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             </div>
           </div>
         </div>
-        
+
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -765,7 +759,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -777,7 +771,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -789,7 +783,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -802,11 +796,11 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Main Interface with Tabs */}
         <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex-1 flex flex-col">
           <CardHeader className="flex-shrink-0">
-            <Tabs value={activeView} onValueChange={(v) => setActiveView(v as any)}>
+            <Tabs value={activeView} onValueChange={v => setActiveView(v as any)}>
               <TabsList className="grid grid-cols-4 w-full max-w-lg">
                 <TabsTrigger value="chat" className="gap-2">
                   <MessageSquare className="w-4 h-4" />
@@ -827,7 +821,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
               </TabsList>
             </Tabs>
           </CardHeader>
-          
+
           <CardContent className="flex-1 overflow-hidden">
             <Tabs value={activeView} className="w-full h-full">
               {/* Chat Tab */}
@@ -835,11 +829,18 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
                   {/* Chat Area */}
                   <div className="lg:col-span-2 h-full">
-                    <Card className="h-full flex flex-col border-0 shadow-none" style={{ minHeight: '600px', maxHeight: '80vh' }}>
+                    <Card
+                      className="h-full flex flex-col border-0 shadow-none"
+                      style={{ minHeight: '600px', maxHeight: '80vh' }}
+                    >
                       <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
                         {/* Messages - Fixed height with proper overflow */}
                         <div className="flex-1 overflow-hidden relative">
-                          <ScrollArea ref={scrollAreaRef} className="h-full pr-2" style={{ height: '100%' }}>
+                          <ScrollArea
+                            ref={scrollAreaRef}
+                            className="h-full pr-2"
+                            style={{ height: '100%' }}
+                          >
                             <style jsx global>{`
                               [data-radix-scroll-area-viewport] {
                                 scrollbar-width: thin;
@@ -861,103 +862,116 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                             `}</style>
                             <div className="p-6 pb-2">
                               <div className="space-y-4 max-w-4xl mx-auto w-full">
-                                {messages.map((message) => (
-                                <div
-                                  key={message.id}
-                                  className={cn(
-                                    "flex",
-                                    message.type === 'user' ? "justify-end" : "justify-start"
-                                  )}
-                                >
+                                {messages.map(message => (
                                   <div
+                                    key={message.id}
                                     className={cn(
-                                      "max-w-[80%] rounded-lg p-4",
-                                      message.type === 'user' 
-                                        ? "bg-purple-600 text-white" 
-                                        : message.type === 'system'
-                                        ? "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200"
-                                        : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                      'flex',
+                                      message.type === 'user' ? 'justify-end' : 'justify-start'
                                     )}
                                   >
-                                    <p className="whitespace-pre-wrap">{message.content}</p>
-                                    
-                                    {message.journalEntry && renderJournalEntry(message.journalEntry)}
-                                    
-                                    {message.actions && message.actions.length > 0 && (
-                                      <div className="flex gap-2 mt-3">
-                                        {message.actions.map((action, idx) => (
-                                          <Button
-                                            key={idx}
-                                            variant={action.variant || 'secondary'}
-                                            size="sm"
-                                            className="gap-1"
-                                            onClick={() => {
-                                              if (action.action === 'attach_receipt') {
-                                                handleCameraInput()
-                                              } else if (action.action === 'send_receipt') {
-                                                alert('WhatsApp receipt sending coming soon!')
-                                              } else if (action.action === 'review_journal') {
-                                                handleReviewJournal(action.data)
-                                              } else if (action.action === 'post_journal') {
-                                                handlePostJournal(action.data)
-                                              } else if (action.action === 'confirm_post') {
-                                                handlePostJournal(action.data)
-                                              } else if (action.action === 'cancel_post') {
-                                                // Just add a cancellation message
-                                                const cancelMessage: SalonMessage = {
-                                                  id: Date.now().toString() + '-cancel',
-                                                  type: 'system',
-                                                  content: "❌ Journal entry posting cancelled. The transaction remains in draft status.",
-                                                  timestamp: new Date(),
-                                                  status: 'error'
-                                                }
-                                                setMessages(prev => [...prev, cancelMessage])
-                                              } else if (action.action === 'view_document') {
-                                                // Open document in new tab
-                                                if (action.data?.url) {
-                                                  window.open(action.data.url, '_blank')
-                                                } else if (action.data?.documentId) {
-                                                  // Fetch document URL if not provided
-                                                  fetch(`/api/v1/documents/upload?documentId=${action.data.documentId}&organizationId=${organizationId}`)
-                                                    .then(res => res.json())
-                                                    .then(data => {
-                                                      if (data.success && data.data?.publicUrl) {
-                                                        window.open(data.data.publicUrl, '_blank')
-                                                      }
-                                                    })
-                                                    .catch(err => {
-                                                      console.error('Error fetching document:', err)
-                                                      alert('Failed to open document. Please try again.')
-                                                    })
-                                                }
-                                              }
-                                            }}
-                                          >
-                                            <action.icon className="w-3 h-3" />
-                                            {action.label}
-                                          </Button>
-                                        ))}
-                                      </div>
-                                    )}
-                                    
-                                    <div className="flex items-center gap-2 mt-2 text-xs opacity-70">
-                                      <Clock className="w-3 h-3" />
-                                      {message.timestamp.toLocaleTimeString()}
-                                      {message.status && (
-                                        <>
-                                          {message.status === 'success' && <CheckCircle className="w-3 h-3 text-green-500" />}
-                                          {message.status === 'error' && <AlertCircle className="w-3 h-3 text-red-500" />}
-                                        </>
+                                    <div
+                                      className={cn(
+                                        'max-w-[80%] rounded-lg p-4',
+                                        message.type === 'user'
+                                          ? 'bg-purple-600 text-white'
+                                          : message.type === 'system'
+                                            ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'
+                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                                       )}
+                                    >
+                                      <p className="whitespace-pre-wrap">{message.content}</p>
+
+                                      {message.journalEntry &&
+                                        renderJournalEntry(message.journalEntry)}
+
+                                      {message.actions && message.actions.length > 0 && (
+                                        <div className="flex gap-2 mt-3">
+                                          {message.actions.map((action, idx) => (
+                                            <Button
+                                              key={idx}
+                                              variant={action.variant || 'secondary'}
+                                              size="sm"
+                                              className="gap-1"
+                                              onClick={() => {
+                                                if (action.action === 'attach_receipt') {
+                                                  handleCameraInput()
+                                                } else if (action.action === 'send_receipt') {
+                                                  alert('WhatsApp receipt sending coming soon!')
+                                                } else if (action.action === 'review_journal') {
+                                                  handleReviewJournal(action.data)
+                                                } else if (action.action === 'post_journal') {
+                                                  handlePostJournal(action.data)
+                                                } else if (action.action === 'confirm_post') {
+                                                  handlePostJournal(action.data)
+                                                } else if (action.action === 'cancel_post') {
+                                                  // Just add a cancellation message
+                                                  const cancelMessage: SalonMessage = {
+                                                    id: Date.now().toString() + '-cancel',
+                                                    type: 'system',
+                                                    content:
+                                                      '❌ Journal entry posting cancelled. The transaction remains in draft status.',
+                                                    timestamp: new Date(),
+                                                    status: 'error'
+                                                  }
+                                                  setMessages(prev => [...prev, cancelMessage])
+                                                } else if (action.action === 'view_document') {
+                                                  // Open document in new tab
+                                                  if (action.data?.url) {
+                                                    window.open(action.data.url, '_blank')
+                                                  } else if (action.data?.documentId) {
+                                                    // Fetch document URL if not provided
+                                                    fetch(
+                                                      `/api/v1/documents/upload?documentId=${action.data.documentId}&organizationId=${organizationId}`
+                                                    )
+                                                      .then(res => res.json())
+                                                      .then(data => {
+                                                        if (data.success && data.data?.publicUrl) {
+                                                          window.open(data.data.publicUrl, '_blank')
+                                                        }
+                                                      })
+                                                      .catch(err => {
+                                                        console.error(
+                                                          'Error fetching document:',
+                                                          err
+                                                        )
+                                                        alert(
+                                                          'Failed to open document. Please try again.'
+                                                        )
+                                                      })
+                                                  }
+                                                }
+                                              }}
+                                            >
+                                              <action.icon className="w-3 h-3" />
+                                              {action.label}
+                                            </Button>
+                                          ))}
+                                        </div>
+                                      )}
+
+                                      <div className="flex items-center gap-2 mt-2 text-xs opacity-70">
+                                        <Clock className="w-3 h-3" />
+                                        {message.timestamp.toLocaleTimeString()}
+                                        {message.status && (
+                                          <>
+                                            {message.status === 'success' && (
+                                              <CheckCircle className="w-3 h-3 text-green-500" />
+                                            )}
+                                            {message.status === 'error' && (
+                                              <AlertCircle className="w-3 h-3 text-red-500" />
+                                            )}
+                                          </>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
                                 <div ref={messagesEndRef} />
                               </div>
                             </div>
                           </ScrollArea>
-                          
+
                           {/* Scroll to bottom button */}
                           {showScrollButton && (
                             <Button
@@ -970,7 +984,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                             </Button>
                           )}
                         </div>
-                        
+
                         {/* Input Area - Fixed at bottom */}
                         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                           {/* Hidden file input */}
@@ -981,13 +995,13 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                             onChange={handleFileAttachment}
                             className="hidden"
                           />
-                          
+
                           <form onSubmit={handleSubmit} className="flex gap-2">
                             <div className="flex-1 relative">
                               <Input
                                 ref={inputRef}
                                 value={input}
-                                onChange={(e) => setInput(e.target.value)}
+                                onChange={e => setInput(e.target.value)}
                                 placeholder="Tell me what happened... (e.g., 'Sarah paid 350 for hair color')"
                                 disabled={loading}
                                 className="pr-20 bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
@@ -1015,8 +1029,8 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                 </Button>
                               </div>
                             </div>
-                            <Button 
-                              type="submit" 
+                            <Button
+                              type="submit"
                               disabled={loading || !input.trim()}
                               className="bg-purple-600 hover:bg-purple-700"
                             >
@@ -1027,7 +1041,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                               )}
                             </Button>
                           </form>
-                          
+
                           {/* Quick Actions */}
                           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mt-3">
                             {SALON_QUICK_PROMPTS.map((prompt, idx) => (
@@ -1038,7 +1052,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                                 onClick={() => handleQuickPrompt(prompt)}
                                 className="flex flex-col h-auto py-2 px-1"
                               >
-                                <prompt.icon className={cn("w-5 h-5 mb-1", prompt.color)} />
+                                <prompt.icon className={cn('w-5 h-5 mb-1', prompt.color)} />
                                 <span className="text-xs">{prompt.label}</span>
                               </Button>
                             ))}
@@ -1047,7 +1061,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                       </CardContent>
                     </Card>
                   </div>
-                  
+
                   {/* Side Panel */}
                   <div className="space-y-4">
                     {/* Help & Examples */}
@@ -1060,32 +1074,43 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2 text-sm">
-                          <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                               onClick={() => setInput("Maya paid 450 for coloring and treatment")}>
+                          <div
+                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            onClick={() => setInput('Maya paid 450 for coloring and treatment')}
+                          >
                             "Maya paid 450 for coloring and treatment"
                           </div>
-                          <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                               onClick={() => setInput("Bought hair color from Beauty Depot for 320")}>
+                          <div
+                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            onClick={() => setInput('Bought hair color from Beauty Depot for 320')}
+                          >
                             "Bought hair color from Beauty Depot for 320"
                           </div>
-                          <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                               onClick={() => setInput("Pay Sarah 40% commission on 2000")}>
+                          <div
+                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            onClick={() => setInput('Pay Sarah 40% commission on 2000')}
+                          >
                             "Pay Sarah 40% commission on 2000"
                           </div>
-                          <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                               onClick={() => setInput("Paid electricity bill 850")}>
+                          <div
+                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            onClick={() => setInput('Paid electricity bill 850')}
+                          >
                             "Paid electricity bill 850"
                           </div>
-                          <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
-                               onClick={() => setInput("Show me today's total sales")}>
+                          <div
+                            className="p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            onClick={() => setInput("Show me today's total sales")}
+                          >
                             "Show me today's total sales"
                           </div>
                         </div>
-                        
+
                         <Alert className="mt-4">
                           <Sparkles className="w-4 h-4" />
                           <AlertDescription>
-                            <strong>Pro tip:</strong> I automatically calculate VAT and categorize expenses for you!
+                            <strong>Pro tip:</strong> I automatically calculate VAT and categorize
+                            expenses for you!
                           </AlertDescription>
                         </Alert>
                       </CardContent>
@@ -1093,7 +1118,7 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                   </div>
                 </div>
               </TabsContent>
-              
+
               {/* Expense Tab */}
               <TabsContent value="expense" className="mt-0">
                 <div className="space-y-6">
@@ -1106,12 +1131,12 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
                   </div>
                 </div>
               </TabsContent>
-              
+
               {/* History Tab */}
               <TabsContent value="history" className="mt-0">
                 <TransactionHistory />
               </TabsContent>
-              
+
               {/* Insights Tab */}
               <TabsContent value="insights" className="mt-0">
                 <DailyInsights />

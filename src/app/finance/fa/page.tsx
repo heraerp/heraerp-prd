@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   Building2,
   Search,
   Filter,
@@ -28,7 +28,20 @@ import {
   PieChart,
   Activity
 } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RePieChart, Pie, Cell, BarChart, Bar } from 'recharts'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart as RePieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar
+} from 'recharts'
 
 // India Vision Organization ID
 const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
@@ -167,22 +180,33 @@ export default function FixedAssetsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-emerald-500/20 text-emerald-400'
-      case 'maintenance': return 'bg-yellow-500/20 text-yellow-400'
-      case 'disposed': return 'bg-red-500/20 text-red-400'
-      case 'inactive': return 'bg-gray-500/20 text-gray-400'
-      default: return 'bg-gray-500/20 text-gray-400'
+      case 'active':
+        return 'bg-emerald-500/20 text-emerald-400'
+      case 'maintenance':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'disposed':
+        return 'bg-red-500/20 text-red-400'
+      case 'inactive':
+        return 'bg-gray-500/20 text-gray-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
     }
   }
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'Network Equipment': return Server
-      case 'Buildings & Facilities': return Building2
-      case 'Vehicles': return Truck
-      case 'IT Equipment': return Monitor
-      case 'Office Furniture': return Package
-      default: return Package
+      case 'Network Equipment':
+        return Server
+      case 'Buildings & Facilities':
+        return Building2
+      case 'Vehicles':
+        return Truck
+      case 'IT Equipment':
+        return Monitor
+      case 'Office Furniture':
+        return Package
+      default:
+        return Package
     }
   }
 
@@ -197,7 +221,7 @@ export default function FixedAssetsPage() {
           <p className="text-white/60 mt-1">Manage and track company assets and depreciation</p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -256,10 +280,14 @@ export default function FixedAssetsPage() {
                   <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500">
                     <Building2 className="h-6 w-6 text-white" />
                   </div>
-                  <span className="text-xs text-purple-400 font-medium">{assetMetrics.totalAssets} assets</span>
+                  <span className="text-xs text-purple-400 font-medium">
+                    {assetMetrics.totalAssets} assets
+                  </span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Total Asset Value</h3>
-                <p className="text-2xl font-bold text-white">₹{(assetMetrics.totalValue / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(assetMetrics.totalValue / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">Purchase value</p>
               </div>
             </div>
@@ -274,7 +302,9 @@ export default function FixedAssetsPage() {
                   <TrendingDown className="h-4 w-4 text-red-400" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Current Value</h3>
-                <p className="text-2xl font-bold text-white">₹{(assetMetrics.currentValue / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(assetMetrics.currentValue / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">After depreciation</p>
               </div>
             </div>
@@ -317,27 +347,30 @@ export default function FixedAssetsPage() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
-                      formatter={(value: any) => `₹${(value/10000000).toFixed(1)} Cr`}
+                      formatter={(value: any) => `₹${(value / 10000000).toFixed(1)} Cr`}
                     />
                   </RePieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
-                  {categoryBreakdown.map((item) => (
+                  {categoryBreakdown.map(item => (
                     <div key={item.name} className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
                         <span className="text-sm text-white/80">{item.name}</span>
                       </div>
                       <div className="flex items-center space-x-3">
                         <span className="text-xs text-white/60">{item.count} items</span>
                         <span className="text-sm font-medium text-white">
-                          ₹{(item.value/10000000).toFixed(1)} Cr
+                          ₹{(item.value / 10000000).toFixed(1)} Cr
                         </span>
                       </div>
                     </div>
@@ -350,20 +383,22 @@ export default function FixedAssetsPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">New Acquisitions (6 Months)</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">
+                  New Acquisitions (6 Months)
+                </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={acquisitionData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `${value}`} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={value => `${value}`} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
                       formatter={(value: any, name: string) => {
-                        if (name === 'value') return `₹${(value/100000).toFixed(1)} L`
+                        if (name === 'value') return `₹${(value / 100000).toFixed(1)} L`
                         return value
                       }}
                     />
@@ -386,14 +421,14 @@ export default function FixedAssetsPage() {
                 type="text"
                 placeholder="Search assets..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-purple-500 transition-colors"
               />
             </div>
-            
+
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={e => setSelectedCategory(e.target.value)}
               className="px-4 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors"
             >
               <option value="all">All Categories</option>
@@ -412,7 +447,7 @@ export default function FixedAssetsPage() {
 
           {/* Assets List */}
           <div className="space-y-4">
-            {assets.map((asset) => {
+            {assets.map(asset => {
               const Icon = getCategoryIcon(asset.category)
               return (
                 <div key={asset.id} className="relative group">
@@ -426,11 +461,13 @@ export default function FixedAssetsPage() {
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/10 text-white/60">
                             {asset.assetCode}
                           </span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(asset.status)}`}>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(asset.status)}`}
+                          >
                             {asset.status}
                           </span>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                           <div>
                             <p className="text-xs text-white/60 mb-1">Purchase Value</p>
@@ -462,7 +499,9 @@ export default function FixedAssetsPage() {
                         <div className="flex items-center space-x-6 text-sm text-white/60">
                           <div className="flex items-center space-x-2">
                             <Calendar className="h-4 w-4" />
-                            <span>Purchased: {new Date(asset.purchaseDate).toLocaleDateString()}</span>
+                            <span>
+                              Purchased: {new Date(asset.purchaseDate).toLocaleDateString()}
+                            </span>
                           </div>
                           {asset.assignedTo && (
                             <div className="flex items-center space-x-2">
@@ -473,12 +512,15 @@ export default function FixedAssetsPage() {
                           {asset.nextMaintenanceDate && (
                             <div className="flex items-center space-x-2">
                               <Wrench className="h-4 w-4" />
-                              <span>Next service: {new Date(asset.nextMaintenanceDate).toLocaleDateString()}</span>
+                              <span>
+                                Next service:{' '}
+                                {new Date(asset.nextMaintenanceDate).toLocaleDateString()}
+                              </span>
                             </div>
                           )}
                         </div>
                       </div>
-                      
+
                       <button className="ml-4 text-white/40 hover:text-white transition-colors">
                         <MoreVertical className="h-5 w-5" />
                       </button>
@@ -503,7 +545,9 @@ export default function FixedAssetsPage() {
                   <span className="text-xs text-red-400 font-medium">YTD</span>
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Total Depreciation</h3>
-                <p className="text-2xl font-bold text-white">₹{(assetMetrics.ytdDepreciation / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(assetMetrics.ytdDepreciation / 10000000).toFixed(1)} Cr
+                </p>
               </div>
             </div>
 
@@ -536,19 +580,24 @@ export default function FixedAssetsPage() {
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Asset Value & Depreciation Trend</h2>
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Asset Value & Depreciation Trend
+              </h2>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={depreciationTrend}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                   <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                  <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `₹${(value/10000000).toFixed(0)}Cr`} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
+                  <YAxis
+                    stroke="rgba(255,255,255,0.5)"
+                    tickFormatter={value => `₹${(value / 10000000).toFixed(0)}Cr`}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       borderRadius: '8px'
                     }}
-                    formatter={(value: any) => `₹${(value/10000000).toFixed(1)} Cr`}
+                    formatter={(value: any) => `₹${(value / 10000000).toFixed(1)} Cr`}
                   />
                   <Area
                     type="monotone"

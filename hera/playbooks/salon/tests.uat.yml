@@ -1,0 +1,67 @@
+smart_code: HERA.TEST.SCOPE.SALON.MINI.v1
+setup: []
+teardown: []
+
+cases:
+  - name: "Service BOM auto-consumption emits inventory issues"
+    arrange:
+      create_transaction_from_file: tests/payloads/salon_pos_order_service_color.json
+      assign_output_to: pos_order_id
+    expect:
+      transactions:
+        headers:
+          - { transaction_type: "pos_order", status: "posted" }
+        lines:
+          - { line_type: "inventory_move_line" }
+      report:
+        view: v_salon_inventory_levels
+        contains:
+          low_stock: true
+
+  - name: "Stylist commissions exclude tips for EXCL_TIP variant"
+    arrange:
+      create_transaction_from_file: tests/payloads/salon_pos_order_with_tip_excl.json
+      assign_output_to: pos_order_id
+    expect:
+      report:
+        view: v_salon_commissions_period
+        params: { from: "2025-09-01", to: "2025-12-31" }
+        contains:
+          tips:
+          commission_aed:
+
+  - name: "Chair utilization computes from appointment metadata"
+    arrange:
+      create_transaction_from_file: tests/payloads/salon_appointments_two_overlapping.json
+      assign_output_to: appt_ids
+    expect:
+      report:
+        view: v_salon_chair_utilization_daily
+        params: { from: "2025-09-01", to: "2025-12-31" }
+        contains:
+          utilization_pct:
+
+  - name: "Customer price list drives AED pricing"
+    arrange:
+      create_transaction_from_file: tests/payloads/salon_pos_order_customer_pl.json
+      assign_output_to: pos_order_id
+    expect:
+      transactions:
+        headers:
+          - { currency_code: "AED" }
+
+  - name: "Cancellation within 6h posts fee and excludes from revenue"
+    arrange:
+      create_transaction_from_file: tests/payloads/salon_appointment_cancel_within_window.json
+      assign_output_to: appt_cancel_id
+    expect:
+      transactions:
+        lines:
+          - { line_type: "fee" }
+      reports:
+        - report_code: HERA.SALON.REPORT.DAILY_SALES.CORE.v1
+          params: { from: "2025-09-01", to: "2025-12-31" }
+          excludes:
+            appt_cancel_id:
+
+strict: true

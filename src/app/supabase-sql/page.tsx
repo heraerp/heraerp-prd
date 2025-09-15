@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Supabase SQL Editor
  * Smart Code: HERA.TOOLS.SQL.EDITOR.v1
- * 
+ *
  * Direct SQL interface for Supabase database operations
  */
 
@@ -17,11 +17,11 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { 
-  Database, 
-  Play, 
-  History, 
-  Copy, 
+import {
+  Database,
+  Play,
+  History,
+  Copy,
   Download,
   AlertCircle,
   CheckCircle2,
@@ -117,7 +117,7 @@ LIMIT 10;`
     try {
       // For demo purposes - in production this would call Supabase
       await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000))
-      
+
       const mockData = [
         { id: 1, name: 'Sample Entity', type: 'customer', created_at: new Date().toISOString() },
         { id: 2, name: 'Another Entity', type: 'product', created_at: new Date().toISOString() },
@@ -145,9 +145,8 @@ LIMIT 10;`
 
       toast({
         title: 'Query Executed',
-        description: `Returned ${queryResult.rowCount} rows in ${queryResult.executionTime}ms`,
+        description: `Returned ${queryResult.rowCount} rows in ${queryResult.executionTime}ms`
       })
-
     } catch (error) {
       const executionTime = Date.now() - startTime
       const queryResult: QueryResult = {
@@ -173,7 +172,7 @@ LIMIT 10;`
     navigator.clipboard.writeText(text)
     toast({
       title: 'Copied',
-      description: 'Query copied to clipboard',
+      description: 'Query copied to clipboard'
     })
   }
 
@@ -199,8 +198,12 @@ LIMIT 10;`
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Authentication Required</h3>
-          <p className="text-gray-600 dark:text-gray-400">Please log in to access the SQL editor.</p>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+            Authentication Required
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Please log in to access the SQL editor.
+          </p>
         </div>
       </div>
     )
@@ -305,7 +308,7 @@ LIMIT 10;`
                 <CardContent>
                   <Textarea
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={e => setQuery(e.target.value)}
                     placeholder="-- Enter your SQL query here
 SELECT * FROM core_entities LIMIT 10;"
                     className="min-h-[300px] font-mono text-sm"
@@ -351,7 +354,7 @@ SELECT * FROM core_entities LIMIT 10;"
                           {result.executionTime}ms
                         </Badge>
                       </div>
-                      
+
                       {result.data && result.data.length > 0 ? (
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
@@ -366,13 +369,15 @@ SELECT * FROM core_entities LIMIT 10;"
                             </thead>
                             <tbody>
                               {result.data.slice(0, 20).map((row, index) => (
-                                <tr key={index} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <tr
+                                  key={index}
+                                  className="border-b hover:bg-gray-50 dark:hover:bg-gray-800"
+                                >
                                   {Object.values(row).map((value, cellIndex) => (
                                     <td key={cellIndex} className="p-2">
                                       {typeof value === 'object' && value !== null
                                         ? JSON.stringify(value)
-                                        : String(value)
-                                      }
+                                        : String(value)}
                                     </td>
                                   ))}
                                 </tr>
@@ -403,7 +408,7 @@ SELECT * FROM core_entities LIMIT 10;"
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {queryHistory.map((entry) => (
+                    {queryHistory.map(entry => (
                       <Card key={entry.id} className="border">
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">

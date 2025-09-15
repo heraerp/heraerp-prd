@@ -125,7 +125,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   try {
     let entityType: string
     let smartCode: string
-    
+
     switch (type) {
       case 'campaign':
         entityType = 'marketing_campaign'
@@ -177,10 +177,7 @@ export const PUT = withErrorHandler(async (request: NextRequest) => {
   const { id, data } = body
 
   if (!id || !data) {
-    return NextResponse.json(
-      { success: false, error: 'ID and data are required' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'ID and data are required' }, { status: 400 })
   }
 
   try {
@@ -215,17 +212,11 @@ export const DELETE = withErrorHandler(async (request: NextRequest) => {
   const id = searchParams.get('id')
 
   if (!id) {
-    return NextResponse.json(
-      { success: false, error: 'ID is required' },
-      { status: 400 }
-    )
+    return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 })
   }
 
   try {
-    const { error } = await supabase
-      .from('core_entities')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('core_entities').delete().eq('id', id)
 
     if (error) throw error
 

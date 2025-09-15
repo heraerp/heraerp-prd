@@ -7,9 +7,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 // Only create client if we have the required environment variables
-const supabase = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : null
+const supabase =
+  supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null
 
 interface BusinessContext {
   category: string
@@ -40,20 +39,17 @@ export async function POST(request: NextRequest) {
     const { query, organizationId, context, useMCP } = body
 
     if (!query || !organizationId) {
-      return NextResponse.json(
-        { error: 'Missing required parameters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
     }
 
     // Analyze query to determine category and intent
     const queryLower = query.toLowerCase()
     const detectedCategory = detectCategory(queryLower)
     const intent = analyzeIntent(queryLower)
-    
+
     // Fetch relevant business data based on category
     const businessData = await fetchBusinessData(organizationId, detectedCategory)
-    
+
     // Generate AI response based on intent and data
     const response = await generateAIResponse({
       query,
@@ -67,10 +63,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response)
   } catch (error) {
     console.error('AI Manager error:', error)
-    return NextResponse.json(
-      { error: 'Failed to process AI query' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to process AI query' }, { status: 500 })
   }
 }
 
@@ -81,7 +74,7 @@ function detectCategory(query: string): string {
       return category
     }
   }
-  
+
   // Default category based on common terms
   if (query.includes('money') || query.includes('revenue') || query.includes('profit')) {
     return 'finance'
@@ -92,7 +85,7 @@ function detectCategory(query: string): string {
   if (query.includes('stock') || query.includes('material') || query.includes('inventory')) {
     return 'inventory'
   }
-  
+
   return 'operations' // Default
 }
 
@@ -104,7 +97,7 @@ function analyzeIntent(query: string): string {
   if (query.includes('risk') || query.includes('problem')) return 'risk_assessment'
   if (query.includes('how') || query.includes('performance')) return 'performance'
   if (query.includes('trend') || query.includes('pattern')) return 'trends'
-  
+
   return 'general' // Default intent
 }
 
@@ -127,7 +120,7 @@ async function fetchBusinessData(organizationId: string, category: string) {
           .eq('transaction_type', 'sale')
           .order('transaction_date', { ascending: false })
           .limit(100)
-        
+
         data.sales = salesData || []
         data.totalRevenue = salesData?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
         data.orderCount = salesData?.length || 0
@@ -140,7 +133,7 @@ async function fetchBusinessData(organizationId: string, category: string) {
           .select('*, core_dynamic_data!inner(*)')
           .eq('organization_id', organizationId)
           .eq('entity_type', 'product')
-        
+
         data.inventory = inventoryData || []
         data.totalItems = inventoryData?.length || 0
         break
@@ -154,12 +147,16 @@ async function fetchBusinessData(organizationId: string, category: string) {
           .in('transaction_type', ['sale', 'purchase', 'expense', 'payment'])
           .order('transaction_date', { ascending: false })
           .limit(200)
-        
+
         data.transactions = financeData || []
-        data.revenue = financeData?.filter(t => t.transaction_type === 'sale')
-          .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
-        data.expenses = financeData?.filter(t => ['purchase', 'expense'].includes(t.transaction_type))
-          .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+        data.revenue =
+          financeData
+            ?.filter(t => t.transaction_type === 'sale')
+            .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+        data.expenses =
+          financeData
+            ?.filter(t => ['purchase', 'expense'].includes(t.transaction_type))
+            .reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
         break
 
       case 'hr':
@@ -169,7 +166,7 @@ async function fetchBusinessData(organizationId: string, category: string) {
           .select('*')
           .eq('organization_id', organizationId)
           .eq('entity_type', 'employee')
-        
+
         data.employees = employeeData || []
         data.teamSize = employeeData?.length || 0
         break
@@ -182,7 +179,7 @@ async function fetchBusinessData(organizationId: string, category: string) {
           .eq('organization_id', organizationId)
           .order('transaction_date', { ascending: false })
           .limit(50)
-        
+
         data.operations = operationalData || []
     }
   } catch (error) {
@@ -246,57 +243,58 @@ async function generateAIResponse(params: {
   useMCP: boolean
 }) {
   const { query, intent, category, businessData, context } = params
-  
+
   // Generate response based on intent and data
   let message = ''
   let recommendations: any[] = []
   let metrics: any[] = []
   let priority = 'medium'
   let insights: any[] = []
-  
+
   switch (intent) {
     case 'analysis':
       message = generateAnalysisResponse(category, businessData, context)
       metrics = extractMetricsFromData(category, businessData)
       break
-      
+
     case 'recommendation':
       const recResult = generateRecommendations(category, businessData, context)
       message = recResult.message
       recommendations = recResult.recommendations
       priority = 'high'
       break
-      
+
     case 'prediction':
       message = generatePredictiveInsights(category, businessData, context)
       priority = 'high'
       break
-      
+
     case 'risk_assessment':
       const riskResult = assessBusinessRisks(category, businessData, context)
       message = riskResult.message
       insights = riskResult.insights
       priority = 'high'
       break
-      
+
     case 'performance':
       message = generatePerformanceReport(category, businessData, context)
       metrics = extractMetricsFromData(category, businessData)
       break
-      
+
     default:
       message = generateGeneralResponse(query, businessData, context)
   }
-  
+
   // Add contextual insights
   if (category === 'sales' && businessData.orderCount > 40) {
     insights.push({
-      content: 'Your sales volume is 15% above industry average. Consider expanding production capacity to meet growing demand.',
+      content:
+        'Your sales volume is 15% above industry average. Consider expanding production capacity to meet growing demand.',
       category: 'sales',
       priority: 'medium'
     })
   }
-  
+
   if (category === 'inventory' && businessData.lowStockItems?.length > 2) {
     insights.push({
       content: `Critical: ${businessData.lowStockItems.length} items need immediate restocking. This could impact upcoming orders.`,
@@ -304,7 +302,7 @@ async function generateAIResponse(params: {
       priority: 'high'
     })
   }
-  
+
   return {
     message,
     category,
@@ -358,53 +356,62 @@ Your profit margins are healthy and above industry standards. Cash position rema
 
 Your production line is operating efficiently with good completion rates. Consider capacity expansion if demand continues to grow.`
   }
-  
-  return templates[category] || `I've analyzed your ${category} data. The metrics show stable performance with room for optimization in key areas.`
+
+  return (
+    templates[category] ||
+    `I've analyzed your ${category} data. The metrics show stable performance with room for optimization in key areas.`
+  )
 }
 
 function generateRecommendations(category: string, data: any, context: BusinessContext) {
   const recommendations = []
   let message = `Based on your current ${category} performance, here are my strategic recommendations:`
-  
+
   if (category === 'sales') {
     recommendations.push({
       title: 'Expand Premium Product Line',
-      description: 'Your high average order value suggests strong demand for premium furniture. Consider introducing new luxury collections.',
+      description:
+        'Your high average order value suggests strong demand for premium furniture. Consider introducing new luxury collections.',
       impact: 'high'
     })
     recommendations.push({
       title: 'Implement Customer Loyalty Program',
-      description: 'With growing order volume, a loyalty program could increase repeat business by 20-30%.',
+      description:
+        'With growing order volume, a loyalty program could increase repeat business by 20-30%.',
       impact: 'medium'
     })
   }
-  
+
   if (category === 'inventory') {
     recommendations.push({
       title: 'Automate Reorder Points',
-      description: 'Set up automatic purchase orders when stock falls below optimal levels to prevent stockouts.',
+      description:
+        'Set up automatic purchase orders when stock falls below optimal levels to prevent stockouts.',
       impact: 'high'
     })
     recommendations.push({
       title: 'Optimize Storage Layout',
-      description: 'Reorganize warehouse based on product turnover rates to improve picking efficiency.',
+      description:
+        'Reorganize warehouse based on product turnover rates to improve picking efficiency.',
       impact: 'medium'
     })
   }
-  
+
   if (category === 'finance') {
     recommendations.push({
       title: 'Negotiate Better Payment Terms',
-      description: 'With strong cash position, negotiate extended payment terms with suppliers to improve cash flow.',
+      description:
+        'With strong cash position, negotiate extended payment terms with suppliers to improve cash flow.',
       impact: 'medium'
     })
     recommendations.push({
       title: 'Invest in Production Automation',
-      description: 'Your healthy margins allow for strategic investments in automation to reduce long-term costs.',
+      description:
+        'Your healthy margins allow for strategic investments in automation to reduce long-term costs.',
       impact: 'high'
     })
   }
-  
+
   return { message, recommendations }
 }
 
@@ -437,23 +444,27 @@ Recommendation: Place orders for critical items immediately to avoid production 
 
 Market conditions remain favorable for premium furniture with sustained demand from hospitality sector.`
   }
-  
-  return predictions[category] || `Based on historical data and current trends, your ${category} metrics are expected to improve by 10-15% over the next quarter.`
+
+  return (
+    predictions[category] ||
+    `Based on historical data and current trends, your ${category} metrics are expected to improve by 10-15% over the next quarter.`
+  )
 }
 
 function assessBusinessRisks(category: string, data: any, context: BusinessContext) {
   const insights = []
   let message = `🚨 **Risk Assessment Report**\n\nI've identified the following business risks that need attention:`
-  
+
   // Universal risks
   if (data.cashPosition < 1000000 || data.finance?.cashPosition < 1000000) {
     insights.push({
-      content: 'Cash reserves are below recommended levels. This could impact ability to handle unexpected expenses or take advantage of bulk purchase discounts.',
+      content:
+        'Cash reserves are below recommended levels. This could impact ability to handle unexpected expenses or take advantage of bulk purchase discounts.',
       category: 'finance',
       priority: 'high'
     })
   }
-  
+
   // Category-specific risks
   if (category === 'inventory' && data.lowStockItems?.length > 0) {
     insights.push({
@@ -462,23 +473,25 @@ function assessBusinessRisks(category: string, data: any, context: BusinessConte
       priority: 'high'
     })
   }
-  
+
   if (category === 'operations' && data.productionCapacity > 85) {
     insights.push({
-      content: 'Production capacity exceeding 85% utilization. This leaves little room for urgent orders and may lead to delivery delays.',
+      content:
+        'Production capacity exceeding 85% utilization. This leaves little room for urgent orders and may lead to delivery delays.',
       category: 'operations',
       priority: 'medium'
     })
   }
-  
+
   if (category === 'sales' && data.pendingReceivables > 500000) {
     insights.push({
-      content: 'High pending receivables detected. Consider implementing stricter credit policies or offering early payment discounts.',
+      content:
+        'High pending receivables detected. Consider implementing stricter credit policies or offering early payment discounts.',
       category: 'sales',
       priority: 'medium'
     })
   }
-  
+
   return { message, insights }
 }
 
@@ -517,7 +530,7 @@ Would you like me to analyze any specific aspect of your business in more detail
 
 function extractMetricsFromData(category: string, data: any): any[] {
   const metrics = []
-  
+
   if (category === 'sales' || data.sales) {
     metrics.push({
       label: 'Total Revenue',
@@ -532,7 +545,7 @@ function extractMetricsFromData(category: string, data: any): any[] {
       change: 8.2
     })
   }
-  
+
   if (category === 'finance' || data.finance) {
     metrics.push({
       label: 'Net Profit',
@@ -547,7 +560,7 @@ function extractMetricsFromData(category: string, data: any): any[] {
       change: 0.5
     })
   }
-  
+
   if (category === 'operations' || data.operations) {
     metrics.push({
       label: 'Production Capacity',
@@ -562,6 +575,6 @@ function extractMetricsFromData(category: string, data: any): any[] {
       change: 0.8
     })
   }
-  
+
   return metrics
 }

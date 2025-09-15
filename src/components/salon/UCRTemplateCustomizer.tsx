@@ -36,13 +36,9 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 
@@ -60,13 +56,15 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
   const [activeTab, setActiveTab] = useState('basics')
   const [validationResult, setValidationResult] = useState<any>(null)
   const [saving, setSaving] = useState(false)
-  
+
   // Initialize customized rule from template
   useEffect(() => {
     if (template) {
-      const customSmartCode = template.smart_code
-        .replace('.v1', `.${currentOrganization?.name.toUpperCase().replace(/\s+/g, '_') || 'CUSTOM'}.v1`)
-      
+      const customSmartCode = template.smart_code.replace(
+        '.v1',
+        `.${currentOrganization?.name.toUpperCase().replace(/\s+/g, '_') || 'CUSTOM'}.v1`
+      )
+
       setCustomizedRule({
         ...template,
         smart_code: customSmartCode,
@@ -143,7 +141,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
   const handleValidate = async () => {
     if (!customizedRule || !currentOrganization) return
-    
+
     try {
       const result = await validateRule({
         organization_id: currentOrganization.id,
@@ -156,13 +154,13 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
         schema_version: 1,
         rule_payload: customizedRule.rule_payload
       })
-      
+
       setValidationResult(result)
-      
+
       if (result.ok) {
         toast({
           title: 'Validation Passed',
-          description: 'Your customized rule is valid and ready to save',
+          description: 'Your customized rule is valid and ready to save'
         })
       }
     } catch (err: any) {
@@ -179,15 +177,15 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
     try {
       // First validate
       await handleValidate()
-      
+
       // Then save
       if (onSave) {
         onSave(customizedRule)
       }
-      
+
       toast({
         title: 'Rule Customized Successfully',
-        description: 'Your customized rule has been saved',
+        description: 'Your customized rule has been saved'
       })
     } catch (err: any) {
       toast({
@@ -202,7 +200,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
   const renderBasicSettings = () => {
     if (!customizedRule) return null
-    
+
     return (
       <div className="space-y-6">
         <div>
@@ -210,12 +208,10 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
           <Input
             id="title"
             value={customizedRule.title}
-            onChange={(e) => setCustomizedRule({ ...customizedRule, title: e.target.value })}
+            onChange={e => setCustomizedRule({ ...customizedRule, title: e.target.value })}
             className="mt-2"
           />
-          <p className="text-sm text-gray-500 mt-1">
-            Give your rule a descriptive name
-          </p>
+          <p className="text-sm text-gray-500 mt-1">Give your rule a descriptive name</p>
         </div>
 
         <div>
@@ -223,10 +219,12 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
           <Textarea
             id="description"
             value={customizedRule.rule_payload.description}
-            onChange={(e) => setCustomizedRule({
-              ...customizedRule,
-              rule_payload: { ...customizedRule.rule_payload, description: e.target.value }
-            })}
+            onChange={e =>
+              setCustomizedRule({
+                ...customizedRule,
+                rule_payload: { ...customizedRule.rule_payload, description: e.target.value }
+              })
+            }
             className="mt-2"
             rows={3}
           />
@@ -248,8 +246,8 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
           <Info className="w-4 h-4" />
           <AlertTitle>Template Information</AlertTitle>
           <AlertDescription>
-            This rule is based on the <strong>{template.title}</strong> template
-            from the {template.industry} industry.
+            This rule is based on the <strong>{template.title}</strong> template from the{' '}
+            {template.industry} industry.
           </AlertDescription>
         </Alert>
       </div>
@@ -258,9 +256,9 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
   const renderCancellationSettings = () => {
     if (!customizedRule || !customizedRule.smart_code.includes('CANCEL')) return null
-    
+
     const definitions = customizedRule.rule_payload.definitions || {}
-    
+
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -275,9 +273,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 step={5}
                 className="flex-1"
               />
-              <span className="w-12 text-right font-medium">
-                {definitions.grace_minutes || 15}
-              </span>
+              <span className="w-12 text-right font-medium">{definitions.grace_minutes || 15}</span>
             </div>
             <p className="text-sm text-gray-500 mt-1">
               Time after appointment start before marking as late
@@ -310,7 +306,9 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
               <Slider
                 id="late_cancel_threshold"
                 value={[definitions.late_cancel_threshold_minutes || 120]}
-                onValueChange={([value]) => updateDefinition('late_cancel_threshold_minutes', value)}
+                onValueChange={([value]) =>
+                  updateDefinition('late_cancel_threshold_minutes', value)
+                }
                 max={480}
                 step={30}
                 className="flex-1"
@@ -339,9 +337,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.late_cancel_fee_pct || 50}%
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Fee charged for late cancellations
-            </p>
+            <p className="text-sm text-gray-500 mt-1">Fee charged for late cancellations</p>
           </div>
         </div>
 
@@ -358,20 +354,25 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
             </div>
             <Switch
               id="block_future"
-              checked={customizedRule.rule_payload.calendar_effects?.block_future_bookings_on_no_show || false}
-              onCheckedChange={(checked) => setCustomizedRule({
-                ...customizedRule,
-                rule_payload: {
-                  ...customizedRule.rule_payload,
-                  calendar_effects: {
-                    ...customizedRule.rule_payload.calendar_effects,
-                    block_future_bookings_on_no_show: checked
+              checked={
+                customizedRule.rule_payload.calendar_effects?.block_future_bookings_on_no_show ||
+                false
+              }
+              onCheckedChange={checked =>
+                setCustomizedRule({
+                  ...customizedRule,
+                  rule_payload: {
+                    ...customizedRule.rule_payload,
+                    calendar_effects: {
+                      ...customizedRule.rule_payload.calendar_effects,
+                      block_future_bookings_on_no_show: checked
+                    }
                   }
-                }
-              })}
+                })
+              }
             />
           </div>
-          
+
           {customizedRule.rule_payload.calendar_effects?.block_future_bookings_on_no_show && (
             <div className="mt-4">
               <Label htmlFor="block_days">Days to Block</Label>
@@ -379,16 +380,18 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 id="block_days"
                 type="number"
                 value={customizedRule.rule_payload.calendar_effects?.blocks_days || 1}
-                onChange={(e) => setCustomizedRule({
-                  ...customizedRule,
-                  rule_payload: {
-                    ...customizedRule.rule_payload,
-                    calendar_effects: {
-                      ...customizedRule.rule_payload.calendar_effects,
-                      blocks_days: parseInt(e.target.value) || 1
+                onChange={e =>
+                  setCustomizedRule({
+                    ...customizedRule,
+                    rule_payload: {
+                      ...customizedRule.rule_payload,
+                      calendar_effects: {
+                        ...customizedRule.rule_payload.calendar_effects,
+                        blocks_days: parseInt(e.target.value) || 1
+                      }
                     }
-                  }
-                })}
+                  })
+                }
                 className="mt-2 w-32"
                 min={1}
                 max={30}
@@ -402,9 +405,9 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
   const renderPricingSettings = () => {
     if (!customizedRule || !customizedRule.smart_code.includes('DISCOUNT')) return null
-    
+
     const definitions = customizedRule.rule_payload.definitions || {}
-    
+
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -423,9 +426,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.max_discount_pct || 30}%
               </span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Maximum discount allowed without approval
-            </p>
+            <p className="text-sm text-gray-500 mt-1">Maximum discount allowed without approval</p>
           </div>
 
           <div>
@@ -434,14 +435,12 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
               id="max_discount_amount"
               type="number"
               value={definitions.max_discount_amount || 500}
-              onChange={(e) => updateDefinition('max_discount_amount', parseInt(e.target.value) || 0)}
+              onChange={e => updateDefinition('max_discount_amount', parseInt(e.target.value) || 0)}
               className="mt-2"
               min={0}
               step={50}
             />
-            <p className="text-sm text-gray-500 mt-1">
-              Absolute maximum discount in currency
-            </p>
+            <p className="text-sm text-gray-500 mt-1">Absolute maximum discount in currency</p>
           </div>
 
           <div>
@@ -470,9 +469,9 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
   const renderExceptions = () => {
     if (!customizedRule) return null
-    
+
     const exceptions = customizedRule.rule_payload.exceptions || []
-    
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -511,7 +510,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                     <Label className="text-sm">If Customer Tier is</Label>
                     <Select
                       value={exception.if.customer_tier || ''}
-                      onValueChange={(value) => updateException(index, 'if', 'customer_tier', value)}
+                      onValueChange={value => updateException(index, 'if', 'customer_tier', value)}
                     >
                       <SelectTrigger className="mt-2">
                         <SelectValue placeholder="Select tier" />
@@ -533,7 +532,14 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                           <Input
                             type="number"
                             value={exception.then.late_cancel_fee_pct || 0}
-                            onChange={(e) => updateException(index, 'then', 'late_cancel_fee_pct', parseInt(e.target.value) || 0)}
+                            onChange={e =>
+                              updateException(
+                                index,
+                                'then',
+                                'late_cancel_fee_pct',
+                                parseInt(e.target.value) || 0
+                              )
+                            }
                             min={0}
                             max={100}
                             className="w-20"
@@ -548,7 +554,14 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                           <Input
                             type="number"
                             value={exception.then.no_show_fee_pct || 0}
-                            onChange={(e) => updateException(index, 'then', 'no_show_fee_pct', parseInt(e.target.value) || 0)}
+                            onChange={e =>
+                              updateException(
+                                index,
+                                'then',
+                                'no_show_fee_pct',
+                                parseInt(e.target.value) || 0
+                              )
+                            }
                             min={0}
                             max={100}
                             className="w-20"
@@ -566,7 +579,14 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                         <Input
                           type="number"
                           value={exception.then.max_discount_pct || 0}
-                          onChange={(e) => updateException(index, 'then', 'max_discount_pct', parseInt(e.target.value) || 0)}
+                          onChange={e =>
+                            updateException(
+                              index,
+                              'then',
+                              'max_discount_pct',
+                              parseInt(e.target.value) || 0
+                            )
+                          }
                           min={0}
                           max={100}
                           className="w-20"
@@ -585,7 +605,8 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
           <Alert>
             <Info className="w-4 h-4" />
             <AlertDescription>
-              No exceptions defined. Add exceptions to create special rules for VIP customers or specific scenarios.
+              No exceptions defined. Add exceptions to create special rules for VIP customers or
+              specific scenarios.
             </AlertDescription>
           </Alert>
         )}
@@ -611,11 +632,13 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
 
         {validationResult && (
           <div className="space-y-4">
-            <div className={`p-4 rounded-lg border ${
-              validationResult.ok 
-                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
-                : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-            }`}>
+            <div
+              className={`p-4 rounded-lg border ${
+                validationResult.ok
+                  ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                  : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+              }`}
+            >
               <div className="flex items-center gap-3">
                 {validationResult.ok ? (
                   <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -627,8 +650,8 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                     {validationResult.ok ? 'Validation Passed' : 'Validation Failed'}
                   </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {validationResult.ok 
-                      ? 'Your rule is valid and ready to deploy' 
+                    {validationResult.ok
+                      ? 'Your rule is valid and ready to deploy'
                       : 'Please fix the errors below before saving'}
                   </p>
                 </div>
@@ -692,7 +715,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
@@ -715,22 +738,16 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
           </TabsList>
 
           <div className="mt-6">
-            <TabsContent value="basics">
-              {renderBasicSettings()}
-            </TabsContent>
+            <TabsContent value="basics">{renderBasicSettings()}</TabsContent>
 
             <TabsContent value="rules">
               {renderCancellationSettings()}
               {renderPricingSettings()}
             </TabsContent>
 
-            <TabsContent value="exceptions">
-              {renderExceptions()}
-            </TabsContent>
+            <TabsContent value="exceptions">{renderExceptions()}</TabsContent>
 
-            <TabsContent value="validation">
-              {renderValidation()}
-            </TabsContent>
+            <TabsContent value="validation">{renderValidation()}</TabsContent>
           </div>
         </Tabs>
 
@@ -741,20 +758,20 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
             Cancel
           </Button>
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setCustomizedRule(JSON.parse(JSON.stringify(template)))
                 toast({
                   title: 'Reset to Template',
-                  description: 'All customizations have been reset',
+                  description: 'All customizations have been reset'
                 })
               }}
             >
               <RotateCcw className="w-4 h-4 mr-2" />
               Reset
             </Button>
-            <Button 
+            <Button
               onClick={handleSave}
               disabled={saving || !validationResult?.ok}
               className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"

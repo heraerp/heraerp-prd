@@ -31,12 +31,12 @@ export function getOrganizationContextFromURL(
   // Parse subdomain
   const parts = host.split('.')
   const subdomain = parts[0]
-  
+
   // Check if it's a custom subdomain (not www, app, localhost)
   const isCustomSubdomain = !!(
-    subdomain && 
-    subdomain !== 'www' && 
-    subdomain !== 'app' && 
+    subdomain &&
+    subdomain !== 'www' &&
+    subdomain !== 'app' &&
     subdomain !== 'localhost' &&
     subdomain !== 'heraerp' &&
     parts.length >= 2 // Ensure it's actually a subdomain

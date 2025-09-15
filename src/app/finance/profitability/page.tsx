@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { 
+import {
   PieChart as PieChartIcon,
   Search,
   Filter,
@@ -25,7 +25,7 @@ import {
   ChevronRight,
   Info
 } from 'lucide-react'
-import { 
+import {
   ResponsiveContainer,
   Treemap,
   Tooltip,
@@ -78,7 +78,9 @@ interface CustomerSegment {
 }
 
 export default function ProfitabilityPage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'customers' | 'trends'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'customers' | 'trends'>(
+    'overview'
+  )
   const [selectedPeriod, setSelectedPeriod] = useState('ytd')
   const [selectedMetric, setSelectedMetric] = useState('profit')
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -218,7 +220,7 @@ export default function ProfitabilityPage() {
           {payload.name}
         </text>
         <text x={cx} y={cy} dy={30} textAnchor="middle" fill="#fff" className="text-sm">
-          {`₹${(value/10000000).toFixed(1)} Cr`}
+          {`₹${(value / 10000000).toFixed(1)} Cr`}
         </text>
         <Sector
           cx={cx}
@@ -250,19 +252,21 @@ export default function ProfitabilityPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
             Profitability Analysis
           </h1>
-          <p className="text-white/60 mt-1">Deep dive into profit margins and business performance</p>
+          <p className="text-white/60 mt-1">
+            Deep dive into profit margins and business performance
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <select
             value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
+            onChange={e => setSelectedPeriod(e.target.value)}
             className="px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#fff685] transition-colors"
           >
             <option value="mtd">Month to Date</option>
             <option value="qtd">Quarter to Date</option>
             <option value="ytd">Year to Date</option>
           </select>
-          <button 
+          <button
             onClick={refreshData}
             className={`flex items-center space-x-2 px-4 py-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all duration-300 ${isRefreshing ? 'animate-pulse' : ''}`}
           >
@@ -334,7 +338,9 @@ export default function ProfitabilityPage() {
                   <TrendingUp className="h-4 w-4 text-emerald-400" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Gross Profit</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.grossProfit / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.grossProfit / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">{overviewMetrics.grossMargin}% margin</p>
               </div>
             </div>
@@ -349,8 +355,12 @@ export default function ProfitabilityPage() {
                   <TrendingUp className="h-4 w-4 text-[#00DDFF]" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Operating Profit</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.operatingProfit / 10000000).toFixed(1)} Cr</p>
-                <p className="text-xs text-white/40 mt-1">{overviewMetrics.operatingMargin}% margin</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.operatingProfit / 10000000).toFixed(1)} Cr
+                </p>
+                <p className="text-xs text-white/40 mt-1">
+                  {overviewMetrics.operatingMargin}% margin
+                </p>
               </div>
             </div>
 
@@ -364,7 +374,9 @@ export default function ProfitabilityPage() {
                   <TrendingUp className="h-4 w-4 text-[#fff685]" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">Net Profit</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.netProfit / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.netProfit / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">{overviewMetrics.netMargin}% margin</p>
               </div>
             </div>
@@ -379,7 +391,9 @@ export default function ProfitabilityPage() {
                   <TrendingUp className="h-4 w-4 text-purple-400" />
                 </div>
                 <h3 className="text-white/60 text-sm font-medium mb-1">EBITDA</h3>
-                <p className="text-2xl font-bold text-white">₹{(overviewMetrics.ebitda / 10000000).toFixed(1)} Cr</p>
+                <p className="text-2xl font-bold text-white">
+                  ₹{(overviewMetrics.ebitda / 10000000).toFixed(1)} Cr
+                </p>
                 <p className="text-xs text-white/40 mt-1">{overviewMetrics.ebitdaMargin}% margin</p>
               </div>
             </div>
@@ -390,7 +404,9 @@ export default function ProfitabilityPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">Business Unit Profitability</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">
+                  Business Unit Profitability
+                </h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -411,16 +427,19 @@ export default function ProfitabilityPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="mt-4 space-y-2">
-                  {businessUnits.map((unit) => (
+                  {businessUnits.map(unit => (
                     <div key={unit.name} className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: unit.color }} />
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: unit.color }}
+                        />
                         <span className="text-sm text-white/80">{unit.name}</span>
                       </div>
                       <div className="flex items-center space-x-3">
                         <span className="text-xs text-white/60">{unit.margin}% margin</span>
                         <span className="text-sm font-medium text-white">
-                          ₹{(unit.value/10000000).toFixed(1)} Cr
+                          ₹{(unit.value / 10000000).toFixed(1)} Cr
                         </span>
                       </div>
                     </div>
@@ -446,9 +465,9 @@ export default function ProfitabilityPage() {
                       fillOpacity={0.3}
                       strokeWidth={2}
                     />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'rgba(0,0,0,0.8)', 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(0,0,0,0.8)',
                         border: '1px solid rgba(255,255,255,0.2)',
                         borderRadius: '8px'
                       }}
@@ -473,17 +492,21 @@ export default function ProfitabilityPage() {
               <table className="w-full">
                 <thead className="bg-white/5 border-b border-white/10">
                   <tr>
-                    <th className="text-left py-4 pl-6 text-sm font-medium text-white/60">Product</th>
+                    <th className="text-left py-4 pl-6 text-sm font-medium text-white/60">
+                      Product
+                    </th>
                     <th className="text-right py-4 text-sm font-medium text-white/60">Revenue</th>
                     <th className="text-right py-4 text-sm font-medium text-white/60">Cost</th>
                     <th className="text-right py-4 text-sm font-medium text-white/60">Profit</th>
                     <th className="text-center py-4 text-sm font-medium text-white/60">Margin</th>
                     <th className="text-right py-4 text-sm font-medium text-white/60">Units</th>
-                    <th className="text-center py-4 pr-6 text-sm font-medium text-white/60">Trend</th>
+                    <th className="text-center py-4 pr-6 text-sm font-medium text-white/60">
+                      Trend
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {productProfitability.map((product) => (
+                  {productProfitability.map(product => (
                     <tr key={product.product} className="hover:bg-white/5 transition-colors">
                       <td className="py-4 pl-6">
                         <div className="flex items-center space-x-3">
@@ -505,13 +528,15 @@ export default function ProfitabilityPage() {
                         </span>
                       </td>
                       <td className="py-4 text-center">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          product.margin >= 35 
-                            ? 'bg-emerald-500/20 text-emerald-400' 
-                            : product.margin >= 25
-                            ? 'bg-[#00DDFF]/20 text-[#00DDFF]'
-                            : 'bg-yellow-500/20 text-yellow-400'
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            product.margin >= 35
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : product.margin >= 25
+                                ? 'bg-[#00DDFF]/20 text-[#00DDFF]'
+                                : 'bg-yellow-500/20 text-yellow-400'
+                          }`}
+                        >
                           {product.margin}%
                         </span>
                       </td>
@@ -519,9 +544,15 @@ export default function ProfitabilityPage() {
                         {product.units.toLocaleString()}
                       </td>
                       <td className="py-4 pr-6 text-center">
-                        {product.trend === 'up' && <TrendingUp className="h-5 w-5 text-emerald-400 mx-auto" />}
-                        {product.trend === 'down' && <TrendingDown className="h-5 w-5 text-red-400 mx-auto" />}
-                        {product.trend === 'stable' && <Activity className="h-5 w-5 text-yellow-400 mx-auto" />}
+                        {product.trend === 'up' && (
+                          <TrendingUp className="h-5 w-5 text-emerald-400 mx-auto" />
+                        )}
+                        {product.trend === 'down' && (
+                          <TrendingDown className="h-5 w-5 text-red-400 mx-auto" />
+                        )}
+                        {product.trend === 'stable' && (
+                          <Activity className="h-5 w-5 text-yellow-400 mx-auto" />
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -538,17 +569,23 @@ export default function ProfitabilityPage() {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={productProfitability}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="product" stroke="rgba(255,255,255,0.5)" angle={-45} textAnchor="end" height={100} />
+                  <XAxis
+                    dataKey="product"
+                    stroke="rgba(255,255,255,0.5)"
+                    angle={-45}
+                    textAnchor="end"
+                    height={100}
+                  />
                   <YAxis stroke="rgba(255,255,255,0.5)" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       borderRadius: '8px'
                     }}
                     formatter={(value: any, name: string) => {
                       if (name === 'margin') return `${value}%`
-                      return `₹${(value/10000000).toFixed(1)} Cr`
+                      return `₹${(value / 10000000).toFixed(1)} Cr`
                     }}
                   />
                   <Bar dataKey="revenue" fill="#00DDFF" opacity={0.8} />
@@ -564,7 +601,7 @@ export default function ProfitabilityPage() {
         <>
           {/* Customer Segment Analysis */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {customerSegments.map((segment) => (
+            {customerSegments.map(segment => (
               <div key={segment.segment} className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                 <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -573,17 +610,19 @@ export default function ProfitabilityPage() {
                       <Users className="h-5 w-5 text-[#fff685]" />
                       <h3 className="text-lg font-semibold text-white">{segment.segment}</h3>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      segment.margin >= 35 
-                        ? 'bg-emerald-500/20 text-emerald-400' 
-                        : segment.margin >= 20
-                        ? 'bg-[#00DDFF]/20 text-[#00DDFF]'
-                        : 'bg-yellow-500/20 text-yellow-400'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        segment.margin >= 35
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : segment.margin >= 20
+                            ? 'bg-[#00DDFF]/20 text-[#00DDFF]'
+                            : 'bg-yellow-500/20 text-yellow-400'
+                      }`}
+                    >
                       {segment.margin}% margin
                     </span>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                       <p className="text-xs text-white/60 mb-1">Revenue</p>
@@ -602,11 +641,15 @@ export default function ProfitabilityPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-white/60">Customers</span>
-                      <span className="text-white font-medium">{segment.customers.toLocaleString()}</span>
+                      <span className="text-white font-medium">
+                        {segment.customers.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-white/60">Avg Revenue/Customer</span>
-                      <span className="text-white font-medium">₹{(segment.avgRevenue).toLocaleString()}</span>
+                      <span className="text-white font-medium">
+                        ₹{segment.avgRevenue.toLocaleString()}
+                      </span>
                     </div>
                   </div>
 
@@ -616,7 +659,7 @@ export default function ProfitabilityPage() {
                       <span>{((segment.revenue / 540000000) * 100).toFixed(0)}%</span>
                     </div>
                     <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div 
+                      <div
                         className="h-full rounded-full bg-gradient-to-r from-[#fff685] to-amber-500"
                         style={{ width: `${(segment.revenue / 540000000) * 100}%` }}
                       />
@@ -631,21 +674,23 @@ export default function ProfitabilityPage() {
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Customer Segment Revenue vs Margin</h2>
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Customer Segment Revenue vs Margin
+              </h2>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={customerSegments}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                   <XAxis dataKey="segment" stroke="rgba(255,255,255,0.5)" />
                   <YAxis stroke="rgba(255,255,255,0.5)" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       borderRadius: '8px'
                     }}
                     formatter={(value: any, name: string) => {
                       if (name === 'margin') return `${value}%`
-                      return `₹${(value/10000000).toFixed(1)} Cr`
+                      return `₹${(value / 10000000).toFixed(1)} Cr`
                     }}
                   />
                   <Bar dataKey="revenue" fill="#00DDFF" opacity={0.8} />
@@ -669,10 +714,10 @@ export default function ProfitabilityPage() {
                 <AreaChart data={profitabilityTrend}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                   <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" />
-                  <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={(value) => `${value}%`} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'rgba(0,0,0,0.8)', 
+                  <YAxis stroke="rgba(255,255,255,0.5)" tickFormatter={value => `${value}%`} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(0,0,0,0.8)',
                       border: '1px solid rgba(255,255,255,0.2)',
                       borderRadius: '8px'
                     }}

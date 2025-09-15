@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-09-15T15:30:39.064Z",
+  "tables": {
+    "core_organizations": {
+      "row_count": 12,
+      "data_hash": "07e688cebdc725032c0becdc34df1bb1bde0fb38d7e6e442713736f2efc27e17",
+      "sample_ids": [
+        "1471e87b-b27e-42ef-8192-343cc5e0d656",
+        "1e01ff79-22df-4e38-b432-696e91b67a55",
+        "30cbd9d1-7610-4e6a-9694-ea259dc6b23a",
+        "84a3654b-907b-472a-ac8f-a1ffb6fb711b",
+        "8c4f6b2d-5a91-4e8c-b3d7-1f9e8a7c6d54"
+      ]
+    },
+    "core_entities": {
+      "row_count": 1101,
+      "data_hash": "7519a709d962922d860d521b7292f7b25f7d4106037b87aa2de045580d3a0499",
+      "sample_ids": [
+        "0007e829-dbe6-4f53-b789-6656a4a9e275",
+        "00220547-2733-4005-9dd9-9f91d82dcc9e",
+        "003756ae-cfb1-4547-800c-a30e13baf5e5",
+        "003961e0-9285-4a53-8d71-323cc393ebd2",
+        "00695aa5-01e5-4219-a196-ad2bcb560eb5"
+      ]
+    },
+    "core_dynamic_data": {
+      "row_count": 1880,
+      "data_hash": "fa605da759502e634329dfd560a77c0a1bc94c7643146b2dd3364f0c2748e4d9",
+      "sample_ids": [
+        "0002d00d-a4ab-4a96-a0e7-d38c125a2f6d",
+        "00140259-f21b-49f2-a524-c6fcb32d992e",
+        "0018b68f-60a8-4c37-885b-d3f89e58e21a",
+        "003a7cea-9c97-4674-a92f-b26b40c62cdf",
+        "004f316c-63f2-4149-a443-4cd201c4e2ac"
+      ]
+    },
+    "core_relationships": {
+      "row_count": 347,
+      "data_hash": "03dbbd24b3d95ac544310220de906de30fedd405c333e88adb5ced618b8945b0",
+      "sample_ids": [
+        "0035b096-5fb4-45f3-bfd4-62fe7c3fd03a",
+        "01c9e91a-a650-493a-8516-a98b8f38ef66",
+        "01d356e9-55f5-4044-a4be-cb795b2bfd92",
+        "01e35f43-cbf7-4bae-bda1-0455a046f87c",
+        "02c98644-e890-40ff-9112-0a5c1419b38d"
+      ]
+    },
+    "universal_transactions": {
+      "row_count": 266,
+      "data_hash": "4c5ddd42cdd76beee347ebc7c2c5a15ca17659df09d3f94b9e158d33fa438d66",
+      "sample_ids": [
+        "016cdb7d-2a4e-4f44-98a9-33c96fd3faf1",
+        "017c97ba-1cce-4f87-92e2-2f1297a85dea",
+        "01ce2816-62ff-41e4-8eec-0f2bd7693950",
+        "0219a4b0-f8cb-4bb3-b1d2-3bb97c3d3910",
+        "0311442d-3fa1-425c-bf40-df179533454c"
+      ]
+    },
+    "universal_transaction_lines": {
+      "row_count": 116,
+      "data_hash": "7cc9762ebd843170274853f2397e3c789f22992283cfd5ce251a2a32ea91ae0e",
+      "sample_ids": [
+        "0243ae74-37e3-4985-bb98-fae2bfc90045",
+        "04937a48-baa2-49a4-aa94-5a0349e0cdee",
+        "06ca6865-e41a-4395-95fa-20c15678c31e",
+        "0760b916-aeae-4e1b-89ac-0d34a9c4e750",
+        "0ebfede0-a059-4496-aa61-5e533cef3c56"
+      ]
+    }
+  }
+}

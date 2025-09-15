@@ -7,14 +7,20 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
+import {
   Calendar,
   Clock,
   User,
@@ -105,7 +111,9 @@ export function BookAppointmentModal({
   const organizationId = currentOrganization?.id || 'demo-salon'
 
   // Form state - Default to assistant tab when pre-selected time is provided
-  const [activeTab, setActiveTab] = useState<'event' | 'assistant'>(preSelectedTime ? 'assistant' : 'event')
+  const [activeTab, setActiveTab] = useState<'event' | 'assistant'>(
+    preSelectedTime ? 'assistant' : 'event'
+  )
   const [title, setTitle] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null)
@@ -134,17 +142,17 @@ export function BookAppointmentModal({
   useEffect(() => {
     const fetchSalonData = async () => {
       if (!organizationId) return
-      
+
       setLoadingData(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       try {
         // Fetch stylists (staff entities)
         const stylistsResponse = await universalApi.readEntities({
           entity_type: 'staff',
           organization_id: organizationId
         })
-        
+
         if (stylistsResponse && stylistsResponse.data) {
           const formattedStylists = stylistsResponse.data.map((staff: any) => ({
             id: staff.id,
@@ -164,7 +172,7 @@ export function BookAppointmentModal({
           entity_type: 'service',
           organization_id: organizationId
         })
-        
+
         if (servicesResponse && servicesResponse.data) {
           const formattedServices = servicesResponse.data.map((service: any) => ({
             id: service.id,
@@ -187,7 +195,7 @@ export function BookAppointmentModal({
           organization_id: organizationId,
           limit: 50
         })
-        
+
         if (customersResponse && customersResponse.data) {
           const formattedCustomers = customersResponse.data.map((customer: any) => ({
             id: customer.id,
@@ -235,7 +243,7 @@ export function BookAppointmentModal({
           }
         ])
       }
-      
+
       if (services.length === 0) {
         setServices([
           {
@@ -290,19 +298,21 @@ export function BookAppointmentModal({
     }
   }, [preSelectedStylist, selectedStylist, stylists])
 
-
   // Calculate total duration and price
-  const totalDuration = selectedServices.reduce((sum, service) => 
-    sum + service.duration + service.buffer_before + service.buffer_after, 0
+  const totalDuration = selectedServices.reduce(
+    (sum, service) => sum + service.duration + service.buffer_before + service.buffer_after,
+    0
   )
   const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0)
-  const endTime = startTime ? formatDate(
-    addMinutesSafe(
-      parseISO(`${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}`),
-      totalDuration
-    ),
-    'HH:mm'
-  ) : ''
+  const endTime = startTime
+    ? formatDate(
+        addMinutesSafe(
+          parseISO(`${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}`),
+          totalDuration
+        ),
+        'HH:mm'
+      )
+    : ''
 
   // Auto-generate title
   useEffect(() => {
@@ -345,44 +355,48 @@ export function BookAppointmentModal({
   }
 
   // Handle customer search
-  const searchCustomers = useCallback(async (query: string) => {
-    if (query.length < 2) return
-    
-    setSearchingCustomer(true)
-    try {
-      // Search customers via universal API
-      const searchResponse = await universalApi.readEntities({
-        entity_type: 'customer',
-        organization_id: organizationId,
-        search: query
-      })
-      
-      if (searchResponse && searchResponse.data) {
-        const searchResults = searchResponse.data.map((customer: any) => ({
-          id: customer.id,
-          entity_name: customer.entity_name,
-          entity_code: customer.entity_code || customer.id,
-          smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
-          phone: (customer.metadata as any)?.phone || '',
-          email: (customer.metadata as any)?.email || '',
-          vip_level: (customer.metadata as any)?.vip_level || null,
-          preferences: (customer.metadata as any)?.preferences || {}
-        }))
-        setCustomers(searchResults)
+  const searchCustomers = useCallback(
+    async (query: string) => {
+      if (query.length < 2) return
+
+      setSearchingCustomer(true)
+      try {
+        // Search customers via universal API
+        const searchResponse = await universalApi.readEntities({
+          entity_type: 'customer',
+          organization_id: organizationId,
+          search: query
+        })
+
+        if (searchResponse && searchResponse.data) {
+          const searchResults = searchResponse.data.map((customer: any) => ({
+            id: customer.id,
+            entity_name: customer.entity_name,
+            entity_code: customer.entity_code || customer.id,
+            smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
+            phone: (customer.metadata as any)?.phone || '',
+            email: (customer.metadata as any)?.email || '',
+            vip_level: (customer.metadata as any)?.vip_level || null,
+            preferences: (customer.metadata as any)?.preferences || {}
+          }))
+          setCustomers(searchResults)
+        }
+      } catch (error) {
+        console.error('Failed to search customers:', error)
+        // Fall back to local search
+        const filtered = customers.filter(
+          c =>
+            c.entity_name.toLowerCase().includes(query.toLowerCase()) ||
+            c.phone?.includes(query) ||
+            c.email?.toLowerCase().includes(query.toLowerCase())
+        )
+        setCustomers(filtered)
+      } finally {
+        setSearchingCustomer(false)
       }
-    } catch (error) {
-      console.error('Failed to search customers:', error)
-      // Fall back to local search
-      const filtered = customers.filter(c => 
-        c.entity_name.toLowerCase().includes(query.toLowerCase()) ||
-        c.phone?.includes(query) ||
-        c.email?.toLowerCase().includes(query.toLowerCase())
-      )
-      setCustomers(filtered)
-    } finally {
-      setSearchingCustomer(false)
-    }
-  }, [organizationId])
+    },
+    [organizationId]
+  )
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -415,18 +429,23 @@ export function BookAppointmentModal({
     try {
       // Check booking rules via UCR before creating appointment
       universalConfigService.setOrganizationId(organizationId)
-      
+
       const bookingContext = {
         organization_id: organizationId,
         business_type: 'salon',
         customer_id: selectedCustomer.id,
-        customer_segments: selectedCustomer.vip_level ? [`vip_${selectedCustomer.vip_level}`] : ['regular'],
+        customer_segments: selectedCustomer.vip_level
+          ? [`vip_${selectedCustomer.vip_level}`]
+          : ['regular'],
         specialist_id: selectedStylist.id,
         service_ids: selectedServices.map(s => s.id),
         appointment_time: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`,
         appointment_value: totalPrice,
         now: new Date(),
-        lead_minutes: (new Date(`${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`).getTime() - new Date().getTime()) / (1000 * 60)
+        lead_minutes:
+          (new Date(`${formatDate(selectedDate, 'yyyy-MM-dd')}T${startTime}:00Z`).getTime() -
+            new Date().getTime()) /
+          (1000 * 60)
       }
 
       // Check booking availability rules
@@ -441,7 +460,9 @@ export function BookAppointmentModal({
       if (availabilityDecision.decision === 'unavailable') {
         toast({
           title: 'Booking Not Available',
-          description: availabilityDecision.reason || 'This time slot is not available according to salon policies.',
+          description:
+            availabilityDecision.reason ||
+            'This time slot is not available according to salon policies.',
           variant: 'destructive'
         })
         return
@@ -491,7 +512,7 @@ export function BookAppointmentModal({
 
       // Create appointment transaction using universalApi
       universalApi.setOrganizationId(organizationId)
-      
+
       const response = await universalApi.createTransaction({
         organization_id: organizationId,
         transaction_type: 'appointment',
@@ -510,7 +531,10 @@ export function BookAppointmentModal({
           service_category: selectedServices[0]?.category || 'general',
           skills_required: selectedServices.flatMap(s => s.skills_required || []),
           estimated_duration: totalDuration,
-          buffer_time: selectedServices.reduce((sum, s) => sum + s.buffer_before + s.buffer_after, 0),
+          buffer_time: selectedServices.reduce(
+            (sum, s) => sum + s.buffer_before + s.buffer_after,
+            0
+          ),
           ucr_discount_applied: discountApplied,
           ucr_final_price: finalPrice
         },
@@ -562,7 +586,7 @@ export function BookAppointmentModal({
 
       toast({
         title: 'Appointment Booked',
-        description: `${title} on ${formatDate(selectedDate, 'MMM d')} at ${startTime}${discountApplied > 0 ? ` - Final price: AED ${finalPrice.toFixed(0)} (${discountApplied.toFixed(0)} discount applied)` : ` - Total: AED ${finalPrice.toFixed(0)}`}`,
+        description: `${title} on ${formatDate(selectedDate, 'MMM d')} at ${startTime}${discountApplied > 0 ? ` - Final price: AED ${finalPrice.toFixed(0)} (${discountApplied.toFixed(0)} discount applied)` : ` - Total: AED ${finalPrice.toFixed(0)}`}`
       })
 
       onBookingComplete?.({
@@ -573,7 +597,7 @@ export function BookAppointmentModal({
         customer: selectedCustomer,
         stylist: selectedStylist
       })
-      
+
       onClose()
     } catch (error) {
       console.error('Failed to book appointment:', error)
@@ -612,400 +636,452 @@ export function BookAppointmentModal({
             </div>
           </div>
         ) : (
-        <>
-        <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="flex-1 bg-[#1b1b1b]">
-          <TabsList className="px-6 bg-transparent border-0 gap-0">
-            <TabsTrigger value="event" className="text-sm font-normal text-[#b3b3b3] data-[state=active]:text-[#e1e1e1] data-[state=active]:border-b-2 data-[state=active]:border-[#4c7cf0] rounded-none px-4 pb-3">
-              Event
-            </TabsTrigger>
-            <TabsTrigger value="assistant" className="text-sm font-normal text-[#b3b3b3] data-[state=active]:text-[#e1e1e1] data-[state=active]:border-b-2 data-[state=active]:border-[#4c7cf0] rounded-none px-4 pb-3">
-              Scheduling Assistant
-            </TabsTrigger>
-          </TabsList>
+          <>
+            <Tabs
+              value={activeTab}
+              onValueChange={(v: any) => setActiveTab(v)}
+              className="flex-1 bg-[#1b1b1b]"
+            >
+              <TabsList className="px-6 bg-transparent border-0 gap-0">
+                <TabsTrigger
+                  value="event"
+                  className="text-sm font-normal text-[#b3b3b3] data-[state=active]:text-[#e1e1e1] data-[state=active]:border-b-2 data-[state=active]:border-[#4c7cf0] rounded-none px-4 pb-3"
+                >
+                  Event
+                </TabsTrigger>
+                <TabsTrigger
+                  value="assistant"
+                  className="text-sm font-normal text-[#b3b3b3] data-[state=active]:text-[#e1e1e1] data-[state=active]:border-b-2 data-[state=active]:border-[#4c7cf0] rounded-none px-4 pb-3"
+                >
+                  Scheduling Assistant
+                </TabsTrigger>
+              </TabsList>
 
-          <div className="flex-1 overflow-hidden bg-[#1b1b1b]">
-            <TabsContent value="event" className="h-full m-0">
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] h-full">
-                {/* Left Column - Form */}
-                <ScrollArea className="h-full">
-                  <div className="p-6 space-y-0">
-                    {/* Title */}
-                    <div className="mb-6">
-                      <Input
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Add a title"
-                        className="border-0 border-b border-border rounded-none bg-transparent text-foreground placeholder-muted-foreground text-lg focus:border-b-2 focus:border-primary px-0 pb-2 dark:bg-transparent dark:text-white dark:placeholder-gray-400"
-                        style={{ backgroundColor: 'transparent' }}
-                      />
-                    </div>
-
-                    {/* Customer Selection */}
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 py-3 border-b border-border dark:border-gray-700">
-                        <User className="w-5 h-5 text-muted-foreground dark:text-gray-400" />
-                        <div className="flex-1">
+              <div className="flex-1 overflow-hidden bg-[#1b1b1b]">
+                <TabsContent value="event" className="h-full m-0">
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] h-full">
+                    {/* Left Column - Form */}
+                    <ScrollArea className="h-full">
+                      <div className="p-6 space-y-0">
+                        {/* Title */}
+                        <div className="mb-6">
                           <Input
-                            id="customer"
-                            placeholder="Invite attendees"
-                            value={customerSearch}
-                            onChange={(e) => setCustomerSearch(e.target.value)}
-                            className="border-0 bg-transparent text-foreground placeholder-muted-foreground text-sm p-0 focus:ring-0 dark:bg-transparent dark:text-white dark:placeholder-gray-400"
+                            id="title"
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
+                            placeholder="Add a title"
+                            className="border-0 border-b border-border rounded-none bg-transparent text-foreground placeholder-muted-foreground text-lg focus:border-b-2 focus:border-primary px-0 pb-2 dark:bg-transparent dark:text-white dark:placeholder-gray-400"
                             style={{ backgroundColor: 'transparent' }}
                           />
                         </div>
-                        {searchingCustomer && (
-                          <Loader2 className="w-4 h-4 animate-spin text-muted-foreground dark:text-gray-400" />
-                        )}
-                        <span className="text-sm text-gray-500 dark:text-gray-400">Optional</span>
-                      </div>
-                        
-                      {/* Customer List */}
-                      {(customerSearch || selectedCustomer) && (
-                        <div className="mt-2 space-y-1">
-                          {customers.map(customer => (
-                            <div
-                              key={customer.id}
-                              className={cn(
-                                "flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-all text-sm",
-                                selectedCustomer?.id === customer.id
-                                  ? "bg-accent text-accent-foreground dark:bg-gray-800 dark:text-white"
-                                  : "hover:bg-accent text-muted-foreground dark:hover:bg-gray-800 dark:text-gray-300"
-                              )}
-                              onClick={() => setSelectedCustomer(customer)}
-                            >
-                              <Avatar className="w-8 h-8">
-                                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                                  {customer.entity_name.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <p className="font-normal">{customer.entity_name}</p>
-                                <p className="text-xs text-muted-foreground dark:text-gray-400">{customer.email}</p>
-                              </div>
-                              {selectedCustomer?.id === customer.id && (
-                                <X className="w-4 h-4 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white" 
-                                   onClick={(e) => {
-                                     e.stopPropagation()
-                                     setSelectedCustomer(null)
-                                   }}
-                                />
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
 
-                    {/* Stylist & Service Selection - Combined Section */}
-                    <div className="mb-6 space-y-4">
-                      <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
-                        <Scissors className="w-5 h-5 text-[#7a7a7a]" />
-                        <div className="flex-1">
-                          <p className="text-sm text-[#e1e1e1]">Appointment Details</p>
-                        </div>
-                      </div>
-                      
-                      {/* Stylist Dropdown */}
-                      <Select
-                        value={selectedStylist?.id}
-                        onValueChange={(id) => setSelectedStylist(stylists.find(s => s.id === id) || null)}
-                      >
-                        <SelectTrigger className="bg-gray-800 border-gray-600 text-white h-10 text-sm" style={{ backgroundColor: '#2b2b2b' }}>
-                          <SelectValue placeholder="Select a stylist" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-800 border-gray-600" style={{ backgroundColor: '#2b2b2b' }}>
-                          {stylists.map(stylist => (
-                            <SelectItem key={stylist.id} value={stylist.id} className="text-popover-foreground hover:bg-accent focus:bg-accent dark:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700 hera-select-item">
-                              <div className="flex items-center gap-2">
-                                <Avatar className="w-6 h-6">
-                                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                                    {stylist.avatar}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <span>{stylist.entity_name}</span>
-                                <Badge variant="secondary" className="ml-auto text-xs">
-                                  {stylist.level}
-                                </Badge>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      {/* Service Selection */}
-                      <div className="space-y-2">
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Select services</p>
-                        {services.map(service => (
-                          <div
-                            key={service.id}
-                            className={cn(
-                              "flex items-center gap-3 p-3 rounded cursor-pointer transition-all",
-                              selectedServices.find(s => s.id === service.id)
-                                ? "bg-accent border border-primary dark:bg-gray-800 dark:border-blue-500"
-                                : "bg-card border border-border hover:border-primary/50 dark:bg-gray-800 dark:border-gray-600 dark:hover:border-blue-500/50"
-                            )}
-                            onClick={() => toggleService(service)}
-                          >
-                            <Checkbox
-                              checked={!!selectedServices.find(s => s.id === service.id)}
-                              className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
-                            />
+                        {/* Customer Selection */}
+                        <div className="mb-6">
+                          <div className="flex items-center gap-3 py-3 border-b border-border dark:border-gray-700">
+                            <User className="w-5 h-5 text-muted-foreground dark:text-gray-400" />
                             <div className="flex-1">
-                              <p className="text-sm text-card-foreground dark:text-white">{service.entity_name}</p>
-                              <p className="text-xs text-muted-foreground dark:text-gray-400">
-                                {service.duration} min • AED {service.price}
-                              </p>
+                              <Input
+                                id="customer"
+                                placeholder="Invite attendees"
+                                value={customerSearch}
+                                onChange={e => setCustomerSearch(e.target.value)}
+                                className="border-0 bg-transparent text-foreground placeholder-muted-foreground text-sm p-0 focus:ring-0 dark:bg-transparent dark:text-white dark:placeholder-gray-400"
+                                style={{ backgroundColor: 'transparent' }}
+                              />
+                            </div>
+                            {searchingCustomer && (
+                              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground dark:text-gray-400" />
+                            )}
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              Optional
+                            </span>
+                          </div>
+
+                          {/* Customer List */}
+                          {(customerSearch || selectedCustomer) && (
+                            <div className="mt-2 space-y-1">
+                              {customers.map(customer => (
+                                <div
+                                  key={customer.id}
+                                  className={cn(
+                                    'flex items-center gap-2 px-3 py-2 rounded cursor-pointer transition-all text-sm',
+                                    selectedCustomer?.id === customer.id
+                                      ? 'bg-accent text-accent-foreground dark:bg-gray-800 dark:text-white'
+                                      : 'hover:bg-accent text-muted-foreground dark:hover:bg-gray-800 dark:text-gray-300'
+                                  )}
+                                  onClick={() => setSelectedCustomer(customer)}
+                                >
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                      {customer.entity_name.charAt(0)}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="flex-1">
+                                    <p className="font-normal">{customer.entity_name}</p>
+                                    <p className="text-xs text-muted-foreground dark:text-gray-400">
+                                      {customer.email}
+                                    </p>
+                                  </div>
+                                  {selectedCustomer?.id === customer.id && (
+                                    <X
+                                      className="w-4 h-4 text-muted-foreground hover:text-foreground dark:text-gray-400 dark:hover:text-white"
+                                      onClick={e => {
+                                        e.stopPropagation()
+                                        setSelectedCustomer(null)
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Stylist & Service Selection - Combined Section */}
+                        <div className="mb-6 space-y-4">
+                          <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
+                            <Scissors className="w-5 h-5 text-[#7a7a7a]" />
+                            <div className="flex-1">
+                              <p className="text-sm text-[#e1e1e1]">Appointment Details</p>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                      
-                      {/* Service Summary */}
-                      {selectedServices.length > 0 && (
-                        <div className="mt-3 p-3 bg-secondary rounded text-sm dark:bg-gray-700">
-                          <div className="flex justify-between items-center">
-                            <span className="text-secondary-foreground dark:text-gray-300">
-                              Duration: {Math.floor(totalDuration / 60)}h {totalDuration % 60}m
-                            </span>
-                            <span className="text-foreground font-medium dark:text-white">
-                              Total: AED {totalPrice}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
 
-                    {/* Date and Time */}
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
-                        <Clock className="w-5 h-5 text-[#7a7a7a]" />
-                        <div className="flex items-center gap-4 flex-1">
-                          <Input
-                            type="date"
-                            value={formatDate(selectedDate, 'yyyy-MM-dd')}
-                            onChange={(e) => setSelectedDate(new Date(e.target.value))}
-                            className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
-                          />
-                          <span className="text-[#7a7a7a]">to</span>
-                          <div className="flex items-center gap-2">
-                            <Input
-                              type="time"
-                              value={startTime}
-                              onChange={(e) => setStartTime(e.target.value)}
-                              className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 w-20 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
-                            />
-                            <span className="text-[#7a7a7a]">-</span>
-                            <Input
-                              type="time"
-                              value={endTime}
-                              disabled
-                              className="border-0 bg-background text-muted-foreground text-sm p-0 focus:ring-0 w-20 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:[color-scheme:dark]"
-                            />
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-[#4c7cf0] hover:text-[#6b95ff] hover:bg-transparent p-0 h-auto font-normal"
+                          {/* Stylist Dropdown */}
+                          <Select
+                            value={selectedStylist?.id}
+                            onValueChange={id =>
+                              setSelectedStylist(stylists.find(s => s.id === id) || null)
+                            }
                           >
-                            All day
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Additional Options */}
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
-                        <FileText className="w-5 h-5 text-[#7a7a7a]" />
-                        <Input
-                          placeholder="Add description"
-                          value={notes}
-                          onChange={(e) => setNotes(e.target.value)}
-                          className="border-0 bg-background text-foreground placeholder-muted-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Busy Toggle */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <Checkbox
-                          checked={!isPrivate}
-                          onCheckedChange={(checked) => setIsPrivate(!checked)}
-                          className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
-                        />
-                        <span className="text-sm text-foreground dark:text-white">Show as busy</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer ml-6">
-                        <Checkbox
-                          checked={isHold}
-                          onCheckedChange={(checked) => setIsHold(!!checked)}
-                          className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
-                        />
-                        <span className="text-sm text-foreground dark:text-white">Tentative booking</span>
-                      </label>
-                    </div>
-
-                  </div>
-                </ScrollArea>
-
-                {/* Right Column - Calendar View */}
-                <div className="hidden lg:block h-full bg-[#252525] border-l border-[#323232]">
-                  <div className="p-4 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-normal text-[#e1e1e1]">
-                        {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
-                      </h3>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
-                          onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
-                        >
-                          ‹
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
-                          onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
-                        >
-                          ›
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    {/* Time slots grid */}
-                    <div className="flex-1 overflow-y-auto">
-                      <div className="relative">
-                        {/* Time labels */}
-                        <div className="absolute left-0 top-0 w-12">
-                          {[...Array(12)].map((_, i) => (
-                            <div key={i} className="h-16 text-xs text-[#7a7a7a] pt-1">
-                              {i + 9}:00
-                            </div>
-                          ))}
-                        </div>
-                        
-                        {/* Calendar grid */}
-                        <div className="ml-14 border-l border-[#323232]">
-                          {/* Current time slot highlight */}
-                          {startTime && (
-                            <div
-                              className="absolute left-14 right-4 bg-[#4c7cf0] rounded"
-                              style={{
-                                top: `${((parseInt(startTime.split(':')[0]) - 9) * 64) + 16}px`,
-                                height: `${(totalDuration / 60) * 64}px`
-                              }}
+                            <SelectTrigger
+                              className="bg-gray-800 border-gray-600 text-white h-10 text-sm"
+                              style={{ backgroundColor: '#2b2b2b' }}
                             >
-                              <div className="p-2 text-white">
-                                <p className="text-xs font-medium">
-                                  {selectedServices.length > 0 ? selectedServices[0].entity_name : 'New Appointment'}
-                                </p>
-                                <p className="text-xs opacity-80">
-                                  {startTime} - {endTime}
-                                </p>
+                              <SelectValue placeholder="Select a stylist" />
+                            </SelectTrigger>
+                            <SelectContent
+                              className="bg-gray-800 border-gray-600"
+                              style={{ backgroundColor: '#2b2b2b' }}
+                            >
+                              {stylists.map(stylist => (
+                                <SelectItem
+                                  key={stylist.id}
+                                  value={stylist.id}
+                                  className="text-popover-foreground hover:bg-accent focus:bg-accent dark:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700 hera-select-item"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Avatar className="w-6 h-6">
+                                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                        {stylist.avatar}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <span>{stylist.entity_name}</span>
+                                    <Badge variant="secondary" className="ml-auto text-xs">
+                                      {stylist.level}
+                                    </Badge>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          {/* Service Selection */}
+                          <div className="space-y-2">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                              Select services
+                            </p>
+                            {services.map(service => (
+                              <div
+                                key={service.id}
+                                className={cn(
+                                  'flex items-center gap-3 p-3 rounded cursor-pointer transition-all',
+                                  selectedServices.find(s => s.id === service.id)
+                                    ? 'bg-accent border border-primary dark:bg-gray-800 dark:border-blue-500'
+                                    : 'bg-card border border-border hover:border-primary/50 dark:bg-gray-800 dark:border-gray-600 dark:hover:border-blue-500/50'
+                                )}
+                                onClick={() => toggleService(service)}
+                              >
+                                <Checkbox
+                                  checked={!!selectedServices.find(s => s.id === service.id)}
+                                  className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
+                                />
+                                <div className="flex-1">
+                                  <p className="text-sm text-card-foreground dark:text-white">
+                                    {service.entity_name}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground dark:text-gray-400">
+                                    {service.duration} min • AED {service.price}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Service Summary */}
+                          {selectedServices.length > 0 && (
+                            <div className="mt-3 p-3 bg-secondary rounded text-sm dark:bg-gray-700">
+                              <div className="flex justify-between items-center">
+                                <span className="text-secondary-foreground dark:text-gray-300">
+                                  Duration: {Math.floor(totalDuration / 60)}h {totalDuration % 60}m
+                                </span>
+                                <span className="text-foreground font-medium dark:text-white">
+                                  Total: AED {totalPrice}
+                                </span>
                               </div>
                             </div>
                           )}
-                          
-                          {/* Hour lines */}
-                          {[...Array(12)].map((_, i) => (
-                            <div key={i} className="h-16 border-t border-[#323232]" />
-                          ))}
+                        </div>
+
+                        {/* Date and Time */}
+                        <div className="mb-6">
+                          <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
+                            <Clock className="w-5 h-5 text-[#7a7a7a]" />
+                            <div className="flex items-center gap-4 flex-1">
+                              <Input
+                                type="date"
+                                value={formatDate(selectedDate, 'yyyy-MM-dd')}
+                                onChange={e => setSelectedDate(new Date(e.target.value))}
+                                className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
+                              />
+                              <span className="text-[#7a7a7a]">to</span>
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  type="time"
+                                  value={startTime}
+                                  onChange={e => setStartTime(e.target.value)}
+                                  className="border-0 bg-background text-foreground text-sm p-0 focus:ring-0 w-20 dark:bg-gray-800 dark:text-white dark:[color-scheme:dark]"
+                                />
+                                <span className="text-[#7a7a7a]">-</span>
+                                <Input
+                                  type="time"
+                                  value={endTime}
+                                  disabled
+                                  className="border-0 bg-background text-muted-foreground text-sm p-0 focus:ring-0 w-20 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:[color-scheme:dark]"
+                                />
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-[#4c7cf0] hover:text-[#6b95ff] hover:bg-transparent p-0 h-auto font-normal"
+                              >
+                                All day
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Additional Options */}
+                        <div className="mb-6">
+                          <div className="flex items-center gap-3 py-3 border-b border-[#323232]">
+                            <FileText className="w-5 h-5 text-[#7a7a7a]" />
+                            <Input
+                              placeholder="Add description"
+                              value={notes}
+                              onChange={e => setNotes(e.target.value)}
+                              className="border-0 bg-background text-foreground placeholder-muted-foreground text-sm p-0 focus:ring-0 dark:bg-gray-800 dark:text-white"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Busy Toggle */}
+                        <div className="flex items-center gap-3 mb-6">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <Checkbox
+                              checked={!isPrivate}
+                              onCheckedChange={checked => setIsPrivate(!checked)}
+                              className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
+                            />
+                            <span className="text-sm text-foreground dark:text-white">
+                              Show as busy
+                            </span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer ml-6">
+                            <Checkbox
+                              checked={isHold}
+                              onCheckedChange={checked => setIsHold(!!checked)}
+                              className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:border-primary dark:border-gray-400 dark:data-[state=checked]:bg-blue-500 dark:data-[state=checked]:border-blue-500"
+                            />
+                            <span className="text-sm text-foreground dark:text-white">
+                              Tentative booking
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    </ScrollArea>
+
+                    {/* Right Column - Calendar View */}
+                    <div className="hidden lg:block h-full bg-[#252525] border-l border-[#323232]">
+                      <div className="p-4 h-full flex flex-col">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-sm font-normal text-[#e1e1e1]">
+                            {formatDate(selectedDate, 'EEEE, MMMM d, yyyy')}
+                          </h3>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
+                              onClick={() =>
+                                setSelectedDate(
+                                  new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000)
+                                )
+                              }
+                            >
+                              ‹
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-accent dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
+                              onClick={() =>
+                                setSelectedDate(
+                                  new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000)
+                                )
+                              }
+                            >
+                              ›
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Time slots grid */}
+                        <div className="flex-1 overflow-y-auto">
+                          <div className="relative">
+                            {/* Time labels */}
+                            <div className="absolute left-0 top-0 w-12">
+                              {[...Array(12)].map((_, i) => (
+                                <div key={i} className="h-16 text-xs text-[#7a7a7a] pt-1">
+                                  {i + 9}:00
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Calendar grid */}
+                            <div className="ml-14 border-l border-[#323232]">
+                              {/* Current time slot highlight */}
+                              {startTime && (
+                                <div
+                                  className="absolute left-14 right-4 bg-[#4c7cf0] rounded"
+                                  style={{
+                                    top: `${(parseInt(startTime.split(':')[0]) - 9) * 64 + 16}px`,
+                                    height: `${(totalDuration / 60) * 64}px`
+                                  }}
+                                >
+                                  <div className="p-2 text-white">
+                                    <p className="text-xs font-medium">
+                                      {selectedServices.length > 0
+                                        ? selectedServices[0].entity_name
+                                        : 'New Appointment'}
+                                    </p>
+                                    <p className="text-xs opacity-80">
+                                      {startTime} - {endTime}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Hour lines */}
+                              {[...Array(12)].map((_, i) => (
+                                <div key={i} className="h-16 border-t border-[#323232]" />
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                </TabsContent>
+
+                <TabsContent value="assistant" className="h-full p-6 m-0">
+                  {preSelectedTime && !selectedStylist && !selectedServices.length && (
+                    <Alert className="mb-4 border-purple-500 bg-purple-500/20">
+                      <AlertCircle className="h-4 w-4 text-purple-400" />
+                      <AlertDescription className="text-purple-200">
+                        <strong>Selected time slot:</strong> {preSelectedTime} on{' '}
+                        {formatDate(selectedDate, 'MMM d, yyyy')}
+                        <br />
+                        Please select a stylist and services to check availability for this time.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  {selectedStylist && selectedServices.length > 0 ? (
+                    <SchedulingAssistant
+                      organizationId={organizationId}
+                      stylistId={selectedStylist.id}
+                      services={selectedServices}
+                      selectedDate={selectedDate}
+                      onSlotSelect={handleSlotSelect}
+                      preSelectedTime={preSelectedTime}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center">
+                        <Users className="w-16 h-16 mx-auto mb-4 text-gray-500" />
+                        <h3 className="text-lg font-medium mb-2 text-white">
+                          Select Stylist and Services
+                        </h3>
+                        <p className="text-gray-300">
+                          Please select a stylist and at least one service to view availability
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="mt-4 bg-gray-800 border-gray-600 text-gray-200 hover:bg-gray-700 hover:text-white hover:border-gray-500"
+                          onClick={() => setActiveTab('event')}
+                        >
+                          Go to Event Tab
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              </div>
+            </Tabs>
+
+            <div className="px-6 py-3 border-t border-[#323232] bg-[#2b2b2b] flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {/* Additional options */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-[#b3b3b3] hover:text-[#e1e1e1] hover:bg-[#323232] h-8"
+                >
+                  <ChevronRight className="w-4 h-4 mr-1" />
+                  Response options
+                </Button>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    15 minutes before
+                  </span>
                 </div>
               </div>
-            </TabsContent>
 
-            <TabsContent value="assistant" className="h-full p-6 m-0">
-              {preSelectedTime && !selectedStylist && !selectedServices.length && (
-                <Alert className="mb-4 border-purple-500 bg-purple-500/20">
-                  <AlertCircle className="h-4 w-4 text-purple-400" />
-                  <AlertDescription className="text-purple-200">
-                    <strong>Selected time slot:</strong> {preSelectedTime} on {formatDate(selectedDate, 'MMM d, yyyy')}
-                    <br />
-                    Please select a stylist and services to check availability for this time.
-                  </AlertDescription>
-                </Alert>
-              )}
-              {selectedStylist && selectedServices.length > 0 ? (
-                <SchedulingAssistant
-                  organizationId={organizationId}
-                  stylistId={selectedStylist.id}
-                  services={selectedServices}
-                  selectedDate={selectedDate}
-                  onSlotSelect={handleSlotSelect}
-                  preSelectedTime={preSelectedTime}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <Users className="w-16 h-16 mx-auto mb-4 text-gray-500" />
-                    <h3 className="text-lg font-medium mb-2 text-white">Select Stylist and Services</h3>
-                    <p className="text-gray-300">
-                      Please select a stylist and at least one service to view availability
-                    </p>
-                    <Button
-                      variant="outline"
-                      className="mt-4 bg-gray-800 border-gray-600 text-gray-200 hover:bg-gray-700 hover:text-white hover:border-gray-500"
-                      onClick={() => setActiveTab('event')}
-                    >
-                      Go to Event Tab
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </TabsContent>
-          </div>
-        </Tabs>
-        
-        <div className="px-6 py-3 border-t border-[#323232] bg-[#2b2b2b] flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {/* Additional options */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-[#b3b3b3] hover:text-[#e1e1e1] hover:bg-[#323232] h-8"
-            >
-              <ChevronRight className="w-4 h-4 mr-1" />
-              Response options
-            </Button>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                15 minutes before
-              </span>
+              <div className="flex items-center gap-2">
+                {conflicts.length > 0 && (
+                  <span className="text-xs text-red-400 mr-2">Conflict detected</span>
+                )}
+                <Button
+                  onClick={handleBook}
+                  disabled={
+                    loading ||
+                    !selectedCustomer ||
+                    !selectedStylist ||
+                    selectedServices.length === 0
+                  }
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-4 text-sm disabled:bg-secondary disabled:text-muted-foreground dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white dark:disabled:bg-gray-700 dark:disabled:text-gray-500"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save'
+                  )}
+                </Button>
+              </div>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {conflicts.length > 0 && (
-              <span className="text-xs text-red-400 mr-2">Conflict detected</span>
-            )}
-            <Button
-              onClick={handleBook}
-              disabled={loading || !selectedCustomer || !selectedStylist || selectedServices.length === 0}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-4 text-sm disabled:bg-secondary disabled:text-muted-foreground dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white dark:disabled:bg-gray-700 dark:disabled:text-gray-500"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                'Save'
-              )}
-            </Button>
-          </div>
-        </div>
-        </>
+          </>
         )}
       </DialogContent>
     </Dialog>

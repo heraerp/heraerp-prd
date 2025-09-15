@@ -9,7 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
@@ -155,12 +161,14 @@ export function FAModule({
   onMaintenanceScheduled,
   onDepreciationCalculated
 }: FAModuleProps) {
-  const [activeTab, setActiveTab] = useState<'assets' | 'maintenance' | 'depreciation' | 'transfers' | 'reports'>('assets')
+  const [activeTab, setActiveTab] = useState<
+    'assets' | 'maintenance' | 'depreciation' | 'transfers' | 'reports'
+  >('assets')
   const [assets, setAssets] = useState<FixedAsset[]>([])
   const [maintenanceRecords, setMaintenanceRecords] = useState<Maintenance[]>([])
   const [selectedAssetType, setSelectedAssetType] = useState<string>('all')
   const [loading, setLoading] = useState(false)
-  
+
   // Asset Form State
   const [assetForm, setAssetForm] = useState<Partial<FixedAsset>>({
     acquisitionDate: new Date(),
@@ -189,21 +197,23 @@ export function FAModule({
           entity_type: 'fixed_asset'
         }
       })
-      
+
       if (response.data) {
-        setAssets(response.data.map((asset: any) => ({
-          id: asset.id,
-          assetCode: asset.entity_code,
-          assetName: asset.entity_name,
-          assetType: (asset.metadata as any)?.asset_type || 'equipment',
-          status: (asset.metadata as any)?.status || 'active',
-          acquisitionDate: new Date((asset.metadata as any)?.acquisition_date || Date.now()),
-          acquisitionCost: (asset.metadata as any)?.acquisition_cost || 0,
-          currentValue: (asset.metadata as any)?.current_value || 0,
-          accumulatedDepreciation: (asset.metadata as any)?.accumulated_depreciation || 0,
-          location: (asset.metadata as any)?.location,
-          metadata: asset.metadata
-        })))
+        setAssets(
+          response.data.map((asset: any) => ({
+            id: asset.id,
+            assetCode: asset.entity_code,
+            assetName: asset.entity_name,
+            assetType: (asset.metadata as any)?.asset_type || 'equipment',
+            status: (asset.metadata as any)?.status || 'active',
+            acquisitionDate: new Date((asset.metadata as any)?.acquisition_date || Date.now()),
+            acquisitionCost: (asset.metadata as any)?.acquisition_cost || 0,
+            currentValue: (asset.metadata as any)?.current_value || 0,
+            accumulatedDepreciation: (asset.metadata as any)?.accumulated_depreciation || 0,
+            location: (asset.metadata as any)?.location,
+            metadata: asset.metadata
+          }))
+        )
       }
     } catch (error) {
       console.error('Failed to load assets:', error)
@@ -221,7 +231,7 @@ export function FAModule({
 
     try {
       setLoading(true)
-      
+
       // Create fixed asset entity
       const asset = await universalApi.createEntity({
         entity_type: 'fixed_asset',
@@ -269,7 +279,6 @@ export function FAModule({
 
       // Reload data
       loadAssets()
-      
     } catch (error) {
       console.error('Failed to create asset:', error)
       alert('Failed to create asset')
@@ -287,7 +296,7 @@ export function FAModule({
 
     try {
       setLoading(true)
-      
+
       // Create maintenance transaction
       const maintenance = await universalApi.createTransaction({
         transaction_type: 'asset_maintenance',
@@ -319,7 +328,6 @@ export function FAModule({
 
       // Reload data
       loadAssets()
-      
     } catch (error) {
       console.error('Failed to schedule maintenance:', error)
       alert('Failed to schedule maintenance')
@@ -331,12 +339,16 @@ export function FAModule({
   // Calculate depreciation
   const calculateDepreciation = (asset: FixedAsset): number => {
     // Simplified straight-line depreciation
-    const usefulLife = asset.assetType === 'freezer' ? 84 : // 7 years
-                       asset.assetType === 'vehicle' ? 60 : // 5 years
-                       asset.assetType === 'cold_room' ? 180 : // 15 years
-                       120 // 10 years default
-    
-    const monthlyDepreciation = (asset.acquisitionCost - (asset.acquisitionCost * 0.1)) / usefulLife
+    const usefulLife =
+      asset.assetType === 'freezer'
+        ? 84 // 7 years
+        : asset.assetType === 'vehicle'
+          ? 60 // 5 years
+          : asset.assetType === 'cold_room'
+            ? 180 // 15 years
+            : 120 // 10 years default
+
+    const monthlyDepreciation = (asset.acquisitionCost - asset.acquisitionCost * 0.1) / usefulLife
     return monthlyDepreciation
   }
 
@@ -347,40 +359,56 @@ export function FAModule({
       totalValue: assets.reduce((sum, asset) => sum + asset.currentValue, 0),
       freezerCount: assets.filter(a => a.assetType === 'freezer').length,
       vehicleCount: assets.filter(a => a.assetType === 'vehicle').length,
-      maintenanceDue: assets.filter(a => (a.metadata as any)?.nextMaintenance && 
-        new Date(a.metadata.nextMaintenance) <= new Date()).length,
+      maintenanceDue: assets.filter(
+        a =>
+          (a.metadata as any)?.nextMaintenance && new Date(a.metadata.nextMaintenance) <= new Date()
+      ).length,
       avgEnergyRating: 0
     }
-    
+
     // Calculate average energy rating for freezers
-    const freezers = assets.filter(a => a.assetType === 'freezer' && (a.metadata as any)?.energyRating)
+    const freezers = assets.filter(
+      a => a.assetType === 'freezer' && (a.metadata as any)?.energyRating
+    )
     if (freezers.length > 0) {
       const ratings = freezers.map(f => {
         const rating = (f.metadata as any)?.energyRating || 'D'
-        return rating === 'A++' ? 7 : rating === 'A+' ? 6 : rating === 'A' ? 5 :
-               rating === 'B' ? 4 : rating === 'C' ? 3 : rating === 'D' ? 2 : 1
+        return rating === 'A++'
+          ? 7
+          : rating === 'A+'
+            ? 6
+            : rating === 'A'
+              ? 5
+              : rating === 'B'
+                ? 4
+                : rating === 'C'
+                  ? 3
+                  : rating === 'D'
+                    ? 2
+                    : 1
       })
       metrics.avgEnergyRating = ratings.reduce((a, b) => a + b, 0) / ratings.length
     }
-    
+
     return metrics
   }
 
   return (
-    <div className={cn("min-h-screen", isDarkMode && "dark")}>
-      <Card className={cn(
-        "shadow-lg",
-        isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : "bg-white border-gray-200"
-      )}>
-        <CardHeader className={cn(
-          "border-b",
-          isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-        )}>
+    <div className={cn('min-h-screen', isDarkMode && 'dark')}>
+      <Card
+        className={cn(
+          'shadow-lg',
+          isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : 'bg-white border-gray-200'
+        )}
+      >
+        <CardHeader className={cn('border-b', isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200')}>
           <div className="flex items-center justify-between">
-            <CardTitle className={cn(
-              "text-xl flex items-center gap-2",
-              isDarkMode ? "text-white" : "text-gray-900"
-            )}>
+            <CardTitle
+              className={cn(
+                'text-xl flex items-center gap-2',
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              )}
+            >
               <Building className="h-5 w-5" />
               Fixed Assets Module
             </CardTitle>
@@ -390,8 +418,7 @@ export function FAModule({
                 {calculateMetrics().totalAssets} Assets
               </Badge>
               <Badge variant="outline" className="gap-1">
-                <DollarSign className="h-3 w-3" />
-                ₹{calculateMetrics().totalValue.toLocaleString()}
+                <DollarSign className="h-3 w-3" />₹{calculateMetrics().totalValue.toLocaleString()}
               </Badge>
               {industrySpecific.freezerAssetTracking && (
                 <Badge variant="outline" className="gap-1">
@@ -402,13 +429,12 @@ export function FAModule({
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-6">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className={cn(
-              "grid w-full grid-cols-5",
-              isDarkMode ? "bg-[#292929]" : "bg-gray-100"
-            )}>
+          <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+            <TabsList
+              className={cn('grid w-full grid-cols-5', isDarkMode ? 'bg-[#292929]' : 'bg-gray-100')}
+            >
               <TabsTrigger value="assets" className="gap-1">
                 <Building className="h-4 w-4" />
                 Assets
@@ -430,13 +456,15 @@ export function FAModule({
                 Reports
               </TabsTrigger>
             </TabsList>
-            
+
             {/* Assets Tab */}
             <TabsContent value="assets" className="space-y-4 mt-4">
               {/* Asset Registration Form */}
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Register New Asset</CardTitle>
                 </CardHeader>
@@ -444,11 +472,15 @@ export function FAModule({
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label>Asset Type</Label>
-                      <Select 
-                        value={assetForm.assetType} 
-                        onValueChange={(value) => setAssetForm(prev => ({ ...prev, assetType: value as any }))}
+                      <Select
+                        value={assetForm.assetType}
+                        onValueChange={value =>
+                          setAssetForm(prev => ({ ...prev, assetType: value as any }))
+                        }
                       >
-                        <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                        <SelectTrigger
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                        >
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -466,8 +498,10 @@ export function FAModule({
                       <Input
                         placeholder="FA-2024-001"
                         value={assetForm.assetCode}
-                        onChange={(e) => setAssetForm(prev => ({ ...prev, assetCode: e.target.value }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setAssetForm(prev => ({ ...prev, assetCode: e.target.value }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -475,20 +509,27 @@ export function FAModule({
                       <Input
                         placeholder="Commercial Freezer Unit"
                         value={assetForm.assetName}
-                        onChange={(e) => setAssetForm(prev => ({ ...prev, assetName: e.target.value }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setAssetForm(prev => ({ ...prev, assetName: e.target.value }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label>Acquisition Date</Label>
                       <Input
                         type="date"
                         value={assetForm.acquisitionDate?.toISOString().split('T')[0]}
-                        onChange={(e) => setAssetForm(prev => ({ ...prev, acquisitionDate: new Date(e.target.value) }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setAssetForm(prev => ({
+                            ...prev,
+                            acquisitionDate: new Date(e.target.value)
+                          }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -497,8 +538,13 @@ export function FAModule({
                         type="number"
                         placeholder="25000"
                         value={assetForm.acquisitionCost}
-                        onChange={(e) => setAssetForm(prev => ({ ...prev, acquisitionCost: parseFloat(e.target.value) || 0 }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setAssetForm(prev => ({
+                            ...prev,
+                            acquisitionCost: parseFloat(e.target.value) || 0
+                          }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -506,12 +552,14 @@ export function FAModule({
                       <Input
                         placeholder="Main Warehouse"
                         value={assetForm.location}
-                        onChange={(e) => setAssetForm(prev => ({ ...prev, location: e.target.value }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setAssetForm(prev => ({ ...prev, location: e.target.value }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   {/* Ice Cream Specific Fields */}
                   {assetForm.assetType === 'freezer' && industrySpecific.freezerAssetTracking && (
                     <div className="grid grid-cols-4 gap-4">
@@ -519,33 +567,41 @@ export function FAModule({
                         <Label>Serial Number</Label>
                         <Input
                           placeholder="SN123456"
-                          onChange={(e) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, serialNumber: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, serialNumber: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Capacity (Liters)</Label>
                         <Input
                           placeholder="500"
-                          onChange={(e) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, capacity: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, capacity: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Energy Rating</Label>
                         <Select
-                          onValueChange={(value) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, energyRating: value }
-                          }))}
+                          onValueChange={value =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, energyRating: value }
+                            }))
+                          }
                         >
-                          <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                          <SelectTrigger
+                            className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                          >
                             <SelectValue placeholder="Select rating" />
                           </SelectTrigger>
                           <SelectContent>
@@ -561,12 +617,16 @@ export function FAModule({
                       <div>
                         <Label>Refrigerant Type</Label>
                         <Select
-                          onValueChange={(value) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, refrigerantType: value }
-                          }))}
+                          onValueChange={value =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, refrigerantType: value }
+                            }))
+                          }
                         >
-                          <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                          <SelectTrigger
+                            className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                          >
                             <SelectValue placeholder="Select type" />
                           </SelectTrigger>
                           <SelectContent>
@@ -579,70 +639,78 @@ export function FAModule({
                       </div>
                     </div>
                   )}
-                  
+
                   {assetForm.assetType === 'vehicle' && industrySpecific.refrigeratedVehicles && (
                     <div className="grid grid-cols-3 gap-4">
                       <div>
                         <Label>Vehicle Registration</Label>
                         <Input
                           placeholder="DXB-A-12345"
-                          onChange={(e) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, vehicleRegistration: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, vehicleRegistration: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Cooling Capacity</Label>
                         <Input
                           placeholder="-25°C to +5°C"
-                          onChange={(e) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, coolingCapacity: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, coolingCapacity: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                       <div>
                         <Label>Cargo Volume (m³)</Label>
                         <Input
                           placeholder="15"
-                          onChange={(e) => setAssetForm(prev => ({
-                            ...prev,
-                            metadata: { ...prev.metadata, cargoVolume: e.target.value }
-                          }))}
-                          className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                          onChange={e =>
+                            setAssetForm(prev => ({
+                              ...prev,
+                              metadata: { ...prev.metadata, cargoVolume: e.target.value }
+                            }))
+                          }
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                         />
                       </div>
                     </div>
                   )}
-                  
+
                   <Separator />
-                  
+
                   {/* Action Buttons */}
                   <div className="flex justify-end gap-2">
                     <Button
                       variant="outline"
-                      onClick={() => setAssetForm({
-                        acquisitionDate: new Date(),
-                        assetType: 'freezer',
-                        status: 'active'
-                      })}
+                      onClick={() =>
+                        setAssetForm({
+                          acquisitionDate: new Date(),
+                          assetType: 'freezer',
+                          status: 'active'
+                        })
+                      }
                     >
                       Clear
                     </Button>
                     <Button
                       onClick={createAsset}
                       disabled={loading || !assetForm.assetName || !assetForm.assetCode}
-                      className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                      className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                     >
                       Register Asset
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-              
+
               {/* Asset List */}
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
@@ -651,17 +719,19 @@ export function FAModule({
                     <Input
                       placeholder="Search assets..."
                       className={cn(
-                        "pl-10 w-[300px]",
-                        isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
+                        'pl-10 w-[300px]',
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
                       )}
                     />
                   </div>
                   {industrySpecific.freezerAssetTracking && (
                     <Select value={selectedAssetType} onValueChange={setSelectedAssetType}>
-                      <SelectTrigger className={cn(
-                        "w-[200px]",
-                        isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                      )}>
+                      <SelectTrigger
+                        className={cn(
+                          'w-[200px]',
+                          isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                        )}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -685,89 +755,111 @@ export function FAModule({
                   </Button>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 gap-4">
                 {assets
-                  .filter(asset => selectedAssetType === 'all' || asset.assetType === selectedAssetType)
+                  .filter(
+                    asset => selectedAssetType === 'all' || asset.assetType === selectedAssetType
+                  )
                   .map(asset => (
-                  <Card key={asset.id} className={cn(
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-                  )}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold">{asset.assetName}</h3>
-                            <Badge variant={asset.status === 'active' ? 'default' : 
-                                           asset.status === 'maintenance' ? 'secondary' : 'outline'}>
-                              {asset.status}
-                            </Badge>
-                            {asset.assetType === 'freezer' && (
-                              <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                <Snowflake className="h-3 w-3 mr-1" />
-                                Freezer
+                    <Card
+                      key={asset.id}
+                      className={cn(
+                        isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                      )}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-semibold">{asset.assetName}</h3>
+                              <Badge
+                                variant={
+                                  asset.status === 'active'
+                                    ? 'default'
+                                    : asset.status === 'maintenance'
+                                      ? 'secondary'
+                                      : 'outline'
+                                }
+                              >
+                                {asset.status}
                               </Badge>
+                              {asset.assetType === 'freezer' && (
+                                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                  <Snowflake className="h-3 w-3 mr-1" />
+                                  Freezer
+                                </Badge>
+                              )}
+                              {(asset.metadata as any)?.energyRating && (
+                                <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                  <Zap className="h-3 w-3 mr-1" />
+                                  {asset.metadata.energyRating}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="grid grid-cols-4 gap-4 text-sm">
+                              <div>
+                                <span className="text-gray-500">Code:</span> {asset.assetCode}
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Location:</span>{' '}
+                                {asset.location || 'N/A'}
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Age:</span>{' '}
+                                {Math.floor(
+                                  (Date.now() - asset.acquisitionDate.getTime()) /
+                                    (1000 * 60 * 60 * 24 * 365)
+                                )}{' '}
+                                years
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Depreciation:</span> ₹
+                                {asset.accumulatedDepreciation.toLocaleString()}
+                              </div>
+                            </div>
+                            {(asset.metadata as any)?.nextMaintenance && (
+                              <div className="mt-2">
+                                <Alert
+                                  className={cn(
+                                    'py-2',
+                                    new Date(asset.metadata.nextMaintenance) <= new Date()
+                                      ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                                      : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
+                                  )}
+                                >
+                                  <Wrench className="h-3 w-3" />
+                                  <AlertDescription className="text-xs">
+                                    Next maintenance:{' '}
+                                    {new Date(asset.metadata.nextMaintenance).toLocaleDateString()}
+                                  </AlertDescription>
+                                </Alert>
+                              </div>
                             )}
-                            {(asset.metadata as any)?.energyRating && (
-                              <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                <Zap className="h-3 w-3 mr-1" />
-                                {asset.metadata.energyRating}
-                              </Badge>
-                            )}
                           </div>
-                          <div className="grid grid-cols-4 gap-4 text-sm">
-                            <div>
-                              <span className="text-gray-500">Code:</span> {asset.assetCode}
+                          <div className="text-right">
+                            <div className="text-2xl font-semibold">
+                              ₹{asset.currentValue.toLocaleString()}
                             </div>
-                            <div>
-                              <span className="text-gray-500">Location:</span> {asset.location || 'N/A'}
+                            <div className="text-sm text-gray-500">Current Value</div>
+                            <div className="text-xs text-gray-400 mt-1">
+                              Cost: ₹{asset.acquisitionCost.toLocaleString()}
                             </div>
-                            <div>
-                              <span className="text-gray-500">Age:</span> {
-                                Math.floor((Date.now() - asset.acquisitionDate.getTime()) / (1000 * 60 * 60 * 24 * 365))
-                              } years
-                            </div>
-                            <div>
-                              <span className="text-gray-500">Depreciation:</span> ₹{asset.accumulatedDepreciation.toLocaleString()}
-                            </div>
-                          </div>
-                          {(asset.metadata as any)?.nextMaintenance && (
-                            <div className="mt-2">
-                              <Alert className={cn(
-                                "py-2",
-                                new Date(asset.metadata.nextMaintenance) <= new Date() ?
-                                "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800" :
-                                "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"
-                              )}>
-                                <Wrench className="h-3 w-3" />
-                                <AlertDescription className="text-xs">
-                                  Next maintenance: {new Date(asset.metadata.nextMaintenance).toLocaleDateString()}
-                                </AlertDescription>
-                              </Alert>
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-semibold">
-                            ₹{asset.currentValue.toLocaleString()}
-                          </div>
-                          <div className="text-sm text-gray-500">Current Value</div>
-                          <div className="text-xs text-gray-400 mt-1">
-                            Cost: ₹{asset.acquisitionCost.toLocaleString()}
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  ))}
               </div>
             </TabsContent>
-            
+
             {/* Maintenance Tab */}
             <TabsContent value="maintenance" className="space-y-4 mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Schedule Maintenance</CardTitle>
                 </CardHeader>
@@ -775,11 +867,15 @@ export function FAModule({
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label>Asset</Label>
-                      <Select 
+                      <Select
                         value={maintenanceForm.assetId}
-                        onValueChange={(value) => setMaintenanceForm(prev => ({ ...prev, assetId: value }))}
+                        onValueChange={value =>
+                          setMaintenanceForm(prev => ({ ...prev, assetId: value }))
+                        }
                       >
-                        <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                        <SelectTrigger
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                        >
                           <SelectValue placeholder="Select asset" />
                         </SelectTrigger>
                         <SelectContent>
@@ -795,9 +891,13 @@ export function FAModule({
                       <Label>Maintenance Type</Label>
                       <Select
                         value={maintenanceForm.maintenanceType}
-                        onValueChange={(value) => setMaintenanceForm(prev => ({ ...prev, maintenanceType: value as any }))}
+                        onValueChange={value =>
+                          setMaintenanceForm(prev => ({ ...prev, maintenanceType: value as any }))
+                        }
                       >
-                        <SelectTrigger className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}>
+                        <SelectTrigger
+                          className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
+                        >
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -809,15 +909,20 @@ export function FAModule({
                       </Select>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label>Scheduled Date</Label>
                       <Input
                         type="date"
                         value={maintenanceForm.scheduledDate?.toISOString().split('T')[0]}
-                        onChange={(e) => setMaintenanceForm(prev => ({ ...prev, scheduledDate: new Date(e.target.value) }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setMaintenanceForm(prev => ({
+                            ...prev,
+                            scheduledDate: new Date(e.target.value)
+                          }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -826,8 +931,13 @@ export function FAModule({
                         type="number"
                         placeholder="5000"
                         value={maintenanceForm.cost}
-                        onChange={(e) => setMaintenanceForm(prev => ({ ...prev, cost: parseFloat(e.target.value) || 0 }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setMaintenanceForm(prev => ({
+                            ...prev,
+                            cost: parseFloat(e.target.value) || 0
+                          }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                     <div>
@@ -835,36 +945,42 @@ export function FAModule({
                       <Input
                         placeholder="John Doe"
                         value={maintenanceForm.technician}
-                        onChange={(e) => setMaintenanceForm(prev => ({ ...prev, technician: e.target.value }))}
-                        className={isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""}
+                        onChange={e =>
+                          setMaintenanceForm(prev => ({ ...prev, technician: e.target.value }))
+                        }
+                        className={isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''}
                       />
                     </div>
                   </div>
-                  
+
                   <div>
                     <Label>Description</Label>
                     <Textarea
                       placeholder="Maintenance work description..."
                       value={maintenanceForm.description}
-                      onChange={(e) => setMaintenanceForm(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={e =>
+                        setMaintenanceForm(prev => ({ ...prev, description: e.target.value }))
+                      }
                       className={cn(
-                        "min-h-[100px]",
-                        isDarkMode ? "bg-[#1f1f1f] border-[#3a3a3a]" : ""
+                        'min-h-[100px]',
+                        isDarkMode ? 'bg-[#1f1f1f] border-[#3a3a3a]' : ''
                       )}
                     />
                   </div>
-                  
+
                   {/* Ice Cream Specific Maintenance Fields */}
                   {industrySpecific.temperatureMonitoring && (
                     <div className="space-y-2">
                       <Label>Temperature Checks</Label>
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <Checkbox 
-                            onCheckedChange={(checked) => setMaintenanceForm(prev => ({
-                              ...prev,
-                              metadata: { ...prev.metadata, temperatureCheck: !!checked }
-                            }))}
+                          <Checkbox
+                            onCheckedChange={checked =>
+                              setMaintenanceForm(prev => ({
+                                ...prev,
+                                metadata: { ...prev.metadata, temperatureCheck: !!checked }
+                              }))
+                            }
                           />
                           <label className="text-sm">Perform temperature calibration</label>
                         </div>
@@ -879,33 +995,37 @@ export function FAModule({
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-end gap-2">
                     <Button
                       variant="outline"
-                      onClick={() => setMaintenanceForm({
-                        maintenanceType: 'preventive',
-                        scheduledDate: new Date(),
-                        status: 'scheduled'
-                      })}
+                      onClick={() =>
+                        setMaintenanceForm({
+                          maintenanceType: 'preventive',
+                          scheduledDate: new Date(),
+                          status: 'scheduled'
+                        })
+                      }
                     >
                       Clear
                     </Button>
                     <Button
                       onClick={scheduleMaintenance}
                       disabled={loading || !maintenanceForm.assetId || !maintenanceForm.description}
-                      className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                      className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                     >
                       Schedule Maintenance
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-              
+
               {/* Upcoming Maintenance */}
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Upcoming Maintenance</CardTitle>
                 </CardHeader>
@@ -916,40 +1036,52 @@ export function FAModule({
                       {calculateMetrics().maintenanceDue} assets have maintenance due
                     </AlertDescription>
                   </Alert>
-                  
+
                   <div className="space-y-3">
                     {assets
-                      .filter(asset => (asset.metadata as any)?.nextMaintenance && 
-                        new Date(asset.metadata.nextMaintenance) <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))
+                      .filter(
+                        asset =>
+                          (asset.metadata as any)?.nextMaintenance &&
+                          new Date(asset.metadata.nextMaintenance) <=
+                            new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                      )
                       .map(asset => (
                         <div key={asset.id} className="p-4 border rounded-lg">
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">{asset.assetName}</h4>
                               <p className="text-sm text-gray-500">
-                                Due: {(asset.metadata as any)?.nextMaintenance && 
+                                Due:{' '}
+                                {(asset.metadata as any)?.nextMaintenance &&
                                   new Date(asset.metadata.nextMaintenance).toLocaleDateString()}
                               </p>
                             </div>
-                            <Badge variant={new Date((asset.metadata as any)?.nextMaintenance!) <= new Date() ? 
-                              'destructive' : 'secondary'}>
-                              {new Date((asset.metadata as any)?.nextMaintenance!) <= new Date() ? 
-                                'Overdue' : 'Scheduled'}
+                            <Badge
+                              variant={
+                                new Date((asset.metadata as any)?.nextMaintenance!) <= new Date()
+                                  ? 'destructive'
+                                  : 'secondary'
+                              }
+                            >
+                              {new Date((asset.metadata as any)?.nextMaintenance!) <= new Date()
+                                ? 'Overdue'
+                                : 'Scheduled'}
                             </Badge>
                           </div>
                         </div>
-                      ))
-                    }
+                      ))}
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Depreciation Tab */}
             <TabsContent value="depreciation" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Depreciation Schedule</CardTitle>
                 </CardHeader>
@@ -957,10 +1089,12 @@ export function FAModule({
                   <ScrollArea className="h-[400px]">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className={cn(
-                          "border-b",
-                          isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                        )}>
+                        <tr
+                          className={cn(
+                            'border-b',
+                            isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                          )}
+                        >
                           <th className="text-left py-2">Asset</th>
                           <th className="text-right py-2">Cost</th>
                           <th className="text-right py-2">Monthly Dep.</th>
@@ -972,27 +1106,36 @@ export function FAModule({
                         {assets.map(asset => {
                           const monthlyDep = calculateDepreciation(asset)
                           return (
-                            <tr key={asset.id} className={cn(
-                              "border-b",
-                              isDarkMode ? "border-[#3a3a3a]" : "border-gray-200"
-                            )}>
+                            <tr
+                              key={asset.id}
+                              className={cn(
+                                'border-b',
+                                isDarkMode ? 'border-[#3a3a3a]' : 'border-gray-200'
+                              )}
+                            >
                               <td className="py-2">
                                 <div>
                                   <div className="font-medium">{asset.assetCode}</div>
                                   <div className="text-xs text-gray-500">{asset.assetName}</div>
                                 </div>
                               </td>
-                              <td className="py-2 text-right">₹{asset.acquisitionCost.toLocaleString()}</td>
+                              <td className="py-2 text-right">
+                                ₹{asset.acquisitionCost.toLocaleString()}
+                              </td>
                               <td className="py-2 text-right">₹{monthlyDep.toFixed(2)}</td>
-                              <td className="py-2 text-right">₹{asset.accumulatedDepreciation.toLocaleString()}</td>
-                              <td className="py-2 text-right font-semibold">₹{asset.currentValue.toLocaleString()}</td>
+                              <td className="py-2 text-right">
+                                ₹{asset.accumulatedDepreciation.toLocaleString()}
+                              </td>
+                              <td className="py-2 text-right font-semibold">
+                                ₹{asset.currentValue.toLocaleString()}
+                              </td>
                             </tr>
                           )
                         })}
                       </tbody>
                     </table>
                   </ScrollArea>
-                  
+
                   <div className="mt-4 flex justify-end">
                     <Button
                       onClick={() => {
@@ -1000,7 +1143,7 @@ export function FAModule({
                           onDepreciationCalculated('batch')
                         }
                       }}
-                      className={isDarkMode ? "bg-[#0078d4] hover:bg-[#106ebe]" : ""}
+                      className={isDarkMode ? 'bg-[#0078d4] hover:bg-[#106ebe]' : ''}
                     >
                       <RefreshCw className="h-4 w-4 mr-1" />
                       Calculate Monthly Depreciation
@@ -1009,12 +1152,14 @@ export function FAModule({
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Transfers Tab */}
             <TabsContent value="transfers" className="mt-4">
-              <Card className={cn(
-                isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : "bg-gray-50 border-gray-200"
-              )}>
+              <Card
+                className={cn(
+                  isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : 'bg-gray-50 border-gray-200'
+                )}
+              >
                 <CardHeader>
                   <CardTitle className="text-lg">Asset Transfers</CardTitle>
                 </CardHeader>
@@ -1025,19 +1170,25 @@ export function FAModule({
                       Track asset movements between locations and customer placements
                     </AlertDescription>
                   </Alert>
-                  
+
                   {industrySpecific.freezerAssetTracking && (
                     <div className="mt-4">
                       <h3 className="font-medium mb-3">Customer Placed Freezers</h3>
                       <div className="space-y-2">
                         {assets
-                          .filter(asset => asset.assetType === 'freezer' && (asset.metadata as any)?.placedAtCustomer)
+                          .filter(
+                            asset =>
+                              asset.assetType === 'freezer' &&
+                              (asset.metadata as any)?.placedAtCustomer
+                          )
                           .map(asset => (
                             <div key={asset.id} className="p-3 border rounded-lg">
                               <div className="flex items-center justify-between">
                                 <div>
                                   <span className="font-medium">{asset.assetCode}</span>
-                                  <span className="text-sm text-gray-500 ml-2">at Customer Location</span>
+                                  <span className="text-sm text-gray-500 ml-2">
+                                    at Customer Location
+                                  </span>
                                 </div>
                                 <Badge variant="outline">
                                   <MapPin className="h-3 w-3 mr-1" />
@@ -1045,22 +1196,23 @@ export function FAModule({
                                 </Badge>
                               </div>
                             </div>
-                          ))
-                        }
+                          ))}
                       </div>
                     </div>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Reports Tab */}
             <TabsContent value="reports" className="mt-4">
               <div className="grid grid-cols-2 gap-4">
-                <Card className={cn(
-                  "cursor-pointer hover:shadow-md transition-shadow",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                )}>
+                <Card
+                  className={cn(
+                    'cursor-pointer hover:shadow-md transition-shadow',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                  )}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <FileText className="h-8 w-8 text-blue-500" />
@@ -1071,11 +1223,13 @@ export function FAModule({
                     </div>
                   </CardContent>
                 </Card>
-                
-                <Card className={cn(
-                  "cursor-pointer hover:shadow-md transition-shadow",
-                  isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                )}>
+
+                <Card
+                  className={cn(
+                    'cursor-pointer hover:shadow-md transition-shadow',
+                    isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                  )}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <TrendingDown className="h-8 w-8 text-green-500" />
@@ -1086,12 +1240,14 @@ export function FAModule({
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 {industrySpecific.energyEfficiencyTracking && (
-                  <Card className={cn(
-                    "cursor-pointer hover:shadow-md transition-shadow",
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                  )}>
+                  <Card
+                    className={cn(
+                      'cursor-pointer hover:shadow-md transition-shadow',
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                    )}
+                  >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3">
                         <Zap className="h-8 w-8 text-yellow-500" />
@@ -1102,9 +1258,9 @@ export function FAModule({
                       </div>
                       {calculateMetrics().avgEnergyRating > 0 && (
                         <div className="mt-3">
-                          <Progress 
-                            value={(calculateMetrics().avgEnergyRating / 7) * 100} 
-                            className="h-2" 
+                          <Progress
+                            value={(calculateMetrics().avgEnergyRating / 7) * 100}
+                            className="h-2"
                           />
                           <p className="text-xs text-gray-500 mt-1">
                             Average Rating: {calculateMetrics().avgEnergyRating.toFixed(1)}/7
@@ -1114,21 +1270,23 @@ export function FAModule({
                     </CardContent>
                   </Card>
                 )}
-                
+
                 {industrySpecific.temperatureMonitoring && (
-                  <Card className={cn(
-                    "cursor-pointer hover:shadow-md transition-shadow",
-                    isDarkMode ? "bg-[#292929] border-[#3a3a3a]" : ""
-                  )}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3">
-                      <Thermometer className="h-8 w-8 text-red-500" />
-                      <div>
-                        <h3 className="font-semibold">Cold Chain Assets</h3>
-                        <p className="text-sm text-gray-500">Temperature compliance</p>
+                  <Card
+                    className={cn(
+                      'cursor-pointer hover:shadow-md transition-shadow',
+                      isDarkMode ? 'bg-[#292929] border-[#3a3a3a]' : ''
+                    )}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3">
+                        <Thermometer className="h-8 w-8 text-red-500" />
+                        <div>
+                          <h3 className="font-semibold">Cold Chain Assets</h3>
+                          <p className="text-sm text-gray-500">Temperature compliance</p>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
+                    </CardContent>
                   </Card>
                 )}
               </div>
@@ -1144,7 +1302,8 @@ export function FAModule({
 export const FA_MODULE_DNA = {
   id: 'HERA.FIN.FA.MODULE.v1',
   name: 'Fixed Assets Module',
-  description: 'Complete fixed asset management with registration, maintenance, depreciation, and transfers',
+  description:
+    'Complete fixed asset management with registration, maintenance, depreciation, and transfers',
   component: FAModule,
   category: 'financial',
   subcategory: 'fixed_assets',

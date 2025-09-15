@@ -6,9 +6,20 @@ export const dynamic = 'force-dynamic'
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Shield, Zap, Users, Database, GitBranch, CheckCircle2, Rocket, Settings } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import {
+  ArrowLeft,
+  Calendar,
+  Shield,
+  Zap,
+  Users,
+  Database,
+  GitBranch,
+  CheckCircle2,
+  Rocket,
+  Settings
+} from 'lucide-react'
 
 export default function MethodologyPage() {
   const router = useRouter()
@@ -57,25 +68,33 @@ export default function MethodologyPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-16">
           <Card className="border-blue-200 dark:border-blue-800 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <CardHeader className="pb-3">
-              <CardTitle className="text-3xl font-bold text-blue-600 dark:text-blue-400">21</CardTitle>
+              <CardTitle className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                21
+              </CardTitle>
               <CardDescription>Days to Go-Live</CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-cyan-200 dark:border-cyan-800 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <CardHeader className="pb-3">
-              <CardTitle className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">Flexible</CardTitle>
+              <CardTitle className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">
+                Flexible
+              </CardTitle>
               <CardDescription>Architecture</CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-green-200 dark:border-green-800 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <CardHeader className="pb-3">
-              <CardTitle className="text-3xl font-bold text-green-600 dark:text-green-400">100%</CardTitle>
+              <CardTitle className="text-3xl font-bold text-green-600 dark:text-green-400">
+                100%
+              </CardTitle>
               <CardDescription>Module Reuse</CardDescription>
             </CardHeader>
           </Card>
           <Card className="border-purple-200 dark:border-purple-800 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <CardHeader className="pb-3">
-              <CardTitle className="text-3xl font-bold text-purple-600 dark:text-purple-400">90%</CardTitle>
+              <CardTitle className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                90%
+              </CardTitle>
               <CardDescription>Cost Reduction</CardDescription>
             </CardHeader>
           </Card>
@@ -239,7 +258,9 @@ export default function MethodologyPage() {
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">Organizations</h4>
+                  <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                    Organizations
+                  </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">Multi-tenant isolation</p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -247,19 +268,27 @@ export default function MethodologyPage() {
                   <p className="text-sm text-gray-600 dark:text-gray-300">All business objects</p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Dynamic Data</h4>
+                  <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">
+                    Dynamic Data
+                  </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">Flexible custom fields</p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <h4 className="font-semibold text-yellow-600 dark:text-yellow-400 mb-2">Relationships</h4>
+                  <h4 className="font-semibold text-yellow-600 dark:text-yellow-400 mb-2">
+                    Relationships
+                  </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">Entity connections</p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">Transactions</h4>
+                  <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">
+                    Transactions
+                  </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">All business events</p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2">Transaction Details</h4>
+                  <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2">
+                    Transaction Details
+                  </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">Line item information</p>
                 </div>
               </div>
@@ -282,7 +311,8 @@ export default function MethodologyPage() {
             <CardContent>
               <div className="bg-gray-900 dark:bg-gray-950 text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
                 <div className="mb-4">
-                  <span className="text-gray-400">// Intelligent Classification Pattern</span><br/>
+                  <span className="text-gray-400">// Intelligent Classification Pattern</span>
+                  <br />
                   Industry-specific • Module-aware • Type-driven • Version-controlled
                 </div>
                 <div className="space-y-2">
@@ -371,11 +401,15 @@ export default function MethodologyPage() {
                 Ready to Transform Your Business?
               </h3>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                Experience enterprise-grade ERP implementation in 21 days with flexible architecture and 90% cost reduction
+                Experience enterprise-grade ERP implementation in 21 days with flexible architecture
+                and 90% cost reduction
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/docs/methodology/complete-guide">
-                  <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+                  >
                     Download Complete Guide
                   </Button>
                 </Link>

@@ -229,11 +229,13 @@ export const BusinessSetupWizard: React.FC = () => {
       auto_journal_dna: true
     }
   })
-  
+
   const [loading, setLoading] = useState(false)
   const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({})
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set())
-  const [wizardSessionId] = useState(() => `wizard_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
+  const [wizardSessionId] = useState(
+    () => `wizard_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  )
 
   // Initialize wizard data if organization exists
   useEffect(() => {
@@ -252,10 +254,10 @@ export const BusinessSetupWizard: React.FC = () => {
   const validateStep = async (stepIndex: number): Promise<boolean> => {
     const step = WIZARD_STEPS[stepIndex]
     const stepData = wizardData[step.id as keyof WizardData]
-    
+
     // Basic validation logic - can be extended
     const errors: string[] = []
-    
+
     switch (step.id) {
       case 'organization_basics':
         const orgData = stepData as WizardData['organizationBasics']
@@ -264,11 +266,13 @@ export const BusinessSetupWizard: React.FC = () => {
         if (!orgData.country) errors.push('Country is required')
         if (!orgData.base_currency_code) errors.push('Base currency is required')
         break
-      
+
       case 'fiscal_year':
         const fiscalData = stepData as WizardData['fiscalYear']
-        if (!fiscalData.retained_earnings_account) errors.push('Retained earnings account is required')
-        if (!fiscalData.current_year_earnings_account) errors.push('Current year earnings account is required')
+        if (!fiscalData.retained_earnings_account)
+          errors.push('Retained earnings account is required')
+        if (!fiscalData.current_year_earnings_account)
+          errors.push('Current year earnings account is required')
         break
     }
 
@@ -305,7 +309,6 @@ export const BusinessSetupWizard: React.FC = () => {
 
       // Mark step as completed
       setCompletedSteps(prev => new Set([...prev, stepIndex]))
-      
     } catch (error) {
       console.error('Failed to save step data:', error)
       throw error
@@ -335,10 +338,8 @@ export const BusinessSetupWizard: React.FC = () => {
       }
 
       // Final validation
-      const allValid = await Promise.all(
-        WIZARD_STEPS.map((_, index) => validateStep(index))
-      )
-      
+      const allValid = await Promise.all(WIZARD_STEPS.map((_, index) => validateStep(index)))
+
       if (!allValid.every(Boolean)) {
         throw new Error('Please complete all steps before activation')
       }
@@ -356,7 +357,6 @@ export const BusinessSetupWizard: React.FC = () => {
       } else {
         throw new Error(result.error || 'Activation failed')
       }
-
     } catch (error) {
       console.error('Organization activation failed:', error)
       // Show error to user
@@ -392,7 +392,9 @@ export const BusinessSetupWizard: React.FC = () => {
       {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Step {currentStep + 1} of {WIZARD_STEPS.length}</span>
+          <span>
+            Step {currentStep + 1} of {WIZARD_STEPS.length}
+          </span>
           <span>{Math.round(progress)}% complete</span>
         </div>
         <Progress value={progress} className="w-full" />
@@ -401,14 +403,14 @@ export const BusinessSetupWizard: React.FC = () => {
       {/* Steps Navigation */}
       <div className="grid grid-cols-5 gap-2 text-xs">
         {WIZARD_STEPS.map((step, index) => (
-          <div 
-            key={step.id} 
+          <div
+            key={step.id}
             className={`flex items-center space-x-1 p-2 rounded ${
-              index === currentStep 
-                ? 'bg-primary text-primary-foreground' 
+              index === currentStep
+                ? 'bg-primary text-primary-foreground'
                 : completedSteps.has(index)
-                ? 'bg-green-100 text-green-700'
-                : 'bg-muted text-muted-foreground'
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-muted text-muted-foreground'
             }`}
           >
             {completedSteps.has(index) ? (
@@ -430,8 +432,8 @@ export const BusinessSetupWizard: React.FC = () => {
         <CardContent>
           <CurrentStepComponent
             data={wizardData}
-            onChange={(data) => setWizardData(prev => ({ ...prev, ...data }))}
-            onSave={(data) => saveStepData(currentStep, data)}
+            onChange={data => setWizardData(prev => ({ ...prev, ...data }))}
+            onSave={data => saveStepData(currentStep, data)}
             validationErrors={validationErrors[WIZARD_STEPS[currentStep].id] || []}
             organizationId={currentOrganization.id}
           />
@@ -440,11 +442,7 @@ export const BusinessSetupWizard: React.FC = () => {
 
       {/* Navigation */}
       <div className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={previousStep}
-          disabled={currentStep === 0 || loading}
-        >
+        <Button variant="outline" onClick={previousStep} disabled={currentStep === 0 || loading}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Previous
         </Button>
@@ -463,10 +461,7 @@ export const BusinessSetupWizard: React.FC = () => {
             Activate Organization
           </Button>
         ) : (
-          <Button
-            onClick={nextStep}
-            disabled={loading}
-          >
+          <Button onClick={nextStep} disabled={loading}>
             Next
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>

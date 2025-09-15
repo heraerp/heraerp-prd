@@ -10,8 +10,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { phone, message, direction = 'inbound', organizationId } = body
 
-    const orgId = organizationId || process.env.DEFAULT_ORGANIZATION_ID || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-    
+    const orgId =
+      organizationId ||
+      process.env.DEFAULT_ORGANIZATION_ID ||
+      'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
+
     console.log('🧪 Creating live webhook test message:', {
       phone,
       message,
@@ -26,7 +29,10 @@ export async function POST(request: NextRequest) {
     const messageTransaction = await universalApi.createTransaction({
       transaction_type: direction === 'inbound' ? 'whatsapp_inbound' : 'whatsapp_outbound',
       transaction_code: `LIVE-WA-${Date.now()}`,
-      smart_code: direction === 'inbound' ? 'HERA.COMMS.WHATSAPP.MSG.INBOUND.v1' : 'HERA.COMMS.WHATSAPP.MSG.OUTBOUND.v1',
+      smart_code:
+        direction === 'inbound'
+          ? 'HERA.COMMS.WHATSAPP.MSG.INBOUND.v1'
+          : 'HERA.COMMS.WHATSAPP.MSG.OUTBOUND.v1',
       total_amount: 0,
       metadata: {
         direction,
@@ -64,13 +70,15 @@ export async function POST(request: NextRequest) {
         'This message should appear as a live conversation'
       ]
     })
-
   } catch (error) {
     console.error('Failed to create live webhook test message:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -78,13 +86,14 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const phone = searchParams.get('phone') || '+1234567890'
-  const message = searchParams.get('message') || 'Hello! This is a live test message from the webhook.'
+  const message =
+    searchParams.get('message') || 'Hello! This is a live test message from the webhook.'
   const direction = searchParams.get('direction') || 'inbound'
   const organizationId = searchParams.get('org_id') || process.env.DEFAULT_ORGANIZATION_ID
 
   // Create a test message using POST logic
   const testData = { phone, message, direction, organizationId }
   const mockRequest = { json: async () => testData } as any
-  
+
   return POST(mockRequest)
 }

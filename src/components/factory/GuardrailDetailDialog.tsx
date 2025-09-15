@@ -3,31 +3,26 @@
  * Shows comprehensive information about guardrail violations with waiver options
  */
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Shield, 
-  AlertTriangle, 
-  CheckCircle, 
+  Shield,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   FileText,
   Clock,
@@ -39,17 +34,17 @@ import {
   AlertCircle,
   ExternalLink,
   ChevronRight
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Progress } from '@/components/ui/progress';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Progress } from '@/components/ui/progress'
 
 interface GuardrailDetailDialogProps {
-  open?: boolean;
-  moduleCode?: string;
-  transactions?: any[];
-  onClose: () => void;
-  onCreateWaiver: (policy: string, reason: string) => void;
+  open?: boolean
+  moduleCode?: string
+  transactions?: any[]
+  onClose: () => void
+  onCreateWaiver: (policy: string, reason: string) => void
 }
 
 export function GuardrailDetailDialog({
@@ -57,21 +52,24 @@ export function GuardrailDetailDialog({
   moduleCode = '',
   transactions = [],
   onClose,
-  onCreateWaiver,
+  onCreateWaiver
 }: GuardrailDetailDialogProps) {
-  const [selectedPolicy, setSelectedPolicy] = useState<string>('');
-  const [waiverReason, setWaiverReason] = useState('');
-  const [activeTab, setActiveTab] = useState('violations');
+  const [selectedPolicy, setSelectedPolicy] = useState<string>('')
+  const [waiverReason, setWaiverReason] = useState('')
+  const [activeTab, setActiveTab] = useState('violations')
 
   // Process guardrail data
   const guardrailData = React.useMemo(() => {
-    const policies = new Map<string, {
-      violations: any[];
-      severity: 'error' | 'warning' | 'info';
-      description: string;
-      count: number;
-      waivable: boolean;
-    }>();
+    const policies = new Map<
+      string,
+      {
+        violations: any[]
+        severity: 'error' | 'warning' | 'info'
+        description: string
+        count: number
+        waivable: boolean
+      }
+    >()
 
     const stats = {
       total: 0,
@@ -79,12 +77,12 @@ export function GuardrailDetailDialog({
       failed: 0,
       warnings: 0,
       coverageAvg: 0,
-      coverageCount: 0,
-    };
+      coverageCount: 0
+    }
 
     transactions.forEach(txn => {
       // Mock data - in real implementation, this would come from transaction lines
-      const violations = (txn.metadata as any)?.violations || [];
+      const violations = (txn.metadata as any)?.violations || []
       violations.forEach((v: any) => {
         if (!policies.has(v.policy)) {
           policies.set(v.policy, {
@@ -92,58 +90,66 @@ export function GuardrailDetailDialog({
             severity: v.severity || 'warning',
             description: v.description || 'Policy violation',
             count: 0,
-            waivable: v.waivable !== false,
-          });
+            waivable: v.waivable !== false
+          })
         }
-        const policy = policies.get(v.policy)!;
-        policy.violations.push({ ...v, transaction: txn });
-        policy.count++;
-        stats.total++;
-        
-        if (v.severity === 'error') stats.failed++;
-        else stats.warnings++;
-      });
+        const policy = policies.get(v.policy)!
+        policy.violations.push({ ...v, transaction: txn })
+        policy.count++
+        stats.total++
+
+        if (v.severity === 'error') stats.failed++
+        else stats.warnings++
+      })
 
       // Coverage data
       if ((txn.metadata as any)?.coverage) {
-        stats.coverageAvg += txn.metadata.coverage;
-        stats.coverageCount++;
+        stats.coverageAvg += txn.metadata.coverage
+        stats.coverageCount++
       }
-    });
+    })
 
-    stats.passed = stats.total - stats.failed - stats.warnings;
+    stats.passed = stats.total - stats.failed - stats.warnings
     if (stats.coverageCount > 0) {
-      stats.coverageAvg = (stats.coverageAvg / stats.coverageCount) * 100;
+      stats.coverageAvg = (stats.coverageAvg / stats.coverageCount) * 100
     }
 
-    return { policies, stats };
-  }, [transactions]);
+    return { policies, stats }
+  }, [transactions])
 
   const handleCreateWaiver = () => {
     if (selectedPolicy && waiverReason.trim()) {
-      onCreateWaiver(selectedPolicy, waiverReason);
-      setSelectedPolicy('');
-      setWaiverReason('');
+      onCreateWaiver(selectedPolicy, waiverReason)
+      setSelectedPolicy('')
+      setWaiverReason('')
     }
-  };
+  }
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'error': return XCircle;
-      case 'warning': return AlertTriangle;
-      case 'info': return Info;
-      default: return CheckCircle;
+      case 'error':
+        return XCircle
+      case 'warning':
+        return AlertTriangle
+      case 'info':
+        return Info
+      default:
+        return CheckCircle
     }
-  };
+  }
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'error': return 'text-red-500';
-      case 'warning': return 'text-orange-500';
-      case 'info': return 'text-blue-500';
-      default: return 'text-gray-500';
+      case 'error':
+        return 'text-red-500'
+      case 'warning':
+        return 'text-orange-500'
+      case 'info':
+        return 'text-blue-500'
+      default:
+        return 'text-gray-500'
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={() => onClose()}>
@@ -156,7 +162,8 @@ export function GuardrailDetailDialog({
             <div>
               <DialogTitle>Guardrail Analysis</DialogTitle>
               <DialogDescription>
-                {moduleCode ? `Module: ${moduleCode}` : 'All Modules'} • {transactions.length} transactions analyzed
+                {moduleCode ? `Module: ${moduleCode}` : 'All Modules'} • {transactions.length}{' '}
+                transactions analyzed
               </DialogDescription>
             </div>
           </div>
@@ -193,7 +200,9 @@ export function GuardrailDetailDialog({
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-xs text-gray-600 dark:text-gray-400">Passed</p>
-                          <p className="text-xl font-bold text-green-600">{guardrailData.stats.passed}</p>
+                          <p className="text-xl font-bold text-green-600">
+                            {guardrailData.stats.passed}
+                          </p>
                         </div>
                         <CheckCircle className="w-8 h-8 text-green-500" />
                       </div>
@@ -205,7 +214,9 @@ export function GuardrailDetailDialog({
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-xs text-gray-600 dark:text-gray-400">Warnings</p>
-                          <p className="text-xl font-bold text-orange-600">{guardrailData.stats.warnings}</p>
+                          <p className="text-xl font-bold text-orange-600">
+                            {guardrailData.stats.warnings}
+                          </p>
                         </div>
                         <AlertTriangle className="w-8 h-8 text-orange-500" />
                       </div>
@@ -217,7 +228,9 @@ export function GuardrailDetailDialog({
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-xs text-gray-600 dark:text-gray-400">Failed</p>
-                          <p className="text-xl font-bold text-red-600">{guardrailData.stats.failed}</p>
+                          <p className="text-xl font-bold text-red-600">
+                            {guardrailData.stats.failed}
+                          </p>
                         </div>
                         <XCircle className="w-8 h-8 text-red-500" />
                       </div>
@@ -228,14 +241,16 @@ export function GuardrailDetailDialog({
                 {/* Policy Violations */}
                 <div className="space-y-4">
                   {Array.from(guardrailData.policies.entries()).map(([policyName, policy]) => {
-                    const SeverityIcon = getSeverityIcon(policy.severity);
-                    
+                    const SeverityIcon = getSeverityIcon(policy.severity)
+
                     return (
                       <Card key={policyName} className="overflow-hidden">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <SeverityIcon className={cn("w-5 h-5", getSeverityColor(policy.severity))} />
+                              <SeverityIcon
+                                className={cn('w-5 h-5', getSeverityColor(policy.severity))}
+                              />
                               <div>
                                 <h3 className="font-semibold">{policyName}</h3>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -244,7 +259,9 @@ export function GuardrailDetailDialog({
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Badge variant={policy.severity === 'error' ? 'destructive' : 'secondary'}>
+                              <Badge
+                                variant={policy.severity === 'error' ? 'destructive' : 'secondary'}
+                              >
                                 {policy.count} violations
                               </Badge>
                               {policy.waivable && (
@@ -252,8 +269,8 @@ export function GuardrailDetailDialog({
                                   variant="outline"
                                   size="sm"
                                   onClick={() => {
-                                    setSelectedPolicy(policyName);
-                                    setWaiverReason('');
+                                    setSelectedPolicy(policyName)
+                                    setWaiverReason('')
                                   }}
                                 >
                                   Create Waiver
@@ -265,7 +282,10 @@ export function GuardrailDetailDialog({
                         <CardContent>
                           <div className="space-y-2">
                             {policy.violations.slice(0, 3).map((violation, idx) => (
-                              <div key={idx} className="text-sm p-2 bg-gray-50 dark:bg-gray-900 rounded">
+                              <div
+                                key={idx}
+                                className="text-sm p-2 bg-gray-50 dark:bg-gray-900 rounded"
+                              >
                                 <div className="flex items-center justify-between">
                                   <span className="text-gray-700 dark:text-gray-300">
                                     {violation.message || 'Policy violation detected'}
@@ -284,7 +304,7 @@ export function GuardrailDetailDialog({
                           </div>
                         </CardContent>
                       </Card>
-                    );
+                    )
                   })}
                 </div>
               </TabsContent>
@@ -309,7 +329,7 @@ export function GuardrailDetailDialog({
                     {/* Coverage by Stage */}
                     <div className="space-y-3">
                       {['BUILD', 'TEST', 'COMPLY'].map(stage => {
-                        const stageCoverage = Math.random() * 30 + 60; // Mock data
+                        const stageCoverage = Math.random() * 30 + 60 // Mock data
                         return (
                           <div key={stage} className="flex items-center gap-4">
                             <span className="text-sm font-medium w-20">{stage}</span>
@@ -320,7 +340,7 @@ export function GuardrailDetailDialog({
                               {stageCoverage.toFixed(0)}%
                             </span>
                           </div>
-                        );
+                        )
                       })}
                     </div>
 
@@ -331,8 +351,8 @@ export function GuardrailDetailDialog({
                         <div className="text-sm text-blue-700 dark:text-blue-300">
                           <p className="font-medium">Recommendation</p>
                           <p className="mt-1">
-                            Increase test coverage in the BUILD stage to meet the 85% target. 
-                            Focus on critical paths and edge cases.
+                            Increase test coverage in the BUILD stage to meet the 85% target. Focus
+                            on critical paths and edge cases.
                           </p>
                         </div>
                       </div>
@@ -369,7 +389,8 @@ export function GuardrailDetailDialog({
                       <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
                         <p className="font-medium text-sm">Security Vulnerability Detected</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          CORS policy violations found in 3 endpoints. Update security headers immediately.
+                          CORS policy violations found in 3 endpoints. Update security headers
+                          immediately.
                         </p>
                         <Button variant="link" className="p-0 h-auto mt-2">
                           View affected files <ExternalLink className="w-3 h-3 ml-1" />
@@ -389,7 +410,9 @@ export function GuardrailDetailDialog({
                       <div className="flex items-start gap-3">
                         <ChevronRight className="w-4 h-4 text-gray-400 mt-0.5" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium">Add integration tests for API endpoints</p>
+                          <p className="text-sm font-medium">
+                            Add integration tests for API endpoints
+                          </p>
                           <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                             Current coverage: 45% → Target: 85%
                           </p>
@@ -416,8 +439,8 @@ export function GuardrailDetailDialog({
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
-                        3 dependencies have security updates available. 
-                        Run `npm audit fix` to apply patches.
+                        3 dependencies have security updates available. Run `npm audit fix` to apply
+                        patches.
                       </p>
                     </CardContent>
                   </Card>
@@ -443,24 +466,21 @@ export function GuardrailDetailDialog({
                   <Textarea
                     id="waiver-reason"
                     value={waiverReason}
-                    onChange={(e) => setWaiverReason(e.target.value)}
+                    onChange={e => setWaiverReason(e.target.value)}
                     placeholder="Provide justification for this waiver..."
                     className="mt-2"
                     rows={3}
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    onClick={handleCreateWaiver}
-                    disabled={!waiverReason.trim()}
-                  >
+                  <Button onClick={handleCreateWaiver} disabled={!waiverReason.trim()}>
                     Create Waiver
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => {
-                      setSelectedPolicy('');
-                      setWaiverReason('');
+                      setSelectedPolicy('')
+                      setWaiverReason('')
                     }}
                   >
                     Cancel
@@ -478,5 +498,5 @@ export function GuardrailDetailDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

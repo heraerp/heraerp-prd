@@ -8,9 +8,18 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Building2, ArrowRight, Plus, Crown, Users, Shield, 
-  Calendar, Globe, LogOut, Sparkles, Loader2
+import {
+  Building2,
+  ArrowRight,
+  Plus,
+  Crown,
+  Users,
+  Shield,
+  Calendar,
+  Globe,
+  LogOut,
+  Sparkles,
+  Loader2
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
@@ -32,7 +41,8 @@ const typeDescriptions = {
 
 export default function OrganizationSelectorPage() {
   const router = useRouter()
-  const { user, organizations, switchOrganization, signOut, isAuthenticated, isLoadingOrgs } = useMultiOrgAuth()
+  const { user, organizations, switchOrganization, signOut, isAuthenticated, isLoadingOrgs } =
+    useMultiOrgAuth()
   const [switching, setSwitching] = useState<string | null>(null)
 
   useEffect(() => {
@@ -45,7 +55,7 @@ export default function OrganizationSelectorPage() {
     setSwitching(orgId)
     try {
       await switchOrganization(orgId)
-      
+
       // Redirect to the organization's subdomain
       if (process.env.NODE_ENV === 'production') {
         window.location.href = `https://${subdomain}.heraerp.com`
@@ -75,7 +85,7 @@ export default function OrganizationSelectorPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Animated background pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      
+
       {/* Glassmorphic orbs for depth */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" />
@@ -94,17 +104,17 @@ export default function OrganizationSelectorPage() {
                 </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">HERA Enterprise</h1>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
+                  HERA Enterprise
+                </h1>
                 <p className="text-xs text-gray-600 dark:text-gray-400">Select Organization</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {user?.email}
-              </span>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <span className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</span>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={signOut}
                 className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors"
               >
@@ -128,11 +138,11 @@ export default function OrganizationSelectorPage() {
 
         {/* Organizations Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {organizations.map((org) => {
+          {organizations.map(org => {
             const RoleIcon = roleIcons[org.role as keyof typeof roleIcons] || Users
-            
+
             return (
-              <Card 
+              <Card
                 key={org.id}
                 className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl hover:shadow-2xl transition-all cursor-pointer border border-white/20 dark:border-gray-700/50 hover:border-blue-500/50 dark:hover:border-blue-400/50 relative overflow-hidden transform hover:-translate-y-1 hover:scale-105 duration-200"
                 onClick={() => handleSelectOrganization(org.id, org.subdomain)}
@@ -145,13 +155,16 @@ export default function OrganizationSelectorPage() {
                     </div>
                   </div>
                 )}
-                
+
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
                       {org.name.substring(0, 2).toUpperCase()}
                     </div>
-                    <Badge variant="outline" className="flex items-center gap-1 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+                    <Badge
+                      variant="outline"
+                      className="flex items-center gap-1 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+                    >
                       <RoleIcon className="w-3 h-3" />
                       {org.role}
                     </Badge>
@@ -167,7 +180,8 @@ export default function OrganizationSelectorPage() {
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600 dark:text-gray-400">Type</span>
                       <span className="font-medium text-gray-900 dark:text-white">
-                        {typeDescriptions[org.type as keyof typeof typeDescriptions] || 'General Business'}
+                        {typeDescriptions[org.type as keyof typeof typeDescriptions] ||
+                          'General Business'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -180,10 +194,10 @@ export default function OrganizationSelectorPage() {
                       </span>
                     </div>
                   </div>
-                  
-                  <Button 
-                    className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200" 
-                    variant={switching === org.id ? "secondary" : "default"}
+
+                  <Button
+                    className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                    variant={switching === org.id ? 'secondary' : 'default'}
                     disabled={switching !== null}
                   >
                     {switching === org.id ? (
@@ -204,7 +218,7 @@ export default function OrganizationSelectorPage() {
           })}
 
           {/* Create New Organization Card */}
-          <Card 
+          <Card
             className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl hover:shadow-2xl transition-all cursor-pointer border-2 border-dashed border-gray-300/50 dark:border-gray-600/50 hover:border-blue-500/50 dark:hover:border-blue-400/50 flex flex-col justify-center transform hover:-translate-y-1 hover:scale-105 duration-200"
             onClick={() => router.push('/auth/organizations/new')}
           >
@@ -212,11 +226,16 @@ export default function OrganizationSelectorPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Plus className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Create New Organization</h3>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                Create New Organization
+              </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Start a new business or project
               </p>
-              <Button variant="outline" className="w-full border-blue-500/50 hover:border-blue-600 dark:border-blue-400/50 dark:hover:border-blue-500 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+              <Button
+                variant="outline"
+                className="w-full border-blue-500/50 hover:border-blue-600 dark:border-blue-400/50 dark:hover:border-blue-500 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              >
                 <Sparkles className="mr-2 h-4 w-4" />
                 New Organization
               </Button>

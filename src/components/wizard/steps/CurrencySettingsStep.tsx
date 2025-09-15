@@ -3,7 +3,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import type { WizardData } from '../BusinessSetupWizard'
@@ -50,35 +56,44 @@ export const CurrencySettingsStep: React.FC<CurrencySettingsStepProps> = ({
             <Badge variant="secondary">{baseCurrency}</Badge>
           </div>
         </div>
-        
+
         <div>
           <Label>Default Rate Type</Label>
-          <Select value={currencyData.default_rate_type} onValueChange={(value: any) => updateField('default_rate_type', value)}>
+          <Select
+            value={currencyData.default_rate_type}
+            onValueChange={(value: any) => updateField('default_rate_type', value)}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
-              <SelectItem value="SPOT" className="hera-select-item">Spot Rate</SelectItem>
-              <SelectItem value="MONTH_END" className="hera-select-item">Month End</SelectItem>
-              <SelectItem value="DAILY" className="hera-select-item">Daily Average</SelectItem>
+              <SelectItem value="SPOT" className="hera-select-item">
+                Spot Rate
+              </SelectItem>
+              <SelectItem value="MONTH_END" className="hera-select-item">
+                Month End
+              </SelectItem>
+              <SelectItem value="DAILY" className="hera-select-item">
+                Daily Average
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
           <Label>Rate Tolerance (%)</Label>
-          <Input 
-            type="number" 
+          <Input
+            type="number"
             step="0.1"
-            value={currencyData.rate_tolerance_percent} 
-            onChange={(e) => updateField('rate_tolerance_percent', parseFloat(e.target.value))}
+            value={currencyData.rate_tolerance_percent}
+            onChange={e => updateField('rate_tolerance_percent', parseFloat(e.target.value))}
           />
         </div>
 
         <div className="flex items-center space-x-2">
-          <Switch 
+          <Switch
             checked={currencyData.auto_calculate_differences}
-            onCheckedChange={(checked) => updateField('auto_calculate_differences', checked)}
+            onCheckedChange={checked => updateField('auto_calculate_differences', checked)}
           />
           <Label>Auto-calculate exchange differences</Label>
         </div>
@@ -88,11 +103,11 @@ export const CurrencySettingsStep: React.FC<CurrencySettingsStepProps> = ({
         <Label className="text-base">Additional Transaction Currencies</Label>
         <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-3">
           {CURRENCIES.filter(c => c !== baseCurrency).map(currency => (
-            <div 
-              key={currency} 
+            <div
+              key={currency}
               className={`p-2 border rounded cursor-pointer text-center ${
-                currencyData.allowed_currencies.includes(currency) 
-                  ? 'border-primary bg-primary/10' 
+                currencyData.allowed_currencies.includes(currency)
+                  ? 'border-primary bg-primary/10'
                   : 'border-muted'
               }`}
               onClick={() => toggleCurrency(currency)}

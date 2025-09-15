@@ -1,10 +1,10 @@
 export interface ReadinessQuestion {
-  id: string;
-  text: string;
-  category: string;
-  section: string;
-  weight: number;
-  helpText?: string;
+  id: string
+  text: string
+  category: string
+  section: string
+  weight: number
+  helpText?: string
 }
 
 export const readinessQuestions: ReadinessQuestion[] = [
@@ -405,7 +405,7 @@ export const readinessQuestions: ReadinessQuestion[] = [
     weight: 3,
     helpText: 'QA ensures system meets requirements'
   }
-];
+]
 
 export const categoryDetails = {
   strategy: {
@@ -443,4 +443,4 @@ export const categoryDetails = {
     description: 'Project governance, timeline, and management capabilities',
     icon: 'Briefcase'
   }
-};
+}

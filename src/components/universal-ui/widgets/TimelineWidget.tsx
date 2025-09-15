@@ -37,9 +37,9 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
   const loadTimelineData = async () => {
     try {
       setLoading(true)
-      
+
       const source = widget.data_source
-      
+
       if (source?.type === 'transactions') {
         // Load transaction history
         const result = await universalApi.query('universal_transactions', {
@@ -47,7 +47,7 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
           reference_entity_id: entityId,
           ...buildFilters(source.filters)
         })
-        
+
         if (result.data) {
           const timelineEvents = result.data.map((txn: any) => ({
             id: txn.id,
@@ -58,12 +58,13 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
             type: txn.transaction_type,
             metadata: txn.metadata
           }))
-          
+
           // Sort by timestamp descending
-          timelineEvents.sort((a: TimelineEvent, b: TimelineEvent) => 
-            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          timelineEvents.sort(
+            (a: TimelineEvent, b: TimelineEvent) =>
+              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
           )
-          
+
           setEvents(timelineEvents)
         }
       } else {
@@ -99,7 +100,7 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
       approval_granted: 'approved',
       approval_rejected: 'rejected'
     }
-    
+
     return actionMap[type] || type.replace(/_/g, ' ')
   }
 
@@ -107,11 +108,11 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
     if (txn.metadata?.component_name) {
       return `${txn.metadata.component_name} (${txn.metadata.quantity} units)`
     }
-    
+
     if (txn.metadata?.old_value && txn.metadata?.new_value) {
       return `Changed from ${txn.metadata.old_value} to ${txn.metadata.new_value}`
     }
-    
+
     return txn.transaction_code || ''
   }
 
@@ -186,28 +187,28 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
 
   const renderEvent = (event: TimelineEvent, isLast: boolean) => {
     const template = widget.config.event_template || '{{user_name}} {{action}} - {{description}}'
-    
+
     const eventText = template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
       return event[key as keyof TimelineEvent] || ''
     })
-    
+
     return (
       <div key={event.id} className="relative">
         <div className="flex items-start gap-4">
           {/* Timeline line and dot */}
           <div className="relative flex flex-col items-center">
-            <div className={cn(
-              'flex h-8 w-8 items-center justify-center rounded-full border-2 bg-background',
-              getEventColor(event.type),
-              'border-current'
-            )}>
+            <div
+              className={cn(
+                'flex h-8 w-8 items-center justify-center rounded-full border-2 bg-background',
+                getEventColor(event.type),
+                'border-current'
+              )}
+            >
               {getEventIcon(event.type)}
             </div>
-            {!isLast && (
-              <div className="absolute top-8 h-full w-0.5 bg-border" />
-            )}
+            {!isLast && <div className="absolute top-8 h-full w-0.5 bg-border" />}
           </div>
-          
+
           {/* Event content */}
           <div className="flex-1 pb-8">
             <div className="flex items-center gap-2 mb-1">
@@ -219,9 +220,9 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
                 {format(new Date(event.timestamp), 'PPp')}
               </span>
             </div>
-            
+
             <p className="text-sm">{eventText}</p>
-            
+
             {event.metadata && Object.keys(event.metadata).length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {Object.entries(event.metadata).map(([key, value]) => (
@@ -264,14 +265,10 @@ export function TimelineWidget({ widget, entityId, organizationId }: TimelineWid
       </CardHeader>
       <CardContent>
         {events.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">
-            No events to display
-          </p>
+          <p className="text-center text-muted-foreground py-8">No events to display</p>
         ) : (
           <div className="relative">
-            {events.map((event, index) => 
-              renderEvent(event, index === events.length - 1)
-            )}
+            {events.map((event, index) => renderEvent(event, index === events.length - 1))}
           </div>
         )}
       </CardContent>

@@ -13,7 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import {
@@ -81,7 +81,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
     try {
       const response = await fetch('/api/v1/restaurant/table-combinations')
       const result = await response.json()
-      
+
       if (result.success) {
         setCombinations(result.data || [])
       } else {
@@ -97,20 +97,20 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
   }, [])
 
   // Get combinable tables (available and can be combined)
-  const combinableTables = tables.filter(table => 
-    table.is_combinable && 
-    table.status === 'available' &&
-    !table.combination_id
+  const combinableTables = tables.filter(
+    table => table.is_combinable && table.status === 'available' && !table.combination_id
   )
 
   // Get combined table groups
-  const combinedGroups = combinations.filter(combo => combo.status === 'active').map(combo => {
-    const tablesInCombo = tables.filter(table => combo.table_ids.includes(table.id))
-    return {
-      ...combo,
-      tables: tablesInCombo
-    }
-  })
+  const combinedGroups = combinations
+    .filter(combo => combo.status === 'active')
+    .map(combo => {
+      const tablesInCombo = tables.filter(table => combo.table_ids.includes(table.id))
+      return {
+        ...combo,
+        tables: tablesInCombo
+      }
+    })
 
   // Create table combination
   const createCombination = async () => {
@@ -185,10 +185,8 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
 
   // Toggle table selection
   const toggleTableSelection = (tableId: string) => {
-    setSelectedTables(prev => 
-      prev.includes(tableId) 
-        ? prev.filter(id => id !== tableId)
-        : [...prev, tableId]
+    setSelectedTables(prev =>
+      prev.includes(tableId) ? prev.filter(id => id !== tableId) : [...prev, tableId]
     )
   }
 
@@ -202,19 +200,19 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
   // Check if tables are adjacent (simplified logic)
   const areTablesAdjacent = (tableIds: string[]) => {
     if (tableIds.length < 2) return true
-    
+
     const selectedTableData = tables.filter(t => tableIds.includes(t.id))
     const adjacencyThreshold = 100 // pixels
-    
+
     for (let i = 0; i < selectedTableData.length; i++) {
       let hasAdjacent = false
       for (let j = 0; j < selectedTableData.length; j++) {
         if (i === j) continue
-        
+
         const dx = Math.abs(selectedTableData[i].x_position - selectedTableData[j].x_position)
         const dy = Math.abs(selectedTableData[i].y_position - selectedTableData[j].y_position)
         const distance = Math.sqrt(dx * dx + dy * dy)
-        
+
         if (distance <= adjacencyThreshold) {
           hasAdjacent = true
           break
@@ -226,12 +224,14 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
   }
 
   const canCombineSelected = () => {
-    return selectedTables.length >= 2 && 
-           areTablesAdjacent(selectedTables) &&
-           selectedTables.every(id => {
-             const table = tables.find(t => t.id === id)
-             return table && table.status === 'available' && table.is_combinable
-           })
+    return (
+      selectedTables.length >= 2 &&
+      areTablesAdjacent(selectedTables) &&
+      selectedTables.every(id => {
+        const table = tables.find(t => t.id === id)
+        return table && table.status === 'available' && table.is_combinable
+      })
+    )
   }
 
   return (
@@ -244,7 +244,9 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
               <Link2 className="w-5 h-5 mr-2" />
               Table Combination & Splitting
             </h3>
-            <p className="text-sm text-gray-600 mt-1">Combine adjacent tables for large parties or split existing combinations</p>
+            <p className="text-sm text-gray-600 mt-1">
+              Combine adjacent tables for large parties or split existing combinations
+            </p>
           </div>
           <div className="flex items-center space-x-3">
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -261,18 +263,18 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                     Select tables to combine into a larger seating arrangement
                   </DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="space-y-4 py-4">
                   <div>
                     <Label htmlFor="combination_name">Combination Name</Label>
                     <Input
                       id="combination_name"
                       value={combinationName}
-                      onChange={(e) => setCombinationName(e.target.value)}
+                      onChange={e => setCombinationName(e.target.value)}
                       placeholder="e.g., Large Party Section, Wedding Tables"
                     />
                   </div>
-                  
+
                   <div>
                     <Label>Select Tables to Combine</Label>
                     <div className="grid grid-cols-2 gap-2 mt-2 max-h-48 overflow-y-auto">
@@ -298,14 +300,14 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                       ))}
                     </div>
                   </div>
-                  
+
                   {selectedTables.length >= 2 && (
                     <div>
                       <Label htmlFor="master_table">Master Table (Main Service Point)</Label>
                       <select
                         id="master_table"
                         value={masterTableId}
-                        onChange={(e) => setMasterTableId(e.target.value)}
+                        onChange={e => setMasterTableId(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
                       >
                         <option value="">Select master table</option>
@@ -318,19 +320,26 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                           ) : null
                         })}
                       </select>
-                      <p className="text-xs text-gray-500 mt-1">Orders and service will be managed from this table</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Orders and service will be managed from this table
+                      </p>
                     </div>
                   )}
-                  
+
                   {selectedTables.length > 0 && (
                     <div className="p-3 bg-gray-50 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">Combination Summary</h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">
+                        Combination Summary
+                      </h4>
                       <div className="space-y-1 text-sm text-gray-600">
                         <div>Tables: {selectedTables.length}</div>
-                        <div>Total Capacity: {
-                          tables.filter(t => selectedTables.includes(t.id))
-                                .reduce((sum, table) => sum + table.capacity, 0)
-                        } seats</div>
+                        <div>
+                          Total Capacity:{' '}
+                          {tables
+                            .filter(t => selectedTables.includes(t.id))
+                            .reduce((sum, table) => sum + table.capacity, 0)}{' '}
+                          seats
+                        </div>
                         <div className="flex items-center space-x-2">
                           {areTablesAdjacent(selectedTables) ? (
                             <>
@@ -348,12 +357,12 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                     </div>
                   )}
                 </div>
-                
+
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button 
+                  <Button
                     onClick={createCombination}
                     disabled={!canCombineSelected() || !combinationName.trim() || !masterTableId}
                   >
@@ -375,7 +384,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
             <Link2 className="w-5 h-5 mr-2" />
             Active Combinations ({combinedGroups.length})
           </h4>
-          
+
           {combinedGroups.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Merge className="w-12 h-12 mx-auto mb-3 text-gray-300" />
@@ -403,7 +412,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                       Split
                     </Button>
                   </div>
-                  
+
                   <div className="flex flex-wrap gap-2">
                     {combo.tables.map(table => (
                       <Badge
@@ -420,7 +429,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                       </Badge>
                     ))}
                   </div>
-                  
+
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                     <div className="flex items-center space-x-4 text-sm text-gray-600">
                       <div className="flex items-center space-x-1">
@@ -448,7 +457,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
             <Plus className="w-5 h-5 mr-2" />
             Available for Combination ({combinableTables.length})
           </h4>
-          
+
           {combinableTables.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <AlertCircle className="w-12 h-12 mx-auto mb-3 text-gray-300" />
@@ -501,7 +510,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
           <Settings className="w-5 h-5 mr-2" />
           Combination Rules & Best Practices
         </h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h5 className="text-sm font-medium text-gray-900 mb-2">Requirements</h5>
@@ -524,7 +533,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
               </li>
             </ul>
           </div>
-          
+
           <div>
             <h5 className="text-sm font-medium text-gray-900 mb-2">Best Practices</h5>
             <ul className="space-y-2 text-sm text-gray-600">

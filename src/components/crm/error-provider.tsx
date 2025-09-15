@@ -29,28 +29,31 @@ interface ErrorProviderProps {
   defaultDuration?: number
 }
 
-export function CRMErrorProvider({ 
-  children, 
+export function CRMErrorProvider({
+  children,
   maxErrors = 5,
-  defaultDuration = 5000 
+  defaultDuration = 5000
 }: ErrorProviderProps) {
   const [errors, setErrors] = useState<(CRMError & { id: string })[]>([])
 
   /**
    * Show a new error
    */
-  const showError = useCallback((error: CRMError) => {
-    const errorWithId = {
-      ...error,
-      id: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    }
+  const showError = useCallback(
+    (error: CRMError) => {
+      const errorWithId = {
+        ...error,
+        id: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      }
 
-    setErrors(prev => {
-      const newErrors = [...prev, errorWithId]
-      // Keep only the latest maxErrors
-      return newErrors.slice(-maxErrors)
-    })
-  }, [maxErrors])
+      setErrors(prev => {
+        const newErrors = [...prev, errorWithId]
+        // Keep only the latest maxErrors
+        return newErrors.slice(-maxErrors)
+      })
+    },
+    [maxErrors]
+  )
 
   /**
    * Dismiss a specific error
@@ -92,20 +95,23 @@ export function CRMErrorProvider({
   return (
     <ErrorContext.Provider value={contextValue}>
       {children}
-      
+
       {/* Error Toast Notifications */}
       <div className="fixed top-4 right-4 z-50 space-y-2">
         <AnimatePresence>
-          {errors.map((error) => (
+          {errors.map(error => (
             <ErrorToast
               key={error.id}
               error={error}
               onClose={() => dismissError(error.id)}
               duration={
-                error.severity === 'critical' ? defaultDuration * 2 :
-                error.severity === 'high' ? defaultDuration * 1.5 :
-                error.severity === 'medium' ? defaultDuration :
-                defaultDuration * 0.8
+                error.severity === 'critical'
+                  ? defaultDuration * 2
+                  : error.severity === 'high'
+                    ? defaultDuration * 1.5
+                    : error.severity === 'medium'
+                      ? defaultDuration
+                      : defaultDuration * 0.8
               }
             />
           ))}
@@ -124,31 +130,30 @@ export function useGlobalErrorHandler() {
   /**
    * Handle errors and show them globally
    */
-  const handleError = useCallback((
-    errorCode: string,
-    details?: any,
-    context?: CRMError['context']
-  ) => {
-    const result = crmErrorHandler.handleError(errorCode, details, context)
-    if (result.error) {
-      showError(result.error)
-    }
-    return result
-  }, [showError])
+  const handleError = useCallback(
+    (errorCode: string, details?: any, context?: CRMError['context']) => {
+      const result = crmErrorHandler.handleError(errorCode, details, context)
+      if (result.error) {
+        showError(result.error)
+      }
+      return result
+    },
+    [showError]
+  )
 
   /**
    * Handle API errors globally
    */
-  const handleApiError = useCallback(async (
-    error: any,
-    context?: CRMError['context']
-  ) => {
-    const result = await crmErrorHandler.handleApiError(error, context)
-    if (result.error) {
-      showError(result.error)
-    }
-    return result
-  }, [showError])
+  const handleApiError = useCallback(
+    async (error: any, context?: CRMError['context']) => {
+      const result = await crmErrorHandler.handleApiError(error, context)
+      if (result.error) {
+        showError(result.error)
+      }
+      return result
+    },
+    [showError]
+  )
 
   return {
     handleError,
@@ -176,8 +181,8 @@ export class GlobalCRMErrorBoundary extends React.Component<
     // Create CRM error from JavaScript error
     const crmError = crmErrorHandler.handleError(
       'UNKNOWN_ERROR',
-      { 
-        originalError: error.message, 
+      {
+        originalError: error.message,
         stack: error.stack,
         componentStack: errorInfo.componentStack
       },
@@ -195,9 +200,7 @@ export class GlobalCRMErrorBoundary extends React.Component<
       return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Something went wrong
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h2>
             <p className="text-gray-600 mb-6">
               An unexpected error occurred. Please refresh the page to continue.
             </p>

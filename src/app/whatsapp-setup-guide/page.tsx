@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   MessageCircle,
   Settings,
   Globe,
@@ -24,14 +24,14 @@ export default function WhatsAppSetupGuide() {
   const [apiStatus, setApiStatus] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
-  
+
   const webhookUrl = `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3002'}/api/v1/whatsapp/webhook`
   const verifyToken = 'hera-whatsapp-webhook-2024-secure-token'
-  
+
   useEffect(() => {
     checkApiStatus()
   }, [])
-  
+
   const checkApiStatus = async () => {
     setLoading(true)
     try {
@@ -44,13 +44,13 @@ export default function WhatsAppSetupGuide() {
       setLoading(false)
     }
   }
-  
+
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text)
     setCopied(label)
     setTimeout(() => setCopied(null), 2000)
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -64,18 +64,13 @@ export default function WhatsAppSetupGuide() {
             Follow these steps to receive real WhatsApp messages in HERA
           </p>
         </div>
-        
+
         {/* Current Status */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               Current Status
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={checkApiStatus}
-                disabled={loading}
-              >
+              <Button variant="outline" size="sm" onClick={checkApiStatus} disabled={loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh'}
               </Button>
             </CardTitle>
@@ -93,7 +88,9 @@ export default function WhatsAppSetupGuide() {
                 </div>
                 <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                   <span className="font-medium">Quality Rating</span>
-                  <Badge variant="outline">{apiStatus.data.phoneInfo.quality_rating || 'Not rated'}</Badge>
+                  <Badge variant="outline">
+                    {apiStatus.data.phoneInfo.quality_rating || 'Not rated'}
+                  </Badge>
                 </div>
               </div>
             ) : (
@@ -106,17 +103,17 @@ export default function WhatsAppSetupGuide() {
             )}
           </CardContent>
         </Card>
-        
+
         {/* Important Note */}
         <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
           <AlertCircle className="w-4 h-4 text-orange-600" />
           <AlertDescription className="text-orange-800 dark:text-orange-200">
-            <strong>Important:</strong> WhatsApp Business API does not provide message history. 
-            You can only receive new messages sent after webhook setup. The test messages you saw 
-            were populated for demonstration purposes.
+            <strong>Important:</strong> WhatsApp Business API does not provide message history. You
+            can only receive new messages sent after webhook setup. The test messages you saw were
+            populated for demonstration purposes.
           </AlertDescription>
         </Alert>
-        
+
         {/* Setup Steps */}
         <Card>
           <CardHeader>
@@ -141,7 +138,7 @@ export default function WhatsAppSetupGuide() {
                 </p>
               </div>
             </div>
-            
+
             {/* Step 2 */}
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
@@ -152,7 +149,12 @@ export default function WhatsAppSetupGuide() {
                 <Button
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={() => window.open('https://business.facebook.com/settings/whatsapp-business-accounts', '_blank')}
+                  onClick={() =>
+                    window.open(
+                      'https://business.facebook.com/settings/whatsapp-business-accounts',
+                      '_blank'
+                    )
+                  }
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Open Meta Business Manager
@@ -162,7 +164,7 @@ export default function WhatsAppSetupGuide() {
                 </p>
               </div>
             </div>
-            
+
             {/* Step 3 */}
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
@@ -179,7 +181,11 @@ export default function WhatsAppSetupGuide() {
                     size="sm"
                     onClick={() => copyToClipboard(webhookUrl, 'webhook')}
                   >
-                    {copied === 'webhook' ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copied === 'webhook' ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
                   </Button>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -187,7 +193,7 @@ export default function WhatsAppSetupGuide() {
                 </p>
               </div>
             </div>
-            
+
             {/* Step 4 */}
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
@@ -204,12 +210,16 @@ export default function WhatsAppSetupGuide() {
                     size="sm"
                     onClick={() => copyToClipboard(verifyToken, 'token')}
                   >
-                    {copied === 'token' ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copied === 'token' ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
                   </Button>
                 </div>
               </div>
             </div>
-            
+
             {/* Step 5 */}
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
@@ -225,7 +235,7 @@ export default function WhatsAppSetupGuide() {
                 </div>
               </div>
             </div>
-            
+
             {/* Step 6 */}
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
@@ -237,7 +247,9 @@ export default function WhatsAppSetupGuide() {
                   Send a WhatsApp message to your business number:
                 </p>
                 <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded">
-                  <p className="font-mono">{apiStatus?.data?.phoneInfo?.display_phone_number || '+91 99458 96033'}</p>
+                  <p className="font-mono">
+                    {apiStatus?.data?.phoneInfo?.display_phone_number || '+91 99458 96033'}
+                  </p>
                 </div>
                 <Button
                   variant="default"
@@ -251,25 +263,26 @@ export default function WhatsAppSetupGuide() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Production Setup */}
         <Card>
           <CardHeader>
             <CardTitle>Production Setup</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-sm text-gray-600">
-              For production deployment:
-            </p>
+            <p className="text-sm text-gray-600">For production deployment:</p>
             <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
               <li>Deploy your HERA app to a public server (Vercel, Railway, etc.)</li>
-              <li>Use your production URL for the webhook: https://yourdomain.com/api/v1/whatsapp/webhook</li>
+              <li>
+                Use your production URL for the webhook:
+                https://yourdomain.com/api/v1/whatsapp/webhook
+              </li>
               <li>Update webhook URL in Meta Business Manager</li>
               <li>All incoming messages will be automatically stored in your database</li>
             </ol>
           </CardContent>
         </Card>
-        
+
         {/* Troubleshooting */}
         <Card>
           <CardHeader>
@@ -285,7 +298,7 @@ export default function WhatsAppSetupGuide() {
                 <li>Check server logs for incoming POST requests</li>
               </ul>
             </div>
-            
+
             <div className="space-y-2">
               <p className="font-medium">Messages not appearing in UI?</p>
               <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">

@@ -26,7 +26,7 @@ export function FurnitureDemoLogin() {
     try {
       // Sign out first
       await supabase.auth.signOut()
-      
+
       // Sign in with demo credentials
       const { data, error } = await supabase.auth.signInWithPassword({
         email: DEMO_CREDENTIALS.email,
@@ -40,12 +40,12 @@ export function FurnitureDemoLogin() {
       // Store flag to indicate demo login
       sessionStorage.setItem('isDemoLogin', 'true')
       sessionStorage.setItem('demoOrgId', DEMO_CREDENTIALS.organizationId)
-      
+
       toast({
         title: 'Login Successful',
-        description: 'Redirecting to furniture dashboard...',
+        description: 'Redirecting to furniture dashboard...'
       })
-      
+
       // Use window.location for hard navigation to ensure clean state
       setTimeout(() => {
         window.location.href = '/furniture'
@@ -73,7 +73,7 @@ export function FurnitureDemoLogin() {
             <p className="text-sm text-gray-400">Kerala Furniture Works</p>
           </div>
         </div>
-        
+
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2 text-gray-300">
             <LogIn className="h-4 w-4 text-amber-400" />
@@ -84,8 +84,8 @@ export function FurnitureDemoLogin() {
             <span>Password: FurnitureDemo2025!</span>
           </div>
         </div>
-        
-        <Button 
+
+        <Button
           onClick={handleDemoLogin}
           disabled={isLoading}
           className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"

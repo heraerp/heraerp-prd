@@ -6,10 +6,29 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Calculator,
@@ -77,16 +96,106 @@ export function RecipeCostingManager() {
 
   // Master ingredient list (would come from HERA entities)
   const masterIngredients: IngredientMaster[] = [
-    { id: '1', name: 'Chicken Breast', category: 'Protein', supplier: 'Fresh Foods Co', unitCost: 8.50, unit: 'kg', lastUpdated: '2024-01-15', priceHistory: [] },
-    { id: '2', name: 'Salmon Fillet', category: 'Seafood', supplier: 'Ocean Fresh', unitCost: 24.00, unit: 'kg', lastUpdated: '2024-01-15', priceHistory: [] },
-    { id: '3', name: 'Pasta', category: 'Grains', supplier: 'Italian Imports', unitCost: 3.50, unit: 'kg', lastUpdated: '2024-01-14', priceHistory: [] },
-    { id: '4', name: 'Olive Oil', category: 'Oils', supplier: 'Mediterranean Goods', unitCost: 12.00, unit: 'liter', lastUpdated: '2024-01-14', priceHistory: [] },
-    { id: '5', name: 'Tomatoes', category: 'Produce', supplier: 'Local Farms', unitCost: 2.50, unit: 'kg', lastUpdated: '2024-01-15', priceHistory: [] },
-    { id: '6', name: 'Mozzarella', category: 'Dairy', supplier: 'Artisan Dairy', unitCost: 15.00, unit: 'kg', lastUpdated: '2024-01-13', priceHistory: [] },
-    { id: '7', name: 'Basil', category: 'Herbs', supplier: 'Fresh Herbs Inc', unitCost: 25.00, unit: 'kg', lastUpdated: '2024-01-15', priceHistory: [] },
-    { id: '8', name: 'Garlic', category: 'Produce', supplier: 'Local Farms', unitCost: 4.00, unit: 'kg', lastUpdated: '2024-01-15', priceHistory: [] },
-    { id: '9', name: 'Heavy Cream', category: 'Dairy', supplier: 'Artisan Dairy', unitCost: 5.00, unit: 'liter', lastUpdated: '2024-01-14', priceHistory: [] },
-    { id: '10', name: 'Parmesan', category: 'Dairy', supplier: 'Italian Imports', unitCost: 28.00, unit: 'kg', lastUpdated: '2024-01-13', priceHistory: [] }
+    {
+      id: '1',
+      name: 'Chicken Breast',
+      category: 'Protein',
+      supplier: 'Fresh Foods Co',
+      unitCost: 8.5,
+      unit: 'kg',
+      lastUpdated: '2024-01-15',
+      priceHistory: []
+    },
+    {
+      id: '2',
+      name: 'Salmon Fillet',
+      category: 'Seafood',
+      supplier: 'Ocean Fresh',
+      unitCost: 24.0,
+      unit: 'kg',
+      lastUpdated: '2024-01-15',
+      priceHistory: []
+    },
+    {
+      id: '3',
+      name: 'Pasta',
+      category: 'Grains',
+      supplier: 'Italian Imports',
+      unitCost: 3.5,
+      unit: 'kg',
+      lastUpdated: '2024-01-14',
+      priceHistory: []
+    },
+    {
+      id: '4',
+      name: 'Olive Oil',
+      category: 'Oils',
+      supplier: 'Mediterranean Goods',
+      unitCost: 12.0,
+      unit: 'liter',
+      lastUpdated: '2024-01-14',
+      priceHistory: []
+    },
+    {
+      id: '5',
+      name: 'Tomatoes',
+      category: 'Produce',
+      supplier: 'Local Farms',
+      unitCost: 2.5,
+      unit: 'kg',
+      lastUpdated: '2024-01-15',
+      priceHistory: []
+    },
+    {
+      id: '6',
+      name: 'Mozzarella',
+      category: 'Dairy',
+      supplier: 'Artisan Dairy',
+      unitCost: 15.0,
+      unit: 'kg',
+      lastUpdated: '2024-01-13',
+      priceHistory: []
+    },
+    {
+      id: '7',
+      name: 'Basil',
+      category: 'Herbs',
+      supplier: 'Fresh Herbs Inc',
+      unitCost: 25.0,
+      unit: 'kg',
+      lastUpdated: '2024-01-15',
+      priceHistory: []
+    },
+    {
+      id: '8',
+      name: 'Garlic',
+      category: 'Produce',
+      supplier: 'Local Farms',
+      unitCost: 4.0,
+      unit: 'kg',
+      lastUpdated: '2024-01-15',
+      priceHistory: []
+    },
+    {
+      id: '9',
+      name: 'Heavy Cream',
+      category: 'Dairy',
+      supplier: 'Artisan Dairy',
+      unitCost: 5.0,
+      unit: 'liter',
+      lastUpdated: '2024-01-14',
+      priceHistory: []
+    },
+    {
+      id: '10',
+      name: 'Parmesan',
+      category: 'Dairy',
+      supplier: 'Italian Imports',
+      unitCost: 28.0,
+      unit: 'kg',
+      lastUpdated: '2024-01-13',
+      priceHistory: []
+    }
   ]
 
   // Sample recipes
@@ -97,14 +206,46 @@ export function RecipeCostingManager() {
       category: 'Main Course',
       servings: 1,
       ingredients: [
-        { id: '1', name: 'Salmon Fillet', quantity: 0.2, unit: 'kg', unitCost: 24.00, totalCost: 4.80, category: 'Seafood' },
-        { id: '2', name: 'Olive Oil', quantity: 0.02, unit: 'liter', unitCost: 12.00, totalCost: 0.24, category: 'Oils' },
-        { id: '3', name: 'Basil', quantity: 0.01, unit: 'kg', unitCost: 25.00, totalCost: 0.25, category: 'Herbs' },
-        { id: '4', name: 'Garlic', quantity: 0.005, unit: 'kg', unitCost: 4.00, totalCost: 0.02, category: 'Produce' }
+        {
+          id: '1',
+          name: 'Salmon Fillet',
+          quantity: 0.2,
+          unit: 'kg',
+          unitCost: 24.0,
+          totalCost: 4.8,
+          category: 'Seafood'
+        },
+        {
+          id: '2',
+          name: 'Olive Oil',
+          quantity: 0.02,
+          unit: 'liter',
+          unitCost: 12.0,
+          totalCost: 0.24,
+          category: 'Oils'
+        },
+        {
+          id: '3',
+          name: 'Basil',
+          quantity: 0.01,
+          unit: 'kg',
+          unitCost: 25.0,
+          totalCost: 0.25,
+          category: 'Herbs'
+        },
+        {
+          id: '4',
+          name: 'Garlic',
+          quantity: 0.005,
+          unit: 'kg',
+          unitCost: 4.0,
+          totalCost: 0.02,
+          category: 'Produce'
+        }
       ],
       totalCost: 5.31,
       costPerServing: 5.31,
-      sellingPrice: 24.00,
+      sellingPrice: 24.0,
       targetMargin: 70,
       actualMargin: 77.9,
       status: 'profitable'
@@ -115,14 +256,46 @@ export function RecipeCostingManager() {
       category: 'Main Course',
       servings: 1,
       ingredients: [
-        { id: '1', name: 'Pasta', quantity: 0.15, unit: 'kg', unitCost: 3.50, totalCost: 0.53, category: 'Grains' },
-        { id: '2', name: 'Heavy Cream', quantity: 0.1, unit: 'liter', unitCost: 5.00, totalCost: 0.50, category: 'Dairy' },
-        { id: '3', name: 'Parmesan', quantity: 0.05, unit: 'kg', unitCost: 28.00, totalCost: 1.40, category: 'Dairy' },
-        { id: '4', name: 'Truffle Oil', quantity: 0.01, unit: 'liter', unitCost: 80.00, totalCost: 0.80, category: 'Oils' }
+        {
+          id: '1',
+          name: 'Pasta',
+          quantity: 0.15,
+          unit: 'kg',
+          unitCost: 3.5,
+          totalCost: 0.53,
+          category: 'Grains'
+        },
+        {
+          id: '2',
+          name: 'Heavy Cream',
+          quantity: 0.1,
+          unit: 'liter',
+          unitCost: 5.0,
+          totalCost: 0.5,
+          category: 'Dairy'
+        },
+        {
+          id: '3',
+          name: 'Parmesan',
+          quantity: 0.05,
+          unit: 'kg',
+          unitCost: 28.0,
+          totalCost: 1.4,
+          category: 'Dairy'
+        },
+        {
+          id: '4',
+          name: 'Truffle Oil',
+          quantity: 0.01,
+          unit: 'liter',
+          unitCost: 80.0,
+          totalCost: 0.8,
+          category: 'Oils'
+        }
       ],
       totalCost: 3.23,
       costPerServing: 3.23,
-      sellingPrice: 25.00,
+      sellingPrice: 25.0,
       targetMargin: 70,
       actualMargin: 87.1,
       status: 'profitable'
@@ -165,7 +338,13 @@ export function RecipeCostingManager() {
     }
   }
 
-  const RecipeForm = ({ recipe, onSave }: { recipe?: Recipe | null; onSave: (recipe: Recipe) => void }) => {
+  const RecipeForm = ({
+    recipe,
+    onSave
+  }: {
+    recipe?: Recipe | null
+    onSave: (recipe: Recipe) => void
+  }) => {
     const [formData, setFormData] = useState<Recipe>(
       recipe || {
         id: Date.now().toString(),
@@ -205,10 +384,10 @@ export function RecipeCostingManager() {
         ...updatedIngredients[index],
         [field]: value
       }
-      
+
       // Recalculate total cost for this ingredient
       if (field === 'quantity' || field === 'unitCost') {
-        updatedIngredients[index].totalCost = 
+        updatedIngredients[index].totalCost =
           updatedIngredients[index].quantity * updatedIngredients[index].unitCost
       }
 
@@ -250,7 +429,7 @@ export function RecipeCostingManager() {
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Enter recipe name"
             />
           </div>
@@ -258,7 +437,7 @@ export function RecipeCostingManager() {
             <Label htmlFor="category">Category</Label>
             <Select
               value={formData.category}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+              onValueChange={value => setFormData(prev => ({ ...prev, category: value }))}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -281,7 +460,7 @@ export function RecipeCostingManager() {
               id="servings"
               type="number"
               value={formData.servings}
-              onChange={(e) => {
+              onChange={e => {
                 const servings = parseInt(e.target.value) || 1
                 const costPerServing = formData.totalCost / servings
                 const actualMargin = calculateMargin(costPerServing, formData.sellingPrice)
@@ -303,7 +482,7 @@ export function RecipeCostingManager() {
               type="number"
               step="0.01"
               value={formData.sellingPrice}
-              onChange={(e) => {
+              onChange={e => {
                 const sellingPrice = parseFloat(e.target.value) || 0
                 const actualMargin = calculateMargin(formData.costPerServing, sellingPrice)
                 setFormData(prev => ({
@@ -321,7 +500,9 @@ export function RecipeCostingManager() {
               id="targetMargin"
               type="number"
               value={formData.targetMargin}
-              onChange={(e) => setFormData(prev => ({ ...prev, targetMargin: parseFloat(e.target.value) || 0 }))}
+              onChange={e =>
+                setFormData(prev => ({ ...prev, targetMargin: parseFloat(e.target.value) || 0 }))
+              }
               min="0"
               max="100"
             />
@@ -356,7 +537,9 @@ export function RecipeCostingManager() {
                       <Package className="w-4 h-4 mr-2" />
                       <div className="text-left">
                         <p className="font-medium">{ing.name}</p>
-                        <p className="text-xs text-gray-500">${ing.unitCost}/{ing.unit}</p>
+                        <p className="text-xs text-gray-500">
+                          ${ing.unitCost}/{ing.unit}
+                        </p>
                       </div>
                     </Button>
                   ))}
@@ -386,7 +569,9 @@ export function RecipeCostingManager() {
                         type="number"
                         step="0.001"
                         value={ing.quantity}
-                        onChange={(e) => updateIngredient(index, 'quantity', parseFloat(e.target.value) || 0)}
+                        onChange={e =>
+                          updateIngredient(index, 'quantity', parseFloat(e.target.value) || 0)
+                        }
                         className="w-20"
                       />
                     </TableCell>
@@ -394,11 +579,7 @@ export function RecipeCostingManager() {
                     <TableCell>${ing.unitCost.toFixed(2)}</TableCell>
                     <TableCell className="font-semibold">${ing.totalCost.toFixed(2)}</TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeIngredient(index)}
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => removeIngredient(index)}>
                         <Trash2 className="w-4 h-4 text-red-500" />
                       </Button>
                     </TableCell>
@@ -422,7 +603,9 @@ export function RecipeCostingManager() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Total Cost</p>
-                <p className="text-xl font-bold text-orange-600">${formData.totalCost.toFixed(2)}</p>
+                <p className="text-xl font-bold text-orange-600">
+                  ${formData.totalCost.toFixed(2)}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Cost per Serving</p>
@@ -430,17 +613,22 @@ export function RecipeCostingManager() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Actual Margin</p>
-                <p className={cn(
-                  "text-xl font-bold",
-                  formData.actualMargin >= targetMargin ? "text-green-600" : "text-red-600"
-                )}>
+                <p
+                  className={cn(
+                    'text-xl font-bold',
+                    formData.actualMargin >= targetMargin ? 'text-green-600' : 'text-red-600'
+                  )}
+                >
                   {formData.actualMargin.toFixed(1)}%
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Suggested Price</p>
                 <p className="text-xl font-bold text-blue-600">
-                  ${calculateSuggestedPrice(formData.costPerServing, formData.targetMargin).toFixed(2)}
+                  $
+                  {calculateSuggestedPrice(formData.costPerServing, formData.targetMargin).toFixed(
+                    2
+                  )}
                 </p>
               </div>
             </div>
@@ -449,8 +637,10 @@ export function RecipeCostingManager() {
               <Alert className="mt-4 border-yellow-200 bg-yellow-50">
                 <AlertCircle className="h-4 w-4 text-yellow-600" />
                 <AlertDescription className="text-yellow-800">
-                  Current margin is below target. Consider adjusting the selling price to 
-                  ${calculateSuggestedPrice(formData.costPerServing, formData.targetMargin).toFixed(2)} 
+                  Current margin is below target. Consider adjusting the selling price to $
+                  {calculateSuggestedPrice(formData.costPerServing, formData.targetMargin).toFixed(
+                    2
+                  )}
                   to achieve {formData.targetMargin}% margin.
                 </AlertDescription>
               </Alert>
@@ -462,7 +652,7 @@ export function RecipeCostingManager() {
           <Button variant="outline" onClick={() => setIsAddingRecipe(false)}>
             Cancel
           </Button>
-          <Button 
+          <Button
             className="restaurant-btn-primary"
             onClick={() => {
               onSave(formData)
@@ -486,19 +676,20 @@ export function RecipeCostingManager() {
           <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
             Recipe Costing Manager
           </h2>
-          <p className="text-gray-600 mt-1">Calculate costs, set prices, and maximize profitability</p>
+          <p className="text-gray-600 mt-1">
+            Calculate costs, set prices, and maximize profitability
+          </p>
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => {/* Import from Excel */}}
+            onClick={() => {
+              /* Import from Excel */
+            }}
           >
             Import Recipes
           </Button>
-          <Button
-            className="restaurant-btn-primary"
-            onClick={() => setIsAddingRecipe(true)}
-          >
+          <Button className="restaurant-btn-primary" onClick={() => setIsAddingRecipe(true)}>
             <Plus className="w-4 h-4 mr-1" />
             New Recipe
           </Button>
@@ -513,14 +704,16 @@ export function RecipeCostingManager() {
               <Target className="w-6 h-6 text-orange-500" />
               <div>
                 <p className="font-medium">Global Target Margin</p>
-                <p className="text-sm text-gray-500">Set your desired profit margin for all recipes</p>
+                <p className="text-sm text-gray-500">
+                  Set your desired profit margin for all recipes
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Input
                 type="number"
                 value={targetMargin}
-                onChange={(e) => setTargetMargin(parseFloat(e.target.value) || 0)}
+                onChange={e => setTargetMargin(parseFloat(e.target.value) || 0)}
                 className="w-20"
                 min="0"
                 max="100"
@@ -537,10 +730,12 @@ export function RecipeCostingManager() {
             <CardTitle>Create New Recipe</CardTitle>
           </CardHeader>
           <CardContent>
-            <RecipeForm onSave={(recipe) => {
-              setRecipes(prev => [...prev, recipe])
-              setIsAddingRecipe(false)
-            }} />
+            <RecipeForm
+              onSave={recipe => {
+                setRecipes(prev => [...prev, recipe])
+                setIsAddingRecipe(false)
+              }}
+            />
           </CardContent>
         </Card>
       ) : (
@@ -555,8 +750,11 @@ export function RecipeCostingManager() {
           <TabsContent value="all" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {recipes.map(recipe => (
-                <Card key={recipe.id} className="restaurant-card cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => setSelectedRecipe(recipe)}>
+                <Card
+                  key={recipe.id}
+                  className="restaurant-card cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => setSelectedRecipe(recipe)}
+                >
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
                       <div>
@@ -574,20 +772,26 @@ export function RecipeCostingManager() {
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Selling Price</span>
-                        <span className="font-semibold text-orange-600">${recipe.sellingPrice.toFixed(2)}</span>
+                        <span className="font-semibold text-orange-600">
+                          ${recipe.sellingPrice.toFixed(2)}
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Margin</span>
-                        <span className={cn(
-                          "font-semibold",
-                          recipe.actualMargin >= targetMargin ? "text-green-600" : "text-red-600"
-                        )}>
+                        <span
+                          className={cn(
+                            'font-semibold',
+                            recipe.actualMargin >= targetMargin ? 'text-green-600' : 'text-red-600'
+                          )}
+                        >
                           {recipe.actualMargin.toFixed(1)}%
                         </span>
                       </div>
                       <div className="pt-2 border-t">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-gray-500">{recipe.ingredients.length} ingredients</span>
+                          <span className="text-gray-500">
+                            {recipe.ingredients.length} ingredients
+                          </span>
                           <span className="text-gray-500">{recipe.servings} serving(s)</span>
                         </div>
                       </div>
@@ -600,32 +804,38 @@ export function RecipeCostingManager() {
 
           <TabsContent value="profitable">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recipes.filter(r => r.status === 'profitable').map(recipe => (
-                <Card key={recipe.id} className="restaurant-card border-green-200">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{recipe.name}</CardTitle>
-                    <Badge className="bg-green-500 w-fit">
-                      {recipe.actualMargin.toFixed(1)}% Margin
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm">Cost</span>
-                        <span>${recipe.costPerServing.toFixed(2)}</span>
+              {recipes
+                .filter(r => r.status === 'profitable')
+                .map(recipe => (
+                  <Card key={recipe.id} className="restaurant-card border-green-200">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{recipe.name}</CardTitle>
+                      <Badge className="bg-green-500 w-fit">
+                        {recipe.actualMargin.toFixed(1)}% Margin
+                      </Badge>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm">Cost</span>
+                          <span>${recipe.costPerServing.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">Price</span>
+                          <span className="font-bold text-green-600">
+                            ${recipe.sellingPrice.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">Profit</span>
+                          <span className="font-bold">
+                            ${(recipe.sellingPrice - recipe.costPerServing).toFixed(2)}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">Price</span>
-                        <span className="font-bold text-green-600">${recipe.sellingPrice.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">Profit</span>
-                        <span className="font-bold">${(recipe.sellingPrice - recipe.costPerServing).toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
             </div>
           </TabsContent>
 
@@ -637,40 +847,47 @@ export function RecipeCostingManager() {
               </AlertDescription>
             </Alert>
             <div className="space-y-4">
-              {recipes.filter(r => r.status === 'review' || r.status === 'loss').map(recipe => (
-                <Card key={recipe.id} className="restaurant-card border-yellow-200">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold text-lg">{recipe.name}</h3>
-                        <p className="text-sm text-gray-500">{recipe.category}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-600">Current Margin</p>
-                        <p className="text-2xl font-bold text-red-600">{recipe.actualMargin.toFixed(1)}%</p>
-                      </div>
-                    </div>
-                    <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
+              {recipes
+                .filter(r => r.status === 'review' || r.status === 'loss')
+                .map(recipe => (
+                  <Card key={recipe.id} className="restaurant-card border-yellow-200">
+                    <CardContent className="pt-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-600">Current Price</p>
-                          <p className="font-semibold">${recipe.sellingPrice.toFixed(2)}</p>
+                          <h3 className="font-semibold text-lg">{recipe.name}</h3>
+                          <p className="text-sm text-gray-500">{recipe.category}</p>
                         </div>
-                        <ArrowRight className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <p className="text-sm text-gray-600">Suggested Price</p>
-                          <p className="font-semibold text-green-600">
-                            ${calculateSuggestedPrice(recipe.costPerServing, targetMargin).toFixed(2)}
+                        <div className="text-right">
+                          <p className="text-sm text-gray-600">Current Margin</p>
+                          <p className="text-2xl font-bold text-red-600">
+                            {recipe.actualMargin.toFixed(1)}%
                           </p>
                         </div>
-                        <Button size="sm" className="restaurant-btn-primary">
-                          Apply
-                        </Button>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm text-gray-600">Current Price</p>
+                            <p className="font-semibold">${recipe.sellingPrice.toFixed(2)}</p>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-600">Suggested Price</p>
+                            <p className="font-semibold text-green-600">
+                              $
+                              {calculateSuggestedPrice(recipe.costPerServing, targetMargin).toFixed(
+                                2
+                              )}
+                            </p>
+                          </div>
+                          <Button size="sm" className="restaurant-btn-primary">
+                            Apply
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
             </div>
           </TabsContent>
 
@@ -756,7 +973,12 @@ export function RecipeCostingManager() {
                       <div>
                         <p className="text-sm text-gray-600">Need Review</p>
                         <p className="text-xl font-bold text-yellow-600">
-                          {recipes.filter(r => r.actualMargin < targetMargin && r.actualMargin >= targetMargin - 10).length}
+                          {
+                            recipes.filter(
+                              r =>
+                                r.actualMargin < targetMargin && r.actualMargin >= targetMargin - 10
+                            ).length
+                          }
                         </p>
                       </div>
                       <AlertCircle className="w-6 h-6 text-yellow-500" />

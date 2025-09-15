@@ -62,34 +62,31 @@ export async function POST(req: NextRequest) {
     switch (action) {
       case 'create_requisition':
         return await createRequisition(data, payload.organization_id)
-      
+
       case 'approve_requisition':
         return await approveRequisition(data, payload.organization_id)
-      
+
       case 'create_purchase_order':
         return await createPurchaseOrder(data, payload.organization_id)
-      
+
       case 'receive_goods':
         return await receiveGoods(data, payload.organization_id)
-      
+
       case 'process_invoice':
         return await processInvoice(data, payload.organization_id)
-      
+
       case 'process_payment':
         return await processPayment(data, payload.organization_id)
-      
+
       case 'get_p2p_analytics':
         return await getP2PAnalytics(payload.organization_id)
-      
+
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
     console.error('P2P API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -134,13 +131,11 @@ async function createRequisition(data: P2PRequestData, organizationId: string) {
       }
     }))
 
-    await supabase
-      .from('universal_transaction_lines')
-      .insert(lines)
+    await supabase.from('universal_transaction_lines').insert(lines)
   }
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: pr,
     message: 'Purchase requisition created successfully'
   })
@@ -168,22 +163,20 @@ async function approveRequisition(data: P2PRequestData, organizationId: string) 
   if (error) throw error
 
   // Create approval relationship
-  await supabase
-    .from('core_relationships')
-    .insert({
-      organization_id: organizationId,
-      from_entity_id: pr_id,
-      to_entity_id: approver_id,
-      relationship_type: 'approved_by',
-      smart_code: 'HERA.P2P.PR.APPROVAL.v1',
-      metadata: {
-        approved_at: new Date().toISOString(),
-        comments
-      }
-    })
+  await supabase.from('core_relationships').insert({
+    organization_id: organizationId,
+    from_entity_id: pr_id,
+    to_entity_id: approver_id,
+    relationship_type: 'approved_by',
+    smart_code: 'HERA.P2P.PR.APPROVAL.v1',
+    metadata: {
+      approved_at: new Date().toISOString(),
+      comments
+    }
+  })
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: pr,
     message: 'Purchase requisition approved'
   })
@@ -243,24 +236,20 @@ async function createPurchaseOrder(data: P2PRequestData, organizationId: string)
       metadata: line.metadata
     }))
 
-    await supabase
-      .from('universal_transaction_lines')
-      .insert(lines)
+    await supabase.from('universal_transaction_lines').insert(lines)
   }
 
   // Create PR to PO relationship
-  await supabase
-    .from('core_relationships')
-    .insert({
-      organization_id: organizationId,
-      from_entity_id: pr_id,
-      to_entity_id: po.id,
-      relationship_type: 'converted_to',
-      smart_code: 'HERA.P2P.PR.TO.PO.v1'
-    })
+  await supabase.from('core_relationships').insert({
+    organization_id: organizationId,
+    from_entity_id: pr_id,
+    to_entity_id: po.id,
+    relationship_type: 'converted_to',
+    smart_code: 'HERA.P2P.PR.TO.PO.v1'
+  })
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: po,
     message: 'Purchase order created from requisition'
   })
@@ -305,9 +294,7 @@ async function receiveGoods(data: P2PRequestData, organizationId: string) {
       }
     }))
 
-    await supabase
-      .from('universal_transaction_lines')
-      .insert(lines)
+    await supabase.from('universal_transaction_lines').insert(lines)
   }
 
   // Update PO status
@@ -322,8 +309,8 @@ async function receiveGoods(data: P2PRequestData, organizationId: string) {
     .eq('id', po_id)
     .eq('organization_id', organizationId)
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: gr,
     message: 'Goods received successfully'
   })
@@ -359,8 +346,8 @@ async function processInvoice(data: P2PRequestData, organizationId: string) {
   // Trigger 3-way matching
   // This would compare PO, GR, and Invoice quantities/amounts
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: invoice,
     message: 'Invoice processed, pending 3-way match'
   })
@@ -404,8 +391,8 @@ async function processPayment(data: P2PRequestData, organizationId: string) {
     .eq('id', invoice_id)
     .eq('organization_id', organizationId)
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: payment,
     message: 'Payment processed successfully'
   })
@@ -413,11 +400,10 @@ async function processPayment(data: P2PRequestData, organizationId: string) {
 
 async function getP2PAnalytics(organizationId: string) {
   // Get P2P cycle metrics
-  const { data: metrics } = await supabase
-    .rpc('get_p2p_analytics', { org_id: organizationId })
+  const { data: metrics } = await supabase.rpc('get_p2p_analytics', { org_id: organizationId })
 
-  return NextResponse.json({ 
-    success: true, 
+  return NextResponse.json({
+    success: true,
     data: metrics || {
       cycle_time_avg: 48,
       approval_time_avg: 12,

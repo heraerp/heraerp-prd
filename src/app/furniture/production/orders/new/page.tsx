@@ -3,9 +3,21 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Calendar, Package, User, FileText, AlertCircle } from 'lucide-react'
+import {
+  ArrowLeft,
+  Plus,
+  Trash2,
+  Calendar,
+  Package,
+  User,
+  FileText,
+  AlertCircle
+} from 'lucide-react'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useUniversalData,
+  universalFilters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
@@ -20,7 +32,7 @@ interface OrderLine {
 export default function NewProductionOrderPage() {
   const router = useRouter()
   const { organizationId, orgLoading } = useDemoOrganization()
-  
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
@@ -34,9 +46,7 @@ export default function NewProductionOrderPage() {
   // Load customers
   const { data: customers } = useUniversalData({
     table: 'core_entities',
-    filter: (item) => 
-      item.entity_type === 'customer' && 
-      item.organization_id === organizationId,
+    filter: item => item.entity_type === 'customer' && item.organization_id === organizationId,
     organizationId,
     enabled: !!organizationId
   })
@@ -44,9 +54,7 @@ export default function NewProductionOrderPage() {
   // Load products
   const { data: products } = useUniversalData({
     table: 'core_entities',
-    filter: (item) => 
-      item.entity_type === 'product' && 
-      item.organization_id === organizationId,
+    filter: item => item.entity_type === 'product' && item.organization_id === organizationId,
     organizationId,
     enabled: !!organizationId
   })
@@ -54,9 +62,7 @@ export default function NewProductionOrderPage() {
   // Load product prices from dynamic data
   const { data: dynamicData } = useUniversalData({
     table: 'core_dynamic_data',
-    filter: (item) => 
-      item.organization_id === organizationId &&
-      item.field_name === 'sale_price',
+    filter: item => item.organization_id === organizationId && item.field_name === 'sale_price',
     organizationId,
     enabled: !!organizationId
   })
@@ -67,12 +73,15 @@ export default function NewProductionOrderPage() {
   }
 
   const addOrderLine = () => {
-    setOrderLines([...orderLines, {
-      productId: '',
-      quantity: 1,
-      unitPrice: 0,
-      totalPrice: 0
-    }])
+    setOrderLines([
+      ...orderLines,
+      {
+        productId: '',
+        quantity: 1,
+        unitPrice: 0,
+        totalPrice: 0
+      }
+    ])
   }
 
   const removeOrderLine = (index: number) => {
@@ -82,19 +91,19 @@ export default function NewProductionOrderPage() {
   const updateOrderLine = (index: number, field: keyof OrderLine, value: any) => {
     const updatedLines = [...orderLines]
     updatedLines[index] = { ...updatedLines[index], [field]: value }
-    
+
     // Auto-calculate when product is selected
     if (field === 'productId' && value) {
       const price = getProductPrice(value)
       updatedLines[index].unitPrice = price
       updatedLines[index].totalPrice = price * updatedLines[index].quantity
     }
-    
+
     // Recalculate total when quantity changes
     if (field === 'quantity') {
       updatedLines[index].totalPrice = updatedLines[index].unitPrice * value
     }
-    
+
     setOrderLines(updatedLines)
   }
 
@@ -110,23 +119,23 @@ export default function NewProductionOrderPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     if (!formData.customerId) {
       setError('Please select a customer')
       return
     }
-    
+
     if (orderLines.length === 0 || orderLines.some(line => !line.productId)) {
       setError('Please add at least one product to the order')
       return
     }
-    
+
     setLoading(true)
-    
+
     try {
       // Set organization context
       universalApi.setOrganizationId(organizationId!)
-      
+
       // Create the production order transaction
       const orderData = {
         organization_id: organizationId!,
@@ -145,15 +154,15 @@ export default function NewProductionOrderPage() {
           created_at: new Date().toISOString()
         }
       }
-      
+
       // Create order with line items
       const result = await universalApi.createTransaction({
         ...orderData,
         line_items: orderLines.map((line, index) => ({
           organization_id: organizationId!,
           line_number: index + 1,
-          entity_id: line.productId,  // Changed from line_entity_id to entity_id
-          quantity: line.quantity.toString(),  // Convert to string as per schema
+          entity_id: line.productId, // Changed from line_entity_id to entity_id
+          quantity: line.quantity.toString(), // Convert to string as per schema
           unit_price: line.unitPrice,
           line_amount: line.totalPrice,
           description: products?.find(p => p.id === line.productId)?.entity_name || '',
@@ -163,11 +172,11 @@ export default function NewProductionOrderPage() {
           }
         }))
       })
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to create production order')
       }
-      
+
       // Navigate to the orders list
       router.push('/furniture/production/orders')
     } catch (err) {
@@ -198,7 +207,9 @@ export default function NewProductionOrderPage() {
             <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">New Production Order</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              New Production Order
+            </h1>
             <p className="text-gray-600 dark:text-gray-400">Create a new manufacturing order</p>
           </div>
         </div>
@@ -221,7 +232,7 @@ export default function NewProductionOrderPage() {
         {/* Order Details Card */}
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Order Details</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Customer Selection */}
             <div>
@@ -231,12 +242,12 @@ export default function NewProductionOrderPage() {
               </label>
               <select
                 value={formData.customerId}
-                onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
+                onChange={e => setFormData({ ...formData, customerId: e.target.value })}
                 className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
                 required
               >
                 <option value="">Select a customer</option>
-                {customers?.map((customer) => (
+                {customers?.map(customer => (
                   <option key={customer.id} value={customer.id}>
                     {customer.entity_name}
                   </option>
@@ -253,7 +264,7 @@ export default function NewProductionOrderPage() {
               <input
                 type="date"
                 value={formData.deliveryDate}
-                onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })}
+                onChange={e => setFormData({ ...formData, deliveryDate: e.target.value })}
                 className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
                 required
               />
@@ -266,7 +277,7 @@ export default function NewProductionOrderPage() {
               </label>
               <select
                 value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                onChange={e => setFormData({ ...formData, priority: e.target.value })}
                 className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="low">Low</option>
@@ -284,7 +295,7 @@ export default function NewProductionOrderPage() {
               </label>
               <textarea
                 value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                onChange={e => setFormData({ ...formData, notes: e.target.value })}
                 rows={3}
                 className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white"
                 placeholder="Special instructions or notes..."
@@ -345,12 +356,12 @@ export default function NewProductionOrderPage() {
                       <td className="px-3 py-4">
                         <select
                           value={line.productId}
-                          onChange={(e) => updateOrderLine(index, 'productId', e.target.value)}
+                          onChange={e => updateOrderLine(index, 'productId', e.target.value)}
                           className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white text-sm"
                           required
                         >
                           <option value="">Select product</option>
-                          {products?.map((product) => (
+                          {products?.map(product => (
                             <option key={product.id} value={product.id}>
                               {product.entity_name}
                             </option>
@@ -362,7 +373,9 @@ export default function NewProductionOrderPage() {
                           type="number"
                           min="1"
                           value={line.quantity}
-                          onChange={(e) => updateOrderLine(index, 'quantity', parseInt(e.target.value) || 1)}
+                          onChange={e =>
+                            updateOrderLine(index, 'quantity', parseInt(e.target.value) || 1)
+                          }
                           className="block w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 dark:bg-gray-700 dark:text-white text-sm"
                           required
                         />
@@ -391,7 +404,10 @@ export default function NewProductionOrderPage() {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan={3} className="px-3 py-4 text-right text-sm font-medium text-gray-900 dark:text-white">
+                    <td
+                      colSpan={3}
+                      className="px-3 py-4 text-right text-sm font-medium text-gray-900 dark:text-white"
+                    >
                       Total
                     </td>
                     <td className="px-3 py-4 text-lg font-bold text-gray-900 dark:text-white">

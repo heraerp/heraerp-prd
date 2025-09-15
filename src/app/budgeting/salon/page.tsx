@@ -12,11 +12,32 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2 } from 'lucide-react'
-import { 
-  Scissors, DollarSign, Users, Calendar, TrendingUp, TrendingDown,
-  Target, BarChart3, PieChart, Clock, CheckCircle, AlertTriangle,
-  Plus, Download, RefreshCw, ArrowLeft, Palette, Sparkles,
-  Star, Heart, Zap, Award, Crown, ShoppingBag, AlertCircle
+import {
+  Scissors,
+  DollarSign,
+  Users,
+  Calendar,
+  TrendingUp,
+  TrendingDown,
+  Target,
+  BarChart3,
+  PieChart,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  Plus,
+  Download,
+  RefreshCw,
+  ArrowLeft,
+  Palette,
+  Sparkles,
+  Star,
+  Heart,
+  Zap,
+  Award,
+  Crown,
+  ShoppingBag,
+  AlertCircle
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { universalApi } from '@/lib/universal-api'
@@ -88,12 +109,17 @@ export default function SalonBudgetingPage() {
 
   // Calculate salon metrics
   const calculateSalonMetrics = () => {
-    const totalServices = salonServices.reduce((total, category) => 
-      total + category.services.reduce((catTotal, service) => catTotal + service.monthly_volume, 0), 0
+    const totalServices = salonServices.reduce(
+      (total, category) =>
+        total +
+        category.services.reduce((catTotal, service) => catTotal + service.monthly_volume, 0),
+      0
     )
-    
-    const totalServiceRevenue = salonServices.reduce((total, category) => 
-      total + category.services.reduce((catTotal, service) => catTotal + service.revenue, 0), 0
+
+    const totalServiceRevenue = salonServices.reduce(
+      (total, category) =>
+        total + category.services.reduce((catTotal, service) => catTotal + service.revenue, 0),
+      0
     )
 
     const averageServicePrice = totalServiceRevenue / totalServices
@@ -121,8 +147,8 @@ export default function SalonBudgetingPage() {
       total: salonMetrics.totalRevenue
     },
     expenses: {
-      labor: salonMetrics.totalRevenue * 0.40, // 40% for salon labor
-      cost_of_goods: salonMetrics.totalRevenue * 0.20, // 20% COGS
+      labor: salonMetrics.totalRevenue * 0.4, // 40% for salon labor
+      cost_of_goods: salonMetrics.totalRevenue * 0.2, // 20% COGS
       rent: 8000,
       utilities: 1200,
       marketing: salonMetrics.totalRevenue * 0.06, // 6% marketing
@@ -132,7 +158,10 @@ export default function SalonBudgetingPage() {
     }
   }
 
-  const totalExpenses = Object.values(salonBudgetBreakdown.expenses).reduce((sum, expense) => sum + expense, 0)
+  const totalExpenses = Object.values(salonBudgetBreakdown.expenses).reduce(
+    (sum, expense) => sum + expense,
+    0
+  )
   const netIncome = salonBudgetBreakdown.revenue.total - totalExpenses
   const profitMargin = (netIncome / salonBudgetBreakdown.revenue.total) * 100
 
@@ -179,10 +208,10 @@ export default function SalonBudgetingPage() {
   // Seasonal trends for salon
   const seasonalTrends = [
     { month: 'Jan', factor: 0.8, events: ['New Year Resolution Boost'] },
-    { month: 'Feb', factor: 0.9, events: ['Valentine\'s Day'] },
+    { month: 'Feb', factor: 0.9, events: ["Valentine's Day"] },
     { month: 'Mar', factor: 1.1, events: ['Spring Refresh'] },
     { month: 'Apr', factor: 1.0, events: ['Easter Preparation'] },
-    { month: 'May', factor: 1.2, events: ['Wedding Season Starts', 'Mother\'s Day'] },
+    { month: 'May', factor: 1.2, events: ['Wedding Season Starts', "Mother's Day"] },
     { month: 'Jun', factor: 1.3, events: ['Wedding Peak', 'Summer Prep'] },
     { month: 'Jul', factor: 1.1, events: ['Summer Maintenance'] },
     { month: 'Aug', factor: 1.0, events: ['Back to School'] },
@@ -198,9 +227,7 @@ export default function SalonBudgetingPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Please log in to access the budgeting page.
-          </AlertDescription>
+          <AlertDescription>Please log in to access the budgeting page.</AlertDescription>
         </Alert>
       </div>
     )
@@ -224,9 +251,7 @@ export default function SalonBudgetingPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-white">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            No organization found. Please complete setup.
-          </AlertDescription>
+          <AlertDescription>No organization found. Please complete setup.</AlertDescription>
         </Alert>
       </div>
     )
@@ -238,8 +263,8 @@ export default function SalonBudgetingPage() {
       setBudgetData({
         budget_id: 'salon-budget-2024',
         total_budget: salonBudgetBreakdown.revenue.total * 12,
-        total_actual: (salonBudgetBreakdown.revenue.total * 12) * 0.92, // 92% of budget
-        variance_amount: (salonBudgetBreakdown.revenue.total * 12) * -0.08,
+        total_actual: salonBudgetBreakdown.revenue.total * 12 * 0.92, // 92% of budget
+        variance_amount: salonBudgetBreakdown.revenue.total * 12 * -0.08,
         variance_percent: -8.0,
         services_budget: salonBudgetBreakdown.revenue.services * 12,
         products_budget: salonBudgetBreakdown.revenue.products * 12,
@@ -261,7 +286,7 @@ export default function SalonBudgetingPage() {
   const createSalonBudget = async () => {
     try {
       setIsLoading(true)
-      
+
       // Create comprehensive salon budget using Universal API
       const budgetResult = await universalApi.createBudget({
         organizationId: salonOrg.organization_id,
@@ -277,7 +302,7 @@ export default function SalonBudgetingPage() {
       if (budgetResult.success) {
         // Create detailed budget lines for salon services
         const budgetLines = []
-        
+
         // Revenue lines by service category
         salonServices.forEach((category, catIndex) => {
           category.services.forEach((service, svcIndex) => {
@@ -293,7 +318,9 @@ export default function SalonBudgetingPage() {
                 service_price: service.price,
                 seasonal_variation: true
               },
-              monthlyBreakdown: seasonalTrends.map(trend => Math.round(service.revenue * trend.factor)),
+              monthlyBreakdown: seasonalTrends.map(trend =>
+                Math.round(service.revenue * trend.factor)
+              ),
               dimensions: {
                 costCenter: 'SALON_SERVICES',
                 profitCenter: category.category.toUpperCase().replace(' ', '_'),
@@ -362,8 +389,8 @@ export default function SalonBudgetingPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 onClick={() => router.push('/budgeting')}
                 className="mr-2"
@@ -383,7 +410,7 @@ export default function SalonBudgetingPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <Badge variant="secondary" className="bg-pink-100 text-pink-700">
                 <Sparkles className="w-4 h-4 mr-1" />
@@ -425,9 +452,7 @@ export default function SalonBudgetingPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-purple-600">Services/Month</p>
-                  <p className="text-2xl font-bold text-purple-900">
-                    {salonMetrics.totalServices}
-                  </p>
+                  <p className="text-2xl font-bold text-purple-900">{salonMetrics.totalServices}</p>
                   <div className="flex items-center mt-2">
                     <Users className="w-4 h-4 text-blue-500 mr-1" />
                     <span className="text-sm text-blue-600">{salonMetrics.servicesPerDay}/day</span>
@@ -461,9 +486,7 @@ export default function SalonBudgetingPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-green-600">Profit Margin</p>
-                  <p className="text-2xl font-bold text-green-900">
-                    {profitMargin.toFixed(1)}%
-                  </p>
+                  <p className="text-2xl font-bold text-green-900">{profitMargin.toFixed(1)}%</p>
                   <div className="flex items-center mt-2">
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
                     <span className="text-sm text-green-600">Target: 35%</span>
@@ -481,19 +504,27 @@ export default function SalonBudgetingPage() {
             <Card key={index} className="bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}>
+                  <div
+                    className={`w-8 h-8 rounded-lg bg-gradient-to-r ${category.color} flex items-center justify-center`}
+                  >
                     <category.icon className="w-5 h-5 text-white" />
                   </div>
                   {category.category}
                 </CardTitle>
                 <CardDescription>
-                  Monthly revenue: {formatCurrency(category.services.reduce((sum, service) => sum + service.revenue, 0))}
+                  Monthly revenue:{' '}
+                  {formatCurrency(
+                    category.services.reduce((sum, service) => sum + service.revenue, 0)
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {category.services.map((service, svcIndex) => (
-                    <div key={svcIndex} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div
+                      key={svcIndex}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
                       <div>
                         <div className="font-medium text-gray-900">{service.name}</div>
                         <div className="text-sm text-gray-600">
@@ -538,7 +569,7 @@ export default function SalonBudgetingPage() {
                       {staff.commission_rate}% Commission
                     </Badge>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Daily Services:</span>
@@ -550,9 +581,11 @@ export default function SalonBudgetingPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Monthly Revenue:</span>
-                      <span className="font-semibold text-blue-600">{formatCurrency(staff.monthly_revenue)}</span>
+                      <span className="font-semibold text-blue-600">
+                        {formatCurrency(staff.monthly_revenue)}
+                      </span>
                     </div>
-                    
+
                     <div>
                       <div className="flex justify-between text-sm mb-1">
                         <span className="text-gray-600">Utilization:</span>
@@ -574,19 +607,25 @@ export default function SalonBudgetingPage() {
               <Calendar className="w-5 h-5 text-green-600" />
               Seasonal Revenue Planning
             </CardTitle>
-            <CardDescription>
-              Monthly revenue variations and special events impact
-            </CardDescription>
+            <CardDescription>Monthly revenue variations and special events impact</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {seasonalTrends.map((trend, index) => (
-                <div key={index} className="text-center p-3 bg-gradient-to-br from-gray-50 to-white rounded-lg border">
+                <div
+                  key={index}
+                  className="text-center p-3 bg-gradient-to-br from-gray-50 to-white rounded-lg border"
+                >
                   <div className="font-semibold text-gray-900 mb-1">{trend.month}</div>
-                  <div className={`text-sm font-medium mb-2 ${
-                    trend.factor >= 1.2 ? 'text-green-600' : 
-                    trend.factor >= 1.0 ? 'text-blue-600' : 'text-orange-600'
-                  }`}>
+                  <div
+                    className={`text-sm font-medium mb-2 ${
+                      trend.factor >= 1.2
+                        ? 'text-green-600'
+                        : trend.factor >= 1.0
+                          ? 'text-blue-600'
+                          : 'text-orange-600'
+                    }`}
+                  >
                     {(trend.factor * 100).toFixed(0)}%
                   </div>
                   <div className="text-xs text-gray-600">
@@ -600,11 +639,13 @@ export default function SalonBudgetingPage() {
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
               <h4 className="font-semibold text-blue-900 mb-2">Seasonal Strategy</h4>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Peak seasons (May-Jun, Nov-Dec): Staff overtime budget, inventory increase</li>
+                <li>
+                  • Peak seasons (May-Jun, Nov-Dec): Staff overtime budget, inventory increase
+                </li>
                 <li>• Wedding season marketing: Target brides with package deals</li>
                 <li>• Holiday promotions: Gift card sales, special packages</li>
                 <li>• Slow periods (Jan-Feb): Staff training, equipment maintenance</li>
@@ -623,7 +664,7 @@ export default function SalonBudgetingPage() {
                 Complete financial planning for {salonOrg.organization_name}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2">
@@ -637,37 +678,30 @@ export default function SalonBudgetingPage() {
                   Products: {formatCurrency(salonBudgetBreakdown.revenue.products * 12)}
                 </div>
               </div>
-              
+
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">
-                  {formatCurrency(totalExpenses * 12)}
-                </div>
+                <div className="text-3xl font-bold mb-2">{formatCurrency(totalExpenses * 12)}</div>
                 <div className="text-pink-100 text-sm">Annual Expenses</div>
                 <div className="text-xs text-pink-200 mt-1">
                   Labor: {formatCurrency(salonBudgetBreakdown.expenses.labor * 12)} (40%)
                 </div>
                 <div className="text-xs text-pink-200">
-                  Other: {formatCurrency((totalExpenses - salonBudgetBreakdown.expenses.labor) * 12)}
+                  Other:{' '}
+                  {formatCurrency((totalExpenses - salonBudgetBreakdown.expenses.labor) * 12)}
                 </div>
               </div>
-              
+
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">
-                  {formatCurrency(netIncome * 12)}
-                </div>
+                <div className="text-3xl font-bold mb-2">{formatCurrency(netIncome * 12)}</div>
                 <div className="text-pink-100 text-sm">Net Income Target</div>
-                <div className="text-xs text-pink-200 mt-1">
-                  Margin: {profitMargin.toFixed(1)}%
-                </div>
-                <div className="text-xs text-pink-200">
-                  Monthly: {formatCurrency(netIncome)}
-                </div>
+                <div className="text-xs text-pink-200 mt-1">Margin: {profitMargin.toFixed(1)}%</div>
+                <div className="text-xs text-pink-200">Monthly: {formatCurrency(netIncome)}</div>
               </div>
             </div>
 
             <div className="mt-8 text-center">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 variant="secondary"
                 onClick={createSalonBudget}
                 className="bg-white text-pink-600 hover:bg-pink-50"

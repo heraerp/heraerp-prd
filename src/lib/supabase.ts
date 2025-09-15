@@ -12,28 +12,24 @@ export const getSupabase = () => {
   if (!supabaseInstance) {
     const url = getSupabaseUrl()
     const key = getSupabaseAnonKey()
-    
+
     // Only create client if we have valid configuration
     if (url && key && !url.includes('placeholder')) {
-      supabaseInstance = createClient(
-        url,
-        key,
-        {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-          }
+      supabaseInstance = createClient(url, key, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
         }
-      )
-      
+      })
+
       // Log configuration status (not the actual values)
       if (typeof window !== 'undefined') {
         console.log('Supabase client configuration:', {
           hasUrl: !!url,
           hasKey: !!key,
-          projectId: url.includes('supabase.co') 
-            ? url.split('.')[0].replace('https://', '') 
+          projectId: url.includes('supabase.co')
+            ? url.split('.')[0].replace('https://', '')
             : 'unknown'
         })
       }
@@ -58,7 +54,6 @@ export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
     return client[prop as keyof typeof client]
   }
 })
-
 
 // Database types for HERA tables
 export interface Organization {

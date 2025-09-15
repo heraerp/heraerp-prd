@@ -54,10 +54,10 @@ interface ValidationResponse {
 
 // Performance benchmarks for each validation level
 const PERFORMANCE_BENCHMARKS = {
-  L1_SYNTAX: 10,      // 10ms
-  L2_SEMANTIC: 50,    // 50ms  
+  L1_SYNTAX: 10, // 10ms
+  L2_SEMANTIC: 50, // 50ms
   L3_PERFORMANCE: 100, // 100ms
-  L4_INTEGRATION: 200  // 200ms
+  L4_INTEGRATION: 200 // 200ms
 }
 
 async function validateL1Syntax(target: any, data: any): Promise<ValidationResult> {
@@ -99,7 +99,7 @@ async function validateL1Syntax(target: any, data: any): Promise<ValidationResul
       errors.push('field_value_number must be a valid number')
     }
 
-    // Field length validation  
+    // Field length validation
     if (data.entity_name && data.entity_name.length > 200) {
       warnings.push('entity_name exceeds recommended length of 200 characters')
     }
@@ -109,7 +109,6 @@ async function validateL1Syntax(target: any, data: any): Promise<ValidationResul
     if (data.status && !validStatuses.includes(data.status)) {
       errors.push(`Invalid status. Must be one of: ${validStatuses.join(', ')}`)
     }
-
   } catch (error) {
     errors.push('L1 syntax validation failed: ' + (error as Error).message)
   }
@@ -131,7 +130,11 @@ async function validateL1Syntax(target: any, data: any): Promise<ValidationResul
   }
 }
 
-async function validateL2Semantic(target: any, data: any, organizationId: string): Promise<ValidationResult> {
+async function validateL2Semantic(
+  target: any,
+  data: any,
+  organizationId: string
+): Promise<ValidationResult> {
   const startTime = Date.now()
   const errors: string[] = []
   const warnings: string[] = []
@@ -141,7 +144,9 @@ async function validateL2Semantic(target: any, data: any, organizationId: string
     if (target.type === 'bom' && data.ingredients) {
       for (const ingredient of data.ingredients) {
         if (ingredient.waste_factor > 0.5) {
-          warnings.push(`High waste factor (${ingredient.waste_factor}) for ingredient ${ingredient.ingredient_id}`)
+          warnings.push(
+            `High waste factor (${ingredient.waste_factor}) for ingredient ${ingredient.ingredient_id}`
+          )
         }
         if (ingredient.cost_per_unit <= 0) {
           errors.push(`Invalid cost per unit for ingredient ${ingredient.ingredient_id}`)
@@ -167,14 +172,14 @@ async function validateL2Semantic(target: any, data: any, organizationId: string
       if (parts.length >= 5) {
         const module = parts[1]
         const subModule = parts[2]
-        
+
         // Check module-submodule compatibility
         const incompatibleCombos = [
           { module: 'REST', subModule: 'MFG' },
           { module: 'HLTH', subModule: 'REST' },
           { module: 'MFG', subModule: 'HLTH' }
         ]
-        
+
         for (const combo of incompatibleCombos) {
           if (module === combo.module && subModule === combo.subModule) {
             warnings.push(`Unusual module-submodule combination: ${module}.${subModule}`)
@@ -184,7 +189,11 @@ async function validateL2Semantic(target: any, data: any, organizationId: string
     }
 
     // Industry standard compliance
-    if (target.type === 'entity' && data.entity_type === 'account' && data.business_rules?.ledger_type === 'GL') {
+    if (
+      target.type === 'entity' &&
+      data.entity_type === 'account' &&
+      data.business_rules?.ledger_type === 'GL'
+    ) {
       if (data.dynamic_fields) {
         const accountType = data.dynamic_fields.find((f: any) => f.field_name === 'account_type')
         if (accountType) {
@@ -202,7 +211,6 @@ async function validateL2Semantic(target: any, data: any, organizationId: string
         warnings.push('Healthcare billing transactions should include procedure codes')
       }
     }
-
   } catch (error) {
     errors.push('L2 semantic validation failed: ' + (error as Error).message)
   }
@@ -238,14 +246,15 @@ async function validateL3Performance(target: any, data: any): Promise<Validation
 
     // Memory usage optimization
     const memoryEstimate = complexityScore * 2 // Rough estimate in bytes
-    if (memoryEstimate > 1048576) { // 1MB
+    if (memoryEstimate > 1048576) {
+      // 1MB
       warnings.push('Estimated memory usage exceeds 1MB')
     }
 
     // Concurrent load testing simulation
     const simulatedConcurrentOps = 100
     const estimatedResponseTime = complexityScore / 1000 // Rough calculation
-    
+
     if (estimatedResponseTime > 500) {
       warnings.push('Estimated response time under load exceeds 500ms')
     }
@@ -264,9 +273,10 @@ async function validateL3Performance(target: any, data: any): Promise<Validation
     // Response time validation
     const benchmarkTime = PERFORMANCE_BENCHMARKS.L3_PERFORMANCE
     if (estimatedResponseTime > benchmarkTime) {
-      errors.push(`Estimated response time (${estimatedResponseTime}ms) exceeds benchmark (${benchmarkTime}ms)`)
+      errors.push(
+        `Estimated response time (${estimatedResponseTime}ms) exceeds benchmark (${benchmarkTime}ms)`
+      )
     }
-
   } catch (error) {
     errors.push('L3 performance validation failed: ' + (error as Error).message)
   }
@@ -289,7 +299,11 @@ async function validateL3Performance(target: any, data: any): Promise<Validation
   }
 }
 
-async function validateL4Integration(target: any, data: any, organizationId: string): Promise<ValidationResult> {
+async function validateL4Integration(
+  target: any,
+  data: any,
+  organizationId: string
+): Promise<ValidationResult> {
   const startTime = Date.now()
   const errors: string[] = []
   const warnings: string[] = []
@@ -313,8 +327,11 @@ async function validateL4Integration(target: any, data: any, organizationId: str
     // Transaction consistency check
     if (target.type === 'transaction' && data.lines) {
       let headerTotal = data.total_amount || 0
-      let linesTotal = data.lines.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0)
-      
+      let linesTotal = data.lines.reduce(
+        (sum: number, line: any) => sum + (line.line_amount || 0),
+        0
+      )
+
       if (Math.abs(headerTotal - linesTotal) > 0.01) {
         errors.push('Transaction header and lines totals do not match')
       }
@@ -346,7 +363,6 @@ async function validateL4Integration(target: any, data: any, organizationId: str
         warnings.push('Entity claims to have dynamic fields but none found')
       }
     }
-
   } catch (error) {
     errors.push('L4 integration validation failed: ' + (error as Error).message)
   }
@@ -371,10 +387,10 @@ async function validateL4Integration(target: any, data: any, organizationId: str
 
 function generateSuggestions(results: ValidationResult[], target: any): string[] {
   const suggestions: string[] = []
-  
+
   const hasErrors = results.some(r => r.errors.length > 0)
   const hasWarnings = results.some(r => r.warnings.length > 0)
-  
+
   if (!hasErrors && !hasWarnings) {
     suggestions.push('All validation levels passed successfully')
     suggestions.push('Target is ready for production use')
@@ -385,19 +401,19 @@ function generateSuggestions(results: ValidationResult[], target: any): string[]
     suggestions.push('Consider addressing warnings for optimal performance')
     suggestions.push('Warnings do not prevent production deployment')
   }
-  
+
   // Performance suggestions
   const perfResult = results.find(r => r.level === 'L3_PERFORMANCE')
   if (perfResult?.metrics?.complexity_score > 10000) {
     suggestions.push('Consider breaking down complex data structures for better performance')
   }
-  
+
   // Integration suggestions
   const integResult = results.find(r => r.level === 'L4_INTEGRATION')
   if (integResult?.warnings.some(w => w.includes('API'))) {
     suggestions.push('Perform runtime API endpoint validation before production deployment')
   }
-  
+
   return suggestions
 }
 
@@ -409,10 +425,7 @@ export async function POST(request: NextRequest) {
     const { organization_id, validation_target, validation_levels, options = {} } = body
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     if (!validation_target.target_id) {
@@ -424,9 +437,12 @@ export async function POST(request: NextRequest) {
 
     const validationId = `val_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const totalStartTime = Date.now()
-    
+
     const results: ValidationResult[] = []
-    let l1Time = 0, l2Time = 0, l3Time = 0, l4Time = 0
+    let l1Time = 0,
+      l2Time = 0,
+      l3Time = 0,
+      l4Time = 0
 
     // Execute validation levels in order
     for (const level of validation_levels) {
@@ -438,7 +454,11 @@ export async function POST(request: NextRequest) {
           l1Time = result.execution_time_ms
           break
         case 'L2_SEMANTIC':
-          result = await validateL2Semantic(validation_target, validation_target.data || {}, organization_id)
+          result = await validateL2Semantic(
+            validation_target,
+            validation_target.data || {},
+            organization_id
+          )
           l2Time = result.execution_time_ms
           break
         case 'L3_PERFORMANCE':
@@ -446,7 +466,11 @@ export async function POST(request: NextRequest) {
           l3Time = result.execution_time_ms
           break
         case 'L4_INTEGRATION':
-          result = await validateL4Integration(validation_target, validation_target.data || {}, organization_id)
+          result = await validateL4Integration(
+            validation_target,
+            validation_target.data || {},
+            organization_id
+          )
           l4Time = result.execution_time_ms
           break
         default:
@@ -462,7 +486,7 @@ export async function POST(request: NextRequest) {
     }
 
     const totalExecutionTime = Date.now() - totalStartTime
-    
+
     // Determine overall result
     const hasErrors = results.some(r => r.errors.length > 0)
     const hasWarnings = results.some(r => r.warnings.length > 0)
@@ -486,7 +510,7 @@ export async function POST(request: NextRequest) {
       certification = {
         level: 'L4_INTEGRATION_CERTIFIED',
         valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-        compliance_score: 100 - (results.reduce((sum, r) => sum + r.warnings.length, 0) * 5)
+        compliance_score: 100 - results.reduce((sum, r) => sum + r.warnings.length, 0) * 5
       }
     }
 
@@ -511,11 +535,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(response)
-
   } catch (error) {
     console.error('4-level validation error:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error during validation',
         details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
@@ -535,25 +558,50 @@ export async function GET() {
         level: 'L1_SYNTAX',
         description: 'Format and syntax validation',
         benchmark: '< 10ms',
-        checks: ['smart_code_format', 'required_fields', 'data_types', 'json_schema', 'field_lengths', 'enum_values']
+        checks: [
+          'smart_code_format',
+          'required_fields',
+          'data_types',
+          'json_schema',
+          'field_lengths',
+          'enum_values'
+        ]
       },
       {
         level: 'L2_SEMANTIC',
         description: 'Business logic and semantic validation',
         benchmark: '< 50ms',
-        checks: ['business_rules', 'calculation_logic', 'dependency_consistency', 'formula_validation', 'industry_standards']
+        checks: [
+          'business_rules',
+          'calculation_logic',
+          'dependency_consistency',
+          'formula_validation',
+          'industry_standards'
+        ]
       },
       {
         level: 'L3_PERFORMANCE',
         description: 'Performance and efficiency validation',
         benchmark: '< 100ms',
-        checks: ['calculation_speed', 'memory_usage', 'concurrent_load', 'scalability', 'resource_utilization']
+        checks: [
+          'calculation_speed',
+          'memory_usage',
+          'concurrent_load',
+          'scalability',
+          'resource_utilization'
+        ]
       },
       {
         level: 'L4_INTEGRATION',
         description: 'Cross-system integration validation',
         benchmark: '< 200ms',
-        checks: ['api_endpoints', 'data_flow', 'transaction_consistency', 'audit_trail', 'external_dependencies']
+        checks: [
+          'api_endpoints',
+          'data_flow',
+          'transaction_consistency',
+          'audit_trail',
+          'external_dependencies'
+        ]
       }
     ],
     target_types: ['smart_code', 'entity', 'transaction', 'bom', 'pricing', 'dag'],

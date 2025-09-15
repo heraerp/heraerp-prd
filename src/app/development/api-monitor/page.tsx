@@ -10,12 +10,12 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  Activity, 
-  Server, 
-  Zap, 
-  Clock, 
-  CheckCircle, 
+import {
+  Activity,
+  Server,
+  Zap,
+  Clock,
+  CheckCircle,
   AlertCircle,
   TrendingUp,
   Database,
@@ -64,19 +64,19 @@ export default function APIMonitorPage() {
               <h1 className="text-2xl font-light text-white mb-2">HERA API Monitor</h1>
               <p className="text-gray-300 text-sm">System Performance Dashboard</p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <Input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                  onChange={e => setPassword(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleLogin()}
                   className="bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20"
                   placeholder="Enter developer access code"
                 />
               </div>
-              
+
               <Button
                 onClick={handleLogin}
                 className="w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white border-0 py-3 rounded-xl font-medium"
@@ -162,10 +162,14 @@ export default function APIMonitorPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'healthy': return 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30'
-      case 'degraded': return 'text-amber-400 bg-amber-500/20 border-amber-500/30'
-      case 'down': return 'text-red-400 bg-red-500/20 border-red-500/30'
-      default: return 'text-gray-400 bg-gray-500/20 border-gray-500/30'
+      case 'healthy':
+        return 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30'
+      case 'degraded':
+        return 'text-amber-400 bg-amber-500/20 border-amber-500/30'
+      case 'down':
+        return 'text-red-400 bg-red-500/20 border-red-500/30'
+      default:
+        return 'text-gray-400 bg-gray-500/20 border-gray-500/30'
     }
   }
 
@@ -221,7 +225,9 @@ export default function APIMonitorPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-400">Total Requests</p>
-                  <p className="text-2xl font-light text-blue-400">{systemMetrics.totalRequests.toLocaleString()}</p>
+                  <p className="text-2xl font-light text-blue-400">
+                    {systemMetrics.totalRequests.toLocaleString()}
+                  </p>
                 </div>
                 <BarChart3 className="w-8 h-8 text-blue-400" />
               </div>
@@ -233,7 +239,9 @@ export default function APIMonitorPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-400">Avg Response</p>
-                  <p className="text-2xl font-light text-purple-400">{systemMetrics.avgResponseTime}ms</p>
+                  <p className="text-2xl font-light text-purple-400">
+                    {systemMetrics.avgResponseTime}ms
+                  </p>
                 </div>
                 <Clock className="w-8 h-8 text-purple-400" />
               </div>
@@ -257,7 +265,9 @@ export default function APIMonitorPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-400">Throughput</p>
-                  <p className="text-2xl font-light text-cyan-400">{systemMetrics.throughput}/min</p>
+                  <p className="text-2xl font-light text-cyan-400">
+                    {systemMetrics.throughput}/min
+                  </p>
                 </div>
                 <Zap className="w-8 h-8 text-cyan-400" />
               </div>
@@ -290,7 +300,9 @@ export default function APIMonitorPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div className={`w-10 h-10 bg-gradient-to-r from-${api.color}-400 to-${api.color}-600 rounded-lg flex items-center justify-center`}>
+                        <div
+                          className={`w-10 h-10 bg-gradient-to-r from-${api.color}-400 to-${api.color}-600 rounded-lg flex items-center justify-center`}
+                        >
                           <Icon className="w-5 h-5 text-white" />
                         </div>
                         <div>
@@ -298,37 +310,36 @@ export default function APIMonitorPage() {
                           <p className="text-sm text-gray-400 font-mono">{api.endpoint}</p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center space-x-6">
                         <div className="text-right">
                           <p className="text-sm text-gray-400">Response Time</p>
-                          <p className={`text-lg font-mono ${getResponseTimeColor(api.responseTime)}`}>
+                          <p
+                            className={`text-lg font-mono ${getResponseTimeColor(api.responseTime)}`}
+                          >
                             {api.responseTime}ms
                           </p>
                         </div>
-                        
+
                         <div className="text-right">
                           <p className="text-sm text-gray-400">24h Requests</p>
-                          <p className="text-lg font-mono text-white">{api.requests24h.toLocaleString()}</p>
+                          <p className="text-lg font-mono text-white">
+                            {api.requests24h.toLocaleString()}
+                          </p>
                         </div>
-                        
+
                         <div className="text-right">
                           <p className="text-sm text-gray-400">Success Rate</p>
                           <p className="text-lg font-mono text-emerald-400">{api.successRate}%</p>
                         </div>
-                        
-                        <Badge className={getStatusColor(api.status)}>
-                          {api.status}
-                        </Badge>
+
+                        <Badge className={getStatusColor(api.status)}>{api.status}</Badge>
                       </div>
                     </div>
-                    
+
                     {/* Success Rate Progress Bar */}
                     <div className="mt-3">
-                      <Progress 
-                        value={api.successRate} 
-                        className="h-2 bg-white/10"
-                      />
+                      <Progress value={api.successRate} className="h-2 bg-white/10" />
                     </div>
                   </motion.div>
                 )
@@ -350,13 +361,16 @@ export default function APIMonitorPage() {
               <div className="p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
                 <div className="flex items-center space-x-2 mb-2">
                   <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm text-emerald-400 font-medium">Excellent Performance</span>
+                  <span className="text-sm text-emerald-400 font-medium">
+                    Excellent Performance
+                  </span>
                 </div>
                 <p className="text-sm text-gray-300">
-                  All Phase 1 APIs are performing within optimal ranges. Smart Code validation averaging 42ms.
+                  All Phase 1 APIs are performing within optimal ranges. Smart Code validation
+                  averaging 42ms.
                 </p>
               </div>
-              
+
               <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
                 <div className="flex items-center space-x-2 mb-2">
                   <AlertCircle className="w-4 h-4 text-amber-400" />
@@ -366,7 +380,7 @@ export default function APIMonitorPage() {
                   BOM Calculation showing higher latency (234ms). Consider template optimization.
                 </p>
               </div>
-              
+
               <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
                 <div className="flex items-center space-x-2 mb-2">
                   <Cpu className="w-4 h-4 text-blue-400" />
@@ -427,11 +441,18 @@ export default function APIMonitorPage() {
         .shake {
           animation: shake 0.6s ease-in-out;
         }
-        
+
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          25% {
+            transform: translateX(-5px);
+          }
+          75% {
+            transform: translateX(5px);
+          }
         }
       `}</style>
     </div>

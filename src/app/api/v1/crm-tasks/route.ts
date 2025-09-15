@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || 'demo_org'
     const completed = searchParams.get('completed')
-    
+
     // Demo tasks data
     const tasks = [
       {
@@ -110,35 +110,30 @@ export async function GET(request: NextRequest) {
         total_tasks: tasks.length,
         pending_tasks: pendingTasks.length,
         completed_tasks: completedTasks.length,
-        overdue_tasks: pendingTasks.filter(task => 
-          new Date(task.dynamic_fields.due_date) < new Date()
+        overdue_tasks: pendingTasks.filter(
+          task => new Date(task.dynamic_fields.due_date) < new Date()
         ).length,
-        high_priority_tasks: pendingTasks.filter(task => 
-          task.dynamic_fields.priority === 'high'
-        ).length
+        high_priority_tasks: pendingTasks.filter(task => task.dynamic_fields.priority === 'high')
+          .length
       },
       message: 'Tasks retrieved successfully'
     })
-
   } catch (error) {
     console.error('CRM Tasks API error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Failed to fetch tasks' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Failed to fetch tasks' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      organization_id, 
-      title, 
-      contact_name, 
-      task_type, 
-      priority, 
-      due_date, 
+    const {
+      organization_id,
+      title,
+      contact_name,
+      task_type,
+      priority,
+      due_date,
       description,
       assigned_to,
       related_opportunity
@@ -170,7 +165,9 @@ export async function POST(request: NextRequest) {
         assigned_to: assigned_to || 'System User',
         related_opportunity,
         created_date: new Date().toISOString().split('T')[0],
-        reminder_date: new Date(new Date(due_date).getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 day before due date
+        reminder_date: new Date(new Date(due_date).getTime() - 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0], // 1 day before due date
         estimated_duration: 30
       }
     }
@@ -180,13 +177,9 @@ export async function POST(request: NextRequest) {
       data: newTask,
       message: 'Task created successfully'
     })
-
   } catch (error) {
     console.error('Create task error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Failed to create task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Failed to create task' }, { status: 500 })
   }
 }
 
@@ -196,10 +189,7 @@ export async function PUT(request: NextRequest) {
     const { id, completed, priority, due_date, description } = body
 
     if (!id) {
-      return NextResponse.json(
-        { success: false, message: 'Task ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: false, message: 'Task ID is required' }, { status: 400 })
     }
 
     // Update task - this would update the universal tables
@@ -221,12 +211,8 @@ export async function PUT(request: NextRequest) {
       data: updatedTask,
       message: 'Task updated successfully'
     })
-
   } catch (error) {
     console.error('Update task error:', error)
-    return NextResponse.json(
-      { success: false, message: 'Failed to update task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, message: 'Failed to update task' }, { status: 500 })
   }
 }

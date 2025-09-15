@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Validate Page - Test if HERA fits your business
  * Smart Code: HERA.UI.JOURNEY.VALIDATE.PAGE.v1
- * 
+ *
  * Second step in the HERA journey - validate business fit
  */
 
@@ -144,9 +144,9 @@ export default function ValidatePage() {
         { value: 'expensive', label: 'Current software too expensive' },
         { value: 'complex', label: 'Systems too complex to use' },
         { value: 'reporting', label: 'Poor reporting capabilities' },
-        { value: 'integration', label: 'Systems don\'t talk to each other' },
+        { value: 'integration', label: "Systems don't talk to each other" },
         { value: 'mobile', label: 'No mobile access' },
-        { value: 'growth', label: 'Can\'t scale with growth' }
+        { value: 'growth', label: "Can't scale with growth" }
       ]
     },
     {
@@ -186,7 +186,7 @@ export default function ValidatePage() {
   const isStepComplete = () => {
     const currentQuestion = validationQuestions[currentStep]
     const answer = answers.find(a => a.questionId === currentQuestion.id)
-    
+
     if (currentQuestion.type === 'checkbox') {
       return answer && Array.isArray(answer.answer) && answer.answer.length > 0
     }
@@ -197,7 +197,7 @@ export default function ValidatePage() {
     // Simple scoring logic
     let score = 0
     const missingFeatures: string[] = []
-    
+
     // Business type scoring
     const businessType = answers.find(a => a.questionId === 'business_type')?.answer
     if (['salon', 'restaurant', 'retail', 'healthcare'].includes(businessType as string)) {
@@ -205,7 +205,7 @@ export default function ValidatePage() {
     } else {
       score += 15 // Generic solution still works
     }
-    
+
     // Size scoring
     const size = answers.find(a => a.questionId === 'business_size')?.answer
     if (['1-5', '6-20', '21-50'].includes(size as string)) {
@@ -213,10 +213,18 @@ export default function ValidatePage() {
     } else {
       score += 15 // Still works for larger businesses
     }
-    
+
     // Features scoring
     const features = answers.find(a => a.questionId === 'features_needed')?.answer as string[]
-    const supportedFeatures = ['inventory', 'appointments', 'accounting', 'crm', 'pos', 'reports', 'multi_location']
+    const supportedFeatures = [
+      'inventory',
+      'appointments',
+      'accounting',
+      'crm',
+      'pos',
+      'reports',
+      'multi_location'
+    ]
     if (features) {
       features.forEach(feature => {
         if (supportedFeatures.includes(feature)) {
@@ -226,13 +234,13 @@ export default function ValidatePage() {
         }
       })
     }
-    
+
     // Problems scoring
     const problems = answers.find(a => a.questionId === 'current_problems')?.answer as string[]
     if (problems && problems.length > 0) {
       score += Math.min(problems.length * 5, 20) // HERA solves these problems
     }
-    
+
     // Timeline scoring
     const timeline = answers.find(a => a.questionId === 'timeline')?.answer
     if (['immediate', '1month'].includes(timeline as string)) {
@@ -240,26 +248,26 @@ export default function ValidatePage() {
     } else {
       score += 5
     }
-    
+
     // Calculate recommendation
     let recommendation: 'perfect' | 'good' | 'moderate' | 'poor'
     if (score >= 80) recommendation = 'perfect'
     else if (score >= 60) recommendation = 'good'
     else if (score >= 40) recommendation = 'moderate'
     else recommendation = 'poor'
-    
+
     // Calculate estimated savings
     const employees = parseInt(roiInputs.employees) || 10
     const monthlyRevenue = parseInt(roiInputs.monthlyRevenue) || 50000
     const currentCost = parseInt(roiInputs.currentSoftwareCost) || 500
     const hoursWasted = parseInt(roiInputs.hoursWasted) || 20
-    
+
     const laborSavings = hoursWasted * 50 * 12 // $50/hour * months
     const softwareSavings = Math.max(currentCost * 12 - 1200, 0) // HERA costs ~$100/month
     const efficiencySavings = monthlyRevenue * 0.02 * 12 // 2% efficiency gain
-    
+
     const estimatedSavings = laborSavings + softwareSavings + efficiencySavings
-    
+
     setValidationResult({
       score,
       recommendation,
@@ -267,36 +275,36 @@ export default function ValidatePage() {
       estimatedSavings,
       implementationTime: businessType === 'salon' ? '30 seconds' : '2-5 minutes'
     })
-    
+
     setShowResults(true)
   }
 
   const renderQuestion = () => {
     const question = validationQuestions[currentStep]
     const answer = answers.find(a => a.questionId === question.id)
-    
+
     return (
       <div className="space-y-6">
         <div>
           <h3 className="text-xl font-semibold !text-gray-900 dark:!text-white mb-2">
             {question.title}
           </h3>
-          <Progress 
-            value={(currentStep + 1) / validationQuestions.length * 100} 
+          <Progress
+            value={((currentStep + 1) / validationQuestions.length) * 100}
             className="h-2"
           />
           <p className="text-sm !text-gray-600 dark:!text-gray-400 mt-1">
             Question {currentStep + 1} of {validationQuestions.length}
           </p>
         </div>
-        
+
         {question.type === 'radio' ? (
           <RadioGroup
-            value={answer?.answer as string || ''}
-            onValueChange={(value) => handleAnswer(question.id, value)}
+            value={(answer?.answer as string) || ''}
+            onValueChange={value => handleAnswer(question.id, value)}
           >
             <div className="space-y-3">
-              {question.options.map((option) => (
+              {question.options.map(option => (
                 <label
                   key={option.value}
                   className="flex items-center space-x-3 cursor-pointer p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-500 transition-colors"
@@ -310,15 +318,15 @@ export default function ValidatePage() {
           </RadioGroup>
         ) : (
           <div className="space-y-3">
-            {question.options.map((option) => (
+            {question.options.map(option => (
               <label
                 key={option.value}
                 className="flex items-center space-x-3 cursor-pointer p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-500 transition-colors"
               >
                 <Checkbox
-                  checked={(answer?.answer as string[] || []).includes(option.value)}
-                  onCheckedChange={(checked) => {
-                    const currentValues = answer?.answer as string[] || []
+                  checked={((answer?.answer as string[]) || []).includes(option.value)}
+                  onCheckedChange={checked => {
+                    const currentValues = (answer?.answer as string[]) || []
                     const newValues = checked
                       ? [...currentValues, option.value]
                       : currentValues.filter(v => v !== option.value)
@@ -331,13 +339,9 @@ export default function ValidatePage() {
             ))}
           </div>
         )}
-        
+
         <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-          >
+          <Button variant="outline" onClick={handleBack} disabled={currentStep === 0}>
             <ChevronLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
@@ -356,28 +360,28 @@ export default function ValidatePage() {
 
   const renderResults = () => {
     if (!validationResult) return null
-    
+
     const recommendationColors = {
       perfect: 'from-green-500 to-emerald-600',
       good: 'from-blue-500 to-cyan-600',
       moderate: 'from-yellow-500 to-orange-600',
       poor: 'from-red-500 to-pink-600'
     }
-    
+
     const recommendationMessages = {
       perfect: 'HERA is a perfect fit for your business!',
       good: 'HERA can solve most of your business needs!',
       moderate: 'HERA can help, with some customization.',
       poor: 'HERA might require significant customization.'
     }
-    
+
     return (
       <div className="space-y-8">
         {/* Score Card */}
-        <div 
+        <div
           className={cn(
-            "relative overflow-hidden rounded-2xl p-8 text-white",
-            "bg-gradient-to-r",
+            'relative overflow-hidden rounded-2xl p-8 text-white',
+            'bg-gradient-to-r',
             recommendationColors[validationResult.recommendation]
           )}
         >
@@ -385,20 +389,16 @@ export default function ValidatePage() {
             <h3 className="text-3xl font-bold mb-2">
               {recommendationMessages[validationResult.recommendation]}
             </h3>
-            <p className="text-xl mb-4">
-              Compatibility Score: {validationResult.score}%
-            </p>
-            <p className="text-lg">
-              Implementation Time: {validationResult.implementationTime}
-            </p>
+            <p className="text-xl mb-4">Compatibility Score: {validationResult.score}%</p>
+            <p className="text-lg">Implementation Time: {validationResult.implementationTime}</p>
           </div>
           <div className="absolute top-0 right-0 w-64 h-64 opacity-20">
             <div className="w-full h-full rounded-full bg-white/20 blur-3xl" />
           </div>
         </div>
-        
+
         {/* ROI Calculator */}
-        <Card 
+        <Card
           style={{
             background: `
               linear-gradient(135deg, 
@@ -426,7 +426,7 @@ export default function ValidatePage() {
                   type="number"
                   placeholder="10"
                   value={roiInputs.employees}
-                  onChange={(e) => setRoiInputs({...roiInputs, employees: e.target.value})}
+                  onChange={e => setRoiInputs({ ...roiInputs, employees: e.target.value })}
                 />
               </div>
               <div>
@@ -436,7 +436,7 @@ export default function ValidatePage() {
                   type="number"
                   placeholder="50000"
                   value={roiInputs.monthlyRevenue}
-                  onChange={(e) => setRoiInputs({...roiInputs, monthlyRevenue: e.target.value})}
+                  onChange={e => setRoiInputs({ ...roiInputs, monthlyRevenue: e.target.value })}
                 />
               </div>
               <div>
@@ -446,7 +446,9 @@ export default function ValidatePage() {
                   type="number"
                   placeholder="500"
                   value={roiInputs.currentSoftwareCost}
-                  onChange={(e) => setRoiInputs({...roiInputs, currentSoftwareCost: e.target.value})}
+                  onChange={e =>
+                    setRoiInputs({ ...roiInputs, currentSoftwareCost: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -456,18 +458,15 @@ export default function ValidatePage() {
                   type="number"
                   placeholder="20"
                   value={roiInputs.hoursWasted}
-                  onChange={(e) => setRoiInputs({...roiInputs, hoursWasted: e.target.value})}
+                  onChange={e => setRoiInputs({ ...roiInputs, hoursWasted: e.target.value })}
                 />
               </div>
             </div>
-            
-            <Button 
-              onClick={() => calculateValidationResult()}
-              className="w-full mb-4"
-            >
+
+            <Button onClick={() => calculateValidationResult()} className="w-full mb-4">
               Recalculate Savings
             </Button>
-            
+
             <div className="p-6 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
               <p className="text-sm !text-gray-600 dark:!text-gray-400 mb-2">
                 Estimated Annual Savings with HERA:
@@ -481,7 +480,7 @@ export default function ValidatePage() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Missing Features */}
         {validationResult.missingFeatures.length > 0 && (
           <Card>
@@ -497,7 +496,11 @@ export default function ValidatePage() {
               </p>
               <div className="flex flex-wrap gap-2">
                 {validationResult.missingFeatures.map(feature => (
-                  <Badge key={feature} variant="outline" className="text-yellow-700 border-yellow-300">
+                  <Badge
+                    key={feature}
+                    variant="outline"
+                    className="text-yellow-700 border-yellow-300"
+                  >
                     {feature}
                   </Badge>
                 ))}
@@ -505,7 +508,7 @@ export default function ValidatePage() {
             </CardContent>
           </Card>
         )}
-        
+
         {/* Next Steps */}
         <div className="text-center">
           <h3 className="text-2xl font-bold !text-gray-900 dark:!text-white mb-4">
@@ -549,7 +552,7 @@ export default function ValidatePage() {
     >
       {/* WSAG Animated Background Orbs */}
       <div className="fixed inset-0 pointer-events-none">
-        <div 
+        <div
           className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -564,8 +567,8 @@ export default function ValidatePage() {
             transform: `translate(-50%, -50%) scale(${1 + mousePosition.x * 0.002})`
           }}
         />
-        
-        <div 
+
+        <div
           className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
           style={{
             background: `radial-gradient(circle, 
@@ -584,7 +587,7 @@ export default function ValidatePage() {
 
       <div className="relative z-10">
         {/* Header */}
-        <header 
+        <header
           className="sticky top-0 z-50 border-b shadow-lg"
           style={{
             background: `
@@ -611,7 +614,7 @@ export default function ValidatePage() {
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <Link href="/" className="flex items-center gap-3">
-                <div 
+                <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transform transition-all duration-300"
                   style={{
                     background: `
@@ -634,7 +637,9 @@ export default function ValidatePage() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold !text-gray-900 dark:!text-white">HERA</h1>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">Business Validation</p>
+                  <p className="text-xs !text-gray-600 dark:!text-gray-300 font-medium">
+                    Business Validation
+                  </p>
                 </div>
               </Link>
 
@@ -651,10 +656,7 @@ export default function ValidatePage() {
         </header>
 
         {/* Journey Progress */}
-        <JourneyProgressTracker 
-          currentStep="validate" 
-          completedSteps={['discover']}
-        />
+        <JourneyProgressTracker currentStep="validate" completedSteps={['discover']} />
 
         {/* Main Content */}
         <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto">
@@ -671,7 +673,7 @@ export default function ValidatePage() {
               </div>
 
               {/* Question Card */}
-              <Card 
+              <Card
                 className="mb-8"
                 style={{
                   background: `
@@ -690,14 +692,12 @@ export default function ValidatePage() {
                   `
                 }}
               >
-                <CardContent className="p-6">
-                  {renderQuestion()}
-                </CardContent>
+                <CardContent className="p-6">{renderQuestion()}</CardContent>
               </Card>
 
               {/* Info Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div 
+                <div
                   className="p-4 rounded-lg text-center"
                   style={{
                     background: 'rgba(255, 255, 255, 0.1)',
@@ -706,10 +706,14 @@ export default function ValidatePage() {
                   }}
                 >
                   <Zap className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">Quick Setup</p>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-400">30 seconds to 5 minutes</p>
+                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                    Quick Setup
+                  </p>
+                  <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                    30 seconds to 5 minutes
+                  </p>
                 </div>
-                <div 
+                <div
                   className="p-4 rounded-lg text-center"
                   style={{
                     background: 'rgba(255, 255, 255, 0.1)',
@@ -718,10 +722,14 @@ export default function ValidatePage() {
                   }}
                 >
                   <Shield className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">Data Security</p>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-400">Bank-level encryption</p>
+                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                    Data Security
+                  </p>
+                  <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                    Bank-level encryption
+                  </p>
                 </div>
-                <div 
+                <div
                   className="p-4 rounded-lg text-center"
                   style={{
                     background: 'rgba(255, 255, 255, 0.1)',
@@ -730,8 +738,12 @@ export default function ValidatePage() {
                   }}
                 >
                   <DollarSign className="w-8 h-8 mx-auto mb-2 text-emerald-600" />
-                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">Cost Savings</p>
-                  <p className="text-xs !text-gray-600 dark:!text-gray-400">Average 92% reduction</p>
+                  <p className="text-sm font-semibold !text-gray-900 dark:!text-white">
+                    Cost Savings
+                  </p>
+                  <p className="text-xs !text-gray-600 dark:!text-gray-400">
+                    Average 92% reduction
+                  </p>
                 </div>
               </div>
             </>

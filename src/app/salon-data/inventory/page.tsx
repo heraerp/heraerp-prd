@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Inventory Management
  * Smart Code: HERA.SALON.INVENTORY.MODULE.v1
- * 
+ *
  * Complete inventory system with reporting, commissions, alerts,
  * product ownership, and integrations - all on 6-table foundation
  */
@@ -21,7 +21,7 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import type { Product, ProductFormData } from '@/types/salon.types'
-import { 
+import {
   Package,
   AlertCircle,
   TrendingUp,
@@ -321,9 +321,12 @@ const formatCurrency = (amount: number, currency: string = 'AED') => {
 
 const getStockStatus = (current: number, reorderPoint: number) => {
   const ratio = current / reorderPoint
-  if (ratio <= 0.5) return { status: 'critical', color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-900/30' }
-  if (ratio <= 1) return { status: 'low', color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-900/30' }
-  if (ratio <= 2) return { status: 'good', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-900/30' }
+  if (ratio <= 0.5)
+    return { status: 'critical', color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-900/30' }
+  if (ratio <= 1)
+    return { status: 'low', color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-900/30' }
+  if (ratio <= 2)
+    return { status: 'good', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-900/30' }
   return { status: 'excess', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-900/30' }
 }
 
@@ -332,9 +335,11 @@ const getStockStatus = (current: number, reorderPoint: number) => {
 export default function SalonInventoryManagement() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
-  
+
   // State Management
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'movements' | 'reports' | 'settings'>('overview')
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'products' | 'movements' | 'reports' | 'settings'
+  >('overview')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [selectedOwnership, setSelectedOwnership] = useState<string>('')
@@ -355,45 +360,57 @@ export default function SalonInventoryManagement() {
 
   const filteredInventory = useMemo(() => {
     return mockInventory.filter(item => {
-      const matchesSearch = item.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.entity_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.barcode?.includes(searchQuery) ||
-                           item.sku?.includes(searchQuery)
+      const matchesSearch =
+        item.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.entity_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.barcode?.includes(searchQuery) ||
+        item.sku?.includes(searchQuery)
       const matchesCategory = !selectedCategory || item.category_id === selectedCategory
       const matchesOwnership = !selectedOwnership || item.ownership_type === selectedOwnership
       const matchesLowStock = !showLowStockOnly || item.stock_on_hand <= item.reorder_point
-      
+
       return matchesSearch && matchesCategory && matchesOwnership && matchesLowStock
     })
   }, [searchQuery, selectedCategory, selectedOwnership, showLowStockOnly])
 
   const inventoryMetrics = useMemo(() => {
-    const totalValue = mockInventory.reduce((sum, item) => sum + (item.stock_on_hand * item.unit_cost), 0)
-    const retailValue = mockInventory.reduce((sum, item) => sum + (item.stock_on_hand * item.retail_price), 0)
-    const lowStockCount = mockInventory.filter(item => item.stock_on_hand <= item.reorder_point).length
+    const totalValue = mockInventory.reduce(
+      (sum, item) => sum + item.stock_on_hand * item.unit_cost,
+      0
+    )
+    const retailValue = mockInventory.reduce(
+      (sum, item) => sum + item.stock_on_hand * item.retail_price,
+      0
+    )
+    const lowStockCount = mockInventory.filter(
+      item => item.stock_on_hand <= item.reorder_point
+    ).length
     const outOfStockCount = mockInventory.filter(item => item.stock_on_hand === 0).length
-    
+
     return {
       totalItems: mockInventory.length,
       totalValue,
       retailValue,
       lowStockCount,
       outOfStockCount,
-      avgMargin: ((retailValue - totalValue) / retailValue * 100) || 0
+      avgMargin: ((retailValue - totalValue) / retailValue) * 100 || 0
     }
   }, [])
 
   const ownershipBreakdown = useMemo(() => {
-    const breakdown = mockInventory.reduce((acc, item) => {
-      const type = item.ownership_type || 'salon'
-      if (!acc[type]) {
-        acc[type] = { count: 0, value: 0 }
-      }
-      acc[type].count++
-      acc[type].value += item.stock_on_hand * item.unit_cost
-      return acc
-    }, {} as Record<string, { count: number; value: number }>)
-    
+    const breakdown = mockInventory.reduce(
+      (acc, item) => {
+        const type = item.ownership_type || 'salon'
+        if (!acc[type]) {
+          acc[type] = { count: 0, value: 0 }
+        }
+        acc[type].count++
+        acc[type].value += item.stock_on_hand * item.unit_cost
+        return acc
+      },
+      {} as Record<string, { count: number; value: number }>
+    )
+
     return breakdown
   }, [])
 
@@ -412,7 +429,7 @@ export default function SalonInventoryManagement() {
         reason: reason
       }
     }
-    
+
     // Here you would call universalApi to create stock adjustment
     // await universalApi.createTransaction(movement)
   }
@@ -420,7 +437,7 @@ export default function SalonInventoryManagement() {
   const handleReorder = async (productId: string) => {
     const product = mockInventory.find(p => p.id === productId)
     if (!product) return
-    
+
     // Create purchase order transaction
     const purchaseOrder = {
       organization_id: organizationId,
@@ -433,35 +450,34 @@ export default function SalonInventoryManagement() {
         quantity: product.reorder_quantity
       }
     }
-    
+
     // In production, this would create the purchase order via API
-    handleError(
-      new Error(`Reorder initiated for ${product.entity_name}`),
-      'inventory-reorder',
-      {
-        showToast: true,
-        fallbackMessage: `Reorder initiated for ${product.entity_name}`
-      }
-    )
+    handleError(new Error(`Reorder initiated for ${product.entity_name}`), 'inventory-reorder', {
+      showToast: true,
+      fallbackMessage: `Reorder initiated for ${product.entity_name}`
+    })
   }
 
   const generateCommissionReport = () => {
     // Calculate commissions based on sales and commission rules
-    const report = mockInventory.map(item => {
-      if (item.commission_rate > 0) {
-        return {
-          product: item.entity_name,
-          owner: item.owner_name,
-          rate: item.commission_rate,
-          type: item.commission_type,
-          estimatedMonthly: item.commission_type === 'percentage' 
-            ? (item.retail_price * 0.15 * 30) // Assume 15% of stock sells monthly
-            : (item.commission_rate * 30)
+    const report = mockInventory
+      .map(item => {
+        if (item.commission_rate > 0) {
+          return {
+            product: item.entity_name,
+            owner: item.owner_name,
+            rate: item.commission_rate,
+            type: item.commission_type,
+            estimatedMonthly:
+              item.commission_type === 'percentage'
+                ? item.retail_price * 0.15 * 30 // Assume 15% of stock sells monthly
+                : item.commission_rate * 30
+          }
         }
-      }
-      return null
-    }).filter(Boolean)
-    
+        return null
+      })
+      .filter(Boolean)
+
     // Commission report generated
     // In production, this would be saved or exported
   }
@@ -483,9 +499,7 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(inventoryMetrics.totalValue)}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Cost basis
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Cost basis</p>
           </CardContent>
         </Card>
 
@@ -517,9 +531,7 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inventoryMetrics.lowStockCount}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Need reordering
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Need reordering</p>
           </CardContent>
         </Card>
 
@@ -534,9 +546,7 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inventoryMetrics.totalItems}</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Active items
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Active items</p>
           </CardContent>
         </Card>
       </div>
@@ -586,16 +596,17 @@ export default function SalonInventoryManagement() {
         <CardContent>
           <div className="space-y-4">
             {Object.entries(ownershipBreakdown).map(([type, data]) => (
-              <div key={type} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div
+                key={type}
+                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+              >
                 <div className="flex items-center gap-3">
                   {type === 'salon' && <Home className="w-5 h-5 text-purple-500" />}
                   {type === 'booth_renter' && <UserCheck className="w-5 h-5 text-blue-500" />}
                   {type === 'consignment' && <Package className="w-5 h-5 text-green-500" />}
                   <div>
                     <h4 className="font-medium capitalize">{type.replace('_', ' ')}</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {data.count} items
-                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{data.count} items</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -618,7 +629,10 @@ export default function SalonInventoryManagement() {
         <CardContent>
           <div className="space-y-3">
             {mockMovements.slice(0, 5).map(movement => (
-              <div key={movement.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div
+                key={movement.id}
+                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+              >
                 <div className="flex items-center gap-3">
                   {movement.movement_type === 'in' ? (
                     <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -638,7 +652,8 @@ export default function SalonInventoryManagement() {
                 </div>
                 <div className="text-right">
                   <p className="font-semibold">
-                    {movement.movement_type === 'in' ? '+' : '-'}{movement.quantity}
+                    {movement.movement_type === 'in' ? '+' : '-'}
+                    {movement.quantity}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {movement.transaction_date.toLocaleTimeString()}
@@ -664,27 +679,29 @@ export default function SalonInventoryManagement() {
                 <Input
                   placeholder="Search products by name, code, barcode..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="pl-9"
                 />
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               <select
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                onChange={e => setSelectedCategory(e.target.value)}
                 className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm"
               >
                 <option value="">All Categories</option>
                 {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
                 ))}
               </select>
-              
+
               <select
                 value={selectedOwnership}
-                onChange={(e) => setSelectedOwnership(e.target.value)}
+                onChange={e => setSelectedOwnership(e.target.value)}
                 className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-sm"
               >
                 <option value="">All Ownership</option>
@@ -692,7 +709,7 @@ export default function SalonInventoryManagement() {
                 <option value="booth_renter">Booth Renter</option>
                 <option value="consignment">Consignment</option>
               </select>
-              
+
               <Button
                 variant={showLowStockOnly ? 'default' : 'outline'}
                 size="sm"
@@ -701,7 +718,7 @@ export default function SalonInventoryManagement() {
                 <AlertCircle className="w-4 h-4 mr-2" />
                 Low Stock Only
               </Button>
-              
+
               <Button variant="outline" size="sm">
                 <Download className="w-4 h-4 mr-2" />
                 Export
@@ -715,7 +732,7 @@ export default function SalonInventoryManagement() {
       <div className="grid grid-cols-1 gap-4">
         {filteredInventory.map(item => {
           const stockStatus = getStockStatus(item.stock_on_hand, item.reorder_point)
-          
+
           return (
             <Card key={item.id} className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
@@ -726,7 +743,7 @@ export default function SalonInventoryManagement() {
                       <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                         <Package className="w-6 h-6 text-gray-500" />
                       </div>
-                      
+
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -735,8 +752,10 @@ export default function SalonInventoryManagement() {
                           <Badge
                             variant="outline"
                             style={{
-                              borderColor: categories.find(c => c.id === item.category_id)?.color + '40',
-                              backgroundColor: categories.find(c => c.id === item.category_id)?.color + '10'
+                              borderColor:
+                                categories.find(c => c.id === item.category_id)?.color + '40',
+                              backgroundColor:
+                                categories.find(c => c.id === item.category_id)?.color + '10'
                             }}
                           >
                             {item.category_name}
@@ -747,7 +766,7 @@ export default function SalonInventoryManagement() {
                             </Badge>
                           )}
                         </div>
-                        
+
                         <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                           {item.entity_code && (
                             <span className="flex items-center gap-1">
@@ -762,17 +781,21 @@ export default function SalonInventoryManagement() {
                             </span>
                           )}
                           {item.sku && (
-                            <span className="flex items-center gap-1">
-                              SKU: {item.sku}
-                            </span>
+                            <span className="flex items-center gap-1">SKU: {item.sku}</span>
                           )}
                         </div>
-                        
+
                         {/* Ownership Info */}
                         <div className="mt-2 flex items-center gap-2">
-                          {item.ownership_type === 'salon' && <Home className="w-4 h-4 text-purple-500" />}
-                          {item.ownership_type === 'booth_renter' && <UserCheck className="w-4 h-4 text-blue-500" />}
-                          {item.ownership_type === 'consignment' && <Package className="w-4 h-4 text-green-500" />}
+                          {item.ownership_type === 'salon' && (
+                            <Home className="w-4 h-4 text-purple-500" />
+                          )}
+                          {item.ownership_type === 'booth_renter' && (
+                            <UserCheck className="w-4 h-4 text-blue-500" />
+                          )}
+                          {item.ownership_type === 'consignment' && (
+                            <Package className="w-4 h-4 text-green-500" />
+                          )}
                           <span className="text-sm">
                             {item.owner_name} ({item.ownership_type?.replace('_', ' ')})
                           </span>
@@ -783,13 +806,11 @@ export default function SalonInventoryManagement() {
 
                   {/* Stock & Pricing Info */}
                   <div className="ml-6 text-right">
-                    <div className={cn("text-2xl font-bold mb-1", stockStatus.color)}>
+                    <div className={cn('text-2xl font-bold mb-1', stockStatus.color)}>
                       {item.stock_on_hand}
                     </div>
-                    <Badge className={cn("mb-2", stockStatus.bg)}>
-                      {stockStatus.status}
-                    </Badge>
-                    
+                    <Badge className={cn('mb-2', stockStatus.bg)}>{stockStatus.status}</Badge>
+
                     <div className="space-y-1 text-sm">
                       <div className="text-gray-500 dark:text-gray-400">
                         Reorder at: {item.reorder_point}
@@ -834,7 +855,7 @@ export default function SalonInventoryManagement() {
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
@@ -892,7 +913,10 @@ export default function SalonInventoryManagement() {
         <CardContent>
           <div className="space-y-3">
             {mockMovements.map(movement => (
-              <div key={movement.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              <div
+                key={movement.id}
+                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
                     {movement.movement_type === 'in' ? (
@@ -908,12 +932,10 @@ export default function SalonInventoryManagement() {
                         <RefreshCw className="w-5 h-5 text-blue-600" />
                       </div>
                     )}
-                    
+
                     <div className="flex-1">
                       <h4 className="font-semibold">{movement.product_name}</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {movement.reason}
-                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{movement.reason}</p>
                       <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                         <span className="flex items-center gap-1">
                           <User className="w-3 h-3" />
@@ -930,13 +952,16 @@ export default function SalonInventoryManagement() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
-                    <p className={cn(
-                      "text-xl font-bold",
-                      movement.movement_type === 'in' ? 'text-green-600' : 'text-red-600'
-                    )}>
-                      {movement.movement_type === 'in' ? '+' : '-'}{movement.quantity}
+                    <p
+                      className={cn(
+                        'text-xl font-bold',
+                        movement.movement_type === 'in' ? 'text-green-600' : 'text-red-600'
+                      )}
+                    >
+                      {movement.movement_type === 'in' ? '+' : '-'}
+                      {movement.quantity}
                     </p>
                     {movement.reference_number && (
                       <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -977,7 +1002,9 @@ export default function SalonInventoryManagement() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 dark:text-gray-400">Total Retail Value</span>
-                <span className="font-semibold">{formatCurrency(inventoryMetrics.retailValue)}</span>
+                <span className="font-semibold">
+                  {formatCurrency(inventoryMetrics.retailValue)}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 dark:text-gray-400">Potential Profit</span>
@@ -1005,23 +1032,27 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {mockInventory.filter(item => item.commission_rate > 0).slice(0, 3).map(item => (
-                <div key={item.id} className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                  <div>
-                    <p className="text-sm font-medium">{item.entity_name}</p>
-                    <p className="text-xs text-gray-500">{item.owner_name}</p>
+              {mockInventory
+                .filter(item => item.commission_rate > 0)
+                .slice(0, 3)
+                .map(item => (
+                  <div
+                    key={item.id}
+                    className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">{item.entity_name}</p>
+                      <p className="text-xs text-gray-500">{item.owner_name}</p>
+                    </div>
+                    <Badge>
+                      {item.commission_type === 'percentage'
+                        ? `${item.commission_rate}%`
+                        : formatCurrency(item.commission_rate)}
+                    </Badge>
                   </div>
-                  <Badge>
-                    {item.commission_type === 'percentage' ? `${item.commission_rate}%` : formatCurrency(item.commission_rate)}
-                  </Badge>
-                </div>
-              ))}
+                ))}
               <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                <Button 
-                  className="w-full" 
-                  variant="outline"
-                  onClick={generateCommissionReport}
-                >
+                <Button className="w-full" variant="outline" onClick={generateCommissionReport}>
                   <DollarSign className="w-4 h-4 mr-2" />
                   Calculate Commissions
                 </Button>
@@ -1123,21 +1154,27 @@ export default function SalonInventoryManagement() {
                   <p className="font-medium">Email Notifications</p>
                   <p className="text-sm text-gray-500">Receive email alerts for low stock</p>
                 </div>
-                <Button variant="outline" size="sm">Configure</Button>
+                <Button variant="outline" size="sm">
+                  Configure
+                </Button>
               </div>
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div>
                   <p className="font-medium">SMS Alerts</p>
                   <p className="text-sm text-gray-500">Get SMS for critical stock levels</p>
                 </div>
-                <Button variant="outline" size="sm">Configure</Button>
+                <Button variant="outline" size="sm">
+                  Configure
+                </Button>
               </div>
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div>
                   <p className="font-medium">Dashboard Alerts</p>
                   <p className="text-sm text-gray-500">Show alerts on main dashboard</p>
                 </div>
-                <Button variant="outline" size="sm">Configure</Button>
+                <Button variant="outline" size="sm">
+                  Configure
+                </Button>
               </div>
             </div>
           </div>
@@ -1230,7 +1267,10 @@ export default function SalonInventoryManagement() {
             </p>
             <div className="space-y-3">
               {categories.map(category => (
-                <div key={category.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div
+                  key={category.id}
+                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                >
                   <div className="flex items-center gap-3">
                     <div
                       className="w-3 h-3 rounded-full"
@@ -1261,7 +1301,7 @@ export default function SalonInventoryManagement() {
   )
 
   // ----------------------------- Product Modal Component ------------------------------------
-  
+
   const ProductModal = () => {
     const [formData, setFormData] = useState({
       entity_name: '',
@@ -1287,10 +1327,10 @@ export default function SalonInventoryManagement() {
         // Here you would call universalApi to create the product
         // In production, save product via API
         // await universalApi.createEntity(productEntity)
-        
+
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000))
-        
+
         // Close modal and refresh
         setShowProductModal(false)
         setFormData({
@@ -1346,7 +1386,7 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">Product Name *</label>
                   <Input
                     value={formData.entity_name}
-                    onChange={(e) => setFormData({...formData, entity_name: e.target.value})}
+                    onChange={e => setFormData({ ...formData, entity_name: e.target.value })}
                     placeholder="e.g., Argan Oil Shampoo"
                   />
                 </div>
@@ -1354,7 +1394,7 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">Product Code *</label>
                   <Input
                     value={formData.entity_code}
-                    onChange={(e) => setFormData({...formData, entity_code: e.target.value})}
+                    onChange={e => setFormData({ ...formData, entity_code: e.target.value })}
                     placeholder="e.g., PRD-001"
                   />
                 </div>
@@ -1362,7 +1402,7 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">Barcode</label>
                   <Input
                     value={formData.barcode}
-                    onChange={(e) => setFormData({...formData, barcode: e.target.value})}
+                    onChange={e => setFormData({ ...formData, barcode: e.target.value })}
                     placeholder="Scan or enter barcode"
                   />
                 </div>
@@ -1370,7 +1410,7 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">SKU</label>
                   <Input
                     value={formData.sku}
-                    onChange={(e) => setFormData({...formData, sku: e.target.value})}
+                    onChange={e => setFormData({ ...formData, sku: e.target.value })}
                     placeholder="e.g., SH-ARG-250"
                   />
                 </div>
@@ -1385,12 +1425,14 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">Category *</label>
                   <select
                     value={formData.category_id}
-                    onChange={(e) => setFormData({...formData, category_id: e.target.value})}
+                    onChange={e => setFormData({ ...formData, category_id: e.target.value })}
                     className="w-full px-3 py-2 border rounded-lg"
                   >
                     <option value="">Select category</option>
                     {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -1398,7 +1440,9 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">Ownership Type</label>
                   <select
                     value={formData.ownership_type}
-                    onChange={(e) => setFormData({...formData, ownership_type: e.target.value as any})}
+                    onChange={e =>
+                      setFormData({ ...formData, ownership_type: e.target.value as any })
+                    }
                     className="w-full px-3 py-2 border rounded-lg"
                   >
                     <option value="salon">Salon Owned</option>
@@ -1410,7 +1454,7 @@ export default function SalonInventoryManagement() {
                     <label className="text-sm font-medium">Owner Name</label>
                     <Input
                       value={formData.owner_name}
-                      onChange={(e) => setFormData({...formData, owner_name: e.target.value})}
+                      onChange={e => setFormData({ ...formData, owner_name: e.target.value })}
                       placeholder="e.g., Beauty Brands LLC"
                     />
                   </div>
@@ -1419,7 +1463,7 @@ export default function SalonInventoryManagement() {
                   <label className="text-sm font-medium">Usage Type</label>
                   <select
                     value={formData.usage_type}
-                    onChange={(e) => setFormData({...formData, usage_type: e.target.value as any})}
+                    onChange={e => setFormData({ ...formData, usage_type: e.target.value as any })}
                     className="w-full px-3 py-2 border rounded-lg"
                   >
                     <option value="retail">Retail Sale</option>
@@ -1438,7 +1482,9 @@ export default function SalonInventoryManagement() {
                   <Input
                     type="number"
                     value={formData.unit_cost}
-                    onChange={(e) => setFormData({...formData, unit_cost: parseFloat(e.target.value) || 0})}
+                    onChange={e =>
+                      setFormData({ ...formData, unit_cost: parseFloat(e.target.value) || 0 })
+                    }
                     placeholder="0.00"
                   />
                 </div>
@@ -1448,7 +1494,9 @@ export default function SalonInventoryManagement() {
                     <Input
                       type="number"
                       value={formData.retail_price}
-                      onChange={(e) => setFormData({...formData, retail_price: parseFloat(e.target.value) || 0})}
+                      onChange={e =>
+                        setFormData({ ...formData, retail_price: parseFloat(e.target.value) || 0 })
+                      }
                       placeholder="0.00"
                     />
                   </div>
@@ -1458,7 +1506,9 @@ export default function SalonInventoryManagement() {
                   <Input
                     type="number"
                     value={formData.stock_on_hand}
-                    onChange={(e) => setFormData({...formData, stock_on_hand: parseInt(e.target.value) || 0})}
+                    onChange={e =>
+                      setFormData({ ...formData, stock_on_hand: parseInt(e.target.value) || 0 })
+                    }
                     placeholder="0"
                   />
                 </div>
@@ -1467,7 +1517,9 @@ export default function SalonInventoryManagement() {
                   <Input
                     type="number"
                     value={formData.reorder_point}
-                    onChange={(e) => setFormData({...formData, reorder_point: parseInt(e.target.value) || 0})}
+                    onChange={e =>
+                      setFormData({ ...formData, reorder_point: parseInt(e.target.value) || 0 })
+                    }
                     placeholder="10"
                   />
                 </div>
@@ -1476,7 +1528,9 @@ export default function SalonInventoryManagement() {
                   <Input
                     type="number"
                     value={formData.reorder_quantity}
-                    onChange={(e) => setFormData({...formData, reorder_quantity: parseInt(e.target.value) || 0})}
+                    onChange={e =>
+                      setFormData({ ...formData, reorder_quantity: parseInt(e.target.value) || 0 })
+                    }
                     placeholder="20"
                   />
                 </div>
@@ -1492,7 +1546,9 @@ export default function SalonInventoryManagement() {
                     <label className="text-sm font-medium">Commission Type</label>
                     <select
                       value={formData.commission_type}
-                      onChange={(e) => setFormData({...formData, commission_type: e.target.value as any})}
+                      onChange={e =>
+                        setFormData({ ...formData, commission_type: e.target.value as any })
+                      }
                       className="w-full px-3 py-2 border rounded-lg"
                     >
                       <option value="percentage">Percentage</option>
@@ -1501,12 +1557,18 @@ export default function SalonInventoryManagement() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">
-                      Commission {formData.commission_type === 'percentage' ? 'Rate (%)' : 'Amount (AED)'}
+                      Commission{' '}
+                      {formData.commission_type === 'percentage' ? 'Rate (%)' : 'Amount (AED)'}
                     </label>
                     <Input
                       type="number"
                       value={formData.commission_rate}
-                      onChange={(e) => setFormData({...formData, commission_rate: parseFloat(e.target.value) || 0})}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          commission_rate: parseFloat(e.target.value) || 0
+                        })
+                      }
                       placeholder="0"
                     />
                   </div>
@@ -1527,7 +1589,12 @@ export default function SalonInventoryManagement() {
               </Button>
               <Button
                 onClick={handleSaveProduct}
-                disabled={isLoading || !formData.entity_name || !formData.entity_code || !formData.category_id}
+                disabled={
+                  isLoading ||
+                  !formData.entity_name ||
+                  !formData.entity_code ||
+                  !formData.category_id
+                }
                 className="bg-purple-600 hover:bg-purple-700"
               >
                 {isLoading ? (
@@ -1575,7 +1642,7 @@ export default function SalonInventoryManagement() {
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </Button>
-              
+
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Inventory Management
@@ -1585,7 +1652,7 @@ export default function SalonInventoryManagement() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm">
                 <Upload className="w-4 h-4 mr-2" />
@@ -1604,11 +1671,11 @@ export default function SalonInventoryManagement() {
           </div>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="px-6 py-6 max-w-[1600px] mx-auto">
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
+        <Tabs value={activeTab} onValueChange={value => setActiveTab(value as any)}>
           <TabsList className="grid grid-cols-5 w-full max-w-2xl mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
@@ -1616,29 +1683,29 @@ export default function SalonInventoryManagement() {
             <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="overview">
             <OverviewTab />
           </TabsContent>
-          
+
           <TabsContent value="products">
             <ProductsTab />
           </TabsContent>
-          
+
           <TabsContent value="movements">
             <MovementsTab />
           </TabsContent>
-          
+
           <TabsContent value="reports">
             <ReportsTab />
           </TabsContent>
-          
+
           <TabsContent value="settings">
             <SettingsTab />
           </TabsContent>
         </Tabs>
       </div>
-      
+
       {/* Product Modal */}
       <ProductModal />
     </div>

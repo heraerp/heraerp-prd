@@ -33,7 +33,8 @@ interface Assistant {
 const assistants: Assistant[] = [
   {
     title: 'Salon Manager',
-    description: 'Complete salon operations with appointment booking, inventory tracking, and revenue analytics',
+    description:
+      'Complete salon operations with appointment booking, inventory tracking, and revenue analytics',
     icon: Scissors,
     href: '/salon-manager',
     gradient: 'from-purple-500 to-pink-500',
@@ -42,7 +43,8 @@ const assistants: Assistant[] = [
   },
   {
     title: 'Analytics Chat v2',
-    description: 'Advanced business intelligence and data analysis with AI-powered insights and predictions',
+    description:
+      'Advanced business intelligence and data analysis with AI-powered insights and predictions',
     icon: Brain,
     href: '/analytics-chat-v2',
     gradient: 'from-blue-500 to-cyan-500',
@@ -51,7 +53,8 @@ const assistants: Assistant[] = [
   },
   {
     title: 'Digital Accountant',
-    description: 'Enterprise accounting automation with journal entries, GL posting, and financial reporting',
+    description:
+      'Enterprise accounting automation with journal entries, GL posting, and financial reporting',
     icon: Calculator,
     href: '/digital-accountant',
     gradient: 'from-green-500 to-emerald-500',
@@ -105,14 +108,12 @@ export default function AIAssistantsPage() {
 
         {/* Assistant Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {assistants.map((assistant) => (
+          {assistants.map(assistant => (
             <Card
               key={assistant.title}
               className={cn(
-                "relative overflow-hidden transition-all duration-300 hover:shadow-2xl",
-                assistant.status === 'live' 
-                  ? "cursor-pointer hover:-translate-y-1" 
-                  : "opacity-60"
+                'relative overflow-hidden transition-all duration-300 hover:shadow-2xl',
+                assistant.status === 'live' ? 'cursor-pointer hover:-translate-y-1' : 'opacity-60'
               )}
             >
               {/* Status Badge */}
@@ -123,22 +124,22 @@ export default function AIAssistantsPage() {
               )}
 
               <CardHeader>
-                <div className={cn(
-                  "w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center mb-4 shadow-lg",
-                  assistant.gradient
-                )}>
+                <div
+                  className={cn(
+                    'w-16 h-16 rounded-xl bg-gradient-to-br flex items-center justify-center mb-4 shadow-lg',
+                    assistant.gradient
+                  )}
+                >
                   <assistant.icon className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl">{assistant.title}</CardTitle>
-                <CardDescription className="mt-2">
-                  {assistant.description}
-                </CardDescription>
+                <CardDescription className="mt-2">{assistant.description}</CardDescription>
               </CardHeader>
 
               <CardContent>
                 {assistant.features && (
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {assistant.features.map((feature) => (
+                    {assistant.features.map(feature => (
                       <Badge key={feature} variant="outline" className="text-xs">
                         {feature}
                       </Badge>
@@ -163,9 +164,9 @@ export default function AIAssistantsPage() {
               </CardContent>
 
               {/* Gradient overlay */}
-              <div 
+              <div
                 className={cn(
-                  "absolute inset-0 opacity-5 pointer-events-none",
+                  'absolute inset-0 opacity-5 pointer-events-none',
                   `bg-gradient-to-br ${assistant.gradient}`
                 )}
               />

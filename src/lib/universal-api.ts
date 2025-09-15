@@ -1,6 +1,6 @@
 /**
  * 🧬 HERA Universal API
- * 
+ *
  * This is the main Universal API interface that delegates to the enterprise-grade v2 implementation.
  * Maintains backwards compatibility while providing standardized responses across all 6 sacred tables.
  */

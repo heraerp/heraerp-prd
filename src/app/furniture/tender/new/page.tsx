@@ -12,14 +12,10 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from '@/components/ui/select'
 import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { format } from 'date-fns'
 import { CalendarIcon, Save, ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -35,7 +31,7 @@ export default function NewTenderPage() {
   const { organizationId, orgLoading } = useFurnitureOrg()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  
+
   const [formData, setFormData] = useState({
     code: '',
     title: '',
@@ -52,7 +48,7 @@ export default function NewTenderPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!organizationId) {
       toast({
         title: 'Error',
@@ -64,7 +60,7 @@ export default function NewTenderPage() {
 
     try {
       setLoading(true)
-      
+
       const tenderId = await tenderService.createTender({
         code: formData.code,
         title: formData.title,
@@ -78,15 +74,15 @@ export default function NewTenderPage() {
 
       toast({
         title: 'Success',
-        description: 'Tender created successfully',
+        description: 'Tender created successfully'
       })
 
       router.push(`/furniture/tender/${tenderId}`)
     } catch (error) {
       console.error('Error creating tender:', error)
-      
+
       const errorMessage = error?.message || 'Unknown error'
-      
+
       if (errorMessage.includes('Failed to fetch') || errorMessage.includes('net::ERR_FAILED')) {
         // Service worker interference
         toast({
@@ -97,7 +93,7 @@ export default function NewTenderPage() {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => window.location.href = '/clear-cache.html'}
+              onClick={() => (window.location.href = '/clear-cache.html')}
             >
               Fix Now
             </Button>
@@ -149,12 +145,7 @@ export default function NewTenderPage() {
           title="Add New Tender"
           subtitle="Add a tender to your watchlist for bidding"
           actions={
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.back()}
-              className="gap-2"
-            >
+            <Button variant="outline" size="sm" onClick={() => router.back()} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
@@ -164,14 +155,14 @@ export default function NewTenderPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
             <h3 className="text-lg font-semibold text-white mb-4">Tender Information</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="code">Tender Code *</Label>
                 <Input
                   id="code"
                   value={formData.code}
-                  onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, code: e.target.value }))}
                   placeholder="KFD/2025/WOOD/001"
                   required
                   className="bg-gray-700/50 border-gray-600"
@@ -182,14 +173,18 @@ export default function NewTenderPage() {
                 <Label htmlFor="department">Department *</Label>
                 <Select
                   value={formData.department}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
+                  onValueChange={value => setFormData(prev => ({ ...prev, department: value }))}
                 >
                   <SelectTrigger className="bg-gray-700/50 border-gray-600">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Kerala Forest Department">Kerala Forest Department</SelectItem>
-                    <SelectItem value="Kerala State Bamboo Corporation">Kerala State Bamboo Corporation</SelectItem>
+                    <SelectItem value="Kerala Forest Department">
+                      Kerala Forest Department
+                    </SelectItem>
+                    <SelectItem value="Kerala State Bamboo Corporation">
+                      Kerala State Bamboo Corporation
+                    </SelectItem>
                     <SelectItem value="Forest Industries">Forest Industries</SelectItem>
                   </SelectContent>
                 </Select>
@@ -200,7 +195,7 @@ export default function NewTenderPage() {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Teak Wood Supply - Nilambur Range"
                   required
                   className="bg-gray-700/50 border-gray-600"
@@ -214,19 +209,25 @@ export default function NewTenderPage() {
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full justify-start text-left font-normal bg-gray-700/50 border-gray-600",
-                        !formData.closingDate && "text-muted-foreground"
+                        'w-full justify-start text-left font-normal bg-gray-700/50 border-gray-600',
+                        !formData.closingDate && 'text-muted-foreground'
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.closingDate ? format(formData.closingDate, "PPP") : <span>Pick a date</span>}
+                      {formData.closingDate ? (
+                        format(formData.closingDate, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
                       selected={formData.closingDate}
-                      onSelect={(date) => date && setFormData(prev => ({ ...prev, closingDate: date }))}
+                      onSelect={date =>
+                        date && setFormData(prev => ({ ...prev, closingDate: date }))
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -239,7 +240,7 @@ export default function NewTenderPage() {
                   id="lotCount"
                   type="number"
                   value={formData.lotCount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, lotCount: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, lotCount: e.target.value }))}
                   min="1"
                   className="bg-gray-700/50 border-gray-600"
                 />
@@ -250,7 +251,7 @@ export default function NewTenderPage() {
                 <Input
                   id="location"
                   value={formData.location}
-                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))}
                   placeholder="Nilambur Forest Division, Malappuram"
                   className="bg-gray-700/50 border-gray-600"
                 />
@@ -261,7 +262,7 @@ export default function NewTenderPage() {
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Provide a brief description of the tender..."
                   rows={4}
                   className="bg-gray-700/50 border-gray-600"
@@ -272,7 +273,7 @@ export default function NewTenderPage() {
 
           <Card className="p-6 bg-gray-800/70 backdrop-blur-sm border-gray-700/50">
             <h3 className="text-lg font-semibold text-white mb-4">Financial Details</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="estimatedValue">Estimated Value (₹) *</Label>
@@ -280,7 +281,7 @@ export default function NewTenderPage() {
                   id="estimatedValue"
                   type="number"
                   value={formData.estimatedValue}
-                  onChange={(e) => setFormData(prev => ({ ...prev, estimatedValue: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, estimatedValue: e.target.value }))}
                   onBlur={calculateEMD}
                   placeholder="4500000"
                   required
@@ -294,7 +295,7 @@ export default function NewTenderPage() {
                   id="emdAmount"
                   type="number"
                   value={formData.emdAmount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, emdAmount: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, emdAmount: e.target.value }))}
                   placeholder="90000"
                   required
                   className="bg-gray-700/50 border-gray-600"
@@ -308,7 +309,7 @@ export default function NewTenderPage() {
                   id="tenderFee"
                   type="number"
                   value={formData.tenderFee}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tenderFee: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, tenderFee: e.target.value }))}
                   className="bg-gray-700/50 border-gray-600"
                 />
               </div>

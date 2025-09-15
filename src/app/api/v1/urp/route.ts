@@ -1,7 +1,7 @@
 /**
  * Universal Report Pattern API
  * Smart Code: HERA.API.URP.ENDPOINT.v1
- * 
+ *
  * RESTful API for executing URP reports
  */
 
@@ -14,14 +14,11 @@ export async function POST(request: NextRequest) {
     // Get organization ID from headers (set by middleware)
     const headersList = await headers()
     const organizationId = headersList.get('x-organization-id')
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization context required' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Organization context required' }, { status: 401 })
     }
-    
+
     const body = await request.json()
     const {
       action,
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
       useCache = true,
       refreshCache = false
     } = body
-    
+
     // Initialize report engine
     const reportEngine = new UniversalReportEngine({
       organizationId: organizationId,
@@ -42,40 +39,33 @@ export async function POST(request: NextRequest) {
       enableMaterializedViews: false,
       cacheTTL: 300
     })
-    
+
     switch (action) {
       case 'execute':
         // Execute a report recipe
         if (!recipe) {
-          return NextResponse.json(
-            { error: 'Recipe name is required' },
-            { status: 400 }
-          )
+          return NextResponse.json({ error: 'Recipe name is required' }, { status: 400 })
         }
-        
-        const result = await reportEngine.executeRecipe(
-          recipe,
-          parameters,
-          {
-            format,
-            locale,
-            currency,
-            useCache,
-            refreshCache
-          }
-        )
-        
+
+        const result = await reportEngine.executeRecipe(recipe, parameters, {
+          format,
+          locale,
+          currency,
+          useCache,
+          refreshCache
+        })
+
         return NextResponse.json({
           success: true,
           recipe,
           data: result,
           timestamp: new Date().toISOString()
         })
-        
+
       case 'list':
         // List available recipes
         const recipes = reportEngine.getAvailableRecipes()
-        
+
         return NextResponse.json({
           success: true,
           recipes: recipes.map(r => ({
@@ -87,72 +77,65 @@ export async function POST(request: NextRequest) {
           })),
           total: recipes.length
         })
-        
+
       case 'clearCache':
         // Clear cache for specific recipe or all
         await reportEngine.clearCache(body.recipeName)
-        
+
         return NextResponse.json({
           success: true,
           message: body.recipeName
             ? `Cache cleared for recipe: ${body.recipeName}`
             : 'All cache cleared'
         })
-        
+
       case 'primitive':
         // Direct primitive access for advanced users
         const { primitive, config } = body
-        
+
         let primitiveResult: any
-        
+
         switch (primitive) {
           case 'entityResolver':
             primitiveResult = await reportEngine.entityResolver.resolve(config)
             break
-            
+
           case 'transactionFacts':
             primitiveResult = await reportEngine.transactionFacts.aggregate(config)
             break
-            
+
           case 'hierarchyBuilder':
             primitiveResult = await reportEngine.hierarchyBuilder.build(config)
             break
-            
+
           case 'dynamicJoin':
             primitiveResult = await reportEngine.dynamicJoin.join(config)
             break
-            
+
           case 'rollupBalance':
             primitiveResult = reportEngine.rollupBalance.calculate(config)
             break
-            
+
           case 'presentationFormatter':
             primitiveResult = reportEngine.presentationFormatter.format(config)
             break
-            
+
           default:
-            return NextResponse.json(
-              { error: `Unknown primitive: ${primitive}` },
-              { status: 400 }
-            )
+            return NextResponse.json({ error: `Unknown primitive: ${primitive}` }, { status: 400 })
         }
-        
+
         return NextResponse.json({
           success: true,
           primitive,
           data: primitiveResult
         })
-        
+
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
-    
   } catch (error: any) {
     console.error('URP API Error:', error)
-    
+
     return NextResponse.json(
       {
         error: 'Internal server error',

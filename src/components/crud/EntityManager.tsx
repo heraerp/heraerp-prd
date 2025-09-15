@@ -5,8 +5,21 @@ import { useSupabaseAuth } from '@/contexts/supabase-auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Trash2, Edit, Plus, RefreshCw } from 'lucide-react'
@@ -77,7 +90,7 @@ export function EntityManager() {
 
       const response = await fetch(`/api/v1/entities?${params}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -110,14 +123,12 @@ export function EntityManager() {
     try {
       const url = editingEntity ? '/api/v1/entities' : '/api/v1/entities'
       const method = editingEntity ? 'PUT' : 'POST'
-      const body = editingEntity 
-        ? { ...formData, id: editingEntity.id }
-        : formData
+      const body = editingEntity ? { ...formData, id: editingEntity.id } : formData
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
@@ -161,7 +172,7 @@ export function EntityManager() {
       const response = await fetch(`/api/v1/entities?id=${entityId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -298,9 +309,7 @@ export function EntityManager() {
                             {entity.entity_type}
                           </Badge>
                           {entity.entity_code && (
-                            <span className="ml-2 text-xs text-gray-500">
-                              {entity.entity_code}
-                            </span>
+                            <span className="ml-2 text-xs text-gray-500">{entity.entity_code}</span>
                           )}
                         </CardDescription>
                       </div>
@@ -325,16 +334,12 @@ export function EntityManager() {
                     </p>
                   </CardContent>
                   <CardFooter className="pt-3 flex justify-end gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => startEdit(entity)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => startEdit(entity)}>
                       <Pencil className="h-3 w-3" />
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => deleteEntity(entity.id)}
                       className="text-red-600 hover:text-red-700"
                     >
@@ -352,11 +357,11 @@ export function EntityManager() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>
-              {editingEntity ? 'Pencil Entity' : 'Create New Entity'}
-            </CardTitle>
+            <CardTitle>{editingEntity ? 'Pencil Entity' : 'Create New Entity'}</CardTitle>
             <CardDescription>
-              {editingEntity ? 'Update entity information' : 'Add a new entity to your organization'}
+              {editingEntity
+                ? 'Update entity information'
+                : 'Add a new entity to your organization'}
             </CardDescription>
           </CardHeader>
           <form onSubmit={saveEntity}>
@@ -366,7 +371,7 @@ export function EntityManager() {
                   <Label htmlFor="entity_type">Entity Type</Label>
                   <Select
                     value={formData.entity_type}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, entity_type: value }))}
+                    onValueChange={value => setFormData(prev => ({ ...prev, entity_type: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select entity type" />
@@ -385,7 +390,7 @@ export function EntityManager() {
                   <Label htmlFor="status">Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+                    onValueChange={value => setFormData(prev => ({ ...prev, status: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select status" />
@@ -404,7 +409,7 @@ export function EntityManager() {
                 <Input
                   id="entity_name"
                   value={formData.entity_name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, entity_name: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, entity_name: e.target.value }))}
                   placeholder="Enter entity name"
                   required
                 />
@@ -416,7 +421,7 @@ export function EntityManager() {
                   <Input
                     id="entity_code"
                     value={formData.entity_code}
-                    onChange={(e) => setFormData(prev => ({ ...prev, entity_code: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, entity_code: e.target.value }))}
                     placeholder="Enter entity code"
                   />
                 </div>
@@ -426,7 +431,9 @@ export function EntityManager() {
                   <Input
                     id="entity_category"
                     value={formData.entity_category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, entity_category: e.target.value }))}
+                    onChange={e =>
+                      setFormData(prev => ({ ...prev, entity_category: e.target.value }))
+                    }
                     placeholder="Enter category"
                   />
                 </div>
@@ -437,7 +444,7 @@ export function EntityManager() {
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Enter description"
                   rows={3}
                 />
@@ -448,9 +455,7 @@ export function EntityManager() {
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? (
-                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
+                {loading ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : null}
                 {editingEntity ? 'Update' : 'Create'} Entity
               </Button>
             </CardFooter>

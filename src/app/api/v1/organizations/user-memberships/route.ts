@@ -10,15 +10,18 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.substring(7)
-    
+
     // Create Supabase client
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    
+
     // Verify token
-    const { data: { user }, error } = await supabase.auth.getUser(token)
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser(token)
     if (error || !user) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
@@ -32,16 +35,20 @@ export async function GET(request: NextRequest) {
       .single()
 
     if (userError || !userEntity) {
-      return NextResponse.json({ 
-        error: 'User entity not found',
-        details: userError?.message 
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          error: 'User entity not found',
+          details: userError?.message
+        },
+        { status: 404 }
+      )
     }
 
     // Get all organization memberships for this user
     const { data: memberships, error: membershipError } = await supabase
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         id,
         organization_id,
         relationship_type,
@@ -58,7 +65,8 @@ export async function GET(request: NextRequest) {
           subscription_tier,
           created_at
         )
-      `)
+      `
+      )
       .eq('from_entity_id', userEntity.id)
       .eq('relationship_type', 'member_of')
       .eq('is_active', true)
@@ -73,28 +81,30 @@ export async function GET(request: NextRequest) {
     }
 
     // Format the response
-    const formattedMemberships = memberships?.map(membership => ({
-      membership_id: membership.id,
-      organization: {
-        id: membership.core_organizations.id,
-        name: membership.core_organizations.organization_name,
-        type: membership.core_organizations.organization_type,
-        code: membership.core_organizations.organization_code,
-        status: membership.core_organizations.status,
-        subscription_tier: membership.core_organizations.subscription_tier,
-        created_at: membership.core_organizations.created_at
-      },
-      membership: {
-        role: (membership.metadata as any)?.role || 'member',
-        is_primary: (membership.metadata as any)?.is_primary || false,
-        permissions: (membership.metadata as any)?.permissions || [],
-        joined_at: (membership.metadata as any)?.joined_at || membership.created_at,
-        relationship_strength: membership.relationship_strength
-      }
-    })) || []
+    const formattedMemberships =
+      memberships?.map(membership => ({
+        membership_id: membership.id,
+        organization: {
+          id: membership.core_organizations.id,
+          name: membership.core_organizations.organization_name,
+          type: membership.core_organizations.organization_type,
+          code: membership.core_organizations.organization_code,
+          status: membership.core_organizations.status,
+          subscription_tier: membership.core_organizations.subscription_tier,
+          created_at: membership.core_organizations.created_at
+        },
+        membership: {
+          role: (membership.metadata as any)?.role || 'member',
+          is_primary: (membership.metadata as any)?.is_primary || false,
+          permissions: (membership.metadata as any)?.permissions || [],
+          joined_at: (membership.metadata as any)?.joined_at || membership.created_at,
+          relationship_strength: membership.relationship_strength
+        }
+      })) || []
 
     // Identify primary organization
-    const primaryOrg = formattedMemberships.find(m => m.membership.is_primary) || formattedMemberships[0]
+    const primaryOrg =
+      formattedMemberships.find(m => m.membership.is_primary) || formattedMemberships[0]
 
     return NextResponse.json({
       success: true,
@@ -103,12 +113,8 @@ export async function GET(request: NextRequest) {
       primary_organization: primaryOrg?.organization || null,
       memberships: formattedMemberships
     })
-
   } catch (error) {
     console.error('User memberships error:', error)
-    return NextResponse.json(
-      { error: 'Failed to load user memberships' }, 
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to load user memberships' }, { status: 500 })
   }
 }

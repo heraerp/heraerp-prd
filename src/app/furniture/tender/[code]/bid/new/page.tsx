@@ -40,12 +40,12 @@ interface BidFormData {
   validityPeriod: string
   deliveryPeriod: string
   paymentTerms: string
-  
+
   // Technical Details
   technicalCapability: string
   pastExperience: string
   qualityAssurance: string
-  
+
   // Commercial Details
   priceBreakdown: {
     materialCost: string
@@ -54,7 +54,7 @@ interface BidFormData {
     overheads: string
     profit: string
   }
-  
+
   // Compliance
   documentsChecked: string[]
   declarations: string[]
@@ -86,7 +86,7 @@ export default function NewBidPage() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('basic')
-  
+
   const [formData, setFormData] = useState<BidFormData>({
     bidAmount: '',
     validityPeriod: '90',
@@ -111,7 +111,7 @@ export default function NewBidPage() {
 
   const calculateTotalBid = () => {
     const breakdown = formData.priceBreakdown
-    const total = 
+    const total =
       parseFloat(breakdown.materialCost || '0') +
       parseFloat(breakdown.transportCost || '0') +
       parseFloat(breakdown.laborCost || '0') +
@@ -148,12 +148,12 @@ export default function NewBidPage() {
       }
 
       const result = await universalApi.createEntity(bidData)
-      
+
       toast({
         title: 'Bid Draft Saved',
-        description: 'Your bid has been saved as draft.',
+        description: 'Your bid has been saved as draft.'
       })
-      
+
       router.push(`/furniture/tender/${code}`)
     } catch (error) {
       console.error('Error saving bid:', error)
@@ -206,7 +206,7 @@ export default function NewBidPage() {
       }
 
       const result = await universalApi.createEntity(bidData)
-      
+
       // Create transaction for bid submission
       await universalApi.createTransaction({
         transaction_type: 'bid_submission',
@@ -218,12 +218,12 @@ export default function NewBidPage() {
           tender_code: code
         }
       })
-      
+
       toast({
         title: 'Bid Submitted Successfully',
-        description: 'Your bid has been submitted and locked.',
+        description: 'Your bid has been submitted and locked.'
       })
-      
+
       router.push(`/furniture/tender/${code}`)
     } catch (error) {
       console.error('Error submitting bid:', error)
@@ -262,7 +262,7 @@ export default function NewBidPage() {
                     id="bidAmount"
                     type="number"
                     value={formData.bidAmount}
-                    onChange={(e) => setFormData({ ...formData, bidAmount: e.target.value })}
+                    onChange={e => setFormData({ ...formData, bidAmount: e.target.value })}
                     placeholder="Enter total bid amount"
                     className="text-lg font-semibold"
                   />
@@ -296,7 +296,7 @@ export default function NewBidPage() {
                       id="validityPeriod"
                       type="number"
                       value={formData.validityPeriod}
-                      onChange={(e) => setFormData({ ...formData, validityPeriod: e.target.value })}
+                      onChange={e => setFormData({ ...formData, validityPeriod: e.target.value })}
                     />
                   </div>
                   <div>
@@ -305,7 +305,7 @@ export default function NewBidPage() {
                       id="deliveryPeriod"
                       type="number"
                       value={formData.deliveryPeriod}
-                      onChange={(e) => setFormData({ ...formData, deliveryPeriod: e.target.value })}
+                      onChange={e => setFormData({ ...formData, deliveryPeriod: e.target.value })}
                     />
                   </div>
                 </div>
@@ -315,7 +315,7 @@ export default function NewBidPage() {
                   <Textarea
                     id="paymentTerms"
                     value={formData.paymentTerms}
-                    onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
+                    onChange={e => setFormData({ ...formData, paymentTerms: e.target.value })}
                     rows={3}
                   />
                 </div>
@@ -327,7 +327,9 @@ export default function NewBidPage() {
                   <Textarea
                     id="technicalCapability"
                     value={formData.technicalCapability}
-                    onChange={(e) => setFormData({ ...formData, technicalCapability: e.target.value })}
+                    onChange={e =>
+                      setFormData({ ...formData, technicalCapability: e.target.value })
+                    }
                     placeholder="Describe your technical capabilities, machinery, workforce..."
                     rows={4}
                   />
@@ -338,7 +340,7 @@ export default function NewBidPage() {
                   <Textarea
                     id="pastExperience"
                     value={formData.pastExperience}
-                    onChange={(e) => setFormData({ ...formData, pastExperience: e.target.value })}
+                    onChange={e => setFormData({ ...formData, pastExperience: e.target.value })}
                     placeholder="List similar projects completed, client references..."
                     rows={4}
                   />
@@ -349,7 +351,7 @@ export default function NewBidPage() {
                   <Textarea
                     id="qualityAssurance"
                     value={formData.qualityAssurance}
-                    onChange={(e) => setFormData({ ...formData, qualityAssurance: e.target.value })}
+                    onChange={e => setFormData({ ...formData, qualityAssurance: e.target.value })}
                     placeholder="Quality control measures, certifications..."
                     rows={4}
                   />
@@ -358,7 +360,7 @@ export default function NewBidPage() {
 
               <TabsContent value="commercial" className="space-y-4 mt-6">
                 <h3 className="font-semibold mb-4">Price Breakdown</h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="materialCost">Material Cost (₹)</Label>
@@ -366,10 +368,15 @@ export default function NewBidPage() {
                       id="materialCost"
                       type="number"
                       value={formData.priceBreakdown.materialCost}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        priceBreakdown: { ...formData.priceBreakdown, materialCost: e.target.value }
-                      })}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          priceBreakdown: {
+                            ...formData.priceBreakdown,
+                            materialCost: e.target.value
+                          }
+                        })
+                      }
                     />
                   </div>
 
@@ -379,10 +386,15 @@ export default function NewBidPage() {
                       id="transportCost"
                       type="number"
                       value={formData.priceBreakdown.transportCost}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        priceBreakdown: { ...formData.priceBreakdown, transportCost: e.target.value }
-                      })}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          priceBreakdown: {
+                            ...formData.priceBreakdown,
+                            transportCost: e.target.value
+                          }
+                        })
+                      }
                     />
                   </div>
 
@@ -392,10 +404,12 @@ export default function NewBidPage() {
                       id="laborCost"
                       type="number"
                       value={formData.priceBreakdown.laborCost}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        priceBreakdown: { ...formData.priceBreakdown, laborCost: e.target.value }
-                      })}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          priceBreakdown: { ...formData.priceBreakdown, laborCost: e.target.value }
+                        })
+                      }
                     />
                   </div>
 
@@ -405,10 +419,12 @@ export default function NewBidPage() {
                       id="overheads"
                       type="number"
                       value={formData.priceBreakdown.overheads}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        priceBreakdown: { ...formData.priceBreakdown, overheads: e.target.value }
-                      })}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          priceBreakdown: { ...formData.priceBreakdown, overheads: e.target.value }
+                        })
+                      }
                     />
                   </div>
 
@@ -418,10 +434,12 @@ export default function NewBidPage() {
                       id="profit"
                       type="number"
                       value={formData.priceBreakdown.profit}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        priceBreakdown: { ...formData.priceBreakdown, profit: e.target.value }
-                      })}
+                      onChange={e =>
+                        setFormData({
+                          ...formData,
+                          priceBreakdown: { ...formData.priceBreakdown, profit: e.target.value }
+                        })
+                      }
                     />
                   </div>
 
@@ -440,12 +458,12 @@ export default function NewBidPage() {
                 <div>
                   <h3 className="font-semibold mb-4">Required Documents</h3>
                   <div className="space-y-3">
-                    {requiredDocuments.map((doc) => (
+                    {requiredDocuments.map(doc => (
                       <div key={doc.id} className="flex items-center space-x-2">
                         <Checkbox
                           id={doc.id}
                           checked={formData.documentsChecked.includes(doc.id)}
-                          onCheckedChange={(checked) => {
+                          onCheckedChange={checked => {
                             if (checked) {
                               setFormData({
                                 ...formData,
@@ -454,7 +472,9 @@ export default function NewBidPage() {
                             } else {
                               setFormData({
                                 ...formData,
-                                documentsChecked: formData.documentsChecked.filter(d => d !== doc.id)
+                                documentsChecked: formData.documentsChecked.filter(
+                                  d => d !== doc.id
+                                )
                               })
                             }
                           }}
@@ -473,12 +493,12 @@ export default function NewBidPage() {
                 <div className="pt-4">
                   <h3 className="font-semibold mb-4">Declarations</h3>
                   <div className="space-y-3">
-                    {declarations.map((dec) => (
+                    {declarations.map(dec => (
                       <div key={dec.id} className="flex items-start space-x-2">
                         <Checkbox
                           id={dec.id}
                           checked={formData.declarations.includes(dec.id)}
-                          onCheckedChange={(checked) => {
+                          onCheckedChange={checked => {
                             if (checked) {
                               setFormData({
                                 ...formData,
@@ -503,18 +523,11 @@ export default function NewBidPage() {
             </Tabs>
 
             <div className="flex justify-between items-center mt-6 pt-6 border-t">
-              <Button
-                variant="outline"
-                onClick={() => router.push(`/furniture/tender/${code}`)}
-              >
+              <Button variant="outline" onClick={() => router.push(`/furniture/tender/${code}`)}>
                 Cancel
               </Button>
               <div className="space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={handleSubmitDraft}
-                  disabled={loading}
-                >
+                <Button variant="outline" onClick={handleSubmitDraft} disabled={loading}>
                   <Save className="h-4 w-4 mr-2" />
                   Save Draft
                 </Button>
@@ -606,7 +619,9 @@ export default function NewBidPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span>Technical Details</span>
-                <span className={formData.technicalCapability ? 'text-green-600' : 'text-orange-600'}>
+                <span
+                  className={formData.technicalCapability ? 'text-green-600' : 'text-orange-600'}
+                >
                   {formData.technicalCapability ? 'Complete' : 'Pending'}
                 </span>
               </div>
@@ -617,9 +632,19 @@ export default function NewBidPage() {
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span>Documents ({formData.documentsChecked.length}/{requiredDocuments.length})</span>
-                <span className={formData.documentsChecked.length === requiredDocuments.length ? 'text-green-600' : 'text-orange-600'}>
-                  {formData.documentsChecked.length === requiredDocuments.length ? 'Complete' : 'Pending'}
+                <span>
+                  Documents ({formData.documentsChecked.length}/{requiredDocuments.length})
+                </span>
+                <span
+                  className={
+                    formData.documentsChecked.length === requiredDocuments.length
+                      ? 'text-green-600'
+                      : 'text-orange-600'
+                  }
+                >
+                  {formData.documentsChecked.length === requiredDocuments.length
+                    ? 'Complete'
+                    : 'Pending'}
                 </span>
               </div>
             </div>

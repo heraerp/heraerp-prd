@@ -8,17 +8,20 @@ export function DemoAuthHandler({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [isProcessing, setIsProcessing] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
-  
+
   useEffect(() => {
     // Simplified demo auth handler - just check if it's a demo route
-    const isDemoRoute = pathname.startsWith('/salon') || pathname.startsWith('/icecream') || pathname.startsWith('/restaurant')
-    
+    const isDemoRoute =
+      pathname.startsWith('/salon') ||
+      pathname.startsWith('/icecream') ||
+      pathname.startsWith('/restaurant')
+
     if (isDemoRoute) {
       console.log('Demo route detected:', pathname)
       // For now, just log - the MultiOrgAuthProvider will handle the actual auth
     }
   }, [pathname])
-  
+
   // Show loading state during demo auth
   if (isProcessing) {
     return (
@@ -30,7 +33,7 @@ export function DemoAuthHandler({ children }: { children: React.ReactNode }) {
       </div>
     )
   }
-  
+
   // Show message briefly
   if (message && !isProcessing) {
     return (
@@ -42,6 +45,6 @@ export function DemoAuthHandler({ children }: { children: React.ReactNode }) {
       </>
     )
   }
-  
+
   return <>{children}</>
 }

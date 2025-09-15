@@ -29,10 +29,7 @@ export interface ErrorResponse {
 /**
  * Standardized error response handler
  */
-export function errorResponse(
-  error: unknown,
-  requestId?: string
-): NextResponse<ErrorResponse> {
+export function errorResponse(error: unknown, requestId?: string): NextResponse<ErrorResponse> {
   console.error('[API Error]', {
     error,
     requestId,
@@ -74,7 +71,7 @@ export function errorResponse(
 
   // Handle generic errors
   const message = error instanceof Error ? error.message : 'Internal server error'
-  
+
   return NextResponse.json(
     {
       error: {
@@ -96,7 +93,7 @@ export function withErrorHandler<T extends (...args: any[]) => Promise<NextRespo
 ): T {
   return (async (...args: Parameters<T>) => {
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     try {
       return await handler(...args)
     } catch (error) {
@@ -109,12 +106,7 @@ export function withErrorHandler<T extends (...args: any[]) => Promise<NextRespo
  * Input validation error helper
  */
 export function validationError(field: string, message: string): APIError {
-  return new APIError(
-    `Validation error: ${message}`,
-    400,
-    'VALIDATION_ERROR',
-    { field, message }
-  )
+  return new APIError(`Validation error: ${message}`, 400, 'VALIDATION_ERROR', { field, message })
 }
 
 /**
@@ -128,22 +120,12 @@ export function authError(message: string = 'Unauthorized'): APIError {
  * Not found error helper
  */
 export function notFoundError(resource: string): APIError {
-  return new APIError(
-    `${resource} not found`,
-    404,
-    'NOT_FOUND',
-    { resource }
-  )
+  return new APIError(`${resource} not found`, 404, 'NOT_FOUND', { resource })
 }
 
 /**
  * Rate limit error helper
  */
 export function rateLimitError(retryAfter?: number): APIError {
-  return new APIError(
-    'Too many requests',
-    429,
-    'RATE_LIMIT',
-    { retryAfter }
-  )
+  return new APIError('Too many requests', 429, 'RATE_LIMIT', { retryAfter })
 }

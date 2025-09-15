@@ -2,35 +2,35 @@
  * HERA Factory Dashboard Main Component
  */
 
-import React from 'react';
-import { KpiCards } from './KpiCards';
-import { TransactionsTable } from './TransactionsTable';
-import { DependencyGraph } from './DependencyGraph';
-import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard';
-import { motion } from 'framer-motion';
-import { Factory, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { 
+import React from 'react'
+import { KpiCards } from './KpiCards'
+import { TransactionsTable } from './TransactionsTable'
+import { DependencyGraph } from './DependencyGraph'
+import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard'
+import { motion } from 'framer-motion'
+import { Factory, RefreshCw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { DatePicker } from '@/components/ui/date-picker';
+  SelectValue
+} from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export default function FactoryDashboard() {
-  const { filters, data, actions } = useFactoryDashboard();
-  const { 
-    transactions, 
-    modules, 
-    relationships, 
-    fiscalPeriods, 
-    transactionLines, 
-    kpis, 
-    loading, 
-    error 
-  } = data;
+  const { filters, data, actions } = useFactoryDashboard()
+  const {
+    transactions,
+    modules,
+    relationships,
+    fiscalPeriods,
+    transactionLines,
+    kpis,
+    loading,
+    error
+  } = data
 
   if (error) {
     return (
@@ -41,7 +41,7 @@ export default function FactoryDashboard() {
           Retry
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -68,7 +68,7 @@ export default function FactoryDashboard() {
               {/* Channel Filter */}
               <Select
                 value={filters.channel || 'all'}
-                onValueChange={(value) => 
+                onValueChange={value =>
                   actions.updateFilters({ channel: value === 'all' ? undefined : value })
                 }
               >
@@ -89,12 +89,7 @@ export default function FactoryDashboard() {
               </div>
 
               {/* Refresh */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={actions.refresh}
-                disabled={loading}
-              >
+              <Button variant="outline" size="sm" onClick={actions.refresh} disabled={loading}>
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
@@ -119,7 +114,7 @@ export default function FactoryDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <TransactionsTable 
+          <TransactionsTable
             transactions={transactions}
             transactionLines={transactionLines}
             onCreateWaiver={actions.createWaiver}
@@ -132,10 +127,7 @@ export default function FactoryDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          <DependencyGraph 
-            modules={modules}
-            relationships={relationships}
-          />
+          <DependencyGraph modules={modules} relationships={relationships} />
         </motion.div>
 
         {/* Fiscal Period Warning */}
@@ -152,5 +144,5 @@ export default function FactoryDashboard() {
         )}
       </main>
     </div>
-  );
+  )
 }

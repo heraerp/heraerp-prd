@@ -1,22 +1,11 @@
 'use client'
 
-import { 
-  StatCardDNA, 
-  MiniStatCardDNA, 
-  StatCardGrid 
-} from '@/lib/dna/components/ui/stat-card-dna'
-import { 
-  DollarSign, 
-  TrendingUp, 
-  Package, 
-  Users,
-  AlertCircle,
-  Calendar
-} from 'lucide-react'
+import { StatCardDNA, MiniStatCardDNA, StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { DollarSign, TrendingUp, Package, Users, AlertCircle, Calendar } from 'lucide-react'
 
 /**
  * Example usage of HERA DNA Stat Card components
- * 
+ *
  * This example demonstrates how to use the StatCardDNA components
  * which automatically handle dark mode text visibility issues.
  */
@@ -31,7 +20,7 @@ export function StatCardExample() {
   return (
     <div className="space-y-8">
       <h2 className="text-2xl font-bold">HERA DNA Stat Cards Example</h2>
-      
+
       {/* Full-size stat cards with 4-column grid */}
       <StatCardGrid columns={4}>
         <StatCardDNA
@@ -42,7 +31,7 @@ export function StatCardExample() {
           icon={DollarSign}
           iconGradient="from-green-500 to-emerald-500"
         />
-        
+
         <StatCardDNA
           title="Total Products"
           value={totalProducts}
@@ -51,7 +40,7 @@ export function StatCardExample() {
           icon={Package}
           iconGradient="from-blue-500 to-purple-500"
         />
-        
+
         <StatCardDNA
           title="Low Stock Alerts"
           value={lowStockItems}
@@ -60,7 +49,7 @@ export function StatCardExample() {
           icon={AlertCircle}
           iconGradient="from-yellow-500 to-orange-500"
         />
-        
+
         <StatCardDNA
           title="Expiring Soon"
           value={expiringItems}
@@ -81,14 +70,14 @@ export function StatCardExample() {
             icon={TrendingUp}
             iconColor="text-green-500"
           />
-          
+
           <MiniStatCardDNA
             title="Active Users"
             value={156}
             icon={Users}
             iconColor="text-blue-500"
           />
-          
+
           <MiniStatCardDNA
             title="Pending Orders"
             value={23}
@@ -118,7 +107,7 @@ export function StatCardExample() {
 
 /**
  * Migration guide from old pattern to new DNA component:
- * 
+ *
  * OLD:
  * ```tsx
  * <Card>
@@ -133,7 +122,7 @@ export function StatCardExample() {
  *   </CardContent>
  * </Card>
  * ```
- * 
+ *
  * NEW:
  * ```tsx
  * <StatCardDNA
@@ -143,7 +132,7 @@ export function StatCardExample() {
  *   iconGradient="from-green-500 to-emerald-500"
  * />
  * ```
- * 
+ *
  * Benefits:
  * - Automatic dark mode text visibility fix
  * - Consistent styling across all stat cards
