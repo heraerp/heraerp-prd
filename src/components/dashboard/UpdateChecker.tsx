@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { RefreshCw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { APP_VERSION } from '@/lib/constants/version'
+import { Button } from '@/src/components/ui/button'
+import { APP_VERSION } from '@/src/lib/constants/version'
 
 export function UpdateChecker() {
   const [isChecking, setIsChecking] = useState(false)

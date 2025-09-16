@@ -14,11 +14,11 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
+import { Checkbox } from '@/src/components/ui/checkbox'
 import {
   Plus,
   Search,
@@ -48,9 +48,9 @@ import {
   Save,
   RefreshCw
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { ServiceWhatsAppActions } from '@/components/salon/whatsapp/ServiceWhatsAppActions'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/src/lib/utils'
+import { ServiceWhatsAppActions } from '@/src/components/salon/whatsapp/ServiceWhatsAppActions'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 

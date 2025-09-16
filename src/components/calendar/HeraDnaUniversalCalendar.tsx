@@ -25,19 +25,19 @@ import {
   ResourceInput
 } from '@fullcalendar/core'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+} from '@/src/components/ui/select'
+import { Switch } from '@/src/components/ui/switch'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   Calendar,
   Users,
@@ -56,7 +56,7 @@ import {
   Palette
 } from 'lucide-react'
 
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 // TypeScript Interfaces for HERA Calendar
 export interface HeraDnaCalendarProps {

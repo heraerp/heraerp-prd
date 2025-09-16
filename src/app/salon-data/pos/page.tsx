@@ -11,17 +11,17 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { universalApi } from '@/lib/universal-api'
-import { handleError } from '@/lib/salon/error-handler'
-import { PaymentWhatsAppActions } from '@/components/salon/whatsapp/PaymentWhatsAppActions'
-import type { CartItem, Payment, TransactionData } from '@/types/salon.types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/src/lib/universal-api'
+import { handleError } from '@/src/lib/salon/error-handler'
+import { PaymentWhatsAppActions } from '@/src/components/salon/whatsapp/PaymentWhatsAppActions'
+import type { CartItem, Payment, TransactionData } from '@/src/types/salon.types'
 import {
   CreditCard,
   ShoppingCart,
@@ -61,7 +61,7 @@ import {
   Mail,
   Send
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 

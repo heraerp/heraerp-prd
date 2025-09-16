@@ -5,7 +5,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { GitBranch, Package, Info, ChevronRight } from 'lucide-react'
-import type { ModuleEntity, RelationshipRow } from '@/lib/types/factory'
+import type { ModuleEntity, RelationshipRow } from '@/src/lib/types/factory'
 
 interface DependencyGraphProps {
   modules: ModuleEntity[]

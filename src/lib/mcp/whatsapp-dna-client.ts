@@ -14,7 +14,7 @@ import {
   type OrganizationId,
   type EntityId,
   type TransactionId
-} from '@/lib/dna-sdk-stub'
+} from '@/src/lib/dna-sdk-stub'
 
 // WhatsApp-specific smart codes as constants
 export const WHATSAPP_SMART_CODES = {

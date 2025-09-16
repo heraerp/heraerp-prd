@@ -17,7 +17,7 @@ import {
   Star,
   Activity
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import Link from 'next/link'
 
 interface NavItem {

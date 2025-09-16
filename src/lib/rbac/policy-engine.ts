@@ -3,7 +3,7 @@
  * Role-based access control with smart code family permissions
  */
 
-import { getSupabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/src/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 import yaml from 'js-yaml'
 import { minimatch } from 'minimatch'

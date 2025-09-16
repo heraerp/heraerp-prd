@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import {
   getOrganizationContextFromURL,
   DEMO_ORGANIZATIONS,
   AppType
-} from '@/lib/organization-context-client'
+} from '@/src/lib/organization-context-client'
 
 export interface OrganizationInfo {
   organizationId: string

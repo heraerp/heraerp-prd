@@ -4,7 +4,7 @@
  * Uses core_entities and core_dynamic_data for storage
  */
 
-import { getSupabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/src/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface UCRTemplateEntry {

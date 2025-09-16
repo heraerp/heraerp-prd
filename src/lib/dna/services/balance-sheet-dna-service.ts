@@ -6,7 +6,7 @@
  * that work with HERA's universal 6-table architecture.
  */
 
-import { UniversalAPIClient } from '@/lib/universal-api'
+import { UniversalAPIClient } from '@/src/lib/universal-api'
 
 // Core Balance Sheet DNA Configuration
 export const BALANCE_SHEET_DNA_CONFIG = {

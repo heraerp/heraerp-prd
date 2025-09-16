@@ -1,0 +1,300 @@
+/* Digital Accountant Styles */
+
+/* Dark theme support */
+:root {
+  --accountant-bg: #ffffff;
+  --accountant-card: #f9fafb;
+  --accountant-border: #e5e7eb;
+  --accountant-text: #111827;
+  --accountant-muted: #6b7280;
+  --accountant-accent: #10b981;
+  --accountant-hover: #f3f4f6;
+  --accountant-shadow: rgba(0, 0, 0, 0.1);
+  --accountant-success: #10b981;
+  --accountant-warning: #f59e0b;
+  --accountant-error: #ef4444;
+}
+
+[data-theme="dark"],
+.dark {
+  --accountant-bg: #1a1a1a;
+  --accountant-card: #2d2d2d;
+  --accountant-border: #404040;
+  --accountant-text: #e5e5e5;
+  --accountant-muted: #9ca3af;
+  --accountant-accent: #34d399;
+  --accountant-hover: #353535;
+  --accountant-shadow: rgba(0, 0, 0, 0.3);
+  --accountant-success: #34d399;
+  --accountant-warning: #fbbf24;
+  --accountant-error: #f87171;
+}
+
+/* Apply dark theme colors */
+.dark body,
+.dark .min-h-screen {
+  background-color: var(--accountant-bg) !important;
+}
+
+.dark .bg-muted {
+  background-color: var(--accountant-card) !important;
+  border-color: var(--accountant-border) !important;
+}
+
+.dark .bg-muted\/50 {
+  background-color: rgba(45, 45, 45, 0.5) !important;
+}
+
+.dark .bg-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.dark .text-primary {
+  color: var(--accountant-accent);
+}
+
+.dark .border {
+  border-color: var(--accountant-border) !important;
+}
+
+.dark input,
+.dark textarea {
+  background-color: var(--accountant-hover) !important;
+  border-color: var(--accountant-border) !important;
+  color: var(--accountant-text) !important;
+}
+
+.dark input:focus,
+.dark textarea:focus {
+  border-color: var(--accountant-accent) !important;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
+}
+
+/* Fix white edges on cards and containers */
+.dark .card,
+.dark [class*="rounded"] {
+  background-color: var(--accountant-card);
+  border-color: var(--accountant-border);
+}
+
+/* Fix shadcn/ui specific components */
+.dark .bg-background {
+  background-color: var(--accountant-bg) !important;
+}
+
+.dark .bg-card {
+  background-color: var(--accountant-card) !important;
+}
+
+.dark .text-foreground {
+  color: var(--accountant-text) !important;
+}
+
+.dark .text-muted-foreground {
+  color: var(--accountant-muted) !important;
+}
+
+/* Fix select and dropdown backgrounds */
+.dark [role="combobox"],
+.dark [role="listbox"],
+.dark [data-radix-collection-item] {
+  background-color: var(--accountant-card) !important;
+  border-color: var(--accountant-border) !important;
+}
+
+/* Transaction status colors */
+.status-draft {
+  color: var(--accountant-muted);
+  border-color: var(--accountant-muted);
+}
+
+.status-posted {
+  color: var(--accountant-success);
+  border-color: var(--accountant-success);
+}
+
+.status-approved {
+  color: var(--accountant-accent);
+  border-color: var(--accountant-accent);
+}
+
+.status-reversed {
+  color: var(--accountant-error);
+  border-color: var(--accountant-error);
+}
+
+/* Accounting-specific animations */
+@keyframes postingPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+.posting-animation {
+  animation: postingPulse 2s ease-in-out infinite;
+}
+
+/* Journal table styles */
+.journal-table {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+}
+
+.journal-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--accountant-border);
+}
+
+.journal-table .debit {
+  color: var(--accountant-success);
+  text-align: right;
+}
+
+.journal-table .credit {
+  color: var(--accountant-warning);
+  text-align: right;
+}
+
+/* Enhanced scrollbar */
+.accountant-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.accountant-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.accountant-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.accountant-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+.accountant-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+/* Quick action hover effect */
+.quick-action-hover {
+  transition: all 0.2s ease;
+}
+
+.quick-action-hover:hover {
+  transform: translateX(4px);
+  background-color: var(--accountant-hover);
+}
+
+/* Confidence meter */
+.confidence-meter {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--accountant-error) 0%,
+    var(--accountant-warning) 50%,
+    var(--accountant-success) 100%
+  );
+  opacity: 0.2;
+}
+
+.confidence-meter-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accountant-success);
+  transition: width 0.3s ease;
+}
+
+/* Transaction badges */
+.transaction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid;
+  transition: all 0.2s ease;
+}
+
+.transaction-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--accountant-shadow);
+}
+
+/* Compliance indicators */
+.compliance-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.compliance-indicator.compliant {
+  background-color: var(--accountant-success);
+  animation: pulse 2s infinite;
+}
+
+.compliance-indicator.warning {
+  background-color: var(--accountant-warning);
+  animation: pulse 1.5s infinite;
+}
+
+.compliance-indicator.error {
+  background-color: var(--accountant-error);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .quick-actions-sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    height: 100vh;
+    z-index: 40;
+    transition: left 0.3s ease;
+  }
+  
+  .quick-actions-sidebar.open {
+    left: 0;
+  }
+}
+
+/* Print styles for journal entries */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .journal-entry {
+    page-break-inside: avoid;
+  }
+  
+  .journal-table {
+    border: 1px solid #000;
+    width: 100%;
+  }
+  
+  .journal-table td {
+    border: 1px solid #000;
+    padding: 4px;
+  }
+}

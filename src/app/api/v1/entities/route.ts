@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
-import { HERAJWTService } from '@/lib/auth/jwt-service'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { HERAJWTService } from '@/src/lib/auth/jwt-service'
 
 const jwtService = new HERAJWTService()
 

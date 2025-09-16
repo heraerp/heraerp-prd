@@ -4,8 +4,8 @@
  * Enterprise-grade configuration for inventory management
  */
 
-import { ConfigurationFactory } from '@/lib/universal-config/config-factory'
-import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
+import { ConfigurationFactory } from '@/src/lib/universal-config/config-factory'
+import { CONFIG_TYPES } from '@/src/lib/universal-config/config-types'
 
 const factory = new ConfigurationFactory()
 const handlers = factory.createRouteHandlers(CONFIG_TYPES.PRODUCT_CATEGORY)

@@ -2,9 +2,9 @@
 
 import React, { useEffect } from 'react'
 import { Check, X, Clock, User, Calendar } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { formatDate } from '@/lib/date-utils'
-import { useLeaveManagement } from '@/hooks/useLeaveManagement'
+import { Button } from '@/src/components/ui/button'
+import { formatDate } from '@/src/lib/date-utils'
+import { useLeaveManagement } from '@/src/hooks/useLeaveManagement'
 
 interface PendingLeaveRequest {
   id: string

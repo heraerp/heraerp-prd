@@ -3,7 +3,7 @@
  * Kubernetes-ready health endpoints and failure recovery
  */
 
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/src/lib/supabase/client'
 import { CacheService } from './cache-service'
 import { MonitoringService } from './monitoring-service'
 

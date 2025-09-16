@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { enterpriseMiddleware } from '@/lib/middleware/enterprise-middleware'
+import { enterpriseMiddleware } from '@/src/lib/middleware/enterprise-middleware'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

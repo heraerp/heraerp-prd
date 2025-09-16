@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
 
 // GET /restaurant-reservations/validations - Fetch all restaurant-reservations items
 export async function GET(request: NextRequest) {

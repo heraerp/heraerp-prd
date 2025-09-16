@@ -12,12 +12,12 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import { useRouter } from 'next/navigation'
 import {
   Building2,
@@ -39,8 +39,8 @@ import {
   Receipt,
   Utensils
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { universalApi } from '@/lib/universal-api'
+import { cn } from '@/src/lib/utils'
+import { universalApi } from '@/src/lib/universal-api'
 
 export default function AuthenticatedRestaurantDashboard() {
   const { currentOrganization, isAuthenticated, isLoading, isLoadingOrgs, user } = useMultiOrgAuth()

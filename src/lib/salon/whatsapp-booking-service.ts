@@ -3,7 +3,7 @@
  * Handles appointment booking via WhatsApp with sacred table integration
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 interface BookingRequest {
   customerPhone: string

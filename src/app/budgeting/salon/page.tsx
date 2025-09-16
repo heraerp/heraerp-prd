@@ -4,13 +4,13 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { useUserContext } from '@/hooks/useUserContext'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useUserContext } from '@/src/hooks/useUserContext'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Progress } from '@/src/components/ui/progress'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import { Loader2 } from 'lucide-react'
 import {
   Scissors,
@@ -40,7 +40,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 interface SalonBudgetData {
   budget_id: string

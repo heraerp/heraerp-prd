@@ -11,13 +11,13 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Progress } from '@/components/ui/progress'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
+import { Progress } from '@/src/components/ui/progress'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import {
   Activity,
   AlertTriangle,
@@ -38,7 +38,7 @@ import {
   XCircle,
   Zap
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 // Mock data for demonstration
 const mockHealthData = {

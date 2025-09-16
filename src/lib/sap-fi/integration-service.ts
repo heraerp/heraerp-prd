@@ -1,8 +1,8 @@
-import { supabaseClient } from '@/lib/supabase-client'
+import { supabaseClient } from '@/src/lib/supabase-client'
 import { SAPConnectorFactory } from './connectors/factory'
 import { SAPValidationService } from './business-logic/validation'
 import { SAPMappingService } from './business-logic/mapping'
-import { UniversalTransaction, UniversalTransactionLine } from '@/types/hera-database.types'
+import { UniversalTransaction, UniversalTransactionLine } from '@/src/types/hera-database.types'
 
 export interface IntegrationResult {
   success: boolean

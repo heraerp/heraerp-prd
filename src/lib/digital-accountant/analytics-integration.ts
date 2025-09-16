@@ -7,8 +7,8 @@
  * Smart Code: HERA.FIN.ACCT.ANALYTICS.v1
  */
 
-import { AnalyticsChatStorage, ChatMessage, CHAT_SMART_CODES } from '@/lib/analytics-chat-storage'
-import { universalApi } from '@/lib/universal-api'
+import { AnalyticsChatStorage, ChatMessage, CHAT_SMART_CODES } from '@/src/lib/analytics-chat-storage'
+import { universalApi } from '@/src/lib/universal-api'
 import {
   AccountingQuery,
   AccountingOperation,
@@ -16,7 +16,7 @@ import {
   JournalEntry,
   ValidationResult,
   ACCOUNTANT_SMART_CODES
-} from '@/types/digital-accountant.types'
+} from '@/src/types/digital-accountant.types'
 import { IDigitalAccountantService } from './contracts'
 import OpenAI from 'openai'
 

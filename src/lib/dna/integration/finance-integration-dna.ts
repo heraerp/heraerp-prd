@@ -6,7 +6,7 @@
  * financial integration through smart codes and declarative rules
  */
 
-import { SmartCode } from '@/lib/smart-codes/types'
+import { SmartCode } from '@/src/lib/smart-codes/types'
 
 // Universal Event Contract - never changes
 export interface UniversalFinanceEvent {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { setupSalonBusiness } from '@/lib/salon/salon-setup'
+import { setupSalonBusiness } from '@/src/lib/salon/salon-setup'
 import { headers } from 'next/headers'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || ''

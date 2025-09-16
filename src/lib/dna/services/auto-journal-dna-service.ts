@@ -5,13 +5,13 @@
 // Smart Code: HERA.FIN.AUTO.JOURNAL.DNA.SERVICE.v1
 // ================================================================================
 
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/src/lib/supabase'
 import {
   processTransactionForJournal,
   runBatchProcessing,
   checkJournalRelevance,
   generateJournalEntry
-} from '@/lib/auto-journal-engine'
+} from '@/src/lib/auto-journal-engine'
 
 // ================================================================================
 // INTERFACES

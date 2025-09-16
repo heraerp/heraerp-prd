@@ -2,8 +2,8 @@
  * Hook to get organization currency settings
  */
 
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { formatCurrency, getOrganizationCurrency, getCurrencyConfig } from '@/lib/currency'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { formatCurrency, getOrganizationCurrency, getCurrencyConfig } from '@/src/lib/currency'
 
 export function useOrganizationCurrency() {
   const { currentOrganization } = useMultiOrgAuth()

@@ -4,19 +4,19 @@
  */
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Label } from '@/src/components/ui/label'
+import { Button } from '@/src/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { useToast } from '@/components/ui/use-toast'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { getSupportedCurrencies } from '@/lib/currency'
+} from '@/src/components/ui/select'
+import { useToast } from '@/src/components/ui/use-toast'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { getSupportedCurrencies } from '@/src/lib/currency'
 import { Globe, Save } from 'lucide-react'
 
 export function CurrencySettings() {

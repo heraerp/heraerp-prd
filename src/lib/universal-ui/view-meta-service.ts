@@ -6,7 +6,7 @@
  * in core_dynamic_data and defines widgets, fields, actions, and behaviors.
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 import { industryConfigurations } from './industry-configurations'
 
 export interface ViewMetadata {

@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { MessageCircle, Check, Clock, X, AlertCircle } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
+import { cn } from '@/src/lib/utils'
 
 interface WhatsAppNotification {
   id: string

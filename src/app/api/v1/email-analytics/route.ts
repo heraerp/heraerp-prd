@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/lib/universal-api'
-import { createLeadConversionPipeline } from '@/lib/crm/lead-conversion-pipeline'
-import { createLeadScoringEngine } from '@/lib/email/lead-scoring-engine'
+import { universalApi } from '@/src/lib/universal-api'
+import { createLeadConversionPipeline } from '@/src/lib/crm/lead-conversion-pipeline'
+import { createLeadScoringEngine } from '@/src/lib/email/lead-scoring-engine'
 
 /**
  * HERA Email-to-Lead Analytics Dashboard API

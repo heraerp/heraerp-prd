@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
-import { enterpriseMiddleware } from '@/lib/middleware/enterprise-middleware'
-import { getSupabase } from '@/lib/supabase/client'
-import { RLSQueryBuilder } from '@/lib/rbac/query-builder-middleware'
-import { heraLogger } from '@/lib/observability/logger'
-import { heraMetrics } from '@/lib/observability/metrics'
+import { enterpriseMiddleware } from '@/src/lib/middleware/enterprise-middleware'
+import { getSupabase } from '@/src/lib/supabase/client'
+import { RLSQueryBuilder } from '@/src/lib/rbac/query-builder-middleware'
+import { heraLogger } from '@/src/lib/observability/logger'
+import { heraMetrics } from '@/src/lib/observability/metrics'
 import { v4 as uuidv4 } from 'uuid'
 
 /**

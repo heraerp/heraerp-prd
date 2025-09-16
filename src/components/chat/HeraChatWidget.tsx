@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react'
 import { MessageCircle, X, Minimize2, Maximize2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import { HeraMCPChat } from './HeraMCPChat'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 
 interface HeraChatWidgetProps {
   apiUrl?: string

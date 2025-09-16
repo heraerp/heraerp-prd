@@ -6,8 +6,8 @@
  * Sacred 6-table architecture with payment guardrails
  */
 
-import { WorkflowDefinition, WorkflowStep, WorkflowTrigger } from '@/lib/workflow/types'
-import { universalApi } from '@/lib/universal-api'
+import { WorkflowDefinition, WorkflowStep, WorkflowTrigger } from '@/src/lib/workflow/types'
+import { universalApi } from '@/src/lib/universal-api'
 
 export const APPOINTMENT_SMART_CODES = {
   // Entity Smart Codes

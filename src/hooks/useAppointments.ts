@@ -5,9 +5,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { appointmentApi } from '@/lib/salon/appointment-api'
-import { toast } from '@/hooks/use-toast'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { appointmentApi } from '@/src/lib/salon/appointment-api'
+import { toast } from '@/src/hooks/use-toast'
 
 export interface Appointment {
   id: string

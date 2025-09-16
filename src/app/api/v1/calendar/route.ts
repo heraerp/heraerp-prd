@@ -19,7 +19,7 @@ import {
   CalendarApiResponse,
   EventsResponse,
   ResourcesResponse
-} from '@/types/calendar-api.types'
+} from '@/src/types/calendar-api.types'
 
 // GET /api/v1/calendar - Fetch events and resources
 export async function GET(request: NextRequest) {

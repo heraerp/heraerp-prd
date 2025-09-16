@@ -1,32 +1,47 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from '@/components/ui/table'
-import { Bell, BellOff, Eye, Search, Filter, Clock, AlertCircle, TrendingUp, Calendar, Star, StarOff, ExternalLink
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
+import { Switch } from '@/src/components/ui/switch'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Table, TableBody, TableCell, TableHead, TableHeader,
+  TableRow
+} from '@/src/components/ui/table'
+import { Bell, BellOff, Eye, Search, Filter, Clock, AlertCircle, TrendingUp, Calendar, Star, StarOff,
+  ExternalLink
 } from 'lucide-react'
 import Link from 'next/link'
-import { useFurnitureOrg } from '@/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { universalApi } from '@/lib/universal-api'
-import { useToast } from '@/hooks/use-toast'
+import { useFurnitureOrg } from '@/src/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
+import { universalApi } from '@/src/lib/universal-api'
+import { useToast } from '@/src/hooks/use-toast'
 import { format, differenceInDays } from 'date-fns'
 
 
 export const dynamic = 'force-dynamic'
 
-interface WatchlistItem { tender_id: string tender_code: string tender_name: string department: string closing_date: string estimated_value: number emd_amount: number alerts_enabled: boolean priority: 'high' | 'medium' | 'low' added_date: string notes?: string
-} // Mock watchlist data - in production, this would come from relationships table
+interface WatchlistItem {
+  tender_id: string
+  tender_code: string
+  tender_name: string
+  department: string
+  closing_date: string
+  estimated_value: number
+  emd_amount: number
+  alerts_enabled: boolean
+  priority: 'high' | 'medium' | 'low'
+  added_date: string
+  notes?: string
+}
+  // Mock watchlist data - in production, this would come from relationships table
 const mockWatchlist: WatchlistItem[] = [ { tender_id: '1', tender_code: 'KFD/2025/WOOD/001', tender_name: 'Teak Wood Supply - Nilambur Range', department: 'Kerala Forest Department', closing_date: '2025-01-25', estimated_value: 4500000, emd_amount: 90000, alerts_enabled: true, priority: 'high', added_date: '2025-01-10', notes: 'Strong competition expected. Prepare aggressive bid.' }, { tender_id: '2', tender_code: 'KFD/2025/ROSE/002', tender_name: 'Rosewood Logs - Wayanad Division', department: 'Kerala Forest Department', closing_date: '2025-01-30', estimated_value: 6200000, emd_amount: 124000, alerts_enabled: true, priority: 'high', added_date: '2025-01-12', notes: 'Premium quality rosewood. High margin opportunity.' }, { tender_id: '3', tender_code: 'KSBC/2025/BAMBOO/001', tender_name: 'Bamboo Supply Contract - Annual', department: 'Kerala State Bamboo Corporation', closing_date: '2025-02-05', estimated_value: 2200000, emd_amount: 44000, alerts_enabled: false, priority: 'medium', added_date: '2025-01-08' }
 ]
 
-export default function WatchlistPage() { const { organizationId, orgLoading } = useFurnitureOrg()
+export default function WatchlistPage() {
+  const { organizationId, orgLoading } = useFurnitureOrg()
 
 const { toast } = useToast()
 
@@ -36,11 +51,60 @@ const [searchTerm, setSearchTerm] = useState('')
 
 const [showAlertsOnly, setShowAlertsOnly] = useState(false)
 
-const filteredWatchlist = watchlist.filter(item => { const matchesSearch = item.tender_code.toLowerCase().includes(searchTerm.toLowerCase()) || item.tender_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.department.toLowerCase().includes(searchTerm.toLowerCase())
+const filteredWatchlist = watchlist.filter(item => {
+
+const matchesSearch =item.tender_code.toLowerCase().includes(searchTerm.toLowerCase()) || item.tender_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.department.toLowerCase().includes(searchTerm.toLowerCase())
 
 const matchesFilter = !showAlertsOnly || item.alerts_enabled return matchesSearch && matchesFilter })
 
-const handleToggleAlerts = (tenderId: string) => { setWatchlist(prev => prev.map(item => item.tender_id === tenderId ? { ...item, alerts_enabled: !item.alerts_enabled } : item ) ) toast({ title: 'Alert Settings Updated', description: 'Notification preferences have been saved.' }) } const handleRemoveFromWatchlist = (tenderId: string) => { setWatchlist(prev => prev.filter(item => item.tender_id !== tenderId)) toast({ title: 'Removed from Watchlist', description: 'The tender has been removed from your watchlist.' }) } const getDaysRemaining = (closingDate: string) => { return differenceInDays(new Date(closingDate), new Date()) } const getPriorityBadge = (priority: string) => { switch (priority) { case 'high': return <Badge variant="destructive">High Priority</Badge> case 'medium': return <Badge variant="default" className="furniture-btn-premium">Medium</Badge> case 'low': return <Badge variant="secondary">Low</Badge> default: return null } } const upcomingDeadlines = watchlist .filter(item => getDaysRemaining(item.closing_date) <= 7) .sort((a, b) => getDaysRemaining(a.closing_date) - getDaysRemaining(b.closing_date)) if (orgLoading) { return <div>Loading organization...</div> } return ( <div> <FurniturePageHeader title="Tender Watchlist" subtitle="Monitor important tenders and get timely alerts" /> {/* Upcoming Deadlines Alert */} {upcomingDeadlines.length > 0 && ( <Alert className="mb-6"> <AlertCircle className="h-4 w-4" /> <AlertDescription> <strong>{upcomingDeadlines.length} tender(s) closing soon:</strong> <ul className="bg-background mt-2 space-y-1"> {upcomingDeadlines.map(item => ( <li key={item.tender_id}> {item.tender_code} - Closing in {getDaysRemaining(item.closing_date)} days </li> ))} </ul> </AlertDescription> </Alert> )} {/* Stats Cards */} <div className="bg-background grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"> <Card className="p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-muted-foreground">Watched Tenders</p> <p className="text-2xl font-bold">{watchlist.length}</p> </div> <Eye className="h-8 w-8 text-muted-foreground" /> </div> </Card> <Card className="p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-muted-foreground">Alerts Enabled</p> <p className="text-2xl font-bold"> {watchlist.filter(item => item.alerts_enabled).length} </p> </div> <Bell className="h-8 w-8 text-blue-500" /> </div> </Card> <Card className="p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-muted-foreground">High Priority</p> <p className="text-2xl font-bold"> {watchlist.filter(item => item.priority === 'high').length} </p> </div> <TrendingUp className="h-8 w-8 text-red-500" /> </div> </Card> <Card className="p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-muted-foreground">Total Value</p> <p className="text-2xl font-bold"> ₹ {(watchlist.reduce((sum, item) => sum + item.estimated_value, 0) / 100000).toFixed( 1 )} L </p> </div> <Calendar className="h-8 w-8 text-amber-500" /> </div> </Card> </div> {/* Watchlist Table */} <Card className="p-6"> <div className="bg-background flex items-center justify-between mb-6"> <div className="flex items-center gap-4"> <div className="relative w-96"> <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /> <Input placeholder="Search watchlist..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="bg-background pl-10" /> </div> <div className="flex items-center gap-2"> <Switch id="alerts-only" checked={showAlertsOnly} onCheckedChange={setShowAlertsOnly} /> <label htmlFor="alerts-only" className="bg-background text-sm"> Show alerts enabled only </label> </div> </div> <Button variant="outline"> <Filter className="h-4 w-4 mr-2" /> Filters </Button> </div> {filteredWatchlist.length === 0 ? ( <div className="text-center py-8 text-muted-foreground">No tenders in watchlist</div> ) : ( <Table> <TableHeader> <TableRow> <TableHead>Tender Details</TableHead> <TableHead>Department</TableHead> <TableHead>Closing Date</TableHead> <TableHead>Value</TableHead> <TableHead>Priority</TableHead> <TableHead>Alerts</TableHead> <TableHead>Actions</TableHead> </TableRow> </TableHeader> <TableBody> {filteredWatchlist.map(item => { const daysRemaining = getDaysRemaining(item.closing_date)
+const handleToggleAlerts = (tenderId: string) => { setWatchlist(prev => prev.map(item => item.tender_id === tenderId ? { ...item, alerts_enabled: !item.alerts_enabled } : item ) ) toast({ title: 'Alert Settings Updated', description: 'Notification preferences have been saved.' }  )
 
-const isUrgent = daysRemaining <= 3 return ( <TableRow key={item.tender_id}> <TableCell> <div> <Link href={`/furniture/tender/${item.tender_code}`} className="bg-background font-medium text-primary hover:underline" > {item.tender_code} </Link> <p className="text-sm text-muted-foreground mt-1">{item.tender_name}</p> {item.notes && ( <p className="text-sm text-muted-foreground mt-1 italic"> Note: {item.notes} </p> )} </div> </TableCell> <TableCell>{item.department}</TableCell> <TableCell> <div className={isUrgent ? 'text-red-600 font-medium' : ''}> {format(new Date(item.closing_date), 'dd MMM yyyy')} <p className="text-sm text-muted-foreground"> {isUrgent && <AlertCircle className="inline h-3 w-3 mr-1" />} {daysRemaining} days left </p> </div> </TableCell> <TableCell> <div> <p className="font-medium"> ₹{(item.estimated_value / 100000).toFixed(1)}L </p> <p className="text-sm text-muted-foreground"> EMD: ₹{(item.emd_amount / 1000).toFixed(0)}K </p> </div> </TableCell> <TableCell>{getPriorityBadge(item.priority)}</TableCell> <TableCell> <Switch checked={item.alerts_enabled} onCheckedChange={() => handleToggleAlerts(item.tender_id)} /> </TableCell> <TableCell> <div className="flex items-center gap-2"> <Link href={`/furniture/tender/${item.tender_code}`}> <Button variant="ghost" size="sm"> <ExternalLink className="h-4 w-4" /> </Button> </Link> <Button variant="ghost" size="sm" onClick={() => handleRemoveFromWatchlist(item.tender_id)} > <StarOff className="h-4 w-4" /> </Button> </div> </TableCell> </TableRow> ) })} </TableBody> </Table> )} </Card> {/* Alert Settings */} <Card className="p-6 mt-6"> <h3 className="bg-background text-lg font-semibold mb-4">Alert Preferences</h3> <div className="space-y-4"> <div className="bg-background flex items-center justify-between"> <div> <p className="font-medium">Email Notifications</p> <p className="text-sm text-muted-foreground"> Receive email alerts for watched tenders </p> </div> <Switch defaultChecked /> </div> <div className="bg-background flex items-center justify-between"> <div> <p className="font-medium">SMS Alerts</p> <p className="text-sm text-muted-foreground"> Get SMS for urgent deadlines (3 days or less) </p> </div> <Switch /> </div> <div className="bg-background flex items-center justify-between"> <div> <p className="font-medium">Daily Digest</p> <p className="text-sm text-muted-foreground"> Summary of all watched tenders at 9 AM daily </p> </div> <Switch defaultChecked /> </div> </div> </Card> </div> )
+const handleRemoveFromWatchlist = (tenderId: string) => { setWatchlist(prev => prev.filter(item => item.tender_id !== tenderId)) toast({ title: 'Removed from Watchlist', description: 'The tender has been removed from your watchlist.' }  )
+
+const getDaysRemaining = (closingDate: string) => { return differenceInDays(new Date(closingDate), new Date()  )
+
+const getPriorityBadge = (priority: string) => { switch (priority) {
+  case 'high':
+        return <Badge variant="destructive">
+          High Priority
+        </Badge> case 'medium':
+        return <Badge variant="default" className="furniture-btn-premium">
+          Medium
+        </Badge> case 'low':
+        return <Badge variant="secondary">
+          Low
+        </Badge> default: return null } }
+
+const upcomingDeadlines = watchlist .filter(item => getDaysRemaining(item.closing_date) <= 7) .sort((a, b) => getDaysRemaining(a.closing_date) - getDaysRemaining(b.closing_date)) if (orgLoading) {
+  return <div>Loading organization...</div> }
+
+  return (
+    <div> <FurniturePageHeader title="Tender Watchlist" subtitle="Monitor important tenders and get timely alerts" /> {/* Upcoming Deadlines Alert */} {upcomingDeadlines.length > 0 && ( <Alert className="mb-6"> <AlertCircle className="h-4 w-4" /> <AlertDescription> <strong>{upcomingDeadlines.length} tender(s) closing soon:</strong> <ul className="bg-[var(--color-body)] mt-2 space-y-1"> {upcomingDeadlines.map(item => ( <li key={item.tender_id}> {item.tender_code} - Closing in {getDaysRemaining(item.closing_date)} days </li> ))} </ul> </AlertDescription>
+      </Alert>
+    )} 
+        {/* Stats Cards  */}
+        <div className="bg-[var(--color-body)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Watched Tenders</p> <p className="text-2xl font-bold">{watchlist.length}</p> </div> <Eye className="h-8 w-8 text-[#37353E]" /> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Alerts Enabled</p> <p className="text-2xl font-bold"> {watchlist.filter(item => item.alerts_enabled).length} </p> </div> <Bell className="h-8 w-8 text-[#37353E]" /> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">High Priority</p> <p className="text-2xl font-bold"> {watchlist.filter(item => item.priority === 'high').length} </p> </div> <TrendingUp className="h-8 w-8 text-red-500" /> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Total Value</p> <p className="text-2xl font-bold"> ₹ {(watchlist.reduce((sum, item) => sum + item.estimated_value, 0) / 100000).toFixed( 1 )} L </p> </div> <Calendar className="h-8 w-8 text-[#37353E]" /> </div> </Card> </div> 
+        {/* Watchlist Table  */}
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="bg-[var(--color-body)] flex items-center justify-between mb-6"> <div className="flex items-center gap-4"> <div className="relative w-96"> <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" /> <Input placeholder="Search watchlist..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="bg-[var(--color-body)] pl-10" /> </div>
+        <div className="flex items-center gap-2"> <Switch id="alerts-only" checked={showAlertsOnly} onCheckedChange={setShowAlertsOnly} /> <label htmlFor="alerts-only" className="bg-[var(--color-body)] text-sm"> Show alerts enabled only </label> </div> </div> <Button variant="outline"> <Filter className="h-4 w-4 mr-2" /> Filters </Button> </div> {filteredWatchlist.length === 0 ? (
+            <div className="text-center py-8 text-[var(--color-text-secondary)]">No tenders in watchlist</div> )
+          : (
+            <Table> <TableHeader> <TableRow> <TableHead>Tender Details</TableHead> <TableHead>Department</TableHead> <TableHead>Closing Date</TableHead> <TableHead>Value</TableHead> <TableHead>Priority</TableHead> <TableHead>Alerts</TableHead> <TableHead>Actions</TableHead> </TableRow> </TableHeader> <TableBody> {filteredWatchlist.map(item => { const daysRemaining = getDaysRemaining(item.closing_date)
+
+const isUrgent = daysRemaining <= 3 return (
+    <TableRow key={item.tender_id}> <TableCell> <div> <Link href={`/furniture/tender/${item.tender_code}`} className="bg-[var(--color-body)] font-medium text-primary hover:underline" > {item.tender_code} </Link> <p className="text-sm text-[var(--color-text-secondary)] mt-1">{item.tender_name}</p> {item.notes && ( <p className="text-sm text-[var(--color-text-secondary)] mt-1 italic"> Note: {item.notes} </p> )} </div> </TableCell> <TableCell>{item.department}</TableCell> <TableCell> <div className={isUrgent ? 'text-red-600 font-medium' : ''}> {format(new Date(item.closing_date), 'dd MMM yyyy')} <p className="text-sm text-[var(--color-text-secondary)]"> {isUrgent && <AlertCircle className="inline h-3 w-3 mr-1" />} {daysRemaining} days left </p> </div> </TableCell> <TableCell> <div> <p className="font-medium"> ₹{(item.estimated_value / 100000).toFixed(1)}L </p> <p className="text-sm text-[var(--color-text-secondary)]"> EMD: ₹{(item.emd_amount / 1000).toFixed(0)}K </p> </div> </TableCell> <TableCell>{getPriorityBadge(item.priority)}</TableCell> <TableCell> <Switch checked={item.alerts_enabled} onCheckedChange={() => handleToggleAlerts(item.tender_id)} /> </TableCell> <TableCell> <div className="flex items-center gap-2"> <Link href={`/furniture/tender/${item.tender_code}`}> <Button variant="ghost" size="sm"> <ExternalLink className="h-4 w-4" /> </Button> </Link> <Button variant="ghost" size="sm" onClick={() => handleRemoveFromWatchlist(item.tender_id)}
+        > <StarOff className="h-4 w-4" /> </Button> </div> </TableCell>
+      </TableRow>
+      ))} </TableBody>
+      </Table>
+    )} </Card> 
+        {/* Alert Settings  */}
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 mt-6"> <h3 className="bg-[var(--color-body)] text-lg font-semibold mb-4">Alert Preferences</h3> <div className="space-y-4"> <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="font-medium">Email Notifications</p> <p className="text-sm text-[var(--color-text-secondary)]"> Receive email alerts for watched tenders </p> </div> <Switch defaultChecked /> </div>
+        <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="font-medium">SMS Alerts</p> <p className="text-sm text-[var(--color-text-secondary)]"> Get SMS for urgent deadlines (3 days or less) </p> </div> <Switch /> </div>
+        <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="font-medium">Daily Digest</p> <p className="text-sm text-[var(--color-text-secondary)]"> Summary of all watched tenders at 9 AM daily </p> </div> <Switch defaultChecked /> </div> </div> </Card>
+      </div>
+      )
 }

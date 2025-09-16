@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 import {
   BarChart,
   Bar,
@@ -39,7 +39,7 @@ import {
   Percent,
   Target
 } from 'lucide-react'
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 import { subDays, startOfWeek, endOfWeek } from 'date-fns'
 
 interface TableAnalyticsProps {

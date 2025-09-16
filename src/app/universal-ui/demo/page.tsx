@@ -1,19 +1,19 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { UniversalRenderer } from '@/src/components/universal-ui/UniversalRenderer'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+} from '@/src/components/ui/select'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   Info,
   Package,
@@ -30,8 +30,8 @@ import {
 import {
   industryConfigurations,
   getIndustryViews
-} from '@/lib/universal-ui/industry-configurations'
-import { ViewMetaService } from '@/lib/universal-ui/view-meta-service'
+} from '@/src/lib/universal-ui/industry-configurations'
+import { ViewMetaService } from '@/src/lib/universal-ui/view-meta-service'
 
 // Demo configurations showing SAME widgets used across ALL industries
 const DEMO_CONFIGS = [

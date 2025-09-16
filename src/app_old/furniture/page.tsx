@@ -1,0 +1,367 @@
+'use client'
+
+import React, { useState, useEffect } from 'react' // Force dynamic rendering to avoid build issues
+
+export const dynamic = 'force-dynamic'
+// Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
+import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Package, ShoppingCart, Factory, Users, TrendingUp, Clock, CheckCircle, AlertCircle, DollarSign, Truck, BarChart3, Settings, FileText, Brain, Sparkles
+} from 'lucide-react'
+import Link from 'next/link'
+import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+
+function FurnitureDashboard() {
+  const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
+  
+  // Dashboard stats - in production these would come from Universal API
+  // Memoized to prevent re-creation
+  const stats = React.useMemo(() => [
+  { label: 'Active Orders', value: '47', change: '+12%', trend: 'up' as const, icon: ShoppingCart, gradient: 'from-blue-500 to-cyan-500' },
+  { label: 'Production Queue', value: '23', change: '5 urgent', trend: 'neutral' as const, icon: Factory, gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]' },
+  { label: 'Monthly Revenue', value: '₹28.5L', change: '+18%', trend: 'up' as const, icon: TrendingUp, gradient: 'from-green-500 to-emerald-500' },
+    { label: 'Inventory Value', value: '₹45.2L', change: 'Well stocked', trend: 'neutral' as const, icon: Package, gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]' }
+  ], [])
+
+  const recentActivities = React.useMemo(() => [
+  { id: '1', type: 'order' as const, title: 'New order from Marriott Hotels', description: '150 Executive Room Chairs', time: '2 hours ago', amount: '₹12,50,000' },
+  { id: '2', type: 'production' as const, title: 'Production completed', description: 'Order #FRN-2025-0234 ready for dispatch', time: '4 hours ago' },
+    { id: '3', type: 'payment' as const, title: 'Payment received', description: 'ITC Hotels - ₹8,50,000', time: '6 hours ago', amount: '₹8,50,000' }
+  ], [])
+
+  const productionKPIs = React.useMemo(() => [
+  { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
+  { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
+  { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
+  { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
+], [] )
+
+const quickActions = React.useMemo( () => [
+  { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
+  { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
+  { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
+  { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
+], [])
+
+  // Show loading state while organization is loading
+  if (orgLoading) {
+    return <FurnitureOrgLoading />
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--color-body)]">
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <FurniturePageHeader
+          title={organizationName || 'Kerala Furniture Works'}
+          subtitle="Complete furniture business management"
+          actions={
+            <>
+              <Link href="/furniture/settings">
+                <Button variant="outline" size="sm" className="gap-2 hover:bg-[var(--color-hover)]">
+                  <Settings className="h-4 w-4" />
+                  Settings
+                </Button>
+              </Link>
+              <Link href="/furniture/reports">
+                <Button variant="outline" size="sm" className="gap-2 hover:bg-[var(--color-hover)]">
+                  <BarChart3 className="h-4 w-4" />
+                  Reports
+                </Button>
+              </Link>
+            </>
+          }
+        />
+        
+        {/* Debug info - temporary */}
+        <div className="furniture-card rounded-lg p-4 text-sm text-[var(--color-text-secondary)]">
+          <p>Organization ID: {organizationId || 'Not loaded'}</p>
+          <p>Organization Name: {organizationName || 'Not loaded'}</p>
+          <p>Loading: {orgLoading ? 'Yes' : 'No'}</p>
+        </div>
+
+        {/* Key Metrics */}
+        <div className="space-y-4">
+          <h2 className="bg-[var(--color-body)] text-xl font-semibold">Business Overview</h2>
+          <StatCardGrid>
+            {stats.map(stat => (
+              <FurnitureStatCard key={stat.label} {...stat} />
+            ))}
+          </StatCardGrid>
+        </div>
+
+        {/* AI Manager Card */}
+        <div className="bg-[var(--color-body)] mt-6">
+          <Link href="/furniture/ai-manager">
+            <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-gradient-to-br from-[var(--color-accent-teal)]-600/10 to-blue-600/10 border-[var(--color-accent-teal)]/20 hover:from-[var(--color-accent-teal)]-600/20 hover:to-blue-600/20 transition-all duration-300 cursor-pointer backdrop-blur-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-accent-teal)]-600 to-blue-600 flex items-center justify-center">
+                    <Brain className="h-8 w-8 text-[#37353E]" />
+                  </div>
+                  <div>
+                    <h3 className="bg-[var(--color-body)] text-lg font-semibold flex items-center gap-2">
+                      AI Business Manager <Sparkles className="h-4 w-4 text-[#37353E]" />
+                    </h3>
+                    <p className="text-sm text-[var(--color-text-secondary)]">
+                      Get instant insights, recommendations, and strategic analysis for your furniture business
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-[var(--color-body)] flex flex-col items-end">
+                  <span className="text-sm font-medium text-[var(--color-text-secondary)]">Ask anything</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">Powered by AI</span>
+                </div>
+              </div>
+            </Card>
+          </Link>
+        </div>
+
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="overview" className="bg-[var(--color-body)] space-y-4">
+          <TabsList className="bg-[var(--color-body)]/50 bg-[var(--color-body)]/50 backdrop-blur-sm">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="production">Production</TabsTrigger>
+            <TabsTrigger value="finance">Finance</TabsTrigger>
+            <TabsTrigger value="hr">HR & Compliance</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="bg-[var(--color-body)] space-y-6">
+            {/* Quick Actions */}
+            <div className="space-y-4">
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Quick Actions</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {quickActions.map(action => (
+                  <Link key={action.label} href={action.href}>
+                    <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 hover:scale-105 transition-transform cursor-pointer bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
+                      <div className="flex flex-col items-center text-center gap-2">
+                        <action.icon className="bg-[var(--color-body)] h-8 w-8 text-primary" />
+                        <span className="text-sm font-medium">{action.label}</span>
+                      </div>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Activities */}
+            <div className="space-y-4">
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Recent Activities</h3>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
+                <div className="space-y-4">
+                  {recentActivities.map(activity => (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-[var(--color-body)] dark:hover:bg-[var(--color-body)]/50 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium">{activity.title}</p>
+                        <p className="text-sm text-[var(--color-text-secondary)]">{activity.description}</p>
+                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">{activity.time}</p>
+                      </div>
+                      {activity.amount && <p className="font-semibold">{activity.amount}</p>}
+                    </div>
+                  ))}
+                  <Link href="/furniture/reports">
+                    <Button variant="outline" className="w-full hover:bg-[var(--color-hover)]">
+                      View All Activities
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="production" className="bg-[var(--color-body)] space-y-6">
+            <div className="space-y-4">
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Production KPIs</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {productionKPIs.map(kpi => (
+                  <Card key={kpi.label} className="p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                    <div className="space-y-2">
+                      <p className="text-sm text-[var(--color-text-secondary)]">{kpi.label}</p>
+                      <p className="text-2xl font-bold">{kpi.value}%</p>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-xs">
+                          <span>Target: {kpi.target}%</span>
+                          <span
+                            className={
+                              kpi.value >= kpi.target ? 'text-green-600' : 'text-[var(--color-accent-indigo)]'
+                            }
+                          >
+                            {kpi.value >= kpi.target ? '✓' : '↓'}
+                          </span>
+                        </div>
+                        <div className="h-2 bg-[var(--color-body)] bg-muted-foreground/10 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full bg-${kpi.color}-500 transition-all`}
+                            style={{ width: `${kpi.value}%` }
+    }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold">Work Center Status</h3>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="space-y-4">
+                  {[
+                    { label: 'Cutting Station', value: 85, icon: Factory },
+                    { label: 'Assembly Line 1', value: 72, icon: Factory },
+                    { label: 'Finishing Bay', value: 90, icon: Factory },
+                    { label: 'Quality Check', value: 65, icon: CheckCircle }
+                  ].map(center => (
+                    <div key={center.label} className="bg-[var(--color-body)] space-y-2">
+                      <div className="bg-[var(--color-body)] flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <center.icon className="bg-[var(--color-body)] h-4 w-4 text-[var(--color-text-secondary)]" />
+                          <span className="font-medium">{center.label}</span>
+                        </div>
+                        <span className="text-sm font-medium">{center.value}%</span>
+                      </div>
+                      <div className="h-2 bg-[var(--color-body)] bg-muted-foreground/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[var(--color-body)] transition-all"
+                          style={{ width: `${center.value}%` }
+    }
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="finance" className="bg-[var(--color-body)] space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="bg-[var(--color-body)] flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[var(--color-text-secondary)]">Outstanding Receivables</p>
+                    <p className="text-2xl font-bold">₹15.2L</p>
+                    <p className="text-sm text-[var(--color-accent-indigo)]">5 overdue</p>
+                  </div>
+                  <AlertCircle className="h-8 w-8 text-[#37353E]" />
+                </div>
+              </Card>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="bg-[var(--color-body)] flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[var(--color-text-secondary)]">GST Payable</p>
+                    <p className="text-2xl font-bold">₹2.8L</p>
+                    <p className="text-sm text-green-600">Due in 7 days</p>
+                  </div>
+                  <DollarSign className="h-8 w-8 text-green-500" />
+                </div>
+              </Card>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="bg-[var(--color-body)] flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[var(--color-text-secondary)]">Cash Position</p>
+                    <p className="text-2xl font-bold">₹8.5L</p>
+                    <p className="text-sm text-primary">Healthy</p>
+                  </div>
+                  <TrendingUp className="h-8 w-8 text-[#37353E]" />
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="hr" className="bg-[var(--color-body)] space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="space-y-2">
+                  <div className="bg-[var(--color-body)] flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-[var(--color-text-secondary)]">Total Employees</p>
+                  </div>
+                  <p className="text-2xl font-bold">124</p>
+                  <p className="text-sm text-green-600">98% attendance today</p>
+                </div>
+              </Card>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="bg-[var(--color-body)] space-y-2">
+                  <div className="bg-[var(--color-body)] flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-[var(--color-text-secondary)]">Payroll Status</p>
+                  </div>
+                  <p className="text-lg font-semibold">Processing</p>
+                  <p className="text-sm text-[var(--color-accent-indigo)]">Due: 25th Jan</p>
+                </div>
+              </Card>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="bg-[var(--color-body)] space-y-2">
+                  <div className="bg-[var(--color-body)] flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-[var(--color-text-secondary)]">PF Remittance</p>
+                  </div>
+                  <p className="text-lg font-semibold">Completed</p>
+                  <p className="text-sm text-green-600">For Dec 2024</p>
+                </div>
+              </Card>
+              <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                <div className="bg-[var(--color-body)] space-y-2">
+                  <div className="bg-[var(--color-body)] flex items-center gap-2">
+                    <Truck className="h-5 w-5 text-primary" />
+                    <p className="text-sm text-[var(--color-text-secondary)]">ESI Status</p>
+                  </div>
+                  <p className="text-lg font-semibold">Pending</p>
+                  <p className="text-sm text-[var(--color-accent-indigo)]">Submit by 31st Jan</p>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Module Navigation */}
+        <div className="bg-[var(--color-body)] space-y-4">
+          <h2 className="bg-[var(--color-body)] text-xl font-semibold">Furniture Modules</h2>
+          <div className="bg-[var(--color-body)] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <ModuleLink href="/furniture/sales" icon={ShoppingCart} label="Sales" />
+            <ModuleLink href="/furniture/production" icon={Factory} label="Production" />
+            <ModuleLink href="/furniture/inventory" icon={Package} label="Inventory" />
+            <ModuleLink href="/furniture/products" icon={BarChart3} label="Products & BOM" />
+            <ModuleLink href="/furniture/tender" icon={FileText} label="Tender Mgmt" />
+            <ModuleLink href="/furniture/finance" icon={DollarSign} label="Finance" />
+            <ModuleLink href="/furniture/hr" icon={Users} label="HR & Payroll" />
+            <ModuleLink href="/furniture/quality" icon={CheckCircle} label="Quality" />
+            <ModuleLink href="/furniture/reports" icon={BarChart3} label="Reports" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const ModuleLink = React.memo(function ModuleLink({
+  href,
+  icon: Icon,
+  label
+}: {
+  href: string
+  icon: React.ElementType
+  label: string
+}) {
+  return (
+    <Link href={href}>
+      <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 hover:scale-105 transition-transform cursor-pointer bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
+        <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
+          <Icon className="h-8 w-8 text-primary" />
+          <span className="text-sm font-medium">{label}</span>
+        </div>
+      </Card>
+    </Link>
+  )
+})
+
+export default React.memo(FurnitureDashboard)

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
 
 // Steve Jobs Principle: "Focus and simplicity"
 // Universal operations dashboard that elegantly handles all fulfillment types

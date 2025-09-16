@@ -1,0 +1,43 @@
+/* ================================
+   FURNITURE MODULE - DARK THEME COLOR TOKENS
+   ================================ */
+
+/* ---- Base Layout ---- */
+:root {
+  /* Core surfaces */
+  --color-body: #2A282F;          /* App background - darker for depth */
+  --color-sidebar: #4A4854;       /* Sidebar - lighter shade */
+  --color-sidebar-border: #5A5864; /* Sidebar border - lighter than sidebar */
+  --color-surface-raised: #42404B; /* Cards, modals, components - no change */
+  --color-border: #504E59;        /* Subtle separators */
+
+  /* Text & Icons */
+  --color-text-primary: #E6E6EB;   /* Main text, headings, icons */
+  --color-text-secondary: #BAB9CA; /* Muted text */
+  --color-text-disabled: #8A889C;  /* Disabled/placeholder text */
+
+  /* Buttons */
+  --color-button-bg: #575463;     /* Neutral solid button background */
+  --color-button-text: #FFFFFF;   /* Button text/icons */
+  --color-button-hover: #6B6975;  /* Hover state background */
+
+  /* Interactive States */
+  --color-hover: #403E4A;         /* General hover for backgrounds - darker than sidebar */
+  --color-active: #2F2D36;        /* Pressed state */
+  --color-focus-ring: #BAB9CA;    /* Focus outline */
+
+  /* Accent Colors */
+  --color-accent-teal: #14B8A6;        /* Teal accent */
+  --color-accent-teal-hover: #0D9488;  /* Teal hover */
+  --color-accent-indigo: #6366F1;      /* Indigo accent */
+  --color-accent-indigo-hover: #4F46E5; /* Indigo hover */
+  --color-accent: #6366F1;             /* Primary accent (Indigo) */
+  --color-accent-text: #FFFFFF;
+  --color-accent-hover: #4F46E5;
+}
+
+/* Furniture-specific overrides */
+.furniture-theme {
+  background-color: var(--color-body);
+  color: var(--color-text-primary);
+}

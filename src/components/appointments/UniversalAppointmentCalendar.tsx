@@ -5,9 +5,9 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 import {
   Calendar,
   Clock,
@@ -30,7 +30,7 @@ import {
   APPOINTMENT_SMART_CODES,
   APPOINTMENT_WORKFLOW,
   SERVICE_TYPES
-} from '@/lib/appointments/universal-appointment-system'
+} from '@/src/lib/appointments/universal-appointment-system'
 
 // HERA Universal Appointment Calendar with FullCalendar Integration
 // Smart Code: HERA.UNIV.CRM.APT.CAL.v1

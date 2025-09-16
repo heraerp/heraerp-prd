@@ -6,8 +6,8 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useSupabaseAuth } from '@/contexts/supabase-auth-context'
-import { vibeEngine } from '@/lib/vibe/core-engine'
-import { VibeContext, VibeSession, VibeComponent, IntegrationWeave } from '@/lib/vibe/types'
+import { vibeEngine } from '@/src/lib/vibe/core-engine'
+import { VibeContext, VibeSession, VibeComponent, IntegrationWeave } from '@/src/lib/vibe/types'
 
 interface VibeContextType {
   // Engine State

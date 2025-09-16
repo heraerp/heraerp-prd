@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { CloudStorageService, createCloudStorageService } from '@/lib/bpo/cloud-storage'
+import { CloudStorageService, createCloudStorageService } from '@/src/lib/bpo/cloud-storage'
 
 export async function POST(request: NextRequest) {
   try {

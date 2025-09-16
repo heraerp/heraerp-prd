@@ -1,20 +1,20 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Textarea } from '@/src/components/ui/textarea'
+import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
+} from '@/src/components/ui/select'
 import {
   User,
   Phone,
@@ -37,7 +37,7 @@ import {
   UniversalAppointmentSystem,
   SERVICE_TYPES,
   APPOINTMENT_SMART_CODES
-} from '@/lib/appointments/universal-appointment-system'
+} from '@/src/lib/appointments/universal-appointment-system'
 
 // HERA Universal Create Appointment Modal
 // Smart Code: HERA.UNIV.CRM.APT.CREATE.v1

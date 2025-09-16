@@ -1,0 +1,22 @@
+{
+  "name": "hera-dna-restaurant",
+  "version": "1.0.0",
+  "description": "HERA DNA Implementation Scripts for Mario's Italian Restaurant",
+  "type": "module",
+  "scripts": {
+    "stage:all": "npm run stage:a && npm run stage:b && npm run stage:c && npm run stage:d && npm run stage:e && npm run stage:f && npm run stage:g && npm run stage:h",
+    "stage:a": "node stage-a-setup-business.js",
+    "stage:b": "node stage-b-generate-transactions.js",
+    "stage:c": "node stage-c-validation.js",
+    "stage:d": "node stage-d-auto-journal.js",
+    "stage:e": "node stage-e-reporting.js",
+    "stage:f": "node stage-f-commission-payroll.js",
+    "stage:g": "node stage-g-inventory.js",
+    "stage:h": "node stage-h-procurement.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1"
+  }
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { StatCardDNA, MiniStatCardDNA, StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { StatCardDNA, MiniStatCardDNA, StatCardGrid } from '@/src/lib/dna/components/ui/stat-card-dna'
 import { DollarSign, TrendingUp, Package, Users, AlertCircle, Calendar } from 'lucide-react'
 
 /**

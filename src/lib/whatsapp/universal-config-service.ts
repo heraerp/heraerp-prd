@@ -4,7 +4,7 @@
  * Smart Code: HERA.COMMS.WHATSAPP.UNIVERSAL.CONFIG.v1
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 import { createClient } from '@supabase/supabase-js'
 
 // Smart Code Namespaces

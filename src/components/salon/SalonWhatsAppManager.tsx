@@ -7,10 +7,10 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   MessageCircle,
   Calendar,
@@ -29,9 +29,9 @@ import {
   Crown,
   Scissors
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { WhatsAppManager } from '@/components/dna/whatsapp/WhatsAppManager'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/src/lib/utils'
+import { WhatsAppManager } from '@/src/components/dna/whatsapp/WhatsAppManager'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 interface SalonWhatsAppManagerProps {
   className?: string

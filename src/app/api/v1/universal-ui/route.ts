@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ViewMetaService } from '@/lib/universal-ui/view-meta-service'
-import { universalApi } from '@/lib/universal-api'
+import { ViewMetaService } from '@/src/lib/universal-ui/view-meta-service'
+import { universalApi } from '@/src/lib/universal-api'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(

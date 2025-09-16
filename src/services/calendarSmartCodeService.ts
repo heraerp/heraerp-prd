@@ -1,7 +1,7 @@
 // HERA Universal Calendar Smart Code Service
 // Handles smart code generation, validation, and classification for calendar entities
 
-import { CalendarSmartCodes, UniversalResource, UniversalAppointment } from '@/types/calendar.types'
+import { CalendarSmartCodes, UniversalResource, UniversalAppointment } from '@/src/types/calendar.types'
 
 export class CalendarSmartCodeService {
   // Smart Code Pattern: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{OBJECT}.{STATUS}.v{VERSION}

@@ -1,0 +1,32 @@
+import React from 'react'
+
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      {/* Auth Header */}
+      <header className="py-6 bg-background/80 backdrop-blur-sm border-b border-border/50">
+        <div className="container mx-auto px-6">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center">
+                <span className="text-lg font-bold text-foreground">H</span>
+              </div>
+              <div>
+                <span className="text-2xl font-light">HERA</span>
+                <span className="text-sm text-muted-foreground ml-2">Central Auth</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Auth Content */}
+      <main className="flex-1">{children}</main>
+
+      {/* Auth Footer */}
+      <footer className="py-8 text-center text-sm text-muted-foreground">
+        <p>© 2025 HERA. Enterprise ERP for Everyone.</p>
+      </footer>
+    </div>
+  )
+}

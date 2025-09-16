@@ -7,7 +7,7 @@
  * Smart Code: HERA.FIN.ACCT.POSTING.ENGINE.v1
  */
 
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/src/lib/supabase'
 import {
   PostingRule,
   PostingCondition,
@@ -17,7 +17,7 @@ import {
   ValidationError,
   ValidationWarning,
   ACCOUNTANT_SMART_CODES
-} from '@/types/digital-accountant.types'
+} from '@/src/types/digital-accountant.types'
 import { IPostingRulesEngine, IPostingRulesRepository } from './contracts'
 import { SQLGuardrailValidator } from './sql-guardrails'
 

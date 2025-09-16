@@ -4,7 +4,7 @@ import {
   aiHelpers,
   AI_SMART_CODES,
   type UniversalAIRequest
-} from '@/lib/ai/universal-ai'
+} from '@/src/lib/ai/universal-ai'
 
 // HERA Universal AI API Endpoint
 // Intelligently routes AI requests to optimal providers with fallback

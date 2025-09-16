@@ -4,8 +4,8 @@ export const revalidate = 0
 export const fetchCache = 'force-no-store'
 
 import React from 'react'
-import SalonThemeSwitcher from '@/components/salon/SalonThemeSwitcher'
-import SalonDarkLayout from '@/components/salon/SalonDarkLayout'
+import SalonThemeSwitcher from '@/src/components/salon/SalonThemeSwitcher'
+import SalonDarkLayout from '@/src/components/salon/SalonDarkLayout'
 
 export default function SalonDataLayout({ children }: { children: React.ReactNode }) {
   return (

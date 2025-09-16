@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 interface ISPMetrics {
   totalRevenue: number

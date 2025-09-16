@@ -38,17 +38,17 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
+} from '@/src/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,11 +56,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Progress } from '@/components/ui/progress'
-import { cn } from '@/lib/utils'
-import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard'
+} from '@/src/components/ui/dropdown-menu'
+import { Checkbox } from '@/src/components/ui/checkbox'
+import { Progress } from '@/src/components/ui/progress'
+import { cn } from '@/src/lib/utils'
+import { useFactoryDashboard } from '@/src/lib/hooks/use-factory-dashboard'
 import { GuardrailDetailDialog } from './GuardrailDetailDialog'
 import { NotificationCenter } from './NotificationCenter'
 import { ModulePipelineView } from './ModulePipelineView'

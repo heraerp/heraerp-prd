@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { HERAFooter } from '@/components/ui/HERAFooter'
-import { Progress } from '@/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { HERAFooter } from '@/src/components/ui/HERAFooter'
+import { Progress } from '@/src/components/ui/progress'
 import {
   Building2,
   FileText,
@@ -32,7 +32,7 @@ import {
   Circle,
   LogOut
 } from 'lucide-react'
-import { GSPU_AUDIT_PHASES, type AuditClient, type AuditPhase } from '@/types/audit.types'
+import { GSPU_AUDIT_PHASES, type AuditClient, type AuditPhase } from '@/src/types/audit.types'
 import { NewEngagementModal } from './NewEngagementModal'
 import { ClientDashboard } from './ClientDashboard'
 

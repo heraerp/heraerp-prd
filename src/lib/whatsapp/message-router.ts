@@ -3,10 +3,10 @@
  * Policy-aware routing with cost optimization
  */
 
-import { MCPTools } from '@/lib/mcp/whatsapp-mcp-tools'
-import { ClaudeWhatsAppService } from '@/lib/ai/claude-whatsapp-service'
-import { UniversalWhatsAppAI } from '@/lib/ai/universal-whatsapp-ai'
-import { universalApi } from '@/lib/universal-api'
+import { MCPTools } from '@/src/lib/mcp/whatsapp-mcp-tools'
+import { ClaudeWhatsAppService } from '@/src/lib/ai/claude-whatsapp-service'
+import { UniversalWhatsAppAI } from '@/src/lib/ai/universal-whatsapp-ai'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface MessageContext {
   organizationId: string

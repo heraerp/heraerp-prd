@@ -11,12 +11,12 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,12 +24,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { universalApi } from '@/lib/universal-api'
-import { handleError } from '@/lib/salon/error-handler'
-import { CustomerWhatsAppActions } from '@/components/salon/whatsapp/CustomerWhatsAppActions'
-import type { CustomerMetadata, CustomerBusinessRules } from '@/types/salon.types'
+} from '@/src/components/ui/dropdown-menu'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/src/lib/universal-api'
+import { handleError } from '@/src/lib/salon/error-handler'
+import { CustomerWhatsAppActions } from '@/src/components/salon/whatsapp/CustomerWhatsAppActions'
+import type { CustomerMetadata, CustomerBusinessRules } from '@/src/types/salon.types'
 import {
   Users,
   User,
@@ -110,10 +110,10 @@ import {
   Activity,
   X
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { ModalPortal } from '@/components/ui/modal-portal'
-import { CustomerFormModal } from '@/components/salon/CustomerFormModal'
-import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/src/lib/utils'
+import { ModalPortal } from '@/src/components/ui/modal-portal'
+import { CustomerFormModal } from '@/src/components/salon/CustomerFormModal'
+import { useToast } from '@/src/components/ui/use-toast'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 

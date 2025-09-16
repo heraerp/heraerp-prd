@@ -3,10 +3,10 @@ export const dynamic = 'force-dynamic'
 
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
-import { FranchiseHero } from '@/components/franchise/FranchiseHero'
-import { TestimonialCard } from '@/components/franchise/TestimonialCard'
-import { Button } from '@/components/ui/button'
+import { FranchiseLayout } from '@/src/components/franchise/FranchiseLayout'
+import { FranchiseHero } from '@/src/components/franchise/FranchiseHero'
+import { TestimonialCard } from '@/src/components/franchise/TestimonialCard'
+import { Button } from '@/src/components/ui/button'
 import {
   Download,
   ArrowRight,

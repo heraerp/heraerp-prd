@@ -4,9 +4,9 @@
  */
 
 import React, { forwardRef } from 'react'
-import { Input } from '@/components/ui/input'
-import { useOrganizationCurrency } from '@/hooks/use-organization-currency'
-import { cn } from '@/lib/utils'
+import { Input } from '@/src/components/ui/input'
+import { useOrganizationCurrency } from '@/src/hooks/use-organization-currency'
+import { cn } from '@/src/lib/utils'
 
 interface CurrencyInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'prefix'> {

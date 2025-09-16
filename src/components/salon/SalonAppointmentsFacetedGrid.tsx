@@ -14,11 +14,11 @@
  */
 
 import React, { useMemo, useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
+import { Checkbox } from '@/src/components/ui/checkbox'
 import {
   Search,
   Filter,
@@ -35,7 +35,7 @@ import {
   CreditCard,
   CheckCircle
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 

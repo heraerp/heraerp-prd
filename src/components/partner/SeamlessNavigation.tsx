@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Progress } from '@/src/components/ui/progress'
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,7 +16,7 @@ import {
   Clock,
   Target
 } from 'lucide-react'
-import { usePartnerJourney } from '@/lib/partner-journey'
+import { usePartnerJourney } from '@/src/lib/partner-journey'
 
 /**
  * Seamless Partner Navigation

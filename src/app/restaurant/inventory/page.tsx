@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { InventoryManagement } from '@/components/restaurant/InventoryManagement'
+import { InventoryManagement } from '@/src/components/restaurant/InventoryManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {

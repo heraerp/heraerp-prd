@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import {
   Diamond,
   PieChart,
@@ -13,8 +13,8 @@ import {
   Bell,
   User
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
 
 interface PWMNavigationProps {
   activeTab: string

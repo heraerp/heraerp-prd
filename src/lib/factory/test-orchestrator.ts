@@ -3,7 +3,7 @@
  * Orchestrates Jest API and Playwright E2E tests within factory pipeline
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import { readFile, writeFile } from 'fs/promises'

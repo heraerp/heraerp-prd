@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { APP_VERSION } from '@/lib/constants/version'
+import { APP_VERSION } from '@/src/lib/constants/version'
 
 export async function GET() {
   // Get version from constants file (source of truth)

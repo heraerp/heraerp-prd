@@ -5,7 +5,7 @@
  * Demonstrates how natural language transforms into complete journal entries
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface UniversalFinanceEvent {
   organization_id: string

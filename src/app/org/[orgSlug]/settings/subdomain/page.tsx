@@ -1,8 +1,8 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { updateOrgSubdomainAction } from '@/app/actions/updateOrgSubdomain'
-import SubdomainSettingsForm from '@/components/org/SubdomainSettingsForm'
+import { updateOrgSubdomainAction } from '@/src/app/actions/updateOrgSubdomain'
+import SubdomainSettingsForm from '@/src/components/org/SubdomainSettingsForm'
 import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 

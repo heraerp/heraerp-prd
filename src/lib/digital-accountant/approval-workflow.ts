@@ -7,7 +7,7 @@
  * Smart Code: HERA.FIN.ACCT.APPROVAL.v1
  */
 
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/src/lib/supabase'
 import {
   ApprovalWorkflow,
   ApprovalStep,
@@ -16,8 +16,8 @@ import {
   ValidationResult,
   ValidationError,
   ACCOUNTANT_SMART_CODES
-} from '@/types/digital-accountant.types'
-import { universalApi } from '@/lib/universal-api'
+} from '@/src/types/digital-accountant.types'
+import { universalApi } from '@/src/lib/universal-api'
 
 // ================================================================================
 // APPROVAL WORKFLOW TYPES

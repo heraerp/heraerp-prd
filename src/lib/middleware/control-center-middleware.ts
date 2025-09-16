@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { controlCenterService } from '@/lib/control-center/control-center-service'
+import { controlCenterService } from '@/src/lib/control-center/control-center-service'
 
 // Operations that require Control Center validation
 const PROTECTED_OPERATIONS = [

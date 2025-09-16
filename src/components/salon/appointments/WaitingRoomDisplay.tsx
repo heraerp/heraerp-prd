@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
 import { Clock, User, Scissors } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
-import { formatDate } from '@/lib/date-utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { formatDate } from '@/src/lib/date-utils'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 // Lazy initialization to handle build-time issues
 let supabase: ReturnType<typeof createClient> | null = null

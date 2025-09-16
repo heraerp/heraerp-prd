@@ -5,7 +5,7 @@
  * from the universal 6-table architecture
  */
 
-import { supabaseAdmin } from '@/lib/supabase-server'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 import type {
   PostingRule,
   OrgFinanceConfig,

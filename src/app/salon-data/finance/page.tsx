@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 import React from 'react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
 import {
   DollarSign,
   TrendingUp,
@@ -29,7 +29,7 @@ import {
   ArrowDownRight,
   Lock
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 export default function SalonFinanceDashboard() {
   // Mock data for quick stats

@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from '@/types/hera-database.types'
+import type { Database } from '@/src/types/hera-database.types'
 
 // Service client bypasses RLS - use only on server-side
 export function createServiceClient() {

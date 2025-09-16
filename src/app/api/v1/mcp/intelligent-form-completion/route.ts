@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 import { createReadinessTemplate } from '@/modules/readiness-questionnaire/template'
 
 interface BusinessContext {

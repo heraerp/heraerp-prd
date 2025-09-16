@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { toast } from '@/components/ui/use-toast'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { toast } from '@/src/components/ui/use-toast'
 
 export interface UCRTemplate {
   template_id: string

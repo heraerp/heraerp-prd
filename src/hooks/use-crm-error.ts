@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { CRMError, crmErrorHandler, ErrorHandlerResult } from '@/lib/crm/error-handler'
+import { CRMError, crmErrorHandler, ErrorHandlerResult } from '@/src/lib/crm/error-handler'
 
 interface UseCRMErrorOptions {
   showToast?: boolean

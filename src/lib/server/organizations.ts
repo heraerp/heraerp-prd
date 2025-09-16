@@ -4,7 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from '@/types/hera-database.types'
+import type { Database } from '@/src/types/hera-database.types'
 
 // Server-side Supabase client
 const supabase = createClient<Database>(

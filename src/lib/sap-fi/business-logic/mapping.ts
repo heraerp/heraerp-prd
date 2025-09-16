@@ -1,4 +1,4 @@
-import { UniversalTransaction, UniversalTransactionLine } from '@/types/hera-database.types'
+import { UniversalTransaction, UniversalTransactionLine } from '@/src/types/hera-database.types'
 
 // SAP Document structure
 export interface SAPDocumentHeader {

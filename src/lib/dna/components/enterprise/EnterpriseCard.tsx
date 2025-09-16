@@ -7,7 +7,7 @@
 'use client'
 
 import * as React from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGlassEffect } from '../../design-system/glass-effects-2.0'
 

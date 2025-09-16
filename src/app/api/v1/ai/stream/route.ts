@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { universalAI, type UniversalAIRequest, AI_SMART_CODES } from '@/lib/ai/universal-ai'
+import { universalAI, type UniversalAIRequest, AI_SMART_CODES } from '@/src/lib/ai/universal-ai'
 
 // HERA Universal AI Streaming Endpoint
 // Provides real-time streaming AI responses

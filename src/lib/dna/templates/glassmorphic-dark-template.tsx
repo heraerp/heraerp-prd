@@ -239,7 +239,7 @@ export const glassmorphicAnimations = `
 
 // Usage example
 export const usageExample = `
-import { glassmorphicThemes, generateGlassmorphicLayout, generateGlassmorphicCard } from '@/lib/dna/templates/glassmorphic-dark-template'
+import { glassmorphicThemes, generateGlassmorphicLayout, generateGlassmorphicCard } from '@/src/lib/dna/templates/glassmorphic-dark-template'
 
 // Use pre-defined theme
 const theme = glassmorphicThemes.healthcare

@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Card } from '@/components/ui/card'
-import { LoadingSpinner } from '@/components/ui/loading-states'
-import { Button } from '@/components/ui/button'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card } from '@/src/components/ui/card'
+import { LoadingSpinner } from '@/src/components/ui/loading-states'
+import { Button } from '@/src/components/ui/button'
 import {
   Plus,
   Users,
@@ -18,8 +18,8 @@ import {
   Calendar,
   DollarSign
 } from 'lucide-react'
-import { universalApi } from '@/lib/universal-api'
-import { StatCardDNA } from '@/lib/dna/components/ui/stat-card-dna'
+import { universalApi } from '@/src/lib/universal-api'
+import { StatCardDNA } from '@/src/lib/dna/components/ui/stat-card-dna'
 
 export default function CRMDashboard() {
   const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()

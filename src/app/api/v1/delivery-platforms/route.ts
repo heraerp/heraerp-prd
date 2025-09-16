@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
 
 // Steve Jobs Principle: "Innovation distinguishes between a leader and a follower."
 // Universal delivery platform integration that works with any delivery service

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 /**
  * Test endpoint to simulate a live WhatsApp webhook message

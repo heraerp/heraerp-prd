@@ -20,16 +20,16 @@ import {
   BarChart3,
   TrendingUp
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Progress } from '@/components/ui/progress'
-import { cn } from '@/lib/utils'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Textarea } from '@/src/components/ui/textarea'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group'
+import { Checkbox } from '@/src/components/ui/checkbox'
+import { Progress } from '@/src/components/ui/progress'
+import { cn } from '@/src/lib/utils'
 
 import type {
   QuestionnaireTemplate,

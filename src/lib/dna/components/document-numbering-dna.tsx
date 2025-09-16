@@ -15,7 +15,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 // 🧬 HERA DNA: Universal Industry Configurations
 export const HERA_DNA_DOCUMENT_CONFIGS = {

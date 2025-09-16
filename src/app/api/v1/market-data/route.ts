@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { yahooFinanceService } from '@/lib/pwm/yahoo-finance'
+import { yahooFinanceService } from '@/src/lib/pwm/yahoo-finance'
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)

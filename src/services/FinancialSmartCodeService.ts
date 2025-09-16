@@ -7,7 +7,7 @@
  * Smart Code Pattern: HERA.FIN.{SUB}.{FUNCTION}.{TYPE}.{VERSION}
  */
 
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
 
 // Financial Smart Code Structure
 export interface FinancialSmartCode {

@@ -5,7 +5,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Clock, TrendingUp, Shield, FileCheck, Calendar } from 'lucide-react'
-import type { KPISet } from '@/lib/types/factory'
+import type { KPISet } from '@/src/lib/types/factory'
 
 interface KpiCardsProps {
   kpis: KPISet

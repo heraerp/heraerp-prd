@@ -4,12 +4,12 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Separator } from '@/components/ui/separator'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
+import { Separator } from '@/src/components/ui/separator'
 import {
   Search,
   MoreVertical,
@@ -46,16 +46,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu'
+} from '@/src/components/ui/dropdown-menu'
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger
-} from '@/components/ui/context-menu'
-import { Badge } from '@/components/ui/badge'
+} from '@/src/components/ui/context-menu'
+import { Badge } from '@/src/components/ui/badge'
 import { useTheme } from 'next-themes'
-import { formatDate, isTodaySafe, isYesterdaySafe, differenceInMinutesSafe } from '@/lib/date-utils'
+import { formatDate, isTodaySafe, isYesterdaySafe, differenceInMinutesSafe } from '@/src/lib/date-utils'
 
 interface Message {
   id: string

@@ -6,10 +6,10 @@ import { AIInsightsFeed } from './AIInsightsFeed'
 import { RiskAlerts } from './RiskAlerts'
 import { OpportunityFeed } from './OpportunityFeed'
 import { MarketIntelligence } from './MarketIntelligence'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import { Brain, Target, Shield, Lightbulb, BarChart3 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
-import { getAIInsights } from '@/lib/pwm/api'
+import { getAIInsights } from '@/src/lib/pwm/api'
 
 interface AIIntelligenceCenterProps {
   organizationId: string

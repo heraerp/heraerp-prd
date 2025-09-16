@@ -1,23 +1,23 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Progress } from '@/components/ui/progress'
+} from '@/src/components/ui/select'
+import { Separator } from '@/src/components/ui/separator'
+import { Progress } from '@/src/components/ui/progress'
 import {
   Receipt,
   Users,
@@ -40,8 +40,8 @@ import {
   Snowflake,
   Award
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { universalApi } from '@/lib/universal-api'
+import { cn } from '@/src/lib/utils'
+import { universalApi } from '@/src/lib/universal-api'
 
 // Types
 export interface APModuleProps {

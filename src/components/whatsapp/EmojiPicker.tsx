@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover'
+import { Button } from '@/src/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import { Smile, Clock, Heart, Zap, Flag, Utensils, Car, Lightbulb } from 'lucide-react'
 
 interface EmojiPickerProps {

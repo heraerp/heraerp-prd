@@ -20,10 +20,10 @@ type Tool = any
 type Server = any
 
 import { z } from 'zod'
-import { universalApi } from '@/lib/universal-api'
-import { universalConfigService } from '@/lib/universal-config/universal-config-service'
+import { universalApi } from '@/src/lib/universal-api'
+import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
 import { v4 as uuidv4 } from 'uuid'
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 import { parseISO, isAfter, isBefore } from 'date-fns'
 
 // Tool parameter schemas

@@ -5,7 +5,7 @@ import {
   MasterDataResult,
   SAPIntegrationError
 } from './base'
-import { UniversalTransaction } from '@/types/hera-database.types'
+import { UniversalTransaction } from '@/src/types/hera-database.types'
 
 export class S4HANACloudConnector extends BaseSAPConnector {
   private apiVersion = 'v1'

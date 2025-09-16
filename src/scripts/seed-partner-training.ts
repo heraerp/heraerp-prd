@@ -6,7 +6,7 @@
  * Training modules as entities, content as dynamic data, assessments as relationships
  */
 
-import { getHeraAPI } from '@/lib/hera-api'
+import { getHeraAPI } from '@/src/lib/hera-api'
 
 export async function seedPartnerTrainingSystem() {
   const heraApi = getHeraAPI()

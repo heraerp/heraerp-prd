@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
-import { QueryProvider } from '@/components/providers/QueryProvider'
-import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
-import { MultiOrgAuthProvider } from '@/components/auth/MultiOrgAuthProvider'
-// import { DemoAuthHandler } from "@/components/auth/DemoAuthHandler"; // Temporarily disabled due to runtime error
-import { ToastProvider } from '@/components/ui/use-toast'
+import { QueryProvider } from '@/src/components/providers/QueryProvider'
+import { HeraThemeProvider } from '@/src/components/universal/ui/HeraThemeProvider'
+import { MultiOrgAuthProvider } from '@/src/components/auth/MultiOrgAuthProvider'
+// import { DemoAuthHandler } from '@/src/components/auth/DemoAuthHandler"; // Temporarily disabled due to runtime error
+import { ToastProvider } from '@/src/components/ui/use-toast'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility

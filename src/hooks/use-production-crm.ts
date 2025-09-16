@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { useProgressiveAuth } from '@/components/auth/ProgressiveAuthProvider'
+import { useProgressiveAuth } from '@/src/components/auth/ProgressiveAuthProvider'
 import {
   ProductionCRMService,
   createCRMService,
@@ -14,7 +14,7 @@ import {
   CRMOpportunity,
   CRMTask,
   CRMAnalytics
-} from '@/lib/crm/production-api'
+} from '@/src/lib/crm/production-api'
 
 interface CRMState {
   contacts: CRMContact[]

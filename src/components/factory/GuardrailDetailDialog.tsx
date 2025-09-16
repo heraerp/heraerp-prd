@@ -11,14 +11,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { ScrollArea } from '@/components/ui/scroll-area'
+} from '@/src/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Textarea } from '@/src/components/ui/textarea'
+import { Label } from '@/src/components/ui/label'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import {
   Shield,
   AlertTriangle,
@@ -35,9 +35,9 @@ import {
   ExternalLink,
   ChevronRight
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Progress } from '@/components/ui/progress'
+import { Progress } from '@/src/components/ui/progress'
 
 interface GuardrailDetailDialogProps {
   open?: boolean

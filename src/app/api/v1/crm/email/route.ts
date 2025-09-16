@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createEmailService, EmailMessage } from '@/lib/crm/email-service'
+import { createEmailService, EmailMessage } from '@/src/lib/crm/email-service'
 
 export async function POST(request: NextRequest) {
   try {

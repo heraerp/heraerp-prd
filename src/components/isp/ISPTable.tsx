@@ -104,7 +104,10 @@ export function ISPTable<T extends Record<string, any>>({
                       className="border-b border-white/5 hover:bg-background/5 transition-colors duration-200"
                     >
                       {columns.map(column => (
-                        <td key={String(column.key)} className="px-6 py-4 text-sm text-foreground/70">
+                        <td
+                          key={String(column.key)}
+                          className="px-6 py-4 text-sm text-foreground/70"
+                        >
                           {column.render
                             ? column.render(item)
                             : String(item[column.key as keyof T] || '-')}

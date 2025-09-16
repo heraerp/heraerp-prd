@@ -10,6 +10,7 @@
     "hera": "tsx src/cli/index.ts",
     "db:seed:test": "tsx scripts/seed-test.ts",
     "db:seed:print": "tsx scripts/seed-test.ts --dry-run",
+    "demo:setup": "node scripts/setup-demo-users.js",
     "dev": "node scripts/startup-control-center.js && next dev",
     "dev:no-cc": "next dev",
     "cc": "node mcp-server/hera-control-center.js",
@@ -147,7 +148,18 @@
     "build:emergency": "echo \"Emergency build mode - skipping build\" && mkdir -p .next && echo \"{\"phase\": \"phase-production-build\"}\" > .next/BUILD_ID",
     "start:emergency": "NODE_ENV=production node emergency-server.js",
     "playbooks:sync:to-hera": "node scripts/sync-playbooks.mjs --direction=to-hera",
-    "playbooks:sync:to-root": "node scripts/sync-playbooks.mjs --direction=to-root"
+    "playbooks:sync:to-root": "node scripts/sync-playbooks.mjs --direction=to-root",
+    "ga:preflight": "npm run type-check && npm run lint && npm run test && npm run e2e:headless",
+    "ga:guardrails": "node scripts/ga/guardrails-check.js",
+    "ga:perf": "node scripts/ga/perf-budgets.js",
+    "ga:a11y": "node scripts/ga/a11y-lighthouse.js",
+    "ga:bundle": "node scripts/ga/bundle-budget.js",
+    "ga:security": "node scripts/ga/security-headers.js",
+    "ga:smoke": "node scripts/ga/smoke-suite.js",
+    "ga:env": "node scripts/ga/env-validate.js",
+    "ga:report": "node scripts/ga/ga-summary.js",
+    "ga:all": "npm run ga:preflight && npm run ga:env && npm run ga:guardrails && npm run ga:perf && npm run ga:a11y && npm run ga:bundle && npm run ga:security && npm run ga:smoke && npm run ga:report",
+    "e2e:headless": "playwright test --headed=false"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",

@@ -1,7 +1,7 @@
 'use server'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getHeraAPI } from '@/lib/hera-api'
+import { getHeraAPI } from '@/src/lib/hera-api'
 
 /**
  * HERA Financial Module - Budget Management API

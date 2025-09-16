@@ -8,12 +8,12 @@
  * - Initial data setup
  */
 
-import { createClient } from '@/lib/supabase-server'
+import { createClient } from '@/src/lib/supabase-server'
 import { cookies } from 'next/headers'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 import { entitlementsService } from './entitlements'
-import { UniversalCOATemplateGenerator } from '@/lib/coa/universal-coa-template'
-import { createFurnitureDemoData } from '@/lib/demo-data/furniture-demo'
+import { UniversalCOATemplateGenerator } from '@/src/lib/coa/universal-coa-template'
+import { createFurnitureDemoData } from '@/src/lib/demo-data/furniture-demo'
 
 export interface ProvisioningRequest {
   organizationName: string

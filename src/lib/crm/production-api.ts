@@ -5,7 +5,7 @@
  * Project Manager Priority #1: Data Persistence Foundation
  */
 
-import { heraApi } from '@/lib/hera-api'
+import { heraApi } from '@/src/lib/hera-api'
 
 export interface CRMContact {
   id: string | number

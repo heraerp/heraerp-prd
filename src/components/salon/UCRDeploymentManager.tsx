@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { useToast } from '@/components/ui/use-toast'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Label } from '@/src/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useToast } from '@/src/components/ui/use-toast'
 import {
   Rocket,
   Shield,
@@ -39,13 +39,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
-import { Switch } from '@/components/ui/switch'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { formatDate } from '@/lib/date-utils'
+} from '@/src/components/ui/select'
+import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
+import { Separator } from '@/src/components/ui/separator'
+import { Switch } from '@/src/components/ui/switch'
+import { Input } from '@/src/components/ui/input'
+import { Textarea } from '@/src/components/ui/textarea'
+import { formatDate } from '@/src/lib/date-utils'
 import { addDays, addMonths } from 'date-fns'
 import {
   Dialog,
@@ -54,9 +54,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter
-} from '@/components/ui/dialog'
-import { Progress } from '@/components/ui/progress'
-import { Checkbox } from '@/components/ui/checkbox'
+} from '@/src/components/ui/dialog'
+import { Progress } from '@/src/components/ui/progress'
+import { Checkbox } from '@/src/components/ui/checkbox'
 
 interface UCRDeploymentManagerProps {
   ruleId: string

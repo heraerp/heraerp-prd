@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/src/components/ui/skeleton'
+import { Card, CardContent, CardHeader } from '@/src/components/ui/card'
 import { Loader2 } from 'lucide-react'
 
 // Smart Code: HERA.UI.LOADING.STATES.ENHANCED.v1

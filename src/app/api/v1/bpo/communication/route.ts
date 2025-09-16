@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BPOCommunicationEntity, BPOMessageEntity, BPOUserRole } from '@/lib/bpo/bpo-entities'
+import { BPOCommunicationEntity, BPOMessageEntity, BPOUserRole } from '@/src/lib/bpo/bpo-entities'
 
 // Mock storage
 let mockThreads: Array<BPOCommunicationEntity & { messages?: BPOMessageEntity[] }> = [

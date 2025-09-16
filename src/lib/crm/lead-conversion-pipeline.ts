@@ -1,5 +1,5 @@
-import { universalApi } from '@/lib/universal-api'
-import { createLeadScoringEngine, LeadScore } from '@/lib/email/lead-scoring-engine'
+import { universalApi } from '@/src/lib/universal-api'
+import { createLeadScoringEngine, LeadScore } from '@/src/lib/email/lead-scoring-engine'
 
 /**
  * HERA CRM Lead Conversion Pipeline

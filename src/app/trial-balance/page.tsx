@@ -5,20 +5,20 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-// import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider' // Not needed - using default salon org
-import { useToast } from '@/components/ui/use-toast'
+} from '@/src/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Badge } from '@/src/components/ui/badge'
+// import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider' // Not needed - using default salon org
+import { useToast } from '@/src/components/ui/use-toast'
 import {
   ChevronLeft,
   Download,

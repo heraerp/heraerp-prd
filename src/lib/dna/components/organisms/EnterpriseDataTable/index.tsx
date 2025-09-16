@@ -6,7 +6,7 @@
 
 import React, { useState, useCallback, useMemo, memo } from 'react'
 import { useGlassEffect, GlassConfig } from '../../../design-system/glass-effects-2.0'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import {
   ChevronDown,
   ChevronUp,

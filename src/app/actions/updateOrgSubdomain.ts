@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 // Server-side Supabase client for direct operations
 const supabase = createClient(

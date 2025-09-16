@@ -1,7 +1,7 @@
 // Optimized JWT service for HERA authentication
 // Provides session validation and refresh functionality
 
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/src/lib/supabase'
 
 interface OptimizedSession {
   valid: boolean

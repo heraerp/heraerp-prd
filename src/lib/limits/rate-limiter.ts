@@ -3,7 +3,7 @@
  * Per-organization and per-IP rate limiting with idempotency support
  */
 
-import { getSupabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/src/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 import crypto from 'crypto'
 

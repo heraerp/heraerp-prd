@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 import {
   ChefHat,
   TrendingUp,
@@ -14,8 +14,8 @@ import {
   Users,
   Building2
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { HeraTypographicLogo } from '@/components/ui/HeraTypographicLogo'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { HeraTypographicLogo } from '@/src/components/ui/HeraTypographicLogo'
 
 interface DemoOption {
   id: string

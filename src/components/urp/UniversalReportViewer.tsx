@@ -8,20 +8,20 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
+} from '@/src/components/ui/select'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Badge } from '@/src/components/ui/badge'
 import { Loader2, RefreshCw, Download, FileText, AlertCircle } from 'lucide-react'
-import { universalApi } from '@/lib/universal-api'
-import { cn } from '@/lib/utils'
+import { universalApi } from '@/src/lib/universal-api'
+import { cn } from '@/src/lib/utils'
 
 interface ReportRecipe {
   name: string

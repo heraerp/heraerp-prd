@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { trackDocView } from '@/lib/hera-docs'
+import { trackDocView } from '@/src/lib/hera-docs'
 
 interface DocAnalyticsProps {
   pageId: string

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auditDocumentService } from '@/lib/supabase/audit-documents'
-import { enhancedAuditDocumentService } from '@/lib/supabase/enhanced-audit-documents'
+import { auditDocumentService } from '@/src/lib/supabase/audit-documents'
+import { enhancedAuditDocumentService } from '@/src/lib/supabase/enhanced-audit-documents'
 
 // Mock document data - used when Supabase is not available
 const mockDocuments = [

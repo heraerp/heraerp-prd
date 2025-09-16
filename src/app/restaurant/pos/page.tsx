@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { POSTerminalGlass } from '@/components/restaurant/POSTerminalGlass'
+import { POSTerminalGlass } from '@/src/components/restaurant/POSTerminalGlass'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {

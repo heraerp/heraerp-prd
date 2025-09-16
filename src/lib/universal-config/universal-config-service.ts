@@ -5,9 +5,9 @@
  * Core service for resolving and applying configuration rules
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { supabase } from '@/lib/supabase'
-import type { Entity, Transaction, DynamicData, Relationship } from '@/types/universal.types'
+import { universalApi } from '@/src/lib/universal-api'
+import { supabase } from '@/src/lib/supabase'
+import type { Entity, Transaction, DynamicData, Relationship } from '@/src/types/universal.types'
 
 // Rule interface matching the README specification
 export interface UniversalRule {

@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
 import {
   LineChart,
   Line,
@@ -16,7 +16,7 @@ import {
   ReferenceDot
 } from 'recharts'
 import { Brain, TrendingUp, Calendar, DollarSign } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 interface PredictiveAnalyticsProps {
   organizationId: string

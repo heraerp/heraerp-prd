@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/src/components/ui/button'
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'
-import { useToast } from '@/components/ui/use-toast'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useToast } from '@/src/components/ui/use-toast'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 interface CheckInButtonProps {
   appointmentId: string

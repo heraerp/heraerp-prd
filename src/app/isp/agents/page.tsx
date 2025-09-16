@@ -610,7 +610,9 @@ export default function AgentsPage() {
               <IndianRupee className="h-5 w-5 text-[#E91E63]" />
               <span className="text-xs text-emerald-400 font-medium">+8.7%</span>
             </div>
-            <p className="text-2xl font-bold text-foreground">₹{(totalRevenue / 100000).toFixed(1)}L</p>
+            <p className="text-2xl font-bold text-foreground">
+              ₹{(totalRevenue / 100000).toFixed(1)}L
+            </p>
             <p className="text-xs text-foreground/60">Total Revenue</p>
           </div>
         </div>

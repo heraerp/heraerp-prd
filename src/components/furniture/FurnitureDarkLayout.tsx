@@ -1,11 +1,16 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback }
+from 'react'
 import FurnitureDarkSidebar from './FurnitureDarkSidebar'
-import { cn } from '@/lib/utils'
-import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { NavigationLoadingProvider } from '@/components/navigation/NavigationLoadingProvider'
+import { cn }
+from '@/src/lib/utils'
+import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 }
+from 'lucide-react'
+import { Button }
+from '@/src/components/ui/button'
+import { NavigationLoadingProvider }
+from '@/src/components/navigation/NavigationLoadingProvider'
 
 
 interface FurnitureDarkLayoutProps {
@@ -33,28 +38,28 @@ const [isMobile, setIsMobile] = useState(true)
   // Close sidebar when clicking on a link on mobile
   const handleSidebarClose = useCallback(() => {
     if (isMobile) {
-      setSidebarOpen(false)
+  setSidebarOpen(false)
     }
   }, [isMobile])
 
   return (
     <NavigationLoadingProvider>
-      <div className="relative min-h-screen bg-background">
+      <div className="relative min-h-screen bg-[var(--color-body)]">
         {/* Mobile Header */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-muted/95 backdrop-blur-xl border-b border-border/50 z-40 flex items-center px-4">
+        <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[var(--color-body)]/95 backdrop-blur-xl border-b border-[var(--color-border)]/50 z-40 flex items-center px-4">
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
             <Menu className="h-6 w-6" />
           </Button>
           <div className="ml-4 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
-              <Armchair className="h-5 w-5 text-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[var(--color-accent-teal)] to-[var(--color-accent-indigo)] flex items-center justify-center">
+              <Armchair className="h-5 w-5 text-white" />
             </div>
-            <span className="text-foreground font-semibold">Kerala Furniture</span>
+            <span className="text-[var(--color-text-primary)] font-semibold">Kerala Furniture</span>
           </div>
         </div>
 
@@ -91,12 +96,12 @@ const [isMobile, setIsMobile] = useState(true)
         )}
 
         {/* Mobile Bottom Navigation */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-muted/95 backdrop-blur-xl border-t border-border/50 z-30">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-[var(--color-body)]/95 backdrop-blur-xl border-t border-[var(--color-border)]/50 z-30">
           <div className="grid grid-cols-4 gap-1 p-2">
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
               onClick={() => (window.location.href = '/furniture')}
             >
               <Home className="h-5 w-5 mb-1" />
@@ -105,7 +110,7 @@ const [isMobile, setIsMobile] = useState(true)
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
               onClick={() => (window.location.href = '/furniture/sales')}
             >
               <ShoppingCart className="h-5 w-5 mb-1" />
@@ -114,7 +119,7 @@ const [isMobile, setIsMobile] = useState(true)
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
               onClick={() => (window.location.href = '/furniture/production')}
             >
               <Factory className="h-5 w-5 mb-1" />
@@ -123,7 +128,7 @@ const [isMobile, setIsMobile] = useState(true)
             <Button
               variant="ghost"
               size="sm"
-              className="flex flex-col items-center justify-center h-16 text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50"
+              className="flex flex-col items-center justify-center h-16 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-sidebar)]/30/50"
               onClick={() => setSidebarOpen(true)}
             >
               <Grid3x3 className="h-5 w-5 mb-1" />

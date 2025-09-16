@@ -15,7 +15,7 @@ import {
   type OrganizationId,
   type EntityId,
   type TransactionId
-} from '@/lib/dna-sdk-stub'
+} from '@/src/lib/dna-sdk-stub'
 
 // Salon-specific smart codes
 export const SALON_SMART_CODES = {

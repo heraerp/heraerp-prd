@@ -9,8 +9,8 @@
  * - universal_transaction_lines: Service line items
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { formatDate, addMinutesSafe } from '@/lib/date-utils'
+import { universalApi } from '@/src/lib/universal-api'
+import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
 import { parseISO } from 'date-fns'
 import { whatsAppService } from './whatsapp-notification-service'
 

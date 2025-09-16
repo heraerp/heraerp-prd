@@ -4,14 +4,14 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import { useRouter } from 'next/navigation'
 import {
   MessageCircle,
@@ -52,11 +52,11 @@ import {
   TrendingDown,
   Loader2
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 // Import the actual components
 import dynamicImport from 'next/dynamic'
-import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
+import { BookingAutomationService } from '@/src/lib/whatsapp/booking-automation'
 
 // Dynamically import components to avoid build issues
 const BookingAutomationPanel = dynamicImport(

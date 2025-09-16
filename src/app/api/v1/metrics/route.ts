@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { heraMetrics } from '@/lib/observability/metrics'
+import { heraMetrics } from '@/src/lib/observability/metrics'
 
 /**
  * GET /api/v1/metrics

@@ -1,0 +1,283 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================================
+   HERA SALON THEME TOKENS
+   Smart Code: HERA.DNA.THEME.SALON.TOKENS.v1
+   ================================================================================ */
+
+:root {
+  /* Salon Brand Colors */
+  --color-primary: #6B3FA0;
+  --color-primary-600: #5E3791;
+  --color-primary-700: #512F82;
+  --color-secondary: #F15BB5;
+  --color-secondary-600: #DC4AA4;
+  --color-dark: #472663;
+  --color-light: #E4C6F6;
+  --color-bg-light: #F9F6FA;
+  --color-text-dark: #2A2730;
+  --color-white: #ffffff;
+  
+  /* Elegant Gradient */
+  --gradient-elegant: linear-gradient(135deg, #472663, #6B3FA0);
+  
+  /* shadcn/ui default theme variables */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 98%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 98%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 262.1 83.3% 57.8%; /* Primary focus ring */
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 262.1 83.3% 57.8%;
+}
+
+/* ================================================================================
+   BASE STYLES
+   ================================================================================ */
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground;
+  background-color: var(--color-bg-light);
+  color: var(--color-text-dark);
+}
+
+/* ================================================================================
+   SALON THEME COMPONENT STYLES
+   ================================================================================ */
+
+/* Primary Button */
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  @apply disabled:pointer-events-none disabled:opacity-50;
+  @apply h-10 px-4 py-2;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  focus-visible:ring-color: var(--color-secondary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-600);
+}
+
+.btn-primary:active {
+  background-color: var(--color-primary-700);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  @apply disabled:pointer-events-none disabled:opacity-50;
+  @apply h-10 px-4 py-2;
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  focus-visible:ring-color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-600);
+}
+
+/* Outline Button */
+.btn-outline {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  @apply disabled:pointer-events-none disabled:opacity-50;
+  @apply h-10 px-4 py-2;
+  @apply border border-input bg-background;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  focus-visible:ring-color: var(--color-secondary);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* Card Component */
+.card-salon {
+  @apply rounded-lg border bg-card text-card-foreground shadow-salon;
+  background-color: var(--color-white);
+  border-color: var(--color-light);
+}
+
+.card-salon:hover {
+  @apply shadow-salon-lg;
+  transform: translateY(-2px);
+}
+
+/* Input Focus Styles */
+input:focus,
+textarea:focus,
+select:focus {
+  @apply ring-2 ring-offset-2;
+  ring-color: var(--color-secondary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+/* Active Navigation Link */
+.nav-link-active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.nav-link-active::before {
+  content: '';
+  @apply absolute left-0 top-0 bottom-0 w-1;
+  background-color: var(--color-secondary);
+}
+
+/* Sidebar Styling */
+.sidebar-salon {
+  background: var(--gradient-elegant);
+  @apply text-white;
+}
+
+.sidebar-salon .nav-link {
+  @apply relative flex items-center px-4 py-3 text-sm font-medium transition-colors;
+  @apply hover:bg-white/10 focus:bg-white/10 focus:outline-none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar-salon .nav-link:hover {
+  color: var(--color-white);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-salon .nav-link.active {
+  @apply nav-link-active;
+}
+
+/* Form Styles */
+.form-salon input,
+.form-salon textarea,
+.form-salon select {
+  @apply w-full rounded-md border px-3 py-2 text-sm transition-colors;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  border-color: var(--color-light);
+  focus:ring-color: var(--color-secondary);
+  focus:border-color: var(--color-primary);
+}
+
+.form-salon label {
+  @apply block text-sm font-medium mb-2;
+  color: var(--color-text-dark);
+}
+
+.form-salon .error {
+  @apply text-sm mt-1;
+  color: hsl(var(--destructive));
+}
+
+/* Loading States */
+.loading {
+  @apply animate-pulse;
+}
+
+.loading-skeleton {
+  @apply bg-muted rounded animate-pulse;
+}
+
+/* Accessibility Enhancements */
+.focus-visible\:ring-salon:focus-visible {
+  @apply ring-2 ring-offset-2;
+  ring-color: var(--color-secondary);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary: #4A2668;
+    --color-secondary: #E0439C;
+    --color-text-dark: #000000;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    @apply border-2 border-solid;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ================================================================================
+   UTILITY CLASSES
+   ================================================================================ */
+
+.text-salon-gradient {
+  background: var(--gradient-elegant);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-salon-gradient {
+  background: var(--gradient-elegant);
+}
+
+.border-salon {
+  border-color: var(--color-primary);
+}
+
+.text-salon-primary {
+  color: var(--color-primary);
+}
+
+.text-salon-secondary {
+  color: var(--color-secondary);
+}
+
+.bg-salon-light {
+  background-color: var(--color-bg-light);
+}
+
+/* Container for main content */
+.main-content {
+  background-color: var(--color-bg-light);
+  min-height: 100vh;
+}

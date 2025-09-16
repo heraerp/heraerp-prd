@@ -6,7 +6,7 @@ import {
   getDemoOrganizationId,
   getDemoOrganizationInfo,
   isDemoRoute
-} from '@/lib/demo-org-resolver'
+} from '@/src/lib/demo-org-resolver'
 
 interface DemoOrgContextType {
   organizationId: string | null

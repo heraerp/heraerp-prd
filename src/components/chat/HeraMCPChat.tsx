@@ -15,21 +15,21 @@ import {
   AlertCircle,
   ChevronDown
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Button } from '@/src/components/ui/button'
+import { Textarea } from '@/src/components/ui/textarea'
+import { Card } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
+} from '@/src/components/ui/select'
 
 interface Message {
   id: string

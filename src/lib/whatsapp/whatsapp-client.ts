@@ -4,7 +4,7 @@
  * Smart Code: HERA.WHATSAPP.CLIENT.v1
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface WhatsAppAccount {
   id: string

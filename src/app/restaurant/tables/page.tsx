@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { TableManagement } from '@/components/restaurant/TableManagement'
+import { TableManagement } from '@/src/components/restaurant/TableManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {

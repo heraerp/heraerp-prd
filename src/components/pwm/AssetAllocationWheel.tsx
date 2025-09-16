@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/src/components/ui/card'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, Sector } from 'recharts'
-import { AssetAllocation } from '@/lib/pwm/types'
-import { cn } from '@/lib/utils'
+import { AssetAllocation } from '@/src/lib/pwm/types'
+import { cn } from '@/src/lib/utils'
 
 interface AssetAllocationWheelProps {
   allocations: AssetAllocation[]

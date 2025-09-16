@@ -13,7 +13,7 @@
  * - Real-time analytics and dashboards
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface TenderMetrics {
   activeTenders: {
@@ -430,6 +430,12 @@ class TenderService {
   private async getAuthToken(): Promise<string> {
     // Get token from localStorage or session
     if (typeof window !== 'undefined') {
+      // Check if in demo mode first
+      const isDemoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
+      if (isDemoLogin) {
+        return 'demo-token'
+      }
+      
       // Try to get from Supabase session
       const supabaseToken = localStorage.getItem('supabase.auth.token')
       if (supabaseToken) {

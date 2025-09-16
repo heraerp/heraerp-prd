@@ -7,7 +7,7 @@
  *
  * @example
  * // Import the universal calendar
- * import { UniversalCalendar } from '@/components/calendar/UniversalCalendar'
+ * import { UniversalCalendar } from '@/src/components/calendar/UniversalCalendar'
  *
  * // Use for salon
  * <UniversalCalendar

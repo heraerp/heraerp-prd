@@ -7,23 +7,23 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Textarea } from '@/src/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Progress } from '@/components/ui/progress'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+} from '@/src/components/ui/select'
+import { Separator } from '@/src/components/ui/separator'
+import { Progress } from '@/src/components/ui/progress'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   Calendar,
   Clock,
@@ -47,8 +47,8 @@ import {
   Heart,
   Crown
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { toast } from '@/hooks/use-toast'
+import { cn } from '@/src/lib/utils'
+import { toast } from '@/src/hooks/use-toast'
 
 // Types for salon booking workflow
 interface SalonService {

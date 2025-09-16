@@ -1,4 +1,4 @@
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 
 export interface UILoyalty_program {
   id: string

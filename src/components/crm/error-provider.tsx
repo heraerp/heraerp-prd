@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { CRMError, crmErrorHandler } from '@/lib/crm/error-handler'
+import { CRMError, crmErrorHandler } from '@/src/lib/crm/error-handler'
 import { ErrorToast } from './error-display'
 
 interface ErrorContextType {

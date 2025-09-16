@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Widget } from '@/lib/universal-ui/view-meta-service'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Widget } from '@/src/lib/universal-ui/view-meta-service'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
 import {
   Table,
   TableBody,
@@ -10,28 +10,28 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+} from '@/src/components/ui/table'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
+} from '@/src/components/ui/select'
+import { Checkbox } from '@/src/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+} from '@/src/components/ui/dropdown-menu'
 import { MoreHorizontal, Search, ChevronLeft, ChevronRight, Filter } from 'lucide-react'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 import { format } from 'date-fns'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 interface GridWidgetProps {
   widget: Widget

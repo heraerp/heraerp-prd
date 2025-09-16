@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 export default function AuthHubPage() {

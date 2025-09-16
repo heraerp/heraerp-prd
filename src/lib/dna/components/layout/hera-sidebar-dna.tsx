@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { cn } from '@/src/lib/utils'
+import { Button } from '@/src/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
 import { Menu, X, Plus, Search, Activity, LucideIcon } from 'lucide-react'
 
 export interface HeraSidebarNavItem {
@@ -321,7 +321,7 @@ export const HERA_SIDEBAR_DNA = {
     'Header content customization'
   ],
   usage: `
-import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
+import { HeraSidebar } from '@/src/lib/dna/components/layout/hera-sidebar-dna'
 import { LayoutDashboard, Package, DollarSign } from 'lucide-react'
 
 const navigation = [

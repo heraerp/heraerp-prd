@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/src/components/ui/button'
 import { ArrowLeft, Rocket, Calendar, Bell, Mail, Home } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 

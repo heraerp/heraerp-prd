@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "id": "FILE_MISSING",
+      "message": "universal_orchestration.yaml not found or unreadable",
+      "error": "ENOENT: no such file or directory, open '/Users/san/Documents/PRD/heraerp-prd/universal_orchestration.yaml'"
+    }
+  ],
+  "warnings": [],
+  "info": [],
+  "artifacts": [],
+  "summary": {},
+  "compat_mode": false
+}

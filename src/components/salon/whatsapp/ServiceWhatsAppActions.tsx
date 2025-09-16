@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   Dialog,
   DialogContent,
@@ -12,10 +12,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+} from '@/src/components/ui/dialog'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Textarea } from '@/src/components/ui/textarea'
 import {
   Sparkles,
   MessageCircle,
@@ -26,10 +26,10 @@ import {
   Gift,
   Rocket
 } from 'lucide-react'
-import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
-import { formatDate } from '@/lib/date-utils'
+import { formatWhatsAppTemplate } from '@/src/lib/salon/whatsapp-templates'
+import { formatDate } from '@/src/lib/date-utils'
 import { addDays } from 'date-fns'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 interface ServiceWhatsAppActionsProps {
   service: {

@@ -3,7 +3,7 @@
  * Reusable fiscal year and year-end closing functionality for ANY business
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface FiscalYearConfig {
   fiscalType: 'calendar' | 'fiscal' | 'custom'

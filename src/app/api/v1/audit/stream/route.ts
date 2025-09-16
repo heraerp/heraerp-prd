@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getSupabase } from '@/lib/supabase/client'
+import { getSupabase } from '@/src/lib/supabase/client'
 
 /**
  * Server-Sent Events endpoint for real-time audit streaming

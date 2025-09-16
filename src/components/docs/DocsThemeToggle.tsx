@@ -1,6 +1,6 @@
 'use client'
 
-import { HeraThemeToggle } from '@/components/universal/ui/HeraThemeProvider'
+import { HeraThemeToggle } from '@/src/components/universal/ui/HeraThemeProvider'
 
 export function DocsThemeToggle() {
   return (

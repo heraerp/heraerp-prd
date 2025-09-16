@@ -300,7 +300,7 @@ export default function ChartOfAccountsDoc() {
           <h3>Quick Setup (30 seconds)</h3>
           <div className="docs-card mb-6">
             <pre className="text-sm bg-canvas-inset p-4 rounded overflow-x-auto">
-              {`import { universalApi } from '@/lib/universal-api'
+              {`import { universalApi } from '@/src/lib/universal-api'
 
 // Setup complete IFRS-compliant COA
 const result = await universalApi.setupIFRSChartOfAccounts({

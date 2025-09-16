@@ -4,13 +4,13 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Textarea } from '@/components/ui/textarea'
+import { Card } from '@/src/components/ui/card'
+import { Input } from '@/src/components/ui/input'
+import { Button } from '@/src/components/ui/button'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
+import { Badge } from '@/src/components/ui/badge'
+import { Textarea } from '@/src/components/ui/textarea'
 import {
   Search,
   Send,
@@ -30,9 +30,9 @@ import {
   MessageSquare,
   RefreshCw
 } from 'lucide-react'
-import { formatDate, isTodaySafe, isYesterdaySafe, differenceInHoursSafe } from '@/lib/date-utils'
-import { cn } from '@/lib/utils'
-import { MessageStatusHistory } from '@/components/whatsapp/MessageStatusHistory'
+import { formatDate, isTodaySafe, isYesterdaySafe, differenceInHoursSafe } from '@/src/lib/date-utils'
+import { cn } from '@/src/lib/utils'
+import { MessageStatusHistory } from '@/src/components/whatsapp/MessageStatusHistory'
 
 interface Conversation {
   id: string

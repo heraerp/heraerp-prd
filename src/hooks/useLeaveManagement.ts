@@ -5,10 +5,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { leaveManagementApi } from '@/lib/salon/leave-management-api'
-import { calendarService } from '@/lib/salon/calendar-integration'
-import { toast } from '@/hooks/use-toast'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { leaveManagementApi } from '@/src/lib/salon/leave-management-api'
+import { calendarService } from '@/src/lib/salon/calendar-integration'
+import { toast } from '@/src/hooks/use-toast'
 
 export interface UseLeaveManagementOptions {
   autoRefreshInterval?: number

@@ -1,0 +1,118 @@
+'use client'
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
+import React from 'react'
+// Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ShoppingCart, Plus, FileText, Clock, CheckCircle, DollarSign, User, Calendar, Package
+} from 'lucide-react'
+import Link from 'next/link' import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/lib/universal-api'
+import { useEffect, useState } from 'react'
+
+
+export default function FurnitureSalesOrders() {
+  const { currentOrganization } = useMultiOrgAuth()
+
+const [selectedItems, setSelectedItems] = useState<any[]>([])
+
+const [furnitureItems, setFurnitureItems] = useState<any[]>([])
+
+const [recentOrders, setRecentOrders] = useState<any[]>([])
+
+const [loading, setLoading] = useState(true)
+
+const [stats, setStats] = useState({ activeOrders: 0, monthlyRevenue: 0, avgOrderSize: 0, pendingDelivery: 0 }) useEffect(() => { if (currentOrganization?.id) {
+  loadData(  ) }, [currentOrganization])
+
+const loadData = async () => { try { setLoading(true) universalApi.setOrganizationId(currentOrganization?.id || '')
+          // Load furniture products for POS
+  const productsResponse =await universalApi.read('core_entities', { filters: [
+  { field: 'entity_type', operator: 'eq', value: 'product' },
+  { field: 'smart_code', operator: 'like', value: '%FURNITURE.MASTER.PRODUCT%' }
+], limit: 10 })
+          // Transform products for POS display const productsWithPrices = await Promise.all( productsResponse.data.map(async (product: any) => {
+  const dynamicResponse =await universalApi.read('core_dynamic_data', { filters: [
+  { field: 'entity_id', operator: 'eq', value: product.id },
+  { field: 'field_name', operator: 'in', value: ['selling_price'] }
+] })
+
+const price = dynamicResponse.data.find((f: any) => f.field_name === 'selling_price') ?.field_value_number || 0 return { id: product.id, name: product.entity_name, category: (product.metadata as any)?.category || 'General', price: price, image: '/api/placeholder/100/100', sku: product.entity_code } }) ) setFurnitureItems(productsWithPrices)
+          // Load recent sales orders
+  const ordersResponse =await universalApi.read('universal_transactions', { filters: [
+  { field: 'transaction_type', operator: 'eq', value: 'sales_order' },
+  { field: 'smart_code', operator: 'like', value: '%FURNITURE.SALES%' }
+], orderBy: { field: 'created_at', direction: 'desc' }, limit: 10 })
+          // Transform orders with customer names const enrichedOrders = await Promise.all( ordersResponse.data.map(async (order: any) => { let customerName = 'Direct Sale' if (order.from_entity_id) {
+  const customerResponse = await universalApi.read('core_entities', { filters: [{ field: 'id', operator: 'eq', value: order.from_entity_id }] })
+        if (customerResponse.data.length > 0) {
+  customerName = customerResponse.data[0].entity_name } }
+  // Get line items count const linesResponse = await universalApi.read('universal_transaction_lines', { filters: [{ field: 'transaction_id', operator: 'eq', value: order.id }] }) return { id: order.transaction_code, customer: customerName, items: linesResponse.data.length, value: `₹${(order.total_amount || 0).toLocaleString('en-IN')}`, status: order.status || 'pending_approval', date: new Date(order.transaction_date).toLocaleDateString('en-IN'  ) }) ) setRecentOrders(enrichedOrders)
+          // Calculate stats
+  const activeOrders =ordersResponse.data.filter((o: any) => ['pending_approval', 'confirmed', 'in_production'].includes(o.status) ).length const currentMonth = new Date().getMonth()
+
+const monthlyOrders = ordersResponse.data.filter( (o: any) => new Date(o.transaction_date).getMonth() === currentMonth )
+
+const monthlyRevenue = monthlyOrders.reduce( (sum: number, o: any) => sum + (o.total_amount || 0), 0 )
+
+const avgOrderSize = ordersResponse.data.length > 0 ? ordersResponse.data.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) / ordersResponse.data.length : 0
+  const pendingDelivery =ordersResponse.data.filter( (o: any) => o.status === 'ready_for_delivery' ).length setStats({ activeOrders, monthlyRevenue, avgOrderSize, pendingDelivery }  ) catch (error) {
+  console.error('Failed to load data:', error)   } finally {
+    setLoading(false)
+  }
+}
+
+const getStatusBadge = (status: string) => {
+  const statusConfig ={ pending_approval: { variant: 'secondary' as const, label: 'Pending Approval' }, confirmed: { variant: 'default' as const, label: 'Confirmed' }, in_production: { variant: 'outline' as const, label: 'In Production' }, completed: { variant: 'default' as const, label: 'Completed' }, delivered: { variant: 'default' as const, label: 'Delivered' } }
+
+const config = statusConfig[status as keyof typeof statusConfig] || { variant: 'default' as const, label: status } return <Badge variant={config.variant}>
+          {config.label}
+        </Badge> }
+
+  return (
+    <div className="min-h-screen bg-[var(--color-body)]"> <div className="p-6 space-y-6"> 
+        {/* Header  */}
+        <div className="flex justify-between items-center"> <div> <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-900 dark:to-gray-300 bg-clip-text text-transparent"> Sales Orders </h1> <p className="text-[var(--color-text-secondary)] mt-1">Create and manage furniture sales orders</p> </div>
+        <div className="bg-[var(--color-body)] flex gap-3"> <Link href="/furniture/sales/proforma"> <Button variant="outline" size="sm"> <FileText className="h-4 w-4 mr-2" /> Proforma </Button> </Link> <Link href="/furniture/sales/orders/new"> <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"> <Plus className="h-4 w-4" /> New Order </Button> </Link> </div> </div> 
+        {/* Tabs for Order Management  */}
+        <Tabs defaultValue="pos" className="bg-[var(--color-body)] space-y-4"> <TabsList className="bg-[var(--color-body)]/50 bg-[var(--color-body)]/50 backdrop-blur-sm"> <TabsTrigger value="pos">Quick Order</TabsTrigger> <TabsTrigger value="orders">Order List</TabsTrigger> <TabsTrigger value="pipeline">Sales Pipeline</TabsTrigger> </TabsList> <TabsContent value="pos" className="bg-[var(--color-body)] space-y-4"> 
+        {/* Quick Order Section  */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+        {/* Product Selection  */}
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <h3 className="bg-[var(--color-body)] text-lg font-semibold mb-4">Select Products</h3> <div className="space-y-3"> {loading ? (
+            <p className="text-[var(--color-text-secondary)]">Loading products...</p> ) : ( furnitureItems.map(item => ( <div key={item.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-[var(--color-body)] dark:hover:bg-[var(--color-body)]/50 transition-colors" > <div className="flex-1"> <p className="font-medium">{item.name}</p> <p className="text-sm text-[var(--color-text-secondary)]"> {item.category} • {item.sku} </p> </div>
+        <div className="flex items-center gap-3"> <span className="font-semibold"> ₹{item.price.toLocaleString('en-IN')} </span> <Button size="sm" onClick={() => setSelectedItems([...selectedItems, item])}
+        > Add </Button> </div>
+      </div>
+    )) )} </div> </Card> 
+        {/* Cart  */}
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <h3 className="bg-[var(--color-body)] text-lg font-semibold mb-4">Cart ({selectedItems.length} items)</h3> <div className="space-y-3 mb-4"> {selectedItems.length === 0 ? (
+            <p className="text-[var(--color-text-secondary)]">No items in cart</p> ) : ( selectedItems.map((item, index) => ( <div key={index} className="bg-[var(--color-body)] flex items-center justify-between"> <div className="flex-1"> <p className="font-medium">{item.name}</p> </div>
+        <div className="flex items-center gap-3"> <span>₹{item.price.toLocaleString('en-IN')}</span> <Button size="sm" variant="ghost" onClick={() => setSelectedItems(selectedItems.filter((_, i) => i !== index)  )
+        > Remove </Button> </div>
+      </div>
+    )) )} </div> {selectedItems.length > 0 && ( <> <div className="border-t pt-4 space-y-2"> <div className="flex justify-between"> <span>Subtotal</span> <span> ₹ {selectedItems .reduce((sum, item) => sum + item.price, 0) .toLocaleString('en-IN')} </span> </div>
+        <div className="flex justify-between"> <span>GST (18%)</span> <span> ₹ {( selectedItems.reduce((sum, item) => sum + item.price, 0) * 0.18 ).toLocaleString('en-IN')} </span> </div>
+        <div className="flex justify-between font-semibold text-lg"> <span>Total</span> <span> ₹ {( selectedItems.reduce((sum, item) => sum + item.price, 0) * 1.18 ).toLocaleString('en-IN')} </span> </div> </div> <Button className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] w-full mt-4">Create Order</Button> </> )} </Card> </div> </TabsContent> <TabsContent value="orders" className="bg-[var(--color-body)] space-y-4"> 
+        {/* Order Statistics  */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4"> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Active Orders</p> <p className="text-2xl font-bold">{loading ? '...' : stats.activeOrders}</p> </div> <ShoppingCart className="h-8 w-8 text-primary opacity-50" /> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">This Month</p> <p className="text-2xl font-bold"> {loading ? '...' : `₹${(stats.monthlyRevenue / 100000).toFixed(1)}L`} </p> </div> <DollarSign className="h-8 w-8 text-green-500 opacity-50" /> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Avg Order Size</p> <p className="text-2xl font-bold"> {loading ? '...' : `₹${(stats.avgOrderSize / 100000).toFixed(1)}L`} </p> </div> <Package className="h-8 w-8 text-[var(--color-text-primary)] opacity-50" /> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Pending Delivery</p> <p className="text-2xl font-bold">{loading ? '...' : stats.pendingDelivery}</p> </div> <Clock className="h-8 w-8 text-[var(--color-text-primary)] opacity-50" /> </div> </Card> </div> 
+        {/* Recent Orders List  */}
+        <div className="space-y-4"> <h3 className="bg-[var(--color-body)] text-lg font-semibold">Recent Orders</h3> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] overflow-hidden bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50"> <div className="divide-y divide-gray-200 dark:divide-gray-700"> {recentOrders.map(order => ( <div key={order.id} className="p-4 hover:bg-[var(--color-body)]/50 dark:hover:bg-[var(--color-body)]/50 transition-colors" > <div className="bg-[var(--color-body)] flex items-center justify-between"> <div className="flex-1"> <div className="flex items-center gap-4"> <div> <Link href={`/furniture/sales/orders/${order.id}`}> <h3 className="bg-[var(--color-body)] font-semibold hover:text-primary transition-colors"> {order.id} </h3> </Link> <div className="bg-[var(--color-body)] flex items-center gap-4 mt-1 text-sm text-[var(--color-text-secondary)]"> <span className="flex items-center gap-1"> <User className="h-3 w-3" /> {order.customer} </span> <span className="flex items-center gap-1"> <Package className="h-3 w-3" /> {order.items} items </span> <span className="flex items-center gap-1"> <Calendar className="h-3 w-3" /> {order.date} </span> </div> </div> </div> </div>
+        <div className="flex items-center gap-4"> <div className="text-right"> <p className="font-semibold">{order.value}</p> <div className="bg-[var(--color-body)] mt-1">{getStatusBadge(order.status)}</div> </div> <Link href={`/furniture/sales/orders/${order.id}`}> <Button variant="outline" size="sm"> View </Button> </Link> </div> </div>
+      </div>
+    ))} </div>
+        <div className="p-4 border-t border-[var(--color-border)] border-[var(--color-border)]"> <Link href="/furniture/sales/orders/all"> <Button variant="outline" className="w-full hover:bg-[var(--color-hover)]"> View All Orders </Button> </Link> </div> </Card> </div> </TabsContent> <TabsContent value="pipeline" className="bg-[var(--color-body)] space-y-4"> <div className="space-y-4"> <h3 className="bg-[var(--color-body)] text-lg font-semibold">Sales Pipeline</h3> <div className="grid grid-cols-1 md:grid-cols-4 gap-4"> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-[#6b6975] dark:border-[#6b6975]"> <h3 className="bg-[var(--color-body)] font-semibold mb-3 text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]">Proforma</h3> <div className="bg-[var(--color-body)] space-y-2"> <p className="text-2xl font-bold text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]">₹45L</p> <p className="text-sm text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]">5 quotes</p> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800"> <h3 className="bg-[var(--color-body)] font-semibold mb-3 text-amber-900 dark:text-amber-100">Pending</h3> <div className="bg-[var(--color-body)] space-y-2"> <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">₹1.2Cr</p> <p className="text-sm text-amber-700 dark:text-[var(--color-text-primary)]">8 orders</p> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-gradient-to-br from-[var(--color-accent-teal)]-50 to-purple-100 dark:from-[var(--color-accent-teal)]-900/20 dark:to-purple-800/20 border-[var(--color-accent-teal)]-200 dark:border-[var(--color-accent-teal)]-800"> <h3 className="bg-[var(--color-body)] font-semibold mb-3 text-[var(--color-text-primary)]-900 dark:text-[var(--color-text-primary)]-100"> In Production </h3> <div className="bg-[var(--color-body)] space-y-2"> <p className="text-2xl font-bold text-[var(--color-text-primary)]-900 dark:text-[var(--color-text-primary)]-100"> ₹2.8Cr </p> <p className="text-sm text-[var(--color-text-primary)]-700 dark:text-[var(--color-text-primary)]">12 orders</p> </div> </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800"> <h3 className="bg-[var(--color-body)] font-semibold mb-3 text-green-900 dark:text-green-100"> Completed </h3> <div className="bg-[var(--color-body)] space-y-2"> <p className="text-2xl font-bold text-green-900 dark:text-green-100">₹5.2Cr</p> <p className="text-sm text-green-700 dark:text-green-300">24 orders</p> </div> </Card> </div> </div> </TabsContent> </Tabs> </div>
+      </div>
+      )
+}

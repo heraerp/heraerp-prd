@@ -1,4 +1,4 @@
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 interface EmailAddress {
   email: string

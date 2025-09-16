@@ -13,11 +13,11 @@ export const dynamic = 'force-dynamic'
 import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { universalApi } from '@/lib/universal-api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { universalApi } from '@/src/lib/universal-api'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
 import {
   Coffee,
   ShoppingCart,
@@ -39,15 +39,15 @@ const LoadingSpinner = () => (
 )
 
 // Import restaurant components
-import { RestaurantDashboard } from '@/components/restaurant/RestaurantDashboard'
-import { POSTerminal } from '@/components/restaurant/POSTerminal'
-import { MenuManagement } from '@/components/restaurant/MenuManagement'
-import { TableManagement } from '@/components/restaurant/TableManagement'
-import { KitchenDisplay } from '@/components/restaurant/KitchenDisplay'
-import { PaymentProcessing } from '@/components/restaurant/PaymentProcessing'
-import { InventoryManagement } from '@/components/restaurant/InventoryManagement'
-import { SuppliersManagement } from '@/components/restaurant/SuppliersManagement'
-import { OrderManagement } from '@/components/restaurant/OrderManagement'
+import { RestaurantDashboard } from '@/src/components/restaurant/RestaurantDashboard'
+import { POSTerminal } from '@/src/components/restaurant/POSTerminal'
+import { MenuManagement } from '@/src/components/restaurant/MenuManagement'
+import { TableManagement } from '@/src/components/restaurant/TableManagement'
+import { KitchenDisplay } from '@/src/components/restaurant/KitchenDisplay'
+import { PaymentProcessing } from '@/src/components/restaurant/PaymentProcessing'
+import { InventoryManagement } from '@/src/components/restaurant/InventoryManagement'
+import { SuppliersManagement } from '@/src/components/restaurant/SuppliersManagement'
+import { OrderManagement } from '@/src/components/restaurant/OrderManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {

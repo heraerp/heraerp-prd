@@ -3,9 +3,9 @@ export const dynamic = 'force-dynamic'
 
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
-import { FranchiseHero } from '@/components/franchise/FranchiseHero'
-import { Button } from '@/components/ui/button'
+import { FranchiseLayout } from '@/src/components/franchise/FranchiseLayout'
+import { FranchiseHero } from '@/src/components/franchise/FranchiseHero'
+import { Button } from '@/src/components/ui/button'
 import {
   User,
   Building2,

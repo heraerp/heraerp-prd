@@ -14,8 +14,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { getDemoOrganizationInfo } from '@/src/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
 
 export function useDemoOrganization() {

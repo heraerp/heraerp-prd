@@ -2,23 +2,23 @@
 
 import React, { useState, useEffect } from 'react'
 import { X, Calendar, Clock, User, Scissors, DollarSign, FileText, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Textarea } from '@/src/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { formatDate } from '@/lib/date-utils'
+} from '@/src/components/ui/select'
+import { formatDate } from '@/src/lib/date-utils'
 import { addDays, parseISO } from 'date-fns'
-import { cn } from '@/lib/utils'
-import { useAppointments } from '@/hooks/useAppointments'
-import { universalApi } from '@/lib/universal-api'
-import { toast } from '@/hooks/use-toast'
+import { cn } from '@/src/lib/utils'
+import { useAppointments } from '@/src/hooks/useAppointments'
+import { universalApi } from '@/src/lib/universal-api'
+import { toast } from '@/src/hooks/use-toast'
 
 interface NewAppointmentModalProps {
   onClose: () => void

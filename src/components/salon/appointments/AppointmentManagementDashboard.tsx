@@ -14,16 +14,16 @@ import {
   XCircle,
   AlertCircle
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
-import { useAppointments } from '@/hooks/useAppointments'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
+import { cn } from '@/src/lib/utils'
+import { useAppointments } from '@/src/hooks/useAppointments'
 import { AppointmentList } from './AppointmentList'
 import { AppointmentCalendarView } from './AppointmentCalendarView'
 import { NewAppointmentModal } from './NewAppointmentModal'
 import { AppointmentStats } from './AppointmentStats'
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 
 interface AppointmentManagementDashboardProps {
   organizationId?: string

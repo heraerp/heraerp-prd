@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import {
   DigitalAccountantHelper,
   salonJournalExamples
-} from '@/lib/digital-accountant/journal-entry-helper'
+} from '@/src/lib/digital-accountant/journal-entry-helper'
 
 export async function POST(request: NextRequest) {
   try {

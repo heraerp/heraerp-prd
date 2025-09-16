@@ -4,8 +4,8 @@
 // Smart Code: HERA.MCP.UAT.TESTING.ENGINE.v1
 // ================================================================================
 
-import { supabase } from '@/lib/supabase'
-import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/src/lib/supabase'
+import { universalApi } from '@/src/lib/universal-api'
 
 // ================================================================================
 // UAT TESTING INTERFACES

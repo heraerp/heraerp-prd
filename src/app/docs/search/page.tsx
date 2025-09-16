@@ -2,11 +2,11 @@
 export const dynamic = 'force-dynamic'
 
 import { Suspense } from 'react'
-import { searchDocs } from '@/lib/hera-docs'
+import { searchDocs } from '@/src/lib/hera-docs'
 import { Search, FileText, Hash, Filter } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 import Link from 'next/link'
 
 interface SearchPageProps {

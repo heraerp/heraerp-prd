@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { enhancedAuditDocumentService } from '@/lib/supabase/enhanced-audit-documents'
+import { enhancedAuditDocumentService } from '@/src/lib/supabase/enhanced-audit-documents'
 
 interface RouteParams {
   params: Promise<{ fileId: string }>

@@ -10,8 +10,8 @@ import {
   runBatchProcessing,
   checkJournalRelevance,
   generateJournalEntry
-} from '@/lib/auto-journal-engine'
-import { supabase } from '@/lib/supabase'
+} from '@/src/lib/auto-journal-engine'
+import { supabase } from '@/src/lib/supabase'
 
 // ================================================================================
 // POST ENDPOINT - Process Transaction for Auto-Journal

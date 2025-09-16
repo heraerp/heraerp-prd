@@ -4,8 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createSalonManagerService } from '@/lib/salon-manager'
-import { supabase } from '@/lib/supabase'
+import { createSalonManagerService } from '@/src/lib/salon-manager'
+import { supabase } from '@/src/lib/supabase'
 
 // Intent patterns for salon operations
 const INTENT_PATTERNS = {

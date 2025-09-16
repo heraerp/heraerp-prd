@@ -1,20 +1,162 @@
 'use client'
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic' import React from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Calendar, Factory, Package, Clock, AlertTriangle, CheckCircle, Plus, Filter, Download, RefreshCw, TrendingUp, Users
+export const dynamic = 'force-dynamic'
+
+import React, { useState, useEffect } from 'react'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Skeleton } from '@/src/components/ui/skeleton'
+import {
+  Calendar,
+  Clock,
+  Package,
+  Users,
+  AlertCircle,
+  Settings,
+  Download,
+  Plus
 } from 'lucide-react'
-import Link from 'next/link'
-import { useDemoOrganization, OrganizationInfo, OrganizationLoading
-} from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters, universalSorters
-} from '@/lib/dna/patterns/universal-api-loading-pattern'
-import { cn } from '@/lib/utils'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
+import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
+import { cn } from '@/src/lib/utils'
 
+export default function ProductionPlanningPage() {
+  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { organizationId, organizationName, orgLoading } = useDemoOrganization()
 
-export default function ProductionPlanning() { const { organizationId, organizationName, orgLoading } = useDemoOrganization() // Load products const { data: products } = useUniversalData({ table: 'core_entities', filter: universalFilters.byEntityType('product'), organizationId, enabled: !!organizationId }) // Load sales orders for demand planning const { data: salesOrders } = useUniversalData({ table: 'universal_transactions', filter: t => t.transaction_type === 'sales_order' && t.smart_code?.includes('FURNITURE.SALES'), sort: universalSorters.byCreatedDesc, organizationId, enabled: !!organizationId }) // Load raw materials const { data: rawMaterials } = useUniversalData({ table: 'core_entities', filter: universalFilters.byEntityType('raw_material'), organizationId, enabled: !!organizationId }) // Load work centers const { data: workCenters } = useUniversalData({ table: 'core_entities', filter: universalFilters.byEntityType('work_center'), organizationId, enabled: !!organizationId }) if (orgLoading) { return <OrganizationLoading /> } // Calculate demand from sales orders const demandByProduct = salesOrders.reduce( (acc, order) => { const productId = order.source_entity_id if (productId) { acc[productId] = (acc[productId] || 0) + (order.total_amount || 0) } return acc }, {} as Record<string, number> ) return ( <div className="min-h-screen bg-background"> <div className="p-6 space-y-6"> {/* Header */} <div className="flex justify-between items-center"> <div> <h1 className="bg-background text-3xl font-bold text-foreground">Production Planning</h1> <p className="text-muted-foreground mt-1"> Plan and schedule production based on demand and capacity </p> <OrganizationInfo name={organizationName} id={organizationId} /> </div> <div className="bg-background flex gap-3"> <Button variant="outline" size="sm" className="gap-2"> <RefreshCw className="h-4 w-4" /> Refresh </Button> <Button variant="outline" size="sm" className="gap-2"> <Download className="h-4 w-4" /> Export </Button> <Link href="/furniture/production/orders/new"> <Button className="gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"> <Plus className="h-4 w-4" /> Create Production Order </Button> </Link> </div> </div> {/* Planning Overview */} <div className="bg-background grid grid-cols-1 md:grid-cols-4 gap-4"> <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50"> <div className="flex items-center justify-between mb-4"> <Package className="h-8 w-8 text-blue-500" /> <Badge variant="secondary" className="bg-blue-500/10 text-blue-400"> Demand </Badge> </div> <p className="text-2xl font-bold text-foreground">{Object.keys(demandByProduct).length}</p> <p className="text-sm text-muted-foreground mt-1">Products in demand</p> </Card> <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50"> <div className="flex items-center justify-between mb-4"> <Factory className="h-8 w-8 text-purple-500" /> <Badge variant="secondary" className="bg-purple-500/10 text-purple-400"> Capacity </Badge> </div> <p className="text-2xl font-bold text-foreground">{workCenters.length * 8}</p> <p className="text-sm text-muted-foreground mt-1">Hours available today</p> </Card> <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50"> <div className="flex items-center justify-between mb-4"> <AlertTriangle className="h-8 w-8 text-amber-500" /> <Badge variant="secondary" className="bg-amber-500/10 text-amber-400"> Critical </Badge> </div> <p className="text-2xl font-bold text-foreground">3</p> <p className="text-sm text-muted-foreground mt-1">Material shortages</p> </Card> <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50"> <div className="flex items-center justify-between mb-4"> <Clock className="h-8 w-8 text-green-500" /> <Badge variant="secondary" className="bg-green-500/10 text-green-400"> On Time </Badge> </div> <p className="text-2xl font-bold text-foreground">92%</p> <p className="text-sm text-muted-foreground mt-1">Delivery performance</p> </Card> </div> {/* Main Planning Content */} <Tabs defaultValue="demand" className="bg-background space-y-4"> <TabsList className="bg-muted/50 backdrop-blur-sm"> <TabsTrigger value="demand">Demand Planning</TabsTrigger> <TabsTrigger value="capacity">Capacity Planning</TabsTrigger> <TabsTrigger value="materials">Material Requirements</TabsTrigger> <TabsTrigger value="schedule">Master Schedule</TabsTrigger> </TabsList> <TabsContent value="demand" className="bg-background space-y-4"> <Card className="bg-muted/50 backdrop-blur-sm border-border/50"> <div className="p-6"> <div className="flex items-center justify-between mb-4"> <h2 className="bg-background text-xl font-semibold text-foreground">Product Demand Analysis</h2> <Button variant="outline" size="sm" className="gap-2"> <Filter className="h-4 w-4" /> Filter </Button> </div> <div className="space-y-4"> {products.map(product => { const demand = demandByProduct[product.id] || 0 const hasOrders = demand > 0 return ( <div key={product.id} className="p-4 bg-background/50 rounded-lg border border-border/50" > <div className="flex items-center justify-between"> <div> <p className="font-medium text-foreground">{product.entity_name}</p> <p className="text-sm text-muted-foreground">{product.entity_code}</p> </div> <div className="text-right"> <p className="text-lg font-semibold text-foreground">{demand} units</p> <Badge className={ hasOrders ? 'bg-green-500/10 text-green-400' : 'bg-gray-9000/10 text-muted-foreground' } > {hasOrders ? 'Active Demand' : 'No Demand'} </Badge> </div> </div> {hasOrders && ( <div className="mt-3 flex gap-2"> <Button variant="outline" size="sm"> Plan Production </Button> <Button variant="ghost" size="sm"> View Orders </Button> </div> )} </div> ) })} </div> </div> </Card> </TabsContent> <TabsContent value="capacity" className="bg-background space-y-4"> <Card className="bg-muted/50 backdrop-blur-sm border-border/50"> <div className="p-6"> <h2 className="bg-background text-xl font-semibold text-foreground mb-4">Work Center Capacity</h2> <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> {workCenters.map(center => ( <div key={center.id} className="p-4 bg-background/50 rounded-lg border border-border/50" > <div className="flex items-center justify-between mb-3"> <div> <p className="font-medium text-foreground">{center.entity_name}</p> <p className="text-sm text-muted-foreground"> {(center.metadata as any)?.location || 'Shop Floor'} </p> </div> <Factory className="h-5 w-5 text-muted-foreground" /> </div> <div className="space-y-2"> <div className="bg-background flex justify-between text-sm"> <span className="text-muted-foreground">Available</span> <span className="text-foreground">8 hours</span> </div> <div className="bg-background flex justify-between text-sm"> <span className="text-muted-foreground">Scheduled</span> <span className="text-foreground">6.5 hours</span> </div> <div className="bg-background flex justify-between text-sm"> <span className="text-muted-foreground">Utilization</span> <span className="text-foreground">81%</span> </div> </div> </div> ))} </div> </div> </Card> </TabsContent> <TabsContent value="materials" className="bg-background space-y-4"> <Card className="bg-muted/50 backdrop-blur-sm border-border/50"> <div className="p-6"> <h2 className="bg-background text-xl font-semibold text-foreground mb-4"> Material Requirements Planning </h2> <div className="space-y-4"> {rawMaterials.map(material => ( <div key={material.id} className="p-4 bg-background/50 rounded-lg border border-border/50" > <div className="bg-background flex items-center justify-between"> <div> <p className="font-medium text-foreground">{material.entity_name}</p> <p className="text-sm text-muted-foreground">{material.entity_code}</p> </div> <div className="bg-background text-right"> <p className="text-sm text-muted-foreground">Current Stock</p> <p className="text-lg font-semibold text-foreground"> {material.entity_code?.includes('TEAK') ? '250' : material.entity_code?.includes('LEATHER') ? '150' : '5000'}{' '} {(material.metadata as any)?.unit || 'units'} </p> </div> </div> </div> ))} </div> </div> </Card> </TabsContent> <TabsContent value="schedule" className="bg-background space-y-4"> <Card className="p-6 bg-muted/50 backdrop-blur-sm border-border/50"> <h3 className="bg-background text-lg font-semibold text-foreground mb-4">Master Production Schedule</h3> <div className="bg-background text-center text-muted-foreground py-12"> <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" /> <p>Advanced scheduling view coming soon</p> <p className="text-sm mt-2">Will include Gantt charts and resource optimization</p> </div> </Card> </TabsContent> </Tabs> {/* Quick Actions */} <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30"> <Link href="/furniture/production/orders/new"> <div className="bg-background flex flex-col items-center text-center gap-2"> <Factory className="h-8 w-8 text-amber-500" /> <span className="text-sm font-medium text-gray-300">Create Order</span> </div> </Link> </Card> <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30"> <Link href="/furniture/production"> <div className="bg-background flex flex-col items-center text-center gap-2"> <TrendingUp className="h-8 w-8 text-blue-500" /> <span className="text-sm font-medium text-gray-300">View Orders</span> </div> </Link> </Card> <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30"> <div className="bg-background flex flex-col items-center text-center gap-2"> <Users className="h-8 w-8 text-purple-500" /> <span className="text-sm font-medium text-gray-300">Workforce</span> </div> </Card> <Card className="p-4 hover:scale-105 transition-transform cursor-pointer bg-muted/30 backdrop-blur-sm border-border/30"> <div className="bg-background flex flex-col items-center text-center gap-2"> <CheckCircle className="h-8 w-8 text-green-500" /> <span className="text-sm font-medium text-gray-300">Quality</span> </div> </Card> </div> </div> </div> )
+  // Show loading state
+  if (orgLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-body)] p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <div className="grid grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full" />
+            ))}
+          </div>
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </div>
+    )
+  }
+
+  // Authorization checks
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
+        <Alert className="max-w-md bg-[var(--color-body)]/50 border-[var(--color-border)]">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>Please log in to access production planning.</AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  if (contextLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-body)] p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <Skeleton className="h-10 w-64" />
+          <div className="grid grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full" />
+            ))}
+          </div>
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </div>
+    )
+  }
+
+  const planningMetrics = [
+    {
+      label: 'Scheduled Orders',
+      value: '23',
+      icon: Calendar,
+      color: 'text-[var(--color-text-primary)]',
+      description: 'Next 7 days',
+      change: '+5'
+    },
+    {
+      label: 'Available Hours',
+      value: '320',
+      icon: Clock,
+      color: 'text-green-500',
+      description: 'This week',
+      change: '+40'
+    },
+    {
+      label: 'Materials Ready',
+      value: '18',
+      icon: Package,
+      color: 'text-[var(--color-text-primary)]',
+      description: 'Orders ready',
+      change: '+2'
+    },
+    {
+      label: 'Workers Assigned',
+      value: '35',
+      icon: Users,
+      color: 'text-[var(--color-text-primary)]',
+      description: 'Active assignments',
+      change: '+3'
+    }
+  ]
+
+  return (
+    <div className="min-h-screen bg-[var(--color-body)]">
+      <div className="p-6 space-y-6">
+        <FurniturePageHeader
+          title="Production Planning"
+          subtitle="Plan and schedule production operations"
+          actions={
+            <>
+              <Button variant="outline" size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Export Plan
+              </Button>
+              <Button variant="outline" size="sm">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+              <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+                <Plus className="h-4 w-4" />
+                New Schedule
+              </Button>
+            </>
+          }
+        />
+        
+        {/* Planning Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {planningMetrics.map((metric, index) => (
+            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-[var(--color-text-secondary)]">{metric.label}</p>
+                  <metric.icon className={cn(
+            'h-4 w-4',
+            metric.color
+          )} />
+                </div>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">{metric.value}</p>
+                <p className="text-xs text-[var(--color-text-secondary)]">{metric.description}</p>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-[var(--color-text-secondary)]">Change: {metric.change}</span>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        <div className="text-center p-8">
+          <p className="text-[var(--color-text-secondary)]">Production planning interface is being loaded...</p>
+        </div>
+      </div>
+    </div>
+  )
 }

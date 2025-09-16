@@ -3,7 +3,7 @@
  * Creates sample furniture manufacturing data for new organizations
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export async function createFurnitureDemoData(organizationId: string) {
   try {

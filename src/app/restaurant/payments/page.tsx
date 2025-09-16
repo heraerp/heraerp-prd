@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { PaymentProcessing } from '@/components/restaurant/PaymentProcessing'
+import { PaymentProcessing } from '@/src/components/restaurant/PaymentProcessing'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {

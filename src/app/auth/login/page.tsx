@@ -6,11 +6,11 @@ export const dynamic = 'force-dynamic'
 import React, { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   Loader2,
   LogIn,
@@ -24,8 +24,8 @@ import {
   Building2,
   ChevronRight
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { DemoModuleSelector } from '@/src/components/demo/DemoModuleSelector'
 
 function LoginForm() {
   const router = useRouter()

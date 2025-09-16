@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { sharePaymentLink, confirmPayment } from '@/lib/mcp/whatsapp-six-tables-mcp'
+import { sharePaymentLink, confirmPayment } from '@/src/lib/mcp/whatsapp-six-tables-mcp'
 
 export async function POST(request: NextRequest) {
   try {

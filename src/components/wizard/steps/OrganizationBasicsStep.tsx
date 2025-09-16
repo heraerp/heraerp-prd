@@ -1,16 +1,16 @@
 'use client'
 
 import React from 'react'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+} from '@/src/components/ui/select'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import type { WizardData } from '../BusinessSetupWizard'
 

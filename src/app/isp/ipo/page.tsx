@@ -833,7 +833,9 @@ export default function IPOPage() {
                       <div>
                         <h3
                           className={`font-medium ${
-                            milestone.status === 'achieved' ? 'text-foreground' : 'text-foreground/60'
+                            milestone.status === 'achieved'
+                              ? 'text-foreground'
+                              : 'text-foreground/60'
                           }`}
                         >
                           {milestone.title}
@@ -873,7 +875,9 @@ export default function IPOPage() {
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
         <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Next Steps for IPO Readiness</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            Next Steps for IPO Readiness
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
               <div className="flex items-center space-x-2 mb-2">

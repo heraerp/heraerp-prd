@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Widget } from '@/lib/universal-ui/view-meta-service'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { universalApi } from '@/lib/universal-api'
+import { Widget } from '@/src/lib/universal-ui/view-meta-service'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { universalApi } from '@/src/lib/universal-api'
 import { format } from 'date-fns'
 import { Clock, User, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 interface TimelineWidgetProps {
   widget: Widget

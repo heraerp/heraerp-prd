@@ -1,0 +1,340 @@
+name: GA Production Readiness
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      full_check:
+        description: 'Run full GA validation suite'
+        required: false
+        default: 'true'
+
+env:
+  NODE_ENV: production
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+  NEXT_PUBLIC_HERA_WA_API: ${{ secrets.HERA_WA_API }}
+  DEFAULT_ORGANIZATION_ID: ${{ secrets.DEFAULT_ORGANIZATION_ID }}
+
+jobs:
+  preflight:
+    name: 🔍 Preflight Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run type check
+        run: npm run type-check
+        
+      - name: Run linting
+        run: npm run lint
+        
+      - name: Run unit tests
+        run: npm run test -- --ci --coverage
+        
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  environment:
+    name: 🌍 Environment Validation
+    runs-on: ubuntu-latest
+    needs: preflight
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Validate environment
+        run: node scripts/ga/env-validate.js
+
+  guardrails:
+    name: 🛡️ Sacred Six Guardrails
+    runs-on: ubuntu-latest
+    needs: preflight
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Check guardrails
+        run: node scripts/ga/guardrails-check.js
+
+  build:
+    name: 🔨 Build & Bundle Analysis
+    runs-on: ubuntu-latest
+    needs: [environment, guardrails]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build application
+        run: npm run build
+        env:
+          ANALYZE: true
+          
+      - name: Check bundle budgets
+        run: node scripts/ga/bundle-budget.js
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: .next
+          retention-days: 7
+
+  performance:
+    name: ⚡ Performance Testing
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: .next
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Lighthouse
+        run: npm install -g @lhci/cli
+        
+      - name: Start server
+        run: |
+          npm run start &
+          sleep 10
+          
+      - name: Run performance checks
+        run: node scripts/ga/perf-budgets.js
+        
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-reports
+          path: lighthouse-*.html
+
+  accessibility:
+    name: ♿ Accessibility Testing
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event.inputs.full_check == 'true' || github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: .next
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install -g @lhci/cli
+          
+      - name: Start server
+        run: |
+          npm run start &
+          sleep 10
+          
+      - name: Run accessibility checks
+        run: node scripts/ga/a11y-lighthouse.js
+
+  security:
+    name: 🔒 Security Validation
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Check security headers
+        run: node scripts/ga/security-headers.js
+        
+      - name: Run dependency audit
+        run: npm audit --production
+        continue-on-error: true
+
+  e2e-tests:
+    name: 🧪 E2E Smoke Tests
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: .next
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps ${{ matrix.browser }}
+          
+      - name: Start server
+        run: |
+          npm run start &
+          sleep 10
+          
+      - name: Run E2E tests
+        run: npx playwright test --project=${{ matrix.browser }} tests/smoke/
+        
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 7
+
+  ga-summary:
+    name: 📊 GA Summary Report
+    runs-on: ubuntu-latest
+    needs: [environment, guardrails, build, performance, security, e2e-tests]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Generate GA report
+        run: node scripts/ga/ga-summary.js || true
+        
+      - name: Upload GA reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: ga-reports
+          path: |
+            ga-report.html
+            ga-report.json
+            smoke-test-report.json
+          retention-days: 30
+          
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs')
+            const report = JSON.parse(fs.readFileSync('ga-report.json', 'utf8'))
+            
+            const emoji = report.isReady ? '✅' : '❌'
+            const status = report.isReady ? 'READY FOR PRODUCTION' : 'NOT READY'
+            
+            const comment = `## ${emoji} GA Production Readiness Report
+            
+            **Status:** ${status}
+            **Score:** ${report.score.toFixed(1)}%
+            
+            | Category | Status |
+            |----------|--------|
+            ${report.results.map(r => `| ${r.category} | ${r.status.toUpperCase()} |`).join('\n')}
+            
+            [View full report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            })
+
+  deploy-check:
+    name: 🚀 Deploy Readiness
+    runs-on: ubuntu-latest
+    needs: ga-summary
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check GA status
+        id: check
+        run: |
+          if [ -f "ga-report.json" ]; then
+            IS_READY=$(node -p "require('./ga-report.json').isReady")
+            echo "ready=$IS_READY" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Deploy to staging
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          echo "🚀 Ready for deployment!"
+          # Add your deployment script here
+          
+      - name: Block deployment
+        if: steps.check.outputs.ready != 'true'
+        run: |
+          echo "❌ Deployment blocked - GA checks failed"
+          exit 1

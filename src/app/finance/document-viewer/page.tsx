@@ -11,23 +11,23 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+} from '@/src/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Badge } from '@/src/components/ui/badge'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Separator } from '@/src/components/ui/separator'
 import {
   Search,
   FileText,
@@ -52,8 +52,8 @@ import {
   ArrowUpDown,
   MoreHorizontal
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { formatDate, parseDateSafe } from '@/lib/date-utils'
+import { cn } from '@/src/lib/utils'
+import { formatDate, parseDateSafe } from '@/src/lib/date-utils'
 import {
   Table,
   TableBody,
@@ -61,7 +61,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/components/ui/table'
+} from '@/src/components/ui/table'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,7 +69,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+} from '@/src/components/ui/dropdown-menu'
 
 interface Organization {
   id: string

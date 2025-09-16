@@ -6,7 +6,7 @@
  * Zero schema changes - uses universal tables only
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 // Smart Code definitions for fiscal close
 export const FISCAL_CLOSE_SMART_CODES = {

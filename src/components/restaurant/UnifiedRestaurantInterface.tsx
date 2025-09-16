@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
 import {
   ChefHat,
   Users,
@@ -35,7 +35,7 @@ import {
   Target,
   Star
 } from 'lucide-react'
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 import {
   StatusIndicator,
   PulseIndicator,

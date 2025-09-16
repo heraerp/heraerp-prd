@@ -6,7 +6,7 @@
  * using only HERA's six sacred tables
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 

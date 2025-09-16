@@ -9,7 +9,7 @@ import React, {
   useCallback
 } from 'react'
 import { User, Session } from '@supabase/supabase-js'
-import { supabaseClient as supabase } from '@/lib/supabase-client'
+import { supabaseClient as supabase } from '@/src/lib/supabase-client'
 import { useRouter, usePathname } from 'next/navigation'
 
 // Types for multi-organization authentication

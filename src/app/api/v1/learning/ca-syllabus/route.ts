@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { caSyllabusService } from '@/lib/ca-syllabus/CASyllabusService'
+import { caSyllabusService } from '@/src/lib/ca-syllabus/CASyllabusService'
 
 export async function GET(request: NextRequest) {
   try {

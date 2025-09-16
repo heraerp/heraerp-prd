@@ -4,9 +4,9 @@
  * Built on: 6 Tables + Smart Codes + UCR + Universal API + DNA UI + Guardrails
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { guardrailEngine } from '@/lib/guardrails/guardrail-engine'
-import { ucrEngine } from '@/lib/ucr/ucr-engine'
+import { universalApi } from '@/src/lib/universal-api'
+import { guardrailEngine } from '@/src/lib/guardrails/guardrail-engine'
+import { ucrEngine } from '@/src/lib/ucr/ucr-engine'
 
 // Module manifest schema stored in core_dynamic_data
 export interface ModuleManifest {

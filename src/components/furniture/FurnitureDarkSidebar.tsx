@@ -1,14 +1,22 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { createPortal } from 'react-dom'
+import React, { useState, useEffect, useMemo, useCallback }
+from 'react'
+import { createPortal }
+from 'react-dom'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { useToast } from '@/hooks/use-toast'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { FurnitureNavigationLink } from './FurnitureNavigationLink'
-import { FurnitureModalLink } from './FurnitureModalLink'
+import { usePathname, useRouter }
+from 'next/navigation'
+import { cn }
+from '@/src/lib/utils'
+import { useToast }
+from '@/src/hooks/use-toast'
+import { useMultiOrgAuth }
+from '@/src/components/auth/MultiOrgAuthProvider'
+import { FurnitureNavigationLink }
+from './FurnitureNavigationLink'
+import { FurnitureModalLink }
+from './FurnitureModalLink'
 import {
   Home,
   Package,
@@ -37,7 +45,8 @@ import {
   Brain,
   BookOpen,
   LogOut
-} from 'lucide-react'
+}
+from 'lucide-react'
 
 
 interface FurnitureDarkSidebarProps {
@@ -55,10 +64,10 @@ interface SidebarItem {
 // Main sidebar items (compact view) - moved outside component to prevent recreation
 const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/furniture', icon: Home },
-  { title: 'Sales', href: '/furniture/sales', icon: ShoppingCart, badge: '47', badgeColor: 'bg-amber-500' },
-  { title: 'Production', href: '/furniture/production', icon: Factory, badge: '23', badgeColor: 'bg-purple-500' },
+  { title: 'Sales', href: '/furniture/sales', icon: ShoppingCart, badge: '47', badgeColor: 'bg-[var(--color-accent-teal)]' },
+  { title: 'Production', href: '/furniture/production', icon: Factory, badge: '23', badgeColor: 'bg-[var(--color-accent-indigo)]' },
   { title: 'Products', href: '/furniture/products', icon: Package },
-  { title: 'Tender', href: '/furniture/tender', icon: FileText, badge: '12', badgeColor: 'bg-blue-500' },
+  { title: 'Tender', href: '/furniture/tender', icon: FileText, badge: '12', badgeColor: 'bg-[var(--color-accent-teal)]/60' },
   { title: 'Settings', href: '/furniture/settings', icon: Settings }
 ]
 
@@ -123,7 +132,7 @@ const AppsModal = React.memo(function AppsModal({
 
   useEffect(() => {
     if (isOpen) {
-      setMounted(true)
+  setMounted(true)
     } else {
       const timeout = setTimeout(() => setMounted(false), 300)
       return () => clearTimeout(timeout)
@@ -147,30 +156,30 @@ const AppsModal = React.memo(function AppsModal({
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
           className={cn(
-            'bg-muted/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden',
+            'bg-[var(--color-body)]/95 backdrop-blur-xl border border-[var(--color-border)]/50 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden',
             'transition-all duration-300 transform',
             isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           )}
         >
           {/* Modal Header */}
-          <div className="bg-background flex items-center justify-between p-6 border-b border-border/50">
+          <div className="bg-[var(--color-body)] flex items-center justify-between p-6 border-b border-[var(--color-border)]/50">
             <div>
-              <h2 className="bg-background text-2xl font-bold text-foreground">All Furniture Apps</h2>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">All Furniture Apps</h2>
+              <p className="text-sm text-[var(--color-text-secondary)] mt-1">
                 Access all your furniture manufacturing tools
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-muted-foreground/10/50 transition-colors text-muted-foreground hover:text-foreground"
+              className="p-2 rounded-lg hover:bg-[var(--color-body)]/50 transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
             >
-              <X className="bg-background h-6 w-6" />
+              <X className="h-6 w-6" />
             </button>
           </div>
           
           {/* Apps Grid */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
-            <div className="bg-background grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {allApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
@@ -217,7 +226,7 @@ const isActive = useCallback(
 
 const handleNavClick = useCallback(() => {
     if (onNavigate) {
-      onNavigate()
+  onNavigate()
     }
   }, [onNavigate])
 
@@ -239,7 +248,7 @@ const handleLogout = async () => {
       // Use window.location for a full page reload to clear any cached state
       window.location.href = '/auth/login'
     } catch (error) {
-      console.error('Logout error:', error)
+  console.error('Logout error:', error)
       toast({
         title: 'Logout failed',
         description: 'Please try again',
@@ -249,25 +258,25 @@ const handleLogout = async () => {
   }
 
   return (
-    <div className="furniture-sidebar h-full w-72 lg:w-20 flex flex-col overflow-hidden">
+    <div className="furniture-sidebar h-full w-72 lg:w-20 flex flex-col overflow-hidden border-r border-[var(--color-sidebar-border)]">
       {/* Logo Section */}
-      <div className="h-16 lg:h-20 flex items-center justify-start lg:justify-center px-4 lg:px-0 border-b border-white/5 bg-black/20 flex-shrink-0">
-        <div className="flex items-center gap-3 lg:flex-col lg:gap-1">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center shadow-lg">
-            <Armchair className="h-6 w-6 text-foreground" />
+      <div className="h-16 lg:h-20 flex items-center justify-center px-4 lg:px-0 border-b border-[var(--color-border)]/20 flex-shrink-0">
+        <div className="flex items-center gap-3 lg:flex-col lg:gap-1 lg:items-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[var(--color-accent-teal)] to-[var(--color-accent-indigo)] flex items-center justify-center shadow-lg">
+            <Armchair className="h-6 w-6 text-white" />
           </div>
           <div className="lg:hidden">
-            <h3 className="bg-background text-foreground font-semibold">Kerala Furniture Works</h3>
-            <p className="text-xs text-muted-foreground">Demo Account</p>
+            <h3 className="text-[var(--color-text-primary)] font-semibold">Kerala Furniture Works</h3>
+            <p className="text-xs text-[var(--color-text-secondary)]">Demo Account</p>
           </div>
-          <span className="hidden lg:block text-[10px] text-muted-foreground font-medium">
+          <span className="hidden lg:block text-[10px] text-[var(--color-text-secondary)] font-medium text-center">
             Furniture
           </span>
         </div>
       </div>
 
       {/* Navigation Items */}
-      <nav className="bg-background flex-1 overflow-y-auto overflow-x-hidden py-1">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-1">
         <div className="space-y-0">
           {sidebarItems.map(item => {
             const Icon = item.icon
@@ -290,17 +299,17 @@ const handleLogout = async () => {
           <button
             onClick={() => setShowAppsModal(true)}
             className={cn(
-              'flex items-center lg:flex-col lg:items-center justify-start lg:justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-300 group relative',
-              'text-muted-foreground hover:text-foreground hover:bg-muted-foreground/10/50',
+              'flex items-center lg:flex-col lg:items-center justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-300 group relative',
+              'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-hover)]',
               'transform hover:scale-[1.02] active:scale-[0.98]'
             )}
           >
-            <Grid3x3 className="h-5 w-5 text-muted-foreground group-hover:text-amber-400" />
-            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-gray-300 lg:text-muted-foreground group-hover:text-gray-100 lg:group-hover:text-gray-300">
+            <Grid3x3 className="h-5 w-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-secondary)]" />
+            <span className="ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight text-[var(--color-text-secondary)] lg:text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] lg:group-hover:text-[var(--color-text-secondary)]">
               More Apps
             </span>
             {/* Tooltip - desktop only */}
-            <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+            <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 bg-[var(--color-body)] text-[var(--color-text-primary)] text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
               <p className="font-medium">More Apps</p>
             </div>
           </button>
@@ -308,24 +317,7 @@ const handleLogout = async () => {
       </nav>
 
       {/* Bottom Section */}
-      <div className="mt-auto border-t border-border/50 flex-shrink-0">
-        {/* Status Indicators */}
-        <div className="px-4 py-3 lg:p-2 space-y-2 bg-background/30">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-amber-400" />
-              <span className="text-sm text-gray-300 lg:hidden">Pending Orders</span>
-            </div>
-            <span className="text-sm font-semibold text-amber-400">23</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-red-400" />
-              <span className="text-sm text-gray-300 lg:hidden">Urgent Items</span>
-            </div>
-            <span className="text-sm font-semibold text-red-400">5</span>
-          </div>
-        </div>
+      <div className="mt-auto border-t border-[var(--color-border)]/50 flex-shrink-0">
 
         {/* Logout Button */}
         <button
@@ -337,7 +329,7 @@ const handleLogout = async () => {
             handleLogout()
           }}
           className={cn(
-            'flex items-center justify-start lg:justify-center gap-3 lg:gap-1',
+            'flex items-center justify-center gap-3 lg:gap-1 lg:flex-col',
             'w-full px-4 py-4 lg:py-3',
             'bg-red-900/20 hover:bg-red-700/30',
             'text-red-400 hover:text-red-300',
@@ -347,9 +339,9 @@ const handleLogout = async () => {
           )}
         >
           <LogOut className="h-5 w-5 flex-shrink-0" />
-          <span className="font-medium text-sm lg:text-[10px]">Logout from Demo</span>
+          <span className="font-medium text-sm lg:text-[10px] lg:text-center">Logout from Demo</span>
           {/* Tooltip - desktop only */}
-          <div className="hidden lg:hidden absolute left-full ml-2 px-3 py-2 bg-muted text-foreground text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+          <div className="hidden lg:hidden absolute left-full ml-2 px-3 py-2 bg-[var(--color-body)] text-[var(--color-text-primary)] text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
             <p className="font-medium">Logout from Demo Account</p>
           </div>
         </button>

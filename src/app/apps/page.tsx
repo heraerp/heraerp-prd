@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   Scissors,
   Heart,
@@ -32,7 +32,7 @@ import {
   AlertCircle,
   Snowflake
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
 
 interface AppCard {

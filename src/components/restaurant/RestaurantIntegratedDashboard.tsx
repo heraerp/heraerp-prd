@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import {
   ChefHat,
   DollarSign,
@@ -32,8 +32,8 @@ import { RestaurantPOS } from './RestaurantPOS'
 import { RestaurantFinancialDashboard } from './RestaurantFinancialDashboard'
 import { RecipeCostingManager } from './RecipeCostingManager'
 import { KitchenDisplaySystem } from './KitchenDisplaySystem'
-import { universalApi } from '@/lib/universal-api'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/src/lib/universal-api'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 export function RestaurantIntegratedDashboard() {
   const [activeModule, setActiveModule] = useState('dashboard')

@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
  */
 
 import React from 'react'
-import ServicesManagement from '@/components/salon/ServicesManagement'
+import ServicesManagement from '@/src/components/salon/ServicesManagement'
 
 export default function SalonServicesPage() {
   return <ServicesManagement />

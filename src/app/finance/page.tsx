@@ -11,22 +11,22 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { LoadingSpinner } from '@/components/ui/loading-states'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Badge } from '@/src/components/ui/badge'
+import { LoadingSpinner } from '@/src/components/ui/loading-states'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ChartOfAccountsStep } from '@/components/wizard/steps/ChartOfAccountsStep'
-import { FiscalYearStep } from '@/components/wizard/steps/FiscalYearStep'
+} from '@/src/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { ChartOfAccountsStep } from '@/src/components/wizard/steps/ChartOfAccountsStep'
+import { FiscalYearStep } from '@/src/components/wizard/steps/FiscalYearStep'
 import {
   FileText,
   DollarSign,
@@ -57,8 +57,8 @@ import {
   BookOpen,
   CalendarClock
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { universalApi } from '@/lib/universal-api'
+import { cn } from '@/src/lib/utils'
+import { universalApi } from '@/src/lib/universal-api'
 
 interface FinanceModule {
   id: string

@@ -13,19 +13,19 @@ import {
   Filter,
   BarChart
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/src/components/ui/button'
+import { Card } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { cn } from '@/lib/utils'
-import { formatDate } from '@/lib/date-utils'
+} from '@/src/components/ui/select'
+import { cn } from '@/src/lib/utils'
+import { formatDate } from '@/src/lib/date-utils'
 
 interface Campaign {
   id: string

@@ -1,0 +1,486 @@
+/* ================================================================================
+   HERA DNA UNIVERSAL THEME STYLES
+   Smart Code: HERA.DNA.THEME.STYLES.UNIVERSAL.v1
+   CSS classes using theme variants with depth and visual hierarchy
+   ================================================================================ */
+
+/* ================================================================================
+   CSS CUSTOM PROPERTIES (Set by ThemeProvider)
+   ================================================================================ */
+
+:root {
+  /* Main color shades (set dynamically) */
+  --color-main-50: #eff6ff;
+  --color-main-100: #dbeafe;
+  --color-main-200: #bfdbfe;
+  --color-main-300: #93c5fd;
+  --color-main-400: #60a5fa;
+  --color-main-500: #3b82f6;
+  --color-main-600: #2563eb;
+  --color-main-700: #1d4ed8;
+  --color-main-800: #1e40af;
+  --color-main-900: #1e3a8a;
+  --color-main-950: #172554;
+  
+  /* Accent color shades (set dynamically) */
+  --color-accent-50: #f0f9ff;
+  --color-accent-100: #e0f2fe;
+  --color-accent-200: #bae6fd;
+  --color-accent-300: #7dd3fc;
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-accent-600: #0284c7;
+  --color-accent-700: #0369a1;
+  --color-accent-800: #075985;
+  --color-accent-900: #0c4a6e;
+  --color-accent-950: #082f49;
+  
+  /* Semantic colors (set dynamically) */
+  --color-primary: var(--color-main-500);
+  --color-primary-hover: var(--color-main-600);
+  --color-primary-active: var(--color-main-700);
+  --color-primary-subtle: var(--color-main-50);
+  --color-secondary: var(--color-accent-500);
+  --color-secondary-hover: var(--color-accent-600);
+  --color-secondary-active: var(--color-accent-700);
+  --color-secondary-subtle: var(--color-accent-50);
+  --color-background: var(--color-main-50);
+  --color-surface: var(--color-main-100);
+  --color-border: var(--color-main-200);
+  --color-muted: var(--color-main-300);
+  --color-foreground: var(--color-main-900);
+  --color-accent: var(--color-accent-500);
+  --color-accent-foreground: var(--color-accent-900);
+  
+  /* Design tokens */
+  --border-radius: 0.375rem;
+  --shadow-color: var(--color-main-900);
+  --shadow-opacity: 0.15;
+}
+
+/* ================================================================================
+   UNIVERSAL BACKGROUND CLASSES
+   ================================================================================ */
+
+.bg-theme-background {
+  background-color: var(--color-background);
+}
+
+.bg-theme-surface {
+  background-color: var(--color-surface);
+}
+
+.bg-theme-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-theme-primary-subtle {
+  background-color: var(--color-primary-subtle);
+}
+
+.bg-theme-secondary {
+  background-color: var(--color-secondary);
+}
+
+.bg-theme-secondary-subtle {
+  background-color: var(--color-secondary-subtle);
+}
+
+/* Main color backgrounds with depth */
+.bg-main-50 { background-color: var(--color-main-50); }
+.bg-main-100 { background-color: var(--color-main-100); }
+.bg-main-200 { background-color: var(--color-main-200); }
+.bg-main-300 { background-color: var(--color-main-300); }
+.bg-main-400 { background-color: var(--color-main-400); }
+.bg-main-500 { background-color: var(--color-main-500); }
+.bg-main-600 { background-color: var(--color-main-600); }
+.bg-main-700 { background-color: var(--color-main-700); }
+.bg-main-800 { background-color: var(--color-main-800); }
+.bg-main-900 { background-color: var(--color-main-900); }
+.bg-main-950 { background-color: var(--color-main-950); }
+
+/* Accent color backgrounds with depth */
+.bg-accent-50 { background-color: var(--color-accent-50); }
+.bg-accent-100 { background-color: var(--color-accent-100); }
+.bg-accent-200 { background-color: var(--color-accent-200); }
+.bg-accent-300 { background-color: var(--color-accent-300); }
+.bg-accent-400 { background-color: var(--color-accent-400); }
+.bg-accent-500 { background-color: var(--color-accent-500); }
+.bg-accent-600 { background-color: var(--color-accent-600); }
+.bg-accent-700 { background-color: var(--color-accent-700); }
+.bg-accent-800 { background-color: var(--color-accent-800); }
+.bg-accent-900 { background-color: var(--color-accent-900); }
+.bg-accent-950 { background-color: var(--color-accent-950); }
+
+/* ================================================================================
+   UNIVERSAL TEXT CLASSES
+   ================================================================================ */
+
+.text-theme-foreground {
+  color: var(--color-foreground);
+}
+
+.text-theme-primary {
+  color: var(--color-primary);
+}
+
+.text-theme-secondary {
+  color: var(--color-secondary);
+}
+
+.text-theme-accent {
+  color: var(--color-accent);
+}
+
+.text-theme-muted {
+  color: var(--color-muted);
+}
+
+/* Main color text with depth */
+.text-main-50 { color: var(--color-main-50); }
+.text-main-100 { color: var(--color-main-100); }
+.text-main-200 { color: var(--color-main-200); }
+.text-main-300 { color: var(--color-main-300); }
+.text-main-400 { color: var(--color-main-400); }
+.text-main-500 { color: var(--color-main-500); }
+.text-main-600 { color: var(--color-main-600); }
+.text-main-700 { color: var(--color-main-700); }
+.text-main-800 { color: var(--color-main-800); }
+.text-main-900 { color: var(--color-main-900); }
+.text-main-950 { color: var(--color-main-950); }
+
+/* Accent color text with depth */
+.text-accent-50 { color: var(--color-accent-50); }
+.text-accent-100 { color: var(--color-accent-100); }
+.text-accent-200 { color: var(--color-accent-200); }
+.text-accent-300 { color: var(--color-accent-300); }
+.text-accent-400 { color: var(--color-accent-400); }
+.text-accent-500 { color: var(--color-accent-500); }
+.text-accent-600 { color: var(--color-accent-600); }
+.text-accent-700 { color: var(--color-accent-700); }
+.text-accent-800 { color: var(--color-accent-800); }
+.text-accent-900 { color: var(--color-accent-900); }
+.text-accent-950 { color: var(--color-accent-950); }
+
+/* ================================================================================
+   UNIVERSAL BORDER CLASSES
+   ================================================================================ */
+
+.border-theme-border {
+  border-color: var(--color-border);
+}
+
+.border-theme-primary {
+  border-color: var(--color-primary);
+}
+
+.border-theme-secondary {
+  border-color: var(--color-secondary);
+}
+
+/* Main color borders with depth */
+.border-main-50 { border-color: var(--color-main-50); }
+.border-main-100 { border-color: var(--color-main-100); }
+.border-main-200 { border-color: var(--color-main-200); }
+.border-main-300 { border-color: var(--color-main-300); }
+.border-main-400 { border-color: var(--color-main-400); }
+.border-main-500 { border-color: var(--color-main-500); }
+.border-main-600 { border-color: var(--color-main-600); }
+.border-main-700 { border-color: var(--color-main-700); }
+.border-main-800 { border-color: var(--color-main-800); }
+.border-main-900 { border-color: var(--color-main-900); }
+.border-main-950 { border-color: var(--color-main-950); }
+
+/* Accent color borders with depth */
+.border-accent-50 { border-color: var(--color-accent-50); }
+.border-accent-100 { border-color: var(--color-accent-100); }
+.border-accent-200 { border-color: var(--color-accent-200); }
+.border-accent-300 { border-color: var(--color-accent-300); }
+.border-accent-400 { border-color: var(--color-accent-400); }
+.border-accent-500 { border-color: var(--color-accent-500); }
+.border-accent-600 { border-color: var(--color-accent-600); }
+.border-accent-700 { border-color: var(--color-accent-700); }
+.border-accent-800 { border-color: var(--color-accent-800); }
+.border-accent-900 { border-color: var(--color-accent-900); }
+.border-accent-950 { border-color: var(--color-accent-950); }
+
+/* ================================================================================
+   UNIVERSAL HOVER STATES (DEPTH PROGRESSION)
+   ================================================================================ */
+
+/* Primary hover states */
+.hover\:bg-theme-primary-hover:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.hover\:text-theme-primary-hover:hover {
+  color: var(--color-primary-hover);
+}
+
+.hover\:border-theme-primary-hover:hover {
+  border-color: var(--color-primary-hover);
+}
+
+/* Secondary hover states */
+.hover\:bg-theme-secondary-hover:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.hover\:text-theme-secondary-hover:hover {
+  color: var(--color-secondary-hover);
+}
+
+.hover\:border-theme-secondary-hover:hover {
+  border-color: var(--color-secondary-hover);
+}
+
+/* Main color hover progression (lighter to darker) */
+.hover\:bg-main-100:hover { background-color: var(--color-main-100); }
+.hover\:bg-main-200:hover { background-color: var(--color-main-200); }
+.hover\:bg-main-300:hover { background-color: var(--color-main-300); }
+.hover\:bg-main-400:hover { background-color: var(--color-main-400); }
+.hover\:bg-main-500:hover { background-color: var(--color-main-500); }
+.hover\:bg-main-600:hover { background-color: var(--color-main-600); }
+.hover\:bg-main-700:hover { background-color: var(--color-main-700); }
+.hover\:bg-main-800:hover { background-color: var(--color-main-800); }
+
+/* Accent color hover progression */
+.hover\:bg-accent-100:hover { background-color: var(--color-accent-100); }
+.hover\:bg-accent-200:hover { background-color: var(--color-accent-200); }
+.hover\:bg-accent-300:hover { background-color: var(--color-accent-300); }
+.hover\:bg-accent-400:hover { background-color: var(--color-accent-400); }
+.hover\:bg-accent-500:hover { background-color: var(--color-accent-500); }
+.hover\:bg-accent-600:hover { background-color: var(--color-accent-600); }
+.hover\:bg-accent-700:hover { background-color: var(--color-accent-700); }
+.hover\:bg-accent-800:hover { background-color: var(--color-accent-800); }
+
+/* ================================================================================
+   UNIVERSAL ACTIVE STATES (DEEPER DEPTH)
+   ================================================================================ */
+
+.active\:bg-theme-primary-active:active {
+  background-color: var(--color-primary-active);
+}
+
+.active\:bg-theme-secondary-active:active {
+  background-color: var(--color-secondary-active);
+}
+
+/* ================================================================================
+   UNIVERSAL COMPONENT STYLES
+   ================================================================================ */
+
+/* Enhanced buttons with depth */
+.btn-theme-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-subtle);
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-theme-primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px rgba(var(--shadow-color), calc(var(--shadow-opacity) * 0.4));
+  transform: translateY(-1px);
+}
+
+.btn-theme-primary:active {
+  background-color: var(--color-primary-active);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(var(--shadow-color), var(--shadow-opacity));
+}
+
+.btn-theme-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-subtle);
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-theme-secondary:hover {
+  background-color: var(--color-secondary-hover);
+  box-shadow: 0 4px 12px rgba(var(--shadow-color), calc(var(--shadow-opacity) * 0.4));
+  transform: translateY(-1px);
+}
+
+.btn-theme-secondary:active {
+  background-color: var(--color-secondary-active);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(var(--shadow-color), var(--shadow-opacity));
+}
+
+/* Enhanced cards with depth */
+.card-theme-surface {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: 0 1px 3px rgba(var(--shadow-color), var(--shadow-opacity));
+  transition: all 0.2s ease-in-out;
+}
+
+.card-theme-surface:hover {
+  box-shadow: 0 4px 12px rgba(var(--shadow-color), calc(var(--shadow-opacity) * 1.5));
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+}
+
+/* Enhanced inputs with depth */
+.input-theme {
+  background-color: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius);
+  color: var(--color-foreground);
+  transition: all 0.2s ease-in-out;
+}
+
+.input-theme:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.1);
+  background-color: var(--color-surface);
+}
+
+.input-theme::placeholder {
+  color: var(--color-muted);
+}
+
+/* ================================================================================
+   UNIVERSAL UTILITY CLASSES
+   ================================================================================ */
+
+/* Gradient backgrounds for depth */
+.bg-gradient-main {
+  background: linear-gradient(135deg, var(--color-main-500) 0%, var(--color-main-600) 100%);
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent-500) 0%, var(--color-accent-600) 100%);
+}
+
+.bg-gradient-main-subtle {
+  background: linear-gradient(135deg, var(--color-main-50) 0%, var(--color-main-100) 100%);
+}
+
+.bg-gradient-accent-subtle {
+  background: linear-gradient(135deg, var(--color-accent-50) 0%, var(--color-accent-100) 100%);
+}
+
+/* Enhanced shadows with theme colors */
+.shadow-theme-sm {
+  box-shadow: 0 1px 2px rgba(var(--shadow-color), calc(var(--shadow-opacity) * 0.5));
+}
+
+.shadow-theme-md {
+  box-shadow: 0 4px 6px rgba(var(--shadow-color), var(--shadow-opacity));
+}
+
+.shadow-theme-lg {
+  box-shadow: 0 10px 15px rgba(var(--shadow-color), calc(var(--shadow-opacity) * 1.2));
+}
+
+.shadow-theme-xl {
+  box-shadow: 0 20px 25px rgba(var(--shadow-color), calc(var(--shadow-opacity) * 1.5));
+}
+
+/* Colored shadows for depth */
+.shadow-main {
+  box-shadow: 0 4px 12px rgba(var(--color-main-500), 0.15);
+}
+
+.shadow-accent {
+  box-shadow: 0 4px 12px rgba(var(--color-accent-500), 0.15);
+}
+
+/* Ring utilities with theme colors */
+.ring-theme-primary {
+  box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.1);
+}
+
+.ring-theme-secondary {
+  box-shadow: 0 0 0 3px rgba(var(--color-secondary), 0.1);
+}
+
+/* ================================================================================
+   DARK MODE ENHANCEMENTS
+   ================================================================================ */
+
+.dark .card-theme-surface {
+  background-color: rgba(var(--color-surface), 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.dark .input-theme {
+  background-color: rgba(var(--color-background), 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.dark .shadow-theme-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ================================================================================
+   THEME-SPECIFIC VARIANTS (Applied via body class)
+   ================================================================================ */
+
+/* Professional theme enhancements */
+.theme-professional .card-theme-surface {
+  border-radius: 0.5rem;
+}
+
+.theme-professional .btn-theme-primary {
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+/* Elegant theme enhancements */
+.theme-elegant .card-theme-surface {
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.theme-elegant .btn-theme-primary {
+  border-radius: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Vibrant theme enhancements */
+.theme-vibrant .card-theme-surface:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.theme-vibrant .btn-theme-primary {
+  box-shadow: 0 4px 12px rgba(var(--color-primary), 0.3);
+}
+
+/* Modern theme enhancements */
+.theme-modern .card-theme-surface {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(var(--color-border), 0.5);
+}
+
+.theme-modern .btn-theme-primary {
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+/* Warm theme enhancements */
+.theme-warm .card-theme-surface {
+  box-shadow: 0 4px 12px rgba(var(--color-main-500), 0.08);
+}
+
+.theme-warm .btn-theme-primary {
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+/* Cool theme enhancements */
+.theme-cool .card-theme-surface {
+  border: 2px solid rgba(var(--color-border), 0.3);
+  background: rgba(var(--color-surface), 0.8);
+}
+
+.theme-cool .btn-theme-primary {
+  border-radius: 0.375rem;
+  border: 1px solid rgba(var(--color-primary-hover), 0.3);
+}

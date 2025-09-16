@@ -97,7 +97,8 @@ export function ISPButton({
   variant?: 'primary' | 'secondary' | 'danger'
 }) {
   const variants = {
-    primary: 'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-foreground hover:shadow-[#00DDFF]/50',
+    primary:
+      'bg-gradient-to-r from-[#00DDFF] to-[#0049B7] text-foreground hover:shadow-[#00DDFF]/50',
     secondary: 'bg-background/10 text-foreground hover:bg-background/20',
     danger: 'bg-gradient-to-r from-[#ff1d58] to-[#f75990] text-foreground hover:shadow-[#ff1d58]/50'
   }

@@ -338,7 +338,9 @@ export default function BillingPage() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground">Billing & Collection Trend</h2>
+                <h2 className="text-xl font-semibold text-foreground">
+                  Billing & Collection Trend
+                </h2>
                 <div className="flex items-center space-x-4 text-xs">
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 rounded-full bg-[#0099CC]" />
@@ -408,7 +410,9 @@ export default function BillingPage() {
                   <div key={index} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-foreground/80">{method.method}</span>
-                      <span className="text-sm font-medium text-foreground">{method.percentage}%</span>
+                      <span className="text-sm font-medium text-foreground">
+                        {method.percentage}%
+                      </span>
                     </div>
                     <div className="relative">
                       <div className="h-2 rounded-full bg-background/10 overflow-hidden">
@@ -455,7 +459,9 @@ export default function BillingPage() {
               render: item => (
                 <div>
                   <p className="text-sm font-medium text-foreground">{item.customer}</p>
-                  {item.description && <p className="text-xs text-foreground/60">{item.description}</p>}
+                  {item.description && (
+                    <p className="text-xs text-foreground/60">{item.description}</p>
+                  )}
                 </div>
               )
             },

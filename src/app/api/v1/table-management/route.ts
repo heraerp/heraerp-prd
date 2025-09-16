@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
 
 // Steve Jobs Principle: "Simplicity is the ultimate sophistication"
 // Universal table management that works for any restaurant configuration

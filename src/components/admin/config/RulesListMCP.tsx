@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
 import {
   Scale,
   Edit,
@@ -33,16 +33,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu'
-import { formatDate } from '@/lib/date-utils'
-import { useToast } from '@/components/ui/use-toast'
+} from '@/src/components/ui/dropdown-menu'
+import { formatDate } from '@/src/lib/date-utils'
+import { useToast } from '@/src/components/ui/use-toast'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@/components/ui/dialog'
+} from '@/src/components/ui/dialog'
 
 interface RulesListMCPProps {
   organizationId: string

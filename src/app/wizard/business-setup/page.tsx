@@ -1,7 +1,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { BusinessSetupWizard } from '@/components/wizard/BusinessSetupWizard'
+import { BusinessSetupWizard } from '@/src/components/wizard/BusinessSetupWizard'
 
 export default function BusinessSetupWizardPage() {
   return (

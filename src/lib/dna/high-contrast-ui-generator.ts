@@ -4,7 +4,7 @@
  * Ensures all generated UIs have proper contrast and visibility
  */
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 export interface ColorScheme {
   backgrounds: {

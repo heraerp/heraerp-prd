@@ -14,16 +14,16 @@ import {
   Briefcase,
   Sun
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 import { LeaveRequestForm } from './LeaveRequestForm'
 import { LeaveCalendar } from './LeaveCalendar'
 import { LeaveBalanceCard } from './LeaveBalanceCard'
 import { TeamLeaveOverview } from './TeamLeaveOverview'
 import { PendingApprovals } from './PendingApprovals'
 import { AnnualLeaveReport } from './AnnualLeaveReport'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { cn } from '@/lib/utils'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/src/lib/utils'
 
 interface LeaveManagementDashboardProps {
   organizationId?: string
@@ -128,7 +128,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
 
         {/* Tertiary Light Orb */}
         <div
-          className="absolute w-64 h-64 rounded-full transition-all duration-[5000ms] ease-in-out"
+          className="absolute w-64 h-64 rounded-full transition-all duration-1000 ease-in-out"
           style={{
             background: `radial-gradient(circle, 
               rgba(16, 185, 129, 0.1) 0%, 

@@ -1,16 +1,16 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { universalApi } from '@/lib/universal-api'
-import { extractData, ensureDefaultEntities, formatCurrency } from '@/lib/universal-helpers'
-import { useEntities, useTransactions } from '@/hooks/useUniversalData'
-import { StatCardGrid, StatCardData } from '@/components/universal/StatCardGrid'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { universalApi } from '@/src/lib/universal-api'
+import { extractData, ensureDefaultEntities, formatCurrency } from '@/src/lib/universal-helpers'
+import { useEntities, useTransactions } from '@/src/hooks/useUniversalData'
+import { StatCardGrid, StatCardData } from '@/src/components/universal/StatCardGrid'
 import {
   ChefHat,
   Clock,
@@ -28,7 +28,7 @@ import {
   TrendingUp,
   Utensils
 } from 'lucide-react'
-import { formatDate, differenceInMinutesSafe } from '@/lib/date-utils'
+import { formatDate, differenceInMinutesSafe } from '@/src/lib/date-utils'
 
 interface KitchenDisplayProps {
   organizationId: string

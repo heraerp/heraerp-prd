@@ -1,9 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
+import { Card } from '@/src/components/ui/card'
 import {
   Wifi,
   WifiOff,
@@ -20,7 +20,7 @@ import {
   CheckCircle,
   Clock
 } from 'lucide-react'
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 
 interface RealTimeStatusProps {
   isConnected: boolean

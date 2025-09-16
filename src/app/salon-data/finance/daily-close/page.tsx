@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
  */
 
 import React from 'react'
-import DailyCashClose from '@/components/pos/DailyCashClose'
+import DailyCashClose from '@/src/components/pos/DailyCashClose'
 
 export default function SalonDailyCashClosePage() {
   return (

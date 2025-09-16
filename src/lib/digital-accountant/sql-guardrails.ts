@@ -7,7 +7,7 @@
  * Smart Code: HERA.FIN.ACCT.DIGITAL.GUARDRAILS.v1
  */
 
-import { ValidationError, ValidationResult } from '@/types/digital-accountant.types'
+import { ValidationError, ValidationResult } from '@/src/types/digital-accountant.types'
 
 // ================================================================================
 // SACRED TABLES

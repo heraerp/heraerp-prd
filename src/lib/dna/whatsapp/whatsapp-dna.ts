@@ -6,7 +6,7 @@
  * that work across all industries through smart codes and dynamic data.
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 // ============================================================================
 // SMART CODE DEFINITIONS

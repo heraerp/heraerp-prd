@@ -16,7 +16,7 @@ import {
   Camera,
   Briefcase
 } from 'lucide-react'
-import { POSConfiguration } from '@/components/universal/UniversalPOS'
+import { POSConfiguration } from '@/src/components/universal/UniversalPOS'
 
 // ================================================================================
 // SALON & SPA CONFIGURATION

@@ -1,7 +1,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { HCMDashboard } from '@/components/hcm/HCMDashboard'
+import { HCMDashboard } from '@/src/components/hcm/HCMDashboard'
 
 export default function HCMPage() {
   return <HCMDashboard />

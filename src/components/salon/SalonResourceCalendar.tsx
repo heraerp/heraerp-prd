@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import '@/styles/microsoft-calendar.css'
 import {
   Calendar,
@@ -39,19 +39,19 @@ import {
   CheckSquare,
   Building2
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BookAppointmentModal } from '@/components/salon/BookAppointmentModal'
-import { Checkbox } from '@/components/ui/checkbox'
+} from '@/src/components/ui/select'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { BookAppointmentModal } from '@/src/components/salon/BookAppointmentModal'
+import { Checkbox } from '@/src/components/ui/checkbox'
 
 interface SalonResourceCalendarProps {
   className?: string

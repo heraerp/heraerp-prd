@@ -533,14 +533,20 @@ export default function AnalyticsPage() {
       <div className="relative group">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
         <div className="relative bg-background/50 backdrop-blur-xl border border-border/50 rounded-2xl p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-6">Service Performance Analysis</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-6">
+            Service Performance Analysis
+          </h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left border-b border-border/50">
                   <th className="pb-3 text-sm font-medium text-foreground/60">Service</th>
-                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Customers</th>
-                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Revenue</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">
+                    Customers
+                  </th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-right">
+                    Revenue
+                  </th>
                   <th className="pb-3 text-sm font-medium text-foreground/60 text-right">
                     Satisfaction
                   </th>

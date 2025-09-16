@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { getModuleTheme, ModuleTheme } from '@/lib/theme/module-themes'
+import { getModuleTheme, ModuleTheme } from '@/src/lib/theme/module-themes'
 
 export function useModuleTheme(): ModuleTheme & { moduleName: string } {
   const pathname = usePathname()

@@ -3,7 +3,7 @@
  * Demonstrates how complex manufacturing data fits in the 6-table schema
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface BOMSeedResult {
   products: any[]

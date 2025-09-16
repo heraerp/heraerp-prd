@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createAnalyticsChatStorage } from '@/lib/analytics-chat-storage'
+import { createAnalyticsChatStorage } from '@/src/lib/analytics-chat-storage'
 
 // MCP tool definitions for accounting
 const MCP_ACCOUNTING_TOOLS = {

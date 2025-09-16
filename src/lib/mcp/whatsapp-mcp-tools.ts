@@ -3,7 +3,7 @@
  * Stateless tools with clear contracts for Claude + HERA DNA integration
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 // Tool type definitions
 export interface MCPToolResponse<T = any> {

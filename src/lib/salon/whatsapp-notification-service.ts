@@ -5,8 +5,8 @@
  * Uses the Sacred 6-Table architecture for storing notification logs
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { formatDate } from '@/lib/date-utils'
+import { universalApi } from '@/src/lib/universal-api'
+import { formatDate } from '@/src/lib/date-utils'
 import { formatWhatsAppTemplate, validateTemplateParameters } from './whatsapp-templates'
 
 // Smart Code definitions for WhatsApp notifications

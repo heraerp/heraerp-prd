@@ -8,9 +8,9 @@
  * - Billing integration hooks
  */
 
-import { createClient } from '@/lib/supabase-server'
+import { createClient } from '@/src/lib/supabase-server'
 import { cookies } from 'next/headers'
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface ModuleDefinition {
   id: string

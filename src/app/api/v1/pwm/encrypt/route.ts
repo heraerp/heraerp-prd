@@ -13,7 +13,7 @@ import {
   validateEncryptionSetup,
   EncryptedData,
   SensitiveWealthFields
-} from '@/lib/pwm/encryption'
+} from '@/src/lib/pwm/encryption'
 
 interface EncryptRequest {
   action: 'encrypt' | 'decrypt' | 'validate'

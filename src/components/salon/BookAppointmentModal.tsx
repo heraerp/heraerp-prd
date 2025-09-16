@@ -1,25 +1,25 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Textarea } from '@/src/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Card, CardContent } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Checkbox } from '@/components/ui/checkbox'
-import { ScrollArea } from '@/components/ui/scroll-area'
+} from '@/src/components/ui/select'
+import { Badge } from '@/src/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Checkbox } from '@/src/components/ui/checkbox'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import {
   Calendar,
   Clock,
@@ -42,14 +42,14 @@ import {
   Users,
   X
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { formatDate, addMinutesSafe } from '@/lib/date-utils'
+import { cn } from '@/src/lib/utils'
+import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
 import { parseISO, isWithinInterval } from 'date-fns'
 import { SchedulingAssistant } from './SchedulingAssistant'
-import { useToast } from '@/hooks/use-toast'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { universalConfigService } from '@/lib/universal-config/universal-config-service'
-import { universalApi } from '@/lib/universal-api'
+import { useToast } from '@/src/hooks/use-toast'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
+import { universalApi } from '@/src/lib/universal-api'
 
 interface Service {
   id: string

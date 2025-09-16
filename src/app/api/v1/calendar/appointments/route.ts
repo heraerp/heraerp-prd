@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { UniversalAppointment, AppointmentLine } from '@/types/calendar.types'
+import { UniversalAppointment, AppointmentLine } from '@/src/types/calendar.types'
 import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
 
 // Mock database operations - replace with actual HERA API calls

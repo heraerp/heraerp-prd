@@ -7,31 +7,31 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { SimpleCalendar } from '@/components/calendar/SimpleCalendar'
-import { CalendarEvent, CalendarResource } from '@/types/calendar-api.types'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SimpleCalendar } from '@/src/components/calendar/SimpleCalendar'
+import { CalendarEvent, CalendarResource } from '@/src/types/calendar-api.types'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/components/ui/dialog'
+} from '@/src/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
+} from '@/src/components/ui/select'
+import { Textarea } from '@/src/components/ui/textarea'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Separator } from '@/src/components/ui/separator'
 import {
   Clock,
   User,
@@ -50,8 +50,8 @@ import {
   Timer,
   Users
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { toast } from '@/hooks/use-toast'
+import { cn } from '@/src/lib/utils'
+import { toast } from '@/src/hooks/use-toast'
 
 // Salon-specific types
 interface SalonService {

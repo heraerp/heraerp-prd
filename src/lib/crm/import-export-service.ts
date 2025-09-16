@@ -6,7 +6,7 @@
  */
 
 import { CRMContact, CRMOpportunity, CRMTask } from './production-api'
-import { heraApi } from '@/lib/hera-api'
+import { heraApi } from '@/src/lib/hera-api'
 
 export interface ImportMapping {
   sourceField: string

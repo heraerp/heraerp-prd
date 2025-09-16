@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { createIntegratedAppointment } from '@/lib/salon/integrated-appointment-booking'
-import { ServerWorkflow } from '@/lib/salon/server-workflow'
+import { createIntegratedAppointment } from '@/src/lib/salon/integrated-appointment-booking'
+import { ServerWorkflow } from '@/src/lib/salon/server-workflow'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''

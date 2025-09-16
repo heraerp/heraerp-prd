@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { IceCreamCOAGenerator } from '@/lib/coa/ice-cream-coa-generator'
-import { supabaseAdmin } from '@/lib/supabase-server'
+import { IceCreamCOAGenerator } from '@/src/lib/coa/ice-cream-coa-generator'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
   try {

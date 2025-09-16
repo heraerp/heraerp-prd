@@ -5,8 +5,8 @@
  * Uses the Sacred 6-Table architecture for campaign tracking and analytics
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { formatDate } from '@/lib/date-utils'
+import { universalApi } from '@/src/lib/universal-api'
+import { formatDate } from '@/src/lib/date-utils'
 import { addDays, differenceInDays } from 'date-fns'
 
 // Smart Code definitions for WhatsApp campaigns

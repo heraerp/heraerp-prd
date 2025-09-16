@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { Calendar } from '@/components/ui/calendar'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Badge } from '@/src/components/ui/badge'
+import { Calendar } from '@/src/components/ui/calendar'
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/components/ui/dialog'
+} from '@/src/components/ui/dialog'
 import { toast } from 'sonner'
 import {
   Calendar as CalendarIcon,
@@ -41,7 +41,7 @@ import {
   UserCheck,
   History
 } from 'lucide-react'
-import { formatDate, isTodaySafe } from '@/lib/date-utils'
+import { formatDate, isTodaySafe } from '@/src/lib/date-utils'
 import { addDays, startOfWeek, endOfWeek, isSameDay, parseISO } from 'date-fns'
 
 interface Reservation {

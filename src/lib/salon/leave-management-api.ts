@@ -9,8 +9,8 @@
  * - universal_transaction_lines: Daily leave breakdown with audit trail
  */
 
-import { universalApi } from '@/lib/universal-api'
-import { formatDate } from '@/lib/date-utils'
+import { universalApi } from '@/src/lib/universal-api'
+import { formatDate } from '@/src/lib/date-utils'
 import {
   eachDayOfInterval,
   isWeekend,

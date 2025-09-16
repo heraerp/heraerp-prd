@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
 import './development.css'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Badge } from '@/src/components/ui/badge'
 import Link from 'next/link'
 import {
   CheckCircle,

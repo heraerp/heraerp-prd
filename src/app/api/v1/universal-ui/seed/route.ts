@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BOMSeeder } from '@/lib/universal-ui/bom-seeder'
+import { BOMSeeder } from '@/src/lib/universal-ui/bom-seeder'
 
 export async function POST(request: NextRequest) {
   const body = await request.json()

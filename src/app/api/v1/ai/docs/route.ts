@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalAI, AI_SMART_CODES } from '@/lib/ai/universal-ai'
+import { universalAI, AI_SMART_CODES } from '@/src/lib/ai/universal-ai'
 
 // HERA AI Documentation Generator
 // Automatically generates documentation from code, APIs, and system components

@@ -8,9 +8,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/components/ui/card'
-import { useModuleTheme } from '@/hooks/useModuleTheme'
-import { cn } from '@/lib/utils'
+} from '@/src/components/ui/card'
+import { useModuleTheme } from '@/src/hooks/useModuleTheme'
+import { cn } from '@/src/lib/utils'
 
 export interface ThemedCardProps extends React.HTMLAttributes<HTMLDivElement> {
   gradient?: boolean

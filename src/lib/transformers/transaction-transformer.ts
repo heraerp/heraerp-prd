@@ -1,4 +1,4 @@
-import { formatDate } from '@/lib/date-utils'
+import { formatDate } from '@/src/lib/date-utils'
 
 export interface UITransaction {
   id: string

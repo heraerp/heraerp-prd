@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createImportExportService } from '@/lib/crm/import-export-service'
+import { createImportExportService } from '@/src/lib/crm/import-export-service'
 
 export async function POST(request: NextRequest) {
   try {

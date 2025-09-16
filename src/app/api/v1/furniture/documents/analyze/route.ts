@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { validateFurnitureInvoice, createSupplierIfNotExists } from '@/lib/furniture/validation'
+import { validateFurnitureInvoice, createSupplierIfNotExists } from '@/src/lib/furniture/validation'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

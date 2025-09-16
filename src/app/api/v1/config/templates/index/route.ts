@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ucrTemplateIndex } from '@/lib/ucr/template-index-service'
-import { getSupabase } from '@/lib/supabase/client'
+import { ucrTemplateIndex } from '@/src/lib/ucr/template-index-service'
+import { getSupabase } from '@/src/lib/supabase/client'
 
 /**
  * GET /api/v1/config/templates/index

@@ -7,8 +7,8 @@
  * Smart Code: HERA.FIN.ACCT.DIGITAL.SERVICE.v1
  */
 
-import { supabase } from '@/lib/supabase'
-import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/src/lib/supabase'
+import { universalApi } from '@/src/lib/universal-api'
 import {
   JournalEntry,
   JournalLine,
@@ -21,7 +21,7 @@ import {
   AccountingQuery,
   ValidationResult,
   ACCOUNTANT_SMART_CODES
-} from '@/types/digital-accountant.types'
+} from '@/src/types/digital-accountant.types'
 import {
   IDigitalAccountantService,
   IJournalRepository,

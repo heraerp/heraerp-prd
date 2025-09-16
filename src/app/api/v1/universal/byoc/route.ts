@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BYOCService, BYOCConfiguration } from '@/lib/universal/byoc-service'
+import { BYOCService, BYOCConfiguration } from '@/src/lib/universal/byoc-service'
 
 // Initialize BYOC service
 const byocService = new BYOCService()

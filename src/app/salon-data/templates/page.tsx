@@ -4,11 +4,11 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { UCRTemplateBrowser } from '@/components/salon/UCRTemplateBrowser'
-import { CustomizationExampleCard } from '@/components/salon/CustomizationExampleCard'
+import { UCRTemplateBrowser } from '@/src/components/salon/UCRTemplateBrowser'
+import { CustomizationExampleCard } from '@/src/components/salon/CustomizationExampleCard'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/src/components/ui/button'
 
 export default function SalonTemplatesPage() {
   return (

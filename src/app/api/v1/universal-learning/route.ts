@@ -2,12 +2,12 @@
 // REST API exposing the complete Universal Learning Platform functionality
 
 import { NextRequest, NextResponse } from 'next/server'
-import { UniversalContentProcessor } from '@/lib/universal-learning/UniversalContentProcessor'
-import { UniversalAIAnalyzer } from '@/lib/universal-learning/UniversalAIAnalyzer'
-import { UniversalEntityCreator } from '@/lib/universal-learning/UniversalEntityCreator'
-import { UniversalLearningPathGenerator } from '@/lib/universal-learning/UniversalLearningPathGenerator'
-import { DomainSpecializationFramework } from '@/lib/universal-learning/DomainSpecializationFramework'
-import { CrossDomainIntelligenceEngine } from '@/lib/universal-learning/CrossDomainIntelligenceEngine'
+import { UniversalContentProcessor } from '@/src/lib/universal-learning/UniversalContentProcessor'
+import { UniversalAIAnalyzer } from '@/src/lib/universal-learning/UniversalAIAnalyzer'
+import { UniversalEntityCreator } from '@/src/lib/universal-learning/UniversalEntityCreator'
+import { UniversalLearningPathGenerator } from '@/src/lib/universal-learning/UniversalLearningPathGenerator'
+import { DomainSpecializationFramework } from '@/src/lib/universal-learning/DomainSpecializationFramework'
+import { CrossDomainIntelligenceEngine } from '@/src/lib/universal-learning/CrossDomainIntelligenceEngine'
 
 // HERA Organization ID for Universal Learning System
 const HERA_LEARNING_ORG_ID = '719dfed1-09b4-4ca8-bfda-f682460de945'

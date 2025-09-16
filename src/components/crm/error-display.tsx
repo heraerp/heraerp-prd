@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
 import {
   AlertCircle,
   AlertTriangle,
@@ -21,7 +21,7 @@ import {
   Settings
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CRMError, crmErrorHandler } from '@/lib/crm/error-handler'
+import { CRMError, crmErrorHandler } from '@/src/lib/crm/error-handler'
 
 interface ErrorDisplayProps {
   error: CRMError

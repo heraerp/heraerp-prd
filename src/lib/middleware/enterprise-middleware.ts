@@ -5,15 +5,15 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
-import { heraLogger } from '@/lib/observability/logger'
-import { heraTracer } from '@/lib/observability/tracer'
-import { heraMetrics } from '@/lib/observability/metrics'
-import { rateLimiter } from '@/lib/limits/rate-limiter'
-import { rbacPolicy } from '@/lib/rbac/policy-engine'
-import { RLSQueryBuilder } from '@/lib/rbac/query-builder-middleware'
-import { normalizeSmartCode } from '@/lib/guardrails/smart-code-normalizer'
-import { checkPeriodPostingAllowed } from '@/lib/guardrails/period-close-validator'
-import { validateGLBalance, normalizeGLAccount } from '@/lib/guardrails/gl-balance-validator'
+import { heraLogger } from '@/src/lib/observability/logger'
+import { heraTracer } from '@/src/lib/observability/tracer'
+import { heraMetrics } from '@/src/lib/observability/metrics'
+import { rateLimiter } from '@/src/lib/limits/rate-limiter'
+import { rbacPolicy } from '@/src/lib/rbac/policy-engine'
+import { RLSQueryBuilder } from '@/src/lib/rbac/query-builder-middleware'
+import { normalizeSmartCode } from '@/src/lib/guardrails/smart-code-normalizer'
+import { checkPeriodPostingAllowed } from '@/src/lib/guardrails/period-close-validator'
+import { validateGLBalance, normalizeGLAccount } from '@/src/lib/guardrails/gl-balance-validator'
 
 export interface MiddlewareContext {
   requestId: string

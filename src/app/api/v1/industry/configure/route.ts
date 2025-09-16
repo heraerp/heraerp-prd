@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
 
 // HERA System Organization - source of all industry templates
 const HERA_SYSTEM_ORG = '719dfed1-09b4-4ca8-bfda-f682460de945'

@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createHybridSalonDNAClient } from '@/lib/salon/salon-dna-client-hybrid'
+import { createHybridSalonDNAClient } from '@/src/lib/salon/salon-dna-client-hybrid'
 
 export async function GET(request: NextRequest) {
   try {

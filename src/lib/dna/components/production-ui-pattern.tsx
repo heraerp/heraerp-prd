@@ -11,11 +11,11 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { cn } from '@/lib/utils'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Progress } from '@/src/components/ui/progress'
+import { cn } from '@/src/lib/utils'
 import {
   Factory,
   Package,
@@ -615,8 +615,8 @@ export const INDUSTRY_UI_CONFIGS = {
 /*
 USAGE EXAMPLE 1: Basic Production Dashboard
 
-import { useProductionData } from '@/lib/dna/patterns/production-data-pattern'
-import { ProductionMetricsCards, ProductionOrderCard } from '@/lib/dna/components/production-ui-pattern'
+import { useProductionData } from '@/src/lib/dna/patterns/production-data-pattern'
+import { ProductionMetricsCards, ProductionOrderCard } from '@/src/lib/dna/components/production-ui-pattern'
 
 function ProductionDashboard() {
   const { organizationId } = useDemoOrganization()

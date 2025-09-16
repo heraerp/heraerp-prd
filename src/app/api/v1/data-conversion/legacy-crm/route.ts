@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { HERALegacyCRMConverter, LegacyCRMRecord } from '@/lib/data-conversion/legacy-crm-analyzer'
-import { heraApi } from '@/lib/hera-api'
+import { HERALegacyCRMConverter, LegacyCRMRecord } from '@/src/lib/data-conversion/legacy-crm-analyzer'
+import { heraApi } from '@/src/lib/hera-api'
 
 /**
  * 🎯 HERA Universal Legacy Data Conversion API

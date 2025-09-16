@@ -9,10 +9,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { provisioningService, type ProvisioningRequest } from '@/lib/services/provisioning'
-import { entitlementsService } from '@/lib/services/entitlements'
-import { resolveTenant } from '@/lib/middleware/tenant-resolver'
-import { createServerClient } from '@/lib/supabase-server'
+import { provisioningService, type ProvisioningRequest } from '@/src/lib/services/provisioning'
+import { entitlementsService } from '@/src/lib/services/entitlements'
+import { resolveTenant } from '@/src/lib/middleware/tenant-resolver'
+import { createServerClient } from '@/src/lib/supabase-server'
 import { cookies } from 'next/headers'
 
 /**

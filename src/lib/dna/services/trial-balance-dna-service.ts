@@ -6,7 +6,7 @@
  * that work with HERA's universal 6-table architecture.
  */
 
-import { UniversalAPIClient } from '@/lib/universal-api'
+import { UniversalAPIClient } from '@/src/lib/universal-api'
 
 // Core Trial Balance DNA Configuration
 export const TRIAL_BALANCE_DNA_CONFIG = {

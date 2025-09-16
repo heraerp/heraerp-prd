@@ -7,21 +7,21 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Switch } from '@/src/components/ui/switch'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
+} from '@/src/components/ui/select'
+import { Textarea } from '@/src/components/ui/textarea'
 import {
   AlertCircle,
   Check,
@@ -34,9 +34,9 @@ import {
   TrendingUp,
   Award
 } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useSchemaAdministration } from '@/lib/schema/schema-hooks'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { useSchemaAdministration } from '@/src/lib/schema/schema-hooks'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 interface SchemaAdministrationProps {
   organizationId?: string

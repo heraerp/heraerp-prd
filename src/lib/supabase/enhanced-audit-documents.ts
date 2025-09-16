@@ -1,7 +1,7 @@
 // Enhanced Audit Documents Service with Supabase Storage Integration
 // Comprehensive CRUD operations following HERA Universal API patterns
 
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/src/lib/supabase/client'
 
 const supabase = createClient()
 

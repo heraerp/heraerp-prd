@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SAPIntegrationService } from '@/lib/sap-fi/integration-service'
-import { SAPConnectorFactory } from '@/lib/sap-fi/connectors/factory'
+import { SAPIntegrationService } from '@/src/lib/sap-fi/integration-service'
+import { SAPConnectorFactory } from '@/src/lib/sap-fi/connectors/factory'
 import { createClient } from '@supabase/supabase-js'
 import { headers } from 'next/headers'
 

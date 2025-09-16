@@ -6,7 +6,7 @@
  * that work with HERA's universal 6-table architecture.
  */
 
-import { UniversalAPIClient } from '@/lib/universal-api'
+import { UniversalAPIClient } from '@/src/lib/universal-api'
 
 // Core P&L DNA Configuration
 export const PROFIT_LOSS_DNA_CONFIG = {

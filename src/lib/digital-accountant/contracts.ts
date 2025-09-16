@@ -21,7 +21,7 @@ import {
   AccountingMetrics,
   AccountingToolResponse,
   AccountingQuery
-} from '@/types/digital-accountant.types'
+} from '@/src/types/digital-accountant.types'
 
 // ================================================================================
 // REPOSITORY INTERFACES

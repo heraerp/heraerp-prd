@@ -4,8 +4,8 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { SalonResourceCalendar } from '@/src/components/salon/SalonResourceCalendar'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 
 export default function SalonDataCalendarPage() {
   const { currentOrganization } = useMultiOrgAuth()

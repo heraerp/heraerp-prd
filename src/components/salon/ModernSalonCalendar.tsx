@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { SimpleCalendar } from '@/components/calendar/SimpleCalendar'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { SimpleCalendar } from '@/src/components/calendar/SimpleCalendar'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/src/components/ui/input'
 import {
   Calendar,
   ChevronLeft,
@@ -29,17 +29,17 @@ import {
   Scissors,
   Palette
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/components/ui/select'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from '@/src/components/ui/select'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 
 interface ModernSalonCalendarProps {
   className?: string

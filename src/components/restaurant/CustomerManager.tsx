@@ -16,9 +16,9 @@ import {
   useFormState,
   useLoadingState,
   createUniversalAPIClient
-} from '@/components/universal'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+} from '@/src/components/universal'
+import { Card } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
 import { Plus, Edit, Trash2, Search, Phone, Mail, MapPin, Calendar, User } from 'lucide-react'
 
 // Customer interface using HERA universal pattern

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DOCUMENT_CATEGORIES } from '@/types/audit.types'
+import { DOCUMENT_CATEGORIES } from '@/src/types/audit.types'
 
 /**
  * HERA Audit Document Requisition API

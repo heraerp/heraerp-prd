@@ -10,12 +10,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { UniversalAPIEnterprise } from '@/lib/universal-api-enterprise'
-import { EnterpriseCard } from '@/lib/dna/components/enterprise/EnterpriseCard'
-import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'
-import { EnterpriseDashboard } from '@/lib/dna/components/enterprise/EnterpriseDashboard'
-import { universalDNAWithColorEnforcement } from '@/lib/dna/index-color-integration'
-import { HERA_COLOR_TOKENS_FINAL } from '@/lib/dna/design-system/hera-color-palette-dna-final'
+import { UniversalAPIEnterprise } from '@/src/lib/universal-api-enterprise'
+import { EnterpriseCard } from '@/src/lib/dna/components/enterprise/EnterpriseCard'
+import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard'
+import { EnterpriseDashboard } from '@/src/lib/dna/components/enterprise/EnterpriseDashboard'
+import { universalDNAWithColorEnforcement } from '@/src/lib/dna/index-color-integration'
+import { HERA_COLOR_TOKENS_FINAL } from '@/src/lib/dna/design-system/hera-color-palette-dna-final'
 
 // Initialize Universal API with enterprise configuration
 const universalAPI = new UniversalAPIEnterprise({

@@ -1,32 +1,300 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Calendar, Package, User, FileText, AlertCircle
-} from 'lucide-react'
-import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters
-} from '@/lib/dna/patterns/universal-api-loading-pattern'
-import { universalApi } from '@/lib/universal-api'
-import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
+import { ArrowLeft, Plus, Trash2, Package, Calendar, User, FileText } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/src/components/ui/button'
+import { Card } from '@/src/components/ui/card'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { Textarea } from '@/src/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
+import { useUniversalData } from '@/src/lib/dna/patterns/universal-api-loading-pattern'
 
-
-interface OrderLine { productId: string quantity: number unitPrice: number totalPrice: number
+interface OrderLine {
+  id: string
+  productId: string
+  productName: string
+  quantity: number
+  unitPrice: number
+  lineTotal: number
 }
 
-export default function NewProductionOrderPage() { const router = useRouter()
+export default function NewProductionOrderPage() {
+  const router = useRouter()
+  const { organizationId, orgLoading } = useDemoOrganization()
+  
+  const [formData, setFormData] = useState({
+    customerId: '',
+    deliveryDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+    priority: 'normal',
+    notes: ''
+  })
 
-const { organizationId, orgLoading } = useDemoOrganization()
+  const [orderLines, setOrderLines] = useState<OrderLine[]>([])
 
-const [loading, setLoading] = useState(false)
+  // Load customers
+  const { data: customers } = useUniversalData({
+    table: 'core_entities',
+    filter: item => item.entity_type === 'customer' && item.organization_id === organizationId,
+    organizationId,
+    enabled: !!organizationId
+  })
 
-const [error, setError] = useState('')
+  // Load products
+  const { data: products } = useUniversalData({
+    table: 'core_entities',
+    filter: item => item.entity_type === 'product' && item.organization_id === organizationId,
+    organizationId,
+    enabled: !!organizationId
+  })
 
-const [formData, setFormData] = useState({ customerId: '', deliveryDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), // 7 days from now priority: 'normal', notes: '' })
+  const addOrderLine = () => {
+    const newLine: OrderLine = {
+      id: Date.now().toString(),
+      productId: '',
+      productName: '',
+      quantity: 1,
+      unitPrice: 0,
+      lineTotal: 0
+    }
+    setOrderLines([...orderLines, newLine])
+  }
 
-const [orderLines, setOrderLines] = useState<OrderLine[]>([]) // Load customers const { data: customers } = useUniversalData({ table: 'core_entities', filter: item => item.entity_type === 'customer' && item.organization_id === organizationId, organizationId, enabled: !!organizationId }) // Load products const { data: products } = useUniversalData({ table: 'core_entities', filter: item => item.entity_type === 'product' && item.organization_id === organizationId, organizationId, enabled: !!organizationId }) // Load product prices from dynamic data const { data: dynamicData } = useUniversalData({ table: 'core_dynamic_data', filter: item => item.organization_id === organizationId && item.field_name === 'sale_price', organizationId, enabled: !!organizationId })
+  const removeOrderLine = (id: string) => {
+    setOrderLines(orderLines.filter(line => line.id !== id))
+  }
 
-const getProductPrice = (productId: string): number => { const priceData = dynamicData?.find(d => d.entity_id === productId) return priceData?.field_value_number || 0 } const addOrderLine = () => { setOrderLines([ ...orderLines, { productId: '', quantity: 1, unitPrice: 0, totalPrice: 0 } ]) } const removeOrderLine = (index: number) => { setOrderLines(orderLines.filter((_, i) => i !== index)) } const updateOrderLine = (index: number, field: keyof OrderLine, value: any) => { const updatedLines = [...orderLines] updatedLines[index] = { ...updatedLines[index], [field]: value } // Auto-calculate when product is selected if (field === 'productId' && value) { const price = getProductPrice(value) updatedLines[index].unitPrice = price updatedLines[index].totalPrice = price * updatedLines[index].quantity } // Recalculate total when quantity changes if (field === 'quantity') { updatedLines[index].totalPrice = updatedLines[index].unitPrice * value } setOrderLines(updatedLines) } const calculateTotal = () => { return orderLines.reduce((sum, line) => sum + line.totalPrice, 0) } const generateOrderCode = () => { const timestamp = Date.now().toString(36).toUpperCase() return `PO-${timestamp}` } const handleSubmit = async (e: React.FormEvent) => { e.preventDefault() setError('') if (!formData.customerId) { setError('Please select a customer') return } if (orderLines.length === 0 || orderLines.some(line => !line.productId)) { setError('Please add at least one product to the order') return } setLoading(true) try { // Set organization context universalApi.setOrganizationId(organizationId!) // Create the production order transaction const orderData = { organization_id: organizationId!, transaction_type: 'production_order' as const, transaction_code: generateOrderCode(), transaction_date: new Date().toISOString(), from_entity_id: formData.customerId, total_amount: calculateTotal(), description: `Production order for ${customers?.find(c => c.id === formData.customerId)?.entity_name}`, smart_code: 'HERA.FURNITURE.PROD.ORDER.v1', metadata: { delivery_date: formData.deliveryDate, priority: formData.priority, notes: formData.notes, status: 'pending', created_at: new Date().toISOString() } } // Create order with line items const result = await universalApi.createTransaction({ ...orderData, line_items: orderLines.map((line, index) => ({ organization_id: organizationId!, line_number: index + 1, entity_id: line.productId, // Changed from line_entity_id to entity_id quantity: line.quantity.toString(), // Convert to string as per schema unit_price: line.unitPrice, line_amount: line.totalPrice, description: products?.find(p => p.id === line.productId)?.entity_name || '', smart_code: 'HERA.FURNITURE.PROD.ORDER.LINE.v1', metadata: { product_name: products?.find(p => p.id === line.productId)?.entity_name } })) }) if (!result.success) { throw new Error(result.error || 'Failed to create production order') } // Navigate to the orders list router.push('/furniture/production/orders') } catch (err) { console.error('Error creating production order:', err) setError('Failed to create production order. Please try again.') } finally { setLoading(false) } } if (orgLoading) { return ( <div className="flex items-center justify-center min-h-screen bg-gray-900"> <div className="bg-background animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div> </div> ) } return ( <div className="max-w-4xl mx-auto space-y-6"> {/* Header */} <div className="bg-background flex items-center justify-between"> <div className="flex items-center space-x-4"> <Link href="/furniture/production/orders" className="p-2 hover:bg-muted dark:hover:bg-muted rounded-md transition-colors" > <ArrowLeft className="h-5 w-5 text-muted-foreground dark:text-muted-foreground" /> </Link> <div> <h1 className="bg-background text-2xl font-bold text-gray-100 text-foreground"> New Production Order </h1> <p className="text-muted-foreground dark:text-muted-foreground">Create a new manufacturing order</p> </div> </div> </div> {/* Error Alert */} {error && ( <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4"> <div className="bg-background flex"> <AlertCircle className="h-5 w-5 text-red-400" /> <div className="ml-3"> <p className="text-sm text-red-800 dark:text-red-200">{error}</p> </div> </div> </div> )} {/* Form */} <form onSubmit={handleSubmit} className="bg-background space-y-6"> {/* Order Details Card */} <div className="bg-muted shadow rounded-lg p-6"> <h2 className="bg-background text-lg font-medium text-gray-100 text-foreground mb-4">Order Details</h2> <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Customer Selection */} <div> <label className="bg-background block text-sm font-medium text-foreground dark:text-gray-300 mb-2"> <User className="inline h-4 w-4 mr-1" /> Customer </label> <select value={formData.customerId} onChange={e => setFormData({ ...formData, customerId: e.target.value })} className="block w-full px-3 py-2 border border-border border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-muted-foreground/10 text-foreground" required > <option value="">Select a customer</option> {customers?.map(customer => ( <option key={customer.id} value={customer.id}> {customer.entity_name} </option> ))} </select> </div> {/* Delivery Date */} <div> <label className="bg-background block text-sm font-medium text-foreground dark:text-gray-300 mb-2"> <Calendar className="inline h-4 w-4 mr-1" /> Delivery Date </label> <input type="date" value={formData.deliveryDate} onChange={e => setFormData({ ...formData, deliveryDate: e.target.value })} className="block w-full px-3 py-2 border border-border border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-muted-foreground/10 text-foreground" required /> </div> {/* Priority */} <div> <label className="bg-background block text-sm font-medium text-foreground dark:text-gray-300 mb-2"> Priority </label> <select value={formData.priority} onChange={e => setFormData({ ...formData, priority: e.target.value })} className="block w-full px-3 py-2 border border-border border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-muted-foreground/10 text-foreground" > <option value="low">Low</option> <option value="normal">Normal</option> <option value="high">High</option> <option value="urgent">Urgent</option> </select> </div> {/* Notes */} <div> <label className="bg-background block text-sm font-medium text-foreground dark:text-gray-300 mb-2"> <FileText className="inline h-4 w-4 mr-1" /> Notes </label> <textarea value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} rows={3} className="block w-full px-3 py-2 border border-border border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-muted-foreground/10 text-foreground" placeholder="Special instructions or notes..." /> </div> </div> </div> {/* Order Items Card */} <div className="bg-muted shadow rounded-lg p-6"> <div className="flex justify-between items-center mb-4"> <h2 className="bg-background text-lg font-medium text-gray-100 text-foreground">Order Items</h2> <button type="button" onClick={addOrderLine} className="inline-flex items-center px-3 py-2 border border-border border-border text-sm leading-4 font-medium rounded-md text-foreground dark:text-gray-200 bg-background bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500" > <Plus className="h-4 w-4 mr-1" /> Add Item </button> </div> {orderLines.length === 0 ? ( <div className="text-center py-8 border-2 border-dashed border-border border-border rounded-lg"> <Package className="mx-auto h-12 w-12 text-muted-foreground" /> <p className="mt-2 text-sm text-muted-foreground dark:text-muted-foreground">No items added yet</p> <button type="button" onClick={addOrderLine} className="bg-background mt-3 text-sm text-amber-600 hover:text-amber-500" > Add your first item </button> </div> ) : ( <div className="overflow-x-auto furniture-scrollbar"> <table className="bg-background min-w-full divide-y divide-gray-200 dark:divide-gray-700"> <thead> <tr> <th className="bg-background px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider"> Product </th> <th className="bg-background px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider"> Quantity </th> <th className="bg-background px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider"> Unit Price </th> <th className="bg-background px-3 py-3 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground uppercase tracking-wider"> Total </th> <th className="bg-background px-3 py-3"></th> </tr> </thead> <tbody className="bg-background divide-y divide-gray-200 dark:divide-gray-700"> {orderLines.map((line, index) => ( <tr key={index}> <td className="bg-background px-3 py-4"> <select value={line.productId} onChange={e => updateOrderLine(index, 'productId', e.target.value)} className="block w-full px-3 py-2 border border-border border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-muted-foreground/10 text-foreground text-sm" required > <option value="">Select product</option> {products?.map(product => ( <option key={product.id} value={product.id}> {product.entity_name} </option> ))} </select> </td> <td className="bg-background px-3 py-4"> <input type="number" min="1" value={line.quantity} onChange={e => updateOrderLine(index, 'quantity', parseInt(e.target.value) || 1) } className="block w-24 px-3 py-2 border border-border border-border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-muted-foreground/10 text-foreground text-sm" required /> </td> <td className="bg-background px-3 py-4"> <div className="text-sm text-gray-100 text-foreground"> {formatCurrency(line.unitPrice)} </div> </td> <td className="bg-background px-3 py-4"> <div className="text-sm font-medium text-gray-100 text-foreground"> {formatCurrency(line.totalPrice)} </div> </td> <td className="bg-background px-3 py-4"> <button type="button" onClick={() => removeOrderLine(index)} className="bg-background text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" > <Trash2 className="h-4 w-4" /> </button> </td> </tr> ))} </tbody> <tfoot> <tr> <td colSpan={3} className="bg-background px-3 py-4 text-right text-sm font-medium text-gray-100 text-foreground" > Total </td> <td className="bg-background px-3 py-4 text-lg font-bold text-gray-100 text-foreground"> {formatCurrency(calculateTotal())} </td> <td></td> </tr> </tfoot> </table> </div> )} </div> {/* Actions */} <div className="flex justify-end space-x-4"> <Link href="/furniture/production/orders" className="px-4 py-2 border border-border border-border text-sm font-medium rounded-md text-foreground dark:text-gray-200 bg-background bg-muted-foreground/10 hover:bg-muted dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" > Cancel </Link> <button type="submit" disabled={loading} className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed" > {loading ? ( <> <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div> Creating... </> ) : ( 'Create Production Order' )} </button> </div> </form> </div> )
+  const updateOrderLine = (id: string, field: keyof OrderLine, value: any) => {
+    setOrderLines(orderLines.map(line => {
+      if (line.id === id) {
+        const updatedLine = { ...line, [field]: value }
+        if (field === 'quantity' || field === 'unitPrice') {
+          updatedLine.lineTotal = updatedLine.quantity * updatedLine.unitPrice
+        }
+        return updatedLine
+      }
+      return line
+    }))
+  }
+
+  const totalAmount = orderLines.reduce((sum, line) => sum + line.lineTotal, 0)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle form submission
+    console.log('Creating production order:', { formData, orderLines, totalAmount })
+    router.push('/furniture/production/orders')
+  }
+
+  if (orgLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[var(--color-body)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-accent-indigo)]"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/furniture/production/orders"
+            className="p-2 hover:bg-[var(--color-body)] rounded-md transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5 text-[#37353E]" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">New Production Order</h1>
+            <p className="text-[var(--color-text-secondary)]">Create a new production order for customer</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+          <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-4">Order Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="customer">Customer</Label>
+              <Select
+                value={formData.customerId}
+                onValueChange={(value) => setFormData({ ...formData, customerId: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select customer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customers?.map(customer => (
+                    <SelectItem key={customer.id} value={customer.id}>
+                      {customer.entity_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="deliveryDate">Delivery Date</Label>
+              <Input
+                id="deliveryDate"
+                type="date"
+                value={formData.deliveryDate}
+                onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="priority">Priority</Label>
+              <Select
+                value={formData.priority}
+                onValueChange={(value) => setFormData({ ...formData, priority: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="normal">Normal</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="md:col-span-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Special instructions or notes for this order..."
+              />
+            </div>
+          </div>
+        </Card>
+
+        {/* Order Lines */}
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium text-[var(--color-text-primary)]">Order Items</h3>
+            <Button type="button" onClick={addOrderLine}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Item
+            </Button>
+          </div>
+
+          {orderLines.length === 0 ? (
+            <Alert>
+              <Package className="h-4 w-4" />
+              <AlertDescription>
+                No items added yet. Click "Add Item" to start building your order.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="space-y-4">
+              {orderLines.map((line) => (
+                <div key={line.id} className="grid grid-cols-12 gap-4 items-end">
+                  <div className="col-span-4">
+                    <Label>Product</Label>
+                    <Select
+                      value={line.productId}
+                      onValueChange={(value) => {
+                        const product = products?.find(p => p.id === value)
+                        updateOrderLine(line.id, 'productId', value)
+                        updateOrderLine(line.id, 'productName', product?.entity_name || '')
+                      }
+    }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select product" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {products?.map(product => (
+                          <SelectItem key={product.id} value={product.id}>
+                            {product.entity_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label>Quantity</Label>
+                    <Input
+                      type="number"
+                      value={line.quantity}
+                      onChange={(e) => updateOrderLine(line.id, 'quantity', parseInt(e.target.value) || 0)}
+                      min="1"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label>Unit Price</Label>
+                    <Input
+                      type="number"
+                      value={line.unitPrice}
+                      onChange={(e) => updateOrderLine(line.id, 'unitPrice', parseFloat(e.target.value) || 0)}
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <Label>Line Total</Label>
+                    <Input
+                      type="text"
+                      value={`₹${line.lineTotal.toFixed(2)}`}
+                      readOnly
+                      className="bg-[var(--color-body)]"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeOrderLine(line.id)}
+                      className="w-full"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center text-lg font-semibold">
+                  <span>Total Amount:</span>
+                  <span>₹{totalAmount.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </Card>
+
+        {/* Actions */}
+        <div className="flex justify-end space-x-4">
+          <Button type="button" variant="outline" onClick={() => router.back()}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={!formData.customerId || orderLines.length === 0}
+            className="bg-[var(--color-accent-indigo)] hover:bg-amber-700"
+          >
+            Create Production Order
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
 }

@@ -1,12 +1,12 @@
 'use client'
 
 import React from 'react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/src/components/ui/card'
+import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
 import { Lightbulb, TrendingUp, Zap, DollarSign, Clock, ChevronRight } from 'lucide-react'
-import { AIInsight } from '@/lib/pwm/types'
-import { cn } from '@/lib/utils'
+import { AIInsight } from '@/src/lib/pwm/types'
+import { cn } from '@/src/lib/utils'
 
 interface OpportunityFeedProps {
   organizationId: string

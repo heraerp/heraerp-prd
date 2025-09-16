@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { formatDate, isTodaySafe } from '@/lib/date-utils'
+import { Button } from '@/src/components/ui/button'
+import { formatDate, isTodaySafe } from '@/src/lib/date-utils'
 import {
   startOfMonth,
   endOfMonth,

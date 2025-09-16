@@ -5,7 +5,7 @@
  * Supports multiple costing methods and real-time calculations
  */
 
-import { universalApi } from '@/lib/universal-api'
+import { universalApi } from '@/src/lib/universal-api'
 
 export interface CostCalculationRequest {
   product_id: string

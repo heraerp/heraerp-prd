@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card } from '@/src/components/ui/card'
+import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
 import {
   LineChart,
   Line,
@@ -15,7 +15,7 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from 'recharts'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 
 interface PerformanceData {
   date: string

@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Card } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
+import { Progress } from '@/src/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { ScrollArea } from '@/src/components/ui/scroll-area'
 import {
   Zap,
   Clock,
@@ -27,14 +27,14 @@ import {
   Timer,
   Star
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import {
   BookingScenario,
   ConversationFlow,
   SmartSuggestion,
   BookingAutomationService,
   BOOKING_PATTERNS
-} from '@/lib/whatsapp/booking-automation'
+} from '@/src/lib/whatsapp/booking-automation'
 
 interface BookingAutomationPanelProps {
   organizationId: string

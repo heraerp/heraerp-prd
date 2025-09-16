@@ -3,7 +3,7 @@
  * Addresses all critical production concerns from code review
  */
 
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/src/lib/supabase/client'
 import { CircuitBreaker, CircuitBreakerOptions } from './circuit-breaker'
 import { RetryService } from './retry-service'
 import { CacheService } from './cache-service'

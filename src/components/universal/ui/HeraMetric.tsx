@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { HeraCard } from './HeraCard'
-import { cn } from '@/lib/utils'
+import { cn } from '@/src/lib/utils'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
 export interface HeraMetricProps {
