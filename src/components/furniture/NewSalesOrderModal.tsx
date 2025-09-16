@@ -95,8 +95,8 @@ const [isSubmitting, setIsSubmitting] = useState(false)
 
 const [isExpanded, setIsExpanded] = useState(false)
 
-//  Form state
-const [customerSearchTerm, setCustomerSearchTerm] = useState('')
+// Form state
+  const [customerSearchTerm, setCustomerSearchTerm] = useState('')
 
 const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
 
@@ -167,12 +167,12 @@ const loadData = async () => {
       universalApi.setOrganizationId(organizationId)
       
       // Load customers
-      const customersResponse = await universalApi.read('core_entities', undefined, organizationId)
+  const customersResponse = await universalApi.read('core_entities', undefined, organizationId)
       if (customersResponse.success) {
         const customerEntities = customersResponse.data?.filter((e: any) => e.entity_type === 'customer') || []
         
         // Load dynamic data for customers
-        const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
+  const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
         const dynamicData = dynamicDataResponse.data || []
         
         const customersWithDetails = customerEntities.map((customer: any) => {
@@ -197,14 +197,14 @@ const loadData = async () => {
         setCustomers(customersWithDetails)
         setFilteredCustomers(customersWithDetails.slice(0, 10))
       }
-      
-      // Load products
-      const productsResponse = await universalApi.read('core_entities', undefined, organizationId)
+
+// Load products
+  const productsResponse = await universalApi.read('core_entities', undefined, organizationId)
       if (productsResponse.success) {
         const productEntities = productsResponse.data?.filter((e: any) => e.entity_type === 'product') || []
         
         // Load dynamic data for products
-        const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
+  const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
         const dynamicData = dynamicDataResponse.data || []
         
         const productsWithDetails = productEntities.map((product: any) => {
@@ -242,14 +242,14 @@ const loadData = async () => {
     
     if (existingItemIndex >= 0) {
       // Increase quantity if product already exists
-      const updatedItems = [...lineItems]
+  const updatedItems = [...lineItems]
       updatedItems[existingItemIndex].quantity += 1
       updatedItems[existingItemIndex].line_amount = 
         updatedItems[existingItemIndex].quantity * updatedItems[existingItemIndex].unit_price
       setLineItems(updatedItems)
     } else {
       // Add new line item
-      const newItem: OrderLineItem = {
+  const newItem: OrderLineItem = {
         product,
         quantity: 1,
         unit_price: product.price || 0,
@@ -287,6 +287,7 @@ const loadData = async () => {
     const taxAmount = taxableAmount * (orderDetails.tax_percent / 100)
     const total = taxableAmount + taxAmount
     
+    
     return {
       subtotal,
       discountAmount,
@@ -314,7 +315,7 @@ const loadData = async () => {
       universalApi.setOrganizationId(organizationId)
       
       // Create customer entity
-      const customerResponse = await universalApi.createEntity({
+  const customerResponse = await universalApi.createEntity({
         entity_type: 'customer',
         entity_name: customerFormData.name,
         entity_code: `CUST-${Date.now()}`,
@@ -326,7 +327,7 @@ const loadData = async () => {
         const customerId = customerResponse.data.id
         
         // Add dynamic data
-        const dynamicFields = []
+  const dynamicFields = []
         if (customerFormData.phone) dynamicFields.push({ field_name: 'phone', field_value_text: customerFormData.phone })
         if (customerFormData.email) dynamicFields.push({ field_name: 'email', field_value_text: customerFormData.email })
         if (customerFormData.address) dynamicFields.push({ field_name: 'address', field_value_text: customerFormData.address })
@@ -378,11 +379,11 @@ const loadData = async () => {
       const totals = calculateTotals()
       
       // 🧬 HERA DNA: Generate professional document number
-      const documentNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.SALES_ORDER)
+  const documentNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.SALES_ORDER)
       console.log('🧬 HERA DNA Generated document number:', documentNumber)
       
       // Create sales order transaction
-      const orderResponse = await universalApi.createTransaction({
+  const orderResponse = await universalApi.createTransaction({
         transaction_type: 'sales_order',
         transaction_code: documentNumber,
         transaction_date: orderDetails.order_date,
@@ -426,8 +427,10 @@ const loadData = async () => {
             },
             organization_id: organizationId
           })
-          } // Create status relationship (pending approval)
-        const statusResponse = await universalApi.createEntity({
+          }
+
+// Create status relationship (pending approval)
+  const statusResponse = await universalApi.createEntity({
           entity_type: 'workflow_status',
           entity_name: 'Pending Approval',
           entity_code: 'STATUS-PENDING-APPROVAL',
@@ -448,11 +451,13 @@ const loadData = async () => {
             },
             organization_id: organizationId
           })
-          } // 🧬 UNIVERSAL EVENT CONTRACT & FINANCE DNA INTEGRATION
+          }
+
+// 🧬 UNIVERSAL EVENT CONTRACT & FINANCE DNA INTEGRATION
         // Automatic GL Posting for Furniture Sales Order
         try {
           // 🧬 HERA DNA: Generate professional journal entry number
-          const journalNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.JOURNAL_ENTRY)
+  const journalNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.JOURNAL_ENTRY)
           const financeEvent = await universalApi.createTransaction({
             transaction_type: 'journal_entry',
             transaction_code: journalNumber,
@@ -475,7 +480,7 @@ const loadData = async () => {
             const journalId = financeEvent.data.id
             
             // Create journal entry lines following Universal Event Contract
-            const journalLines = [
+  const journalLines = [
               {
                 // DR: Accounts Receivable (Customer owes us money)
                 entity_id: selectedCustomer.id,
@@ -546,7 +551,9 @@ metadata: {
             variant: 'destructive',
             duration: 3000
           })
-          } // Reset form
+          }
+
+// Reset form
         setSelectedCustomer(null)
         setLineItems([])
         setOrderDetails({

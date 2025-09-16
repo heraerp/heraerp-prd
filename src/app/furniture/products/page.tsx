@@ -43,6 +43,7 @@ const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null
   
   // Show loading state while organization is loading
   if (orgLoading) {
+    
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
         <div className="text-center">

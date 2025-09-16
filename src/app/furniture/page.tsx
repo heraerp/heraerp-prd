@@ -352,7 +352,8 @@ const ModuleLink = React.memo(function ModuleLink({
   icon: React.ElementType
   label: string
 }) {
-  return (
+  
+    return (
     <Link href={href}>
       <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 hover:scale-105 transition-transform cursor-pointer bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
         <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">

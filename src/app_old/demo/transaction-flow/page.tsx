@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { UniversalTransactionFlow } from '@/lib/dna/components/transaction/UniversalTransactionFlow'
+import { UniversalTransactionFlow } from '@/src/lib/dna/components/transaction/UniversalTransactionFlow'
 import { 
   salonBookingSteps,
   restaurantOrderSteps,
@@ -9,8 +9,8 @@ import {
   retailPurchaseSteps,
   industryTranslations,
   mergeTranslations
-} from '@/lib/dna/components/transaction/transaction-flows.config'
-import { ServiceSelectionStep } from '@/lib/dna/components/transaction/steps/ServiceSelectionStep'
+} from '@/src/lib/dna/components/transaction/transaction-flows.config'
+import { ServiceSelectionStep } from '@/src/lib/dna/components/transaction/steps/ServiceSelectionStep'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -355,7 +355,7 @@ export default function TransactionFlowDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { UniversalTransactionFlow } from '@/lib/dna/components/transaction'
+{`import { UniversalTransactionFlow } from '@/src/lib/dna/components/transaction'
 import { salonBookingSteps } from './transaction-flows.config'
 
 <UniversalTransactionFlow

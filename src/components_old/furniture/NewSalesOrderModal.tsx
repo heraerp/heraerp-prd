@@ -31,7 +31,7 @@ from 'lucide-react'
 import { universalApi }
 from '@/lib/universal-api'
 import { useDemoOrganization }
-from '@/lib/dna/patterns/demo-org-pattern'
+from '@/src/lib/dna/patterns/demo-org-pattern'
 import { cn }
 from '@/lib/utils'
 import { useToast }
@@ -39,7 +39,7 @@ from '@/hooks/use-toast'
 import { generateHeraDocumentNumber, useHeraDocumentNumbering, HERA_DNA_DOCUMENT_TYPES,
   HeraDocumentNumberDisplay
 }
-from '@/lib/dna/components/document-numbering-dna'
+from '@/src/lib/dna/components/document-numbering-dna'
 
 
 interface Customer {

@@ -88,7 +88,7 @@ const [searchTerm, setSearchTerm] = useState('')
       console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.v1')
 
       // Execute Chart of Accounts recipe
-      const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.v1', {
+  const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.v1', {
         fiscalYear: new Date().getFullYear(),
         includeInactive: false,
         hierarchyDepth: 5
@@ -105,7 +105,7 @@ const [searchTerm, setSearchTerm] = useState('')
         console.log('Sample account from URP:', result[0])
 
         // Transform URP result to GLAccountNode format recursively
-        const transformAccount = (account: any): GLAccountNode => ({
+  const transformAccount = (account: any): GLAccountNode => ({
           id: account.id,
           entity_code: account.accountCode || account.entity_code,
           entity_name: account.entity_name,
@@ -168,7 +168,7 @@ const [searchTerm, setSearchTerm] = useState('')
       } else {
         newSet.add(accountCode)
       }
-      return newSet
+    return newSet
     })
   }
 
@@ -192,7 +192,7 @@ const [searchTerm, setSearchTerm] = useState('')
       )
 
       // Create download
-      const blob = new Blob([result], {
+  const blob = new Blob([result], {
         type: format === 'csv' ? 'text/csv' : 'application/vnd.ms-excel'
       })
 
@@ -218,16 +218,17 @@ const [searchTerm, setSearchTerm] = useState('')
 
     // Filter by search term
     if (searchTerm) {
-  const matchesSearch =
-        account.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const matchesSearch = account.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         account.entity_name.toLowerCase().includes(searchTerm.toLowerCase())
-      if (!matchesSearch && !hasChildren) return null
+      if (!matchesSearch && !hasChildren) 
+    return null
     }
 
-    // Handle cases where metadata might be null or undefined
-    const accountType = (account.metadata as any)?.account_type || 'detail'
+// Handle cases where metadata might be null or undefined
+  const accountType = (account.metadata as any)?.account_type || 'detail'
     const accountLevel = (account.metadata as any)?.account_level || 0
 
+    
     return (
       <div key={account.entity_code}>
         {' '}
@@ -361,8 +362,8 @@ const [searchTerm, setSearchTerm] = useState('')
       </div>
     )
   }
-  // Calculate totals and count all accounts including children const countAllAccounts = (accs: GLAccountNode[]): number => { return accs.reduce((count, account) => { return count + 1 + (account.children ? countAllAccounts(account.children) : 0  ), 0  )
 
+// Calculate totals and count all accounts including children const countAllAccounts = (accs: GLAccountNode[]): number => { return accs.reduce((count, account) => { return count + 1 + (account.children ? countAllAccounts(account.children) : 0  ), 0  )
   const totalAccountCount = countAllAccounts(accounts)
 
   const totals = accounts.reduce(
@@ -379,7 +380,7 @@ const [searchTerm, setSearchTerm] = useState('')
   return <FurnitureOrgLoading />
   }
 
-  // Authorization checks
+// Authorization checks
   if (isAuthenticated && contextLoading) {
   return (
       <div className="min-h-screen bg-[var(--color-body)] p-6">

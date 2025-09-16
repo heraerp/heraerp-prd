@@ -80,8 +80,7 @@ const [salesTrend, setSalesTrend] = useState<any[]>([])
 const loadSalesData = useCallback(async () => {
           console.log('loadSalesData called with organizationId:', organizationId) try { setLoading(true) universalApi.setOrganizationId(organizationId)
           // Load all transactions console.log('Loading transactions for organization:', organizationId, organizationName) console.log('Using direct Supabase query...')
-
-const { data: transactionsData, error: transactionsError } = await supabase .from('universal_transactions') .select('*') .eq('organization_id', organizationId) .order('created_at', { ascending: false }) console.log('Transactions query result:', { data: transactionsData, error: transactionsError }) if (transactionsError) {
+  const { data: transactionsData, error: transactionsError } = await supabase .from('universal_transactions') .select('*') .eq('organization_id', organizationId) .order('created_at', { ascending: false }) console.log('Transactions query result:', { data: transactionsData, error: transactionsError }) if (transactionsError) {
   console.error('Failed to load transactions:', transactionsError) return }
 
 const transactionsResponse = { success: true, data: transactionsData || [], error: null } console.log('Total transactions loaded:', transactionsResponse.data.length) console.log('Sample transaction:', transactionsResponse.data[0])
@@ -91,7 +90,8 @@ const transactionsResponse = { success: true, data: transactionsData || [], erro
   return ( t.smart_code.includes('FURNITURE') || t.smart_code.includes('SALES.ORDER') || t.smart_code.includes('SALES.INVOICE') || t.smart_code.includes('HERA.FURNITURE')   )
   // If no smart code but it's a sales transaction in a furniture org, include it return true }) .sort( (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime() ) console.log('Furniture sales orders/invoices found:', salesOrders.length) if (salesOrders.length > 0) {
   console.log('First sales transaction:', salesOrders[0]  )
-  // Filter proforma invoices const proformaInvoices = transactionsResponse.data.filter( (t: any) => t.transaction_type === 'proforma_invoice' && t.smart_code?.includes('FURNITURE.SALES') )
+  // Filter proforma invoices
+  const proformaInvoices = transactionsResponse.data.filter( (t: any) => t.transaction_type === 'proforma_invoice' && t.smart_code?.includes('FURNITURE.SALES') )
           // Calculate statistics
   const now =new Date()
 
@@ -104,9 +104,11 @@ const startOfWeek = new Date(now.setDate(now.getDate() - 7))
 const activeOrders = salesOrders.filter((o: any) => {
   const status =(o.metadata as any)?.status || 'pending_approval' // Include different statuses based on transaction type if (o.transaction_type === 'sales_invoice') {
   return ['unpaid', 'pending', 'overdue'].includes(status  ) return ['pending_approval', 'confirmed', 'in_production'].includes(status  )).length const pendingQuotes = proformaInvoices.filter((p: any) => {
-  const status =(p.metadata as any)?.status || 'pending' return status === 'pending' }).length const readyToDispatch = salesOrders.filter((o: any) => {
+  const status = (p.metadata as any)?.status || 'pending' 
+    return status === 'pending' }).length const readyToDispatch = salesOrders.filter((o: any) => {
   const status =(o.metadata as any)?.status || '' // Include ready orders and paid invoices if (o.transaction_type === 'sales_invoice') {
-  return status === 'paid' } return status === 'ready_for_delivery' }).length const monthlyOrders = salesOrders.filter( (o: any) => new Date(o.transaction_date) >= startOfMonth )
+  return status === 'paid' }
+    return status === 'ready_for_delivery' }).length const monthlyOrders = salesOrders.filter( (o: any) => new Date(o.transaction_date) >= startOfMonth )
 
 const monthlyRevenue = monthlyOrders.reduce( (sum: number, o: any) => sum + (o.total_amount || 0), 0 )
 
@@ -115,8 +117,7 @@ const todayOrders = salesOrders.filter((o: any) => new Date(o.transaction_date) 
 const todayOrdersCount = todayOrders.length
   const todayRevenue =todayOrders.reduce( (sum: number, o: any) => sum + (o.total_amount || 0), 0 )
           // Calculate weekly growth const thisWeekOrders = salesOrders.filter( (o: any) => new Date(o.transaction_date) >= startOfWeek )
-
-const thisWeekRevenue = thisWeekOrders.reduce( (sum: number, o: any) => sum + (o.total_amount || 0), 0 )
+  const thisWeekRevenue = thisWeekOrders.reduce( (sum: number, o: any) => sum + (o.total_amount || 0), 0 )
 
 const lastWeekStart = new Date(startOfWeek) lastWeekStart.setDate(lastWeekStart.getDate() - 7)
 
@@ -124,8 +125,11 @@ const lastWeekOrders = salesOrders.filter( (o: any) => new Date(o.transaction_da
 
 const lastWeekRevenue = lastWeekOrders.reduce( (sum: number, o: any) => sum + (o.total_amount || 0), 0 )
 
-const weeklyGrowth = lastWeekRevenue > 0 ? ((thisWeekRevenue - lastWeekRevenue) / lastWeekRevenue) * 100 : 0 // Get top customer const customerOrders: { [key: string]: { name: string; revenue: number } } = {}
-  // Load all entities to get customer names const { data: entitiesData, error: entitiesError } = await supabase .from('core_entities') .select('*') .eq('organization_id', organizationId) if (entitiesError) {
+const weeklyGrowth = lastWeekRevenue > 0 ? ((thisWeekRevenue - lastWeekRevenue) / lastWeekRevenue) * 100 : 0 // Get top customer
+  const customerOrders: { [key: string]: { name: string; revenue: number } } = {}
+
+// Load all entities to get customer names
+  const { data: entitiesData, error: entitiesError } = await supabase .from('core_entities') .select('*') .eq('organization_id', organizationId) if (entitiesError) {
   console.error('Failed to load entities:', entitiesError  )
 
 const customerEntities = entitiesData?.filter((e: any) => e.entity_type === 'customer') || [] console.log('Customer entities loaded:', customerEntities.length) for (const order of salesOrders) {
@@ -141,15 +145,19 @@ const topCustomerId = Object.entries(customerOrders).sort( ([, a], [, b]) => b.r
   const customerId =order.source_entity_id || order.target_entity_id if (customerId) {
   const customer = customerEntities.find((c: any) => c.id === customerId) if (customer) {
   customerName = customer.entity_name } }
-  // Get line items count const { data: linesData, error: linesError } = await supabase .from('universal_transaction_lines') .select('*') .eq('transaction_id', order.id) if (linesError) {
+
+// Get line items count
+  const { data: linesData, error: linesError } = await supabase .from('universal_transaction_lines') .select('*') .eq('transaction_id', order.id) if (linesError) {
   console.error('Failed to load transaction lines for order:', order.id, linesError  )
 
 const orderLines = linesData || []
-  const deliveryDateStr =(order.metadata as any)?.delivery_date || new Date( new Date(order.transaction_date).getTime() + 7 * 24 * 60 * 60 * 1000 ).toISOString() return { id: order.id, orderNumber: order.transaction_code || `ORD-${order.id.slice(0, 8)}`, customerName, orderDate: new Date(order.transaction_date).toLocaleDateString('en-IN'), amount: order.total_amount || 0, status: (order.metadata as any)?.status || 'pending_approval', items: orderLines.length, deliveryDate: new Date(deliveryDateStr).toLocaleDateString('en-IN'  ) }) ) setRecentOrders(recentOrdersData)
+  const deliveryDateStr = (order.metadata as any)?.delivery_date || new Date( new Date(order.transaction_date).getTime() + 7 * 24 * 60 * 60 * 1000 ).toISOString() 
+    return { id: order.id, orderNumber: order.transaction_code || `ORD-${order.id.slice(0, 8)}`, customerName, orderDate: new Date(order.transaction_date).toLocaleDateString('en-IN'), amount: order.total_amount || 0, status: (order.metadata as any)?.status || 'pending_approval', items: orderLines.length, deliveryDate: new Date(deliveryDateStr).toLocaleDateString('en-IN'  ) }) ) setRecentOrders(recentOrdersData)
           // Load top products (simulated from transactions)
+  const productSales: { [key: string]: { name: string; category: string; units: number; revenue: number } } = {}
 
-const productSales: { [key: string]: { name: string; category: string; units: number; revenue: number } } = {}
-  // Get all transaction lines const { data: allLinesData, error: allLinesError } = await supabase .from('universal_transaction_lines') .select('*') .eq('organization_id', organizationId) if (allLinesError) {
+// Get all transaction lines
+  const { data: allLinesData, error: allLinesError } = await supabase .from('universal_transaction_lines') .select('*') .eq('organization_id', organizationId) if (allLinesError) {
   console.error('Failed to load all transaction lines:', allLinesError  )
 
 const allLines = allLinesData || [] // Get all products
@@ -166,7 +174,8 @@ const topProductsData = Object.entries(productSales) .sort(([, a], [, b]) => b.r
   const date = new Date() date.setDate(date.getDate() - i)
 
 const dayOrders = salesOrders.filter((o: any) => {
-  const orderDate =new Date(o.transaction_date) return orderDate.toDateString() === date.toDateString(  ))
+  const orderDate = new Date(o.transaction_date) 
+    return orderDate.toDateString() === date.toDateString(  ))
 
 const dayRevenue = dayOrders.reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0) trendData.push({ date: date.toLocaleDateString('en-IN', { weekday: 'short' }), revenue: dayRevenue, orders: dayOrders.length }  ) setSalesTrend(trendData  ) catch (error) {
   console.error('Failed to load sales data:', error) console.error('Error details:', { message: error instanceof Error ? error.message : 'Unknown error', stack: error instanceof Error ? error.stack : undefined })   } finally {
@@ -197,7 +206,8 @@ const getStatusLabel = (status: string) => { switch (status) {
         return 'Paid' case 'unpaid':
         return 'Unpaid' case 'overdue':
         return 'Overdue' default: return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' '  ) }
-  // Show loading state while organization is loading if (orgLoading) {
+
+// Show loading state while organization is loading if (orgLoading) {
   return (
     <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center"> <div className="text-center"> <div className="inline-flex items-center space-x-2"> <div className="w-8 h-8 border-4 border-[var(--color-accent-indigo)] border-t-transparent rounded-full animate-spin"></div> <p className="text-[var(--color-text-secondary)]">Loading organization...</p> </div> </div>
       </div>

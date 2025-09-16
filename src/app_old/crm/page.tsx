@@ -19,7 +19,7 @@ import {
   DollarSign
 } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
-import { StatCardDNA } from '@/lib/dna/components/ui/stat-card-dna'
+import { StatCardDNA } from '@/src/lib/dna/components/ui/stat-card-dna'
 
 export default function CRMDashboard() {
   const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()

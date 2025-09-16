@@ -141,7 +141,7 @@ const getStrategyIcon = (strategy?: string) => {
   }
 }
 
-  // Filter tenders based on search and status
+// Filter tenders based on search and status
   const filteredTenders = tenders.filter(tender => {
     const matchesSearch = searchQuery === '' ||
       tender.code.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -4,7 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { UniversalAppointment, AppointmentLine } from '@/src/types/calendar.types'
-import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
+import { calendarSmartCodeService } from '@/src/services/calendarSmartCodeService'
 
 // Mock database operations - replace with actual HERA API calls
 class MockCalendarAppointmentDB {

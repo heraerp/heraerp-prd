@@ -31,13 +31,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/ca
 import { Badge } from '@/src/components/ui/badge'
 import { Alert, AlertDescription } from '@/src/components/ui/alert'
 
-import { ReadinessWizardV2 as ReadinessWizard } from '@/modules/readiness-questionnaire/ReadinessWizardV2'
-import { createReadinessTemplate } from '@/modules/readiness-questionnaire/template'
+import { ReadinessWizardV2 as ReadinessWizard } from '@/src/modules/readiness-questionnaire/ReadinessWizardV2'
+import { createReadinessTemplate } from '@/src/modules/readiness-questionnaire/template'
 import type {
   QuestionnaireTemplate,
   QuestionnaireSession,
   SessionAPI
-} from '@/modules/readiness-questionnaire/types'
+} from '@/src/modules/readiness-questionnaire/types'
 import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import { useToast } from '@/src/hooks/use-toast'
 

@@ -51,7 +51,7 @@ export default function FurnitureProduction() {
     )
   }
 
-  // Authorization checks
+// Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -114,7 +114,8 @@ export default function FurnitureProduction() {
     }
   ]
 
-  return (
+  
+    return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader

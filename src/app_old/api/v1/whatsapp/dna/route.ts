@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { WhatsAppDNA } from '@/lib/dna/whatsapp/whatsapp-dna'
+import { WhatsAppDNA } from '@/src/lib/dna/whatsapp/whatsapp-dna'
 
 export async function POST(request: NextRequest) {
   try {

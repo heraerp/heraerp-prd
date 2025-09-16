@@ -424,16 +424,4 @@ export const ReportCalculations = {
   }
 }
 
-// Export validation functions for convenience
-export {
-  SalesRow,
-  PnLRow, 
-  BalanceRow,
-  DailySalesReport,
-  MonthlySalesReport,
-  ProfitLossStatement,
-  BalanceSheet,
-  TransactionSummary,
-  TransactionDetail,
-  DrillDownResponse
-}
+// All types are already exported at their definitions

@@ -6,7 +6,7 @@ import { Button } from '@/src/components/ui/button'
 import { Badge } from '@/src/components/ui/badge'
 import { Input } from '@/src/components/ui/input'
 import { ScrollArea } from '@/src/components/ui/scroll-area'
-import '@/styles/microsoft-calendar.css'
+import '@/src/styles/microsoft-calendar.css'
 import {
   Calendar,
   ChevronLeft,

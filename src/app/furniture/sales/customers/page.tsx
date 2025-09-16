@@ -24,22 +24,27 @@ const [showDeleteModal, setShowDeleteModal] = useState(false)
 const [customerToDelete, setCustomerToDelete] = useState<any>(null)
 
 const [deleteLoading, setDeleteLoading] = useState(false)
-          // Load customers from core_entities const { data: customers, isLoading: customersLoading, refetch } = useUniversalData({ table: 'core_entities', filter: item => item.entity_type === 'customer' && item.organization_id === organizationId && (!searchTerm || item.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) || item.entity_code?.toLowerCase().includes(searchTerm.toLowerCase())), organizationId, enabled: !!organizationId })
+          // Load customers from core_entities
+  const { data: customers, isLoading: customersLoading, refetch } = useUniversalData({ table: 'core_entities', filter: item => item.entity_type === 'customer' && item.organization_id === organizationId && (!searchTerm || item.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) || item.entity_code?.toLowerCase().includes(searchTerm.toLowerCase())), organizationId, enabled: !!organizationId })
           // Load customer dynamic data (contact info, credit limits, etc.)
-
-const { data: dynamicData } = useUniversalData({ table: 'core_dynamic_data', filter: item => item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-          // Load sales transactions for customer metrics const { data: transactions } = useUniversalData({ table: 'universal_transactions', filter: item => item.organization_id === organizationId && item.transaction_type === 'sales_order', organizationId, enabled: !!organizationId })
+  const { data: dynamicData } = useUniversalData({ table: 'core_dynamic_data', filter: item => item.organization_id === organizationId, organizationId, enabled: !!organizationId })
+          // Load sales transactions for customer metrics
+  const { data: transactions } = useUniversalData({ table: 'universal_transactions', filter: item => item.organization_id === organizationId && item.transaction_type === 'sales_order', organizationId, enabled: !!organizationId })
           // Get customer dynamic fields const getCustomerField = (customerId: string, fieldName: string) => {
   const field =dynamicData?.find(d => d.entity_id === customerId && d.field_name === fieldName) return field?.field_value_text || field?.field_value_number || '' }
-  // Calculate customer metrics const getCustomerMetrics = (customerId: string) => {
+
+// Calculate customer metrics const getCustomerMetrics = (customerId: string) => {
   const customerTransactions =transactions?.filter(t => t.from_entity_id === customerId) || [] const totalRevenue = customerTransactions.reduce((sum, t) => sum + t.total_amount, 0)
 
 const orderCount = customerTransactions.length
   const lastOrderDate =customerTransactions.sort( (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime() )[0]?.transaction_date return { totalRevenue, orderCount, lastOrderDate } }
-  // Filter customers based on status const filteredCustomers = customers?.filter(customer => { if (filterType === 'active') {
-  const metrics = getCustomerMetrics(customer.id) return ( metrics.orderCount > 0 && metrics.lastOrderDate && new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) )
+
+// Filter customers based on status const filteredCustomers = customers?.filter(customer => { if (filterType === 'active') {
+  const metrics = getCustomerMetrics(customer.id) 
+    return ( metrics.orderCount > 0 && metrics.lastOrderDate && new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) )
           // Active in last 90 days } if (filterType === 'inactive') {
-  const metrics = getCustomerMetrics(customer.id) return ( metrics.orderCount === 0 || !metrics.lastOrderDate || new Date(metrics.lastOrderDate) <= new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)   ) return true })
+  const metrics = getCustomerMetrics(customer.id) 
+    return ( metrics.orderCount === 0 || !metrics.lastOrderDate || new Date(metrics.lastOrderDate) <= new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)   ) return true })
 
 const handleDeleteCustomer = async () => { if (!customerToDelete) return setDeleteLoading(true) try { universalApi.setOrganizationId(organizationId!)
           // Delete customer entity (this will cascade to dynamic data) await universalApi.deleteEntity(customerToDelete.id)
@@ -48,7 +53,8 @@ const handleDeleteCustomer = async () => { if (!customerToDelete) return setDele
   console.error('Error deleting customer:', error) alert('Failed to delete customer. Please try again.'  ) finally { setDeleteLoading(false  ) }
 
 const stats = { total: customers?.length || 0, active: filteredCustomers?.filter(c => {
-  const metrics =getCustomerMetrics(c.id) return ( metrics.orderCount > 0 && metrics.lastOrderDate && new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)   )).length || 0, totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0 } if (orgLoading) {
+  const metrics = getCustomerMetrics(c.id) 
+    return ( metrics.orderCount > 0 && metrics.lastOrderDate && new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)   )).length || 0, totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0 } if (orgLoading) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-[var(--color-body)]"> <div className="bg-[var(--color-body)] animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-accent-indigo)]"></div>
       </div>
@@ -68,7 +74,8 @@ const email = getCustomerField(customer.id, 'email')
 
 const phone = getCustomerField(customer.id, 'phone')
 
-const creditLimit = getCustomerField(customer.id, 'credit_limit') return (
+const creditLimit = getCustomerField(customer.id, 'credit_limit') 
+    return (
     <tr key={customer.id} className="hover:bg-[var(--color-body)] dark:hover:bg-[var(--color-sidebar)]/30"> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap"> <div> <div className="text-sm font-medium text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {customer.entity_name} </div> <div className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]"> {customer.entity_code} </div> </div> </td> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap"> <div className="text-sm"> {email && ( <div className="bg-[var(--color-body)] flex items-center text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]"> <Mail className="h-3 w-3 mr-1" /> {email} </div> )} {phone && ( <div className="bg-[var(--color-body)] flex items-center text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]"> <Phone className="h-3 w-3 mr-1" /> {phone} </div> )} </div> </td> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap"> <div className="text-sm text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {metrics.orderCount} </div> </td> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap"> <div className="text-sm font-medium text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {formatCurrency(metrics.totalRevenue)} </div> </td> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap"> <div className="bg-[var(--color-body)] text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]"> {metrics.lastOrderDate ? format(new Date(metrics.lastOrderDate), 'MMM dd, yyyy') : 'No orders yet'} </div> </td> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap"> <div className="text-sm text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {creditLimit ? formatCurrency(Number(creditLimit)) : '-'} </div> </td> <td className="bg-[var(--color-body)] px-6 py-4 whitespace-nowrap text-right text-sm font-medium"> <div className="flex items-center justify-end gap-2"> <Link href={`/furniture/sales/customers/${customer.id}`} className="bg-[var(--color-body)] text-[var(--color-accent-indigo)] hover:text-amber-900 dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-primary)]" > <Edit className="h-4 w-4" /> </Link> <button onClick={() => { setCustomerToDelete(customer) setShowDeleteModal(true  )
     } className="bg-[var(--color-body)] text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" > <Trash2 className="h-4 w-4" /> </button> </div> </td>
       </tr>

@@ -51,10 +51,9 @@ interface TemplateFormProps {
 }
 
 export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitting }: TemplateFormProps) {
-  const [previewVariables, setPreviewVariables] = React.useState<Record<string, string>>({})
-  const [validationErrors, setValidationErrors] = React.useState<string[]>([])
-
-  const form = useForm<WaTemplate>({
+  const [previewVariables, setPreviewVariables] = React.useState<Record<string, string>>({});
+const [validationErrors, setValidationErrors] = React.useState<string[]>([]);
+const form = useForm<WaTemplate>({
     resolver: zodResolver(WaTemplate),
     defaultValues: template || {
       name: '',
@@ -64,9 +63,8 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
       variables: [],
       sample: {}
     }
-  })
-
-  const { fields: variableFields, append: appendVariable, remove: removeVariable } = useFieldArray({
+  });
+const { fields: variableFields, append: appendVariable, remove: removeVariable } = useFieldArray({
     control: form.control,
     name: 'variables'
   })
@@ -95,8 +93,8 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
 
   // Validate template variables when body or variables change
   React.useEffect(() => {
-    const body = form.watch('body')
-    const variables = form.watch('variables')
+    const body = form.watch('body');
+const variables = form.watch('variables')
     
     if (body && variables) {
       const templateData = { ...form.getValues() }
@@ -167,16 +165,16 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
   }
 
   const getPreviewText = () => {
-    const templateData = form.getValues()
-    return renderTemplate(templateData, previewVariables)
+    const templateData = form.getValues();
+return renderTemplate(templateData, previewVariables)
   }
 
   const handleSubmit = async (data: WaTemplate) => {
     // Final validation
     const validation = validateTemplateVariables(data)
     if (!validation.isValid) {
-      setValidationErrors(validation.errors)
-      return
+      setValidationErrors(validation.errors);
+return
     }
 
     // Add sample data for preview
@@ -194,9 +192,8 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
     }
   }
 
-  const isValid = validationErrors.length === 0 && form.watch('name') && form.watch('body')
-
-  return (
+  const isValid = validationErrors.length === 0 && form.watch('name') && form.watch('body');
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -206,9 +203,7 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
           </DialogTitle>
           <DialogDescription>
             {template 
-              ? `Edit the WhatsApp message template "${template.name}"`
-              : 'Create a new WhatsApp message template for your organization'
-            }
+              ? `Edit the WhatsApp message template "${template.name}"`              : 'Create a new WhatsApp message template for your organization'            }`
           </DialogDescription>
         </DialogHeader>
 
@@ -312,7 +307,7 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
                       maxLength={HERA_MSP_CONFIG.MAX_MESSAGE_LENGTH}
                     />
                     <div className="flex justify-between text-sm text-gray-500">
-                      <span>Use {{`variable_name`}} for dynamic content</span>
+                      <span>Use {`{{variable_name}}`} for dynamic content</span>
                       <span>
                         {form.watch('body')?.length || 0} / {HERA_MSP_CONFIG.MAX_MESSAGE_LENGTH}
                       </span>
@@ -398,7 +393,7 @@ export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitt
                       {variableFields.map((field, index) => {
                         const varName = form.watch(`variables.${index}`)
                         return (
-                          <div key={field.id} className="flex items-center space-x-3">
+                          <div key={field.id} className="flex items-center space-x-3">`
                             <div className="flex-1">
                               <Input
                                 placeholder="variable_name"

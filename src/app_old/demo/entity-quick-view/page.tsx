@@ -7,7 +7,7 @@ import {
   EntityQuickViewBody,
   EntityQuickViewFooter,
   EntityQuickViewSkeleton
-} from '@/lib/dna/components/entity/EntityQuickView'
+} from '@/src/lib/dna/components/entity/EntityQuickView'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils/format'
 import { 

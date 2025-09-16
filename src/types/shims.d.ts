@@ -44,7 +44,7 @@ declare module '@/lib/universal-api' {
 }
 
 // DNA components shims referenced by examples
-declare module '@/lib/dna/components/enterprise/EnterpriseDashboard' {
+declare module '@/src/lib/dna/components/enterprise/EnterpriseDashboard' {
   export const EnterpriseDashboard: any
   export type EnterpriseDashboardProps = any
 }

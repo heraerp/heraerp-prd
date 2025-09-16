@@ -39,14 +39,14 @@ import { useInventoryData } from '@/src/lib/furniture/use-inventory-data'
 import { cn } from '@/src/lib/utils'
 
 // Stock level thresholds
-const STOCK_LEVELS = {
+  const STOCK_LEVELS = {
   CRITICAL: 10,
   LOW: 25,
   NORMAL: 50
 }
 
 // Movement types configuration
-const movementTypes = {
+  const movementTypes = {
   purchase_receipt: {
     label: 'Purchase Receipt',
     icon: Truck,
@@ -80,7 +80,7 @@ const movementTypes = {
 }
 
 // Stock overview columns
-const stockColumns = [
+  const stockColumns = [
   {
     key: 'entity_code',
     label: 'SKU',
@@ -125,7 +125,8 @@ const stockColumns = [
         low: 'text-[var(--color-accent-indigo)] dark:text-[var(--color-text-secondary)]',
         normal: 'text-green-600 dark:text-green-400'
       }
-      return <span className={cn(
+      
+    return <span className={cn(
             'font-mono font-medium',
             colors[level]
           )}>{qty}</span>
@@ -148,7 +149,7 @@ export default function FurnitureInventory() {
     return <FurnitureOrgLoading />
   }
 
-  // Authorization checks
+// Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -211,7 +212,8 @@ export default function FurnitureInventory() {
     }
   ]
 
-  return (
+  
+    return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader

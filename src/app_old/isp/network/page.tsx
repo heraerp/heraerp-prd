@@ -36,9 +36,9 @@ import {
   RadialBar,
   PolarAngleAxis
 } from 'recharts'
-import { ISPModal } from '@/components/isp/ISPModal'
-import { ISPTable } from '@/components/isp/ISPTable'
-import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
+import { ISPModal } from '@/src/components/isp/ISPModal'
+import { ISPTable } from '@/src/components/isp/ISPTable'
+import { ISPInput, ISPSelect, ISPButton } from '@/src/components/isp/ISPForm'
 
 // India Vision Organization ID
 const INDIA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'

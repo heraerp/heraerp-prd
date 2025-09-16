@@ -17,8 +17,9 @@ import TenderWorkflowStatus from '@/src/components/furniture/tender/TenderWorkfl
 
 
 export const dynamic = 'force-dynamic' // Mock tender detail data
-const mockTenderDetail = { code: 'KFD/2025/WOOD/001', title: 'Teak Wood Supply - Nilambur Range', department: 'Kerala Forest Department', publishDate: '2025-01-10', closingDate: '2025-01-25', status: 'active', daysLeft: 5, estimatedValue: '₹45,00,000', emdAmount: '₹90,000', tenderFee: '₹5,000', processingFee: '₹1,180', description: 'Supply of Teak wood logs from Nilambur Forest Range. The tender includes 15 lots of premium quality teak wood with specified dimensions and grading requirements.', location: 'Nilambur Forest Division, Malappuram District, Kerala', lots: [ { id: 'LOT001', species: 'Teak', grade: 'A', volumeCbm: 25.5, reservePrice: '₹3,50,000', depot: 'Nilambur Main Depot', dimensions: '2-3m length, 45-60cm girth' }, { id: 'LOT002', species: 'Teak', grade: 'B', volumeCbm: 18.2, reservePrice: '₹2,80,000', depot: 'Nilambur Main Depot', dimensions: '1.5-2m length, 35-45cm girth' }
-  // ... more lots ], documents: [
+  const mockTenderDetail = { code: 'KFD/2025/WOOD/001', title: 'Teak Wood Supply - Nilambur Range', department: 'Kerala Forest Department', publishDate: '2025-01-10', closingDate: '2025-01-25', status: 'active', daysLeft: 5, estimatedValue: '₹45,00,000', emdAmount: '₹90,000', tenderFee: '₹5,000', processingFee: '₹1,180', description: 'Supply of Teak wood logs from Nilambur Forest Range. The tender includes 15 lots of premium quality teak wood with specified dimensions and grading requirements.', location: 'Nilambur Forest Division, Malappuram District, Kerala', lots: [ { id: 'LOT001', species: 'Teak', grade: 'A', volumeCbm: 25.5, reservePrice: '₹3,50,000', depot: 'Nilambur Main Depot', dimensions: '2-3m length, 45-60cm girth' }, { id: 'LOT002', species: 'Teak', grade: 'B', volumeCbm: 18.2, reservePrice: '₹2,80,000', depot: 'Nilambur Main Depot', dimensions: '1.5-2m length, 35-45cm girth' }
+
+// ... more lots ], documents: [
   { name: 'Tender Notice', status: 'downloaded', date: '2025-01-10' },
   { name: 'Technical Specifications', status: 'downloaded', date: '2025-01-10' },
   { name: 'EMD Payment Receipt', status: 'uploaded', date: '2025-01-12' },

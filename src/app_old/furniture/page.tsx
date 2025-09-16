@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react' // Force dynamic rendering to
 
 export const dynamic = 'force-dynamic'
 // Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
-import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { StatCardGrid } from '@/src/lib/dna/components/ui/stat-card-dna'
 import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'

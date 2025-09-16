@@ -113,7 +113,7 @@ interface QuickInsight {
 }
 
 // Real-time business metrics
-const BUSINESS_METRICS: BusinessMetric[] = [
+  const BUSINESS_METRICS: BusinessMetric[] = [
   {
     id: 'revenue',
     label: 'Monthly Revenue',
@@ -175,7 +175,7 @@ const BUSINESS_METRICS: BusinessMetric[] = [
     category: 'finance'
   }
 ] // AI-powered quick insights
-const QUICK_INSIGHTS: QuickInsight[] = [
+  const QUICK_INSIGHTS: QuickInsight[] = [
   {
     icon: TrendUp,
     label: 'Revenue Analysis',
@@ -219,7 +219,7 @@ const QUICK_INSIGHTS: QuickInsight[] = [
     category: 'strategy'
   }
 ] // Management categories
-const MANAGEMENT_CATEGORIES = [
+  const MANAGEMENT_CATEGORIES = [
   { id: 'overview', label: 'Overview', icon: Gauge },
   { id: 'operations', label: 'Operations', icon: Factory },
   { id: 'sales', label: 'Sales', icon: ShoppingCart },
@@ -310,7 +310,7 @@ export default function FurnitureAIManagerPage() {
 
     try {
       // Call the AI manager API
-      const response = await fetch('/api/v1/furniture/ai-manager', {
+  const response = await fetch('/api/v1/furniture/ai-manager', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -499,12 +499,12 @@ export default function FurnitureAIManagerPage() {
     )
   }
 
-  // Show loading state
+// Show loading state
   if (orgLoading) {
   return <FurnitureOrgLoading />
   }
 
-  // Authorization checks
+// Authorization checks
   if (isAuthenticated && contextLoading) {
   return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">

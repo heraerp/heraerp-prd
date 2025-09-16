@@ -52,7 +52,10 @@ const price = dynamicResponse.data.find((f: any) => f.field_name === 'selling_pr
   const customerResponse = await universalApi.read('core_entities', { filters: [{ field: 'id', operator: 'eq', value: order.from_entity_id }] })
         if (customerResponse.data.length > 0) {
   customerName = customerResponse.data[0].entity_name } }
-  // Get line items count const linesResponse = await universalApi.read('universal_transaction_lines', { filters: [{ field: 'transaction_id', operator: 'eq', value: order.id }] }) return { id: order.transaction_code, customer: customerName, items: linesResponse.data.length, value: `₹${(order.total_amount || 0).toLocaleString('en-IN')}`, status: order.status || 'pending_approval', date: new Date(order.transaction_date).toLocaleDateString('en-IN'  ) }) ) setRecentOrders(enrichedOrders)
+
+// Get line items count
+  const linesResponse = await universalApi.read('universal_transaction_lines', { filters: [{ field: 'transaction_id', operator: 'eq', value: order.id }] }) 
+    return { id: order.transaction_code, customer: customerName, items: linesResponse.data.length, value: `₹${(order.total_amount || 0).toLocaleString('en-IN')}`, status: order.status || 'pending_approval', date: new Date(order.transaction_date).toLocaleDateString('en-IN'  ) }) ) setRecentOrders(enrichedOrders)
           // Calculate stats
   const activeOrders =ordersResponse.data.filter((o: any) => ['pending_approval', 'confirmed', 'in_production'].includes(o.status) ).length const currentMonth = new Date().getMonth()
 
@@ -70,7 +73,8 @@ const avgOrderSize = ordersResponse.data.length > 0 ? ordersResponse.data.reduce
 const getStatusBadge = (status: string) => {
   const statusConfig ={ pending_approval: { variant: 'secondary' as const, label: 'Pending Approval' }, confirmed: { variant: 'default' as const, label: 'Confirmed' }, in_production: { variant: 'outline' as const, label: 'In Production' }, completed: { variant: 'default' as const, label: 'Completed' }, delivered: { variant: 'default' as const, label: 'Delivered' } }
 
-const config = statusConfig[status as keyof typeof statusConfig] || { variant: 'default' as const, label: status } return <Badge variant={config.variant}>
+const config = statusConfig[status as keyof typeof statusConfig] || { variant: 'default' as const, label: status } 
+    return <Badge variant={config.variant}>
           {config.label}
         </Badge> }
 

@@ -62,7 +62,7 @@ interface SidebarItem {
 }
 
 // Main sidebar items (compact view) - moved outside component to prevent recreation
-const sidebarItems: SidebarItem[] = [
+  const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/furniture', icon: Home },
   { title: 'Sales', href: '/furniture/sales', icon: ShoppingCart, badge: '47', badgeColor: 'bg-[var(--color-accent-teal)]' },
   { title: 'Production', href: '/furniture/production', icon: Factory, badge: '23', badgeColor: 'bg-[var(--color-accent-indigo)]' },
@@ -72,7 +72,7 @@ const sidebarItems: SidebarItem[] = [
 ]
 
 // All apps for the modal - moved outside component to prevent recreation
-const allApps: SidebarItem[] = [
+  const allApps: SidebarItem[] = [
   // Main Navigation
   { title: 'Dashboard', href: '/furniture', icon: Home },
   { title: 'Sales Orders', href: '/furniture/sales/orders', icon: ShoppingCart },
@@ -117,7 +117,7 @@ const allApps: SidebarItem[] = [
 const bottomItems: SidebarItem[] = []
 
 // Apps Modal Component - Memoized to prevent unnecessary re-renders
-const AppsModal = React.memo(function AppsModal({
+  const AppsModal = React.memo(function AppsModal({
   isOpen,
   onClose,
   isActive,
@@ -183,7 +183,8 @@ const AppsModal = React.memo(function AppsModal({
               {allApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
-                return (
+                
+    return (
                   <FurnitureModalLink
                     key={app.href}
                     href={app.href}
@@ -281,7 +282,8 @@ const handleLogout = async () => {
           {sidebarItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
-            return (
+            
+    return (
               <FurnitureNavigationLink
                 key={item.href}
                 href={item.href}

@@ -8,11 +8,12 @@ import React from 'react'
 import FurnitureDarkLayout from '@/src/components/furniture/FurnitureDarkLayout'
 import { FurnitureOrgProvider } from '@/src/components/furniture/FurnitureOrgContext'
 import { FurnitureDarkThemeProvider } from '@/src/components/furniture/FurnitureDarkThemeProvider'
-import '@/styles/furniture-enterprise.css'
+import '@/src/styles/furniture-enterprise.css'
 
 export default function FurnitureLayout({ children }: {
   children: React.ReactNode }) {
-  return (
+  
+    return (
     <FurnitureDarkThemeProvider>
       <FurnitureDarkLayout>
         <FurnitureOrgProvider>{children}</FurnitureOrgProvider>

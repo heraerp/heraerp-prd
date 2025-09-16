@@ -1,0 +1,289 @@
+/* ================================================================================
+   HERA SALON THEME - Global CSS Enhancements
+   Smart Code: HERA.UI.THEME.SALON.CSS.v1
+   Beautiful, accessible styling for salon applications
+   ================================================================================ */
+
+/* Root theme variables */
+:root {
+  /* Primary palette - Purple to Pink gradient */
+  --salon-primary-50: 253, 244, 255;
+  --salon-primary-100: 250, 232, 255;
+  --salon-primary-200: 245, 208, 254;
+  --salon-primary-300: 240, 171, 252;
+  --salon-primary-400: 232, 121, 249;
+  --salon-primary-500: 217, 70, 239;
+  --salon-primary-600: 192, 38, 211;
+  --salon-primary-700: 162, 28, 175;
+  --salon-primary-800: 134, 25, 143;
+  --salon-primary-900: 112, 26, 117;
+  
+  /* Secondary palette - Rose gold */
+  --salon-secondary-50: 253, 242, 248;
+  --salon-secondary-100: 252, 231, 243;
+  --salon-secondary-200: 251, 207, 232;
+  --salon-secondary-300: 249, 168, 212;
+  --salon-secondary-400: 244, 114, 182;
+  --salon-secondary-500: 236, 72, 153;
+  --salon-secondary-600: 219, 39, 119;
+  --salon-secondary-700: 190, 24, 93;
+  --salon-secondary-800: 157, 23, 77;
+  --salon-secondary-900: 131, 24, 67;
+  
+  /* Accent palette - Luxurious gold */
+  --salon-accent-400: 251, 191, 36;
+  --salon-accent-500: 245, 158, 11;
+  --salon-accent-600: 217, 119, 6;
+}
+
+/* Dark mode variables */
+.dark {
+  --salon-primary-50: 74, 4, 78;
+  --salon-primary-100: 112, 26, 117;
+  --salon-primary-200: 134, 25, 143;
+  --salon-primary-300: 162, 28, 175;
+  --salon-primary-400: 192, 38, 211;
+  --salon-primary-500: 217, 70, 239;
+  --salon-primary-600: 232, 121, 249;
+  --salon-primary-700: 240, 171, 252;
+  --salon-primary-800: 245, 208, 254;
+  --salon-primary-900: 250, 232, 255;
+}
+
+/* Beautiful gradient animations */
+@keyframes salon-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes salon-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes salon-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Salon gradient backgrounds */
+.salon-gradient-primary {
+  background: linear-gradient(135deg, 
+    rgb(var(--salon-primary-500)) 0%, 
+    rgb(var(--salon-secondary-500)) 50%, 
+    rgb(var(--salon-accent-500)) 100%);
+  background-size: 200% 200%;
+  animation: salon-gradient 15s ease infinite;
+}
+
+.salon-gradient-card {
+  background: linear-gradient(135deg,
+    rgba(var(--salon-primary-500), 0.1) 0%,
+    rgba(var(--salon-secondary-500), 0.1) 50%,
+    rgba(var(--salon-accent-500), 0.1) 100%);
+}
+
+/* Enhanced card styling */
+.salon-card {
+  @apply bg-white/80 dark:bg-gray-900/80;
+  @apply backdrop-blur-xl;
+  @apply border border-purple-200/50 dark:border-purple-800/50;
+  @apply shadow-xl shadow-purple-500/10;
+  @apply transition-all duration-300;
+}
+
+.salon-card:hover {
+  @apply shadow-2xl shadow-purple-500/20;
+  @apply -translate-y-1;
+  @apply scale-[1.02];
+}
+
+/* Beautiful buttons */
+.salon-button-primary {
+  @apply relative overflow-hidden;
+  @apply bg-gradient-to-r from-purple-500 to-pink-500;
+  @apply hover:from-purple-600 hover:to-pink-600;
+  @apply text-white font-medium;
+  @apply shadow-lg shadow-purple-500/25;
+  @apply hover:shadow-xl hover:shadow-purple-500/30;
+  @apply transition-all duration-200;
+  @apply hover:scale-105;
+}
+
+.salon-button-secondary {
+  @apply bg-gradient-to-r from-rose-400 to-amber-400;
+  @apply hover:from-rose-500 hover:to-amber-500;
+  @apply text-white font-medium;
+  @apply shadow-lg shadow-rose-500/25;
+  @apply transition-all duration-200;
+}
+
+/* Status badges with perfect contrast */
+.salon-status-pending {
+  @apply bg-amber-100 dark:bg-amber-950/30;
+  @apply text-amber-900 dark:text-amber-100;
+  @apply border-amber-300 dark:border-amber-800;
+}
+
+.salon-status-confirmed {
+  @apply bg-blue-100 dark:bg-blue-950/30;
+  @apply text-blue-900 dark:text-blue-100;
+  @apply border-blue-300 dark:border-blue-800;
+}
+
+.salon-status-arrived {
+  @apply bg-purple-100 dark:bg-purple-950/30;
+  @apply text-purple-900 dark:text-purple-100;
+  @apply border-purple-300 dark:border-purple-800;
+}
+
+.salon-status-in-service {
+  @apply bg-pink-100 dark:bg-pink-950/30;
+  @apply text-pink-900 dark:text-pink-100;
+  @apply border-pink-300 dark:border-pink-800;
+}
+
+.salon-status-completed {
+  @apply bg-green-100 dark:bg-green-950/30;
+  @apply text-green-900 dark:text-green-100;
+  @apply border-green-300 dark:border-green-800;
+}
+
+/* Glass morphism effects */
+.salon-glass {
+  @apply bg-white/70 dark:bg-gray-900/70;
+  @apply backdrop-blur-2xl backdrop-saturate-200;
+  @apply border border-purple-200/20 dark:border-purple-800/20;
+  @apply shadow-xl;
+}
+
+/* Input fields with salon styling */
+.salon-input {
+  @apply bg-white dark:bg-gray-900;
+  @apply border-purple-200 dark:border-purple-800;
+  @apply focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20;
+  @apply placeholder-gray-400 dark:placeholder-gray-500;
+  @apply transition-colors duration-200;
+}
+
+/* Navigation styling */
+.salon-nav-item {
+  @apply px-4 py-2 rounded-lg;
+  @apply transition-all duration-200;
+  @apply hover:bg-gradient-to-r hover:from-purple-100/50 hover:to-pink-100/50;
+  @apply dark:hover:from-purple-900/30 dark:hover:to-pink-900/30;
+}
+
+.salon-nav-item-active {
+  @apply px-4 py-2 rounded-lg;
+  @apply bg-gradient-to-r from-purple-100 to-pink-100;
+  @apply dark:from-purple-900/50 dark:to-pink-900/50;
+  @apply font-medium;
+}
+
+/* Beautiful headings */
+.salon-heading-gradient {
+  @apply bg-gradient-to-r from-purple-600 to-pink-600;
+  @apply bg-clip-text text-transparent;
+  @apply font-bold;
+}
+
+/* Hover glow effect */
+.salon-hover-glow {
+  @apply hover:shadow-lg hover:shadow-purple-500/20;
+  @apply dark:hover:shadow-purple-400/20;
+  @apply transition-all duration-300;
+}
+
+/* Floating animation for special elements */
+.salon-float {
+  animation: salon-float 6s ease-in-out infinite;
+}
+
+/* Pulse animation for alerts */
+.salon-pulse {
+  animation: salon-pulse 2s ease-in-out infinite;
+}
+
+/* Custom scrollbar for salon theme */
+.salon-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.salon-scrollbar::-webkit-scrollbar-track {
+  @apply bg-purple-100 dark:bg-purple-950/30;
+  @apply rounded-full;
+}
+
+.salon-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gradient-to-b from-purple-400 to-pink-400;
+  @apply rounded-full;
+}
+
+.salon-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply from-purple-500 to-pink-500;
+}
+
+/* Special effects for premium features */
+.salon-premium {
+  @apply relative;
+  @apply before:absolute before:inset-0;
+  @apply before:bg-gradient-to-r before:from-amber-400/20 before:to-orange-400/20;
+  @apply before:blur-xl before:-z-10;
+  @apply border-amber-400/50;
+}
+
+/* Accessible focus states */
+.salon-focus:focus {
+  @apply outline-none;
+  @apply ring-2 ring-purple-500 ring-offset-2;
+  @apply ring-offset-white dark:ring-offset-gray-900;
+}
+
+/* Loading states */
+.salon-loading {
+  @apply relative overflow-hidden;
+}
+
+.salon-loading::after {
+  content: '';
+  @apply absolute inset-0;
+  @apply bg-gradient-to-r from-transparent via-white/30 to-transparent;
+  @apply -translate-x-full;
+  animation: salon-shimmer 2s infinite;
+}
+
+@keyframes salon-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive text sizes */
+.salon-text-responsive {
+  @apply text-sm sm:text-base lg:text-lg;
+}
+
+/* Print styles for salon documents */
+@media print {
+  .salon-no-print {
+    display: none !important;
+  }
+  
+  .salon-card {
+    @apply bg-white border-gray-300 shadow-none;
+  }
+}

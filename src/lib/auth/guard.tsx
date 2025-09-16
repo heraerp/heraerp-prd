@@ -7,10 +7,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Loader2, ShieldX } from 'lucide-react'
-import { useAuth } from './session'
-import { Card } from '@/src/components/ui/Card'
+import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Card } from '@/src/components/ui/card'
+import { landingForRole, isAllowed, getUnauthorizedRedirect, Role as RBACRole } from './rbac'
 
 export interface GuardProps {
   children: React.ReactNode
@@ -41,7 +42,7 @@ export interface GuardProps {
 export function Guard({
   children,
   requireAuth = true,
-  redirectTo = '/login',
+  redirectTo = '/auth/login',
   allowedRoles = [],
   requiredRole,
   requiredFeatures = [],
@@ -52,18 +53,19 @@ export function Guard({
   silent = false,
 }: GuardProps) {
   const router = useRouter()
-  const { user, isAuthenticated, isLoading } = useAuth()
+  const pathname = usePathname()
+  const { user, isAuthenticated, contextLoading } = useMultiOrgAuth()
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
     // Wait for auth to initialize
-    if (!isLoading) {
+    if (!contextLoading) {
       setIsInitialized(true)
     }
-  }, [isLoading])
+  }, [contextLoading])
 
   useEffect(() => {
-    if (!isInitialized || isLoading) return
+    if (!isInitialized || contextLoading) return
 
     // Check authentication requirement
     if (requireAuth && !isAuthenticated) {
@@ -73,16 +75,30 @@ export function Guard({
       return
     }
 
-    // Check role-based access
+    // Check RBAC access for current path
     if (isAuthenticated && user) {
-      const hasRequiredRole = requiredRole ? user.roles.includes(requiredRole) : true
+      const userRole = (user.role || 'customer') as RBACRole
+      const pathAllowed = isAllowed(userRole, pathname)
+
+      // First check path-based access
+      if (!pathAllowed) {
+        if (!silent) {
+          const redirect = getUnauthorizedRedirect(userRole)
+          router.push(redirect)
+        }
+        return
+      }
+
+      // Then check explicit role requirements
+      const hasRequiredRole = requiredRole ? user.role === requiredRole : true
       const hasAllowedRole = allowedRoles.length > 0 
-        ? user.roles.some(role => allowedRoles.includes(role))
+        ? allowedRoles.includes(user.role || 'customer')
         : true
 
       if (!hasRequiredRole || !hasAllowedRole) {
         if (!silent && !showUnauthorized) {
-          router.push('/unauthorized')
+          const redirect = getUnauthorizedRedirect(userRole)
+          router.push(redirect)
         }
         return
       }
@@ -90,15 +106,17 @@ export function Guard({
       // Custom permission check
       if (permissionCheck && !permissionCheck(user)) {
         if (!silent && !showUnauthorized) {
-          router.push('/unauthorized')
+          const redirect = getUnauthorizedRedirect(userRole)
+          router.push(redirect)
         }
         return
       }
     }
   }, [
     isInitialized,
-    isLoading,
+    contextLoading,
     isAuthenticated,
+    pathname,
     user,
     requireAuth,
     requiredRole,
@@ -111,7 +129,7 @@ export function Guard({
   ])
 
   // Show loading state
-  if (!isInitialized || isLoading) {
+  if (!isInitialized || contextLoading) {
     if (loadingComponent) {
       return <>{loadingComponent}</>
     }
@@ -143,9 +161,10 @@ export function Guard({
 
   // Check authorization
   if (isAuthenticated && user) {
-    const hasRequiredRole = requiredRole ? user.roles.includes(requiredRole) : true
+    const userRole = user.role || 'customer'
+    const hasRequiredRole = requiredRole ? userRole === requiredRole : true
     const hasAllowedRole = allowedRoles.length > 0 
-      ? user.roles.some(role => allowedRoles.includes(role))
+      ? allowedRoles.includes(userRole)
       : true
     const hasCustomPermission = permissionCheck ? permissionCheck(user) : true
 
@@ -172,7 +191,7 @@ export function Guard({
                     You don't have permission to access this feature.
                   </p>
                   <div className="text-xs text-gray-500">
-                    <p>Your roles: {user.roles.join(', ')}</p>
+                    <p>Your role: {user.role || 'customer'}</p>
                     {requiredRole && (
                       <p>Required role: {requiredRole}</p>
                     )}
@@ -216,18 +235,19 @@ export function withGuard<P extends object>(
 
 // Utility hooks for permission checking
 export function usePermissions() {
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated } = useMultiOrgAuth()
 
   const hasRole = (role: string): boolean => {
-    return isAuthenticated && user ? user.roles.includes(role) : false
+    return isAuthenticated && user ? user.role === role : false
   }
 
   const hasAnyRole = (roles: string[]): boolean => {
-    return isAuthenticated && user ? user.roles.some(role => roles.includes(role)) : false
+    return isAuthenticated && user ? roles.includes(user.role || 'customer') : false
   }
 
   const hasAllRoles = (roles: string[]): boolean => {
-    return isAuthenticated && user ? roles.every(role => user.roles.includes(role)) : false
+    // User can only have one role in this system
+    return false
   }
 
   const canAccess = (permission: string | string[] | ((user: any) => boolean)): boolean => {
@@ -257,12 +277,41 @@ export function usePermissions() {
 // Common role constants for type safety
 export const ROLES = {
   OWNER: 'owner',
+  ADMIN: 'admin',
   MANAGER: 'manager',
   STYLIST: 'stylist',
   CASHIER: 'cashier',
+  CUSTOMER: 'customer',
+  ACCOUNTANT: 'accountant'
 } as const
 
 export type Role = typeof ROLES[keyof typeof ROLES]
+
+// Hook for route guard
+export function useRouteGuard(): { allowed: boolean; redirect: string } {
+  const { user } = useMultiOrgAuth()
+  const pathname = usePathname()
+  
+  const role = (user?.role || 'customer') as RBACRole
+  const allowed = isAllowed(role, pathname)
+  const redirect = allowed ? '' : getUnauthorizedRedirect(role)
+  
+  return { allowed, redirect }
+}
+
+// Hook to redirect to role landing
+export function useRoleLanding() {
+  const router = useRouter()
+  const { user } = useMultiOrgAuth()
+  
+  const redirectToLanding = () => {
+    const role = (user?.role || 'customer') as RBACRole
+    const landing = landingForRole(role)
+    router.replace(landing)
+  }
+  
+  return { redirectToLanding }
+}
 
 // Pre-configured guard components for common use cases
 export const OwnerOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => (

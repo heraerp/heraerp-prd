@@ -10,7 +10,7 @@ import { TrendingUp, Trophy, Brain, DollarSign, Target, Clock, AlertCircle, File
 } from 'lucide-react'
 import { useFurnitureOrg } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { StatCardGrid } from '@/src/lib/dna/components/ui/stat-card-dna'
 import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import TenderListTable from '@/components/furniture/tender/TenderListTable'
 

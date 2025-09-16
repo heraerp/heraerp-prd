@@ -25,7 +25,7 @@ import {
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
+import { UniversalReportEngine } from '@/src/lib/dna/urp/report-engine'
 import type { GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
 import { cn } from '@/lib/utils'
 

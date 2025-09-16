@@ -46,7 +46,8 @@ export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({
     loadDemoOrg()
   }, [isAuthenticated, currentOrganization, pathname])
 
-  return (
+  
+    return (
     <FurnitureOrgContext.Provider value={{ organizationId, organizationName, orgLoading }}>
       {children}
     </FurnitureOrgContext.Provider>
@@ -59,13 +60,13 @@ export function useFurnitureOrg() {
   if (!context) {
     throw new Error('useFurnitureOrg must be used within FurnitureOrgProvider')
   }
-  
-  return context
+    return context
 }
 
 // Loading component for consistent loading state
 export function FurnitureOrgLoading() {
-  return (
+  
+    return (
     <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
       <div className="text-center">
         <div className="inline-flex items-center space-x-2">

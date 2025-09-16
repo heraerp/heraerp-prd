@@ -32,8 +32,7 @@ const { toast } = useToast()
 const [loading, setLoading] = useState(false)
 
 const [formData, setFormData] = useState({ code: '', title: '', department: 'Kerala Forest Department', closingDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now estimatedValue: '', emdAmount: '', description: '', location: '', lotCount: '1', tenderFee: '5000', processingFee: '1180' })
-
-const handleSubmit = async (e: React.FormEvent) => { e.preventDefault() if (!organizationId) {
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault() if (!organizationId) {
   toast({ title: 'Error', description: 'Organization context not found', variant: 'destructive' }) return } try { setLoading(true)
 
 const tenderId = await tenderService.createTender({ code: formData.code, title: formData.title, department: formData.department, closing_date: formData.closingDate.toISOString(), estimated_value: parseFloat(formData.estimatedValue), emd_amount: parseFloat(formData.emdAmount), description: formData.description, location: formData.location }) toast({ title: 'Success', description: 'Tender created successfully' }) router.push(`/furniture/tender/${tenderId}`  ) catch (error) {

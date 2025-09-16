@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Building2, User, Mail, Phone, MapPin, CreditCard, FileText, AlertCircle, Save
 } from 'lucide-react'
-import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
 import { universalApi } from '@/lib/universal-api'
 
 

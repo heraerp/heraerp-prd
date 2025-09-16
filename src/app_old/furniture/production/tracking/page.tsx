@@ -14,9 +14,9 @@ import { Activity, Factory, Package, Clock, CheckCircle, AlertCircle, Play, Paus
 import Link from 'next/link'
 import { useDemoOrganization, OrganizationInfo,
   OrganizationLoading
-} from '@/lib/dna/patterns/demo-org-pattern'
+} from '@/src/lib/dna/patterns/demo-org-pattern'
 import { useUniversalData, universalFilters, universalSorters
-} from '@/lib/dna/patterns/universal-api-loading-pattern'
+} from '@/src/lib/dna/patterns/universal-api-loading-pattern'
 import { cn } from '@/lib/utils'
 
 

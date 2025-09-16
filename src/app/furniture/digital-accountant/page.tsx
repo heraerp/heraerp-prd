@@ -94,7 +94,7 @@ interface QuickPrompt {
 }
 
 // Furniture-specific quick prompts
-const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
+  const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
   {
     icon: DollarSign,
     label: 'Cash Sale',
@@ -138,7 +138,7 @@ const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
     category: 'summary'
   }
 ] // Furniture-specific quick expenses
-const FURNITURE_QUICK_EXPENSES = [
+  const FURNITURE_QUICK_EXPENSES = [
   { icon: Package, label: 'Wood/Timber', amount: 5000, category: 'materials' },
   { icon: Wrench, label: 'Hardware', amount: 1000, category: 'materials' },
   { icon: Factory, label: 'Labor', amount: 2000, category: 'production' },
@@ -219,7 +219,7 @@ export default function FurnitureDigitalAccountantPage() {
 
     try {
       // Call the furniture digital accountant API
-      const response = await fetch('/api/v1/furniture/digital-accountant', {
+  const response = await fetch('/api/v1/furniture/digital-accountant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -286,7 +286,7 @@ export default function FurnitureDigitalAccountantPage() {
       inputRef.current?.focus()
 
       // Add system message about document analysis
-      const systemMessage: FurnitureMessage = {
+  const systemMessage: FurnitureMessage = {
         id: Date.now().toString(),
         type: 'system',
         content: `📄 Document analyzed! I've extracted the following information:
@@ -303,12 +303,12 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
     }
   }
 
-  // Show loading state
+// Show loading state
   if (orgLoading) {
   return <FurnitureOrgLoading />
   }
 
-  // Authorization checks
+// Authorization checks
   if (isAuthenticated && contextLoading) {
   return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">

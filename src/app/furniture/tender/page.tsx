@@ -25,7 +25,7 @@ import TenderWorkflowStatus from '@/src/components/furniture/tender/TenderWorkfl
 export const dynamic = 'force-dynamic'
 
 // Default stats for loading state
-const defaultTenderStats = [
+  const defaultTenderStats = [
   {
     label: 'Active Tenders',
     value: '12',
@@ -202,8 +202,8 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
           console.log('Using default tender metrics for demo mode')
           // Keep default stats if metrics API fails
         }
-        
-        // Try to load tender list
+
+// Try to load tender list
         try {
           const { tenders: tenderList } = await tenderService.getTenderList({
             status: 'active',

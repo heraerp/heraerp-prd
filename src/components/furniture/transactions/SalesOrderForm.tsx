@@ -63,78 +63,73 @@ interface UCRApprovalResult {
 }
 
 export function SalesOrderForm() {
-  const [customers, setCustomers] = useState<any[]>([])
-
-const [products, setProducts] = useState<any[]>([])
-
-const [selectedCustomer, setSelectedCustomer] = useState('')
-
-const [customerPO, setCustomerPO] = useState('')
-
-const [lineItems, setLineItems] = useState<SalesOrderLineItem[]>([])
-
-const [deliveryAddress, setDeliveryAddress] = useState({ line1: '', line2: '', city: '', state: '', country: '', postal: '' })
-
-const [specialInstructions, setSpecialInstructions] = useState('')
-
-const [loading, setLoading] = useState(false)
-
-const [error, setError] = useState('')
-
-const [success, setSuccess] = useState('')
-
-const [validationErrors, setValidationErrors] = useState<string[]>([])
-
-const [pricingSummary, setPricingSummary] = useState<UCRPricingResult | null>(null)
-
-const [approvalRequired, setApprovalRequired] = useState<UCRApprovalResult | null>(null)
-
+  const [customers, setCustomers] = useState<any[]>([]);
+const [products, setProducts] = useState<any[]>([]);
+const [selectedCustomer, setSelectedCustomer] = useState('');
+const [customerPO, setCustomerPO] = useState('');
+const [lineItems, setLineItems] = useState<SalesOrderLineItem[]>([]);
+const [deliveryAddress, setDeliveryAddress] = useState({ line1: '', line2: '', city: '', state: '', country: '', postal: '' });
+const [specialInstructions, setSpecialInstructions] = useState('');
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState('');
+const [success, setSuccess] = useState('');
+const [validationErrors, setValidationErrors] = useState<string[]>([]);
+const [pricingSummary, setPricingSummary] = useState<UCRPricingResult | null>(null);
+const [approvalRequired, setApprovalRequired] = useState<UCRApprovalResult | null>(null);
 const [promisedDeliveryDate, setPromisedDeliveryDate] = useState<Date | null>(null)
 
-useEffect(() => { loadData(  ), [])
-
+useEffect(() => { loadData(  ), []);
 const loadData = async () => { try { // Load customers const customersData = await universalApi.read({ table: 'core_entities', filter: { entity_type: 'furniture_customer' } }) setCustomers(customersData.data || []) // Load products with pricing const productsData = await universalApi.read({ table: 'core_entities', filter: { entity_type: 'furniture_product' } }) // Load dynamic pricing data for each product for (const product of productsData.data || []) {
   const dynamicData = await universalApi.read({ table: 'core_dynamic_data', filter: { entity_id: product.id, field_name: 'selling_price' } }) if (dynamicData.data && dynamicData.data.length > 0) {
   product.selling_price = dynamicData.data[0].field_value_number } } setProducts(productsData.data || [])   } catch (err) {
   console.error('Error loading data:', err) setError('Failed to load data'  ) }
 
-const addLineItem = () => { setLineItems([ ...lineItems, { entity_id: '', product_name: '', quantity: 1, unit_amount: 0 } ]  )
-
-const removeLineItem = (index: number) => { setLineItems(lineItems.filter((_, i) => i !== index)  )
-
+const addLineItem = () => { setLineItems([ ...lineItems, { entity_id: '', product_name: '', quantity: 1, unit_amount: 0 } ]  );
+const removeLineItem = (index: number) => { setLineItems(lineItems.filter((_, i) => i !== index)  );
 const updateLineItem = (index: number, field: string, value: any) => { const updated = [...lineItems] updated[index] = { ...updated[index], [field]: value } if (field === 'entity_id') {
   const product = products.find(p => p.id === value) if (product) {
   updated[index].product_name = product.entity_name updated[index].unit_amount = product.selling_price || 0 } } if (field === 'quantity' || field === 'unit_amount') {
-  updated[index].line_amount = updated[index].quantity * updated[index].unit_amount } setLineItems(updated  )
+  updated[index].line_amount = updated[index].quantity * updated[index].unit_amount } setLineItems(updated  );
+const validateAndCalculate = async () => { setValidationErrors([]) setPricingSummary(null) setApprovalRequired(null) setPromisedDeliveryDate(null) try { // Simulate UCR validation
+  const validation: UCRValidationResult = await simulateUCRValidation() if (!validation.valid) {
+  setValidationErrors(validation.errors) return false }
 
-const validateAndCalculate = async () => { setValidationErrors([]) setPricingSummary(null) setApprovalRequired(null) setPromisedDeliveryDate(null) try { // Simulate UCR validation const validation: UCRValidationResult = await simulateUCRValidation() if (!validation.valid) {
-  setValidationErrors(validation.errors) return false } // Simulate UCR pricing calculation const pricing: UCRPricingResult = await simulateUCRPricing() setPricingSummary(pricing) // Simulate approval check const approval: UCRApprovalResult = await simulateUCRApproval(pricing.totalAmount) setApprovalRequired(approval) // Simulate delivery date calculation const deliveryDate = await simulateDeliveryDateCalculation() setPromisedDeliveryDate(deliveryDate) return true   } catch (err) {
-  setError('Validation failed') return false } }
+// Simulate UCR pricing calculation const pricing: UCRPricingResult = await simulateUCRPricing() setPricingSummary(pricing) // Simulate approval check const approval: UCRApprovalResult = await simulateUCRApproval(pricing.totalAmount) setApprovalRequired(approval) // Simulate delivery date calculation
+  const deliveryDate = await simulateDeliveryDateCalculation() setPromisedDeliveryDate(deliveryDate) return true   } catch (err) {
+  setError('Validation failed') 
+    return false } }
 
-const simulateUCRValidation = async (): Promise<UCRValidationResult> => { const errors: string[] = [] // Minimum order value check const totalAmount = lineItems.reduce((sum, item) => sum + item.quantity * item.unit_amount, 0) if (totalAmount < 5000) {
+const simulateUCRValidation = async (): Promise<UCRValidationResult> => { const errors: string[] = [] // Minimum order value check
+  const totalAmount = lineItems.reduce((sum, item) => sum + item.quantity * item.unit_amount, 0) if (totalAmount < 5000) {
   errors.push('Minimum order value is AED 5,000'  ) // Product availability check for (const item of lineItems) {
   if (item.quantity > 50) {
-  errors.push(`Maximum quantity per item is 50 units`  ) } // Customer credit check if (!selectedCustomer) {
-  errors.push('Customer selection is required'  ) if (lineItems.length === 0) {
-  errors.push('At least one product must be selected'  ) return { valid: errors.length === 0, errors } }
+  errors.push(`Maximum quantity per item is 50 units`  ) }
 
-const simulateUCRPricing = async (): Promise<UCRPricingResult> => { const pricedItems = lineItems.map(item => { let discountPercent = 0 // Volume discounts if (item.quantity >= 10) discountPercent = 5 if (item.quantity >= 25) discountPercent = 10 if (item.quantity >= 50) discountPercent = 15 const discountAmount = item.unit_amount * (discountPercent / 100) * item.quantity const lineAmount = item.unit_amount * item.quantity - discountAmount return { ...item, discount_percent: discountPercent, discount_amount: discountAmount, line_amount: lineAmount } })
-
+// Customer credit check if (!selectedCustomer) {  errors.push('Customer selection is required'  ) if (lineItems.length === 0) {  errors.push('At least one product must be selected'  ) return { valid: errors.length === 0, errors } }`
+  const simulateUCRPricing = async (): Promise<UCRPricingResult> => { const pricedItems = lineItems.map(item => { let discountPercent = 0 // Volume discounts if (item.quantity >= 10) discountPercent = 5 if (item.quantity >= 25) discountPercent = 10 if (item.quantity >= 50) discountPercent = 15 const discountAmount = item.unit_amount * (discountPercent / 100) * item.quantity
+  const lineAmount = item.unit_amount * item.quantity - discountAmount 
+    return { ...item, discount_percent: discountPercent, discount_amount: discountAmount, line_amount: lineAmount } });
 const totalAmount = pricedItems.reduce((sum, item) => sum + (item.line_amount || 0), 0) return { totalAmount, lineItems: pricedItems } }
 
 const simulateUCRApproval = async (totalAmount: number): Promise<UCRApprovalResult> => { if (totalAmount >= 50000) {
   return { required: true, rule: 'High Value Order Approval', threshold: 50000, approvers: ['Sales Manager', 'Finance Manager'] } } return { required: false } }
 
-const simulateDeliveryDateCalculation = async (): Promise<Date> => { // Base lead time: 7 days let leadTimeDays = 7 // Add time for custom products const hasCustom = lineItems.some(item => item.specifications?.custom) if (hasCustom) {
-  leadTimeDays += 7 } // Add time for large quantities const totalQuantity = lineItems.reduce((sum, item) => sum + item.quantity, 0) if (totalQuantity > 20) {
+const simulateDeliveryDateCalculation = async (): Promise<Date> => { // Base lead time: 7 days let leadTimeDays = 7 // Add time for custom products
+  const hasCustom = lineItems.some(item => item.specifications?.custom) if (hasCustom) {
+  leadTimeDays += 7 }
+
+// Add time for large quantities
+  const totalQuantity = lineItems.reduce((sum, item) => sum + item.quantity, 0) if (totalQuantity > 20) {
   leadTimeDays += 3 }
 
-const deliveryDate = new Date() deliveryDate.setDate(deliveryDate.getDate() + leadTimeDays) return deliveryDate }
+const deliveryDate = new Date() deliveryDate.setDate(deliveryDate.getDate() + leadTimeDays) 
+    return deliveryDate }
 
-const handleSubmit = async () => { setError('') setSuccess('') // Validate and calculate const isValid = await validateAndCalculate() if (!isValid) {
-  return } setLoading(true) try { // Create sales order transaction const transaction = await universalApi.createTransaction({ transaction_type: 'sales_order', transaction_code: `SO-${Date.now()}`, transaction_date: new Date().toISOString(), from_entity_id: selectedCustomer, total_amount: pricingSummary?.totalAmount || 0, smart_code: 'HERA.IND.FURN.TXN.SALESORDER.V1', metadata: { customer_po: customerPO, delivery_address: deliveryAddress, special_instructions: specialInstructions, status: approvalRequired?.required ? 'pending_approval' : 'confirmed', approval_required: approvalRequired, promised_delivery_date: promisedDeliveryDate?.toISOString(  ), line_items: (pricingSummary?.lineItems || []).map((item, index) => ({ line_number: index + 1, entity_id: item.entity_id, quantity: item.quantity, unit_price: item.unit_amount, line_amount: item.line_amount || 0, smart_code: 'HERA.IND.FURN.TXN.SALESORDER.LINE.V1', metadata: { product_name: item.product_name, specifications: item.specifications, discount_percent: item.discount_percent, discount_amount: item.discount_amount } })  )) setSuccess(`Sales Order ${transaction.transaction_code} created successfully!`) // Reset form setSelectedCustomer('') setCustomerPO('') setLineItems([]) setDeliveryAddress({ line1: '', line2: '', city: '', state: '', country: '', postal: '' }) setSpecialInstructions('') setPricingSummary(null) setApprovalRequired(null) setPromisedDeliveryDate(null  ) catch (err: any) {
-  setError(err.message || 'Failed to create sales order')   } finally {
-    setLoading(false)
+const handleSubmit = async () => { setError('') setSuccess('') // Validate and calculate
+  const isValid = await validateAndCalculate() if (!isValid) {
+  
+    return } setLoading(true) try { // Create sales order transaction
+  const transaction = await universalApi.createTransaction({ transaction_type: 'sales_order', transaction_code: `SO-${Date.now()}`, transaction_date: new Date().toISOString(), from_entity_id: selectedCustomer, total_amount: pricingSummary?.totalAmount || 0, smart_code: 'HERA.IND.FURN.TXN.SALESORDER.V1', metadata: { customer_po: customerPO, delivery_address: deliveryAddress, special_instructions: specialInstructions, status: approvalRequired?.required ? 'pending_approval' : 'confirmed', approval_required: approvalRequired, promised_delivery_date: promisedDeliveryDate?.toISOString(  ), line_items: (pricingSummary?.lineItems || []).map((item, index) => ({ line_number: index + 1, entity_id: item.entity_id, quantity: item.quantity, unit_price: item.unit_amount, line_amount: item.line_amount || 0, smart_code: 'HERA.IND.FURN.TXN.SALESORDER.LINE.V1', metadata: { product_name: item.product_name, specifications: item.specifications, discount_percent: item.discount_percent, discount_amount: item.discount_amount } })  )) setSuccess(`Sales Order ${transaction.transaction_code} created successfully!`) // Reset form setSelectedCustomer('') setCustomerPO('') setLineItems([]) setDeliveryAddress({ line1: '', line2: '', city: '', state: '', country: '', postal: '' }) setSpecialInstructions('') setPricingSummary(null) setApprovalRequired(null) setPromisedDeliveryDate(null  ) catch (err: any) {  setError(err.message || 'Failed to create sales order')   } finally {    setLoading(false)`
   }
 }
 

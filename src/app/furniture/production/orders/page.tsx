@@ -85,6 +85,7 @@ export default function ProductionOrdersPage() {
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
     const Icon = config.icon
     
+    
     return (
       <Badge variant="outline" className={cn(
             'border-0',
@@ -96,7 +97,7 @@ export default function ProductionOrdersPage() {
     )
   }
 
-  // Show loading state
+// Show loading state
   if (orgLoading) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] p-6">
@@ -113,7 +114,7 @@ export default function ProductionOrdersPage() {
     )
   }
 
-  // Authorization checks
+// Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">

@@ -277,7 +277,7 @@ export const getComponentsByCategory = (category: HeraDNACategory) => {
 
 // Get component import path
 export const getComponentImportPath = (componentKey: HeraDNAComponentKey) => {
-  return `@/lib/dna/components/${componentKey.replace('-', '/')}`
+  return `@/src/lib/dna/components/${componentKey.replace('-', '/')}`
 }
 
 // ================================================================================

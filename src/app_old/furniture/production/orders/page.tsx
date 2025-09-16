@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
-import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
+import { EnterpriseDataTable } from '@/src/lib/dna/components/organisms/EnterpriseDataTable'
 import {
   Search,
   Plus,
@@ -26,9 +26,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { useUniversalData } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import { useUniversalData } from '@/src/lib/dna/patterns/universal-api-loading-pattern'
 import { cn } from '@/lib/utils'
 
 export default function ProductionOrdersPage() {

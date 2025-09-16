@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
+import { EnterpriseDataTable } from '@/src/lib/dna/components/organisms/EnterpriseDataTable'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

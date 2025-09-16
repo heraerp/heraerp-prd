@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/src/lib/utils'
 import { useToast } from '@/src/components/ui/use-toast'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
 import {
   Home,
   Calendar,
@@ -30,8 +29,7 @@ import {
   Box,
   TrendingUp,
   Grid3x3,
-  X,
-  LogOut
+  X
 } from 'lucide-react'
 
 interface SalonDashboardSidebarProps {
@@ -212,8 +210,15 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
   const pathname = usePathname()
   const router = useRouter()
   const { toast } = useToast()
-  const { currentOrganization, signOut } = useMultiOrgAuth()
   const [appsModalOpen, setAppsModalOpen] = useState(false)
+  const [isDemoMode, setIsDemoMode] = useState(false)
+  
+  // Check if this is a demo session
+  useEffect(() => {
+    const demoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
+    const demoModule = sessionStorage.getItem('demoModule')
+    setIsDemoMode(demoLogin && demoModule === 'salon')
+  }, [])
 
   // Memoize isActive function
   const isActive = useCallback((href: string) => {
@@ -222,22 +227,12 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
     return false
   }, [pathname])
 
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      toast({
-        title: 'Signed out',
-        description: 'You have been signed out successfully'
-      })
-      router.push('/auth/login')
-    } catch (error) {
-      console.error('Sign out error:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to sign out',
-        variant: 'destructive'
-      })
-    }
+  const handleExitDemo = () => {
+    // Clear demo session data
+    sessionStorage.removeItem('isDemoLogin')
+    sessionStorage.removeItem('demoModule')
+    // Return to demo page
+    router.push('/demo')
   }
 
   const openAppsModal = useCallback((e: React.MouseEvent) => {
@@ -289,9 +284,9 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
             <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-200 to-pink-200 bg-clip-text text-transparent">
               HERA Salon
             </h1>
-            {currentOrganization && (
-              <p className="text-xs text-violet-300/70 mt-1">{currentOrganization.name}</p>
-            )}
+            <p className="text-xs text-violet-300/70 mt-1">
+              {isDemoMode ? 'Demo Mode' : 'Hair Talkz'}
+            </p>
           </Link>
         </div>
 
@@ -323,14 +318,16 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
             </div>
           )}
           
-          {/* Sign Out Button */}
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/20 text-violet-200 hover:text-red-200 transition-all duration-200"
-          >
-            <LogOut className="h-5 w-5" />
-            <span className="text-sm font-medium">Sign Out</span>
-          </button>
+          {/* Exit Demo Button - Only show in demo mode */}
+          {isDemoMode && (
+            <button
+              onClick={handleExitDemo}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-violet-500/20 text-violet-200 hover:text-violet-100 transition-all duration-200"
+            >
+              <ChevronRight className="h-5 w-5" />
+              <span className="text-sm font-medium">Exit Demo</span>
+            </button>
+          )}
         </div>
       </div>
 

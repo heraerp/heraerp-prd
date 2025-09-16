@@ -37,7 +37,7 @@ import { useFinanceData } from '@/src/lib/furniture/use-finance-data'
 import { cn } from '@/src/lib/utils'
 
 // GL Account columns
-const glAccountColumns = [
+  const glAccountColumns = [
   {
     key: 'entity_code',
     label: 'Account Code', 
@@ -89,7 +89,8 @@ const glAccountColumns = [
         detail: 'bg-gray-900/20 text-[var(--color-text-secondary)]'
       }
       
-      return (
+      
+    return (
         <Badge variant="outline" className={cn(
             'border-0',
             colors[type]
@@ -114,8 +115,8 @@ export default function FurnitureFinance() {
   const buildHierarchy = () => {
     const hierarchy: any[] = []
     const accountMap: Record<string, any> = {}
-    
-    // Create a map for easy lookup
+
+// Create a map for easy lookup
     glAccounts.forEach(account => {
       accountMap[account.entity_code] = { ...account, children: [] }
     })
@@ -132,7 +133,7 @@ export default function FurnitureFinance() {
     })
     
     // Flatten the hierarchy for table display with proper ordering
-    const flattenHierarchy = (nodes: any[], depth = 0): any[] => {
+  const flattenHierarchy = (nodes: any[], depth = 0): any[] => {
       const result: any[] = []
       nodes.forEach(node => {
         result.push({ ...node, depth })
@@ -144,8 +145,8 @@ export default function FurnitureFinance() {
       })
       return result
     }
-    
-    // Sort top level by code
+
+// Sort top level by code
     hierarchy.sort((a, b) => a.entity_code.localeCompare(b.entity_code))
     return flattenHierarchy(hierarchy)
   }
@@ -168,7 +169,7 @@ export default function FurnitureFinance() {
     return <FurnitureOrgLoading />
   }
 
-  // Authorization checks
+// Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -223,7 +224,8 @@ export default function FurnitureFinance() {
     }
   ]
 
-  return (
+  
+    return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader

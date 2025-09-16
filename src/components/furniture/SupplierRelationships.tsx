@@ -53,26 +53,26 @@ export function SupplierRelationships({ organizationId, className, productId }: 
       setError(null)
       
       // Get all entities
-      const { data: entities } = await universalApi.read({ 
+  const { data: entities } = await universalApi.read({ 
         table: 'core_entities', 
         organizationId 
       })
       
       // Get all relationships
-      const { data: relationships } = await universalApi.read({ 
+  const { data: relationships } = await universalApi.read({ 
         table: 'core_relationships', 
         organizationId 
       })
       
       // Filter suppliers
-      const supplierEntities = entities?.filter((e: any) => e.entity_type === 'supplier') || []
+  const supplierEntities = entities?.filter((e: any) => e.entity_type === 'supplier') || []
       
       // Build supplier info
-      const supplierData: SupplierInfo[] = []
+  const supplierData: SupplierInfo[] = []
       
       for (const supplier of supplierEntities) {
         // Find all products this supplier sources
-        const supplierRels = relationships?.filter(
+  const supplierRels = relationships?.filter(
           (r: any) => r.from_entity_id === supplier.id && r.relationship_type === 'sources'
         ) || []
         

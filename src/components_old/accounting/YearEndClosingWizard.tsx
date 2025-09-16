@@ -38,11 +38,11 @@ import {
   createFiscalYearManager,
   type ClosingResult,
   type FiscalPeriod
-} from '@/lib/dna/fiscal-year/universal-fiscal-year'
+} from '@/src/lib/dna/fiscal-year/universal-fiscal-year'
 import {
   createFiscalCloseEngine,
   type FiscalCloseResult
-} from '@/lib/dna/fiscal-year/fiscal-close-engine'
+} from '@/src/lib/dna/fiscal-year/fiscal-close-engine'
 import { formatDate } from '@/lib/date-utils'
 
 interface YearEndClosingWizardProps {

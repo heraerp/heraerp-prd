@@ -59,6 +59,7 @@ export default function ProductionOrderDetailPage({ params }: {
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
     const Icon = config.icon
     
+    
     return (
       <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}>
         <Icon className="h-4 w-4" />
@@ -76,6 +77,7 @@ export default function ProductionOrderDetailPage({ params }: {
     }
 
     const config = priorityConfig[priority as keyof typeof priorityConfig] || priorityConfig.normal
+    
     
     return (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>

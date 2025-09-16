@@ -29,10 +29,12 @@ const [loading, setLoading] = useState(false)
 
 const [error, setError] = useState('')
           // Load customer entity const { data: customers, refetch: refetchCustomer } = useUniversalData({ table: 'core_entities', filter: item => item.id === id && item.entity_type === 'customer' && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-
-const customer = customers?.[0] // Load customer dynamic data const { data: dynamicData, refetch: refetchDynamicData } = useUniversalData({ table: 'core_dynamic_data', filter: item => item.entity_id === params.id && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-          // Load customer transactions const { data: transactions } = useUniversalData({ table: 'universal_transactions', filter: item => item.from_entity_id === params.id && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-          // Form state const [formData, setFormData] = useState({ entity_name: '', entity_code: '', email: '', phone: '', mobile: '', address: '', city: '', state: '', pincode: '', gstin: '', pan_number: '', contact_person: '', credit_limit: '', payment_terms: '', notes: '' })
+  const customer = customers?.[0] // Load customer dynamic data
+  const { data: dynamicData, refetch: refetchDynamicData } = useUniversalData({ table: 'core_dynamic_data', filter: item => item.entity_id === params.id && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
+          // Load customer transactions
+  const { data: transactions } = useUniversalData({ table: 'universal_transactions', filter: item => item.from_entity_id === params.id && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
+          // Form state
+  const [formData, setFormData] = useState({ entity_name: '', entity_code: '', email: '', phone: '', mobile: '', address: '', city: '', state: '', pincode: '', gstin: '', pan_number: '', contact_person: '', credit_limit: '', payment_terms: '', notes: '' })
           // Initialize form data from customer and dynamic data useEffect(() => { if (customer && dynamicData) {
   const getFieldValue = (fieldName: string) => {
   const field =dynamicData.find(d => d.field_name === fieldName) return field?.field_value_text || field?.field_value_number?.toString() || '' } setFormData({ entity_name: customer.entity_name, entity_code: customer.entity_code || '', email: getFieldValue('email'), phone: getFieldValue('phone'), mobile: getFieldValue('mobile'), address: getFieldValue('address'), city: getFieldValue('city'), state: getFieldValue('state'), pincode: getFieldValue('pincode'), gstin: getFieldValue('gstin'), pan_number: getFieldValue('pan_number'), contact_person: getFieldValue('contact_person'), credit_limit: getFieldValue('credit_limit'), payment_terms: getFieldValue('payment_terms') || 'Net 30', notes: getFieldValue('notes'  )  ) }, [customer, dynamicData])
@@ -59,12 +61,15 @@ const handleSave = async () => { setError('') setLoading(true) try { universalAp
 ] for (const field of dynamicFields) {
   if (field.field_value_text || field.field_value_number) {
   await universalApi.setDynamicField( params.id, field.field_name, field.field_type === 'number' ? field.field_value_number! : field.field_value_text!, `HERA.FURNITURE.CUSTOMER.${field.field_name.toUpperCase()}.v1`   ) }
-  // Refresh data await refetchCustomer() await refetchDynamicData() setEditMode(false)   } catch (err) {
+
+// Refresh data await refetchCustomer() await refetchDynamicData() setEditMode(false)   } catch (err) {
   console.error('Error updating customer:', err) setError('Failed to update customer. Please try again.')   } finally {
     setLoading(false)
   }
 }
-  // Calculate customer metrics const metrics = { totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0, orderCount: transactions?.length || 0, avgOrderValue: transactions?.length ? transactions.reduce((sum, t) => sum + t.total_amount, 0) / transactions.length : 0, lastOrderDate: transactions?.sort( (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime() )[0]?.transaction_date } if (orgLoading || !customer) {
+
+// Calculate customer metrics
+  const metrics = { totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0, orderCount: transactions?.length || 0, avgOrderValue: transactions?.length ? transactions.reduce((sum, t) => sum + t.total_amount, 0) / transactions.length : 0, lastOrderDate: transactions?.sort( (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime() )[0]?.transaction_date } if (orgLoading || !customer) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-[var(--color-body)]"> <div className="bg-[var(--color-body)] animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-accent-indigo)]"></div>
       </div>

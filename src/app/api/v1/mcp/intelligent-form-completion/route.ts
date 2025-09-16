@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { universalApi } from '@/src/lib/universal-api'
-import { createReadinessTemplate } from '@/modules/readiness-questionnaire/template'
+import { createReadinessTemplate } from '@/src/modules/readiness-questionnaire/template'
 
 interface BusinessContext {
   businessType: string

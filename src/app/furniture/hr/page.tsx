@@ -40,7 +40,7 @@ import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
 import { cn } from '@/src/lib/utils'
 
 // Employee table columns
-const employeeColumns = [
+  const employeeColumns = [
   {
     id: 'entity_code',
     key: 'entity_code',
@@ -109,7 +109,7 @@ const employeeColumns = [
 ]
 
 // Attendance summary columns
-const attendanceColumns = [
+  const attendanceColumns = [
   {
     id: 'transaction_code',
     key: 'transaction_code',
@@ -119,7 +119,8 @@ const attendanceColumns = [
     sortable: true,
     render: (value: string, row: any) => {
       const date = (row.metadata as any)?.attendance_date || row.transaction_date
-      return (
+      
+    return (
         <div>
           <p className="font-medium">
             {new Date(date).toLocaleDateString('en-IN', {
@@ -186,7 +187,7 @@ export default function FurnitureHR() {
     return <FurnitureOrgLoading />
   }
 
-  // Authorization checks
+// Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -249,7 +250,8 @@ export default function FurnitureHR() {
     }
   ]
 
-  return (
+  
+    return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader

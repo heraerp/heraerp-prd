@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 import dynamic from 'next/dynamic'
 
 // Import the salon-data page dynamically to avoid SSR issues with headers
-const SalonDataPage = dynamic(() => import('@/app/salon-data/page'), {
+const SalonDataPage = dynamic(() => import('@/src/app/salon-data/page'), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">

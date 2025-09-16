@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Plus, Search, Filter, MoreVertical, Phone, Mail, MapPin, Building2, Calendar, IndianRupee, TrendingUp, Edit, Trash2
 } from 'lucide-react'
-import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
 import { useUniversalData, universalFilters
-} from '@/lib/dna/patterns/universal-api-loading-pattern'
+} from '@/src/lib/dna/patterns/universal-api-loading-pattern'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'

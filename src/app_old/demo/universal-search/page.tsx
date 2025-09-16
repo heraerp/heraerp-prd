@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { UniversalSearch, type SearchResult } from '@/lib/dna/components/search/UniversalSearch'
+import { UniversalSearch, type SearchResult } from '@/src/lib/dna/components/search/UniversalSearch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -484,7 +484,7 @@ export default function UniversalSearchDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { UniversalSearch } from '@/lib/dna/components/search'
+{`import { UniversalSearch } from '@/src/lib/dna/components/search'
 
 // Basic usage
 <UniversalSearch

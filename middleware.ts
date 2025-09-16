@@ -7,6 +7,9 @@ import type { NextRequest } from 'next/server'
 // Handles public pages, demo pages with seed data, and customer subdomains
 // ================================================================================
 
+// Demo organization ID from environment
+const DEMO_ORG_ID = process.env.NEXT_PUBLIC_DEMO_ORG_ID || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
+
 // Public pages that don't require authentication
 const PUBLIC_PAGES = [
   '/',
@@ -25,14 +28,30 @@ const PUBLIC_PAGES = [
   '/auth/landing',
 ]
 
-// Demo routes with seed data (publicly accessible)
+// Demo routes with seed data (publicly accessible) - EXCLUDING salon-data
 const DEMO_ROUTES = [
   'salon',
-  'salon-data',
   'restaurant',
   'healthcare',
   'furniture',
   'retail',
+]
+
+// Salon app routes that should use demo mode
+const SALON_DEMO_ROUTES = [
+  '/salon',
+  '/dashboard',
+  '/appointments', 
+  '/pos',
+  '/customers',
+  '/settings',
+  '/reports',
+  '/whatsapp',
+  '/inventory',
+  '/finance',
+  '/admin',
+  '/accountant',
+  '/customer',
 ]
 
 // Reserved subdomains
@@ -72,8 +91,20 @@ export async function middleware(request: NextRequest) {
   // Parse subdomain
   const subdomain = getSubdomain(hostname)
   
-  // Create response headers
+  // Create response headers with org mode
   const requestHeaders = new Headers(request.headers)
+  
+  // Set organization mode based on subdomain
+  if (!subdomain || subdomain === 'www' || subdomain === 'demo' || subdomain === 'app') {
+    // Demo mode
+    requestHeaders.set('x-hera-org-mode', 'demo')
+    requestHeaders.set('x-hera-org-id', DEMO_ORG_ID)
+  } else if (!RESERVED_SUBDOMAINS.includes(subdomain)) {
+    // Tenant mode
+    requestHeaders.set('x-hera-org-mode', 'tenant')
+    requestHeaders.set('x-hera-tenant-slug', subdomain)
+  }
+  
   if (subdomain) {
     requestHeaders.set('x-hera-subdomain', subdomain)
   }
@@ -91,6 +122,15 @@ export async function middleware(request: NextRequest) {
       // Demo pages are publicly accessible with seed data
       requestHeaders.set('x-hera-demo-mode', 'true')
       requestHeaders.set('x-hera-demo-type', firstSegment)
+      return NextResponse.next({ headers: requestHeaders })
+    }
+    
+    // Check if it's a salon demo route (for direct /dashboard, /appointments access)
+    if (SALON_DEMO_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+      // These are salon app routes in demo mode
+      requestHeaders.set('x-hera-demo-mode', 'true')
+      requestHeaders.set('x-hera-demo-type', 'salon')
+      requestHeaders.set('x-hera-org-id', DEMO_ORG_ID)
       return NextResponse.next({ headers: requestHeaders })
     }
 

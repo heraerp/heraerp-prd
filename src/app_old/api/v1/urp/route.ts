@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
+import { UniversalReportEngine } from '@/src/lib/dna/urp/report-engine'
 import { headers } from 'next/headers'
 
 export async function POST(request: NextRequest) {

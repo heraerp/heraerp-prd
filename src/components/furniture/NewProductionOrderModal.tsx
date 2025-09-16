@@ -52,23 +52,29 @@ export default function NewProductionOrderModal({ open, onClose, organizationId,
 const [error, setError] = useState('')
 
 const [formData, setFormData] = useState({ productId: '', workCenterId: '', plannedQuantity: 1, plannedStartDate: format(new Date(), 'yyyy-MM-dd'), plannedEndDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), priority: 'medium', batchNumber: '', notes: '' }) // Load data using API endpoint const { data: responseData } = useUniversalEndpointData({ endpoint: '/api/furniture/production', organizationId, enabled: open && !!organizationId })
-
-const products = responseData?.entities?.filter((e: any) => e.entity_type === 'product') || [] const workCenters = responseData?.entities?.filter((e: any) => e.entity_type === 'work_center') || [] // Generate batch number const generateBatchNumber = () => { const date = new Date()
-
-const year = date.getFullYear().toString().slice(-2)
+  const products = responseData?.entities?.filter((e: any) => e.entity_type === 'product') || [] const workCenters = responseData?.entities?.filter((e: any) => e.entity_type === 'work_center') || [] // Generate batch number const generateBatchNumber = () => { const date = new Date()
+  const year = date.getFullYear().toString().slice(-2)
 
 const month = (date.getMonth() + 1).toString().padStart(2, '0')
 
 const day = date.getDate().toString().padStart(2, '0')
 
-const random = Math.random().toString(36).substring(2, 6).toUpperCase() return `BATCH-${year}${month}${day}-${random}` } // Reset form when modal opens useEffect(() => { if (open) {
+const random = Math.random().toString(36).substring(2, 6).toUpperCase() 
+    return `BATCH-${year}${month}${day}-${random}` }
+
+// Reset form when modal opens useEffect(() => { if (open) {
   setFormData({ productId: '', workCenterId: '', plannedQuantity: 1, plannedStartDate: format(new Date(), 'yyyy-MM-dd'), plannedEndDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), priority: 'medium', batchNumber: generateBatchNumber(), notes: '' }) setError(''  ) }, [open])
 
-const generateOrderCode = () => { const timestamp = Date.now().toString(36).toUpperCase() return `PROD-${timestamp}` }
+const generateOrderCode = () => { const timestamp = Date.now().toString(36).toUpperCase() 
+    return `PROD-${timestamp}` }
 
 const handleSubmit = async (e: React.FormEvent) => { e.preventDefault() setError('') if (!formData.productId) {
   setError('Please select a product to produce') return } if (!formData.workCenterId) {
-  setError('Please select a work center') return } setLoading(true) try { universalApi.setOrganizationId(organizationId) // Create the production order transaction const orderData = { organization_id: organizationId, transaction_type: 'production_order' as const, transaction_code: generateOrderCode(), transaction_date: new Date().toISOString(), source_entity_id: formData.productId, // Product to produce target_entity_id: formData.workCenterId, // Work center total_amount: formData.plannedQuantity, description: `Production order for ${products.find(p => p.id === formData.productId)?.entity_name}`, smart_code: 'HERA.FURNITURE.MFG.PROD.ORDER.v1', metadata: { batch_number: formData.batchNumber, planned_start: formData.plannedStartDate, planned_end: formData.plannedEndDate, priority: formData.priority, notes: formData.notes, status: 'planned', created_at: new Date().toISOString(  ) } // Create order with line items const result = await universalApi.createTransaction({ ...orderData, line_items: [ { organization_id: organizationId, line_number: 1, entity_id: formData.productId, quantity: formData.plannedQuantity.toString(), unit_price: 0, // Internal production line_amount: 0, description: `Output: ${products.find(p => p.id === formData.productId)?.entity_name}`, smart_code: 'HERA.FURNITURE.PROD.LINE.OUTPUT.v1', metadata: { line_type: 'output', completed_quantity: 0, scrap_quantity: 0 } } ] }) if (!result.success) {
+  setError('Please select a work center') return } setLoading(true) try { universalApi.setOrganizationId(organizationId) // Create the production order transaction
+  const orderData = { organization_id: organizationId, transaction_type: 'production_order' as const, transaction_code: generateOrderCode(), transaction_date: new Date().toISOString(), source_entity_id: formData.productId, // Product to produce target_entity_id: formData.workCenterId, // Work center total_amount: formData.plannedQuantity, description: `Production order for ${products.find(p => p.id === formData.productId)?.entity_name}`, smart_code: 'HERA.FURNITURE.MFG.PROD.ORDER.v1', metadata: { batch_number: formData.batchNumber, planned_start: formData.plannedStartDate, planned_end: formData.plannedEndDate, priority: formData.priority, notes: formData.notes, status: 'planned', created_at: new Date().toISOString(  ) }
+
+// Create order with line items
+  const result = await universalApi.createTransaction({ ...orderData, line_items: [ { organization_id: organizationId, line_number: 1, entity_id: formData.productId, quantity: formData.plannedQuantity.toString(), unit_price: 0, // Internal production line_amount: 0, description: `Output: ${products.find(p => p.id === formData.productId)?.entity_name}`, smart_code: 'HERA.FURNITURE.PROD.LINE.OUTPUT.v1', metadata: { line_type: 'output', completed_quantity: 0, scrap_quantity: 0 } } ] }) if (!result.success) {
   throw new Error(result.error || 'Failed to create production order'  ) // Success - close modal and refresh onSuccess?.() onClose()   } catch (err) {
   console.error('Error creating production order:', err) setError('Failed to create production order. Please try again.')   } finally {
     setLoading(false)

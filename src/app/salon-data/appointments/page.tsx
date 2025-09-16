@@ -11,7 +11,7 @@ import type { Organization } from '@/src/types/salon.types'
 // Dynamically import the AppointmentManagementDashboard to avoid SSR issues
 const AppointmentManagementDashboard = dynamicImport(
   () =>
-    import('@/components/salon/appointments/AppointmentManagementDashboard').then(
+    import('@/src/components/salon/appointments/AppointmentManagementDashboard').then(
       mod => mod.AppointmentManagementDashboard
     ),
   {

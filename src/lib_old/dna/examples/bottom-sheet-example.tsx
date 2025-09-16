@@ -1,9 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { BottomSheet, useBottomSheet } from '@/lib/dna/components/mobile/BottomSheet'
-import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'
-import { StatCardDNA } from '@/lib/dna/components/ui/stat-card-dna'
+import { BottomSheet, useBottomSheet } from '@/src/lib/dna/components/mobile/BottomSheet'
+import { HeraButtonDNA } from '@/src/lib/dna/components/ui/hera-button-dna'
+import { StatCardDNA } from '@/src/lib/dna/components/ui/stat-card-dna'
 import { DollarSign, TrendingUp, Users, ShoppingCart } from 'lucide-react'
 
 /**

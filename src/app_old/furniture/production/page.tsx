@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { cn } from '@/lib/utils'
 

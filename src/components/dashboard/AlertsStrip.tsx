@@ -6,6 +6,7 @@ import { AlertTriangle, FileText, Package, MessageSquareWarning, X } from 'lucid
 import { Alert, AlertDescription } from '@/src/components/ui/alert'
 import { Button } from '@/src/components/ui/button'
 import { cn } from '@/src/lib/utils'
+import { salonClasses } from '@/src/lib/theme/salon-theme'
 import { useClosingStatus } from '@/src/lib/api/closing'
 import { useInventoryAlerts } from '@/src/lib/api/inventory'
 import { useWhatsappFailures } from '@/src/lib/api/whatsapp'
@@ -33,7 +34,7 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
         icon: FileText,
         message: `${closingStatus.unposted_count} unposted journal entries`,
         link: '/finance/closing',
-        color: 'from-amber-500 to-orange-500'
+        color: 'from-amber-400 to-orange-400'
       })
     }
     
@@ -45,7 +46,7 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
         icon: Package,
         message: `${inventoryAlerts.overdue_receipts} overdue inventory receipts`,
         link: '/inventory/receipts',
-        color: 'from-orange-500 to-red-500'
+        color: 'from-orange-400 to-rose-400'
       })
     }
     
@@ -57,7 +58,7 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
         icon: MessageSquareWarning,
         message: `${whatsappFailures.failed_count} failed WhatsApp messages`,
         link: '/whatsapp/history?status=failed',
-        color: 'from-red-500 to-red-600'
+        color: 'from-rose-500 to-red-500'
       })
     }
     
@@ -81,7 +82,11 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
           <Alert
             key={alert.id}
             variant={alert.type === 'error' ? 'destructive' : 'default'}
-            className="relative pr-12"
+            className={cn(
+              "relative pr-12 border-purple-200/50 dark:border-purple-800/50",
+              "bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm",
+              "shadow-lg shadow-purple-500/10"
+            )}
           >
             <div className="flex items-center gap-3">
               <div className={cn(
@@ -94,7 +99,7 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
               <AlertDescription className="flex-1">
                 <Link
                   href={alert.link}
-                  className="font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-violet-500 rounded"
+                  className="font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500 rounded text-gray-700 dark:text-gray-300"
                 >
                   {alert.message}
                 </Link>

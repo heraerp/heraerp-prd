@@ -76,9 +76,9 @@ export default function NewProductionOrderPage() {
         if (field === 'quantity' || field === 'unitPrice') {
           updatedLine.lineTotal = updatedLine.quantity * updatedLine.unitPrice
         }
-        return updatedLine
+    return updatedLine
       }
-      return line
+    return line
     }))
   }
 

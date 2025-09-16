@@ -26,7 +26,7 @@ from 'date-fns'
 import { universalApi }
 from '@/lib/universal-api'
 import { useUniversalEndpointData }
-from '@/lib/dna/patterns/universal-api-endpoint-pattern'
+from '@/src/lib/dna/patterns/universal-api-endpoint-pattern'
 import { cn }
 from '@/lib/utils'
 

@@ -44,7 +44,7 @@ import {
 
 // Example lazy loading
 const LazyStatCard = lazy(() => 
-  import('@/lib/dna').then(module => ({ 
+  import('@/src/lib/dna').then(module => ({ 
     default: module.StatCardDNA 
   }))
 )
@@ -383,7 +383,7 @@ export default function ExportSystemDemoPage() {
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
 {`const Lazy${selectedComponent} = lazy(() => 
-  import('@/lib/dna').then(module => ({ 
+  import('@/src/lib/dna').then(module => ({ 
     default: module.${selectedComponent} 
   }))
 )`}
@@ -392,7 +392,7 @@ export default function ExportSystemDemoPage() {
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
-                            onClick={() => copyToClipboard(`const Lazy${selectedComponent} = lazy(() => import('@/lib/dna').then(module => ({ default: module.${selectedComponent} })))`)}
+                            onClick={() => copyToClipboard(`const Lazy${selectedComponent} = lazy(() => import('@/src/lib/dna').then(module => ({ default: module.${selectedComponent} })))`)}
                           >
                             <Copy className="w-3 h-3" />
                           </Button>

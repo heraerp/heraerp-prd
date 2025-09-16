@@ -32,6 +32,7 @@ const [isMobile, setIsMobile] = useState(true)
 
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
+    
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 

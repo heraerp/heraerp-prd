@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
 import { Skeleton } from '@/src/components/ui/skeleton'
 import { cn } from '@/src/lib/utils'
+import { salonClasses, salonTheme } from '@/src/lib/theme/salon-theme'
 import { useUniversalReports } from '@/src/lib/hooks/useUniversalReports'
 import { useAppointmentStats } from '@/src/lib/api/appointments'
 import { useWhatsappMetrics } from '@/src/lib/api/whatsapp'
@@ -83,7 +84,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
       title: "Today's Gross Sales",
       value: formatCurrency(grossSales),
       icon: DollarSign,
-      color: 'from-violet-500 to-violet-600',
+      color: 'from-purple-500 to-pink-500',
       loading: salesLoading,
       href: '/reports/sales/daily'
     },
@@ -91,7 +92,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
       title: "Today's Net Revenue",
       value: formatCurrency(netRevenue),
       icon: TrendingUp,
-      color: 'from-pink-500 to-pink-600',
+      color: 'from-pink-500 to-rose-500',
       loading: salesLoading,
       href: '/reports/finance/pnl'
     },
@@ -100,7 +101,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
       value: totalAppointments,
       subtitle: `${confirmedAppointments} confirmed, ${inProgressAppointments} in progress`,
       icon: Calendar,
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-purple-600 to-purple-500',
       loading: appointmentsLoading,
       href: '/appointments/calendar'
     },
@@ -108,7 +109,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
       title: 'Avg Ticket',
       value: formatCurrency(avgTicket),
       icon: Calculator,
-      color: 'from-indigo-500 to-indigo-600',
+      color: 'from-amber-500 to-orange-500',
       loading: salesLoading,
       href: '/reports/analytics'
     },
@@ -140,22 +141,32 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
           <Link
             key={index}
             href={kpi.href}
-            className="group focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 rounded-xl"
+            className="group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-xl"
           >
-            <Card className="relative overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 group-focus:shadow-lg group-focus:-translate-y-1">
+            <Card className={cn(
+              "relative overflow-hidden transition-all duration-300",
+              "hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02]",
+              "group-focus:shadow-2xl group-focus:-translate-y-1 group-focus:scale-[1.02]",
+              salonClasses.card,
+              salonClasses.hoverGlow
+            )}>
               <div className={cn(
-                "absolute inset-0 opacity-10 bg-gradient-to-br",
+                "absolute inset-0 opacity-20 bg-gradient-to-br",
                 kpi.color
               )} />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent dark:from-gray-900/50" />
               
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {kpi.title}
                 </CardTitle>
-                <Icon className={cn(
-                  "h-4 w-4 bg-gradient-to-br bg-clip-text",
-                  kpi.color
-                )} />
+                <div className={cn(
+                  "p-2 rounded-lg bg-gradient-to-br",
+                  kpi.color,
+                  "bg-opacity-20"
+                )}>
+                  <Icon className="h-4 w-4 text-white" />
+                </div>
               </CardHeader>
               
               <CardContent>
@@ -165,7 +176,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
                     {kpi.subtitle && <Skeleton className="h-3 w-32" />}
                   </div>
                 ) : (
-                  <>
+                  <div className="relative z-10">
                     <div className={cn(
                       "text-2xl font-bold bg-gradient-to-br bg-clip-text text-transparent",
                       kpi.color
@@ -173,11 +184,11 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
                       {kpi.value}
                     </div>
                     {kpi.subtitle && (
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                         {kpi.subtitle}
                       </p>
                     )}
-                  </>
+                  </div>
                 )}
               </CardContent>
             </Card>

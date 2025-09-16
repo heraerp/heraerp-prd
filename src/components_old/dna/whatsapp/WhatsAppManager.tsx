@@ -45,7 +45,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { WhatsAppDNA, WHATSAPP_SMART_CODES } from '@/lib/dna/whatsapp/whatsapp-dna'
+import { WhatsAppDNA, WHATSAPP_SMART_CODES } from '@/src/lib/dna/whatsapp/whatsapp-dna'
 
 interface Conversation {
   id: string

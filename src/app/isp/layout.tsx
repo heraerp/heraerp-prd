@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { NavigationLoadingProvider } from '@/components/navigation/NavigationLoadingProvider'
-import { NavigationLink } from '@/components/navigation/NavigationLink'
+import { NavigationLoadingProvider } from '@/src/components/navigation/NavigationLoadingProvider'
+import NavigationLink from '@/src/components/navigation/NavigationLink'
 import {
   Wifi,
   Users,

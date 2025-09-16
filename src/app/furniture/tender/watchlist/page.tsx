@@ -36,8 +36,9 @@ interface WatchlistItem {
   added_date: string
   notes?: string
 }
-  // Mock watchlist data - in production, this would come from relationships table
-const mockWatchlist: WatchlistItem[] = [ { tender_id: '1', tender_code: 'KFD/2025/WOOD/001', tender_name: 'Teak Wood Supply - Nilambur Range', department: 'Kerala Forest Department', closing_date: '2025-01-25', estimated_value: 4500000, emd_amount: 90000, alerts_enabled: true, priority: 'high', added_date: '2025-01-10', notes: 'Strong competition expected. Prepare aggressive bid.' }, { tender_id: '2', tender_code: 'KFD/2025/ROSE/002', tender_name: 'Rosewood Logs - Wayanad Division', department: 'Kerala Forest Department', closing_date: '2025-01-30', estimated_value: 6200000, emd_amount: 124000, alerts_enabled: true, priority: 'high', added_date: '2025-01-12', notes: 'Premium quality rosewood. High margin opportunity.' }, { tender_id: '3', tender_code: 'KSBC/2025/BAMBOO/001', tender_name: 'Bamboo Supply Contract - Annual', department: 'Kerala State Bamboo Corporation', closing_date: '2025-02-05', estimated_value: 2200000, emd_amount: 44000, alerts_enabled: false, priority: 'medium', added_date: '2025-01-08' }
+
+// Mock watchlist data - in production, this would come from relationships table
+  const mockWatchlist: WatchlistItem[] = [ { tender_id: '1', tender_code: 'KFD/2025/WOOD/001', tender_name: 'Teak Wood Supply - Nilambur Range', department: 'Kerala Forest Department', closing_date: '2025-01-25', estimated_value: 4500000, emd_amount: 90000, alerts_enabled: true, priority: 'high', added_date: '2025-01-10', notes: 'Strong competition expected. Prepare aggressive bid.' }, { tender_id: '2', tender_code: 'KFD/2025/ROSE/002', tender_name: 'Rosewood Logs - Wayanad Division', department: 'Kerala Forest Department', closing_date: '2025-01-30', estimated_value: 6200000, emd_amount: 124000, alerts_enabled: true, priority: 'high', added_date: '2025-01-12', notes: 'Premium quality rosewood. High margin opportunity.' }, { tender_id: '3', tender_code: 'KSBC/2025/BAMBOO/001', tender_name: 'Bamboo Supply Contract - Annual', department: 'Kerala State Bamboo Corporation', closing_date: '2025-02-05', estimated_value: 2200000, emd_amount: 44000, alerts_enabled: false, priority: 'medium', added_date: '2025-01-08' }
 ]
 
 export default function WatchlistPage() {
@@ -55,7 +56,8 @@ const filteredWatchlist = watchlist.filter(item => {
 
 const matchesSearch =item.tender_code.toLowerCase().includes(searchTerm.toLowerCase()) || item.tender_name.toLowerCase().includes(searchTerm.toLowerCase()) || item.department.toLowerCase().includes(searchTerm.toLowerCase())
 
-const matchesFilter = !showAlertsOnly || item.alerts_enabled return matchesSearch && matchesFilter })
+const matchesFilter = !showAlertsOnly || item.alerts_enabled 
+    return matchesSearch && matchesFilter })
 
 const handleToggleAlerts = (tenderId: string) => { setWatchlist(prev => prev.map(item => item.tender_id === tenderId ? { ...item, alerts_enabled: !item.alerts_enabled } : item ) ) toast({ title: 'Alert Settings Updated', description: 'Notification preferences have been saved.' }  )
 

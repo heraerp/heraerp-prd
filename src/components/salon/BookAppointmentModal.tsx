@@ -43,6 +43,7 @@ import {
   X
 } from 'lucide-react'
 import { cn } from '@/src/lib/utils'
+import { salonClasses, salonTheme } from '@/src/lib/theme/salon-theme'
 import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
 import { parseISO, isWithinInterval } from 'date-fns'
 import { SchedulingAssistant } from './SchedulingAssistant'

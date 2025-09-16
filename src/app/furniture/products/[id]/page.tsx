@@ -43,14 +43,14 @@ const loadProductData = async () => {
   try {
     setLoading(true);
     // Get product details
-    const { data: entities } = await universalApi.read({ table: 'core_entities', organizationId: currentOrganization!.id })
+  const { data: entities } = await universalApi.read({ table: 'core_entities', organizationId: currentOrganization!.id })
 
 const productData = entities?.find((e: any) => e.id === productId);
     if (!productData) throw new Error('Product not found');
     setProduct(productData);
     
     // Get dynamic data
-    const { data: dynamicFields } = await universalApi.read({ table: 'core_dynamic_data', organizationId: currentOrganization!.id })
+  const { data: dynamicFields } = await universalApi.read({ table: 'core_dynamic_data', organizationId: currentOrganization!.id })
 
 const productFields = dynamicFields?.filter((f: any) => f.entity_id === productId) || [];
     setDynamicData(productFields);

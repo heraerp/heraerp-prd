@@ -41,9 +41,14 @@ const [error, setError] = useState<string | null>(null)
 
 const abortRef = useRef(false)
 
-const timeoutRef = useRef<NodeJS.Timeout>() // Start loading process const start = async () => { abortRef.current = false setCurrentStageIndex(0) setProgress(0) setIsComplete(false) setError(null) setStageStates(stages.map(stage => ({ id: stage.id, status: 'pending' }))  ) // Stop loading process const stop = () => { abortRef.current = true if (timeoutRef.current) {
-  clearTimeout(timeoutRef.current  ) } // Process stages useEffect(() => { if (currentStageIndex < 0 || currentStageIndex >= stages.length) return if (abortRef.current) return const processStage = async () => { const stage = stages[currentStageIndex] // Update stage status to loading setStageStates(prev => prev.map(s => (s.id === stage.id ? { ...s, status: 'loading' } : s))) try { // Simulate stage duration or use provided duration const duration = stage.duration || 1000 + Math.random() * 2000 await new Promise((resolve, reject) => { timeoutRef.current = setTimeout(() => { if (abortRef.current) {
-  reject(new Error('Loading aborted')  ) else { resolve(undefined  ) }, duration  )) // Update stage status to completed setStageStates(prev => prev.map(s => (s.id === stage.id ? { ...s, status: 'completed' } : s)) ) // Update progress const newProgress = ((currentStageIndex + 1) / stages.length) * 100 setProgress(newProgress) // Move to next stage or complete if (currentStageIndex < stages.length - 1) {
+const timeoutRef = useRef<NodeJS.Timeout>() // Start loading process const start = async () => { abortRef.current = false setCurrentStageIndex(0) setProgress(0) setIsComplete(false) setError(null) setStageStates(stages.map(stage => ({ id: stage.id, status: 'pending' }))  ) // Stop loading process
+  const stop = () => { abortRef.current = true if (timeoutRef.current) {
+  clearTimeout(timeoutRef.current  ) }
+
+// Process stages useEffect(() => { if (currentStageIndex < 0 || currentStageIndex >= stages.length) return if (abortRef.current) return const processStage = async () => { const stage = stages[currentStageIndex] // Update stage status to loading setStageStates(prev => prev.map(s => (s.id === stage.id ? { ...s, status: 'loading' } : s))) try { // Simulate stage duration or use provided duration
+  const duration = stage.duration || 1000 + Math.random() * 2000 await new Promise((resolve, reject) => { timeoutRef.current = setTimeout(() => { if (abortRef.current) {
+  reject(new Error('Loading aborted')  ) else { resolve(undefined  ) }, duration  )) // Update stage status to completed setStageStates(prev => prev.map(s => (s.id === stage.id ? { ...s, status: 'completed' } : s)) ) // Update progress
+  const newProgress = ((currentStageIndex + 1) / stages.length) * 100 setProgress(newProgress) // Move to next stage or complete if (currentStageIndex < stages.length - 1) {
   setCurrentStageIndex(prev => prev + 1  ) else { setIsComplete(true) onComplete?.(  )   } catch (err) {
   const errorMessage = err instanceof Error ? err.message : 'Unknown error' // Update stage status to error setStageStates(prev => prev.map(s => (s.id === stage.id ? { ...s, status: 'error', error: errorMessage } : s)) ) setError(errorMessage) onError?.(err instanceof Error ? err : new Error(errorMessage)  ) } processStage(  ), [currentStageIndex, stages, onComplete, onError]) // Auto start on mount useEffect(() => { if (autoStart) {
   start(  ) return () => { stop(  ) }, [autoStart])

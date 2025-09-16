@@ -22,26 +22,22 @@ import { cn } from '@/src/lib/utils'
 
 export default function ProductionTracking() {
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
-          // Load active production orders const { data: productionOrders } = useUniversalData({ table: 'universal_transactions', filter: t => t.transaction_type === 'production_order' && t.smart_code?.includes('HERA.MFG.PROD'), sort: universalSorters.byCreatedDesc, organizationId, enabled: !!organizationId })
+          // Load active production orders
+  const { data: productionOrders } = useUniversalData({ table: 'universal_transactions', filter: t => t.transaction_type === 'production_order' && t.smart_code?.includes('HERA.MFG.PROD'), sort: universalSorters.byCreatedDesc, organizationId, enabled: !!organizationId })
 
   // Load work centers 
-  
   const { data: workCenters } = useUniversalData({ table: 'core_entities', filter: universalFilters.byEntityType('work_center'), organizationId, enabled: !!organizationId })
 
   // Load products 
-  
   const { data: products } = useUniversalData({ table: 'core_entities', filter: universalFilters.byEntityType('product'), organizationId, enabled: !!organizationId })
 
   // Load transaction lines for real-time tracking 
-  
   const { data: transactionLines } = useUniversalData({ table: 'universal_transaction_lines', organizationId, enabled: !!organizationId })
 
   // Load relationships for status 
-  
   const { data: relationships } = useUniversalData({ table: 'core_relationships', filter: r => r.relationship_type === 'has_status', organizationId, enabled: !!organizationId })
 
   // Load status entities 
-  
   const { data: statusEntities } = useUniversalData({ table: 'core_entities', filter: universalFilters.byEntityType('workflow_status'), organizationId, enabled: !!organizationId
   })
 
@@ -49,11 +45,11 @@ export default function ProductionTracking() {
   return <OrganizationLoading />
   }
 
-  // Get active orders only const activeOrders = productionOrders.filter(order => {
-  const statusRel =relationships.find(r => r.from_entity_id === order.id)
-  const status = statusRel ? statusEntities.find(s => s.id === statusRel.to_entity_id) : null return status?.entity_code === 'STATUS-IN_PROGRESS' })
+// Get active orders only const activeOrders = productionOrders.filter(order => {
+  const statusRel =relationships.find(r => r.from_entity_id === order.id);
+const status = statusRel ? statusEntities.find(s => s.id === statusRel.to_entity_id) : null return status?.entity_code === 'STATUS-IN_PROGRESS' })
           // Overall statistics
-const stats ={
+  const stats ={
   activeOperations: activeOrders.length,
   unitsInProgress: activeOrders.reduce((sum,
   o) => sum + (o.total_amount || 0),
@@ -74,15 +70,14 @@ const stats ={
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/50 backdrop-blur-sm border-[var(--color-border)]/50"> <div className="flex items-center justify-between mb-2"> <Gauge className="h-8 w-8 text-[#37353E]" /> <span className="text-sm font-medium text-[var(--color-text-primary)]">{stats.avgEfficiency}%</span> </div> <Progress value={stats.avgEfficiency} className="h-2 bg-muted-foreground/10" /> <p className="text-sm text-[var(--color-text-secondary)] mt-2">Average Efficiency</p> </Card>
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/50 backdrop-blur-sm border-[var(--color-border)]/50"> <div className="flex items-center justify-between mb-2"> <Clock className="h-8 w-8 text-[#37353E]" /> <span className="text-sm font-medium text-[var(--color-text-primary)]">{stats.onTimeRate}%</span> </div> <Progress value={stats.onTimeRate} className="h-2 bg-muted-foreground/10" /> <p className="text-sm text-[var(--color-text-secondary)] mt-2">On-Time Rate</p> </Card> </div> 
         {/* Work Center Status Grid  */}
-        <div> <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)] mb-4">Work Center Status</h2> <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> {workCenters.map(center => { // Find active order for this work center const activeOrder = activeOrders.find(o => o.target_entity_id === center.id)
+        <div> <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)] mb-4">Work Center Status</h2> <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> {workCenters.map(center => { // Find active order for this work center const activeOrder = activeOrders.find(o => o.target_entity_id === center.id);
+  const product = activeOrder ? products.find(p => p.id === activeOrder.source_entity_id) : null
 
-const product = activeOrder ? products.find(p => p.id === activeOrder.source_entity_id) : null
-
-const orderLines =activeOrder ? transactionLines.filter(l => l.transaction_id === activeOrder.id) : [] const currentOperation = orderLines.find( l => (l.metadata as any)?.status === 'in_progress' )
-
+const orderLines =activeOrder ? transactionLines.filter(l => l.transaction_id === activeOrder.id) : [] const currentOperation = orderLines.find( l => (l.metadata as any)?.status === 'in_progress' );
 const completedOperations = orderLines.filter( l => (l.metadata as any)?.status === 'completed' ).length
 
-const totalOperations =orderLines.length || 1 const progress = (completedOperations / totalOperations) * 100 return (
+const totalOperations =orderLines.length || 1 const progress = (completedOperations / totalOperations) * 100 
+    return (
     <Card key={center.id} className="p-6 bg-[var(--color-body)]/50 backdrop-blur-sm border-[var(--color-border)]/50" > <div className="flex items-start justify-between mb-4"> <div> <h3 className="bg-[var(--color-body)] font-semibold text-[var(--color-text-primary)]">{center.entity_name}</h3> <p className="text-sm text-[var(--color-text-secondary)]"> {(center.metadata as any)?.location || 'Shop Floor'} </p> </div> <Badge className={ activeOrder ? 'bg-green-500/10 text-green-400' : 'bg-gray-9000/10 text-[var(--color-text-secondary)]' } >
           {activeOrder ? 'Running' : 'Idle'} 
         </Badge> </div> {activeOrder ? (
@@ -103,14 +98,12 @@ const totalOperations =orderLines.length || 1 const progress = (completedOperati
         {/* Active Production Orders  */}
         <div> <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)] mb-4">Active Production Orders</h2> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] bg-[var(--color-body)]/50 backdrop-blur-sm border-[var(--color-border)]/50"> <div className="p-6"> <div className="space-y-4"> {activeOrders.length === 0 ? (
             <div className="bg-[var(--color-body)] text-center text-[var(--color-text-secondary)] py-8"> No active production orders at this time </div> ) : ( activeOrders.map(order => {
-  const product =products.find(p => p.id === order.source_entity_id)
-  const workCenter = workCenters.find(w => w.id === order.target_entity_id)
-
-const orderLines = transactionLines.filter(l => l.transaction_id === order.id)
-
-const completedQty = orderLines.reduce( (sum, line) => sum + ((line.metadata as any)?.completed_quantity || 0), 0 )
-
-const progress = order.total_amount ? (completedQty / order.total_amount) * 100 : 0 return (
+  const product =products.find(p => p.id === order.source_entity_id);
+const workCenter = workCenters.find(w => w.id === order.target_entity_id);
+const orderLines = transactionLines.filter(l => l.transaction_id === order.id);
+const completedQty = orderLines.reduce( (sum, line) => sum + ((line.metadata as any)?.completed_quantity || 0), 0 );
+const progress = order.total_amount ? (completedQty / order.total_amount) * 100 : 0 
+    return (
     <div key={order.id} className="p-4 bg-[var(--color-body)]/50 rounded-lg border border-[var(--color-border)]/50" > <div className="flex items-center justify-between"> <div className="flex-1"> <div className="bg-[var(--color-body)] flex items-center gap-4"> <div> <p className="font-semibold text-[var(--color-text-primary)]">{order.transaction_code}</p> <p className="text-sm text-[var(--color-text-secondary)]"> {product?.entity_name} - {order.total_amount} units </p> </div> <Badge className="bg-green-500/10 text-green-400 animate-pulse">
           In Progress 
         </Badge> </div>
@@ -118,9 +111,7 @@ const progress = order.total_amount ? (completedQty / order.total_amount) * 100 
         <div> <p className="text-xs text-[var(--color-text-secondary)]">Completed</p> <p className="text-sm font-medium text-[var(--color-text-primary)]"> {completedQty} / {order.total_amount} units </p> </div>
         <div> <p className="text-xs text-[var(--color-text-secondary)]">Time Elapsed</p> <p className="text-sm font-medium text-[var(--color-text-primary)]">2h 35m</p> </div> </div>
         <div className="mt-3"> <Progress value={progress} className="h-3 bg-muted-foreground/10" /> </div> </div>
-        <div className="bg-[var(--color-body)] ml-4"> <Link href={`/furniture/production/orders/${order.id}/track`}> <Button variant="outline" size="sm"> View Details </Button> </Link> </div> </div>
-      </div>
-      )
+        <div className="bg-[var(--color-body)] ml-4"> <Link href={`/furniture/production/orders/${order.id}/track`}> <Button variant="outline" size="sm"> View Details </Button> </Link> </div> </div>      </div>      )`
     }) )} </div> </div> </Card> </div> 
         {/* Recent Activities  */}
         <div> <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)] mb-4">Recent Activities</h2> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] bg-[var(--color-body)]/50 backdrop-blur-sm border-[var(--color-border)]/50"> <div className="p-6"> <div className="bg-[var(--color-body)] space-y-3"> <div className="bg-[var(--color-body)] flex items-start gap-3 text-sm"> <div className="mt-0.5 p-1.5 bg-green-500/10 rounded"> <CheckCircle className="h-4 w-4 text-green-500" /> </div>

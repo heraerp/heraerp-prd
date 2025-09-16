@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createDigitalAccountantService } from '@/lib/digital-accountant'
 import { createAnalyticsChatStorage } from '@/lib/analytics-chat-storage'
 import { supabaseAdmin } from '@/lib/supabase-server'
-// import { FinanceEventProcessor } from '@/lib/dna/integration/finance-event-processor'
+// import { FinanceEventProcessor } from '@/src/lib/dna/integration/finance-event-processor'
 
 // Smart code patterns for intent detection
 const INTENT_PATTERNS = {

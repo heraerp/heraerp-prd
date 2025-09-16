@@ -264,6 +264,12 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
               if (demoRouteMap[basePath]) {
                 selectedOrg = allDemoOrgs.find(o => o.subdomain === demoRouteMap[basePath]) || null
               }
+              
+              // Check for salon app routes (dashboard, appointments, etc.)
+              const salonAppRoutes = ['/dashboard', '/appointments', '/pos', '/customers', '/settings', '/reports', '/whatsapp', '/inventory', '/finance', '/admin', '/accountant', '/customer']
+              if (salonAppRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+                selectedOrg = allDemoOrgs.find(o => o.subdomain === 'demo-salon') || null
+              }
             }
 
             // Set the selected organization or default to first one
@@ -332,6 +338,38 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
           setSession(initialSession)
           setUser(createUserFromAuth(initialSession.user))
           await loadUserOrganizations(initialSession.user)
+        } else {
+          // No session, check if we're on a salon demo route
+          const pathname = window.location.pathname
+          const salonAppRoutes = ['/dashboard', '/appointments', '/pos', '/customers', '/settings', '/reports', '/whatsapp', '/inventory', '/finance', '/admin', '/accountant', '/customer']
+          
+          if (pathname.startsWith('/salon') || salonAppRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+            // Create demo user and organization for salon routes
+            const demoUser: DualUser = {
+              id: 'demo-user-salon',
+              auth_user_id: 'demo-user-salon',
+              email: 'demo@herasalon.com',
+              name: 'Demo User',
+              full_name: 'Demo Salon User',
+              role: 'owner'
+            }
+            
+            const demoOrg: Organization = {
+              id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', // Demo org ID
+              name: 'Hair Talkz Demo Salon',
+              subdomain: 'demo-salon',
+              type: 'salon',
+              subscription_plan: 'demo',
+              role: 'owner',
+              permissions: ['*'],
+              is_active: true
+            }
+            
+            setUser(demoUser)
+            setOrganizations([demoOrg])
+            setCurrentOrganization(demoOrg)
+            localStorage.setItem('current-organization-id', demoOrg.id)
+          }
         }
       } catch (error) {
         console.error('Failed to initialize auth:', error)

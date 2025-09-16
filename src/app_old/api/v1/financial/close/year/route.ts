@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createFiscalCloseEngine } from '@/lib/dna/fiscal-year/fiscal-close-engine'
+import { createFiscalCloseEngine } from '@/src/lib/dna/fiscal-year/fiscal-close-engine'
 import { z } from 'zod'
 
 // Request validation schema

@@ -11,7 +11,7 @@ import { FileText, Search, Filter, Plus, TrendingUp, AlertCircle, Clock, Trophy,
 import Link from 'next/link'
 import { useFurnitureOrg } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { StatCardGrid } from '@/src/lib/dna/components/ui/stat-card-dna'
 import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import { universalApi } from '@/lib/universal-api'
 import { tenderService } from '@/lib/services/tender-service'

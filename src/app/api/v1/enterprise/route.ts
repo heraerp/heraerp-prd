@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
 
         // Store sensitive data encrypted
         if (data.secrets) {
-          const { kmsProvider } = await import('@/lib/crypto/kms-provider')
+          const { kmsProvider } = await import('@/src/lib/crypto/kms-provider')
           for (const [key, value] of Object.entries(data.secrets)) {
             const encrypted = await kmsProvider.encrypt(value as string, {
               organization_id: ctx.organizationId!,
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
 
       case 'update_rbac_policy':
         // Example: Update RBAC policy
-        const { rbacPolicy } = await import('@/lib/rbac/policy-engine')
+        const { rbacPolicy } = await import('@/src/lib/rbac/policy-engine')
         await rbacPolicy.loadPolicies(data.policy_yaml, ctx.organizationId!)
 
         result = { status: 'policy_updated' }
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
 
       case 'trigger_guardrail_check':
         // Example: Trigger guardrail validation
-        const { guardrailAutoFix } = await import('@/lib/guardrails/auto-fix-service')
+        const { guardrailAutoFix } = await import('@/src/lib/guardrails/auto-fix-service')
         const validation = await guardrailAutoFix.autoFixPayload(data.table, data.payload, {
           user_id: ctx.userId,
           session_org_id: ctx.organizationId,

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { SmartCodePicker, type SmartCode } from '@/lib/dna/components/smart-code/SmartCodePicker'
+import { SmartCodePicker, type SmartCode } from '@/src/lib/dna/components/smart-code/SmartCodePicker'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -393,7 +393,7 @@ export default function SmartCodePickerDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { SmartCodePicker } from '@/lib/dna/components/smart-code'
+{`import { SmartCodePicker } from '@/src/lib/dna/components/smart-code'
 
 // Basic usage
 <SmartCodePicker

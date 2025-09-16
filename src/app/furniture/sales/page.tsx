@@ -94,8 +94,9 @@ const getStatusLabel = (status: string) => {
       default:
         return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, ' ')
     }
-  } 
-  // Show loading state while organization is loading
+  }
+
+// Show loading state while organization is loading
   if (orgLoading) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
@@ -107,8 +108,9 @@ const getStatusLabel = (status: string) => {
         </div>
       </div>
     )
-  } 
-  // Show skeleton while data is loading
+  }
+
+// Show skeleton while data is loading
   if (loading && recentOrders.length === 0) {
     return (
       <div className="min-h-screen bg-[var(--color-body)]">
@@ -117,8 +119,9 @@ const getStatusLabel = (status: string) => {
         </div>
       </div>
     )
-  } 
-  // Show error state
+  }
+
+// Show error state
   if (error) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">

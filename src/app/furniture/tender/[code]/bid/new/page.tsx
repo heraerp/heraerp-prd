@@ -32,7 +32,8 @@ interface BidFormData {
   qualityAssurance: string // Commercial Details
   priceBreakdown: { materialCost: string transportCost: string laborCost: string overheads: string profit: string
 }
-  // Compliance documentsChecked: string[] declarations: string[]
+
+// Compliance documentsChecked: string[] declarations: string[]
 }
 
 const requiredDocuments = [ { id: 'pan', label: 'PAN Card' }, { id: 'gst', label: 'GST Registration' }, { id: 'trade_license', label: 'Trade License' }, { id: 'bank_statement', label: 'Bank Statement (Last 3 months)' }, { id: 'experience_cert', label: 'Experience Certificate' }, { id: 'quality_cert', label: 'Quality Certification' }, { id: 'emd_receipt', label: 'EMD Receipt' }, { id: 'tender_fee', label: 'Tender Fee Receipt' }
@@ -59,7 +60,8 @@ const [bidStrategy, setBidStrategy] = useState('moderate')
 const [showAiInsights, setShowAiInsights] = useState(true)
 
 const calculateTotalBid = () => {
-  const breakdown =formData.priceBreakdown const total = parseFloat(breakdown.materialCost || '0') + parseFloat(breakdown.transportCost || '0') + parseFloat(breakdown.laborCost || '0') + parseFloat(breakdown.overheads || '0') + parseFloat(breakdown.profit || '0') return total }
+  const breakdown =formData.priceBreakdown const total = parseFloat(breakdown.materialCost || '0') + parseFloat(breakdown.transportCost || '0') + parseFloat(breakdown.laborCost || '0') + parseFloat(breakdown.overheads || '0') + parseFloat(breakdown.profit || '0') 
+    return total }
 
 const handleSubmitDraft = async () => { setLoading(true) try {
   const bidData ={ entity_type: 'HERA.FURNITURE.TENDER.BID.v1', entity_code: `BID/KFW/${new Date().getFullYear()}/${Date.now()}`, entity_name: `Bid for ${code}`, smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.v1', metadata: { tender_code: code, bid_amount: parseFloat(formData.bidAmount), validity_period_days: parseInt(formData.validityPeriod), delivery_period_days: parseInt(formData.deliveryPeriod), payment_terms: formData.paymentTerms, bid_strategy: bidStrategy, technical_details: { capability: formData.technicalCapability, experience: formData.pastExperience, quality: formData.qualityAssurance }, price_breakdown: formData.priceBreakdown, documents_attached: formData.documentsChecked, declarations_accepted: formData.declarations, status: 'draft' } }
@@ -80,7 +82,8 @@ const result = await universalApi.createEntity(bidData)
   }
 }
 
-  return (
+  
+    return (
     <div> <FurniturePageHeader title={`Prepare Bid for ${code}`} subtitle="Complete all sections to submit your bid" /> <div className="bg-[var(--color-body)] grid grid-cols-1 lg:grid-cols-3 gap-6"> <div className="lg:col-span-2"> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <Tabs value={activeTab} onValueChange={setActiveTab}> <TabsList className="grid grid-cols-4 w-full"> <TabsTrigger value="basic">Basic</TabsTrigger> <TabsTrigger value="technical">Technical</TabsTrigger> <TabsTrigger value="commercial">Commercial</TabsTrigger> <TabsTrigger value="documents">Documents</TabsTrigger> </TabsList> <TabsContent value="basic" className="bg-[var(--color-body)] space-y-4 mt-6"> <div> <Label htmlFor="bidAmount">Bid Amount (₹)</Label> <Input id="bidAmount" type="number" value={formData.bidAmount} onChange={e => setFormData({ ...formData, bidAmount: e.target.value })} placeholder="Enter total bid amount" className="bg-[var(--color-body)] text-lg font-semibold" /> <p className="text-sm text-[var(--color-text-secondary)] mt-1"> Calculated total: ₹{calculateTotalBid().toLocaleString('en-IN')} </p> </div>
         <div> <Label>Bid Strategy</Label> <RadioGroup value={bidStrategy} onValueChange={setBidStrategy}> <div className="bg-[var(--color-body)] flex items-center space-x-2"> <RadioGroupItem value="aggressive" id="aggressive" /> <Label htmlFor="aggressive">Aggressive (Low margin, high win chance)</Label> </div>
         <div className="bg-[var(--color-body)] flex items-center space-x-2"> <RadioGroupItem value="moderate" id="moderate" /> <Label htmlFor="moderate">Moderate (Balanced approach)</Label> </div>

@@ -9,6 +9,7 @@ const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
 const { glob } = require('glob')
+const { execSync } = require('child_process')
 
 // Sacred Six compliance patterns
 const SACRED_SIX_TABLES = [
@@ -55,6 +56,21 @@ async function checkSacredSixCompliance() {
 
   let violations = 0
   let warnings = 0
+
+  // Check for legacy salon-data references
+  console.log(chalk.white.bold('Checking for legacy salon-data references...'))
+  try {
+    const legacyRefs = execSync(`grep -r "salon-data" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" --exclude-dir=node_modules --exclude-dir=.next . || true`, { encoding: 'utf8' })
+    if (legacyRefs.trim()) {
+      console.log(chalk.red('❌ Legacy salon-data references detected:'))
+      console.log(chalk.red(legacyRefs))
+      violations++
+    } else {
+      console.log(chalk.green('✅ No legacy salon-data references found'))
+    }
+  } catch (error) {
+    console.log(chalk.yellow('⚠️  Could not check for legacy references'))
+  }
 
   // Check for forbidden SQL patterns
   console.log(chalk.white.bold('Checking for Sacred Six violations...'))

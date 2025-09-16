@@ -59,7 +59,8 @@ const [apiEndpoints, setApiEndpoints] = useState<ApiEndpoint[]>([])
 
 const [queryPerformance, setQueryPerformance] = useState<QueryPerformance[]>([])
 
-const [alerts, setAlerts] = useState<string[]>([]) // Default metrics if no onRefresh provided const defaultMetrics: PerformanceMetric[] = [
+const [alerts, setAlerts] = useState<string[]>([]) // Default metrics if no onRefresh provided
+  const defaultMetrics: PerformanceMetric[] = [
   { label: 'Avg Response Time', value: 245, unit: 'ms', trend: 'down', status: 'good' },
   { label: 'Requests/sec', value: 142, unit: 'req/s', trend: 'up', status: 'good' },
   { label: 'Error Rate', value: 0.3, unit: '%', trend: 'stable', status: 'good' },
@@ -76,9 +77,11 @@ const [alerts, setAlerts] = useState<string[]>([]) // Default metrics if no onRe
   console.error('Failed to fetch performance data:', error)   } finally {
     setLoading(false)
   }
-} // Initial fetch and setup interval useEffect(() => { fetchData()
+}
 
-const interval = setInterval(fetchData, refreshInterval * 1000) return () => clearInterval(interval  ), [refreshInterval])
+// Initial fetch and setup interval useEffect(() => { fetchData()
+  const interval = setInterval(fetchData, refreshInterval * 1000) 
+    return () => clearInterval(interval  ), [refreshInterval])
 
 const getStatusColor = (status?: PerformanceMetric['status']) => { switch (status) {
   case 'good': return 'text-green-600 dark:text-green-400' case 'warning': return 'text-yellow-600 dark:text-yellow-400' case 'critical': return 'text-red-600 dark:text-red-400' default: return 'text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]' } }

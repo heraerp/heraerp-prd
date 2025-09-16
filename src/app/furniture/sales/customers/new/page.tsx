@@ -43,20 +43,24 @@ const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextArea
 const generateCustomerCode = () => {
   const prefix ='CUST' const timestamp = Date.now().toString(36).toUpperCase().slice(-4)
 
-const random = Math.random().toString(36).toUpperCase().slice(2, 5) return `${prefix}-${timestamp}-${random}` }
+const random = Math.random().toString(36).toUpperCase().slice(2, 5) 
+    return `${prefix}-${timestamp}-${random}` }
 
 const handleSubmit = async (e: React.FormEvent) => { e.preventDefault() setError('') if (!formData.entity_name) {
   setError('Please enter customer name') return } setLoading(true) try { // Set organization context universalApi.setOrganizationId(organizationId!)
-          // Generate customer code if not provided const customerCode = formData.entity_code || generateCustomerCode()
+          // Generate customer code if not provided
+  const customerCode = formData.entity_code || generateCustomerCode()
           // Create the customer entity
   const customerData ={ entity_type: 'customer' as const, entity_name: formData.entity_name, entity_code: customerCode, smart_code: 'HERA.FURNITURE.CUSTOMER.ENTITY.v1', metadata: { industry: 'furniture', customer_type: 'business', source: 'direct', created_at: new Date().toISOString(  ) }
 
 const customer = await universalApi.createEntity(customerData)
           // Now create all the dynamic data fields
-  const dynamicFields =[ // Contact Information { field_name: 'email', field_value_text: formData.email, field_type: 'text' as const }, { field_name: 'phone', field_value_text: formData.phone, field_type: 'text' as const }, { field_name: 'mobile', field_value_text: formData.mobile, field_type: 'text' as const }, { field_name: 'contact_person', field_value_text: formData.contact_person, field_type: 'text' as const }, // Address { field_name: 'address', field_value_text: formData.address, field_type: 'text' as const }, { field_name: 'city', field_value_text: formData.city, field_type: 'text' as const }, { field_name: 'state', field_value_text: formData.state, field_type: 'text' as const }, { field_name: 'pincode', field_value_text: formData.pincode, field_type: 'text' as const }, // Business Information { field_name: 'gstin', field_value_text: formData.gstin, field_type: 'text' as const }, { field_name: 'pan_number', field_value_text: formData.pan_number, field_type: 'text' as const }, // Financial { field_name: 'credit_limit', field_value_number: formData.credit_limit ? parseFloat(formData.credit_limit) : 0, field_type: 'number' as const }, { field_name: 'payment_terms', field_value_text: formData.payment_terms, field_type: 'text' as const }, // Additional { field_name: 'notes', field_value_text: formData.notes, field_type: 'text' as const } ] // Save all dynamic fields for (const field of dynamicFields) {
+  const dynamicFields =[ // Contact Information { field_name: 'email', field_value_text: formData.email, field_type: 'text' as const }, { field_name: 'phone', field_value_text: formData.phone, field_type: 'text' as const }, { field_name: 'mobile', field_value_text: formData.mobile, field_type: 'text' as const }, { field_name: 'contact_person', field_value_text: formData.contact_person, field_type: 'text' as const }, // Address { field_name: 'address', field_value_text: formData.address, field_type: 'text' as const }, { field_name: 'city', field_value_text: formData.city, field_type: 'text' as const }, { field_name: 'state', field_value_text: formData.state, field_type: 'text' as const }, { field_name: 'pincode', field_value_text: formData.pincode, field_type: 'text' as const }, // Business Information { field_name: 'gstin', field_value_text: formData.gstin, field_type: 'text' as const }, { field_name: 'pan_number', field_value_text: formData.pan_number, field_type: 'text' as const }, // Financial { field_name: 'credit_limit', field_value_number: formData.credit_limit ? parseFloat(formData.credit_limit) : 0, field_type: 'number' as const }, { field_name: 'payment_terms', field_value_text: formData.payment_terms, field_type: 'text' as const }, // Additional { field_name: 'notes', field_value_text: formData.notes, field_type: 'text' as
+  const } ] // Save all dynamic fields for (const field of dynamicFields) {
   if (field.field_value_text || field.field_value_number) {
   await universalApi.setDynamicField( customer.data.id, field.field_name, field.field_type === 'number' ? field.field_value_number! : field.field_value_text!, `HERA.FURNITURE.CUSTOMER.${field.field_name.toUpperCase()}.v1`   ) }
-  // Navigate to the customers list router.push('/furniture/sales/customers')   } catch (err) {
+
+// Navigate to the customers list router.push('/furniture/sales/customers')   } catch (err) {
   console.error('Error creating customer:', err) setError('Failed to create customer. Please try again.')   } finally {
     setLoading(false)
   }

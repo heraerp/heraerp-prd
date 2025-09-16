@@ -64,10 +64,8 @@ const [productionStatus, setProductionStatus] = useState<ProductionStatus>({ pla
 useEffect(() => { loadManufacturingOrders(  ), [])
 
 const loadManufacturingOrders = async () => { try { setLoading(true) // Load manufacturing orders const ordersData = await universalApi.read({ table: 'universal_transactions', filter: { transaction_type: 'manufacturing_order' } })
-
-const formattedOrders: ManufacturingOrder[] = [] const statusCounts: ProductionStatus = { planned: 0, in_progress: 0, quality_check: 0, completed: 0, total: 0 } for (const order of ordersData.data || []) { // Get product details const productData = await universalApi.read({ table: 'core_entities', filter: { id: order.reference_entity_id } })
-
-const product = productData.data?.[0] const metadata = order.metadata || {}
+  const formattedOrders: ManufacturingOrder[] = [] const statusCounts: ProductionStatus = { planned: 0, in_progress: 0, quality_check: 0, completed: 0, total: 0 } for (const order of ordersData.data || []) { // Get product details const productData = await universalApi.read({ table: 'core_entities', filter: { id: order.reference_entity_id } })
+  const product = productData.data?.[0] const metadata = order.metadata || {}
 
 const status = metadata.status || 'planned' const quantityCompleted = metadata.quantity_completed || 0 const quantityToProduced = metadata.quantity_to_produce || 0 // Count by status statusCounts[status as keyof ProductionStatus]++ statusCounts.total++ formattedOrders.push({ id: order.id, transaction_code: order.transaction_code, product_id: order.reference_entity_id, product_name: product?.entity_name || 'Unknown Product', quantity_to_produce: quantityToProduced, quantity_completed: quantityCompleted, target_completion_date: metadata.target_completion_date, status: status, progress_percent: quantityToProduced > 0 ? (quantityCompleted / quantityToProduced) * 100 : 0, material_status: await checkMaterialAvailability(order.id), sales_order_id: metadata.sales_order_id }  ) setOrders(formattedOrders) setProductionStatus(statusCounts)   } catch (err) {
   console.error('Error loading manufacturing orders:', err) setError('Failed to load manufacturing orders')   } finally {
@@ -76,8 +74,7 @@ const status = metadata.status || 'planned' const quantityCompleted = metadata.q
 }
 
 const checkMaterialAvailability = async ( orderId: string ): Promise<'available' | 'partial' | 'shortage'> => { // In a real implementation, this would check inventory levels against BOM requirements // For demo purposes, we'll return a random status const statuses: ('available' | 'partial' | 'shortage')[] = ['available', 'partial', 'shortage'] return statuses[Math.floor(Math.random() * statuses.length)] }
-
-const getStatusBadgeColor = (status: string) => { switch (status) {
+  const getStatusBadgeColor = (status: string) => { switch (status) {
   case 'planned': return 'secondary' case 'in_progress': return 'default' case 'quality_check': return 'outline' case 'completed': return 'success' default: return 'secondary' } }
 
 const getMaterialStatusBadge = (status: string) => { switch (status) {
