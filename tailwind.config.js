@@ -24,7 +24,7 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "var(--color-primary)",
+          DEFAULT: "rgb(var(--primary) / <alpha-value>)",
           50: "#F3F0FF",
           100: "#E8DDFF", 
           200: "#D6C7FF",
@@ -39,7 +39,7 @@ module.exports = {
           foreground: "var(--color-white)",
         },
         secondary: {
-          DEFAULT: "var(--color-secondary)",
+          DEFAULT: "rgb(var(--secondary) / <alpha-value>)",
           50: "#FDF2F8",
           100: "#FCE7F3",
           200: "#FBCFE8", 
@@ -71,6 +71,15 @@ module.exports = {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        // CivicFlow Theme Colors
+        bg: "rgb(var(--bg) / <alpha-value>)",
+        panel: "rgb(var(--panel) / <alpha-value>)",
+        "panel-alt": "rgb(var(--panel-alt) / <alpha-value>)",
+        "text-100": "rgb(var(--text-100) / <alpha-value>)",
+        "text-300": "rgb(var(--text-300) / <alpha-value>)",
+        "text-500": "rgb(var(--text-500) / <alpha-value>)",
+        "accent-soft": "rgb(var(--accent-soft-bg) / 0.1)",
+        "primary-hover": "rgb(var(--primary) / 0.8)",
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
