@@ -31,7 +31,10 @@ import {
   Globe,
   Code,
   CheckCircle,
-  FileJson
+  FileJson,
+  Settings,
+  Shield,
+  Zap
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -434,5 +437,3 @@ import { salonBookingSteps } from './transaction-flows.config'
   )
 }
 
-// Add missing import
-import { Settings, Shield, Zap } from 'lucide-react'

@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { AlertCircle, CheckCircle2, XCircle, Activity } from 'lucide-react'
-import { createSupabaseClient } from '@/lib/supabase-client'
+import { supabaseClient } from '@/lib/supabase-client'
 
 const HAIR_TALKZ_ORG_ID = 'hair-talkz-salon-org-uuid'
 const REFRESH_INTERVAL = 30000 // 30 seconds
@@ -36,7 +36,7 @@ export default function HairTalkzWorkflowDashboard() {
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
-  const supabase = createSupabaseClient()
+  const supabase = supabaseClient
 
   useEffect(() => {
     fetchData()
@@ -141,7 +141,7 @@ export default function HairTalkzWorkflowDashboard() {
                 {flag.enabled ? (
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
                 ) : (
-                  <div className="h-4 w-4 rounded-full bg-gray-300" />
+                  <div className="h-4 w-4 rounded-full bg-muted" />
                 )}
               </div>
             ))}
@@ -252,11 +252,11 @@ export default function HairTalkzWorkflowDashboard() {
         <CardContent>
           <div className="space-y-2">
             <p className="text-sm text-gray-600">If metrics are red, run rollback immediately:</p>
-            <code className="block p-2 bg-gray-100 rounded text-sm">
+            <code className="block p-2 bg-muted rounded text-sm">
               npm run salon:canary:rollback
             </code>
             <p className="text-sm text-gray-600 mt-4">View detailed logs:</p>
-            <code className="block p-2 bg-gray-100 rounded text-sm">
+            <code className="block p-2 bg-muted rounded text-sm">
               tail -f /var/log/hera/workflow-engine.log | grep hair-talkz
             </code>
           </div>

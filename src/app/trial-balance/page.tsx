@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 // import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider' // Not needed - using default salon org
-import { useToast } from '@/components/ui/use-toast'
+// import { useToast } from '@/components/ui/use-toast' // Not needed for static generation
 import {
   ChevronLeft,
   Download,
@@ -103,7 +103,7 @@ interface TrialBalanceData {
 
 export default function TrialBalancePage() {
   const router = useRouter()
-  const { toast } = useToast()
+  // const { toast } = useToast() // Commented out for static generation
 
   // Use default salon organization - no auth required
   const organizationId = '550e8400-e29b-41d4-a716-446655440000'
@@ -137,11 +137,11 @@ export default function TrialBalancePage() {
       setTrialBalanceData(data.data)
     } catch (error) {
       console.error('Error fetching trial balance:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to load trial balance report',
-        variant: 'destructive'
-      })
+      // toast({
+      //   title: 'Error',
+      //   description: 'Failed to load trial balance report',
+      //   variant: 'destructive'
+      // })
     } finally {
       setLoading(false)
     }
@@ -227,16 +227,18 @@ export default function TrialBalancePage() {
       a.download = `trial-balance-${new Date().toISOString().split('T')[0]}.${format}`
       a.click()
 
-      toast({
-        title: 'Export Successful',
-        description: `Trial balance exported as ${format.toUpperCase()}`
-      })
+      console.log('Export successful:', `Trial balance exported as ${format.toUpperCase()}`)
+      // toast({
+      //   title: 'Export Successful',
+      //   description: `Trial balance exported as ${format.toUpperCase()}`
+      // })
     } catch (error) {
-      toast({
-        title: 'Export Failed',
-        description: 'Could not export the report',
-        variant: 'destructive'
-      })
+      console.error('Export failed:', error)
+      // toast({
+      //   title: 'Export Failed',
+      //   description: 'Could not export the report',
+      //   variant: 'destructive'
+      // })
     }
   }
 

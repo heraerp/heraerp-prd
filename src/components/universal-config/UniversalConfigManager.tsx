@@ -6,7 +6,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Search, Filter, Settings, ChevronRight } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, Filter, Settings, ChevronRight, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,7 +29,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/components/ui/use-toast'
+// import { useToast } from '@/components/ui/use-toast' // Not needed for static generation
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Switch } from '@/components/ui/switch'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -110,7 +110,7 @@ export function UniversalConfigManager({
     is_active: true
   })
 
-  const { toast } = useToast()
+  // const { toast } = useToast() // Commented out for static generation
 
   // Initialize form with additional fields
   useEffect(() => {
@@ -141,11 +141,7 @@ export function UniversalConfigManager({
       setAnalytics(data.analytics || null)
     } catch (error) {
       console.error(`Error fetching ${config.pluralName}:`, error)
-      toast({
-        title: 'Error',
-        description: `Failed to load ${config.pluralName}`,
-        variant: 'destructive'
-      })
+      console.error(`Failed to load ${config.pluralName}`)
     } finally {
       setLoading(false)
     }
@@ -187,10 +183,7 @@ export function UniversalConfigManager({
         )
       }
 
-      toast({
-        title: 'Success',
-        description: `${config.displayName} ${selectedItem ? 'updated' : 'created'} successfully`
-      })
+      console.log('Success:', `${config.displayName} ${selectedItem ? 'updated' : 'created'} successfully`)
 
       setIsAddDialogOpen(false)
       setIsEditDialogOpen(false)
@@ -198,11 +191,7 @@ export function UniversalConfigManager({
       fetchItems()
     } catch (error) {
       console.error('Error:', error)
-      toast({
-        title: 'Error',
-        description: `Failed to ${selectedItem ? 'update' : 'create'} ${config.displayName}`,
-        variant: 'destructive'
-      })
+      console.error(`Failed to ${selectedItem ? 'update' : 'create'} ${config.displayName}:`, error)
     } finally {
       setIsSubmitting(false)
     }
@@ -221,20 +210,13 @@ export function UniversalConfigManager({
         throw new Error(error.error || `Failed to delete ${config.displayName}`)
       }
 
-      toast({
-        title: 'Success',
-        description: `${config.displayName} deleted successfully`
-      })
+      console.log('Success:', `${config.displayName} deleted successfully`)
 
       setIsDeleteDialogOpen(false)
       setSelectedItem(null)
       fetchItems()
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || `Failed to delete ${config.displayName}`,
-        variant: 'destructive'
-      })
+      console.error('Delete failed:', error.message || `Failed to delete ${config.displayName}`)
     }
   }
 
@@ -277,7 +259,7 @@ export function UniversalConfigManager({
 
   if (contextLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center space-y-4">
           <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
           <p className="text-muted-foreground">Loading {config.pluralName}...</p>

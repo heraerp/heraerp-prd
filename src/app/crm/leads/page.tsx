@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSupabaseClient } from '@/hooks/useSupabaseWithOrg'
 import {
   UserPlus,
@@ -51,7 +51,7 @@ interface DynamicData {
   field_value_number?: number
 }
 
-export default function LeadsPage() {
+function LeadsPageContent() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [selectedSource, setSelectedSource] = useState('all')
@@ -403,5 +403,13 @@ export default function LeadsPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function LeadsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <LeadsPageContent />
+    </Suspense>
   )
 }

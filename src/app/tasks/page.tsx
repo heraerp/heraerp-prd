@@ -75,7 +75,11 @@ export default function TasksPage() {
   if (!currentOrgId) {
     return (
       <div className="container mx-auto py-8">
-        <EmptyState message="Please select an organization to view tasks" icon={AlertCircle} />
+        <EmptyState 
+          title="No organization selected"
+          description="Please select an organization to view tasks" 
+          icon={<AlertCircle className="h-8 w-8 text-muted-foreground" />} 
+        />
       </div>
     )
   }
